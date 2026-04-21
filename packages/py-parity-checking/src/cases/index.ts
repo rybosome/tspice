@@ -1,20 +1,20 @@
 import type { ParityCase } from "../case-types.js";
 
-import { cellsWindowsCases } from "./cells-windows.cases.js";
-import { coordsVectorsCases } from "./coords-vectors.cases.js";
-import { ekCases } from "./ek.cases.js";
-import { idsNamesCases } from "./ids-names.cases.js";
-import { kernelPoolCases } from "./kernel-pool.cases.js";
-import { kernelsCases } from "./kernels.cases.js";
-import { timeCases } from "./time.cases.js";
+import cellsWindowsCasesRaw from "./cells-windows.cases.json" with { type: "json" };
+import coordsVectorsCasesRaw from "./coords-vectors.cases.json" with { type: "json" };
+import ekCasesRaw from "./ek.cases.json" with { type: "json" };
+import idsNamesCasesRaw from "./ids-names.cases.json" with { type: "json" };
+import kernelPoolCasesRaw from "./kernel-pool.cases.json" with { type: "json" };
+import kernelsCasesRaw from "./kernels.cases.json" with { type: "json" };
+import timeCasesRaw from "./time.cases.json" with { type: "json" };
 
-export { timeCases } from "./time.cases.js";
-export { idsNamesCases } from "./ids-names.cases.js";
-export { coordsVectorsCases } from "./coords-vectors.cases.js";
-export { cellsWindowsCases } from "./cells-windows.cases.js";
-export { kernelPoolCases } from "./kernel-pool.cases.js";
-export { kernelsCases } from "./kernels.cases.js";
-export { ekCases } from "./ek.cases.js";
+export const timeCases = timeCasesRaw as ParityCase[];
+export const idsNamesCases = idsNamesCasesRaw as ParityCase[];
+export const coordsVectorsCases = coordsVectorsCasesRaw as ParityCase[];
+export const cellsWindowsCases = cellsWindowsCasesRaw as ParityCase[];
+export const kernelPoolCases = kernelPoolCasesRaw as ParityCase[];
+export const kernelsCases = kernelsCasesRaw as ParityCase[];
+export const ekCases = ekCasesRaw as ParityCase[];
 
 export const allCases: ParityCase[] = [
   ...timeCases,
