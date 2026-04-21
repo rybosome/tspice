@@ -45,6 +45,8 @@ class EphemerisState:
 @dataclass
 class FramesState:
     requestedFrames: set[str] = field(default_factory=set)
+    stagedVirtualKernelPaths: set[str] = field(default_factory=set)
+    ckHandles: dict[str, int] = field(default_factory=dict)
 
 
 @dataclass

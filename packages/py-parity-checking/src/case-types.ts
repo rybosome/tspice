@@ -156,6 +156,15 @@ export type Matrix3x3 = [
   [number, number, number],
 ];
 
+export type Matrix6x6 = [
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+];
+
 export type Vector3 = [number, number, number];
 
 export type StepCoordsVectorsReclat = {
@@ -512,6 +521,100 @@ export type StepErrorChkout = {
   name: string;
 };
 
+export type CkCoverageLevel = "SEGMENT" | "INTERVAL";
+export type CkCoverageTimeSystem = "SCLK" | "TDB";
+
+export type StepFramesNamfrm = {
+  op: "frames.namfrm";
+  name: string;
+};
+
+export type StepFramesFrmnam = {
+  op: "frames.frmnam";
+  code: number;
+};
+
+export type StepFramesCidfrm = {
+  op: "frames.cidfrm";
+  center: number;
+};
+
+export type StepFramesCnmfrm = {
+  op: "frames.cnmfrm";
+  centerName: string;
+};
+
+export type StepFramesFrinfo = {
+  op: "frames.frinfo";
+  frameId: number;
+};
+
+export type StepFramesCcifrm = {
+  op: "frames.ccifrm";
+  frameClass: number;
+  classId: number;
+};
+
+export type StepFramesCkgp = {
+  op: "frames.ckgp";
+  inst: number;
+  sclkdp: number;
+  tol: number;
+  ref: string;
+};
+
+export type StepFramesCkgpav = {
+  op: "frames.ckgpav";
+  inst: number;
+  sclkdp: number;
+  tol: number;
+  ref: string;
+};
+
+export type StepFramesCklpf = {
+  op: "frames.cklpf";
+  ck: PathRefLike;
+  handleId: string;
+};
+
+export type StepFramesCkupf = {
+  op: "frames.ckupf";
+  handleId: string;
+};
+
+export type StepFramesCkobj = {
+  op: "frames.ckobj";
+  ck: PathRefLike;
+  idsId: string;
+  maxCard?: number;
+};
+
+export type StepFramesCkcov = {
+  op: "frames.ckcov";
+  ck: PathRefLike;
+  idcode: number;
+  needav: boolean;
+  level: CkCoverageLevel;
+  tol: number;
+  timsys: CkCoverageTimeSystem;
+  coverId: string;
+  maxIntervals?: number;
+};
+
+export type StepFramesPxform = {
+  op: "frames.pxform";
+  from: string;
+  to: string;
+  et: number;
+};
+
+export type StepFramesSxform = {
+  op: "frames.sxform";
+  from: string;
+  to: string;
+  et: number;
+};
+
 export type StepEkEkfind = {
   op: "ek.ekfind";
   query: string;
@@ -764,6 +867,20 @@ export type WorkflowStep =
   | StepErrorSigerr
   | StepErrorChkin
   | StepErrorChkout
+  | StepFramesNamfrm
+  | StepFramesFrmnam
+  | StepFramesCidfrm
+  | StepFramesCnmfrm
+  | StepFramesFrinfo
+  | StepFramesCcifrm
+  | StepFramesCkgp
+  | StepFramesCkgpav
+  | StepFramesCklpf
+  | StepFramesCkupf
+  | StepFramesCkobj
+  | StepFramesCkcov
+  | StepFramesPxform
+  | StepFramesSxform
   | StepEkEkfind
   | StepEkEkgc
   | StepGeometrySubpnt
@@ -883,6 +1000,51 @@ export type StepOutput =
   | { op: "error.sigerr"; value: null }
   | { op: "error.chkin"; value: null }
   | { op: "error.chkout"; value: null }
+  | { op: "frames.namfrm"; value: { found: false } | { found: true; code: number } }
+  | { op: "frames.frmnam"; value: { found: false } | { found: true; name: string } }
+  | {
+      op: "frames.cidfrm";
+      value: { found: false } | { found: true; frcode: number; frname: string };
+    }
+  | {
+      op: "frames.cnmfrm";
+      value: { found: false } | { found: true; frcode: number; frname: string };
+    }
+  | {
+      op: "frames.frinfo";
+      value:
+        | { found: false }
+        | { found: true; center: number; frameClass: number; classId: number };
+    }
+  | {
+      op: "frames.ccifrm";
+      value:
+        | { found: false }
+        | { found: true; frcode: number; frname: string; center: number };
+    }
+  | {
+      op: "frames.ckgp";
+      value:
+        | { found: false }
+        | { found: true; cmat: Matrix3x3; clkout: number };
+    }
+  | {
+      op: "frames.ckgpav";
+      value:
+        | { found: false }
+        | { found: true; cmat: Matrix3x3; av: [number, number, number]; clkout: number };
+    }
+  | { op: "frames.cklpf"; value: { opened: true } }
+  | { op: "frames.ckupf"; value: { closed: true } }
+  | { op: "frames.ckobj"; value: { ids: number[] } }
+  | {
+      op: "frames.ckcov";
+      value: {
+        intervals: Array<{ left: number; right: number }>;
+      };
+    }
+  | { op: "frames.pxform"; value: Matrix3x3 }
+  | { op: "frames.sxform"; value: Matrix6x6 }
   | {
       op: "ek.ekfind";
       value: { ok: true; nmrows: number } | { ok: false; errmsg: string };

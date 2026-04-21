@@ -45,6 +45,20 @@ from .models import (
     StepErrorReset,
     StepErrorSetmsg,
     StepErrorSigerr,
+    StepFramesCcifrm,
+    StepFramesCidfrm,
+    StepFramesCkcov,
+    StepFramesCkgp,
+    StepFramesCkgpav,
+    StepFramesCklpf,
+    StepFramesCkobj,
+    StepFramesCkupf,
+    StepFramesCnmfrm,
+    StepFramesFrinfo,
+    StepFramesFrmnam,
+    StepFramesNamfrm,
+    StepFramesPxform,
+    StepFramesSxform,
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
@@ -785,6 +799,116 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepErrorChkout(
                 op=op,
                 name=_expect_string(step.get("name"), label="error.chkout.name"),
+            )
+
+        case "frames.namfrm":
+            return StepFramesNamfrm(op=op, name=_expect_string(step.get("name"), label="frames.namfrm.name"))
+
+        case "frames.frmnam":
+            return StepFramesFrmnam(op=op, code=_expect_int(step.get("code"), label="frames.frmnam.code"))
+
+        case "frames.cidfrm":
+            return StepFramesCidfrm(op=op, center=_expect_int(step.get("center"), label="frames.cidfrm.center"))
+
+        case "frames.cnmfrm":
+            return StepFramesCnmfrm(
+                op=op,
+                centerName=_expect_string(step.get("centerName"), label="frames.cnmfrm.centerName"),
+            )
+
+        case "frames.frinfo":
+            return StepFramesFrinfo(op=op, frameId=_expect_int(step.get("frameId"), label="frames.frinfo.frameId"))
+
+        case "frames.ccifrm":
+            return StepFramesCcifrm(
+                op=op,
+                frameClass=_expect_int(step.get("frameClass"), label="frames.ccifrm.frameClass"),
+                classId=_expect_int(step.get("classId"), label="frames.ccifrm.classId"),
+            )
+
+        case "frames.ckgp":
+            return StepFramesCkgp(
+                op=op,
+                inst=_expect_int(step.get("inst"), label="frames.ckgp.inst"),
+                sclkdp=_expect_number(step.get("sclkdp"), label="frames.ckgp.sclkdp"),
+                tol=_expect_number(step.get("tol"), label="frames.ckgp.tol"),
+                ref=_expect_string(step.get("ref"), label="frames.ckgp.ref"),
+            )
+
+        case "frames.ckgpav":
+            return StepFramesCkgpav(
+                op=op,
+                inst=_expect_int(step.get("inst"), label="frames.ckgpav.inst"),
+                sclkdp=_expect_number(step.get("sclkdp"), label="frames.ckgpav.sclkdp"),
+                tol=_expect_number(step.get("tol"), label="frames.ckgpav.tol"),
+                ref=_expect_string(step.get("ref"), label="frames.ckgpav.ref"),
+            )
+
+        case "frames.cklpf":
+            return StepFramesCklpf(
+                op=op,
+                ck=_decode_path_ref(step.get("ck"), label="frames.cklpf.ck"),
+                handleId=_expect_string(step.get("handleId"), label="frames.cklpf.handleId"),
+            )
+
+        case "frames.ckupf":
+            return StepFramesCkupf(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.ckupf.handleId"),
+            )
+
+        case "frames.ckobj":
+            max_card_raw = step.get("maxCard")
+            max_card = None
+            if max_card_raw is not None:
+                max_card = _expect_int(max_card_raw, label="frames.ckobj.maxCard")
+            return StepFramesCkobj(
+                op=op,
+                ck=_decode_path_ref(step.get("ck"), label="frames.ckobj.ck"),
+                idsId=_expect_string(step.get("idsId"), label="frames.ckobj.idsId"),
+                maxCard=max_card,
+            )
+
+        case "frames.ckcov":
+            level = _expect_string(step.get("level"), label="frames.ckcov.level")
+            if level not in {"SEGMENT", "INTERVAL"}:
+                raise ValueError("frames.ckcov.level must be SEGMENT|INTERVAL")
+
+            timsys = _expect_string(step.get("timsys"), label="frames.ckcov.timsys")
+            if timsys not in {"SCLK", "TDB"}:
+                raise ValueError("frames.ckcov.timsys must be SCLK|TDB")
+
+            max_intervals_raw = step.get("maxIntervals")
+            max_intervals = None
+            if max_intervals_raw is not None:
+                max_intervals = _expect_int(max_intervals_raw, label="frames.ckcov.maxIntervals")
+
+            return StepFramesCkcov(
+                op=op,
+                ck=_decode_path_ref(step.get("ck"), label="frames.ckcov.ck"),
+                idcode=_expect_int(step.get("idcode"), label="frames.ckcov.idcode"),
+                needav=_expect_bool(step.get("needav"), label="frames.ckcov.needav"),
+                level=level,
+                tol=_expect_number(step.get("tol"), label="frames.ckcov.tol"),
+                timsys=timsys,
+                coverId=_expect_string(step.get("coverId"), label="frames.ckcov.coverId"),
+                maxIntervals=max_intervals,
+            )
+
+        case "frames.pxform":
+            return StepFramesPxform(
+                op=op,
+                from_=_expect_string(step.get("from"), label="frames.pxform.from"),
+                to=_expect_string(step.get("to"), label="frames.pxform.to"),
+                et=_expect_number(step.get("et"), label="frames.pxform.et"),
+            )
+
+        case "frames.sxform":
+            return StepFramesSxform(
+                op=op,
+                from_=_expect_string(step.get("from"), label="frames.sxform.from"),
+                to=_expect_string(step.get("to"), label="frames.sxform.to"),
+                et=_expect_number(step.get("et"), label="frames.sxform.et"),
             )
 
         case "ek.ekfind":

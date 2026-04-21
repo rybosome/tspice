@@ -7,6 +7,9 @@
   - `kernel-pool-parity.tpc`
   - `pck00010.tpc`
   - `de440s.bsp`
+- Copied from `packages/tspice/test/fixtures/kernels/mgs-minimal`:
+  - `mgs_sclkscet_00061.tsc`
+  - `mgs_hga_hinge_v2.bc`
 - Added package-local fixed EK fixture:
   - `py-parity-minimal.ek`
 - Added package-local ids-names fixture:

@@ -69,6 +69,22 @@ from .geometry_gf import (
     StepGeometryGfGfstep,
     StepGeometryGfGfstol,
 )
+from .frames import (
+    StepFramesCcifrm,
+    StepFramesCidfrm,
+    StepFramesCkcov,
+    StepFramesCkgp,
+    StepFramesCkgpav,
+    StepFramesCklpf,
+    StepFramesCkobj,
+    StepFramesCkupf,
+    StepFramesCnmfrm,
+    StepFramesFrinfo,
+    StepFramesFrmnam,
+    StepFramesNamfrm,
+    StepFramesPxform,
+    StepFramesSxform,
+)
 from .ids_names import (
     StepIdsNamesBodc2n,
     StepIdsNamesBodc2s,
@@ -202,6 +218,20 @@ WorkflowStep: TypeAlias = (
     | StepErrorSigerr
     | StepErrorChkin
     | StepErrorChkout
+    | StepFramesNamfrm
+    | StepFramesFrmnam
+    | StepFramesCidfrm
+    | StepFramesCnmfrm
+    | StepFramesFrinfo
+    | StepFramesCcifrm
+    | StepFramesCkgp
+    | StepFramesCkgpav
+    | StepFramesCklpf
+    | StepFramesCkupf
+    | StepFramesCkobj
+    | StepFramesCkcov
+    | StepFramesPxform
+    | StepFramesSxform
     | StepEkEkfind
     | StepEkEkgc
     | StepGeometrySubpnt

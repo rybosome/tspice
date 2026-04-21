@@ -6,6 +6,7 @@ from .cells_windows import run_cells_windows_step
 from .coords_vectors import run_coords_vectors_step
 from .ek import run_ek_step
 from .error import run_error_step
+from .frames import run_frames_step
 from .geometry import run_geometry_step
 from .geometry_gf import run_geometry_gf_step
 from .ids_names import run_ids_names_step
@@ -44,6 +45,10 @@ def _run_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput:
         return out
 
     out = run_ek_step(step, context)
+    if out is not None:
+        return out
+
+    out = run_frames_step(step, context)
     if out is not None:
         return out
 
