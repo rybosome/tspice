@@ -1,0 +1,35 @@
+[
+  {
+    "caseId": "file-io-dlaopn-create-empty-file-success",
+    "description": "dlaopn creates an empty DLA file and dlabfs reports no segments",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "path": "kernels/generated/dlaopn-create.dla",
+        "ftype": "DLA",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer"
+      },
+      { "op": "file-io.dlabfs", "handleId": "writer", "descrId": "seg0" },
+      { "op": "file-io.dlacls", "handleId": "writer" },
+      { "op": "file-io.exists", "path": "kernels/generated/dlaopn-create.dla" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dlaopn-negative-ncomch-error",
+    "description": "Representative dlaopn error for invalid ncomch",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "path": "kernels/generated/dlaopn-invalid.dla",
+        "ftype": "DLA",
+        "ifname": "TSPICE",
+        "ncomch": -1,
+        "handleId": "writer"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

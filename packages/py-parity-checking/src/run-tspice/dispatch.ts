@@ -4,6 +4,7 @@ import { runCellsWindowsStep } from "./domains/cells-windows.js";
 import { runCoordsVectorsStep } from "./domains/coords-vectors.js";
 import { runDskStep } from "./domains/dsk.js";
 import { runEkStep } from "./domains/ek.js";
+import { runFileIoStep } from "./domains/file-io.js";
 import { runErrorStep } from "./domains/error.js";
 import { runFramesStep } from "./domains/frames.js";
 import { runGeometryStep } from "./domains/geometry.js";
@@ -100,6 +101,23 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "kernels.kxtrct":
     case "kernels.unload":
       return runKernelsStep(context, step);
+
+    case "file-io.exists":
+    case "file-io.getfat":
+    case "file-io.dafopr":
+    case "file-io.dafcls":
+    case "file-io.dafbfs":
+    case "file-io.daffna":
+    case "file-io.dasopr":
+    case "file-io.dascls":
+    case "file-io.dlaopn":
+    case "file-io.dlabfs":
+    case "file-io.dlafns":
+    case "file-io.dlacls":
+    case "file-io.dskopn":
+    case "file-io.dskmi2":
+    case "file-io.dskw02":
+      return runFileIoStep(context, step);
 
     case "error.failed":
     case "error.reset":

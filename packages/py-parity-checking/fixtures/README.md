@@ -8,6 +8,8 @@
   - `pck00010.tpc`
   - `de440s.bsp`
   - `apophis_g_25000mm_rad_obj_0000n00000_v001.bds`
+  - `file-io-minimal.bsp` (from `frames-minimal/earthstns_itrf93_201023.bsp`)
+  - `file-io-minimal.bds` (from `dsk-minimal/apophis_g_25000mm_rad_obj_0000n00000_v001.bds`)
 - Copied from `packages/tspice/test/fixtures/kernels/mgs-minimal`:
   - `mgs_sclkscet_00061.tsc`
   - `mgs_hga_hinge_v2.bc`

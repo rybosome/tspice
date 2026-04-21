@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "file-io-exists-fixture-present-success",
+    "description": "exists reports true for fixture path after furnsh staging",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "file-io.exists", "path": "kernels/naif0012.tls" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-exists-missing-file-success",
+    "description": "exists reports false for a missing fixture-relative file",
+    "workflow": [{ "op": "file-io.exists", "path": "kernels/does-not-exist.any" }],
+    "expectation": { "kind": "success" }
+  }
+]
