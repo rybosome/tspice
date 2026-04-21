@@ -79,9 +79,13 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
       return runKernelPoolStep(context, step);
 
     case "kernels.furnsh":
+    case "kernels.kclear":
+    case "kernels.kinfo":
+    case "kernels.kplfrm":
     case "kernels.ktotal":
     case "kernels.kdata":
     case "kernels.kxtrct":
+    case "kernels.unload":
       return runKernelsStep(context, step);
 
     case "error.failed":

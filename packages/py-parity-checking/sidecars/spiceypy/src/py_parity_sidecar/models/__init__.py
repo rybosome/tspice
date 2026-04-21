@@ -69,7 +69,16 @@ from .kernel_pool import (
     StepKernelPoolPipool,
     StepKernelPoolSwpool,
 )
-from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
+from .kernels import (
+    StepKernelsFurnsh,
+    StepKernelsKclear,
+    StepKernelsKdata,
+    StepKernelsKinfo,
+    StepKernelsKplfrm,
+    StepKernelsKtotal,
+    StepKernelsKxtrct,
+    StepKernelsUnload,
+)
 from .time import (
     DeltetEptype,
     TimdefItem,
@@ -166,9 +175,13 @@ __all__ = [
     "StepKernelPoolCvpool",
     "StepKernelPoolExpool",
     "StepKernelsFurnsh",
+    "StepKernelsKclear",
+    "StepKernelsKinfo",
+    "StepKernelsKplfrm",
     "StepKernelsKtotal",
     "StepKernelsKdata",
     "StepKernelsKxtrct",
+    "StepKernelsUnload",
     "StepErrorFailed",
     "StepErrorReset",
     "StepErrorGetmsg",

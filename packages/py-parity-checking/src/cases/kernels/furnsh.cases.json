@@ -1,0 +1,18 @@
+[
+  {
+    "caseId": "kernels-furnsh-loads-text-kernel-success",
+    "description": "furnsh loads a text kernel that is visible through ktotal/kdata",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.ktotal", "kind": "ALL" },
+      { "op": "kernels.kdata", "which": 0, "kind": "ALL" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernels-furnsh-missing-file-error",
+    "description": "Representative furnsh missing-file error path",
+    "workflow": [{ "op": "kernels.furnsh", "file": "kernels/does-not-exist.tls" }],
+    "expectation": { "kind": "error" }
+  }
+]

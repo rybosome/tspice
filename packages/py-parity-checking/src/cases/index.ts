@@ -39,7 +39,7 @@ import idsNamesBodfndCasesRaw from "./ids-names/bodfnd.cases.json" with { type: 
 import idsNamesBodn2cCasesRaw from "./ids-names/bodn2c.cases.json" with { type: "json" };
 import idsNamesBods2cCasesRaw from "./ids-names/bods2c.cases.json" with { type: "json" };
 import idsNamesBodvarCasesRaw from "./ids-names/bodvar.cases.json" with { type: "json" };
-import kernelsCasesRaw from "./kernels.cases.json" with { type: "json" };
+import { kernelsCases } from "./kernels/index.js";
 import { kernelPoolCases } from "./kernel-pool/index.js";
 import timeDeltetCasesRaw from "./time/deltet.cases.json" with { type: "json" };
 import timeEt2UtcCasesRaw from "./time/et2utc.cases.json" with { type: "json" };
@@ -108,7 +108,6 @@ export const coordsVectorsCases: ParityCase[] = [
 ];
 export const cellsWindowsCases = cellsWindowsCasesRaw as ParityCase[];
 export { kernelPoolCases };
-export const kernelsCases = kernelsCasesRaw as ParityCase[];
 export const ekCases = ekCasesRaw as ParityCase[];
 export { errorCases };
 export const geometryCases: ParityCase[] = [

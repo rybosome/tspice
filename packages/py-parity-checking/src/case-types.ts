@@ -369,6 +369,20 @@ export type StepKernelsFurnsh = {
   file: PathRefLike;
 };
 
+export type StepKernelsKclear = {
+  op: "kernels.kclear";
+};
+
+export type StepKernelsKinfo = {
+  op: "kernels.kinfo";
+  path: string;
+};
+
+export type StepKernelsKplfrm = {
+  op: "kernels.kplfrm";
+  frmcls: number;
+};
+
 export type StepKernelsKtotal = {
   op: "kernels.ktotal";
   kind: string;
@@ -385,6 +399,11 @@ export type StepKernelsKxtrct = {
   keywd: string;
   terms: string[];
   string: string;
+};
+
+export type StepKernelsUnload = {
+  op: "kernels.unload";
+  path: string;
 };
 
 export type StepErrorFailed = {
@@ -581,9 +600,13 @@ export type WorkflowStep =
   | StepKernelPoolCvpool
   | StepKernelPoolExpool
   | StepKernelsFurnsh
+  | StepKernelsKclear
+  | StepKernelsKinfo
+  | StepKernelsKplfrm
   | StepKernelsKtotal
   | StepKernelsKdata
   | StepKernelsKxtrct
+  | StepKernelsUnload
   | StepErrorFailed
   | StepErrorReset
   | StepErrorGetmsg
@@ -668,6 +691,12 @@ export type StepOutput =
   | { op: "kernel-pool.cvpool"; value: boolean }
   | { op: "kernel-pool.expool"; value: boolean }
   | { op: "kernels.furnsh"; value: null }
+  | { op: "kernels.kclear"; value: null }
+  | {
+      op: "kernels.kinfo";
+      value: { found: false } | { found: true; filtyp: string; source: string };
+    }
+  | { op: "kernels.kplfrm"; value: { ids: number[] } }
   | { op: "kernels.ktotal"; value: number }
   | {
       op: "kernels.kdata";
@@ -677,6 +706,7 @@ export type StepOutput =
       op: "kernels.kxtrct";
       value: { found: false } | { found: true; wordsq: string; substr: string };
     }
+  | { op: "kernels.unload"; value: null }
   | { op: "error.failed"; value: boolean }
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }

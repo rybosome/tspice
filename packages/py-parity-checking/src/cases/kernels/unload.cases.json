@@ -1,0 +1,19 @@
+[
+  {
+    "caseId": "kernels-unload-removes-loaded-kernel-success",
+    "description": "unload removes a previously loaded kernel from lookup results",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.kinfo", "path": "kernels/naif0012.tls" },
+      { "op": "kernels.unload", "path": "kernels/naif0012.tls" },
+      { "op": "kernels.kinfo", "path": "kernels/naif0012.tls" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernels-unload-empty-path-error",
+    "description": "Representative unload invalid empty-path error",
+    "workflow": [{ "op": "kernels.unload", "path": "" }],
+    "expectation": { "kind": "error" }
+  }
+]
