@@ -794,6 +794,101 @@ export type StepEkEkgc = {
   elment: number;
 };
 
+export type StepEkEkgd = {
+  op: "ek.ekgd";
+  selidx: number;
+  row: number;
+  elment: number;
+};
+
+export type StepEkEkgi = {
+  op: "ek.ekgi";
+  selidx: number;
+  row: number;
+  elment: number;
+};
+
+export type StepEkEkopn = {
+  op: "ek.ekopn";
+  path: string;
+  ifname: string;
+  ncomch: number;
+  handleId: string;
+};
+
+export type StepEkEkopr = {
+  op: "ek.ekopr";
+  path: string;
+  handleId: string;
+};
+
+export type StepEkEkopw = {
+  op: "ek.ekopw";
+  path: string;
+  handleId: string;
+};
+
+export type StepEkEkcls = {
+  op: "ek.ekcls";
+  handleId: string;
+};
+
+export type StepEkEkntab = {
+  op: "ek.ekntab";
+};
+
+export type StepEkEktnam = {
+  op: "ek.ektnam";
+  n: number;
+};
+
+export type StepEkEknseg = {
+  op: "ek.eknseg";
+  handleId: string;
+};
+
+export type StepEkEkifld = {
+  op: "ek.ekifld";
+  handleId: string;
+  tabnam: string;
+  nrows: number;
+  cnames: string[];
+  decls: string[];
+  segmentId: string;
+};
+
+export type StepEkEkacli = {
+  op: "ek.ekacli";
+  segmentId: string;
+  column: string;
+  ivals: number[];
+  entszs: number[];
+  nlflgs: boolean[];
+};
+
+export type StepEkEkacld = {
+  op: "ek.ekacld";
+  segmentId: string;
+  column: string;
+  dvals: number[];
+  entszs: number[];
+  nlflgs: boolean[];
+};
+
+export type StepEkEkaclc = {
+  op: "ek.ekaclc";
+  segmentId: string;
+  column: string;
+  cvals: string[];
+  entszs: number[];
+  nlflgs: boolean[];
+};
+
+export type StepEkEkffld = {
+  op: "ek.ekffld";
+  segmentId: string;
+};
+
 export type StepGeometryGfGfsstp = {
   op: "geometry-gf.gfsstp";
   step: number;
@@ -1148,8 +1243,22 @@ export type WorkflowStep =
   | StepFramesCkcov
   | StepFramesPxform
   | StepFramesSxform
+  | StepEkEkopn
+  | StepEkEkopr
+  | StepEkEkopw
+  | StepEkEkcls
+  | StepEkEkntab
+  | StepEkEktnam
+  | StepEkEknseg
   | StepEkEkfind
   | StepEkEkgc
+  | StepEkEkgd
+  | StepEkEkgi
+  | StepEkEkifld
+  | StepEkEkacli
+  | StepEkEkacld
+  | StepEkEkaclc
+  | StepEkEkffld
   | StepGeometrySubpnt
   | StepGeometrySubslr
   | StepGeometrySincpt
@@ -1182,6 +1291,16 @@ export type WorkflowOp = WorkflowStep["op"];
 
 export type KernelPoolFoundNumbers = { found: false } | { found: true; values: number[] };
 export type KernelPoolFoundStrings = { found: false } | { found: true; values: string[] };
+
+export type EkGetStringResult =
+  | { found: false }
+  | { found: true; isNull: true }
+  | { found: true; isNull: false; value: string };
+
+export type EkGetNumberResult =
+  | { found: false }
+  | { found: true; isNull: true }
+  | { found: true; isNull: false; value: number };
 
 export type StepOutput =
   | { op: "time.str2et"; value: number }
@@ -1345,15 +1464,68 @@ export type StepOutput =
   | { op: "frames.pxform"; value: Matrix3x3 }
   | { op: "frames.sxform"; value: Matrix6x6 }
   | {
+      op: "ek.ekopn";
+      value: { handleId: string };
+    }
+  | {
+      op: "ek.ekopr";
+      value: { handleId: string };
+    }
+  | {
+      op: "ek.ekopw";
+      value: { handleId: string };
+    }
+  | {
+      op: "ek.ekcls";
+      value: null;
+    }
+  | {
+      op: "ek.ekntab";
+      value: number;
+    }
+  | {
+      op: "ek.ektnam";
+      value: string;
+    }
+  | {
+      op: "ek.eknseg";
+      value: number;
+    }
+  | {
       op: "ek.ekfind";
       value: { ok: true; nmrows: number } | { ok: false; errmsg: string };
     }
   | {
       op: "ek.ekgc";
-      value:
-        | { found: false }
-        | { found: true; isNull: true }
-        | { found: true; isNull: false; value: string };
+      value: EkGetStringResult;
+    }
+  | {
+      op: "ek.ekgd";
+      value: EkGetNumberResult;
+    }
+  | {
+      op: "ek.ekgi";
+      value: EkGetNumberResult;
+    }
+  | {
+      op: "ek.ekifld";
+      value: { segmentId: string };
+    }
+  | {
+      op: "ek.ekacli";
+      value: null;
+    }
+  | {
+      op: "ek.ekacld";
+      value: null;
+    }
+  | {
+      op: "ek.ekaclc";
+      value: null;
+    }
+  | {
+      op: "ek.ekffld";
+      value: null;
     }
   | {
       op: "geometry.subpnt";

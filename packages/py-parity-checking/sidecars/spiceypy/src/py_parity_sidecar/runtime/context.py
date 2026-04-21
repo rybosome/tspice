@@ -46,9 +46,18 @@ class DskState:
     cleanupRegistered: bool = False
 
 
+@dataclass(frozen=True)
+class EkSegmentState:
+    handleId: str
+    segno: int
+    rcptrs: list[int]
+
+
 @dataclass
 class EkState:
     lastQuery: str | None = None
+    handles: dict[str, int] = field(default_factory=dict)
+    segments: dict[str, EkSegmentState] = field(default_factory=dict)
 
 
 @dataclass

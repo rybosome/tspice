@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "ek-ekopr-happy-reopen-created-file",
+    "description": "ekopr can reopen an EK file created earlier in the same workflow",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekopr-happy.ek",
+        "ifname": "ekopr-happy",
+        "ncomch": 0,
+        "handleId": "H_WRITE"
+      },
+      { "op": "ek.ekcls", "handleId": "H_WRITE" },
+      {
+        "op": "ek.ekopr",
+        "path": ".py-parity-ek-ekopr-happy.ek",
+        "handleId": "H_READ"
+      },
+      { "op": "ek.eknseg", "handleId": "H_READ" },
+      { "op": "ek.ekcls", "handleId": "H_READ" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekopr-missing-file-error",
+    "description": "ekopr reports an error when opening a missing EK file",
+    "workflow": [
+      {
+        "op": "ek.ekopr",
+        "path": ".py-parity-ek-ekopr-missing.ek",
+        "handleId": "H_MISSING"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]
