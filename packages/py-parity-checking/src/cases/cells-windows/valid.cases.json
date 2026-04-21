@@ -1,0 +1,23 @@
+[
+  {
+    "caseId": "cells-windows-valid-normalizes-set-success",
+    "description": "valid runs against a populated int set cell",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_VALID", "item": 5, "maxCardinality": 8 },
+      { "op": "cells-windows.insrti", "cellId": "C_VALID", "item": 1 },
+      { "op": "cells-windows.insrti", "cellId": "C_VALID", "item": 3 },
+      { "op": "cells-windows.valid", "size": 8, "n": 3, "targetKind": "int", "targetId": "C_VALID" },
+      { "op": "cells-windows.card", "targetKind": "int", "targetId": "C_VALID" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-valid-negative-n-error",
+    "description": "Representative valid argument validation error",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_VALID_ERR", "item": 1, "maxCardinality": 4 },
+      { "op": "cells-windows.valid", "size": 4, "n": -1, "targetKind": "int", "targetId": "C_VALID_ERR" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

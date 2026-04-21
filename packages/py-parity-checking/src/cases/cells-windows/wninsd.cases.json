@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "cells-windows-wninsd-merge-success",
+    "description": "wninsd merges overlapping intervals in a tracked window",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "W_WNINSD", "left": 0, "right": 1, "maxIntervals": 8 },
+      { "op": "cells-windows.wninsd", "windowId": "W_WNINSD", "left": 2, "right": 3 },
+      { "op": "cells-windows.wninsd", "windowId": "W_WNINSD", "left": 0.5, "right": 2.5 },
+      { "op": "cells-windows.wncard", "windowId": "W_WNINSD" },
+      { "op": "cells-windows.wnfetd", "windowId": "W_WNINSD", "index": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-wninsd-invalid-interval-error",
+    "description": "Representative wninsd invalid interval bounds error",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "W_WNINSD_ERR", "left": 3, "right": 2, "maxIntervals": 4 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

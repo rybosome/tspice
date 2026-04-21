@@ -2,8 +2,14 @@ import type { Spice } from "@rybosome/tspice";
 
 import {
   createRunTspiceContext as createRunTspiceContextCore,
+  getOrCreateCharCell,
+  getOrCreateDoubleCell,
+  getOrCreateIntCell,
   getOrCreateWindow,
   registerFinalizer,
+  requireCharCell,
+  requireDoubleCell,
+  requireIntCell,
   requireWindow,
   type RunTspiceContext,
 } from "../runtime/context.js";
@@ -11,7 +17,17 @@ import { beforeCaseLifecycle, finalizeCaseLifecycle } from "../runtime/lifecycle
 import { createCaseRuntimePaths } from "../runtime/path-ref.js";
 
 export type { RunTspiceContext };
-export { getOrCreateWindow, requireWindow, registerFinalizer };
+export {
+  getOrCreateCharCell,
+  getOrCreateDoubleCell,
+  getOrCreateIntCell,
+  getOrCreateWindow,
+  registerFinalizer,
+  requireCharCell,
+  requireDoubleCell,
+  requireIntCell,
+  requireWindow,
+};
 
 /** Create per-case tspice execution context with runtime fixture/scratch roots. */
 export function createRunTspiceContext(

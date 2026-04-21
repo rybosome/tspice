@@ -1,9 +1,17 @@
-import type { SpiceWindow } from "@rybosome/tspice-backend-contract";
+import type {
+  SpiceCharCell,
+  SpiceDoubleCell,
+  SpiceIntCell,
+  SpiceWindow,
+} from "@rybosome/tspice-backend-contract";
 import type { Spice } from "@rybosome/tspice";
 
 import type { RuntimePaths } from "./path-ref.js";
 
 export type CellsWindowsState = {
+  intCells: Map<string, SpiceIntCell>;
+  doubleCells: Map<string, SpiceDoubleCell>;
+  charCells: Map<string, SpiceCharCell>;
   windows: Map<string, SpiceWindow>;
 };
 
@@ -63,6 +71,9 @@ export function createRunTspiceContext(spice: Spice, paths: RuntimePaths): RunTs
     paths,
     state: {
       cellsWindows: {
+        intCells: new Map<string, SpiceIntCell>(),
+        doubleCells: new Map<string, SpiceDoubleCell>(),
+        charCells: new Map<string, SpiceCharCell>(),
         windows: new Map<string, SpiceWindow>(),
       },
       kernels: {
@@ -109,6 +120,103 @@ export function runFinalizersBestEffort(context: RunTspiceContext): void {
       // best-effort cleanup only
     }
   }
+}
+
+/** Return an existing int cell by ID, or create+track a new one in the cellsWindows slice. */
+export function getOrCreateIntCell(
+  context: RunTspiceContext,
+  cellId: string,
+  maxCardinality: number,
+): SpiceIntCell {
+  const existing = context.state.cellsWindows.intCells.get(cellId);
+  if (existing != null) {
+    return existing;
+  }
+
+  const created = context.spice.kit.newIntCell(maxCardinality);
+  context.state.cellsWindows.intCells.set(cellId, created);
+  registerFinalizer(context, `cellsWindows.freeIntCell:${cellId}`, () => {
+    try {
+      context.spice.kit.freeCell(created);
+    } catch {
+      // best-effort cleanup only
+    }
+  });
+  return created;
+}
+
+/** Require a previously created int cell by ID. */
+export function requireIntCell(context: RunTspiceContext, cellId: string): SpiceIntCell {
+  const cell = context.state.cellsWindows.intCells.get(cellId);
+  if (cell == null) {
+    throw new Error(`Int cell does not exist: ${cellId}`);
+  }
+  return cell;
+}
+
+/** Return an existing double cell by ID, or create+track a new one in the cellsWindows slice. */
+export function getOrCreateDoubleCell(
+  context: RunTspiceContext,
+  cellId: string,
+  maxCardinality: number,
+): SpiceDoubleCell {
+  const existing = context.state.cellsWindows.doubleCells.get(cellId);
+  if (existing != null) {
+    return existing;
+  }
+
+  const created = context.spice.kit.newDoubleCell(maxCardinality);
+  context.state.cellsWindows.doubleCells.set(cellId, created);
+  registerFinalizer(context, `cellsWindows.freeDoubleCell:${cellId}`, () => {
+    try {
+      context.spice.kit.freeCell(created);
+    } catch {
+      // best-effort cleanup only
+    }
+  });
+  return created;
+}
+
+/** Require a previously created double cell by ID. */
+export function requireDoubleCell(context: RunTspiceContext, cellId: string): SpiceDoubleCell {
+  const cell = context.state.cellsWindows.doubleCells.get(cellId);
+  if (cell == null) {
+    throw new Error(`Double cell does not exist: ${cellId}`);
+  }
+  return cell;
+}
+
+/** Return an existing char cell by ID, or create+track a new one in the cellsWindows slice. */
+export function getOrCreateCharCell(
+  context: RunTspiceContext,
+  cellId: string,
+  maxCardinality: number,
+  length: number,
+): SpiceCharCell {
+  const existing = context.state.cellsWindows.charCells.get(cellId);
+  if (existing != null) {
+    return existing;
+  }
+
+  const created = context.spice.kit.newCharCell(maxCardinality, length);
+  context.state.cellsWindows.charCells.set(cellId, created);
+  registerFinalizer(context, `cellsWindows.freeCharCell:${cellId}`, () => {
+    try {
+      context.spice.kit.freeCell(created);
+    } catch {
+      // best-effort cleanup only
+    }
+  });
+  return created;
+}
+
+/** Require a previously created char cell by ID. */
+export function requireCharCell(context: RunTspiceContext, cellId: string): SpiceCharCell {
+  const cell = context.state.cellsWindows.charCells.get(cellId);
+  if (cell == null) {
+    throw new Error(`Char cell does not exist: ${cellId}`);
+  }
+  return cell;
 }
 
 /** Return an existing window by ID, or create+track a new one in the cellsWindows slice. */
