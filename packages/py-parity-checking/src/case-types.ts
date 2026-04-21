@@ -12,6 +12,77 @@ export type StepTimeEt2Utc = {
   prec: number;
 };
 
+export type StepTimeTkvrsn = {
+  op: "time.tkvrsn";
+  item: "TOOLKIT";
+};
+
+export type StepTimeTimout = {
+  op: "time.timout";
+  et: number;
+  picture: string;
+};
+
+export type StepTimeDeltet = {
+  op: "time.deltet";
+  epoch: number;
+  eptype: "ET" | "UTC";
+};
+
+export type StepTimeUnitim = {
+  op: "time.unitim";
+  epoch: number;
+  insys: string;
+  outsys: string;
+};
+
+export type StepTimeTparse = {
+  op: "time.tparse";
+  timstr: string;
+};
+
+export type StepTimeTpictr = {
+  op: "time.tpictr";
+  sample: string;
+  pictur: string;
+};
+
+export type StepTimeScs2e = {
+  op: "time.scs2e";
+  sc: number;
+  sclkch: string;
+};
+
+export type StepTimeSce2s = {
+  op: "time.sce2s";
+  sc: number;
+  et: number;
+};
+
+export type StepTimeScencd = {
+  op: "time.scencd";
+  sc: number;
+  sclkch: string;
+};
+
+export type StepTimeScdecd = {
+  op: "time.scdecd";
+  sc: number;
+  sclkdp: number;
+};
+
+export type StepTimeSct2e = {
+  op: "time.sct2e";
+  sc: number;
+  sclkdp: number;
+};
+
+export type StepTimeSce2c = {
+  op: "time.sce2c";
+  sc: number;
+  et: number;
+};
+
 export type StepTimeTimdefGet = {
   op: "time.timdef";
   action: "GET";
@@ -108,8 +179,20 @@ export type StepEkEkgc = {
 export type WorkflowStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
+  | StepTimeTkvrsn
+  | StepTimeTimout
+  | StepTimeDeltet
+  | StepTimeUnitim
+  | StepTimeTparse
+  | StepTimeTpictr
   | StepTimeTimdefGet
   | StepTimeTimdefSet
+  | StepTimeScs2e
+  | StepTimeSce2s
+  | StepTimeScencd
+  | StepTimeScdecd
+  | StepTimeSct2e
+  | StepTimeSce2c
   | StepIdsNamesBodn2c
   | StepCoordsVectorsMxm
   | StepCoordsVectorsRecgeo
@@ -128,7 +211,19 @@ export type WorkflowOp = WorkflowStep["op"];
 export type StepOutput =
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
+  | { op: "time.tkvrsn"; value: string }
+  | { op: "time.timout"; value: string }
+  | { op: "time.deltet"; value: number }
+  | { op: "time.unitim"; value: number }
+  | { op: "time.tparse"; value: number }
+  | { op: "time.tpictr"; value: string }
   | { op: "time.timdef"; value: string | null }
+  | { op: "time.scs2e"; value: number }
+  | { op: "time.sce2s"; value: string }
+  | { op: "time.scencd"; value: number }
+  | { op: "time.scdecd"; value: string }
+  | { op: "time.sct2e"; value: number }
+  | { op: "time.sce2c"; value: number }
   | { op: "ids-names.bodn2c"; value: { found: false } | { found: true; code: number } }
   | { op: "coords-vectors.mxm"; value: Matrix3x3 }
   | { op: "coords-vectors.recgeo"; value: { lon: number; lat: number; alt: number } }

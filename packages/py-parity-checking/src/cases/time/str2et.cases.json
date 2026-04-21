@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "time-str2et-happy-j2000",
+    "description": "Parses canonical J2000 TDB literal to ET",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.str2et", "time": "2000 JAN 01 12:00:00 TDB" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-str2et-invalid-time-error",
+    "description": "Representative parse failure for invalid time literal",
+    "workflow": [{ "op": "time.str2et", "time": "NOT_A_VALID_TIME_LITERAL" }],
+    "expectation": { "kind": "error" }
+  }
+]

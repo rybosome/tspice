@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "time-tparse-happy-utc-iso",
+    "description": "Parses UTC ISO timestamp to UTC seconds past J2000",
+    "workflow": [{ "op": "time.tparse", "timstr": "2000-01-01T12:00:00" }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-tparse-invalid-string-error",
+    "description": "Representative parse error for invalid UTC time string",
+    "workflow": [{ "op": "time.tparse", "timstr": "NOT_PARSEABLE_UTC_STRING" }],
+    "expectation": { "kind": "error" }
+  }
+]
