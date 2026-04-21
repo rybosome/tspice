@@ -27,7 +27,6 @@ def _run_step(step: WorkflowStep, windows: WindowStore) -> StepOutput:
     if out is not None:
         return out
 
-    # kernel-pool now supports read/write/watch lifecycle coverage across all raw v1 methods.
     out = run_kernel_pool_step(step)
     if out is not None:
         return out
