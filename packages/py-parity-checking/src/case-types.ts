@@ -134,11 +134,71 @@ export type StepCellsWindowsWnfetd = {
   index: number;
 };
 
+export type StepKernelPoolGdpool = {
+  op: "kernel-pool.gdpool";
+  name: string;
+  start: number;
+  room: number;
+};
+
+export type StepKernelPoolGipool = {
+  op: "kernel-pool.gipool";
+  name: string;
+  start: number;
+  room: number;
+};
+
 export type StepKernelPoolGcpool = {
   op: "kernel-pool.gcpool";
   name: string;
   start: number;
   room: number;
+};
+
+export type StepKernelPoolGnpool = {
+  op: "kernel-pool.gnpool";
+  template: string;
+  start: number;
+  room: number;
+};
+
+export type StepKernelPoolDtpool = {
+  op: "kernel-pool.dtpool";
+  name: string;
+};
+
+export type StepKernelPoolPdpool = {
+  op: "kernel-pool.pdpool";
+  name: string;
+  values: number[];
+};
+
+export type StepKernelPoolPipool = {
+  op: "kernel-pool.pipool";
+  name: string;
+  values: number[];
+};
+
+export type StepKernelPoolPcpool = {
+  op: "kernel-pool.pcpool";
+  name: string;
+  values: string[];
+};
+
+export type StepKernelPoolSwpool = {
+  op: "kernel-pool.swpool";
+  agent: string;
+  names: string[];
+};
+
+export type StepKernelPoolCvpool = {
+  op: "kernel-pool.cvpool";
+  agent: string;
+};
+
+export type StepKernelPoolExpool = {
+  op: "kernel-pool.expool";
+  name: string;
 };
 
 export type StepKernelsFurnsh = {
@@ -198,7 +258,17 @@ export type WorkflowStep =
   | StepCoordsVectorsRecgeo
   | StepCellsWindowsWninsd
   | StepCellsWindowsWnfetd
+  | StepKernelPoolGdpool
+  | StepKernelPoolGipool
   | StepKernelPoolGcpool
+  | StepKernelPoolGnpool
+  | StepKernelPoolDtpool
+  | StepKernelPoolPdpool
+  | StepKernelPoolPipool
+  | StepKernelPoolPcpool
+  | StepKernelPoolSwpool
+  | StepKernelPoolCvpool
+  | StepKernelPoolExpool
   | StepKernelsFurnsh
   | StepKernelsKtotal
   | StepKernelsKdata
@@ -207,6 +277,9 @@ export type WorkflowStep =
   | StepEkEkgc;
 
 export type WorkflowOp = WorkflowStep["op"];
+
+export type KernelPoolFoundNumbers = { found: false } | { found: true; values: number[] };
+export type KernelPoolFoundStrings = { found: false } | { found: true; values: string[] };
 
 export type StepOutput =
   | { op: "time.str2et"; value: number }
@@ -229,7 +302,20 @@ export type StepOutput =
   | { op: "coords-vectors.recgeo"; value: { lon: number; lat: number; alt: number } }
   | { op: "cells-windows.wninsd"; value: null }
   | { op: "cells-windows.wnfetd"; value: { left: number; right: number } }
-  | { op: "kernel-pool.gcpool"; value: { found: false } | { found: true; values: string[] } }
+  | { op: "kernel-pool.gdpool"; value: KernelPoolFoundNumbers }
+  | { op: "kernel-pool.gipool"; value: KernelPoolFoundNumbers }
+  | { op: "kernel-pool.gcpool"; value: KernelPoolFoundStrings }
+  | { op: "kernel-pool.gnpool"; value: KernelPoolFoundStrings }
+  | {
+      op: "kernel-pool.dtpool";
+      value: { found: false } | { found: true; n: number; type: "C" | "N" };
+    }
+  | { op: "kernel-pool.pdpool"; value: null }
+  | { op: "kernel-pool.pipool"; value: null }
+  | { op: "kernel-pool.pcpool"; value: null }
+  | { op: "kernel-pool.swpool"; value: null }
+  | { op: "kernel-pool.cvpool"; value: boolean }
+  | { op: "kernel-pool.expool"; value: boolean }
   | { op: "kernels.furnsh"; value: null }
   | { op: "kernels.ktotal"; value: number }
   | {

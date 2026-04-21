@@ -4,8 +4,8 @@ import cellsWindowsCasesRaw from "./cells-windows.cases.json" with { type: "json
 import coordsVectorsCasesRaw from "./coords-vectors.cases.json" with { type: "json" };
 import ekCasesRaw from "./ek.cases.json" with { type: "json" };
 import idsNamesCasesRaw from "./ids-names.cases.json" with { type: "json" };
-import kernelPoolCasesRaw from "./kernel-pool.cases.json" with { type: "json" };
 import kernelsCasesRaw from "./kernels.cases.json" with { type: "json" };
+import { kernelPoolCases } from "./kernel-pool/index.js";
 import timeDeltetCasesRaw from "./time/deltet.cases.json" with { type: "json" };
 import timeEt2UtcCasesRaw from "./time/et2utc.cases.json" with { type: "json" };
 import timeScdecdCasesRaw from "./time/scdecd.cases.json" with { type: "json" };
@@ -43,7 +43,7 @@ export const timeCases: ParityCase[] = [
 export const idsNamesCases = idsNamesCasesRaw as ParityCase[];
 export const coordsVectorsCases = coordsVectorsCasesRaw as ParityCase[];
 export const cellsWindowsCases = cellsWindowsCasesRaw as ParityCase[];
-export const kernelPoolCases = kernelPoolCasesRaw as ParityCase[];
+export { kernelPoolCases };
 export const kernelsCases = kernelsCasesRaw as ParityCase[];
 export const ekCases = ekCasesRaw as ParityCase[];
 

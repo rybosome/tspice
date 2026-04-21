@@ -39,7 +39,17 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "cells-windows.wnfetd":
       return runCellsWindowsStep(context, step);
 
+    case "kernel-pool.gdpool":
+    case "kernel-pool.gipool":
     case "kernel-pool.gcpool":
+    case "kernel-pool.gnpool":
+    case "kernel-pool.dtpool":
+    case "kernel-pool.pdpool":
+    case "kernel-pool.pipool":
+    case "kernel-pool.pcpool":
+    case "kernel-pool.swpool":
+    case "kernel-pool.cvpool":
+    case "kernel-pool.expool":
       return runKernelPoolStep(context, step);
 
     case "kernels.furnsh":

@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "kernel-pool-expool-numeric-existence-semantics",
+    "description": "expool reports existence for numeric variables only and false for character or missing names",
+    "workflow": [
+      { "op": "kernel-pool.pdpool", "name": "KP_EX_NUM", "values": [1.25] },
+      { "op": "kernel-pool.pcpool", "name": "KP_EX_CHAR", "values": ["x"] },
+      { "op": "kernel-pool.expool", "name": "KP_EX_NUM" },
+      { "op": "kernel-pool.expool", "name": "KP_EX_CHAR" },
+      { "op": "kernel-pool.expool", "name": "KP_EX_MISSING" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-expool-empty-name-error",
+    "description": "Representative expool validation error for empty names",
+    "workflow": [
+      { "op": "kernel-pool.expool", "name": "" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

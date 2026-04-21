@@ -6,7 +6,19 @@ from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
 from .coords_vectors import StepCoordsVectorsMxm, StepCoordsVectorsRecgeo
 from .ek import StepEkEkgc, StepEkEkfind
 from .ids_names import StepIdsNamesBodn2c
-from .kernel_pool import StepKernelPoolGcpool
+from .kernel_pool import (
+    StepKernelPoolCvpool,
+    StepKernelPoolDtpool,
+    StepKernelPoolExpool,
+    StepKernelPoolGcpool,
+    StepKernelPoolGdpool,
+    StepKernelPoolGipool,
+    StepKernelPoolGnpool,
+    StepKernelPoolPcpool,
+    StepKernelPoolPdpool,
+    StepKernelPoolPipool,
+    StepKernelPoolSwpool,
+)
 from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
 from .time import (
     StepTimeDeltet,
@@ -49,7 +61,17 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsRecgeo
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
+    | StepKernelPoolGdpool
+    | StepKernelPoolGipool
     | StepKernelPoolGcpool
+    | StepKernelPoolGnpool
+    | StepKernelPoolDtpool
+    | StepKernelPoolPdpool
+    | StepKernelPoolPipool
+    | StepKernelPoolPcpool
+    | StepKernelPoolSwpool
+    | StepKernelPoolCvpool
+    | StepKernelPoolExpool
     | StepKernelsFurnsh
     | StepKernelsKtotal
     | StepKernelsKdata

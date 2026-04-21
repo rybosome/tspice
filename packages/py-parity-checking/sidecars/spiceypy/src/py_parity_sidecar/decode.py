@@ -11,7 +11,17 @@ from .models import (
     StepEkEkgc,
     StepEkEkfind,
     StepIdsNamesBodn2c,
+    StepKernelPoolCvpool,
+    StepKernelPoolDtpool,
+    StepKernelPoolExpool,
     StepKernelPoolGcpool,
+    StepKernelPoolGdpool,
+    StepKernelPoolGipool,
+    StepKernelPoolGnpool,
+    StepKernelPoolPcpool,
+    StepKernelPoolPdpool,
+    StepKernelPoolPipool,
+    StepKernelPoolSwpool,
     StepKernelsFurnsh,
     StepKernelsKdata,
     StepKernelsKtotal,
@@ -66,6 +76,24 @@ def _expect_string_list(value: Any, *, label: str) -> list[str]:
     out: list[str] = []
     for idx, item in enumerate(value):
         out.append(_expect_string(item, label=f"{label}[{idx}]"))
+    return out
+
+
+def _expect_int_list(value: Any, *, label: str) -> list[int]:
+    if not isinstance(value, list):
+        raise TypeError(f"{label} must be a list")
+    out: list[int] = []
+    for idx, item in enumerate(value):
+        out.append(_expect_int(item, label=f"{label}[{idx}]"))
+    return out
+
+
+def _expect_number_list(value: Any, *, label: str) -> list[float]:
+    if not isinstance(value, list):
+        raise TypeError(f"{label} must be a list")
+    out: list[float] = []
+    for idx, item in enumerate(value):
+        out.append(_expect_number(item, label=f"{label}[{idx}]"))
     return out
 
 
@@ -248,12 +276,82 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 index=_expect_int(step.get("index"), label="cells-windows.wnfetd.index"),
             )
 
+        case "kernel-pool.gdpool":
+            return StepKernelPoolGdpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.gdpool.name"),
+                start=_expect_int(step.get("start"), label="kernel-pool.gdpool.start"),
+                room=_expect_int(step.get("room"), label="kernel-pool.gdpool.room"),
+            )
+
+        case "kernel-pool.gipool":
+            return StepKernelPoolGipool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.gipool.name"),
+                start=_expect_int(step.get("start"), label="kernel-pool.gipool.start"),
+                room=_expect_int(step.get("room"), label="kernel-pool.gipool.room"),
+            )
+
         case "kernel-pool.gcpool":
             return StepKernelPoolGcpool(
                 op=op,
                 name=_expect_string(step.get("name"), label="kernel-pool.gcpool.name"),
                 start=_expect_int(step.get("start"), label="kernel-pool.gcpool.start"),
                 room=_expect_int(step.get("room"), label="kernel-pool.gcpool.room"),
+            )
+
+        case "kernel-pool.gnpool":
+            return StepKernelPoolGnpool(
+                op=op,
+                template=_expect_string(step.get("template"), label="kernel-pool.gnpool.template"),
+                start=_expect_int(step.get("start"), label="kernel-pool.gnpool.start"),
+                room=_expect_int(step.get("room"), label="kernel-pool.gnpool.room"),
+            )
+
+        case "kernel-pool.dtpool":
+            return StepKernelPoolDtpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.dtpool.name"),
+            )
+
+        case "kernel-pool.pdpool":
+            return StepKernelPoolPdpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.pdpool.name"),
+                values=_expect_number_list(step.get("values"), label="kernel-pool.pdpool.values"),
+            )
+
+        case "kernel-pool.pipool":
+            return StepKernelPoolPipool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.pipool.name"),
+                values=_expect_int_list(step.get("values"), label="kernel-pool.pipool.values"),
+            )
+
+        case "kernel-pool.pcpool":
+            return StepKernelPoolPcpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.pcpool.name"),
+                values=_expect_string_list(step.get("values"), label="kernel-pool.pcpool.values"),
+            )
+
+        case "kernel-pool.swpool":
+            return StepKernelPoolSwpool(
+                op=op,
+                agent=_expect_string(step.get("agent"), label="kernel-pool.swpool.agent"),
+                names=_expect_string_list(step.get("names"), label="kernel-pool.swpool.names"),
+            )
+
+        case "kernel-pool.cvpool":
+            return StepKernelPoolCvpool(
+                op=op,
+                agent=_expect_string(step.get("agent"), label="kernel-pool.cvpool.agent"),
+            )
+
+        case "kernel-pool.expool":
+            return StepKernelPoolExpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.expool.name"),
             )
 
         case "kernels.furnsh":

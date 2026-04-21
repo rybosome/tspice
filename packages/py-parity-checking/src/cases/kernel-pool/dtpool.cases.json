@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "kernel-pool-dtpool-report-type-size-and-miss",
+    "description": "dtpool reports type and cardinality for numeric and character variables and misses unknown names",
+    "workflow": [
+      { "op": "kernel-pool.pcpool", "name": "KP_DT_CHAR", "values": ["alpha", "beta"] },
+      { "op": "kernel-pool.pdpool", "name": "KP_DT_NUM", "values": [1.5, 2.5, 3.5] },
+      { "op": "kernel-pool.dtpool", "name": "KP_DT_CHAR" },
+      { "op": "kernel-pool.dtpool", "name": "KP_DT_NUM" },
+      { "op": "kernel-pool.dtpool", "name": "KP_DT_MISSING" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]
