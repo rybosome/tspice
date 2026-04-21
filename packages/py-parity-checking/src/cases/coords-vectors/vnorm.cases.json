@@ -1,0 +1,19 @@
+[
+  {
+    "caseId": "coords-vectors-vnorm-happy-pythagorean",
+    "description": "vnorm computes Euclidean magnitude for a 3-4-12 vector",
+    "workflow": [
+      {
+        "op": "coords-vectors.vnorm",
+        "v": [
+          3,
+          4,
+          12
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

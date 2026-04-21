@@ -107,17 +107,128 @@ export type Matrix3x3 = [
   [number, number, number],
 ];
 
+export type Vector3 = [number, number, number];
+
+export type StepCoordsVectorsReclat = {
+  op: "coords-vectors.reclat";
+  rectan: Vector3;
+};
+
+export type StepCoordsVectorsLatrec = {
+  op: "coords-vectors.latrec";
+  radius: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsRecsph = {
+  op: "coords-vectors.recsph";
+  rectan: Vector3;
+};
+
+export type StepCoordsVectorsSphrec = {
+  op: "coords-vectors.sphrec";
+  radius: number;
+  colat: number;
+  lon: number;
+};
+
+export type StepCoordsVectorsVnorm = {
+  op: "coords-vectors.vnorm";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsVhat = {
+  op: "coords-vectors.vhat";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsVdot = {
+  op: "coords-vectors.vdot";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVcrss = {
+  op: "coords-vectors.vcrss";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVadd = {
+  op: "coords-vectors.vadd";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVsub = {
+  op: "coords-vectors.vsub";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVminus = {
+  op: "coords-vectors.vminus";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsVscl = {
+  op: "coords-vectors.vscl";
+  s: number;
+  v: Vector3;
+};
+
 export type StepCoordsVectorsMxm = {
   op: "coords-vectors.mxm";
   m1: Matrix3x3;
   m2: Matrix3x3;
 };
 
-export type StepCoordsVectorsRecgeo = {
-  op: "coords-vectors.recgeo";
-  rectan: [number, number, number];
+export type StepCoordsVectorsRotate = {
+  op: "coords-vectors.rotate";
+  angle: number;
+  axis: number;
+};
+
+export type StepCoordsVectorsRotmat = {
+  op: "coords-vectors.rotmat";
+  m: Matrix3x3;
+  angle: number;
+  axis: number;
+};
+
+export type StepCoordsVectorsAxisar = {
+  op: "coords-vectors.axisar";
+  axis: Vector3;
+  angle: number;
+};
+
+export type StepCoordsVectorsGeorec = {
+  op: "coords-vectors.georec";
+  lon: number;
+  lat: number;
+  alt: number;
   re: number;
   f: number;
+};
+
+export type StepCoordsVectorsRecgeo = {
+  op: "coords-vectors.recgeo";
+  rectan: Vector3;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsMxv = {
+  op: "coords-vectors.mxv";
+  m: Matrix3x3;
+  v: Vector3;
+};
+
+export type StepCoordsVectorsMtxv = {
+  op: "coords-vectors.mtxv";
+  m: Matrix3x3;
+  v: Vector3;
 };
 
 export type StepCellsWindowsWninsd = {
@@ -194,8 +305,26 @@ export type WorkflowStep =
   | StepTimeSct2e
   | StepTimeSce2c
   | StepIdsNamesBodn2c
+  | StepCoordsVectorsReclat
+  | StepCoordsVectorsLatrec
+  | StepCoordsVectorsRecsph
+  | StepCoordsVectorsSphrec
+  | StepCoordsVectorsVnorm
+  | StepCoordsVectorsVhat
+  | StepCoordsVectorsVdot
+  | StepCoordsVectorsVcrss
+  | StepCoordsVectorsVadd
+  | StepCoordsVectorsVsub
+  | StepCoordsVectorsVminus
+  | StepCoordsVectorsVscl
   | StepCoordsVectorsMxm
+  | StepCoordsVectorsRotate
+  | StepCoordsVectorsRotmat
+  | StepCoordsVectorsAxisar
+  | StepCoordsVectorsGeorec
   | StepCoordsVectorsRecgeo
+  | StepCoordsVectorsMxv
+  | StepCoordsVectorsMtxv
   | StepCellsWindowsWninsd
   | StepCellsWindowsWnfetd
   | StepKernelPoolGcpool
@@ -225,8 +354,26 @@ export type StepOutput =
   | { op: "time.sct2e"; value: number }
   | { op: "time.sce2c"; value: number }
   | { op: "ids-names.bodn2c"; value: { found: false } | { found: true; code: number } }
+  | { op: "coords-vectors.reclat"; value: { radius: number; lon: number; lat: number } }
+  | { op: "coords-vectors.latrec"; value: Vector3 }
+  | { op: "coords-vectors.recsph"; value: { radius: number; colat: number; lon: number } }
+  | { op: "coords-vectors.sphrec"; value: Vector3 }
+  | { op: "coords-vectors.vnorm"; value: number }
+  | { op: "coords-vectors.vhat"; value: Vector3 }
+  | { op: "coords-vectors.vdot"; value: number }
+  | { op: "coords-vectors.vcrss"; value: Vector3 }
+  | { op: "coords-vectors.vadd"; value: Vector3 }
+  | { op: "coords-vectors.vsub"; value: Vector3 }
+  | { op: "coords-vectors.vminus"; value: Vector3 }
+  | { op: "coords-vectors.vscl"; value: Vector3 }
   | { op: "coords-vectors.mxm"; value: Matrix3x3 }
+  | { op: "coords-vectors.rotate"; value: Matrix3x3 }
+  | { op: "coords-vectors.rotmat"; value: Matrix3x3 }
+  | { op: "coords-vectors.axisar"; value: Matrix3x3 }
+  | { op: "coords-vectors.georec"; value: Vector3 }
   | { op: "coords-vectors.recgeo"; value: { lon: number; lat: number; alt: number } }
+  | { op: "coords-vectors.mxv"; value: Vector3 }
+  | { op: "coords-vectors.mtxv"; value: Vector3 }
   | { op: "cells-windows.wninsd"; value: null }
   | { op: "cells-windows.wnfetd"; value: { left: number; right: number } }
   | { op: "kernel-pool.gcpool"; value: { found: false } | { found: true; values: string[] } }

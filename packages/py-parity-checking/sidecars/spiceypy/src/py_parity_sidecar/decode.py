@@ -6,8 +6,26 @@ from .models import (
     CaseRequest,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCoordsVectorsAxisar,
+    StepCoordsVectorsGeorec,
+    StepCoordsVectorsLatrec,
+    StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
+    StepCoordsVectorsMxv,
+    StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
+    StepCoordsVectorsRecsph,
+    StepCoordsVectorsRotate,
+    StepCoordsVectorsRotmat,
+    StepCoordsVectorsSphrec,
+    StepCoordsVectorsVadd,
+    StepCoordsVectorsVcrss,
+    StepCoordsVectorsVdot,
+    StepCoordsVectorsVhat,
+    StepCoordsVectorsVminus,
+    StepCoordsVectorsVnorm,
+    StepCoordsVectorsVscl,
+    StepCoordsVectorsVsub,
     StepEkEkgc,
     StepEkEkfind,
     StepIdsNamesBodn2c,
@@ -213,11 +231,115 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ids-names.bodn2c":
             return StepIdsNamesBodn2c(op=op, name=_expect_string(step.get("name"), label="ids-names.bodn2c.name"))
 
+        case "coords-vectors.reclat":
+            return StepCoordsVectorsReclat(
+                op=op,
+                rectan=_expect_vec3(step.get("rectan"), label="coords-vectors.reclat.rectan"),
+            )
+
+        case "coords-vectors.latrec":
+            return StepCoordsVectorsLatrec(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.latrec.radius"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.latrec.lon"),
+                lat=_expect_number(step.get("lat"), label="coords-vectors.latrec.lat"),
+            )
+
+        case "coords-vectors.recsph":
+            return StepCoordsVectorsRecsph(
+                op=op,
+                rectan=_expect_vec3(step.get("rectan"), label="coords-vectors.recsph.rectan"),
+            )
+
+        case "coords-vectors.sphrec":
+            return StepCoordsVectorsSphrec(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.sphrec.radius"),
+                colat=_expect_number(step.get("colat"), label="coords-vectors.sphrec.colat"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.sphrec.lon"),
+            )
+
+        case "coords-vectors.vnorm":
+            return StepCoordsVectorsVnorm(op=op, v=_expect_vec3(step.get("v"), label="coords-vectors.vnorm.v"))
+
+        case "coords-vectors.vhat":
+            return StepCoordsVectorsVhat(op=op, v=_expect_vec3(step.get("v"), label="coords-vectors.vhat.v"))
+
+        case "coords-vectors.vdot":
+            return StepCoordsVectorsVdot(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vdot.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vdot.b"),
+            )
+
+        case "coords-vectors.vcrss":
+            return StepCoordsVectorsVcrss(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vcrss.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vcrss.b"),
+            )
+
+        case "coords-vectors.vadd":
+            return StepCoordsVectorsVadd(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vadd.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vadd.b"),
+            )
+
+        case "coords-vectors.vsub":
+            return StepCoordsVectorsVsub(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vsub.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vsub.b"),
+            )
+
+        case "coords-vectors.vminus":
+            return StepCoordsVectorsVminus(op=op, v=_expect_vec3(step.get("v"), label="coords-vectors.vminus.v"))
+
+        case "coords-vectors.vscl":
+            return StepCoordsVectorsVscl(
+                op=op,
+                s=_expect_number(step.get("s"), label="coords-vectors.vscl.s"),
+                v=_expect_vec3(step.get("v"), label="coords-vectors.vscl.v"),
+            )
+
         case "coords-vectors.mxm":
             return StepCoordsVectorsMxm(
                 op=op,
                 m1=_expect_3x3_matrix(step.get("m1"), label="coords-vectors.mxm.m1"),
                 m2=_expect_3x3_matrix(step.get("m2"), label="coords-vectors.mxm.m2"),
+            )
+
+        case "coords-vectors.rotate":
+            return StepCoordsVectorsRotate(
+                op=op,
+                angle=_expect_number(step.get("angle"), label="coords-vectors.rotate.angle"),
+                axis=_expect_int(step.get("axis"), label="coords-vectors.rotate.axis"),
+            )
+
+        case "coords-vectors.rotmat":
+            return StepCoordsVectorsRotmat(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.rotmat.m"),
+                angle=_expect_number(step.get("angle"), label="coords-vectors.rotmat.angle"),
+                axis=_expect_int(step.get("axis"), label="coords-vectors.rotmat.axis"),
+            )
+
+        case "coords-vectors.axisar":
+            return StepCoordsVectorsAxisar(
+                op=op,
+                axis=_expect_vec3(step.get("axis"), label="coords-vectors.axisar.axis"),
+                angle=_expect_number(step.get("angle"), label="coords-vectors.axisar.angle"),
+            )
+
+        case "coords-vectors.georec":
+            return StepCoordsVectorsGeorec(
+                op=op,
+                lon=_expect_number(step.get("lon"), label="coords-vectors.georec.lon"),
+                lat=_expect_number(step.get("lat"), label="coords-vectors.georec.lat"),
+                alt=_expect_number(step.get("alt"), label="coords-vectors.georec.alt"),
+                re=_expect_number(step.get("re"), label="coords-vectors.georec.re"),
+                f=_expect_number(step.get("f"), label="coords-vectors.georec.f"),
             )
 
         case "coords-vectors.recgeo":
@@ -226,6 +348,20 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 rectan=_expect_vec3(step.get("rectan"), label="coords-vectors.recgeo.rectan"),
                 re=_expect_number(step.get("re"), label="coords-vectors.recgeo.re"),
                 f=_expect_number(step.get("f"), label="coords-vectors.recgeo.f"),
+            )
+
+        case "coords-vectors.mxv":
+            return StepCoordsVectorsMxv(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.mxv.m"),
+                v=_expect_vec3(step.get("v"), label="coords-vectors.mxv.v"),
+            )
+
+        case "coords-vectors.mtxv":
+            return StepCoordsVectorsMtxv(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.mtxv.m"),
+                v=_expect_vec3(step.get("v"), label="coords-vectors.mtxv.v"),
             )
 
         case "cells-windows.wninsd":

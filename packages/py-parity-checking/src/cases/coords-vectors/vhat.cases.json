@@ -1,0 +1,19 @@
+[
+  {
+    "caseId": "coords-vectors-vhat-happy-zero-vector",
+    "description": "vhat preserves CSPICE zero-vector behavior by returning zero vector",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhat",
+        "v": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

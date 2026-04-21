@@ -3,7 +3,28 @@ from __future__ import annotations
 from typing import TypeAlias
 
 from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
-from .coords_vectors import StepCoordsVectorsMxm, StepCoordsVectorsRecgeo
+from .coords_vectors import (
+    StepCoordsVectorsAxisar,
+    StepCoordsVectorsGeorec,
+    StepCoordsVectorsLatrec,
+    StepCoordsVectorsMtxv,
+    StepCoordsVectorsMxm,
+    StepCoordsVectorsMxv,
+    StepCoordsVectorsReclat,
+    StepCoordsVectorsRecgeo,
+    StepCoordsVectorsRecsph,
+    StepCoordsVectorsRotate,
+    StepCoordsVectorsRotmat,
+    StepCoordsVectorsSphrec,
+    StepCoordsVectorsVadd,
+    StepCoordsVectorsVcrss,
+    StepCoordsVectorsVdot,
+    StepCoordsVectorsVhat,
+    StepCoordsVectorsVminus,
+    StepCoordsVectorsVnorm,
+    StepCoordsVectorsVscl,
+    StepCoordsVectorsVsub,
+)
 from .ek import StepEkEkgc, StepEkEkfind
 from .ids_names import StepIdsNamesBodn2c
 from .kernel_pool import StepKernelPoolGcpool
@@ -45,8 +66,26 @@ WorkflowStep: TypeAlias = (
     | StepTimeSct2e
     | StepTimeSce2c
     | StepIdsNamesBodn2c
+    | StepCoordsVectorsReclat
+    | StepCoordsVectorsLatrec
+    | StepCoordsVectorsRecsph
+    | StepCoordsVectorsSphrec
+    | StepCoordsVectorsVnorm
+    | StepCoordsVectorsVhat
+    | StepCoordsVectorsVdot
+    | StepCoordsVectorsVcrss
+    | StepCoordsVectorsVadd
+    | StepCoordsVectorsVsub
+    | StepCoordsVectorsVminus
+    | StepCoordsVectorsVscl
     | StepCoordsVectorsMxm
+    | StepCoordsVectorsRotate
+    | StepCoordsVectorsRotmat
+    | StepCoordsVectorsAxisar
+    | StepCoordsVectorsGeorec
     | StepCoordsVectorsRecgeo
+    | StepCoordsVectorsMxv
+    | StepCoordsVectorsMtxv
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
     | StepKernelPoolGcpool

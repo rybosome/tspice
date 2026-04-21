@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "coords-vectors-georec-happy-spherical-equator",
+    "description": "georec converts geodetic lon/lat/alt to rectangular coordinates",
+    "workflow": [
+      {
+        "op": "coords-vectors.georec",
+        "lon": 0,
+        "lat": 0,
+        "alt": 0,
+        "re": 1,
+        "f": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-georec-invalid-flattening-error",
+    "description": "Representative georec invalid flattening error",
+    "workflow": [
+      {
+        "op": "coords-vectors.georec",
+        "lon": 0,
+        "lat": 0,
+        "alt": 0,
+        "re": 1,
+        "f": 1.5
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]
