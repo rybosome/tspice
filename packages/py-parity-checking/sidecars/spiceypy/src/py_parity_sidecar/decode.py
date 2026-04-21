@@ -16,10 +16,22 @@ from .models import (
     StepKernelsKdata,
     StepKernelsKtotal,
     StepKernelsKxtrct,
+    StepTimeDeltet,
     StepTimeEt2Utc,
+    StepTimeScdecd,
+    StepTimeScencd,
+    StepTimeSce2c,
+    StepTimeSce2s,
+    StepTimeScs2e,
+    StepTimeSct2e,
     StepTimeStr2Et,
+    StepTimeTimout,
+    StepTimeTkvrsn,
+    StepTimeTparse,
+    StepTimeTpictr,
     StepTimeTimdefGet,
     StepTimeTimdefSet,
+    StepTimeUnitim,
     WorkflowStep,
 )
 
@@ -98,6 +110,48 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 prec=_expect_int(step.get("prec"), label="time.et2utc.prec"),
             )
 
+        case "time.tkvrsn":
+            item = _expect_string(step.get("item"), label="time.tkvrsn.item")
+            return StepTimeTkvrsn(op=op, item=item)
+
+        case "time.timout":
+            return StepTimeTimout(
+                op=op,
+                et=_expect_number(step.get("et"), label="time.timout.et"),
+                picture=_expect_string(step.get("picture"), label="time.timout.picture"),
+            )
+
+        case "time.deltet":
+            eptype = _expect_string(step.get("eptype"), label="time.deltet.eptype")
+            if eptype not in {"ET", "UTC"}:
+                raise ValueError("time.deltet.eptype must be ET|UTC")
+            return StepTimeDeltet(
+                op=op,
+                epoch=_expect_number(step.get("epoch"), label="time.deltet.epoch"),
+                eptype=eptype,
+            )
+
+        case "time.unitim":
+            return StepTimeUnitim(
+                op=op,
+                epoch=_expect_number(step.get("epoch"), label="time.unitim.epoch"),
+                insys=_expect_string(step.get("insys"), label="time.unitim.insys"),
+                outsys=_expect_string(step.get("outsys"), label="time.unitim.outsys"),
+            )
+
+        case "time.tparse":
+            return StepTimeTparse(
+                op=op,
+                timstr=_expect_string(step.get("timstr"), label="time.tparse.timstr"),
+            )
+
+        case "time.tpictr":
+            return StepTimeTpictr(
+                op=op,
+                sample=_expect_string(step.get("sample"), label="time.tpictr.sample"),
+                pictur=_expect_string(step.get("pictur"), label="time.tpictr.pictur"),
+            )
+
         case "time.timdef":
             action = _expect_string(step.get("action"), label="time.timdef.action")
             item = _expect_string(step.get("item"), label="time.timdef.item")
@@ -113,6 +167,48 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                     value=_expect_string(step.get("value"), label="time.timdef.value"),
                 )
             raise ValueError("time.timdef.action must be GET|SET")
+
+        case "time.scs2e":
+            return StepTimeScs2e(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.scs2e.sc"),
+                sclkch=_expect_string(step.get("sclkch"), label="time.scs2e.sclkch"),
+            )
+
+        case "time.sce2s":
+            return StepTimeSce2s(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.sce2s.sc"),
+                et=_expect_number(step.get("et"), label="time.sce2s.et"),
+            )
+
+        case "time.scencd":
+            return StepTimeScencd(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.scencd.sc"),
+                sclkch=_expect_string(step.get("sclkch"), label="time.scencd.sclkch"),
+            )
+
+        case "time.scdecd":
+            return StepTimeScdecd(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.scdecd.sc"),
+                sclkdp=_expect_number(step.get("sclkdp"), label="time.scdecd.sclkdp"),
+            )
+
+        case "time.sct2e":
+            return StepTimeSct2e(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.sct2e.sc"),
+                sclkdp=_expect_number(step.get("sclkdp"), label="time.sct2e.sclkdp"),
+            )
+
+        case "time.sce2c":
+            return StepTimeSce2c(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.sce2c.sc"),
+                et=_expect_number(step.get("et"), label="time.sce2c.et"),
+            )
 
         case "ids-names.bodn2c":
             return StepIdsNamesBodn2c(op=op, name=_expect_string(step.get("name"), label="ids-names.bodn2c.name"))

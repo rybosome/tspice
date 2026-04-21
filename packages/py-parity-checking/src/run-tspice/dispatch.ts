@@ -13,7 +13,19 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
   switch (step.op) {
     case "time.str2et":
     case "time.et2utc":
+    case "time.tkvrsn":
+    case "time.timout":
+    case "time.deltet":
+    case "time.unitim":
+    case "time.tparse":
+    case "time.tpictr":
     case "time.timdef":
+    case "time.scs2e":
+    case "time.sce2s":
+    case "time.scencd":
+    case "time.scdecd":
+    case "time.sct2e":
+    case "time.sce2c":
       return runTimeStep(context, step);
 
     case "ids-names.bodn2c":

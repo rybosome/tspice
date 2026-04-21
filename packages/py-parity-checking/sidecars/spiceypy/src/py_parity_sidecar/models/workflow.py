@@ -8,13 +8,42 @@ from .ek import StepEkEkgc, StepEkEkfind
 from .ids_names import StepIdsNamesBodn2c
 from .kernel_pool import StepKernelPoolGcpool
 from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
-from .time import StepTimeEt2Utc, StepTimeStr2Et, StepTimeTimdefGet, StepTimeTimdefSet
+from .time import (
+    StepTimeDeltet,
+    StepTimeEt2Utc,
+    StepTimeScdecd,
+    StepTimeScencd,
+    StepTimeSce2c,
+    StepTimeSce2s,
+    StepTimeScs2e,
+    StepTimeSct2e,
+    StepTimeStr2Et,
+    StepTimeTimdefGet,
+    StepTimeTimdefSet,
+    StepTimeTimout,
+    StepTimeTkvrsn,
+    StepTimeTparse,
+    StepTimeTpictr,
+    StepTimeUnitim,
+)
 
 WorkflowStep: TypeAlias = (
     StepTimeStr2Et
     | StepTimeEt2Utc
+    | StepTimeTkvrsn
+    | StepTimeTimout
+    | StepTimeDeltet
+    | StepTimeUnitim
+    | StepTimeTparse
+    | StepTimeTpictr
     | StepTimeTimdefGet
     | StepTimeTimdefSet
+    | StepTimeScs2e
+    | StepTimeSce2s
+    | StepTimeScencd
+    | StepTimeScdecd
+    | StepTimeSct2e
+    | StepTimeSce2c
     | StepIdsNamesBodn2c
     | StepCoordsVectorsMxm
     | StepCoordsVectorsRecgeo

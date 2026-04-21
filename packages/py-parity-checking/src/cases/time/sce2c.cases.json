@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "time-sce2c-happy-with-cook-sclk",
+    "description": "Converts cookbook ET to encoded SCLK ticks",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
+      { "op": "time.sce2c", "sc": -77, "et": -287063909.06101716 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-sce2c-missing-sclk-error",
+    "description": "Representative sce2c error when SCLK kernel is missing",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.sce2c", "sc": -77, "et": -287063909.06101716 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

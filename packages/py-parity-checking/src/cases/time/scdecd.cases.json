@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "time-scdecd-happy-with-cook-sclk",
+    "description": "Decodes cookbook SCLK ticks to partitioned clock string",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
+      { "op": "time.scdecd", "sc": -77, "sclkdp": 4319435080.0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-scdecd-missing-sclk-error",
+    "description": "Representative scdecd error when SCLK kernel is not loaded",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.scdecd", "sc": -77, "sclkdp": 4319435080.0 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]
