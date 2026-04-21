@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "ids-names-boddef-round-trip-success",
+    "description": "boddef mapping can be resolved by bods2c and bodc2s in the same workflow",
+    "workflow": [
+      {
+        "op": "ids-names.boddef",
+        "name": "TSPICE_PARITY_BODY_639",
+        "code": 123456789
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "TSPICE_PARITY_BODY_639"
+      },
+      {
+        "op": "ids-names.bodc2s",
+        "code": 123456789
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-boddef-empty-name-error",
+    "description": "Representative boddef validation error for empty body name",
+    "workflow": [
+      {
+        "op": "ids-names.boddef",
+        "name": "",
+        "code": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

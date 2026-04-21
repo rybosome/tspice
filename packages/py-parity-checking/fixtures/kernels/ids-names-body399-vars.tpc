@@ -1,0 +1,13 @@
+KPL/PCK
+
+\\begindata
+
+  BODY399_RADII = ( 1.0 2.0 3.0 )
+  BODY399_FOO   = ( 'alpha' )
+
+\\begintext
+
+Body-constant fixture for ids-names py-parity coverage.
+
+- BODY399_RADII is numeric (bodfnd=true, bodvar returns values).
+- BODY399_FOO is character-typed (bodfnd=true, bodvar returns []).

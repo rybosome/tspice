@@ -32,7 +32,13 @@ import geometryPl2nvcCasesRaw from "./geometry/pl2nvc.cases.json" with { type: "
 import geometrySincptCasesRaw from "./geometry/sincpt.cases.json" with { type: "json" };
 import geometrySubpntCasesRaw from "./geometry/subpnt.cases.json" with { type: "json" };
 import geometrySubslrCasesRaw from "./geometry/subslr.cases.json" with { type: "json" };
-import idsNamesCasesRaw from "./ids-names.cases.json" with { type: "json" };
+import idsNamesBodc2nCasesRaw from "./ids-names/bodc2n.cases.json" with { type: "json" };
+import idsNamesBodc2sCasesRaw from "./ids-names/bodc2s.cases.json" with { type: "json" };
+import idsNamesBoddefCasesRaw from "./ids-names/boddef.cases.json" with { type: "json" };
+import idsNamesBodfndCasesRaw from "./ids-names/bodfnd.cases.json" with { type: "json" };
+import idsNamesBodn2cCasesRaw from "./ids-names/bodn2c.cases.json" with { type: "json" };
+import idsNamesBods2cCasesRaw from "./ids-names/bods2c.cases.json" with { type: "json" };
+import idsNamesBodvarCasesRaw from "./ids-names/bodvar.cases.json" with { type: "json" };
 import kernelsCasesRaw from "./kernels.cases.json" with { type: "json" };
 import { kernelPoolCases } from "./kernel-pool/index.js";
 import timeDeltetCasesRaw from "./time/deltet.cases.json" with { type: "json" };
@@ -69,7 +75,15 @@ export const timeCases: ParityCase[] = [
   ...(timeUnitimCasesRaw as ParityCase[]),
 ];
 
-export const idsNamesCases = idsNamesCasesRaw as ParityCase[];
+export const idsNamesCases: ParityCase[] = [
+  ...(idsNamesBodn2cCasesRaw as ParityCase[]),
+  ...(idsNamesBodc2nCasesRaw as ParityCase[]),
+  ...(idsNamesBodc2sCasesRaw as ParityCase[]),
+  ...(idsNamesBoddefCasesRaw as ParityCase[]),
+  ...(idsNamesBodfndCasesRaw as ParityCase[]),
+  ...(idsNamesBods2cCasesRaw as ParityCase[]),
+  ...(idsNamesBodvarCasesRaw as ParityCase[]),
+];
 export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),

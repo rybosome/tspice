@@ -31,6 +31,12 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
       return runTimeStep(context, step);
 
     case "ids-names.bodn2c":
+    case "ids-names.bodc2n":
+    case "ids-names.bodc2s":
+    case "ids-names.boddef":
+    case "ids-names.bodfnd":
+    case "ids-names.bods2c":
+    case "ids-names.bodvar":
       return runIdsNamesStep(context, step);
 
     case "coords-vectors.reclat":

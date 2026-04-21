@@ -117,6 +117,39 @@ export type StepIdsNamesBodn2c = {
   name: string;
 };
 
+export type StepIdsNamesBodc2n = {
+  op: "ids-names.bodc2n";
+  code: number;
+};
+
+export type StepIdsNamesBodc2s = {
+  op: "ids-names.bodc2s";
+  code: number;
+};
+
+export type StepIdsNamesBoddef = {
+  op: "ids-names.boddef";
+  name: string;
+  code: number;
+};
+
+export type StepIdsNamesBodfnd = {
+  op: "ids-names.bodfnd";
+  body: number;
+  item: string;
+};
+
+export type StepIdsNamesBods2c = {
+  op: "ids-names.bods2c";
+  name: string;
+};
+
+export type StepIdsNamesBodvar = {
+  op: "ids-names.bodvar";
+  body: number;
+  item: string;
+};
+
 export type Matrix3x3 = [
   [number, number, number],
   [number, number, number],
@@ -508,6 +541,12 @@ export type WorkflowStep =
   | StepTimeSct2e
   | StepTimeSce2c
   | StepIdsNamesBodn2c
+  | StepIdsNamesBodc2n
+  | StepIdsNamesBodc2s
+  | StepIdsNamesBoddef
+  | StepIdsNamesBodfnd
+  | StepIdsNamesBods2c
+  | StepIdsNamesBodvar
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -586,6 +625,12 @@ export type StepOutput =
   | { op: "time.sct2e"; value: number }
   | { op: "time.sce2c"; value: number }
   | { op: "ids-names.bodn2c"; value: { found: false } | { found: true; code: number } }
+  | { op: "ids-names.bodc2n"; value: { found: false } | { found: true; name: string } }
+  | { op: "ids-names.bodc2s"; value: string }
+  | { op: "ids-names.boddef"; value: null }
+  | { op: "ids-names.bodfnd"; value: boolean }
+  | { op: "ids-names.bods2c"; value: { found: false } | { found: true; code: number } }
+  | { op: "ids-names.bodvar"; value: number[] }
   | { op: "coords-vectors.reclat"; value: { radius: number; lon: number; lat: number } }
   | { op: "coords-vectors.latrec"; value: Vector3 }
   | { op: "coords-vectors.recsph"; value: { radius: number; colat: number; lon: number } }
