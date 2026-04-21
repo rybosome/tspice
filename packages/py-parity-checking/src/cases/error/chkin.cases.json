@@ -1,0 +1,24 @@
+[
+  {
+    "caseId": "error-chkin-trace-stack-success",
+    "description": "chkin/chkout updates traceback stack without setting failure status",
+    "workflow": [
+      { "op": "error.reset" },
+      { "op": "error.chkin", "name": "PARITY_TRACE_A" },
+      { "op": "error.chkin", "name": "PARITY_TRACE_B" },
+      { "op": "error.chkout", "name": "PARITY_TRACE_B" },
+      { "op": "error.chkout", "name": "PARITY_TRACE_A" },
+      { "op": "error.failed" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "error-chkin-empty-name-error",
+    "description": "Representative chkin error path for empty traceback name",
+    "workflow": [{ "op": "error.chkin", "name": "" }],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

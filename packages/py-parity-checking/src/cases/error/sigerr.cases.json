@@ -1,0 +1,15 @@
+[
+  {
+    "caseId": "error-sigerr-signals-error-path",
+    "description": "sigerr triggers representative SPICE error status/failure behavior",
+    "workflow": [
+      { "op": "error.reset" },
+      { "op": "error.setmsg", "message": "sigerr parity long message" },
+      { "op": "error.sigerr", "short": "SPICE(PARITYSIGERR)" }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["PARITYSIGERR"]
+    }
+  }
+]

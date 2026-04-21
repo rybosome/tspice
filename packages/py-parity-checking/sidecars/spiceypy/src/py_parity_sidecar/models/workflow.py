@@ -5,6 +5,15 @@ from typing import TypeAlias
 from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
 from .coords_vectors import StepCoordsVectorsMxm, StepCoordsVectorsRecgeo
 from .ek import StepEkEkgc, StepEkEkfind
+from .error import (
+    StepErrorChkin,
+    StepErrorChkout,
+    StepErrorFailed,
+    StepErrorGetmsg,
+    StepErrorReset,
+    StepErrorSetmsg,
+    StepErrorSigerr,
+)
 from .ids_names import StepIdsNamesBodn2c
 from .kernel_pool import (
     StepKernelPoolCvpool,
@@ -76,6 +85,13 @@ WorkflowStep: TypeAlias = (
     | StepKernelsKtotal
     | StepKernelsKdata
     | StepKernelsKxtrct
+    | StepErrorFailed
+    | StepErrorReset
+    | StepErrorGetmsg
+    | StepErrorSetmsg
+    | StepErrorSigerr
+    | StepErrorChkin
+    | StepErrorChkout
     | StepEkEkfind
     | StepEkEkgc
 )

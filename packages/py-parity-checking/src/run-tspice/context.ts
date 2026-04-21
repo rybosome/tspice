@@ -16,9 +16,10 @@ export function createRunTspiceContext(spice: Spice, fixturesRoot: string): RunT
   };
 }
 
-/** Clear all loaded kernels before starting a case run. */
+/** Clear loaded kernels and CSPICE error state before starting a case run. */
 export function clearKernelState(context: RunTspiceContext): void {
   context.spice.raw.kclear();
+  context.spice.raw.reset();
 }
 
 /** Return an existing window by ID, or create and track a new one. */
@@ -65,8 +66,17 @@ function clearKernelStateBestEffort(context: RunTspiceContext): void {
   }
 }
 
-/** Run best-effort cleanup for windows and kernel state after a case run. */
+function clearErrorStateBestEffort(context: RunTspiceContext): void {
+  try {
+    context.spice.raw.reset();
+  } catch {
+    // best-effort cleanup only
+  }
+}
+
+/** Run best-effort cleanup for windows, kernel state, and error state after a case run. */
 export function cleanupContext(context: RunTspiceContext): void {
   freeWindows(context);
   clearKernelStateBestEffort(context);
+  clearErrorStateBestEffort(context);
 }

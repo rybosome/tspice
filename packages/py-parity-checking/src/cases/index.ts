@@ -3,6 +3,7 @@ import type { ParityCase } from "../case-types.js";
 import cellsWindowsCasesRaw from "./cells-windows.cases.json" with { type: "json" };
 import coordsVectorsCasesRaw from "./coords-vectors.cases.json" with { type: "json" };
 import ekCasesRaw from "./ek.cases.json" with { type: "json" };
+import { errorCases } from "./error/index.js";
 import idsNamesCasesRaw from "./ids-names.cases.json" with { type: "json" };
 import kernelsCasesRaw from "./kernels.cases.json" with { type: "json" };
 import { kernelPoolCases } from "./kernel-pool/index.js";
@@ -46,6 +47,7 @@ export const cellsWindowsCases = cellsWindowsCasesRaw as ParityCase[];
 export { kernelPoolCases };
 export const kernelsCases = kernelsCasesRaw as ParityCase[];
 export const ekCases = ekCasesRaw as ParityCase[];
+export { errorCases };
 
 export const allCases: ParityCase[] = [
   ...timeCases,
@@ -55,4 +57,5 @@ export const allCases: ParityCase[] = [
   ...kernelPoolCases,
   ...kernelsCases,
   ...ekCases,
+  ...errorCases,
 ];
