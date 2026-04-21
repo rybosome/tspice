@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { afterAll, beforeAll, describe, it } from "vitest";
+import { afterAll, beforeAll, describe, it, vi } from "vitest";
 
 import type { Spice } from "@rybosome/tspice";
 import { spiceClients } from "@rybosome/tspice";
@@ -14,6 +14,9 @@ import { runCaseInTspice } from "../src/run-tspice.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const fixturesRoot = path.resolve(__dirname, "..", "fixtures");
+
+// CI runners can take longer to spawn Python sidecar calls for parity checks.
+vi.setConfig({ testTimeout: 20_000, hookTimeout: 30_000 });
 
 let spice: Spice;
 let dispose: () => Promise<void>;
