@@ -2,32 +2,12 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type {
-  CaseExecutionResult,
-  ParityCase,
-  StepKernelsFurnsh,
-  WorkflowStep,
-} from "./case-types.js";
-import { resolveFixturePath } from "./fixtures.js";
+import type { CaseExecutionResult, ParityCase } from "./case-types.js";
 
 const moduleFile = fileURLToPath(import.meta.url);
 const moduleDir = path.dirname(moduleFile);
 const packageRoot = path.resolve(moduleDir, "..");
 const sidecarProjectRoot = path.resolve(packageRoot, "sidecars", "spiceypy");
-
-function withResolvedFixturePaths(workflow: WorkflowStep[], fixturesRoot: string): WorkflowStep[] {
-  return workflow.map((step) => {
-    if (step.op !== "kernels.furnsh") {
-      return step;
-    }
-
-    const resolved: StepKernelsFurnsh = {
-      ...step,
-      file: resolveFixturePath(fixturesRoot, step.file),
-    };
-    return resolved;
-  });
-}
 
 function parseSidecarResponse(stdout: string): CaseExecutionResult {
   const trimmed = stdout.trim();
@@ -40,11 +20,11 @@ function parseSidecarResponse(stdout: string): CaseExecutionResult {
 /** Execute one parity case in the Python SpiceyPy sidecar. */
 export async function runCaseInSidecar(
   parityCase: ParityCase,
-  fixturesRoot: string,
+  _fixturesRoot: string,
 ): Promise<CaseExecutionResult> {
   const requestPayload = {
     caseId: parityCase.caseId,
-    workflow: withResolvedFixturePaths(parityCase.workflow, fixturesRoot),
+    workflow: parityCase.workflow,
   };
 
   const child = spawn(

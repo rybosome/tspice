@@ -1,0 +1,2152 @@
+[
+  {
+    "caseId": "cells-windows.card.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.card with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "cells-windows.card",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.insrtc.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.insrtc with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.insrtd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.insrtd with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.insrti.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.insrti with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.scard.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.scard with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "cells-windows.scard",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.size.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.size with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "cells-windows.size",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.ssize.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.ssize with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "cells-windows.ssize",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.valid.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.valid with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "cells-windows.valid",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.wncard.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.wncard with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "cells-windows.wncard",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.wnfetd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.wnfetd with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "cells-windows.wnfetd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.wninsd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.wninsd with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows.wnvald.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for cells-windows.wnvald with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "cells-windows.wnvald",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.axisar.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.axisar with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.axisar",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.georec.autogen.success-override",
+    "description": "Auto-generated canonical success call with deterministic Earth reference values. (override for coords-vectors.georec).",
+    "workflow": [
+      {
+        "op": "coords-vectors.georec",
+        "args": [
+          0,
+          0,
+          0,
+          6378.137,
+          0.0033528106647474805
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors.latrec.autogen.success-override",
+    "description": "Auto-generated canonical success call with unit-radius spherical coordinates. (override for coords-vectors.latrec).",
+    "workflow": [
+      {
+        "op": "coords-vectors.latrec",
+        "args": [
+          1,
+          0,
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors.mtxv.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.mtxv with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxv",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.mxm.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.mxm with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxm",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.mxv.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.mxv with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxv",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.recgeo.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.recgeo with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "coords-vectors.recgeo",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.reclat.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.reclat with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "coords-vectors.reclat",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.recsph.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.recsph with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "coords-vectors.recsph",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.rotate.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.rotate with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotate",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.rotmat.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.rotmat with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotmat",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.sphrec.autogen.success-override",
+    "description": "Auto-generated canonical success call with unit-radius spherical coordinates. (override for coords-vectors.sphrec).",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphrec",
+        "args": [
+          1,
+          0,
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vadd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vadd with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vadd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vcrss.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vcrss with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vcrss",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vdot.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vdot with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vdot",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vhat.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vhat with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhat",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vminus.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vminus with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vminus",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vnorm.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vnorm with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vnorm",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vscl.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vscl with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vscl",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "coords-vectors.vsub.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for coords-vectors.vsub with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsub",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "dsk.dskb02.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for dsk.dskb02 with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "dsk.dskb02",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "dsk.dskgd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for dsk.dskgd with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "dsk.dskgd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "dsk.dskobj.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for dsk.dskobj with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "dsk.dsksrf.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for dsk.dsksrf with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekaclc.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekaclc with no args (requiredParams=7).",
+    "workflow": [
+      {
+        "op": "ek.ekaclc",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekacld.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekacld with no args (requiredParams=7).",
+    "workflow": [
+      {
+        "op": "ek.ekacld",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekacli.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekacli with no args (requiredParams=7).",
+    "workflow": [
+      {
+        "op": "ek.ekacli",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekcls.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekcls with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ek.ekcls",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekffld.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekffld with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ek.ekffld",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekfind.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekfind with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ek.ekfind",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekgc.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekgc with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ek.ekgc",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekgd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekgd with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ek.ekgd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekgi.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekgi with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ek.ekgi",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekifld.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekifld with no args (requiredParams=5).",
+    "workflow": [
+      {
+        "op": "ek.ekifld",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.eknseg.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.eknseg with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ek.eknseg",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekntab.autogen.success-no-args",
+    "description": "Auto-generated baseline success call for ek.ekntab with no args (requiredParams=0).",
+    "workflow": [
+      {
+        "op": "ek.ekntab",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek.ekopn.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekopn with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekopr.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekopr with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ek.ekopr",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ekopw.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ekopw with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ek.ekopw",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek.ektnam.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ek.ektnam with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ek.ektnam",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkcls.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkcls with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkcls",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkcov.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkcov with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkcov",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkez.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkez with no args (requiredParams=5).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkez",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkezp.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkezp with no args (requiredParams=5).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkezp",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkezr.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkezr with no args (requiredParams=5).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkezr",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkgeo.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkgeo with no args (requiredParams=4).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkgeo",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkgps.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkgps with no args (requiredParams=4).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkgps",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkobj.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkobj with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkobj",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkopa.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkopa with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopa",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkopn.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkopn with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkpds.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkpds with no args (requiredParams=6).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkpos.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkpos with no args (requiredParams=5).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpos",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spksfs.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spksfs with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "ephemeris.spksfs",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkssb.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkssb with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkssb",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkuds.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkuds with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkuds",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris.spkw08.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ephemeris.spkw08 with no args (requiredParams=11).",
+    "workflow": [
+      {
+        "op": "ephemeris.spkw08",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "error.chkin.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for error.chkin with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "error.chkout.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for error.chkout with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "error.chkout",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "error.failed.autogen.success-no-args",
+    "description": "Auto-generated baseline success call for error.failed with no args (requiredParams=0).",
+    "workflow": [
+      {
+        "op": "error.failed",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error.getmsg.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for error.getmsg with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "error.getmsg",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "error.reset.autogen.success-no-args",
+    "description": "Auto-generated baseline success call for error.reset with no args (requiredParams=0).",
+    "workflow": [
+      {
+        "op": "error.reset",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error.setmsg.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for error.setmsg with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "error.sigerr.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for error.sigerr with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "error.sigerr",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dafbfs.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dafbfs with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.dafbfs",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dafcls.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dafcls with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.dafcls",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.daffna.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.daffna with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.daffna",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dafopr.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dafopr with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.dafopr",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dascls.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dascls with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.dascls",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dasopr.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dasopr with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.dasopr",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dlabfs.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dlabfs with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.dlabfs",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dlacls.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dlacls with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.dlacls",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dlafns.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dlafns with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "file-io.dlafns",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dlaopn.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dlaopn with no args (requiredParams=4).",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dskmi2.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dskmi2 with no args (requiredParams=11).",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dskopn.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dskopn with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "file-io.dskopn",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.dskw02.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.dskw02 with no args (requiredParams=21).",
+    "workflow": [
+      {
+        "op": "file-io.dskw02",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.exists.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.exists with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.exists",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io.getfat.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for file-io.getfat with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "file-io.getfat",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.ccifrm.autogen.success-override",
+    "description": "Auto-generated canonical success call using frame class 1 / class ID 1. (override for frames.ccifrm).",
+    "workflow": [
+      {
+        "op": "frames.ccifrm",
+        "args": [
+          1,
+          1
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames.cidfrm.autogen.success-override",
+    "description": "Auto-generated canonical success call using center ID 0. (override for frames.cidfrm).",
+    "workflow": [
+      {
+        "op": "frames.cidfrm",
+        "args": [
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames.ckcov.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.ckcov with no args (requiredParams=7).",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.ckgp.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.ckgp with no args (requiredParams=4).",
+    "workflow": [
+      {
+        "op": "frames.ckgp",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.ckgpav.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.ckgpav with no args (requiredParams=4).",
+    "workflow": [
+      {
+        "op": "frames.ckgpav",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.cklpf.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.cklpf with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.ckobj.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.ckobj with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.ckupf.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.ckupf with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "frames.ckupf",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.cnmfrm.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.cnmfrm with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "frames.cnmfrm",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.frinfo.autogen.success-override",
+    "description": "Auto-generated canonical success call for frame code 1 (J2000). (override for frames.frinfo).",
+    "workflow": [
+      {
+        "op": "frames.frinfo",
+        "args": [
+          1
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames.frmnam.autogen.success-override",
+    "description": "Auto-generated canonical success call for frame code 1 (J2000). (override for frames.frmnam).",
+    "workflow": [
+      {
+        "op": "frames.frmnam",
+        "args": [
+          1
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames.namfrm.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.namfrm with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "frames.namfrm",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.pxform.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.pxform with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "frames.pxform",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames.sxform.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for frames.sxform with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "frames.sxform",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfdist.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry-gf.gfdist with no args (requiredParams=10).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfdist",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfrefn.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry-gf.gfrefn with no args (requiredParams=4).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfrepf.autogen.success-no-args",
+    "description": "Auto-generated baseline success call for geometry-gf.gfrepf with no args (requiredParams=0).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrepf",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfrepi.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry-gf.gfrepi with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrepi",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfsep.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry-gf.gfsep with no args (requiredParams=15).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsep",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfsstp.autogen.success-override",
+    "description": "Auto-generated canonical success call with positive step size. (override for geometry-gf.gfsstp).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsstp",
+        "args": [
+          1
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfstep.autogen.success-override",
+    "description": "Auto-generated canonical success workflow that initializes GF step size before stepping. (override for geometry-gf.gfstep).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsstp",
+        "args": [
+          1
+        ]
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "args": [
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf.gfstol.autogen.success-override",
+    "description": "Auto-generated canonical success call with positive convergence tolerance. (override for geometry-gf.gfstol).",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "args": [
+          0.000001
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry.illumf.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.illumf with no args (requiredParams=8).",
+    "workflow": [
+      {
+        "op": "geometry.illumf",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.illumg.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.illumg with no args (requiredParams=8).",
+    "workflow": [
+      {
+        "op": "geometry.illumg",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.ilumin.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.ilumin with no args (requiredParams=7).",
+    "workflow": [
+      {
+        "op": "geometry.ilumin",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.nvc2pl.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.nvc2pl with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.occult.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.occult with no args (requiredParams=9).",
+    "workflow": [
+      {
+        "op": "geometry.occult",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.pl2nvc.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.pl2nvc with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.sincpt.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.sincpt with no args (requiredParams=8).",
+    "workflow": [
+      {
+        "op": "geometry.sincpt",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.subpnt.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.subpnt with no args (requiredParams=6).",
+    "workflow": [
+      {
+        "op": "geometry.subpnt",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry.subslr.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for geometry.subslr with no args (requiredParams=6).",
+    "workflow": [
+      {
+        "op": "geometry.subslr",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ids-names.bodc2n.autogen.success-override",
+    "description": "Auto-generated canonical success call for body ID 0. (override for ids-names.bodc2n).",
+    "workflow": [
+      {
+        "op": "ids-names.bodc2n",
+        "args": [
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names.bodc2s.autogen.success-override",
+    "description": "Auto-generated canonical success call for body ID 0. (override for ids-names.bodc2s).",
+    "workflow": [
+      {
+        "op": "ids-names.bodc2s",
+        "args": [
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names.boddef.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ids-names.boddef with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "ids-names.boddef",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ids-names.bodfnd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ids-names.bodfnd with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "ids-names.bodfnd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ids-names.bodn2c.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ids-names.bodn2c with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ids-names.bodn2c",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ids-names.bods2c.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ids-names.bods2c with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "ids-names.bods2c",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ids-names.bodvar.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for ids-names.bodvar with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "ids-names.bodvar",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.cvpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.cvpool with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "kernel-pool.cvpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.dtpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.dtpool with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "kernel-pool.dtpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.expool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.expool with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "kernel-pool.expool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.gcpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.gcpool with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "kernel-pool.gcpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.gdpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.gdpool with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "kernel-pool.gdpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.gipool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.gipool with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "kernel-pool.gipool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.gnpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.gnpool with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "kernel-pool.gnpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.pcpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.pcpool with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.pdpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.pdpool with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.pipool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.pipool with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "kernel-pool.pipool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool.swpool.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernel-pool.swpool with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "kernel-pool.swpool",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernels.furnsh.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernels.furnsh with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernels.kclear.autogen.success-no-args",
+    "description": "Auto-generated baseline success call for kernels.kclear with no args (requiredParams=0).",
+    "workflow": [
+      {
+        "op": "kernels.kclear",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels.kdata.autogen.success-override",
+    "description": "Auto-generated canonical success call returning found=false when no kernels are loaded. (override for kernels.kdata).",
+    "workflow": [
+      {
+        "op": "kernels.kdata",
+        "args": [
+          0,
+          "ALL"
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels.kinfo.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernels.kinfo with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "kernels.kinfo",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernels.kplfrm.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernels.kplfrm with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "kernels.kplfrm",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernels.ktotal.autogen.success-override",
+    "description": "Auto-generated canonical success call with explicit kind=ALL. (override for kernels.ktotal).",
+    "workflow": [
+      {
+        "op": "kernels.ktotal",
+        "args": [
+          "ALL"
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels.kxtrct.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernels.kxtrct with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernels.unload.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for kernels.unload with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "kernels.unload",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.deltet.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.deltet with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.deltet",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.et2utc.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.et2utc with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "time.et2utc",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.scdecd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.scdecd with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.scdecd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.sce2c.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.sce2c with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.sce2c",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.sce2s.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.sce2s with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.sce2s",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.scencd.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.scencd with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.scencd",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.scs2e.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.scs2e with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.scs2e",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.sct2e.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.sct2e with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.sct2e",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.str2et.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.str2et with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "time.str2et",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.timdef.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.timdef with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.timdef",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.timout.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.timout with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.timout",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.tkvrsn.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.tkvrsn with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "time.tkvrsn",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.tparse.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.tparse with no args (requiredParams=1).",
+    "workflow": [
+      {
+        "op": "time.tparse",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.tpictr.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.tpictr with no args (requiredParams=2).",
+    "workflow": [
+      {
+        "op": "time.tpictr",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time.unitim.autogen.error-no-args",
+    "description": "Auto-generated baseline invalid-args call for time.unitim with no args (requiredParams=3).",
+    "workflow": [
+      {
+        "op": "time.unitim",
+        "args": []
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

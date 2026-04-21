@@ -23,7 +23,8 @@
     "pretypecheck": "pnpm -w turbo run build --filter=@rybosome/tspice",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly && tsc -p tsconfig.test.json --noEmit",
     "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice",
-    "test": "vitest run"
+    "test": "vitest run",
+    "generate:cases": "node ./scripts/generate-canonical-cases.mjs"
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",

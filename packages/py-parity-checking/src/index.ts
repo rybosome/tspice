@@ -4,13 +4,19 @@ export type {
   CaseExecutionResult,
   CaseExecutionSuccess,
   CaseExpectation,
-  Matrix3x3,
+  JsonScalar,
+  JsonValue,
   ParityCase,
   StepOutput,
   WorkflowStep,
 } from "./case-types.js";
 
-export { allCases } from "./cases/index.js";
+export {
+  canonicalRawMethods,
+  type CanonicalRawMethod,
+} from "./generated/canonical-raw-methods.js";
+
+export { allCases, canonicalAutoCases } from "./cases/index.js";
 
 export { runCaseInSidecar } from "./run-sidecar.js";
 export { runCaseInTspice } from "./run-tspice.js";
