@@ -36,16 +36,22 @@ from .models import (
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
-    StepDskDascls,
-    StepDskDasopr,
-    StepDskDlabfs,
-    StepDskDskb02,
-    StepDskDskgd,
-    StepDskDskmi2,
-    StepDskDskobj,
-    StepDskDskopn,
-    StepDskDsksrf,
-    StepDskDskw02,
+    StepEphemerisSpkcls,
+    StepEphemerisSpkcov,
+    StepEphemerisSpkez,
+    StepEphemerisSpkezp,
+    StepEphemerisSpkezr,
+    StepEphemerisSpkgeo,
+    StepEphemerisSpkgps,
+    StepEphemerisSpkobj,
+    StepEphemerisSpkopa,
+    StepEphemerisSpkopn,
+    StepEphemerisSpkpds,
+    StepEphemerisSpkpos,
+    StepEphemerisSpksfs,
+    StepEphemerisSpkssb,
+    StepEphemerisSpkuds,
+    StepEphemerisSpkw08,
     StepEkEkaclc,
     StepEkEkacld,
     StepEkEkacli,
@@ -62,21 +68,6 @@ from .models import (
     StepEkEkopr,
     StepEkEkopw,
     StepEkEktnam,
-    StepFileIoDafbfs,
-    StepFileIoDafcls,
-    StepFileIoDaffna,
-    StepFileIoDafopr,
-    StepFileIoDascls,
-    StepFileIoDasopr,
-    StepFileIoDlabfs,
-    StepFileIoDlacls,
-    StepFileIoDlafns,
-    StepFileIoDlaopn,
-    StepFileIoDskmi2,
-    StepFileIoDskopn,
-    StepFileIoDskw02,
-    StepFileIoExists,
-    StepFileIoGetfat,
     StepErrorChkin,
     StepErrorChkout,
     StepErrorFailed,
@@ -84,20 +75,6 @@ from .models import (
     StepErrorReset,
     StepErrorSetmsg,
     StepErrorSigerr,
-    StepFramesCcifrm,
-    StepFramesCidfrm,
-    StepFramesCkcov,
-    StepFramesCkgp,
-    StepFramesCkgpav,
-    StepFramesCklpf,
-    StepFramesCkobj,
-    StepFramesCkupf,
-    StepFramesCnmfrm,
-    StepFramesFrinfo,
-    StepFramesFrmnam,
-    StepFramesNamfrm,
-    StepFramesPxform,
-    StepFramesSxform,
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
@@ -212,12 +189,6 @@ def _expect_int_list(value: Any, *, label: str) -> list[int]:
     return out
 
 
-def _expect_optional_string(value: Any, *, label: str) -> str | None:
-    if value is None:
-        return None
-    return _expect_string(value, label=label)
-
-
 def _expect_number_list(value: Any, *, label: str) -> list[float]:
     if not isinstance(value, list):
         raise TypeError(f"{label} must be a list")
@@ -272,33 +243,6 @@ def _expect_vec4(value: Any, *, label: str) -> tuple[float, float, float, float]
     )
 
 
-def _expect_vec3_rows(value: Any, *, label: str) -> list[tuple[float, float, float]]:
-    if not isinstance(value, list):
-        raise TypeError(f"{label} must be a list")
-    out: list[tuple[float, float, float]] = []
-    for idx, row in enumerate(value):
-        out.append(_expect_vec3(row, label=f"{label}[{idx}]"))
-    return out
-
-
-def _expect_index_triples(value: Any, *, label: str) -> list[tuple[int, int, int]]:
-    if not isinstance(value, list):
-        raise TypeError(f"{label} must be a list")
-
-    out: list[tuple[int, int, int]] = []
-    for idx, row in enumerate(value):
-        if not isinstance(row, list) or len(row) != 3:
-            raise TypeError(f"{label}[{idx}] must be a length-3 integer array")
-        out.append(
-            (
-                _expect_int(row[0], label=f"{label}[{idx}][0]"),
-                _expect_int(row[1], label=f"{label}[{idx}][1]"),
-                _expect_int(row[2], label=f"{label}[{idx}][2]"),
-            )
-        )
-    return out
-
-
 def _decode_path_ref(value: Any, *, label: str) -> PathRef | str:
     if isinstance(value, str):
         return value
@@ -324,6 +268,13 @@ def _decode_runtime_config(value: Any) -> RuntimeConfig | None:
             scratchRoot=_expect_string(paths.get("scratchRoot"), label="request.runtime.paths.scratchRoot"),
         )
     )
+
+
+def _expect_spk_packed_descriptor(value: Any, *, label: str) -> tuple[float, float, float, float, float]:
+    numbers = _expect_number_list(value, label=label)
+    if len(numbers) != 5:
+        raise TypeError(f"{label} must be a length-5 number array")
+    return (numbers[0], numbers[1], numbers[2], numbers[3], numbers[4])
 
 
 def _decode_step(raw_step: Any) -> WorkflowStep:
@@ -846,136 +797,159 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "kernels.unload":
             return StepKernelsUnload(op=op, path=_expect_string(step.get("path"), label="kernels.unload.path"))
 
-        case "file-io.exists":
-            return StepFileIoExists(
+        case "ephemeris.spkcls":
+            return StepEphemerisSpkcls(
                 op=op,
-                path=_decode_path_ref(step.get("path"), label="file-io.exists.path"),
+                handleId=_expect_string(step.get("handleId"), label="ephemeris.spkcls.handleId"),
             )
 
-        case "file-io.getfat":
-            return StepFileIoGetfat(
+        case "ephemeris.spkcov":
+            max_intervals_raw = step.get("maxIntervals")
+            max_intervals = None
+            if max_intervals_raw is not None:
+                max_intervals = _expect_int(max_intervals_raw, label="ephemeris.spkcov.maxIntervals")
+            return StepEphemerisSpkcov(
                 op=op,
-                path=_decode_path_ref(step.get("path"), label="file-io.getfat.path"),
+                spk=_decode_path_ref(step.get("spk"), label="ephemeris.spkcov.spk"),
+                idcode=_expect_int(step.get("idcode"), label="ephemeris.spkcov.idcode"),
+                coverWindowId=_expect_string(step.get("coverWindowId"), label="ephemeris.spkcov.coverWindowId"),
+                maxIntervals=max_intervals,
             )
 
-        case "file-io.dafopr":
-            return StepFileIoDafopr(
+        case "ephemeris.spkez":
+            return StepEphemerisSpkez(
                 op=op,
-                path=_decode_path_ref(step.get("path"), label="file-io.dafopr.path"),
-                handleId=_expect_string(step.get("handleId"), label="file-io.dafopr.handleId"),
+                target=_expect_int(step.get("target"), label="ephemeris.spkez.target"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkez.et"),
+                ref=_expect_string(step.get("ref"), label="ephemeris.spkez.ref"),
+                abcorr=_expect_string(step.get("abcorr"), label="ephemeris.spkez.abcorr"),
+                observer=_expect_int(step.get("observer"), label="ephemeris.spkez.observer"),
             )
 
-        case "file-io.dafcls":
-            return StepFileIoDafcls(
+        case "ephemeris.spkezp":
+            return StepEphemerisSpkezp(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.dafcls.handleId"),
+                target=_expect_int(step.get("target"), label="ephemeris.spkezp.target"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkezp.et"),
+                ref=_expect_string(step.get("ref"), label="ephemeris.spkezp.ref"),
+                abcorr=_expect_string(step.get("abcorr"), label="ephemeris.spkezp.abcorr"),
+                observer=_expect_int(step.get("observer"), label="ephemeris.spkezp.observer"),
             )
 
-        case "file-io.dafbfs":
-            return StepFileIoDafbfs(
+        case "ephemeris.spkezr":
+            return StepEphemerisSpkezr(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.dafbfs.handleId"),
+                target=_expect_string(step.get("target"), label="ephemeris.spkezr.target"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkezr.et"),
+                ref=_expect_string(step.get("ref"), label="ephemeris.spkezr.ref"),
+                abcorr=_expect_string(step.get("abcorr"), label="ephemeris.spkezr.abcorr"),
+                observer=_expect_string(step.get("observer"), label="ephemeris.spkezr.observer"),
             )
 
-        case "file-io.daffna":
-            return StepFileIoDaffna(
+        case "ephemeris.spkgeo":
+            return StepEphemerisSpkgeo(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.daffna.handleId"),
+                target=_expect_int(step.get("target"), label="ephemeris.spkgeo.target"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkgeo.et"),
+                ref=_expect_string(step.get("ref"), label="ephemeris.spkgeo.ref"),
+                observer=_expect_int(step.get("observer"), label="ephemeris.spkgeo.observer"),
             )
 
-        case "file-io.dasopr":
-            return StepFileIoDasopr(
+        case "ephemeris.spkgps":
+            return StepEphemerisSpkgps(
                 op=op,
-                path=_decode_path_ref(step.get("path"), label="file-io.dasopr.path"),
-                handleId=_expect_string(step.get("handleId"), label="file-io.dasopr.handleId"),
+                target=_expect_int(step.get("target"), label="ephemeris.spkgps.target"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkgps.et"),
+                ref=_expect_string(step.get("ref"), label="ephemeris.spkgps.ref"),
+                observer=_expect_int(step.get("observer"), label="ephemeris.spkgps.observer"),
             )
 
-        case "file-io.dascls":
-            return StepFileIoDascls(
+        case "ephemeris.spkobj":
+            max_cardinality_raw = step.get("maxCardinality")
+            max_cardinality = None
+            if max_cardinality_raw is not None:
+                max_cardinality = _expect_int(max_cardinality_raw, label="ephemeris.spkobj.maxCardinality")
+            return StepEphemerisSpkobj(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.dascls.handleId"),
+                spk=_decode_path_ref(step.get("spk"), label="ephemeris.spkobj.spk"),
+                idsCellId=_expect_string(step.get("idsCellId"), label="ephemeris.spkobj.idsCellId"),
+                maxCardinality=max_cardinality,
             )
 
-        case "file-io.dlaopn":
-            return StepFileIoDlaopn(
+        case "ephemeris.spkopa":
+            return StepEphemerisSpkopa(
                 op=op,
-                path=_decode_path_ref(step.get("path"), label="file-io.dlaopn.path"),
-                ftype=_expect_string(step.get("ftype"), label="file-io.dlaopn.ftype"),
-                ifname=_expect_string(step.get("ifname"), label="file-io.dlaopn.ifname"),
-                ncomch=_expect_int(step.get("ncomch"), label="file-io.dlaopn.ncomch"),
-                handleId=_expect_string(step.get("handleId"), label="file-io.dlaopn.handleId"),
+                file=_decode_path_ref(step.get("file"), label="ephemeris.spkopa.file"),
+                handleId=_expect_string(step.get("handleId"), label="ephemeris.spkopa.handleId"),
             )
 
-        case "file-io.dlabfs":
-            return StepFileIoDlabfs(
+        case "ephemeris.spkopn":
+            return StepEphemerisSpkopn(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.dlabfs.handleId"),
-                descrId=_expect_string(step.get("descrId"), label="file-io.dlabfs.descrId"),
+                file=_decode_path_ref(step.get("file"), label="ephemeris.spkopn.file"),
+                ifname=_expect_string(step.get("ifname"), label="ephemeris.spkopn.ifname"),
+                ncomch=_expect_int(step.get("ncomch"), label="ephemeris.spkopn.ncomch"),
+                handleId=_expect_string(step.get("handleId"), label="ephemeris.spkopn.handleId"),
             )
 
-        case "file-io.dlafns":
-            return StepFileIoDlafns(
+        case "ephemeris.spkpds":
+            return StepEphemerisSpkpds(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.dlafns.handleId"),
-                descrId=_expect_string(step.get("descrId"), label="file-io.dlafns.descrId"),
+                body=_expect_int(step.get("body"), label="ephemeris.spkpds.body"),
+                center=_expect_int(step.get("center"), label="ephemeris.spkpds.center"),
+                frame=_expect_string(step.get("frame"), label="ephemeris.spkpds.frame"),
+                type=_expect_int(step.get("type"), label="ephemeris.spkpds.type"),
+                first=_expect_number(step.get("first"), label="ephemeris.spkpds.first"),
+                last=_expect_number(step.get("last"), label="ephemeris.spkpds.last"),
             )
 
-        case "file-io.dlacls":
-            return StepFileIoDlacls(
+        case "ephemeris.spkpos":
+            return StepEphemerisSpkpos(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.dlacls.handleId"),
+                target=_expect_string(step.get("target"), label="ephemeris.spkpos.target"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkpos.et"),
+                ref=_expect_string(step.get("ref"), label="ephemeris.spkpos.ref"),
+                abcorr=_expect_string(step.get("abcorr"), label="ephemeris.spkpos.abcorr"),
+                observer=_expect_string(step.get("observer"), label="ephemeris.spkpos.observer"),
             )
 
-        case "file-io.dskopn":
-            return StepFileIoDskopn(
+        case "ephemeris.spksfs":
+            return StepEphemerisSpksfs(
                 op=op,
-                path=_decode_path_ref(step.get("path"), label="file-io.dskopn.path"),
-                ifname=_expect_string(step.get("ifname"), label="file-io.dskopn.ifname"),
-                ncomch=_expect_int(step.get("ncomch"), label="file-io.dskopn.ncomch"),
-                handleId=_expect_string(step.get("handleId"), label="file-io.dskopn.handleId"),
+                body=_expect_int(step.get("body"), label="ephemeris.spksfs.body"),
+                et=_expect_number(step.get("et"), label="ephemeris.spksfs.et"),
             )
 
-        case "file-io.dskmi2":
-            return StepFileIoDskmi2(
+        case "ephemeris.spkssb":
+            return StepEphemerisSpkssb(
                 op=op,
-                nv=_expect_int(step.get("nv"), label="file-io.dskmi2.nv"),
-                vrtces=_expect_number_list(step.get("vrtces"), label="file-io.dskmi2.vrtces"),
-                np=_expect_int(step.get("np"), label="file-io.dskmi2.np"),
-                plates=_expect_int_list(step.get("plates"), label="file-io.dskmi2.plates"),
-                finscl=_expect_number(step.get("finscl"), label="file-io.dskmi2.finscl"),
-                corscl=_expect_int(step.get("corscl"), label="file-io.dskmi2.corscl"),
-                worksz=_expect_int(step.get("worksz"), label="file-io.dskmi2.worksz"),
-                voxpsz=_expect_int(step.get("voxpsz"), label="file-io.dskmi2.voxpsz"),
-                voxlsz=_expect_int(step.get("voxlsz"), label="file-io.dskmi2.voxlsz"),
-                makvtl=_expect_bool(step.get("makvtl"), label="file-io.dskmi2.makvtl"),
-                spxisz=_expect_int(step.get("spxisz"), label="file-io.dskmi2.spxisz"),
-                spaixId=_expect_optional_string(step.get("spaixId"), label="file-io.dskmi2.spaixId"),
+                target=_expect_int(step.get("target"), label="ephemeris.spkssb.target"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkssb.et"),
+                ref=_expect_string(step.get("ref"), label="ephemeris.spkssb.ref"),
             )
 
-        case "file-io.dskw02":
-            return StepFileIoDskw02(
+        case "ephemeris.spkuds":
+            return StepEphemerisSpkuds(
                 op=op,
-                handleId=_expect_string(step.get("handleId"), label="file-io.dskw02.handleId"),
-                center=_expect_int(step.get("center"), label="file-io.dskw02.center"),
-                surfid=_expect_int(step.get("surfid"), label="file-io.dskw02.surfid"),
-                dclass=_expect_int(step.get("dclass"), label="file-io.dskw02.dclass"),
-                frame=_expect_string(step.get("frame"), label="file-io.dskw02.frame"),
-                corsys=_expect_int(step.get("corsys"), label="file-io.dskw02.corsys"),
-                corpar=_expect_number_list(step.get("corpar"), label="file-io.dskw02.corpar"),
-                mncor1=_expect_number(step.get("mncor1"), label="file-io.dskw02.mncor1"),
-                mxcor1=_expect_number(step.get("mxcor1"), label="file-io.dskw02.mxcor1"),
-                mncor2=_expect_number(step.get("mncor2"), label="file-io.dskw02.mncor2"),
-                mxcor2=_expect_number(step.get("mxcor2"), label="file-io.dskw02.mxcor2"),
-                mncor3=_expect_number(step.get("mncor3"), label="file-io.dskw02.mncor3"),
-                mxcor3=_expect_number(step.get("mxcor3"), label="file-io.dskw02.mxcor3"),
-                first=_expect_number(step.get("first"), label="file-io.dskw02.first"),
-                last=_expect_number(step.get("last"), label="file-io.dskw02.last"),
-                nv=_expect_int(step.get("nv"), label="file-io.dskw02.nv"),
-                vrtces=_expect_number_list(step.get("vrtces"), label="file-io.dskw02.vrtces"),
-                np=_expect_int(step.get("np"), label="file-io.dskw02.np"),
-                plates=_expect_int_list(step.get("plates"), label="file-io.dskw02.plates"),
-                spaixId=_expect_string(step.get("spaixId"), label="file-io.dskw02.spaixId"),
+                descr=_expect_spk_packed_descriptor(step.get("descr"), label="ephemeris.spkuds.descr"),
             )
+
+        case "ephemeris.spkw08":
+            return StepEphemerisSpkw08(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ephemeris.spkw08.handleId"),
+                body=_expect_int(step.get("body"), label="ephemeris.spkw08.body"),
+                center=_expect_int(step.get("center"), label="ephemeris.spkw08.center"),
+                frame=_expect_string(step.get("frame"), label="ephemeris.spkw08.frame"),
+                first=_expect_number(step.get("first"), label="ephemeris.spkw08.first"),
+                last=_expect_number(step.get("last"), label="ephemeris.spkw08.last"),
+                segid=_expect_string(step.get("segid"), label="ephemeris.spkw08.segid"),
+                degree=_expect_int(step.get("degree"), label="ephemeris.spkw08.degree"),
+                states=_expect_number_list(step.get("states"), label="ephemeris.spkw08.states"),
+                epoch1=_expect_number(step.get("epoch1"), label="ephemeris.spkw08.epoch1"),
+                step=_expect_number(step.get("step"), label="ephemeris.spkw08.step"),
+            )
+
         case "error.failed":
             return StepErrorFailed(op=op)
 
@@ -1010,116 +984,6 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepErrorChkout(
                 op=op,
                 name=_expect_string(step.get("name"), label="error.chkout.name"),
-            )
-
-        case "frames.namfrm":
-            return StepFramesNamfrm(op=op, name=_expect_string(step.get("name"), label="frames.namfrm.name"))
-
-        case "frames.frmnam":
-            return StepFramesFrmnam(op=op, code=_expect_int(step.get("code"), label="frames.frmnam.code"))
-
-        case "frames.cidfrm":
-            return StepFramesCidfrm(op=op, center=_expect_int(step.get("center"), label="frames.cidfrm.center"))
-
-        case "frames.cnmfrm":
-            return StepFramesCnmfrm(
-                op=op,
-                centerName=_expect_string(step.get("centerName"), label="frames.cnmfrm.centerName"),
-            )
-
-        case "frames.frinfo":
-            return StepFramesFrinfo(op=op, frameId=_expect_int(step.get("frameId"), label="frames.frinfo.frameId"))
-
-        case "frames.ccifrm":
-            return StepFramesCcifrm(
-                op=op,
-                frameClass=_expect_int(step.get("frameClass"), label="frames.ccifrm.frameClass"),
-                classId=_expect_int(step.get("classId"), label="frames.ccifrm.classId"),
-            )
-
-        case "frames.ckgp":
-            return StepFramesCkgp(
-                op=op,
-                inst=_expect_int(step.get("inst"), label="frames.ckgp.inst"),
-                sclkdp=_expect_number(step.get("sclkdp"), label="frames.ckgp.sclkdp"),
-                tol=_expect_number(step.get("tol"), label="frames.ckgp.tol"),
-                ref=_expect_string(step.get("ref"), label="frames.ckgp.ref"),
-            )
-
-        case "frames.ckgpav":
-            return StepFramesCkgpav(
-                op=op,
-                inst=_expect_int(step.get("inst"), label="frames.ckgpav.inst"),
-                sclkdp=_expect_number(step.get("sclkdp"), label="frames.ckgpav.sclkdp"),
-                tol=_expect_number(step.get("tol"), label="frames.ckgpav.tol"),
-                ref=_expect_string(step.get("ref"), label="frames.ckgpav.ref"),
-            )
-
-        case "frames.cklpf":
-            return StepFramesCklpf(
-                op=op,
-                ck=_decode_path_ref(step.get("ck"), label="frames.cklpf.ck"),
-                handleId=_expect_string(step.get("handleId"), label="frames.cklpf.handleId"),
-            )
-
-        case "frames.ckupf":
-            return StepFramesCkupf(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="frames.ckupf.handleId"),
-            )
-
-        case "frames.ckobj":
-            max_card_raw = step.get("maxCard")
-            max_card = None
-            if max_card_raw is not None:
-                max_card = _expect_int(max_card_raw, label="frames.ckobj.maxCard")
-            return StepFramesCkobj(
-                op=op,
-                ck=_decode_path_ref(step.get("ck"), label="frames.ckobj.ck"),
-                idsId=_expect_string(step.get("idsId"), label="frames.ckobj.idsId"),
-                maxCard=max_card,
-            )
-
-        case "frames.ckcov":
-            level = _expect_string(step.get("level"), label="frames.ckcov.level")
-            if level not in {"SEGMENT", "INTERVAL"}:
-                raise ValueError("frames.ckcov.level must be SEGMENT|INTERVAL")
-
-            timsys = _expect_string(step.get("timsys"), label="frames.ckcov.timsys")
-            if timsys not in {"SCLK", "TDB"}:
-                raise ValueError("frames.ckcov.timsys must be SCLK|TDB")
-
-            max_intervals_raw = step.get("maxIntervals")
-            max_intervals = None
-            if max_intervals_raw is not None:
-                max_intervals = _expect_int(max_intervals_raw, label="frames.ckcov.maxIntervals")
-
-            return StepFramesCkcov(
-                op=op,
-                ck=_decode_path_ref(step.get("ck"), label="frames.ckcov.ck"),
-                idcode=_expect_int(step.get("idcode"), label="frames.ckcov.idcode"),
-                needav=_expect_bool(step.get("needav"), label="frames.ckcov.needav"),
-                level=level,
-                tol=_expect_number(step.get("tol"), label="frames.ckcov.tol"),
-                timsys=timsys,
-                coverId=_expect_string(step.get("coverId"), label="frames.ckcov.coverId"),
-                maxIntervals=max_intervals,
-            )
-
-        case "frames.pxform":
-            return StepFramesPxform(
-                op=op,
-                from_=_expect_string(step.get("from"), label="frames.pxform.from"),
-                to=_expect_string(step.get("to"), label="frames.pxform.to"),
-                et=_expect_number(step.get("et"), label="frames.pxform.et"),
-            )
-
-        case "frames.sxform":
-            return StepFramesSxform(
-                op=op,
-                from_=_expect_string(step.get("from"), label="frames.sxform.from"),
-                to=_expect_string(step.get("to"), label="frames.sxform.to"),
-                et=_expect_number(step.get("et"), label="frames.sxform.et"),
             )
 
         case "ek.ekfind":
@@ -1235,101 +1099,6 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepEkEkffld(
                 op=op,
                 segmentId=_expect_string(step.get("segmentId"), label="ek.ekffld.segmentId"),
-            )
-
-        case "dsk.dskobj":
-            return StepDskDskobj(op=op, path=_decode_path_ref(step.get("path"), label="dsk.dskobj.path"))
-
-        case "dsk.dsksrf":
-            return StepDskDsksrf(
-                op=op,
-                path=_decode_path_ref(step.get("path"), label="dsk.dsksrf.path"),
-                bodyid=_expect_int(step.get("bodyid"), label="dsk.dsksrf.bodyid"),
-            )
-
-        case "dsk.dskopn":
-            return StepDskDskopn(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="dsk.dskopn.handleId"),
-                path=_decode_path_ref(step.get("path"), label="dsk.dskopn.path"),
-                ifname=_expect_string(step.get("ifname"), label="dsk.dskopn.ifname"),
-                ncomch=_expect_int(step.get("ncomch"), label="dsk.dskopn.ncomch"),
-            )
-
-        case "dsk.dskmi2":
-            return StepDskDskmi2(
-                op=op,
-                spatialIndexId=_expect_string(step.get("spatialIndexId"), label="dsk.dskmi2.spatialIndexId"),
-                vrtces=_expect_vec3_rows(step.get("vrtces"), label="dsk.dskmi2.vrtces"),
-                plates=_expect_index_triples(step.get("plates"), label="dsk.dskmi2.plates"),
-                finscl=_expect_number(step.get("finscl"), label="dsk.dskmi2.finscl"),
-                corscl=_expect_int(step.get("corscl"), label="dsk.dskmi2.corscl"),
-                worksz=_expect_int(step.get("worksz"), label="dsk.dskmi2.worksz"),
-                voxpsz=_expect_int(step.get("voxpsz"), label="dsk.dskmi2.voxpsz"),
-                voxlsz=_expect_int(step.get("voxlsz"), label="dsk.dskmi2.voxlsz"),
-                makvtl=_expect_bool(step.get("makvtl"), label="dsk.dskmi2.makvtl"),
-                spxisz=_expect_int(step.get("spxisz"), label="dsk.dskmi2.spxisz"),
-            )
-
-        case "dsk.dskw02":
-            corpar = _expect_number_list(step.get("corpar"), label="dsk.dskw02.corpar")
-            if len(corpar) != 10:
-                raise ValueError("dsk.dskw02.corpar must have length 10")
-
-            return StepDskDskw02(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="dsk.dskw02.handleId"),
-                spatialIndexId=_expect_string(step.get("spatialIndexId"), label="dsk.dskw02.spatialIndexId"),
-                center=_expect_int(step.get("center"), label="dsk.dskw02.center"),
-                surfid=_expect_int(step.get("surfid"), label="dsk.dskw02.surfid"),
-                dclass=_expect_int(step.get("dclass"), label="dsk.dskw02.dclass"),
-                frame=_expect_string(step.get("frame"), label="dsk.dskw02.frame"),
-                corsys=_expect_int(step.get("corsys"), label="dsk.dskw02.corsys"),
-                corpar=corpar,
-                mncor1=_expect_number(step.get("mncor1"), label="dsk.dskw02.mncor1"),
-                mxcor1=_expect_number(step.get("mxcor1"), label="dsk.dskw02.mxcor1"),
-                mncor2=_expect_number(step.get("mncor2"), label="dsk.dskw02.mncor2"),
-                mxcor2=_expect_number(step.get("mxcor2"), label="dsk.dskw02.mxcor2"),
-                mncor3=_expect_number(step.get("mncor3"), label="dsk.dskw02.mncor3"),
-                mxcor3=_expect_number(step.get("mxcor3"), label="dsk.dskw02.mxcor3"),
-                first=_expect_number(step.get("first"), label="dsk.dskw02.first"),
-                last=_expect_number(step.get("last"), label="dsk.dskw02.last"),
-                vrtces=_expect_vec3_rows(step.get("vrtces"), label="dsk.dskw02.vrtces"),
-                plates=_expect_index_triples(step.get("plates"), label="dsk.dskw02.plates"),
-            )
-
-        case "dsk.dasopr":
-            return StepDskDasopr(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="dsk.dasopr.handleId"),
-                path=_decode_path_ref(step.get("path"), label="dsk.dasopr.path"),
-            )
-
-        case "dsk.dascls":
-            return StepDskDascls(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="dsk.dascls.handleId"),
-            )
-
-        case "dsk.dlabfs":
-            return StepDskDlabfs(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="dsk.dlabfs.handleId"),
-                dladscId=_expect_string(step.get("dladscId"), label="dsk.dlabfs.dladscId"),
-            )
-
-        case "dsk.dskgd":
-            return StepDskDskgd(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="dsk.dskgd.handleId"),
-                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskgd.dladscId"),
-            )
-
-        case "dsk.dskb02":
-            return StepDskDskb02(
-                op=op,
-                handleId=_expect_string(step.get("handleId"), label="dsk.dskb02.handleId"),
-                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskb02.dladscId"),
             )
 
         case "geometry.subpnt":
