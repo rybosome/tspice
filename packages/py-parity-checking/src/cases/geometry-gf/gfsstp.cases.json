@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "geometry-gf-gfsstp-success",
+    "description": "gfsstp updates the constant step size used by gfstep",
+    "workflow": [
+      { "op": "geometry-gf.gfsstp", "step": 123 },
+      { "op": "geometry-gf.gfstep", "time": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "geometry-gf-gfsstp-invalid-step-error",
+    "description": "Representative gfsstp invalid step size error",
+    "workflow": [{ "op": "geometry-gf.gfsstp", "step": 0 }],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -2,20 +2,7 @@ from __future__ import annotations
 
 from typing import TypeAlias
 
-from .cells_windows import (
-    StepCellsWindowsCard,
-    StepCellsWindowsInsrtc,
-    StepCellsWindowsInsrtd,
-    StepCellsWindowsInsrti,
-    StepCellsWindowsScard,
-    StepCellsWindowsSize,
-    StepCellsWindowsSsize,
-    StepCellsWindowsValid,
-    StepCellsWindowsWncard,
-    StepCellsWindowsWnfetd,
-    StepCellsWindowsWninsd,
-    StepCellsWindowsWnvald,
-)
+from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
 from .coords_vectors import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -59,6 +46,16 @@ from .geometry import (
     StepGeometrySubpnt,
     StepGeometrySubslr,
 )
+from .geometry_gf import (
+    StepGeometryGfGfdist,
+    StepGeometryGfGfrefn,
+    StepGeometryGfGfrepf,
+    StepGeometryGfGfrepi,
+    StepGeometryGfGfsep,
+    StepGeometryGfGfsstp,
+    StepGeometryGfGfstep,
+    StepGeometryGfGfstol,
+)
 from .ids_names import (
     StepIdsNamesBodc2n,
     StepIdsNamesBodc2s,
@@ -81,16 +78,7 @@ from .kernel_pool import (
     StepKernelPoolPipool,
     StepKernelPoolSwpool,
 )
-from .kernels import (
-    StepKernelsFurnsh,
-    StepKernelsKclear,
-    StepKernelsKdata,
-    StepKernelsKinfo,
-    StepKernelsKplfrm,
-    StepKernelsKtotal,
-    StepKernelsKxtrct,
-    StepKernelsUnload,
-)
+from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
 from .time import (
     StepTimeDeltet,
     StepTimeEt2Utc,
@@ -154,18 +142,8 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsRecgeo
     | StepCoordsVectorsMxv
     | StepCoordsVectorsMtxv
-    | StepCellsWindowsCard
-    | StepCellsWindowsInsrtc
-    | StepCellsWindowsInsrtd
-    | StepCellsWindowsInsrti
-    | StepCellsWindowsScard
-    | StepCellsWindowsSize
-    | StepCellsWindowsSsize
-    | StepCellsWindowsValid
-    | StepCellsWindowsWncard
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
-    | StepCellsWindowsWnvald
     | StepKernelPoolGdpool
     | StepKernelPoolGipool
     | StepKernelPoolGcpool
@@ -178,13 +156,9 @@ WorkflowStep: TypeAlias = (
     | StepKernelPoolCvpool
     | StepKernelPoolExpool
     | StepKernelsFurnsh
-    | StepKernelsKclear
-    | StepKernelsKinfo
-    | StepKernelsKplfrm
     | StepKernelsKtotal
     | StepKernelsKdata
     | StepKernelsKxtrct
-    | StepKernelsUnload
     | StepErrorFailed
     | StepErrorReset
     | StepErrorGetmsg
@@ -203,4 +177,12 @@ WorkflowStep: TypeAlias = (
     | StepGeometryOccult
     | StepGeometryNvc2pl
     | StepGeometryPl2nvc
+    | StepGeometryGfGfsstp
+    | StepGeometryGfGfstep
+    | StepGeometryGfGfstol
+    | StepGeometryGfGfrefn
+    | StepGeometryGfGfrepi
+    | StepGeometryGfGfrepf
+    | StepGeometryGfGfsep
+    | StepGeometryGfGfdist
 )
