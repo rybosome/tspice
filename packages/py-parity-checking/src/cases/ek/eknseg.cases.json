@@ -1,0 +1,34 @@
+[
+  {
+    "caseId": "ek-eknseg-happy-on-open-handle",
+    "description": "eknseg returns observable segment count for an open EK handle",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-eknseg-happy.ek",
+        "ifname": "eknseg-happy",
+        "ncomch": 0,
+        "handleId": "H_SEG"
+      },
+      { "op": "ek.eknseg", "handleId": "H_SEG" },
+      { "op": "ek.ekcls", "handleId": "H_SEG" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-eknseg-closed-handle-error",
+    "description": "eknseg rejects a handle after it has been closed",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-eknseg-closed.ek",
+        "ifname": "eknseg-closed",
+        "ncomch": 0,
+        "handleId": "H_SEG"
+      },
+      { "op": "ek.ekcls", "handleId": "H_SEG" },
+      { "op": "ek.eknseg", "handleId": "H_SEG" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

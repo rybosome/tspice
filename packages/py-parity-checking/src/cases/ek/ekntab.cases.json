@@ -1,0 +1,18 @@
+[
+  {
+    "caseId": "ek-ekntab-happy-with-loaded-table",
+    "description": "ekntab returns visible table count after loading EK fixtures",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
+      { "op": "ek.ekntab" },
+      { "op": "ek.ektnam", "n": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekntab-happy-empty-state",
+    "description": "ekntab is observable in an empty kernel state as zero tables",
+    "workflow": [{ "op": "ek.ekntab" }],
+    "expectation": { "kind": "success" }
+  }
+]

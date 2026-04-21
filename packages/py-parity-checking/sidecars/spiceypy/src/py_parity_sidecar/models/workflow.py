@@ -50,7 +50,24 @@ from .dsk import (
     StepDskDsksrf,
     StepDskDskw02,
 )
-from .ek import StepEkEkgc, StepEkEkfind
+from .ek import (
+    StepEkEkaclc,
+    StepEkEkacld,
+    StepEkEkacli,
+    StepEkEkcls,
+    StepEkEkgc,
+    StepEkEkgd,
+    StepEkEkffld,
+    StepEkEkfind,
+    StepEkEkgi,
+    StepEkEkifld,
+    StepEkEknseg,
+    StepEkEkntab,
+    StepEkEkopn,
+    StepEkEkopr,
+    StepEkEkopw,
+    StepEkEktnam,
+)
 from .file_io import (
     StepFileIoDafbfs,
     StepFileIoDafcls,
@@ -276,8 +293,22 @@ WorkflowStep: TypeAlias = (
     | StepFramesCkcov
     | StepFramesPxform
     | StepFramesSxform
+    | StepEkEkopn
+    | StepEkEkopr
+    | StepEkEkopw
+    | StepEkEkcls
+    | StepEkEkntab
+    | StepEkEktnam
+    | StepEkEknseg
     | StepEkEkfind
     | StepEkEkgc
+    | StepEkEkgd
+    | StepEkEkgi
+    | StepEkEkifld
+    | StepEkEkacli
+    | StepEkEkacld
+    | StepEkEkaclc
+    | StepEkEkffld
     | StepDskDskobj
     | StepDskDsksrf
     | StepDskDskopn

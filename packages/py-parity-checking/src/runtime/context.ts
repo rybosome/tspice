@@ -44,6 +44,14 @@ export type DskState = {
 
 export type EkState = {
   lastQuery: string | null;
+  handles: Map<string, SpiceHandle>;
+  segments: Map<string, EkSegmentState>;
+};
+
+export type EkSegmentState = {
+  handleId: string;
+  segno: number;
+  rcptrs: number[];
 };
 
 export type EphemerisState = {
@@ -111,6 +119,8 @@ export function createRunTspiceContext(spice: Spice, paths: RuntimePaths): RunTs
       },
       ek: {
         lastQuery: null,
+        handles: new Map<string, SpiceHandle>(),
+        segments: new Map<string, EkSegmentState>(),
       },
       ephemeris: {
         requestedTargets: new Set<number>(),

@@ -1,0 +1,75 @@
+[
+  {
+    "caseId": "ek-ekgi-happy-read-integer-results",
+    "description": "ekgi reads integer query results from a workflow-created table",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgi-happy.ek",
+        "ifname": "ekgi-happy",
+        "ncomch": 0,
+        "handleId": "H_EKGI"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGI",
+        "tabnam": "EKGI_TABLE",
+        "nrows": 2,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_EKGI"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_EKGI",
+        "column": "ID",
+        "ivals": [42, 84],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGI" },
+      { "op": "ek.ekcls", "handleId": "H_EKGI" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-happy.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_TABLE ORDER BY ID" },
+      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 0 },
+      { "op": "ek.ekgi", "selidx": 0, "row": 1, "elment": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekgi-invalid-row-error",
+    "description": "ekgi reports row-index errors for out-of-range query rows",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgi-error.ek",
+        "ifname": "ekgi-error",
+        "ncomch": 0,
+        "handleId": "H_EKGI_ERR"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGI_ERR",
+        "tabnam": "EKGI_ERR",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_EKGI_ERR"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_EKGI_ERR",
+        "column": "ID",
+        "ivals": [42],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_ERR" },
+      { "op": "ek.ekcls", "handleId": "H_EKGI_ERR" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-error.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_ERR" },
+      { "op": "ek.ekgi", "selidx": 0, "row": 99, "elment": 0 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -130,6 +130,20 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
 
     case "ek.ekfind":
     case "ek.ekgc":
+    case "ek.ekgd":
+    case "ek.ekgi":
+    case "ek.ekopn":
+    case "ek.ekopr":
+    case "ek.ekopw":
+    case "ek.ekcls":
+    case "ek.ekntab":
+    case "ek.ektnam":
+    case "ek.eknseg":
+    case "ek.ekifld":
+    case "ek.ekacli":
+    case "ek.ekacld":
+    case "ek.ekaclc":
+    case "ek.ekffld":
       return runEkStep(context, step);
 
     case "dsk.dskobj":

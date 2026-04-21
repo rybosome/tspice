@@ -46,8 +46,22 @@ from .models import (
     StepDskDskopn,
     StepDskDsksrf,
     StepDskDskw02,
+    StepEkEkaclc,
+    StepEkEkacld,
+    StepEkEkacli,
+    StepEkEkcls,
     StepEkEkgc,
+    StepEkEkgd,
+    StepEkEkffld,
     StepEkEkfind,
+    StepEkEkgi,
+    StepEkEkifld,
+    StepEkEknseg,
+    StepEkEkntab,
+    StepEkEkopn,
+    StepEkEkopr,
+    StepEkEkopw,
+    StepEkEktnam,
     StepFileIoDafbfs,
     StepFileIoDafcls,
     StepFileIoDaffna,
@@ -210,6 +224,15 @@ def _expect_number_list(value: Any, *, label: str) -> list[float]:
     out: list[float] = []
     for idx, item in enumerate(value):
         out.append(_expect_number(item, label=f"{label}[{idx}]"))
+    return out
+
+
+def _expect_bool_list(value: Any, *, label: str) -> list[bool]:
+    if not isinstance(value, list):
+        raise TypeError(f"{label} must be a list")
+    out: list[bool] = []
+    for idx, item in enumerate(value):
+        out.append(_expect_bool(item, label=f"{label}[{idx}]"))
     return out
 
 
@@ -1102,12 +1125,116 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ek.ekfind":
             return StepEkEkfind(op=op, query=_expect_string(step.get("query"), label="ek.ekfind.query"))
 
+        case "ek.ekopn":
+            return StepEkEkopn(
+                op=op,
+                path=_expect_string(step.get("path"), label="ek.ekopn.path"),
+                ifname=_expect_string(step.get("ifname"), label="ek.ekopn.ifname"),
+                ncomch=_expect_int(step.get("ncomch"), label="ek.ekopn.ncomch"),
+                handleId=_expect_string(step.get("handleId"), label="ek.ekopn.handleId"),
+            )
+
+        case "ek.ekopr":
+            return StepEkEkopr(
+                op=op,
+                path=_expect_string(step.get("path"), label="ek.ekopr.path"),
+                handleId=_expect_string(step.get("handleId"), label="ek.ekopr.handleId"),
+            )
+
+        case "ek.ekopw":
+            return StepEkEkopw(
+                op=op,
+                path=_expect_string(step.get("path"), label="ek.ekopw.path"),
+                handleId=_expect_string(step.get("handleId"), label="ek.ekopw.handleId"),
+            )
+
+        case "ek.ekcls":
+            return StepEkEkcls(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekcls.handleId"),
+            )
+
+        case "ek.ekntab":
+            return StepEkEkntab(op=op)
+
+        case "ek.ektnam":
+            return StepEkEktnam(op=op, n=_expect_int(step.get("n"), label="ek.ektnam.n"))
+
+        case "ek.eknseg":
+            return StepEkEknseg(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.eknseg.handleId"),
+            )
+
         case "ek.ekgc":
             return StepEkEkgc(
                 op=op,
                 selidx=_expect_int(step.get("selidx"), label="ek.ekgc.selidx"),
                 row=_expect_int(step.get("row"), label="ek.ekgc.row"),
                 elment=_expect_int(step.get("elment"), label="ek.ekgc.elment"),
+            )
+
+        case "ek.ekgd":
+            return StepEkEkgd(
+                op=op,
+                selidx=_expect_int(step.get("selidx"), label="ek.ekgd.selidx"),
+                row=_expect_int(step.get("row"), label="ek.ekgd.row"),
+                elment=_expect_int(step.get("elment"), label="ek.ekgd.elment"),
+            )
+
+        case "ek.ekgi":
+            return StepEkEkgi(
+                op=op,
+                selidx=_expect_int(step.get("selidx"), label="ek.ekgi.selidx"),
+                row=_expect_int(step.get("row"), label="ek.ekgi.row"),
+                elment=_expect_int(step.get("elment"), label="ek.ekgi.elment"),
+            )
+
+        case "ek.ekifld":
+            return StepEkEkifld(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekifld.handleId"),
+                tabnam=_expect_string(step.get("tabnam"), label="ek.ekifld.tabnam"),
+                nrows=_expect_int(step.get("nrows"), label="ek.ekifld.nrows"),
+                cnames=_expect_string_list(step.get("cnames"), label="ek.ekifld.cnames"),
+                decls=_expect_string_list(step.get("decls"), label="ek.ekifld.decls"),
+                segmentId=_expect_string(step.get("segmentId"), label="ek.ekifld.segmentId"),
+            )
+
+        case "ek.ekacli":
+            return StepEkEkacli(
+                op=op,
+                segmentId=_expect_string(step.get("segmentId"), label="ek.ekacli.segmentId"),
+                column=_expect_string(step.get("column"), label="ek.ekacli.column"),
+                ivals=_expect_int_list(step.get("ivals"), label="ek.ekacli.ivals"),
+                entszs=_expect_int_list(step.get("entszs"), label="ek.ekacli.entszs"),
+                nlflgs=_expect_bool_list(step.get("nlflgs"), label="ek.ekacli.nlflgs"),
+            )
+
+        case "ek.ekacld":
+            return StepEkEkacld(
+                op=op,
+                segmentId=_expect_string(step.get("segmentId"), label="ek.ekacld.segmentId"),
+                column=_expect_string(step.get("column"), label="ek.ekacld.column"),
+                dvals=_expect_number_list(step.get("dvals"), label="ek.ekacld.dvals"),
+                entszs=_expect_int_list(step.get("entszs"), label="ek.ekacld.entszs"),
+                nlflgs=_expect_bool_list(step.get("nlflgs"), label="ek.ekacld.nlflgs"),
+            )
+
+        case "ek.ekaclc":
+            return StepEkEkaclc(
+                op=op,
+                segmentId=_expect_string(step.get("segmentId"), label="ek.ekaclc.segmentId"),
+                column=_expect_string(step.get("column"), label="ek.ekaclc.column"),
+                cvals=_expect_string_list(step.get("cvals"), label="ek.ekaclc.cvals"),
+                entszs=_expect_int_list(step.get("entszs"), label="ek.ekaclc.entszs"),
+                nlflgs=_expect_bool_list(step.get("nlflgs"), label="ek.ekaclc.nlflgs"),
+            )
+
+        case "ek.ekffld":
+            return StepEkEkffld(
+                op=op,
+                segmentId=_expect_string(step.get("segmentId"), label="ek.ekffld.segmentId"),
             )
 
         case "dsk.dskobj":

@@ -36,7 +36,22 @@ import dskDskb02CasesRaw from "./dsk/dskb02.cases.json" with { type: "json" };
 import dskDskgdCasesRaw from "./dsk/dskgd.cases.json" with { type: "json" };
 import dskDskobjCasesRaw from "./dsk/dskobj.cases.json" with { type: "json" };
 import dskDsksrfCasesRaw from "./dsk/dsksrf.cases.json" with { type: "json" };
-import ekCasesRaw from "./ek.cases.json" with { type: "json" };
+import ekEkaclcCasesRaw from "./ek/ekaclc.cases.json" with { type: "json" };
+import ekEkacldCasesRaw from "./ek/ekacld.cases.json" with { type: "json" };
+import ekEkacliCasesRaw from "./ek/ekacli.cases.json" with { type: "json" };
+import ekEkclsCasesRaw from "./ek/ekcls.cases.json" with { type: "json" };
+import ekEkgcCasesRaw from "./ek/ekgc.cases.json" with { type: "json" };
+import ekEkgdCasesRaw from "./ek/ekgd.cases.json" with { type: "json" };
+import ekEkffldCasesRaw from "./ek/ekffld.cases.json" with { type: "json" };
+import ekEkfindCasesRaw from "./ek/ekfind.cases.json" with { type: "json" };
+import ekEkgiCasesRaw from "./ek/ekgi.cases.json" with { type: "json" };
+import ekEkifldCasesRaw from "./ek/ekifld.cases.json" with { type: "json" };
+import ekEknsegCasesRaw from "./ek/eknseg.cases.json" with { type: "json" };
+import ekEkntabCasesRaw from "./ek/ekntab.cases.json" with { type: "json" };
+import ekEkopnCasesRaw from "./ek/ekopn.cases.json" with { type: "json" };
+import ekEkoprCasesRaw from "./ek/ekopr.cases.json" with { type: "json" };
+import ekEkopwCasesRaw from "./ek/ekopw.cases.json" with { type: "json" };
+import ekEktnamCasesRaw from "./ek/ektnam.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
 import { framesCases } from "./frames/index.js";
 import geometryGfGfdistCasesRaw from "./geometry-gf/gfdist.cases.json" with { type: "json" };
@@ -178,7 +193,24 @@ export const fileIoCases: ParityCase[] = [
   ...(fileIoGetfatCasesRaw as ParityCase[]),
 ];
 export { kernelPoolCases };
-export const ekCases = ekCasesRaw as ParityCase[];
+export const ekCases: ParityCase[] = [
+  ...(ekEkopnCasesRaw as ParityCase[]),
+  ...(ekEkoprCasesRaw as ParityCase[]),
+  ...(ekEkopwCasesRaw as ParityCase[]),
+  ...(ekEkclsCasesRaw as ParityCase[]),
+  ...(ekEkntabCasesRaw as ParityCase[]),
+  ...(ekEktnamCasesRaw as ParityCase[]),
+  ...(ekEknsegCasesRaw as ParityCase[]),
+  ...(ekEkfindCasesRaw as ParityCase[]),
+  ...(ekEkgcCasesRaw as ParityCase[]),
+  ...(ekEkgdCasesRaw as ParityCase[]),
+  ...(ekEkgiCasesRaw as ParityCase[]),
+  ...(ekEkifldCasesRaw as ParityCase[]),
+  ...(ekEkacliCasesRaw as ParityCase[]),
+  ...(ekEkacldCasesRaw as ParityCase[]),
+  ...(ekEkaclcCasesRaw as ParityCase[]),
+  ...(ekEkffldCasesRaw as ParityCase[]),
+];
 export const dskCases: ParityCase[] = [
   ...(dskDskobjCasesRaw as ParityCase[]),
   ...(dskDsksrfCasesRaw as ParityCase[]),
