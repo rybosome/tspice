@@ -5,6 +5,8 @@
 - Copied from `packages/tspice/test/fixtures/kernels`:
   - `naif0012.tls`
   - `kernel-pool-parity.tpc`
+  - `pck00010.tpc`
+  - `de440s.bsp`
 - Added package-local fixed EK fixture:
   - `py-parity-minimal.ek`
 

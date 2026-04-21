@@ -23,6 +23,15 @@ import coordsVectorsVsclCasesRaw from "./coords-vectors/vscl.cases.json" with { 
 import coordsVectorsVsubCasesRaw from "./coords-vectors/vsub.cases.json" with { type: "json" };
 import ekCasesRaw from "./ek.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
+import geometryIllumfCasesRaw from "./geometry/illumf.cases.json" with { type: "json" };
+import geometryIllumgCasesRaw from "./geometry/illumg.cases.json" with { type: "json" };
+import geometryIluminCasesRaw from "./geometry/ilumin.cases.json" with { type: "json" };
+import geometryNvc2plCasesRaw from "./geometry/nvc2pl.cases.json" with { type: "json" };
+import geometryOccultCasesRaw from "./geometry/occult.cases.json" with { type: "json" };
+import geometryPl2nvcCasesRaw from "./geometry/pl2nvc.cases.json" with { type: "json" };
+import geometrySincptCasesRaw from "./geometry/sincpt.cases.json" with { type: "json" };
+import geometrySubpntCasesRaw from "./geometry/subpnt.cases.json" with { type: "json" };
+import geometrySubslrCasesRaw from "./geometry/subslr.cases.json" with { type: "json" };
 import idsNamesCasesRaw from "./ids-names.cases.json" with { type: "json" };
 import kernelsCasesRaw from "./kernels.cases.json" with { type: "json" };
 import { kernelPoolCases } from "./kernel-pool/index.js";
@@ -88,6 +97,17 @@ export { kernelPoolCases };
 export const kernelsCases = kernelsCasesRaw as ParityCase[];
 export const ekCases = ekCasesRaw as ParityCase[];
 export { errorCases };
+export const geometryCases: ParityCase[] = [
+  ...(geometrySubpntCasesRaw as ParityCase[]),
+  ...(geometrySubslrCasesRaw as ParityCase[]),
+  ...(geometrySincptCasesRaw as ParityCase[]),
+  ...(geometryIluminCasesRaw as ParityCase[]),
+  ...(geometryIllumgCasesRaw as ParityCase[]),
+  ...(geometryIllumfCasesRaw as ParityCase[]),
+  ...(geometryOccultCasesRaw as ParityCase[]),
+  ...(geometryNvc2plCasesRaw as ParityCase[]),
+  ...(geometryPl2nvcCasesRaw as ParityCase[]),
+];
 
 export const allCases: ParityCase[] = [
   ...timeCases,
@@ -97,5 +117,6 @@ export const allCases: ParityCase[] = [
   ...kernelPoolCases,
   ...kernelsCases,
   ...ekCases,
+  ...geometryCases,
   ...errorCases,
 ];

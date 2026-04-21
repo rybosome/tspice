@@ -4,6 +4,7 @@ import { runCellsWindowsStep } from "./domains/cells-windows.js";
 import { runCoordsVectorsStep } from "./domains/coords-vectors.js";
 import { runEkStep } from "./domains/ek.js";
 import { runErrorStep } from "./domains/error.js";
+import { runGeometryStep } from "./domains/geometry.js";
 import { runIdsNamesStep } from "./domains/ids-names.js";
 import { runKernelPoolStep } from "./domains/kernel-pool.js";
 import { runKernelsStep } from "./domains/kernels.js";
@@ -89,6 +90,17 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "ek.ekfind":
     case "ek.ekgc":
       return runEkStep(context, step);
+
+    case "geometry.subpnt":
+    case "geometry.subslr":
+    case "geometry.sincpt":
+    case "geometry.ilumin":
+    case "geometry.illumg":
+    case "geometry.illumf":
+    case "geometry.occult":
+    case "geometry.nvc2pl":
+    case "geometry.pl2nvc":
+      return runGeometryStep(context, step);
 
     default: {
       const exhaustive: never = step;

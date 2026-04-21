@@ -5,6 +5,7 @@ from .cells_windows import WindowStore, run_cells_windows_step
 from .coords_vectors import run_coords_vectors_step
 from .ek import run_ek_step
 from .error import run_error_step
+from .geometry import run_geometry_step
 from .ids_names import run_ids_names_step
 from .kernel_pool import run_kernel_pool_step
 from .kernels import run_kernels_step
@@ -41,6 +42,10 @@ def _run_step(step: WorkflowStep, windows: WindowStore) -> StepOutput:
         return out
 
     out = run_ek_step(step)
+    if out is not None:
+        return out
+
+    out = run_geometry_step(step)
     if out is not None:
         return out
 

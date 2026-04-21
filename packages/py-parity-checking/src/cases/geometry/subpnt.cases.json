@@ -1,0 +1,62 @@
+[
+  {
+    "caseId": "geometry-subpnt-happy-path-success",
+    "description": "subpnt near-point ellipsoid sub-observer geometry on Moon from Earth",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.subpnt",
+        "method": "Near point: Ellipsoid",
+        "target": "MOON",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subpnt-invalid-method-error",
+    "description": "Representative subpnt method syntax error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.subpnt",
+        "method": "INVALID METHOD",
+        "target": "MOON",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]
