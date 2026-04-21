@@ -27,6 +27,9 @@
     },
     {
       "path": "./packages/parity-checking"
+    },
+    {
+      "path": "./packages/py-parity-checking"
     }
   ]
 }

@@ -1,0 +1,18 @@
+[project]
+name = "py-parity-sidecar"
+version = "0.1.0"
+description = "SpiceyPy parity sidecar for tspice py-parity-checking package"
+requires-python = ">=3.11"
+dependencies = [
+  "spiceypy>=6.0.0,<7"
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
