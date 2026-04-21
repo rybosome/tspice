@@ -32,6 +32,10 @@ import coordsVectorsVminusCasesRaw from "./coords-vectors/vminus.cases.json" wit
 import coordsVectorsVnormCasesRaw from "./coords-vectors/vnorm.cases.json" with { type: "json" };
 import coordsVectorsVsclCasesRaw from "./coords-vectors/vscl.cases.json" with { type: "json" };
 import coordsVectorsVsubCasesRaw from "./coords-vectors/vsub.cases.json" with { type: "json" };
+import dskDskb02CasesRaw from "./dsk/dskb02.cases.json" with { type: "json" };
+import dskDskgdCasesRaw from "./dsk/dskgd.cases.json" with { type: "json" };
+import dskDskobjCasesRaw from "./dsk/dskobj.cases.json" with { type: "json" };
+import dskDsksrfCasesRaw from "./dsk/dsksrf.cases.json" with { type: "json" };
 import ekCasesRaw from "./ek.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
 import { framesCases } from "./frames/index.js";
@@ -142,6 +146,12 @@ export const cellsWindowsCases: ParityCase[] = [
 ];
 export { kernelPoolCases };
 export const ekCases = ekCasesRaw as ParityCase[];
+export const dskCases: ParityCase[] = [
+  ...(dskDskobjCasesRaw as ParityCase[]),
+  ...(dskDsksrfCasesRaw as ParityCase[]),
+  ...(dskDskgdCasesRaw as ParityCase[]),
+  ...(dskDskb02CasesRaw as ParityCase[]),
+];
 export { errorCases };
 export { framesCases };
 export const geometryCases: ParityCase[] = [
@@ -185,6 +195,7 @@ export const allCases: ParityCase[] = [
   ...kernelPoolCases,
   ...kernelsCases,
   ...ekCases,
+  ...dskCases,
   ...geometryCases,
   ...geometryGfCases,
   ...errorCases,

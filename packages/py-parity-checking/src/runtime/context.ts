@@ -1,6 +1,8 @@
 import type {
+  DlaDescriptor,
   SpiceCharCell,
   SpiceDoubleCell,
+  SpiceHandle,
   SpiceIntCell,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
@@ -25,6 +27,11 @@ export type FileIoState = {
 
 export type DskState = {
   loadedSegments: number;
+  handles: Map<string, { handle: SpiceHandle; isOpen: boolean }>;
+  dlaDescriptors: Map<string, DlaDescriptor>;
+  spatialIndexes: Map<string, { spaixd: number[]; spaixi: number[] }>;
+  resolvedPathRefs: Map<string, string>;
+  cleanupRegistered: boolean;
 };
 
 export type EkState = {
@@ -86,6 +93,11 @@ export function createRunTspiceContext(spice: Spice, paths: RuntimePaths): RunTs
       },
       dsk: {
         loadedSegments: 0,
+        handles: new Map<string, { handle: SpiceHandle; isOpen: boolean }>(),
+        dlaDescriptors: new Map<string, DlaDescriptor>(),
+        spatialIndexes: new Map<string, { spaixd: number[]; spaixi: number[] }>(),
+        resolvedPathRefs: new Map<string, string>(),
+        cleanupRegistered: false,
       },
       ek: {
         lastQuery: null,

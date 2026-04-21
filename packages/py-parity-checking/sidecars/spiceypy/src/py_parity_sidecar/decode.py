@@ -36,6 +36,16 @@ from .models import (
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
+    StepDskDascls,
+    StepDskDasopr,
+    StepDskDlabfs,
+    StepDskDskb02,
+    StepDskDskgd,
+    StepDskDskmi2,
+    StepDskDskobj,
+    StepDskDskopn,
+    StepDskDsksrf,
+    StepDskDskw02,
     StepEkEkgc,
     StepEkEkfind,
     StepErrorChkin,
@@ -216,6 +226,33 @@ def _expect_vec4(value: Any, *, label: str) -> tuple[float, float, float, float]
         _expect_number(value[2], label=f"{label}[2]"),
         _expect_number(value[3], label=f"{label}[3]"),
     )
+
+
+def _expect_vec3_rows(value: Any, *, label: str) -> list[tuple[float, float, float]]:
+    if not isinstance(value, list):
+        raise TypeError(f"{label} must be a list")
+    out: list[tuple[float, float, float]] = []
+    for idx, row in enumerate(value):
+        out.append(_expect_vec3(row, label=f"{label}[{idx}]"))
+    return out
+
+
+def _expect_index_triples(value: Any, *, label: str) -> list[tuple[int, int, int]]:
+    if not isinstance(value, list):
+        raise TypeError(f"{label} must be a list")
+
+    out: list[tuple[int, int, int]] = []
+    for idx, row in enumerate(value):
+        if not isinstance(row, list) or len(row) != 3:
+            raise TypeError(f"{label}[{idx}] must be a length-3 integer array")
+        out.append(
+            (
+                _expect_int(row[0], label=f"{label}[{idx}][0]"),
+                _expect_int(row[1], label=f"{label}[{idx}][1]"),
+                _expect_int(row[2], label=f"{label}[{idx}][2]"),
+            )
+        )
+    return out
 
 
 def _decode_path_ref(value: Any, *, label: str) -> PathRef | str:
@@ -920,6 +957,101 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 selidx=_expect_int(step.get("selidx"), label="ek.ekgc.selidx"),
                 row=_expect_int(step.get("row"), label="ek.ekgc.row"),
                 elment=_expect_int(step.get("elment"), label="ek.ekgc.elment"),
+            )
+
+        case "dsk.dskobj":
+            return StepDskDskobj(op=op, path=_decode_path_ref(step.get("path"), label="dsk.dskobj.path"))
+
+        case "dsk.dsksrf":
+            return StepDskDsksrf(
+                op=op,
+                path=_decode_path_ref(step.get("path"), label="dsk.dsksrf.path"),
+                bodyid=_expect_int(step.get("bodyid"), label="dsk.dsksrf.bodyid"),
+            )
+
+        case "dsk.dskopn":
+            return StepDskDskopn(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskopn.handleId"),
+                path=_decode_path_ref(step.get("path"), label="dsk.dskopn.path"),
+                ifname=_expect_string(step.get("ifname"), label="dsk.dskopn.ifname"),
+                ncomch=_expect_int(step.get("ncomch"), label="dsk.dskopn.ncomch"),
+            )
+
+        case "dsk.dskmi2":
+            return StepDskDskmi2(
+                op=op,
+                spatialIndexId=_expect_string(step.get("spatialIndexId"), label="dsk.dskmi2.spatialIndexId"),
+                vrtces=_expect_vec3_rows(step.get("vrtces"), label="dsk.dskmi2.vrtces"),
+                plates=_expect_index_triples(step.get("plates"), label="dsk.dskmi2.plates"),
+                finscl=_expect_number(step.get("finscl"), label="dsk.dskmi2.finscl"),
+                corscl=_expect_int(step.get("corscl"), label="dsk.dskmi2.corscl"),
+                worksz=_expect_int(step.get("worksz"), label="dsk.dskmi2.worksz"),
+                voxpsz=_expect_int(step.get("voxpsz"), label="dsk.dskmi2.voxpsz"),
+                voxlsz=_expect_int(step.get("voxlsz"), label="dsk.dskmi2.voxlsz"),
+                makvtl=_expect_bool(step.get("makvtl"), label="dsk.dskmi2.makvtl"),
+                spxisz=_expect_int(step.get("spxisz"), label="dsk.dskmi2.spxisz"),
+            )
+
+        case "dsk.dskw02":
+            corpar = _expect_number_list(step.get("corpar"), label="dsk.dskw02.corpar")
+            if len(corpar) != 10:
+                raise ValueError("dsk.dskw02.corpar must have length 10")
+
+            return StepDskDskw02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskw02.handleId"),
+                spatialIndexId=_expect_string(step.get("spatialIndexId"), label="dsk.dskw02.spatialIndexId"),
+                center=_expect_int(step.get("center"), label="dsk.dskw02.center"),
+                surfid=_expect_int(step.get("surfid"), label="dsk.dskw02.surfid"),
+                dclass=_expect_int(step.get("dclass"), label="dsk.dskw02.dclass"),
+                frame=_expect_string(step.get("frame"), label="dsk.dskw02.frame"),
+                corsys=_expect_int(step.get("corsys"), label="dsk.dskw02.corsys"),
+                corpar=corpar,
+                mncor1=_expect_number(step.get("mncor1"), label="dsk.dskw02.mncor1"),
+                mxcor1=_expect_number(step.get("mxcor1"), label="dsk.dskw02.mxcor1"),
+                mncor2=_expect_number(step.get("mncor2"), label="dsk.dskw02.mncor2"),
+                mxcor2=_expect_number(step.get("mxcor2"), label="dsk.dskw02.mxcor2"),
+                mncor3=_expect_number(step.get("mncor3"), label="dsk.dskw02.mncor3"),
+                mxcor3=_expect_number(step.get("mxcor3"), label="dsk.dskw02.mxcor3"),
+                first=_expect_number(step.get("first"), label="dsk.dskw02.first"),
+                last=_expect_number(step.get("last"), label="dsk.dskw02.last"),
+                vrtces=_expect_vec3_rows(step.get("vrtces"), label="dsk.dskw02.vrtces"),
+                plates=_expect_index_triples(step.get("plates"), label="dsk.dskw02.plates"),
+            )
+
+        case "dsk.dasopr":
+            return StepDskDasopr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dasopr.handleId"),
+                path=_decode_path_ref(step.get("path"), label="dsk.dasopr.path"),
+            )
+
+        case "dsk.dascls":
+            return StepDskDascls(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dascls.handleId"),
+            )
+
+        case "dsk.dlabfs":
+            return StepDskDlabfs(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dlabfs.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dlabfs.dladscId"),
+            )
+
+        case "dsk.dskgd":
+            return StepDskDskgd(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskgd.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskgd.dladscId"),
+            )
+
+        case "dsk.dskb02":
+            return StepDskDskb02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskb02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskb02.dladscId"),
             )
 
         case "geometry.subpnt":
