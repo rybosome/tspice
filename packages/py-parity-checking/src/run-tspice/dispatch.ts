@@ -5,6 +5,7 @@ import { runCoordsVectorsStep } from "./domains/coords-vectors.js";
 import { runEkStep } from "./domains/ek.js";
 import { runErrorStep } from "./domains/error.js";
 import { runGeometryStep } from "./domains/geometry.js";
+import { runGeometryGfStep } from "./domains/geometry-gf.js";
 import { runIdsNamesStep } from "./domains/ids-names.js";
 import { runKernelPoolStep } from "./domains/kernel-pool.js";
 import { runKernelsStep } from "./domains/kernels.js";
@@ -61,18 +62,8 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "coords-vectors.mtxv":
       return runCoordsVectorsStep(context, step);
 
-    case "cells-windows.card":
-    case "cells-windows.insrtc":
-    case "cells-windows.insrtd":
-    case "cells-windows.insrti":
-    case "cells-windows.scard":
-    case "cells-windows.size":
-    case "cells-windows.ssize":
-    case "cells-windows.valid":
-    case "cells-windows.wncard":
     case "cells-windows.wninsd":
     case "cells-windows.wnfetd":
-    case "cells-windows.wnvald":
       return runCellsWindowsStep(context, step);
 
     case "kernel-pool.gdpool":
@@ -89,13 +80,9 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
       return runKernelPoolStep(context, step);
 
     case "kernels.furnsh":
-    case "kernels.kclear":
-    case "kernels.kinfo":
-    case "kernels.kplfrm":
     case "kernels.ktotal":
     case "kernels.kdata":
     case "kernels.kxtrct":
-    case "kernels.unload":
       return runKernelsStep(context, step);
 
     case "error.failed":
@@ -121,6 +108,16 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "geometry.nvc2pl":
     case "geometry.pl2nvc":
       return runGeometryStep(context, step);
+
+    case "geometry-gf.gfsstp":
+    case "geometry-gf.gfstep":
+    case "geometry-gf.gfstol":
+    case "geometry-gf.gfrefn":
+    case "geometry-gf.gfrepi":
+    case "geometry-gf.gfrepf":
+    case "geometry-gf.gfsep":
+    case "geometry-gf.gfdist":
+      return runGeometryGfStep(context, step);
 
     default: {
       const exhaustive: never = step;

@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "geometry-gf-gfrepf-success",
+    "description": "gfrepf finalizes the default progress reporter without side effects on parity output",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "GFREPF_WIN", "left": 0, "right": 1, "maxIntervals": 8 },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "GFREPF_WIN",
+        "begmss": "GF begin",
+        "endmss": "GF end"
+      },
+      { "op": "geometry-gf.gfrepf" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

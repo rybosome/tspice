@@ -2,20 +2,7 @@ from __future__ import annotations
 
 from .case import CaseError, CaseRequest, CaseResponse, JsonScalar, JsonValue, StepOutput
 from .paths import PathRef, PathRefInput, PathRefKind, RuntimeConfig, RuntimePaths
-from .cells_windows import (
-    StepCellsWindowsCard,
-    StepCellsWindowsInsrtc,
-    StepCellsWindowsInsrtd,
-    StepCellsWindowsInsrti,
-    StepCellsWindowsScard,
-    StepCellsWindowsSize,
-    StepCellsWindowsSsize,
-    StepCellsWindowsValid,
-    StepCellsWindowsWncard,
-    StepCellsWindowsWnfetd,
-    StepCellsWindowsWninsd,
-    StepCellsWindowsWnvald,
-)
+from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
 from .coords_vectors import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -59,6 +46,16 @@ from .geometry import (
     StepGeometrySubpnt,
     StepGeometrySubslr,
 )
+from .geometry_gf import (
+    StepGeometryGfGfdist,
+    StepGeometryGfGfrefn,
+    StepGeometryGfGfrepf,
+    StepGeometryGfGfrepi,
+    StepGeometryGfGfsep,
+    StepGeometryGfGfsstp,
+    StepGeometryGfGfstep,
+    StepGeometryGfGfstol,
+)
 from .ids_names import (
     StepIdsNamesBodc2n,
     StepIdsNamesBodc2s,
@@ -82,16 +79,7 @@ from .kernel_pool import (
     StepKernelPoolPipool,
     StepKernelPoolSwpool,
 )
-from .kernels import (
-    StepKernelsFurnsh,
-    StepKernelsKclear,
-    StepKernelsKdata,
-    StepKernelsKinfo,
-    StepKernelsKplfrm,
-    StepKernelsKtotal,
-    StepKernelsKxtrct,
-    StepKernelsUnload,
-)
+from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
 from .time import (
     DeltetEptype,
     TimdefItem,
@@ -173,18 +161,8 @@ __all__ = [
     "StepCoordsVectorsRecgeo",
     "StepCoordsVectorsMxv",
     "StepCoordsVectorsMtxv",
-    "StepCellsWindowsCard",
-    "StepCellsWindowsInsrtc",
-    "StepCellsWindowsInsrtd",
-    "StepCellsWindowsInsrti",
-    "StepCellsWindowsScard",
-    "StepCellsWindowsSize",
-    "StepCellsWindowsSsize",
-    "StepCellsWindowsValid",
-    "StepCellsWindowsWncard",
     "StepCellsWindowsWninsd",
     "StepCellsWindowsWnfetd",
-    "StepCellsWindowsWnvald",
     "KernelPoolVarType",
     "StepKernelPoolGdpool",
     "StepKernelPoolGipool",
@@ -198,13 +176,9 @@ __all__ = [
     "StepKernelPoolCvpool",
     "StepKernelPoolExpool",
     "StepKernelsFurnsh",
-    "StepKernelsKclear",
-    "StepKernelsKinfo",
-    "StepKernelsKplfrm",
     "StepKernelsKtotal",
     "StepKernelsKdata",
     "StepKernelsKxtrct",
-    "StepKernelsUnload",
     "StepErrorFailed",
     "StepErrorReset",
     "StepErrorGetmsg",
@@ -223,5 +197,13 @@ __all__ = [
     "StepGeometryOccult",
     "StepGeometryNvc2pl",
     "StepGeometryPl2nvc",
+    "StepGeometryGfGfsstp",
+    "StepGeometryGfGfstep",
+    "StepGeometryGfGfstol",
+    "StepGeometryGfGfrefn",
+    "StepGeometryGfGfrepi",
+    "StepGeometryGfGfrepf",
+    "StepGeometryGfGfsep",
+    "StepGeometryGfGfdist",
     "WorkflowStep",
 ]

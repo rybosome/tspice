@@ -1,17 +1,6 @@
 import type { ParityCase } from "../case-types.js";
 
-import cellsWindowsCardCasesRaw from "./cells-windows/card.cases.json" with { type: "json" };
-import cellsWindowsInsrtcCasesRaw from "./cells-windows/insrtc.cases.json" with { type: "json" };
-import cellsWindowsInsrtdCasesRaw from "./cells-windows/insrtd.cases.json" with { type: "json" };
-import cellsWindowsInsrtiCasesRaw from "./cells-windows/insrti.cases.json" with { type: "json" };
-import cellsWindowsScardCasesRaw from "./cells-windows/scard.cases.json" with { type: "json" };
-import cellsWindowsSizeCasesRaw from "./cells-windows/size.cases.json" with { type: "json" };
-import cellsWindowsSsizeCasesRaw from "./cells-windows/ssize.cases.json" with { type: "json" };
-import cellsWindowsValidCasesRaw from "./cells-windows/valid.cases.json" with { type: "json" };
-import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with { type: "json" };
-import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
-import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
-import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
+import cellsWindowsCasesRaw from "./cells-windows.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -34,6 +23,14 @@ import coordsVectorsVsclCasesRaw from "./coords-vectors/vscl.cases.json" with { 
 import coordsVectorsVsubCasesRaw from "./coords-vectors/vsub.cases.json" with { type: "json" };
 import ekCasesRaw from "./ek.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
+import geometryGfGfdistCasesRaw from "./geometry-gf/gfdist.cases.json" with { type: "json" };
+import geometryGfGfrefnCasesRaw from "./geometry-gf/gfrefn.cases.json" with { type: "json" };
+import geometryGfGfrepfCasesRaw from "./geometry-gf/gfrepf.cases.json" with { type: "json" };
+import geometryGfGfrepiCasesRaw from "./geometry-gf/gfrepi.cases.json" with { type: "json" };
+import geometryGfGfsepCasesRaw from "./geometry-gf/gfsep.cases.json" with { type: "json" };
+import geometryGfGfsstpCasesRaw from "./geometry-gf/gfsstp.cases.json" with { type: "json" };
+import geometryGfGfstepCasesRaw from "./geometry-gf/gfstep.cases.json" with { type: "json" };
+import geometryGfGfstolCasesRaw from "./geometry-gf/gfstol.cases.json" with { type: "json" };
 import geometryIllumfCasesRaw from "./geometry/illumf.cases.json" with { type: "json" };
 import geometryIllumgCasesRaw from "./geometry/illumg.cases.json" with { type: "json" };
 import geometryIluminCasesRaw from "./geometry/ilumin.cases.json" with { type: "json" };
@@ -50,7 +47,7 @@ import idsNamesBodfndCasesRaw from "./ids-names/bodfnd.cases.json" with { type: 
 import idsNamesBodn2cCasesRaw from "./ids-names/bodn2c.cases.json" with { type: "json" };
 import idsNamesBods2cCasesRaw from "./ids-names/bods2c.cases.json" with { type: "json" };
 import idsNamesBodvarCasesRaw from "./ids-names/bodvar.cases.json" with { type: "json" };
-import { kernelsCases } from "./kernels/index.js";
+import kernelsCasesRaw from "./kernels.cases.json" with { type: "json" };
 import { kernelPoolCases } from "./kernel-pool/index.js";
 import timeDeltetCasesRaw from "./time/deltet.cases.json" with { type: "json" };
 import timeEt2UtcCasesRaw from "./time/et2utc.cases.json" with { type: "json" };
@@ -117,21 +114,9 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsMxvCasesRaw as ParityCase[]),
   ...(coordsVectorsMtxvCasesRaw as ParityCase[]),
 ];
-export const cellsWindowsCases: ParityCase[] = [
-  ...(cellsWindowsCardCasesRaw as ParityCase[]),
-  ...(cellsWindowsInsrtcCasesRaw as ParityCase[]),
-  ...(cellsWindowsInsrtdCasesRaw as ParityCase[]),
-  ...(cellsWindowsInsrtiCasesRaw as ParityCase[]),
-  ...(cellsWindowsScardCasesRaw as ParityCase[]),
-  ...(cellsWindowsSizeCasesRaw as ParityCase[]),
-  ...(cellsWindowsSsizeCasesRaw as ParityCase[]),
-  ...(cellsWindowsValidCasesRaw as ParityCase[]),
-  ...(cellsWindowsWncardCasesRaw as ParityCase[]),
-  ...(cellsWindowsWninsdCasesRaw as ParityCase[]),
-  ...(cellsWindowsWnfetdCasesRaw as ParityCase[]),
-  ...(cellsWindowsWnvaldCasesRaw as ParityCase[]),
-];
+export const cellsWindowsCases = cellsWindowsCasesRaw as ParityCase[];
 export { kernelPoolCases };
+export const kernelsCases = kernelsCasesRaw as ParityCase[];
 export const ekCases = ekCasesRaw as ParityCase[];
 export { errorCases };
 export const geometryCases: ParityCase[] = [
@@ -146,6 +131,27 @@ export const geometryCases: ParityCase[] = [
   ...(geometryPl2nvcCasesRaw as ParityCase[]),
 ];
 
+
+export const geometryGfGfdistCases = geometryGfGfdistCasesRaw as ParityCase[];
+export const geometryGfGfrefnCases = geometryGfGfrefnCasesRaw as ParityCase[];
+export const geometryGfGfrepfCases = geometryGfGfrepfCasesRaw as ParityCase[];
+export const geometryGfGfrepiCases = geometryGfGfrepiCasesRaw as ParityCase[];
+export const geometryGfGfsepCases = geometryGfGfsepCasesRaw as ParityCase[];
+export const geometryGfGfsstpCases = geometryGfGfsstpCasesRaw as ParityCase[];
+export const geometryGfGfstepCases = geometryGfGfstepCasesRaw as ParityCase[];
+export const geometryGfGfstolCases = geometryGfGfstolCasesRaw as ParityCase[];
+
+export const geometryGfCases: ParityCase[] = [
+  ...geometryGfGfstepCases,
+  ...geometryGfGfsstpCases,
+  ...geometryGfGfstolCases,
+  ...geometryGfGfrefnCases,
+  ...geometryGfGfrepfCases,
+  ...geometryGfGfrepiCases,
+  ...geometryGfGfsepCases,
+  ...geometryGfGfdistCases,
+];
+
 export const allCases: ParityCase[] = [
   ...timeCases,
   ...idsNamesCases,
@@ -155,5 +161,6 @@ export const allCases: ParityCase[] = [
   ...kernelsCases,
   ...ekCases,
   ...geometryCases,
+  ...geometryGfCases,
   ...errorCases,
 ];
