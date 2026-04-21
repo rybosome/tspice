@@ -1,0 +1,45 @@
+[
+  {
+    "caseId": "file-io-dskmi2-minimal-mesh-success",
+    "description": "dskmi2 builds a deterministic type-2 spatial index summary",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 3,
+        "vrtces": [0, 0, 0, 1, 0, 0, 0, 1, 0],
+        "np": 1,
+        "plates": [1, 2, 3],
+        "finscl": 0.2,
+        "corscl": 5,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 200000,
+        "spaixId": "idx0"
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dskmi2-invalid-nv-error",
+    "description": "Representative dskmi2 error for invalid nv",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 0,
+        "vrtces": [],
+        "np": 1,
+        "plates": [1, 2, 3],
+        "finscl": 0.2,
+        "corscl": 5,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 200000
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

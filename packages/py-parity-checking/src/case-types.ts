@@ -533,6 +533,122 @@ export type StepKernelsUnload = {
   alias?: string;
 };
 
+export type StepFileIoExists = {
+  op: "file-io.exists";
+  path: PathRefLike;
+};
+
+export type StepFileIoGetfat = {
+  op: "file-io.getfat";
+  path: PathRefLike;
+};
+
+export type StepFileIoDafopr = {
+  op: "file-io.dafopr";
+  path: PathRefLike;
+  handleId: string;
+};
+
+export type StepFileIoDafcls = {
+  op: "file-io.dafcls";
+  handleId: string;
+};
+
+export type StepFileIoDafbfs = {
+  op: "file-io.dafbfs";
+  handleId: string;
+};
+
+export type StepFileIoDaffna = {
+  op: "file-io.daffna";
+  handleId: string;
+};
+
+export type StepFileIoDasopr = {
+  op: "file-io.dasopr";
+  path: PathRefLike;
+  handleId: string;
+};
+
+export type StepFileIoDascls = {
+  op: "file-io.dascls";
+  handleId: string;
+};
+
+export type StepFileIoDlaopn = {
+  op: "file-io.dlaopn";
+  path: PathRefLike;
+  ftype: string;
+  ifname: string;
+  ncomch: number;
+  handleId: string;
+};
+
+export type StepFileIoDlabfs = {
+  op: "file-io.dlabfs";
+  handleId: string;
+  descrId: string;
+};
+
+export type StepFileIoDlafns = {
+  op: "file-io.dlafns";
+  handleId: string;
+  descrId: string;
+};
+
+export type StepFileIoDlacls = {
+  op: "file-io.dlacls";
+  handleId: string;
+};
+
+export type StepFileIoDskopn = {
+  op: "file-io.dskopn";
+  path: PathRefLike;
+  ifname: string;
+  ncomch: number;
+  handleId: string;
+};
+
+export type StepFileIoDskmi2 = {
+  op: "file-io.dskmi2";
+  nv: number;
+  vrtces: number[];
+  np: number;
+  plates: number[];
+  finscl: number;
+  corscl: number;
+  worksz: number;
+  voxpsz: number;
+  voxlsz: number;
+  makvtl: boolean;
+  spxisz: number;
+  spaixId?: string;
+};
+
+export type StepFileIoDskw02 = {
+  op: "file-io.dskw02";
+  handleId: string;
+  center: number;
+  surfid: number;
+  dclass: number;
+  frame: string;
+  corsys: number;
+  corpar: number[];
+  mncor1: number;
+  mxcor1: number;
+  mncor2: number;
+  mxcor2: number;
+  mncor3: number;
+  mxcor3: number;
+  first: number;
+  last: number;
+  nv: number;
+  vrtces: number[];
+  np: number;
+  plates: number[];
+  spaixId: string;
+
+
 export type StepErrorFailed = {
   op: "error.failed";
 };
@@ -990,6 +1106,21 @@ export type WorkflowStep =
   | StepKernelsKdata
   | StepKernelsKxtrct
   | StepKernelsUnload
+  | StepFileIoExists
+  | StepFileIoGetfat
+  | StepFileIoDafopr
+  | StepFileIoDafcls
+  | StepFileIoDafbfs
+  | StepFileIoDaffna
+  | StepFileIoDasopr
+  | StepFileIoDascls
+  | StepFileIoDlaopn
+  | StepFileIoDlabfs
+  | StepFileIoDlafns
+  | StepFileIoDlacls
+  | StepFileIoDskopn
+  | StepFileIoDskmi2
+  | StepFileIoDskw02
   | StepErrorFailed
   | StepErrorReset
   | StepErrorGetmsg
@@ -1132,6 +1263,29 @@ export type StepOutput =
       value: { found: false } | { found: true; wordsq: string; substr: string };
     }
   | { op: "kernels.unload"; value: null }
+  | { op: "file-io.exists"; value: boolean }
+  | { op: "file-io.getfat"; value: { arch: string; type: string } }
+  | { op: "file-io.dafopr"; value: null }
+  | { op: "file-io.dafcls"; value: null }
+  | { op: "file-io.dafbfs"; value: null }
+  | { op: "file-io.daffna"; value: boolean }
+  | { op: "file-io.dasopr"; value: null }
+  | { op: "file-io.dascls"; value: null }
+  | { op: "file-io.dlaopn"; value: null }
+  | { op: "file-io.dlabfs"; value: { found: boolean } }
+  | { op: "file-io.dlafns"; value: { found: boolean } }
+  | { op: "file-io.dlacls"; value: null }
+  | { op: "file-io.dskopn"; value: null }
+  | {
+      op: "file-io.dskmi2";
+      value: {
+        spaixdLength: number;
+        spaixiLength: number;
+        spaixdHead: number[];
+        spaixiHead: number[];
+      };
+    }
+  | { op: "file-io.dskw02"; value: null }
   | { op: "error.failed"; value: boolean }
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }

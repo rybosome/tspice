@@ -47,6 +47,21 @@ import geometryGfGfsepCasesRaw from "./geometry-gf/gfsep.cases.json" with { type
 import geometryGfGfsstpCasesRaw from "./geometry-gf/gfsstp.cases.json" with { type: "json" };
 import geometryGfGfstepCasesRaw from "./geometry-gf/gfstep.cases.json" with { type: "json" };
 import geometryGfGfstolCasesRaw from "./geometry-gf/gfstol.cases.json" with { type: "json" };
+import fileIoDafbfsCasesRaw from "./file-io/dafbfs.cases.json" with { type: "json" };
+import fileIoDafclsCasesRaw from "./file-io/dafcls.cases.json" with { type: "json" };
+import fileIoDaffnaCasesRaw from "./file-io/daffna.cases.json" with { type: "json" };
+import fileIoDafoprCasesRaw from "./file-io/dafopr.cases.json" with { type: "json" };
+import fileIoDasclsCasesRaw from "./file-io/dascls.cases.json" with { type: "json" };
+import fileIoDasoprCasesRaw from "./file-io/dasopr.cases.json" with { type: "json" };
+import fileIoDlabfsCasesRaw from "./file-io/dlabfs.cases.json" with { type: "json" };
+import fileIoDlaclsCasesRaw from "./file-io/dlacls.cases.json" with { type: "json" };
+import fileIoDlafnsCasesRaw from "./file-io/dlafns.cases.json" with { type: "json" };
+import fileIoDlaopnCasesRaw from "./file-io/dlaopn.cases.json" with { type: "json" };
+import fileIoDskmi2CasesRaw from "./file-io/dskmi2.cases.json" with { type: "json" };
+import fileIoDskopnCasesRaw from "./file-io/dskopn.cases.json" with { type: "json" };
+import fileIoDskw02CasesRaw from "./file-io/dskw02.cases.json" with { type: "json" };
+import fileIoExistsCasesRaw from "./file-io/exists.cases.json" with { type: "json" };
+import fileIoGetfatCasesRaw from "./file-io/getfat.cases.json" with { type: "json" };
 import geometryIllumfCasesRaw from "./geometry/illumf.cases.json" with { type: "json" };
 import geometryIllumgCasesRaw from "./geometry/illumg.cases.json" with { type: "json" };
 import geometryIluminCasesRaw from "./geometry/ilumin.cases.json" with { type: "json" };
@@ -143,6 +158,23 @@ export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsWninsdCasesRaw as ParityCase[]),
   ...(cellsWindowsWnfetdCasesRaw as ParityCase[]),
   ...(cellsWindowsWnvaldCasesRaw as ParityCase[]),
+export const fileIoCases: ParityCase[] = [
+  ...(fileIoDafbfsCasesRaw as ParityCase[]),
+  ...(fileIoDafclsCasesRaw as ParityCase[]),
+  ...(fileIoDaffnaCasesRaw as ParityCase[]),
+  ...(fileIoDafoprCasesRaw as ParityCase[]),
+  ...(fileIoDasclsCasesRaw as ParityCase[]),
+  ...(fileIoDasoprCasesRaw as ParityCase[]),
+  ...(fileIoDlabfsCasesRaw as ParityCase[]),
+  ...(fileIoDlaclsCasesRaw as ParityCase[]),
+  ...(fileIoDlafnsCasesRaw as ParityCase[]),
+  ...(fileIoDlaopnCasesRaw as ParityCase[]),
+  ...(fileIoDskmi2CasesRaw as ParityCase[]),
+  ...(fileIoDskopnCasesRaw as ParityCase[]),
+  ...(fileIoDskw02CasesRaw as ParityCase[]),
+  ...(fileIoExistsCasesRaw as ParityCase[]),
+  ...(fileIoGetfatCasesRaw as ParityCase[]),
+];
 ];
 export { kernelPoolCases };
 export const ekCases = ekCasesRaw as ParityCase[];
@@ -194,6 +226,7 @@ export const allCases: ParityCase[] = [
   ...cellsWindowsCases,
   ...kernelPoolCases,
   ...kernelsCases,
+  ...fileIoCases,
   ...ekCases,
   ...dskCases,
   ...geometryCases,

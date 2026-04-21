@@ -1,0 +1,116 @@
+[
+  {
+    "caseId": "file-io-dskw02-write-and-traverse-success",
+    "description": "dskw02 writes a segment that can be traversed via dlabfs/dlafns",
+    "workflow": [
+      {
+        "op": "file-io.dskopn",
+        "path": "kernels/generated/dskw02-roundtrip.bds",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer"
+      },
+      {
+        "op": "file-io.dskmi2",
+        "nv": 3,
+        "vrtces": [0, 0, 0, 1, 0, 0, 0, 1, 0],
+        "np": 1,
+        "plates": [1, 2, 3],
+        "finscl": 0.2,
+        "corscl": 5,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 200000,
+        "spaixId": "idx0"
+      },
+      {
+        "op": "file-io.dskw02",
+        "handleId": "writer",
+        "center": 399,
+        "surfid": 1,
+        "dclass": 2,
+        "frame": "J2000",
+        "corsys": 3,
+        "corpar": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": 0,
+        "mxcor1": 1,
+        "mncor2": 0,
+        "mxcor2": 1,
+        "mncor3": -0.1,
+        "mxcor3": 0.1,
+        "first": 0,
+        "last": 1,
+        "nv": 3,
+        "vrtces": [0, 0, 0, 1, 0, 0, 0, 1, 0],
+        "np": 1,
+        "plates": [1, 2, 3],
+        "spaixId": "idx0"
+      },
+      { "op": "file-io.dascls", "handleId": "writer" },
+      {
+        "op": "file-io.dasopr",
+        "path": "kernels/generated/dskw02-roundtrip.bds",
+        "handleId": "reader"
+      },
+      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
+      { "op": "file-io.dlafns", "handleId": "reader", "descrId": "seg0" },
+      { "op": "file-io.dascls", "handleId": "reader" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dskw02-closed-handle-error",
+    "description": "Representative dskw02 error when writing with a closed handle",
+    "workflow": [
+      {
+        "op": "file-io.dskopn",
+        "path": "kernels/generated/dskw02-closed-handle.bds",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer"
+      },
+      {
+        "op": "file-io.dskmi2",
+        "nv": 3,
+        "vrtces": [0, 0, 0, 1, 0, 0, 0, 1, 0],
+        "np": 1,
+        "plates": [1, 2, 3],
+        "finscl": 0.2,
+        "corscl": 5,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 200000,
+        "spaixId": "idx0"
+      },
+      { "op": "file-io.dascls", "handleId": "writer" },
+      {
+        "op": "file-io.dskw02",
+        "handleId": "writer",
+        "center": 399,
+        "surfid": 1,
+        "dclass": 2,
+        "frame": "J2000",
+        "corsys": 3,
+        "corpar": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": 0,
+        "mxcor1": 1,
+        "mncor2": 0,
+        "mxcor2": 1,
+        "mncor3": -0.1,
+        "mxcor3": 0.1,
+        "first": 0,
+        "last": 1,
+        "nv": 3,
+        "vrtces": [0, 0, 0, 1, 0, 0, 0, 1, 0],
+        "np": 1,
+        "plates": [1, 2, 3],
+        "spaixId": "idx0"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

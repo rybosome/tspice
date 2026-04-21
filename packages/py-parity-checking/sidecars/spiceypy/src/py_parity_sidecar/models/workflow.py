@@ -51,6 +51,23 @@ from .dsk import (
     StepDskDskw02,
 )
 from .ek import StepEkEkgc, StepEkEkfind
+from .file_io import (
+    StepFileIoDafbfs,
+    StepFileIoDafcls,
+    StepFileIoDaffna,
+    StepFileIoDafopr,
+    StepFileIoDascls,
+    StepFileIoDasopr,
+    StepFileIoDlabfs,
+    StepFileIoDlacls,
+    StepFileIoDlafns,
+    StepFileIoDlaopn,
+    StepFileIoDskmi2,
+    StepFileIoDskopn,
+    StepFileIoDskw02,
+    StepFileIoExists,
+    StepFileIoGetfat,
+)
 from .error import (
     StepErrorChkin,
     StepErrorChkout,
@@ -223,6 +240,21 @@ WorkflowStep: TypeAlias = (
     | StepKernelsKdata
     | StepKernelsKxtrct
     | StepKernelsUnload
+    | StepFileIoExists
+    | StepFileIoGetfat
+    | StepFileIoDafopr
+    | StepFileIoDafcls
+    | StepFileIoDafbfs
+    | StepFileIoDaffna
+    | StepFileIoDasopr
+    | StepFileIoDascls
+    | StepFileIoDlaopn
+    | StepFileIoDlabfs
+    | StepFileIoDlafns
+    | StepFileIoDlacls
+    | StepFileIoDskopn
+    | StepFileIoDskmi2
+    | StepFileIoDskw02
     | StepErrorFailed
     | StepErrorReset
     | StepErrorGetmsg
