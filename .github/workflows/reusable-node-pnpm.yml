@@ -25,6 +25,11 @@ on:
         required: false
         type: boolean
         default: false
+      enable_uv:
+        description: Install uv before running commands.
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   run:
@@ -38,6 +43,10 @@ jobs:
         uses: ./.github/actions/setup-pnpm-node
         with:
           node-version: ${{ inputs.node_version }}
+
+      - name: Setup uv
+        if: ${{ inputs.enable_uv }}
+        uses: astral-sh/setup-uv@v5
 
       # Node 22 + node-gyp can be flaky when it tries to download headers from nodejs.org.
       # Point node-gyp at the headers shipped with the installed Node runtime instead.
