@@ -23,6 +23,7 @@ jobs:
 
         ./scripts/ci/ensure-uncompress.sh
       enable_cspice_cache: true
+      enable_uv: true
       command: |
         set -euo pipefail
 
@@ -155,6 +156,7 @@ jobs:
 
         ./scripts/ci/ensure-uncompress.sh
       enable_cspice_cache: true
+      enable_uv: true
       command: |
         set -euo pipefail
 
