@@ -66,9 +66,13 @@ from .models import (
     RuntimeConfig,
     RuntimePaths,
     StepKernelsFurnsh,
+    StepKernelsKclear,
     StepKernelsKdata,
+    StepKernelsKinfo,
+    StepKernelsKplfrm,
     StepKernelsKtotal,
     StepKernelsKxtrct,
+    StepKernelsUnload,
     StepTimeDeltet,
     StepTimeEt2Utc,
     StepTimeScdecd,
@@ -586,6 +590,15 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "kernels.furnsh":
             return StepKernelsFurnsh(op=op, file=_decode_path_ref(step.get("file"), label="kernels.furnsh.file"))
 
+        case "kernels.kclear":
+            return StepKernelsKclear(op=op)
+
+        case "kernels.kinfo":
+            return StepKernelsKinfo(op=op, path=_expect_string(step.get("path"), label="kernels.kinfo.path"))
+
+        case "kernels.kplfrm":
+            return StepKernelsKplfrm(op=op, frmcls=_expect_int(step.get("frmcls"), label="kernels.kplfrm.frmcls"))
+
         case "kernels.ktotal":
             return StepKernelsKtotal(op=op, kind=_expect_string(step.get("kind"), label="kernels.ktotal.kind"))
 
@@ -603,6 +616,9 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 terms=_expect_string_list(step.get("terms"), label="kernels.kxtrct.terms"),
                 string=_expect_string(step.get("string"), label="kernels.kxtrct.string"),
             )
+
+        case "kernels.unload":
+            return StepKernelsUnload(op=op, path=_expect_string(step.get("path"), label="kernels.unload.path"))
 
         case "error.failed":
             return StepErrorFailed(op=op)

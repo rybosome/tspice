@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "kernels-kplfrm-class-4-success",
+    "description": "kplfrm returns frame IDs defined in the loaded frame kernel for class 4",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/kplfrm-minimal.tf" },
+      { "op": "kernels.kplfrm", "frmcls": 4 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernels-kplfrm-invalid-class-error",
+    "description": "Representative kplfrm invalid frame-class error path",
+    "workflow": [{ "op": "kernels.kplfrm", "frmcls": 7 }],
+    "expectation": { "kind": "error" }
+  }
+]

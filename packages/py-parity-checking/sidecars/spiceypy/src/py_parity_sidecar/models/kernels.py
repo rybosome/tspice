@@ -13,6 +13,23 @@ class StepKernelsFurnsh:
 
 
 @dataclass(frozen=True)
+class StepKernelsKclear:
+    op: Literal["kernels.kclear"]
+
+
+@dataclass(frozen=True)
+class StepKernelsKinfo:
+    op: Literal["kernels.kinfo"]
+    path: str
+
+
+@dataclass(frozen=True)
+class StepKernelsKplfrm:
+    op: Literal["kernels.kplfrm"]
+    frmcls: int
+
+
+@dataclass(frozen=True)
 class StepKernelsKtotal:
     op: Literal["kernels.ktotal"]
     kind: str
@@ -31,3 +48,9 @@ class StepKernelsKxtrct:
     keywd: str
     terms: list[str]
     string: str
+
+
+@dataclass(frozen=True)
+class StepKernelsUnload:
+    op: Literal["kernels.unload"]
+    path: str
