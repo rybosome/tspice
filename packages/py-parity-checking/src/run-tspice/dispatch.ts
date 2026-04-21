@@ -4,6 +4,7 @@ import { runCellsWindowsStep } from "./domains/cells-windows.js";
 import { runCoordsVectorsStep } from "./domains/coords-vectors.js";
 import { runEkStep } from "./domains/ek.js";
 import { runErrorStep } from "./domains/error.js";
+import { runFramesStep } from "./domains/frames.js";
 import { runGeometryStep } from "./domains/geometry.js";
 import { runGeometryGfStep } from "./domains/geometry-gf.js";
 import { runIdsNamesStep } from "./domains/ids-names.js";
@@ -111,6 +112,22 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "ek.ekfind":
     case "ek.ekgc":
       return runEkStep(context, step);
+
+    case "frames.namfrm":
+    case "frames.frmnam":
+    case "frames.cidfrm":
+    case "frames.cnmfrm":
+    case "frames.frinfo":
+    case "frames.ccifrm":
+    case "frames.ckgp":
+    case "frames.ckgpav":
+    case "frames.cklpf":
+    case "frames.ckupf":
+    case "frames.ckobj":
+    case "frames.ckcov":
+    case "frames.pxform":
+    case "frames.sxform":
+      return runFramesStep(context, step);
 
     case "geometry.subpnt":
     case "geometry.subslr":

@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "frames-frmnam-found-success",
+    "description": "frmnam resolves frame code 1 -> J2000",
+    "workflow": [{ "op": "frames.frmnam", "code": 1 }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-frmnam-not-found-success",
+    "description": "frmnam miss returns found=false",
+    "workflow": [{ "op": "frames.frmnam", "code": 123456789 }],
+    "expectation": { "kind": "success" }
+  }
+]

@@ -34,6 +34,7 @@ import coordsVectorsVsclCasesRaw from "./coords-vectors/vscl.cases.json" with { 
 import coordsVectorsVsubCasesRaw from "./coords-vectors/vsub.cases.json" with { type: "json" };
 import ekCasesRaw from "./ek.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
+import { framesCases } from "./frames/index.js";
 import geometryGfGfdistCasesRaw from "./geometry-gf/gfdist.cases.json" with { type: "json" };
 import geometryGfGfrefnCasesRaw from "./geometry-gf/gfrefn.cases.json" with { type: "json" };
 import geometryGfGfrepfCasesRaw from "./geometry-gf/gfrepf.cases.json" with { type: "json" };
@@ -142,6 +143,7 @@ export const cellsWindowsCases: ParityCase[] = [
 export { kernelPoolCases };
 export const ekCases = ekCasesRaw as ParityCase[];
 export { errorCases };
+export { framesCases };
 export const geometryCases: ParityCase[] = [
   ...(geometrySubpntCasesRaw as ParityCase[]),
   ...(geometrySubslrCasesRaw as ParityCase[]),
@@ -186,4 +188,5 @@ export const allCases: ParityCase[] = [
   ...geometryCases,
   ...geometryGfCases,
   ...errorCases,
+  ...framesCases,
 ];
