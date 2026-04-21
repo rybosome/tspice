@@ -5,7 +5,20 @@ from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
 from .coords_vectors import StepCoordsVectorsMxm, StepCoordsVectorsRecgeo
 from .ek import StepEkEkgc, StepEkEkfind
 from .ids_names import StepIdsNamesBodn2c
-from .kernel_pool import StepKernelPoolGcpool
+from .kernel_pool import (
+    KernelPoolVarType,
+    StepKernelPoolCvpool,
+    StepKernelPoolDtpool,
+    StepKernelPoolExpool,
+    StepKernelPoolGcpool,
+    StepKernelPoolGdpool,
+    StepKernelPoolGipool,
+    StepKernelPoolGnpool,
+    StepKernelPoolPcpool,
+    StepKernelPoolPdpool,
+    StepKernelPoolPipool,
+    StepKernelPoolSwpool,
+)
 from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
 from .time import (
     DeltetEptype,
@@ -61,7 +74,18 @@ __all__ = [
     "StepCoordsVectorsRecgeo",
     "StepCellsWindowsWninsd",
     "StepCellsWindowsWnfetd",
+    "KernelPoolVarType",
+    "StepKernelPoolGdpool",
+    "StepKernelPoolGipool",
     "StepKernelPoolGcpool",
+    "StepKernelPoolGnpool",
+    "StepKernelPoolDtpool",
+    "StepKernelPoolPdpool",
+    "StepKernelPoolPipool",
+    "StepKernelPoolPcpool",
+    "StepKernelPoolSwpool",
+    "StepKernelPoolCvpool",
+    "StepKernelPoolExpool",
     "StepKernelsFurnsh",
     "StepKernelsKtotal",
     "StepKernelsKdata",

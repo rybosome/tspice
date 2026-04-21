@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "kernel-pool-gdpool-read-double-values-and-miss",
+    "description": "gdpool returns a numeric slice from inserted doubles and misses unknown variables",
+    "workflow": [
+      { "op": "kernel-pool.pdpool", "name": "KP_GD_DOUBLE", "values": [1.5, 2.25, -3.75] },
+      { "op": "kernel-pool.gdpool", "name": "KP_GD_DOUBLE", "start": 1, "room": 2 },
+      { "op": "kernel-pool.gdpool", "name": "KP_GD_MISSING", "start": 0, "room": 10 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-gdpool-invalid-room-error",
+    "description": "Representative gdpool argument validation error (negative room)",
+    "workflow": [
+      { "op": "kernel-pool.pdpool", "name": "KP_GD_DOUBLE", "values": [1.5] },
+      { "op": "kernel-pool.gdpool", "name": "KP_GD_DOUBLE", "start": 0, "room": -1 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]
