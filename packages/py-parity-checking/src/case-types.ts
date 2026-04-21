@@ -355,6 +355,51 @@ export type StepCellsWindowsWncard = {
   windowId: string;
 };
 
+export type IndexTriple = [number, number, number];
+
+export type DlaDescriptorPayload = {
+  bwdptr: number;
+  fwdptr: number;
+  ibase: number;
+  isize: number;
+  dbase: number;
+  dsize: number;
+  cbase: number;
+  csize: number;
+};
+
+export type DskDescriptorPayload = {
+  surfce: number;
+  center: number;
+  dclass: number;
+  dtype: number;
+  frmcde: number;
+  corsys: number;
+  corpar: number[];
+  co1min: number;
+  co1max: number;
+  co2min: number;
+  co2max: number;
+  co3min: number;
+  co3max: number;
+  start: number;
+  stop: number;
+};
+
+export type DskType2BookkeepingPayload = {
+  nv: number;
+  np: number;
+  nvxtot: number;
+  vtxbds: [[number, number], [number, number], [number, number]];
+  voxsiz: number;
+  voxori: Vec3;
+  vgrext: Vec3;
+  cgscal: number;
+  vtxnpl: number;
+  voxnpt: number;
+  voxnpl: number;
+};
+
 export type StepCellsWindowsWninsd = {
   op: "cells-windows.wninsd";
   windowId: string;
@@ -785,6 +830,91 @@ export type StepGeometryPl2nvc = {
   plane: SpicePlane;
 };
 
+
+export type StepDskDskobj = {
+  op: "dsk.dskobj";
+  path: PathRefLike;
+};
+
+export type StepDskDsksrf = {
+  op: "dsk.dsksrf";
+  path: PathRefLike;
+  bodyid: number;
+};
+
+export type StepDskDskopn = {
+  op: "dsk.dskopn";
+  handleId: string;
+  path: PathRefLike;
+  ifname: string;
+  ncomch: number;
+};
+
+export type StepDskDskmi2 = {
+  op: "dsk.dskmi2";
+  spatialIndexId: string;
+  vrtces: Vec3[];
+  plates: IndexTriple[];
+  finscl: number;
+  corscl: number;
+  worksz: number;
+  voxpsz: number;
+  voxlsz: number;
+  makvtl: boolean;
+  spxisz: number;
+};
+
+export type StepDskDskw02 = {
+  op: "dsk.dskw02";
+  handleId: string;
+  spatialIndexId: string;
+  center: number;
+  surfid: number;
+  dclass: number;
+  frame: string;
+  corsys: number;
+  corpar: number[];
+  mncor1: number;
+  mxcor1: number;
+  mncor2: number;
+  mxcor2: number;
+  mncor3: number;
+  mxcor3: number;
+  first: number;
+  last: number;
+  vrtces: Vec3[];
+  plates: IndexTriple[];
+};
+
+export type StepDskDasopr = {
+  op: "dsk.dasopr";
+  handleId: string;
+  path: PathRefLike;
+};
+
+export type StepDskDascls = {
+  op: "dsk.dascls";
+  handleId: string;
+};
+
+export type StepDskDlabfs = {
+  op: "dsk.dlabfs";
+  handleId: string;
+  dladscId: string;
+};
+
+export type StepDskDskgd = {
+  op: "dsk.dskgd";
+  handleId: string;
+  dladscId: string;
+};
+
+export type StepDskDskb02 = {
+  op: "dsk.dskb02";
+  handleId: string;
+  dladscId: string;
+};
+
 export type WorkflowStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
@@ -900,7 +1030,16 @@ export type WorkflowStep =
   | StepGeometryGfGfrepf
   | StepGeometryGfGfsep
   | StepGeometryGfGfdist
-;
+  | StepDskDskobj
+  | StepDskDsksrf
+  | StepDskDskopn
+  | StepDskDskmi2
+  | StepDskDskw02
+  | StepDskDasopr
+  | StepDskDascls
+  | StepDskDlabfs
+  | StepDskDskgd
+  | StepDskDskb02;
 
 export type WorkflowOp = WorkflowStep["op"];
 
@@ -1115,7 +1254,23 @@ export type StepOutput =
   | { op: "geometry-gf.gfrepi"; value: null }
   | { op: "geometry-gf.gfrepf"; value: null }
   | { op: "geometry-gf.gfsep"; value: null }
-  | { op: "geometry-gf.gfdist"; value: null };
+  | { op: "geometry-gf.gfdist"; value: null }
+  | {
+      op: "dsk.dskobj";
+      value: { bodyIds: number[] };
+    }
+  | {
+      op: "dsk.dsksrf";
+      value: { surfaceIds: number[] };
+    }
+  | { op: "dsk.dskopn"; value: null }
+  | { op: "dsk.dskmi2"; value: null }
+  | { op: "dsk.dskw02"; value: null }
+  | { op: "dsk.dasopr"; value: null }
+  | { op: "dsk.dascls"; value: null }
+  | { op: "dsk.dlabfs"; value: { found: boolean } }
+  | { op: "dsk.dskgd"; value: DskDescriptorPayload }
+  | { op: "dsk.dskb02"; value: DskType2BookkeepingPayload };
 
 export type CaseError = {
   type: string;

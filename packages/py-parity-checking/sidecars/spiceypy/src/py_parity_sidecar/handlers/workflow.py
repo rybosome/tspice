@@ -4,6 +4,7 @@ from ..models import CaseRequest, StepOutput, WorkflowStep
 from ..runtime import SidecarRuntimeContext
 from .cells_windows import run_cells_windows_step
 from .coords_vectors import run_coords_vectors_step
+from .dsk import run_dsk_step
 from .ek import run_ek_step
 from .error import run_error_step
 from .frames import run_frames_step
@@ -45,6 +46,10 @@ def _run_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput:
         return out
 
     out = run_ek_step(step, context)
+    if out is not None:
+        return out
+
+    out = run_dsk_step(step, context)
     if out is not None:
         return out
 

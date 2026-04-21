@@ -30,6 +30,10 @@ class FileIoState:
 @dataclass
 class DskState:
     loadedSegments: int = 0
+    handles: dict[str, dict[str, Any]] = field(default_factory=dict)
+    dladsc: dict[str, Any] = field(default_factory=dict)
+    spatialIndexes: dict[str, dict[str, Any]] = field(default_factory=dict)
+    cleanupRegistered: bool = False
 
 
 @dataclass

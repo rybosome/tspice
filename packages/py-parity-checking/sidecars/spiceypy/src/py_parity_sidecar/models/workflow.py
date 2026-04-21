@@ -38,6 +38,18 @@ from .coords_vectors import (
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
 )
+from .dsk import (
+    StepDskDascls,
+    StepDskDasopr,
+    StepDskDlabfs,
+    StepDskDskb02,
+    StepDskDskgd,
+    StepDskDskmi2,
+    StepDskDskobj,
+    StepDskDskopn,
+    StepDskDsksrf,
+    StepDskDskw02,
+)
 from .ek import StepEkEkgc, StepEkEkfind
 from .error import (
     StepErrorChkin,
@@ -234,6 +246,16 @@ WorkflowStep: TypeAlias = (
     | StepFramesSxform
     | StepEkEkfind
     | StepEkEkgc
+    | StepDskDskobj
+    | StepDskDsksrf
+    | StepDskDskopn
+    | StepDskDskmi2
+    | StepDskDskw02
+    | StepDskDasopr
+    | StepDskDascls
+    | StepDskDlabfs
+    | StepDskDskgd
+    | StepDskDskb02
     | StepGeometrySubpnt
     | StepGeometrySubslr
     | StepGeometrySincpt
