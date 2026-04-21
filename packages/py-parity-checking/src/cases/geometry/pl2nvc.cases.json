@@ -1,0 +1,13 @@
+[
+  {
+    "caseId": "geometry-pl2nvc-happy-path-success",
+    "description": "pl2nvc decodes normalized plane representation into normal + constant",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "plane": [0.2672612419124244, 0.5345224838248488, 0.8017837257372733, 1.0690449676496976]
+      }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

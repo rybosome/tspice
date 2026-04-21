@@ -233,6 +233,9 @@ export type StepCoordsVectorsMtxv = {
   v: Vector3;
 };
 
+export type Vec3 = Vector3;
+export type SpicePlane = [number, number, number, number];
+
 export type StepCellsWindowsWninsd = {
   op: "cells-windows.wninsd";
   windowId: string;
@@ -382,6 +385,97 @@ export type StepEkEkgc = {
   elment: number;
 };
 
+export type StepGeometrySubpnt = {
+  op: "geometry.subpnt";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  observer: string;
+};
+
+export type StepGeometrySubslr = {
+  op: "geometry.subslr";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  observer: string;
+};
+
+export type StepGeometrySincpt = {
+  op: "geometry.sincpt";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  observer: string;
+  dref: string;
+  dvec: Vec3;
+};
+
+export type StepGeometryIlumin = {
+  op: "geometry.ilumin";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  observer: string;
+  spoint: Vec3;
+};
+
+export type StepGeometryIllumg = {
+  op: "geometry.illumg";
+  method: string;
+  target: string;
+  ilusrc: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  observer: string;
+  spoint: Vec3;
+};
+
+export type StepGeometryIllumf = {
+  op: "geometry.illumf";
+  method: string;
+  target: string;
+  ilusrc: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  observer: string;
+  spoint: Vec3;
+};
+
+export type StepGeometryOccult = {
+  op: "geometry.occult";
+  targ1: string;
+  shape1: string;
+  frame1: string;
+  targ2: string;
+  shape2: string;
+  frame2: string;
+  abcorr: string;
+  observer: string;
+  et: number;
+};
+
+export type StepGeometryNvc2pl = {
+  op: "geometry.nvc2pl";
+  normal: Vec3;
+  konst: number;
+};
+
+export type StepGeometryPl2nvc = {
+  op: "geometry.pl2nvc";
+  plane: SpicePlane;
+};
+
 export type WorkflowStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
@@ -445,7 +539,16 @@ export type WorkflowStep =
   | StepErrorChkin
   | StepErrorChkout
   | StepEkEkfind
-  | StepEkEkgc;
+  | StepEkEkgc
+  | StepGeometrySubpnt
+  | StepGeometrySubslr
+  | StepGeometrySincpt
+  | StepGeometryIlumin
+  | StepGeometryIllumg
+  | StepGeometryIllumf
+  | StepGeometryOccult
+  | StepGeometryNvc2pl
+  | StepGeometryPl2nvc;
 
 export type WorkflowOp = WorkflowStep["op"];
 
@@ -532,6 +635,58 @@ export type StepOutput =
         | { found: false }
         | { found: true; isNull: true }
         | { found: true; isNull: false; value: string };
+    }
+  | {
+      op: "geometry.subpnt";
+      value: { spoint: Vec3; trgepc: number; srfvec: Vec3 };
+    }
+  | {
+      op: "geometry.subslr";
+      value: { spoint: Vec3; trgepc: number; srfvec: Vec3 };
+    }
+  | {
+      op: "geometry.sincpt";
+      value:
+        | { found: false }
+        | { found: true; spoint: Vec3; trgepc: number; srfvec: Vec3 };
+    }
+  | {
+      op: "geometry.ilumin";
+      value: {
+        trgepc: number;
+        srfvec: Vec3;
+        phase: number;
+        incdnc: number;
+        emissn: number;
+      };
+    }
+  | {
+      op: "geometry.illumg";
+      value: {
+        trgepc: number;
+        srfvec: Vec3;
+        phase: number;
+        incdnc: number;
+        emissn: number;
+      };
+    }
+  | {
+      op: "geometry.illumf";
+      value: {
+        trgepc: number;
+        srfvec: Vec3;
+        phase: number;
+        incdnc: number;
+        emissn: number;
+        visibl: boolean;
+        lit: boolean;
+      };
+    }
+  | { op: "geometry.occult"; value: number }
+  | { op: "geometry.nvc2pl"; value: SpicePlane }
+  | {
+      op: "geometry.pl2nvc";
+      value: { normal: Vec3; konst: number };
     };
 
 export type CaseError = {

@@ -1,0 +1,74 @@
+[
+  {
+    "caseId": "geometry-sincpt-intercept-hit-success",
+    "description": "sincpt ellipsoid boresight toward Moon center returns found=true intercept",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "MOON",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH",
+        "dref": "J2000",
+        "dvec": [
+          -291608.38463343546,
+          -266716.83339423337,
+          -76102.48709990202
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-invalid-target-error",
+    "description": "Representative sincpt invalid target/frame combination error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "NOT_A_BODY",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH",
+        "dref": "J2000",
+        "dvec": [
+          -291608.38463343546,
+          -266716.83339423337,
+          -76102.48709990202
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

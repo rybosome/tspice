@@ -35,6 +35,17 @@ from .error import (
     StepErrorSetmsg,
     StepErrorSigerr,
 )
+from .geometry import (
+    StepGeometryIlumin,
+    StepGeometryIllumf,
+    StepGeometryIllumg,
+    StepGeometryNvc2pl,
+    StepGeometryOccult,
+    StepGeometryPl2nvc,
+    StepGeometrySincpt,
+    StepGeometrySubpnt,
+    StepGeometrySubslr,
+)
 from .ids_names import StepIdsNamesBodn2c
 from .kernel_pool import (
     StepKernelPoolCvpool,
@@ -133,4 +144,13 @@ WorkflowStep: TypeAlias = (
     | StepErrorChkout
     | StepEkEkfind
     | StepEkEkgc
+    | StepGeometrySubpnt
+    | StepGeometrySubslr
+    | StepGeometrySincpt
+    | StepGeometryIlumin
+    | StepGeometryIllumg
+    | StepGeometryIllumf
+    | StepGeometryOccult
+    | StepGeometryNvc2pl
+    | StepGeometryPl2nvc
 )
