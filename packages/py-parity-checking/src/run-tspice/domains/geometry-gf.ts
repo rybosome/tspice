@@ -21,6 +21,12 @@ type GeometryGfStep =
   | StepGeometryGfGfstep
   | StepGeometryGfGfstol;
 
+function assertBoolean(value: unknown, context: string): asserts value is boolean {
+  if (typeof value !== "boolean") {
+    throw new TypeError(`${context}: expected boolean`);
+  }
+}
+
 /** Execute one `geometry-gf.*` workflow step in tspice. */
 export function runGeometryGfStep(context: RunTspiceContext, step: GeometryGfStep): StepOutput {
   switch (step.op) {
@@ -35,8 +41,11 @@ export function runGeometryGfStep(context: RunTspiceContext, step: GeometryGfSte
       context.spice.raw.gfstol(step.value);
       return { op: step.op, value: null };
 
-    case "geometry-gf.gfrefn":
+    case "geometry-gf.gfrefn": {
+      assertBoolean(step.s1, "geometry-gf.gfrefn.s1");
+      assertBoolean(step.s2, "geometry-gf.gfrefn.s2");
       return { op: step.op, value: context.spice.raw.gfrefn(step.t1, step.t2, step.s1, step.s2) };
+    }
 
     case "geometry-gf.gfrepi": {
       const window = requireWindow(context, step.windowId);

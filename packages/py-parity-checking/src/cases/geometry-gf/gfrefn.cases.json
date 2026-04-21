@@ -4,5 +4,11 @@
     "description": "gfrefn midpoint-style refinement estimate for a simple interval",
     "workflow": [{ "op": "geometry-gf.gfrefn", "t1": 0, "t2": 10, "s1": true, "s2": false }],
     "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-invalid-flags-error",
+    "description": "Representative gfrefn error when refinement flags are not booleans",
+    "workflow": [{ "op": "geometry-gf.gfrefn", "t1": 0, "t2": 10, "s1": 1, "s2": false }],
+    "expectation": { "kind": "error", "errorMessageIncludes": ["boolean"] }
   }
 ]
