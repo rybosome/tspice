@@ -11,8 +11,6 @@ from .time import run_time_step
 
 
 def _run_step(step: WorkflowStep, windows: WindowStore) -> StepOutput:
-    # Keep time dispatch first: these methods include stateful TIMDEF and
-    # SCLK/time conversion operations that should run without extra wrappers.
     out = run_time_step(step)
     if out is not None:
         return out
