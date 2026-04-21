@@ -1,16 +1,18 @@
 [
   {
     "caseId": "geometry-gf-gfrepi-success",
-    "description": "gfrepi initializes the default progress reporter with an existing window",
+    "description": "gfrepi initializes progress reporting for an existing window without mutating interval contents",
     "workflow": [
       { "op": "cells-windows.wninsd", "windowId": "GFREPI_WIN", "left": 0, "right": 1, "maxIntervals": 8 },
+      { "op": "cells-windows.wnfetd", "windowId": "GFREPI_WIN", "index": 0 },
       {
         "op": "geometry-gf.gfrepi",
         "windowId": "GFREPI_WIN",
         "begmss": "GF start",
         "endmss": "GF done"
       },
-      { "op": "geometry-gf.gfrepf" }
+      { "op": "geometry-gf.gfrepf" },
+      { "op": "cells-windows.wnfetd", "windowId": "GFREPI_WIN", "index": 0 }
     ],
     "expectation": { "kind": "success" }
   },
