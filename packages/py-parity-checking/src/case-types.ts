@@ -1,5 +1,7 @@
 export type TimdefItem = "SYSTEM" | "CALENDAR" | "ZONE";
 
+export type ErrorGetmsgWhich = "SHORT" | "LONG" | "EXPLAIN";
+
 export type StepTimeStr2Et = {
   op: "time.str2et";
   time: string;
@@ -93,6 +95,39 @@ export type StepKernelsKxtrct = {
   string: string;
 };
 
+export type StepErrorFailed = {
+  op: "error.failed";
+};
+
+export type StepErrorReset = {
+  op: "error.reset";
+};
+
+export type StepErrorGetmsg = {
+  op: "error.getmsg";
+  which: ErrorGetmsgWhich;
+};
+
+export type StepErrorSetmsg = {
+  op: "error.setmsg";
+  message: string;
+};
+
+export type StepErrorSigerr = {
+  op: "error.sigerr";
+  short: string;
+};
+
+export type StepErrorChkin = {
+  op: "error.chkin";
+  name: string;
+};
+
+export type StepErrorChkout = {
+  op: "error.chkout";
+  name: string;
+};
+
 export type StepEkEkfind = {
   op: "ek.ekfind";
   query: string;
@@ -120,6 +155,13 @@ export type WorkflowStep =
   | StepKernelsKtotal
   | StepKernelsKdata
   | StepKernelsKxtrct
+  | StepErrorFailed
+  | StepErrorReset
+  | StepErrorGetmsg
+  | StepErrorSetmsg
+  | StepErrorSigerr
+  | StepErrorChkin
+  | StepErrorChkout
   | StepEkEkfind
   | StepEkEkgc;
 
@@ -145,6 +187,13 @@ export type StepOutput =
       op: "kernels.kxtrct";
       value: { found: false } | { found: true; wordsq: string; substr: string };
     }
+  | { op: "error.failed"; value: boolean }
+  | { op: "error.reset"; value: null }
+  | { op: "error.getmsg"; value: string }
+  | { op: "error.setmsg"; value: null }
+  | { op: "error.sigerr"; value: null }
+  | { op: "error.chkin"; value: null }
+  | { op: "error.chkout"; value: null }
   | {
       op: "ek.ekfind";
       value: { ok: true; nmrows: number } | { ok: false; errmsg: string };

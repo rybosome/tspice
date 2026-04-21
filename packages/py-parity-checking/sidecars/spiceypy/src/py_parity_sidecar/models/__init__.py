@@ -4,6 +4,15 @@ from .case import CaseError, CaseRequest, CaseResponse, JsonScalar, JsonValue, S
 from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
 from .coords_vectors import StepCoordsVectorsMxm, StepCoordsVectorsRecgeo
 from .ek import StepEkEkgc, StepEkEkfind
+from .error import (
+    StepErrorChkin,
+    StepErrorChkout,
+    StepErrorFailed,
+    StepErrorGetmsg,
+    StepErrorReset,
+    StepErrorSetmsg,
+    StepErrorSigerr,
+)
 from .ids_names import StepIdsNamesBodn2c
 from .kernel_pool import StepKernelPoolGcpool
 from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
@@ -32,6 +41,13 @@ __all__ = [
     "StepKernelsKtotal",
     "StepKernelsKdata",
     "StepKernelsKxtrct",
+    "StepErrorFailed",
+    "StepErrorReset",
+    "StepErrorGetmsg",
+    "StepErrorSetmsg",
+    "StepErrorSigerr",
+    "StepErrorChkin",
+    "StepErrorChkout",
     "StepEkEkfind",
     "StepEkEkgc",
     "WorkflowStep",

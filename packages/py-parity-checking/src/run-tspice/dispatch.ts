@@ -3,6 +3,7 @@ import type { RunTspiceContext } from "./context.js";
 import { runCellsWindowsStep } from "./domains/cells-windows.js";
 import { runCoordsVectorsStep } from "./domains/coords-vectors.js";
 import { runEkStep } from "./domains/ek.js";
+import { runErrorStep } from "./domains/error.js";
 import { runIdsNamesStep } from "./domains/ids-names.js";
 import { runKernelPoolStep } from "./domains/kernel-pool.js";
 import { runKernelsStep } from "./domains/kernels.js";
@@ -35,6 +36,15 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "kernels.kdata":
     case "kernels.kxtrct":
       return runKernelsStep(context, step);
+
+    case "error.failed":
+    case "error.reset":
+    case "error.getmsg":
+    case "error.setmsg":
+    case "error.sigerr":
+    case "error.chkin":
+    case "error.chkout":
+      return runErrorStep(context, step);
 
     case "ek.ekfind":
     case "ek.ekgc":

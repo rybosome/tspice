@@ -10,6 +10,13 @@ from .models import (
     StepCoordsVectorsRecgeo,
     StepEkEkgc,
     StepEkEkfind,
+    StepErrorChkin,
+    StepErrorChkout,
+    StepErrorFailed,
+    StepErrorGetmsg,
+    StepErrorReset,
+    StepErrorSetmsg,
+    StepErrorSigerr,
     StepIdsNamesBodn2c,
     StepKernelPoolGcpool,
     StepKernelsFurnsh,
@@ -179,6 +186,42 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 keywd=_expect_string(step.get("keywd"), label="kernels.kxtrct.keywd"),
                 terms=_expect_string_list(step.get("terms"), label="kernels.kxtrct.terms"),
                 string=_expect_string(step.get("string"), label="kernels.kxtrct.string"),
+            )
+
+        case "error.failed":
+            return StepErrorFailed(op=op)
+
+        case "error.reset":
+            return StepErrorReset(op=op)
+
+        case "error.getmsg":
+            return StepErrorGetmsg(
+                op=op,
+                which=_expect_string(step.get("which"), label="error.getmsg.which"),
+            )
+
+        case "error.setmsg":
+            return StepErrorSetmsg(
+                op=op,
+                message=_expect_string(step.get("message"), label="error.setmsg.message"),
+            )
+
+        case "error.sigerr":
+            return StepErrorSigerr(
+                op=op,
+                short=_expect_string(step.get("short"), label="error.sigerr.short"),
+            )
+
+        case "error.chkin":
+            return StepErrorChkin(
+                op=op,
+                name=_expect_string(step.get("name"), label="error.chkin.name"),
+            )
+
+        case "error.chkout":
+            return StepErrorChkout(
+                op=op,
+                name=_expect_string(step.get("name"), label="error.chkout.name"),
             )
 
         case "ek.ekfind":
