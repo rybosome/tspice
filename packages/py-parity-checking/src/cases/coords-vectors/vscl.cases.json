@@ -1,0 +1,20 @@
+[
+  {
+    "caseId": "coords-vectors-vscl-happy-negative-scale",
+    "description": "vscl scales a vector by a negative scalar",
+    "workflow": [
+      {
+        "op": "coords-vectors.vscl",
+        "s": -2,
+        "v": [
+          1,
+          -2,
+          3
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

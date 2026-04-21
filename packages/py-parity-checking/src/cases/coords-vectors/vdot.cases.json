@@ -1,0 +1,24 @@
+[
+  {
+    "caseId": "coords-vectors-vdot-happy-basic-dot",
+    "description": "vdot computes scalar dot product for simple integer vectors",
+    "workflow": [
+      {
+        "op": "coords-vectors.vdot",
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "b": [
+          4,
+          5,
+          6
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

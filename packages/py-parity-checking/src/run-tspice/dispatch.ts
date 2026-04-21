@@ -32,8 +32,26 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "ids-names.bodn2c":
       return runIdsNamesStep(context, step);
 
+    case "coords-vectors.reclat":
+    case "coords-vectors.latrec":
+    case "coords-vectors.recsph":
+    case "coords-vectors.sphrec":
+    case "coords-vectors.vnorm":
+    case "coords-vectors.vhat":
+    case "coords-vectors.vdot":
+    case "coords-vectors.vcrss":
+    case "coords-vectors.vadd":
+    case "coords-vectors.vsub":
+    case "coords-vectors.vminus":
+    case "coords-vectors.vscl":
     case "coords-vectors.mxm":
+    case "coords-vectors.rotate":
+    case "coords-vectors.rotmat":
+    case "coords-vectors.axisar":
+    case "coords-vectors.georec":
     case "coords-vectors.recgeo":
+    case "coords-vectors.mxv":
+    case "coords-vectors.mtxv":
       return runCoordsVectorsStep(context, step);
 
     case "cells-windows.wninsd":

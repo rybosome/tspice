@@ -1,0 +1,33 @@
+[
+  {
+    "caseId": "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+    "description": "rotmat rotates identity matrix by +90 degrees about Z axis",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotmat",
+        "m": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "angle": 1.5707963267948966,
+        "axis": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
