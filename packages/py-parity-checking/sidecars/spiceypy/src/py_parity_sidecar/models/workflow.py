@@ -46,7 +46,15 @@ from .geometry import (
     StepGeometrySubpnt,
     StepGeometrySubslr,
 )
-from .ids_names import StepIdsNamesBodn2c
+from .ids_names import (
+    StepIdsNamesBodc2n,
+    StepIdsNamesBodc2s,
+    StepIdsNamesBoddef,
+    StepIdsNamesBodfnd,
+    StepIdsNamesBodn2c,
+    StepIdsNamesBods2c,
+    StepIdsNamesBodvar,
+)
 from .kernel_pool import (
     StepKernelPoolCvpool,
     StepKernelPoolDtpool,
@@ -98,6 +106,12 @@ WorkflowStep: TypeAlias = (
     | StepTimeSct2e
     | StepTimeSce2c
     | StepIdsNamesBodn2c
+    | StepIdsNamesBodc2n
+    | StepIdsNamesBodc2s
+    | StepIdsNamesBoddef
+    | StepIdsNamesBodfnd
+    | StepIdsNamesBods2c
+    | StepIdsNamesBodvar
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph

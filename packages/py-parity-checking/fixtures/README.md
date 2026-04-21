@@ -9,5 +9,7 @@
   - `de440s.bsp`
 - Added package-local fixed EK fixture:
   - `py-parity-minimal.ek`
+- Added package-local ids-names fixture:
+  - `ids-names-body399-vars.tpc`
 
 The EK fixture is generated once via SpiceyPy tooling and checked in so parity tests rely only on repository fixtures (no runtime fixture generation).

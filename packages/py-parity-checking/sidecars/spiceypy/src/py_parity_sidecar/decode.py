@@ -44,7 +44,13 @@ from .models import (
     StepGeometrySincpt,
     StepGeometrySubpnt,
     StepGeometrySubslr,
+    StepIdsNamesBodc2n,
+    StepIdsNamesBodc2s,
+    StepIdsNamesBoddef,
+    StepIdsNamesBodfnd,
     StepIdsNamesBodn2c,
+    StepIdsNamesBods2c,
+    StepIdsNamesBodvar,
     StepKernelPoolCvpool,
     StepKernelPoolDtpool,
     StepKernelPoolExpool,
@@ -315,6 +321,36 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
 
         case "ids-names.bodn2c":
             return StepIdsNamesBodn2c(op=op, name=_expect_string(step.get("name"), label="ids-names.bodn2c.name"))
+
+        case "ids-names.bodc2n":
+            return StepIdsNamesBodc2n(op=op, code=_expect_int(step.get("code"), label="ids-names.bodc2n.code"))
+
+        case "ids-names.bodc2s":
+            return StepIdsNamesBodc2s(op=op, code=_expect_int(step.get("code"), label="ids-names.bodc2s.code"))
+
+        case "ids-names.boddef":
+            return StepIdsNamesBoddef(
+                op=op,
+                name=_expect_string(step.get("name"), label="ids-names.boddef.name"),
+                code=_expect_int(step.get("code"), label="ids-names.boddef.code"),
+            )
+
+        case "ids-names.bodfnd":
+            return StepIdsNamesBodfnd(
+                op=op,
+                body=_expect_int(step.get("body"), label="ids-names.bodfnd.body"),
+                item=_expect_string(step.get("item"), label="ids-names.bodfnd.item"),
+            )
+
+        case "ids-names.bods2c":
+            return StepIdsNamesBods2c(op=op, name=_expect_string(step.get("name"), label="ids-names.bods2c.name"))
+
+        case "ids-names.bodvar":
+            return StepIdsNamesBodvar(
+                op=op,
+                body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
+                item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
 
         case "coords-vectors.reclat":
             return StepCoordsVectorsReclat(
