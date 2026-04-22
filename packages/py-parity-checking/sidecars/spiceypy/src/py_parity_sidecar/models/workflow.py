@@ -2,7 +2,20 @@ from __future__ import annotations
 
 from typing import TypeAlias
 
-from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
+from .cells_windows import (
+    StepCellsWindowsCard,
+    StepCellsWindowsInsrtc,
+    StepCellsWindowsInsrtd,
+    StepCellsWindowsInsrti,
+    StepCellsWindowsScard,
+    StepCellsWindowsSize,
+    StepCellsWindowsSsize,
+    StepCellsWindowsValid,
+    StepCellsWindowsWncard,
+    StepCellsWindowsWnfetd,
+    StepCellsWindowsWninsd,
+    StepCellsWindowsWnvald,
+)
 from .coords_vectors import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -78,7 +91,16 @@ from .kernel_pool import (
     StepKernelPoolPipool,
     StepKernelPoolSwpool,
 )
-from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
+from .kernels import (
+    StepKernelsFurnsh,
+    StepKernelsKclear,
+    StepKernelsKdata,
+    StepKernelsKinfo,
+    StepKernelsKplfrm,
+    StepKernelsKtotal,
+    StepKernelsKxtrct,
+    StepKernelsUnload,
+)
 from .time import (
     StepTimeDeltet,
     StepTimeEt2Utc,
@@ -142,8 +164,18 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsRecgeo
     | StepCoordsVectorsMxv
     | StepCoordsVectorsMtxv
+    | StepCellsWindowsCard
+    | StepCellsWindowsInsrtc
+    | StepCellsWindowsInsrtd
+    | StepCellsWindowsInsrti
+    | StepCellsWindowsScard
+    | StepCellsWindowsSize
+    | StepCellsWindowsSsize
+    | StepCellsWindowsValid
+    | StepCellsWindowsWncard
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
+    | StepCellsWindowsWnvald
     | StepKernelPoolGdpool
     | StepKernelPoolGipool
     | StepKernelPoolGcpool
@@ -156,9 +188,13 @@ WorkflowStep: TypeAlias = (
     | StepKernelPoolCvpool
     | StepKernelPoolExpool
     | StepKernelsFurnsh
+    | StepKernelsKclear
+    | StepKernelsKinfo
+    | StepKernelsKplfrm
     | StepKernelsKtotal
     | StepKernelsKdata
     | StepKernelsKxtrct
+    | StepKernelsUnload
     | StepErrorFailed
     | StepErrorReset
     | StepErrorGetmsg

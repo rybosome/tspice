@@ -283,6 +283,69 @@ export type StepCoordsVectorsMtxv = {
 export type Vec3 = Vector3;
 export type SpicePlane = [number, number, number, number];
 
+export type CellsWindowsTargetKind = "int" | "double" | "char" | "window";
+
+export type StepCellsWindowsCard = {
+  op: "cells-windows.card";
+  targetKind: CellsWindowsTargetKind;
+  targetId: string;
+};
+
+export type StepCellsWindowsInsrtc = {
+  op: "cells-windows.insrtc";
+  cellId: string;
+  item: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsInsrtd = {
+  op: "cells-windows.insrtd";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsInsrti = {
+  op: "cells-windows.insrti";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsScard = {
+  op: "cells-windows.scard";
+  card: number;
+  targetKind: CellsWindowsTargetKind;
+  targetId: string;
+};
+
+export type StepCellsWindowsSize = {
+  op: "cells-windows.size";
+  targetKind: CellsWindowsTargetKind;
+  targetId: string;
+};
+
+export type StepCellsWindowsSsize = {
+  op: "cells-windows.ssize";
+  size: number;
+  targetKind: CellsWindowsTargetKind;
+  targetId: string;
+};
+
+export type StepCellsWindowsValid = {
+  op: "cells-windows.valid";
+  size: number;
+  n: number;
+  targetKind: CellsWindowsTargetKind;
+  targetId: string;
+};
+
+export type StepCellsWindowsWncard = {
+  op: "cells-windows.wncard";
+  windowId: string;
+};
+
 export type StepCellsWindowsWninsd = {
   op: "cells-windows.wninsd";
   windowId: string;
@@ -295,6 +358,13 @@ export type StepCellsWindowsWnfetd = {
   op: "cells-windows.wnfetd";
   windowId: string;
   index: number;
+};
+
+export type StepCellsWindowsWnvald = {
+  op: "cells-windows.wnvald";
+  size: number;
+  n: number;
+  windowId: string;
 };
 
 export type StepKernelPoolGdpool = {
@@ -369,6 +439,20 @@ export type StepKernelsFurnsh = {
   file: PathRefLike;
 };
 
+export type StepKernelsKclear = {
+  op: "kernels.kclear";
+};
+
+export type StepKernelsKinfo = {
+  op: "kernels.kinfo";
+  path: string;
+};
+
+export type StepKernelsKplfrm = {
+  op: "kernels.kplfrm";
+  frmcls: number;
+};
+
 export type StepKernelsKtotal = {
   op: "kernels.ktotal";
   kind: string;
@@ -385,6 +469,11 @@ export type StepKernelsKxtrct = {
   keywd: string;
   terms: string[];
   string: string;
+};
+
+export type StepKernelsUnload = {
+  op: "kernels.unload";
+  path: string;
 };
 
 export type StepErrorFailed = {
@@ -634,8 +723,18 @@ export type WorkflowStep =
   | StepCoordsVectorsRecgeo
   | StepCoordsVectorsMxv
   | StepCoordsVectorsMtxv
+  | StepCellsWindowsCard
+  | StepCellsWindowsInsrtc
+  | StepCellsWindowsInsrtd
+  | StepCellsWindowsInsrti
+  | StepCellsWindowsScard
+  | StepCellsWindowsSize
+  | StepCellsWindowsSsize
+  | StepCellsWindowsValid
+  | StepCellsWindowsWncard
   | StepCellsWindowsWninsd
   | StepCellsWindowsWnfetd
+  | StepCellsWindowsWnvald
   | StepKernelPoolGdpool
   | StepKernelPoolGipool
   | StepKernelPoolGcpool
@@ -648,9 +747,13 @@ export type WorkflowStep =
   | StepKernelPoolCvpool
   | StepKernelPoolExpool
   | StepKernelsFurnsh
+  | StepKernelsKclear
+  | StepKernelsKinfo
+  | StepKernelsKplfrm
   | StepKernelsKtotal
   | StepKernelsKdata
   | StepKernelsKxtrct
+  | StepKernelsUnload
   | StepErrorFailed
   | StepErrorReset
   | StepErrorGetmsg
@@ -727,8 +830,18 @@ export type StepOutput =
   | { op: "coords-vectors.recgeo"; value: { lon: number; lat: number; alt: number } }
   | { op: "coords-vectors.mxv"; value: Vector3 }
   | { op: "coords-vectors.mtxv"; value: Vector3 }
+  | { op: "cells-windows.card"; value: number }
+  | { op: "cells-windows.insrtc"; value: null }
+  | { op: "cells-windows.insrtd"; value: null }
+  | { op: "cells-windows.insrti"; value: null }
+  | { op: "cells-windows.scard"; value: null }
+  | { op: "cells-windows.size"; value: number }
+  | { op: "cells-windows.ssize"; value: null }
+  | { op: "cells-windows.valid"; value: null }
+  | { op: "cells-windows.wncard"; value: number }
   | { op: "cells-windows.wninsd"; value: null }
   | { op: "cells-windows.wnfetd"; value: { left: number; right: number } }
+  | { op: "cells-windows.wnvald"; value: null }
   | { op: "kernel-pool.gdpool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gipool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gcpool"; value: KernelPoolFoundStrings }
@@ -744,6 +857,12 @@ export type StepOutput =
   | { op: "kernel-pool.cvpool"; value: boolean }
   | { op: "kernel-pool.expool"; value: boolean }
   | { op: "kernels.furnsh"; value: null }
+  | { op: "kernels.kclear"; value: null }
+  | {
+      op: "kernels.kinfo";
+      value: { found: false } | { found: true; filtyp: string; source: string };
+    }
+  | { op: "kernels.kplfrm"; value: { ids: number[] } }
   | { op: "kernels.ktotal"; value: number }
   | {
       op: "kernels.kdata";
@@ -753,6 +872,7 @@ export type StepOutput =
       op: "kernels.kxtrct";
       value: { found: false } | { found: true; wordsq: string; substr: string };
     }
+  | { op: "kernels.unload"; value: null }
   | { op: "error.failed"; value: boolean }
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }

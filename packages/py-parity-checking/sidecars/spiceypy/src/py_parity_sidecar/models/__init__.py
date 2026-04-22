@@ -2,7 +2,20 @@ from __future__ import annotations
 
 from .case import CaseError, CaseRequest, CaseResponse, JsonScalar, JsonValue, StepOutput
 from .paths import PathRef, PathRefInput, PathRefKind, RuntimeConfig, RuntimePaths
-from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
+from .cells_windows import (
+    StepCellsWindowsCard,
+    StepCellsWindowsInsrtc,
+    StepCellsWindowsInsrtd,
+    StepCellsWindowsInsrti,
+    StepCellsWindowsScard,
+    StepCellsWindowsSize,
+    StepCellsWindowsSsize,
+    StepCellsWindowsValid,
+    StepCellsWindowsWncard,
+    StepCellsWindowsWnfetd,
+    StepCellsWindowsWninsd,
+    StepCellsWindowsWnvald,
+)
 from .coords_vectors import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -79,7 +92,16 @@ from .kernel_pool import (
     StepKernelPoolPipool,
     StepKernelPoolSwpool,
 )
-from .kernels import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct
+from .kernels import (
+    StepKernelsFurnsh,
+    StepKernelsKclear,
+    StepKernelsKdata,
+    StepKernelsKinfo,
+    StepKernelsKplfrm,
+    StepKernelsKtotal,
+    StepKernelsKxtrct,
+    StepKernelsUnload,
+)
 from .time import (
     DeltetEptype,
     TimdefItem,
@@ -161,8 +183,18 @@ __all__ = [
     "StepCoordsVectorsRecgeo",
     "StepCoordsVectorsMxv",
     "StepCoordsVectorsMtxv",
+    "StepCellsWindowsCard",
+    "StepCellsWindowsInsrtc",
+    "StepCellsWindowsInsrtd",
+    "StepCellsWindowsInsrti",
+    "StepCellsWindowsScard",
+    "StepCellsWindowsSize",
+    "StepCellsWindowsSsize",
+    "StepCellsWindowsValid",
+    "StepCellsWindowsWncard",
     "StepCellsWindowsWninsd",
     "StepCellsWindowsWnfetd",
+    "StepCellsWindowsWnvald",
     "KernelPoolVarType",
     "StepKernelPoolGdpool",
     "StepKernelPoolGipool",
@@ -176,9 +208,13 @@ __all__ = [
     "StepKernelPoolCvpool",
     "StepKernelPoolExpool",
     "StepKernelsFurnsh",
+    "StepKernelsKclear",
+    "StepKernelsKinfo",
+    "StepKernelsKplfrm",
     "StepKernelsKtotal",
     "StepKernelsKdata",
     "StepKernelsKxtrct",
+    "StepKernelsUnload",
     "StepErrorFailed",
     "StepErrorReset",
     "StepErrorGetmsg",
