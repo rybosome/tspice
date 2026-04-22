@@ -158,6 +158,8 @@ export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsWninsdCasesRaw as ParityCase[]),
   ...(cellsWindowsWnfetdCasesRaw as ParityCase[]),
   ...(cellsWindowsWnvaldCasesRaw as ParityCase[]),
+];
+
 export const fileIoCases: ParityCase[] = [
   ...(fileIoDafbfsCasesRaw as ParityCase[]),
   ...(fileIoDafclsCasesRaw as ParityCase[]),
@@ -174,7 +176,6 @@ export const fileIoCases: ParityCase[] = [
   ...(fileIoDskw02CasesRaw as ParityCase[]),
   ...(fileIoExistsCasesRaw as ParityCase[]),
   ...(fileIoGetfatCasesRaw as ParityCase[]),
-];
 ];
 export { kernelPoolCases };
 export const ekCases = ekCasesRaw as ParityCase[];
