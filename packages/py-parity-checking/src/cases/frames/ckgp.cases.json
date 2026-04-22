@@ -28,7 +28,8 @@
         "sclkdp": 0,
         "tol": 0,
         "ref": "MGS_SPACECRAFT"
-      }
+      },
+      { "op": "frames.ckupf", "handleId": "CKH_CKGP_ERR" }
     ],
     "expectation": { "kind": "success" }
   }
