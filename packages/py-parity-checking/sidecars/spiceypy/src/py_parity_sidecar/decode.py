@@ -4,8 +4,18 @@ from typing import Any, Mapping
 
 from .models import (
     CaseRequest,
+    StepCellsWindowsCard,
+    StepCellsWindowsInsrtc,
+    StepCellsWindowsInsrtd,
+    StepCellsWindowsInsrti,
+    StepCellsWindowsScard,
+    StepCellsWindowsSize,
+    StepCellsWindowsSsize,
+    StepCellsWindowsValid,
+    StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWnvald,
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
     StepCoordsVectorsLatrec,
@@ -449,6 +459,105 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 v=_expect_vec3(step.get("v"), label="coords-vectors.mtxv.v"),
             )
 
+        case "cells-windows.card":
+            return StepCellsWindowsCard(
+                op=op,
+                targetKind=_expect_string(step.get("targetKind"), label="cells-windows.card.targetKind"),
+                targetId=_expect_string(step.get("targetId"), label="cells-windows.card.targetId"),
+            )
+
+        case "cells-windows.insrtc":
+            max_cardinality_raw = step.get("maxCardinality")
+            max_cardinality = None
+            if max_cardinality_raw is not None:
+                max_cardinality = _expect_int(
+                    max_cardinality_raw,
+                    label="cells-windows.insrtc.maxCardinality",
+                )
+
+            length_raw = step.get("length")
+            length = None
+            if length_raw is not None:
+                length = _expect_int(length_raw, label="cells-windows.insrtc.length")
+
+            return StepCellsWindowsInsrtc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.insrtc.cellId"),
+                item=_expect_string(step.get("item"), label="cells-windows.insrtc.item"),
+                maxCardinality=max_cardinality,
+                length=length,
+            )
+
+        case "cells-windows.insrtd":
+            max_cardinality_raw = step.get("maxCardinality")
+            max_cardinality = None
+            if max_cardinality_raw is not None:
+                max_cardinality = _expect_int(
+                    max_cardinality_raw,
+                    label="cells-windows.insrtd.maxCardinality",
+                )
+
+            return StepCellsWindowsInsrtd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.insrtd.cellId"),
+                item=_expect_number(step.get("item"), label="cells-windows.insrtd.item"),
+                maxCardinality=max_cardinality,
+            )
+
+        case "cells-windows.insrti":
+            max_cardinality_raw = step.get("maxCardinality")
+            max_cardinality = None
+            if max_cardinality_raw is not None:
+                max_cardinality = _expect_int(
+                    max_cardinality_raw,
+                    label="cells-windows.insrti.maxCardinality",
+                )
+
+            return StepCellsWindowsInsrti(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.insrti.cellId"),
+                item=_expect_int(step.get("item"), label="cells-windows.insrti.item"),
+                maxCardinality=max_cardinality,
+            )
+
+        case "cells-windows.scard":
+            return StepCellsWindowsScard(
+                op=op,
+                card=_expect_int(step.get("card"), label="cells-windows.scard.card"),
+                targetKind=_expect_string(step.get("targetKind"), label="cells-windows.scard.targetKind"),
+                targetId=_expect_string(step.get("targetId"), label="cells-windows.scard.targetId"),
+            )
+
+        case "cells-windows.size":
+            return StepCellsWindowsSize(
+                op=op,
+                targetKind=_expect_string(step.get("targetKind"), label="cells-windows.size.targetKind"),
+                targetId=_expect_string(step.get("targetId"), label="cells-windows.size.targetId"),
+            )
+
+        case "cells-windows.ssize":
+            return StepCellsWindowsSsize(
+                op=op,
+                size=_expect_int(step.get("size"), label="cells-windows.ssize.size"),
+                targetKind=_expect_string(step.get("targetKind"), label="cells-windows.ssize.targetKind"),
+                targetId=_expect_string(step.get("targetId"), label="cells-windows.ssize.targetId"),
+            )
+
+        case "cells-windows.valid":
+            return StepCellsWindowsValid(
+                op=op,
+                size=_expect_int(step.get("size"), label="cells-windows.valid.size"),
+                n=_expect_int(step.get("n"), label="cells-windows.valid.n"),
+                targetKind=_expect_string(step.get("targetKind"), label="cells-windows.valid.targetKind"),
+                targetId=_expect_string(step.get("targetId"), label="cells-windows.valid.targetId"),
+            )
+
+        case "cells-windows.wncard":
+            return StepCellsWindowsWncard(
+                op=op,
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wncard.windowId"),
+            )
+
         case "cells-windows.wninsd":
             max_intervals_raw = step.get("maxIntervals")
             max_intervals = None
@@ -467,6 +576,14 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfetd.windowId"),
                 index=_expect_int(step.get("index"), label="cells-windows.wnfetd.index"),
+            )
+
+        case "cells-windows.wnvald":
+            return StepCellsWindowsWnvald(
+                op=op,
+                size=_expect_int(step.get("size"), label="cells-windows.wnvald.size"),
+                n=_expect_int(step.get("n"), label="cells-windows.wnvald.n"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnvald.windowId"),
             )
 
         case "kernel-pool.gdpool":

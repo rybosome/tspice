@@ -2,7 +2,20 @@ from __future__ import annotations
 
 from typing import TypeAlias
 
-from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
+from .cells_windows import (
+    StepCellsWindowsCard,
+    StepCellsWindowsInsrtc,
+    StepCellsWindowsInsrtd,
+    StepCellsWindowsInsrti,
+    StepCellsWindowsScard,
+    StepCellsWindowsSize,
+    StepCellsWindowsSsize,
+    StepCellsWindowsValid,
+    StepCellsWindowsWncard,
+    StepCellsWindowsWnfetd,
+    StepCellsWindowsWninsd,
+    StepCellsWindowsWnvald,
+)
 from .coords_vectors import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -118,8 +131,18 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsRecgeo
     | StepCoordsVectorsMxv
     | StepCoordsVectorsMtxv
+    | StepCellsWindowsCard
+    | StepCellsWindowsInsrtc
+    | StepCellsWindowsInsrtd
+    | StepCellsWindowsInsrti
+    | StepCellsWindowsScard
+    | StepCellsWindowsSize
+    | StepCellsWindowsSsize
+    | StepCellsWindowsValid
+    | StepCellsWindowsWncard
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
+    | StepCellsWindowsWnvald
     | StepKernelPoolGdpool
     | StepKernelPoolGipool
     | StepKernelPoolGcpool
