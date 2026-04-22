@@ -23,7 +23,12 @@ export function publishAlias(
   alias: string,
   value: AliasValue,
 ): void {
-  context.aliases.set(normalizeAliasName(alias), value);
+  const normalizedAlias = normalizeAliasName(alias);
+  if (context.aliases.has(normalizedAlias)) {
+    throw new Error(`Workflow alias already published: ${normalizedAlias}`);
+  }
+
+  context.aliases.set(normalizedAlias, value);
 }
 
 /** Resolve a previously published alias value. */

@@ -68,4 +68,23 @@ describe("workflow normalization", () => {
       },
     ]);
   });
+
+  it("throws when multiple publishers define the same alias", () => {
+    const workflow: WorkflowStep[] = [
+      {
+        op: "kernels.furnsh",
+        file: "kernels/naif0012.tls",
+        alias: "shared-kernel",
+      },
+      {
+        op: "kernels.furnsh",
+        file: "kernels/pck00010.tpc",
+        alias: "shared-kernel",
+      },
+    ];
+
+    expect(() => normalizeWorkflow(workflow, "sidecar")).toThrowError(
+      "Workflow alias already published: shared-kernel",
+    );
+  });
 });
