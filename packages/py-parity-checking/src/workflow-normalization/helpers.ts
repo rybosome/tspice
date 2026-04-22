@@ -1,0 +1,38 @@
+import type { AliasValue, NormalizationContext, NormalizeTarget } from "./types.js";
+
+import { readAlias } from "./context.js";
+
+/**
+ * Convert alias values into existing path-string contract used by `kernels.kinfo`/`kernels.unload`.
+ *
+ * For `PathRef` aliases, we intentionally map to legacy fixture-compatible strings so consumers can
+ * continue using existing path fields without broad step-surface changes.
+ */
+export function aliasValueToPathString(value: AliasValue, target: NormalizeTarget): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (value.kind === "fixture") {
+    return value.rel;
+  }
+
+  if (target === "sidecar") {
+    throw new Error("Scratch-path aliases are not supported for sidecar path consumers");
+  }
+
+  return `scratch/${value.rel}`;
+}
+
+export function resolvePathWithOptionalAlias(
+  path: string,
+  alias: string | undefined,
+  context: NormalizationContext,
+): string {
+  if (alias == null) {
+    return path;
+  }
+
+  const value = readAlias(context, alias);
+  return aliasValueToPathString(value, context.target);
+}

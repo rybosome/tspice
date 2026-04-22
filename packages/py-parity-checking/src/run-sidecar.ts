@@ -5,15 +5,14 @@ import { fileURLToPath } from "node:url";
 import type {
   CaseExecutionResult,
   ParityCase,
-  StepKernelsFurnsh,
   WorkflowStep,
 } from "./case-types.js";
 import {
   createCaseRuntimePaths,
   removeScratchRootBestEffort,
-  toPathRef,
   type RuntimePaths,
 } from "./runtime/path-ref.js";
+import { normalizeWorkflow } from "./workflow-normalization/index.js";
 
 const moduleFile = fileURLToPath(import.meta.url);
 const moduleDir = path.dirname(moduleFile);
@@ -27,20 +26,6 @@ type SidecarRequestPayload = {
   };
   workflow: WorkflowStep[];
 };
-
-function withPathRefs(workflow: WorkflowStep[]): WorkflowStep[] {
-  return workflow.map((step) => {
-    if (step.op !== "kernels.furnsh") {
-      return step;
-    }
-
-    const normalized: StepKernelsFurnsh = {
-      ...step,
-      file: toPathRef(step.file),
-    };
-    return normalized;
-  });
-}
 
 function parseSidecarResponse(stdout: string): CaseExecutionResult {
   const trimmed = stdout.trim();
@@ -63,7 +48,7 @@ export async function runCaseInSidecar(
       runtime: {
         paths: runtimePaths,
       },
-      workflow: withPathRefs(parityCase.workflow),
+      workflow: normalizeWorkflow(parityCase.workflow, "sidecar"),
     };
 
     const child = spawn(

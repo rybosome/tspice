@@ -437,6 +437,7 @@ export type StepKernelPoolExpool = {
 export type StepKernelsFurnsh = {
   op: "kernels.furnsh";
   file: PathRefLike;
+  alias?: string;
 };
 
 export type StepKernelsKclear = {
@@ -446,6 +447,7 @@ export type StepKernelsKclear = {
 export type StepKernelsKinfo = {
   op: "kernels.kinfo";
   path: string;
+  alias?: string;
 };
 
 export type StepKernelsKplfrm = {
@@ -474,6 +476,7 @@ export type StepKernelsKxtrct = {
 export type StepKernelsUnload = {
   op: "kernels.unload";
   path: string;
+  alias?: string;
 };
 
 export type StepErrorFailed = {
