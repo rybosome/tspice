@@ -4,6 +4,7 @@ from ctypes import c_double
 
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
+from spiceypy.utils.exceptions import NotFoundError
 
 from ..models import (
     StepGeometryIlumin,
@@ -62,16 +63,21 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
         )
 
     if isinstance(step, StepGeometrySincpt):
-        spoint, trgepc, srfvec = sp.sincpt(
-            step.method,
-            step.target,
-            step.et,
-            step.fixref,
-            step.abcorr,
-            step.observer,
-            step.dref,
-            step.dvec,
-        )
+        try:
+            spoint, trgepc, srfvec = sp.sincpt(
+                step.method,
+                step.target,
+                step.et,
+                step.fixref,
+                step.abcorr,
+                step.observer,
+                step.dref,
+                step.dvec,
+            )
+        except NotFoundError:
+            if bool(sp.failed()):
+                raise
+            return StepOutput(op=step.op, value={"found": False})
 
         return StepOutput(
             op=step.op,
