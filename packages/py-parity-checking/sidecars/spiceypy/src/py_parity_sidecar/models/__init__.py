@@ -2,7 +2,20 @@ from __future__ import annotations
 
 from .case import CaseError, CaseRequest, CaseResponse, JsonScalar, JsonValue, StepOutput
 from .paths import PathRef, PathRefInput, PathRefKind, RuntimeConfig, RuntimePaths
-from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
+from .cells_windows import (
+    StepCellsWindowsCard,
+    StepCellsWindowsInsrtc,
+    StepCellsWindowsInsrtd,
+    StepCellsWindowsInsrti,
+    StepCellsWindowsScard,
+    StepCellsWindowsSize,
+    StepCellsWindowsSsize,
+    StepCellsWindowsValid,
+    StepCellsWindowsWncard,
+    StepCellsWindowsWnfetd,
+    StepCellsWindowsWninsd,
+    StepCellsWindowsWnvald,
+)
 from .coords_vectors import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -160,8 +173,18 @@ __all__ = [
     "StepCoordsVectorsRecgeo",
     "StepCoordsVectorsMxv",
     "StepCoordsVectorsMtxv",
+    "StepCellsWindowsCard",
+    "StepCellsWindowsInsrtc",
+    "StepCellsWindowsInsrtd",
+    "StepCellsWindowsInsrti",
+    "StepCellsWindowsScard",
+    "StepCellsWindowsSize",
+    "StepCellsWindowsSsize",
+    "StepCellsWindowsValid",
+    "StepCellsWindowsWncard",
     "StepCellsWindowsWninsd",
     "StepCellsWindowsWnfetd",
+    "StepCellsWindowsWnvald",
     "KernelPoolVarType",
     "StepKernelPoolGdpool",
     "StepKernelPoolGipool",

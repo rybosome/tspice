@@ -11,6 +11,9 @@ Finalizer = Callable[[], None]
 
 @dataclass
 class CellsWindowsState:
+    intCells: dict[str, Any] = field(default_factory=dict)
+    doubleCells: dict[str, Any] = field(default_factory=dict)
+    charCells: dict[str, Any] = field(default_factory=dict)
     windows: dict[str, Any] = field(default_factory=dict)
 
 
