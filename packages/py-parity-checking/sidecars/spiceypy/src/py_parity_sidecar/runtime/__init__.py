@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from .context import (
     CaseState,
+    FileIoHandleState,
+    FileIoState,
     SidecarRuntimeContext,
     create_runtime_context,
     register_default_finalizers,
@@ -16,6 +18,8 @@ from .path_refs import (
 
 __all__ = [
     "CaseState",
+    "FileIoHandleState",
+    "FileIoState",
     "SidecarRuntimeContext",
     "create_runtime_context",
     "register_default_finalizers",

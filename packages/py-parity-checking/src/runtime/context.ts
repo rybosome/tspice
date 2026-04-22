@@ -21,8 +21,16 @@ export type KernelsState = {
   loadedVirtualKernelPaths: string[];
 };
 
+export type FileIoHandleState = {
+  handle: SpiceHandle;
+  closeWith: "dafcls" | "dascls";
+  isOpen: boolean;
+};
+
 export type FileIoState = {
-  openHandles: Map<string, string>;
+  handles: Map<string, FileIoHandleState>;
+  descriptors: Map<string, DlaDescriptor>;
+  spatialIndexes: Map<string, { spaixd: number[]; spaixi: number[] }>;
 };
 
 export type DskState = {
@@ -89,7 +97,9 @@ export function createRunTspiceContext(spice: Spice, paths: RuntimePaths): RunTs
         loadedVirtualKernelPaths: [],
       },
       fileIo: {
-        openHandles: new Map<string, string>(),
+        handles: new Map<string, FileIoHandleState>(),
+        descriptors: new Map<string, DlaDescriptor>(),
+        spatialIndexes: new Map<string, { spaixd: number[]; spaixi: number[] }>(),
       },
       dsk: {
         loadedSegments: 0,
