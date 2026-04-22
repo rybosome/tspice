@@ -167,6 +167,7 @@ def _expect_vec4(value: Any, *, label: str) -> tuple[float, float, float, float]
         _expect_number(value[1], label=f"{label}[1]"),
         _expect_number(value[2], label=f"{label}[2]"),
         _expect_number(value[3], label=f"{label}[3]"),
+    )
 
 
 def _decode_path_ref(value: Any, *, label: str) -> PathRef | str:
