@@ -13,6 +13,7 @@ import {
   type RuntimePaths,
 } from "./runtime/path-ref.js";
 import { runSidecarPreCaseHooks } from "./run-sidecar/pre-case.js";
+import { withNormalizedWorkflowPathRefs } from "./runtime/workflow-paths.js";
 import { normalizeWorkflowDetailed } from "./workflow-normalization/index.js";
 
 const moduleFile = fileURLToPath(import.meta.url);
@@ -44,7 +45,10 @@ export async function runCaseInSidecar(
   const runtimePaths = createCaseRuntimePaths(fixturesRoot, parityCase.caseId);
 
   try {
-    const normalized = normalizeWorkflowDetailed(parityCase.workflow, "sidecar");
+    const normalized = normalizeWorkflowDetailed(
+      withNormalizedWorkflowPathRefs(parityCase.workflow),
+      "sidecar",
+    );
     runSidecarPreCaseHooks(normalized.metadata, runtimePaths);
 
     const requestPayload: SidecarRequestPayload = {

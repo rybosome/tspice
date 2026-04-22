@@ -19,7 +19,7 @@ import type {
   StepEkEktnam,
   StepOutput,
 } from "../../case-types.js";
-import { resolvePathRef } from "../../fixtures.js";
+import { toVirtualKernelPath } from "../../fixtures.js";
 import {
   closeEkHandle,
   registerEkHandle,
@@ -28,6 +28,7 @@ import {
   requireEkSegment,
   type RunTspiceContext,
 } from "../context.js";
+import { normalizePathRefRelativePath } from "../../runtime/path-ref.js";
 
 type EkStep =
   | StepEkEkopn
@@ -47,14 +48,14 @@ type EkStep =
   | StepEkEkaclc
   | StepEkEkffld;
 
-function resolveEkPath(context: RunTspiceContext, rawPath: string): string {
+function resolveEkPath(rawPath: string): string {
   if (path.isAbsolute(rawPath)) {
     return rawPath;
   }
 
-  return resolvePathRef(context.paths, {
+  return toVirtualKernelPath({
     kind: "scratch",
-    rel: rawPath,
+    rel: normalizePathRefRelativePath(rawPath),
   });
 }
 
@@ -62,19 +63,19 @@ function resolveEkPath(context: RunTspiceContext, rawPath: string): string {
 export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
   switch (step.op) {
     case "ek.ekopn": {
-      const handle = context.spice.raw.ekopn(resolveEkPath(context, step.path), step.ifname, step.ncomch);
+      const handle = context.spice.raw.ekopn(resolveEkPath(step.path), step.ifname, step.ncomch);
       registerEkHandle(context, step.handleId, handle);
       return { op: step.op, value: { handleId: step.handleId } };
     }
 
     case "ek.ekopr": {
-      const handle = context.spice.raw.ekopr(resolveEkPath(context, step.path));
+      const handle = context.spice.raw.ekopr(resolveEkPath(step.path));
       registerEkHandle(context, step.handleId, handle);
       return { op: step.op, value: { handleId: step.handleId } };
     }
 
     case "ek.ekopw": {
-      const handle = context.spice.raw.ekopw(resolveEkPath(context, step.path));
+      const handle = context.spice.raw.ekopw(resolveEkPath(step.path));
       registerEkHandle(context, step.handleId, handle);
       return { op: step.op, value: { handleId: step.handleId } };
     }
