@@ -3,11 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+from .paths import PathRefInput
+
 
 @dataclass(frozen=True)
 class StepKernelsFurnsh:
     op: Literal["kernels.furnsh"]
-    file: str
+    file: PathRefInput
 
 
 @dataclass(frozen=True)

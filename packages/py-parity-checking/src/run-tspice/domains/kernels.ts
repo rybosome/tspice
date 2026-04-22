@@ -9,7 +9,7 @@ import type {
 } from "../../case-types.js";
 import {
   normalizeKernelPathForParity,
-  resolveFixturePath,
+  resolvePathRef,
   toVirtualKernelPath,
 } from "../../fixtures.js";
 import type { RunTspiceContext } from "../context.js";
@@ -20,12 +20,14 @@ type KernelsStep = StepKernelsFurnsh | StepKernelsKtotal | StepKernelsKdata | St
 export function runKernelsStep(context: RunTspiceContext, step: KernelsStep): StepOutput {
   switch (step.op) {
     case "kernels.furnsh": {
-      const fixturePath = resolveFixturePath(context.fixturesRoot, step.file);
-      const bytes = fs.readFileSync(fixturePath);
+      const resolvedPath = resolvePathRef(context.paths, step.file);
+      const virtualPath = toVirtualKernelPath(step.file);
+      const bytes = fs.readFileSync(resolvedPath);
       context.spice.raw.furnsh({
-        path: toVirtualKernelPath(step.file),
+        path: virtualPath,
         bytes,
       });
+      context.state.kernels.loadedVirtualKernelPaths.push(virtualPath);
       return { op: step.op, value: null };
     }
 

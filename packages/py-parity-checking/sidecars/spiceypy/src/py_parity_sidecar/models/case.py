@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TypeAlias
 
+from .paths import RuntimeConfig
 from .workflow import WorkflowStep
 
 JsonScalar: TypeAlias = str | int | float | bool | None
@@ -13,6 +14,7 @@ JsonValue: TypeAlias = JsonScalar | list["JsonValue"] | dict[str, "JsonValue"]
 class CaseRequest:
     caseId: str
     workflow: list[WorkflowStep]
+    runtime: RuntimeConfig | None = None
 
 
 @dataclass(frozen=True)

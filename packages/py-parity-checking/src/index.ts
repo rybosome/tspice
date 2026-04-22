@@ -5,6 +5,8 @@ export type {
   CaseExecutionSuccess,
   CaseExpectation,
   Matrix3x3,
+  PathRef,
+  PathRefLike,
   ParityCase,
   StepOutput,
   WorkflowStep,

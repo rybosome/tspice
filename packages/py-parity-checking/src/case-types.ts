@@ -2,6 +2,20 @@ export type TimdefItem = "SYSTEM" | "CALENDAR" | "ZONE";
 
 export type ErrorGetmsgWhich = "SHORT" | "LONG" | "EXPLAIN";
 
+/**
+ * Logical runtime path reference used by parity workflows.
+ *
+ * - `fixture`: package fixture file under `packages/py-parity-checking/fixtures`
+ * - `scratch`: case-scoped disposable file under per-case scratch root
+ */
+export type PathRef = {
+  kind: "fixture" | "scratch";
+  rel: string;
+};
+
+/** Preferred path contract (`PathRef`) with string fixture compatibility for existing case JSON. */
+export type PathRefLike = PathRef | string;
+
 export type StepTimeStr2Et = {
   op: "time.str2et";
   time: string;
@@ -319,7 +333,7 @@ export type StepKernelPoolExpool = {
 
 export type StepKernelsFurnsh = {
   op: "kernels.furnsh";
-  file: string;
+  file: PathRefLike;
 };
 
 export type StepKernelsKtotal = {

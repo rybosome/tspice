@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .case import CaseError, CaseRequest, CaseResponse, JsonScalar, JsonValue, StepOutput
+from .paths import PathRef, PathRefInput, PathRefKind, RuntimeConfig, RuntimePaths
 from .cells_windows import StepCellsWindowsWnfetd, StepCellsWindowsWninsd
 from .coords_vectors import (
     StepCoordsVectorsAxisar,
@@ -91,6 +92,11 @@ __all__ = [
     "JsonScalar",
     "JsonValue",
     "StepOutput",
+    "PathRefKind",
+    "PathRef",
+    "PathRefInput",
+    "RuntimePaths",
+    "RuntimeConfig",
     "TimdefItem",
     "TkvrsnItem",
     "DeltetEptype",

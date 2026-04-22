@@ -26,6 +26,7 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
+from ..runtime import SidecarRuntimeContext
 
 
 def _to_vec3(values: object) -> list[float]:
@@ -49,7 +50,7 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
     return rows
 
 
-def run_coords_vectors_step(step: WorkflowStep) -> StepOutput | None:
+def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})
