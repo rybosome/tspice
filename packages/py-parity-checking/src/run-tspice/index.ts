@@ -17,7 +17,7 @@ export function runCaseInTspice(
   parityCase: ParityCase,
   fixturesRoot: string,
 ): CaseExecutionResult {
-  const context = createRunTspiceContext(spice, fixturesRoot);
+  const context = createRunTspiceContext(spice, fixturesRoot, parityCase.caseId);
 
   try {
     clearKernelState(context);

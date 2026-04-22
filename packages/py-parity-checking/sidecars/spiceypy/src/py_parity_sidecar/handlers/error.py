@@ -13,6 +13,7 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
+from ..runtime import SidecarRuntimeContext
 
 _ALLOWED_GETMSG_SELECTORS = {"SHORT", "LONG", "EXPLAIN"}
 
@@ -31,7 +32,7 @@ def _format_sigerr_message() -> str:
     return " | ".join(parts)
 
 
-def run_error_step(step: WorkflowStep) -> StepOutput | None:
+def run_error_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepErrorFailed):
         return StepOutput(op=step.op, value=bool(sp.failed()))
 

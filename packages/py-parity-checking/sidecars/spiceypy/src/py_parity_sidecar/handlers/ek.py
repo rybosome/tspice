@@ -5,6 +5,7 @@ from typing import Any
 import spiceypy as sp
 
 from ..models import StepEkEkgc, StepEkEkfind, StepOutput, WorkflowStep
+from ..runtime import SidecarRuntimeContext
 
 
 def _normalize_ekgc(value: Any) -> dict[str, Any]:
@@ -28,8 +29,9 @@ def _normalize_ekgc(value: Any) -> dict[str, Any]:
     raise ValueError(f"Unexpected ekgc return shape: {value!r}")
 
 
-def run_ek_step(step: WorkflowStep) -> StepOutput | None:
+def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepEkEkfind):
+        context.state.ek.lastQuery = step.query
         nmrows, error_flag, errmsg = sp.ekfind(step.query)
         if int(error_flag) == 0:
             return StepOutput(op=step.op, value={"ok": True, "nmrows": int(nmrows)})

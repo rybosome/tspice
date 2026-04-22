@@ -22,6 +22,7 @@ from ..models import (
     StepTimeUnitim,
     WorkflowStep,
 )
+from ..runtime import SidecarRuntimeContext
 
 SPICE_OUTPUT_LEN = 4096
 
@@ -32,7 +33,7 @@ def _expect_non_empty(value: str, *, label: str) -> str:
     return value
 
 
-def run_time_step(step: WorkflowStep) -> StepOutput | None:
+def run_time_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepTimeStr2Et):
         et = float(sp.str2et(step.time))
         return StepOutput(op=step.op, value=et)

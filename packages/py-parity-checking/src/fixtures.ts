@@ -1,40 +1,32 @@
-import path from "node:path";
+import type { PathRefLike } from "./case-types.js";
+import {
+  normalizeKernelPathForParity as normalizeKernelPathForParityCore,
+  normalizePathRefRelativePath,
+  resolveFixturePath as resolveFixturePathCore,
+  resolvePathRef,
+  toPathRef,
+  toVirtualKernelPath as toVirtualKernelPathCore,
+  type RuntimePaths,
+} from "./runtime/path-ref.js";
 
-/** Normalize package-local fixture path segments and reject traversal forms. */
+export { resolvePathRef, toPathRef, type RuntimePaths };
+
+/** Compatibility alias for fixture-relative normalization. */
 export function normalizeFixtureRelativePath(file: string): string {
-  const normalized = file.replace(/\\/g, "/");
-  if (normalized.startsWith("/") || normalized.startsWith("..")) {
-    throw new Error(`Fixture path must be package-relative: ${file}`);
-  }
-
-  const collapsed = path.posix.normalize(normalized);
-  if (collapsed.startsWith("..") || collapsed.includes("/../")) {
-    throw new Error(`Fixture path escapes fixture root: ${file}`);
-  }
-  return collapsed;
+  return normalizePathRefRelativePath(file);
 }
 
-/** Resolve a fixture file under the provided fixtures root with traversal checks. */
-export function resolveFixturePath(fixturesRoot: string, fixtureFile: string): string {
-  const relative = normalizeFixtureRelativePath(fixtureFile);
-  const resolved = path.resolve(fixturesRoot, relative);
-  const rootResolved = path.resolve(fixturesRoot);
-  if (!resolved.startsWith(rootResolved + path.sep) && resolved !== rootResolved) {
-    throw new Error(`Resolved fixture path escapes root: ${fixtureFile}`);
-  }
-  return resolved;
+/** Resolve fixture file refs under fixtures root (supports PathRef and legacy string forms). */
+export function resolveFixturePath(fixturesRoot: string, fixtureFile: PathRefLike): string {
+  return resolveFixturePathCore(fixturesRoot, fixtureFile);
 }
 
-/** Convert a fixture-relative file into a WASM virtual kernel id. */
-export function toVirtualKernelPath(fixtureFile: string): string {
-  const relative = normalizeFixtureRelativePath(fixtureFile);
-  return `py-parity/${relative}`;
+/** Convert logical fixture/scratch refs into tspice virtual kernel ids. */
+export function toVirtualKernelPath(pathRefLike: PathRefLike): string {
+  return toVirtualKernelPathCore(pathRefLike);
 }
 
 /** Normalize backend-reported kernel paths to stable basename-only parity values. */
 export function normalizeKernelPathForParity(pathValue: string): string {
-  if (pathValue.trim().length === 0) {
-    return "";
-  }
-  return path.basename(pathValue);
+  return normalizeKernelPathForParityCore(pathValue);
 }

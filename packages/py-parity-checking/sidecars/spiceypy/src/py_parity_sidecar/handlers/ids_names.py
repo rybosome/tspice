@@ -6,6 +6,7 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError
 
 from ..models import StepIdsNamesBodn2c, StepOutput, WorkflowStep
+from ..runtime import SidecarRuntimeContext
 
 
 def _normalize_bodn2c(value: Any) -> dict[str, int | bool]:
@@ -20,7 +21,7 @@ def _normalize_bodn2c(value: Any) -> dict[str, int | bool]:
     return {"found": True, "code": int(value)}
 
 
-def run_ids_names_step(step: WorkflowStep) -> StepOutput | None:
+def run_ids_names_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
     if not isinstance(step, StepIdsNamesBodn2c):
         return None
 

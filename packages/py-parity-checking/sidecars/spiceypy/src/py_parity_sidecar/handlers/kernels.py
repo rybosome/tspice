@@ -6,13 +6,24 @@ from typing import Any
 import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError
 
-from ..models import StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct, StepOutput, WorkflowStep
+from ..models import PathRefInput, StepKernelsFurnsh, StepKernelsKdata, StepKernelsKtotal, StepKernelsKxtrct, StepOutput, WorkflowStep
+from ..runtime import SidecarRuntimeContext, resolve_path_ref, to_path_ref
 
 
 def _basename(path_value: str) -> str:
     if path_value.strip() == "":
         return ""
     return Path(path_value).name
+
+
+def _to_virtual_kernel_path(path_ref_input: PathRefInput) -> str:
+    if isinstance(path_ref_input, str) and Path(path_ref_input).is_absolute():
+        return f"py-parity/{Path(path_ref_input).name}"
+
+    path_ref = to_path_ref(path_ref_input)
+    if path_ref.kind == "fixture":
+        return f"py-parity/{path_ref.rel}"
+    return f"py-parity/scratch/{path_ref.rel}"
 
 
 def _normalize_kdata(value: Any) -> dict[str, Any]:
@@ -53,9 +64,11 @@ def _normalize_kxtrct(value: Any) -> dict[str, Any]:
     raise ValueError(f"Unexpected kxtrct return shape: {value!r}")
 
 
-def run_kernels_step(step: WorkflowStep) -> StepOutput | None:
+def run_kernels_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepKernelsFurnsh):
-        sp.furnsh(step.file)
+        resolved_file = resolve_path_ref(context.paths, step.file)
+        sp.furnsh(resolved_file)
+        context.state.kernels.loadedVirtualKernelPaths.append(_to_virtual_kernel_path(step.file))
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepKernelsKtotal):

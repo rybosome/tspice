@@ -20,6 +20,7 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
+from ..runtime import SidecarRuntimeContext
 
 
 def _normalize_found_scalars(
@@ -60,7 +61,7 @@ def _swpool_lenvals(names: list[str]) -> int:
     return max(2, max(len(name) for name in names))
 
 
-def run_kernel_pool_step(step: WorkflowStep) -> StepOutput | None:
+def run_kernel_pool_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepKernelPoolGdpool):
         try:
             out = _normalize_found_scalars(

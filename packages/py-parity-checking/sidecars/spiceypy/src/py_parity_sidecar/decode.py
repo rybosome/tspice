@@ -56,6 +56,9 @@ from .models import (
     StepKernelPoolPdpool,
     StepKernelPoolPipool,
     StepKernelPoolSwpool,
+    PathRef,
+    RuntimeConfig,
+    RuntimePaths,
     StepKernelsFurnsh,
     StepKernelsKdata,
     StepKernelsKtotal,
@@ -164,6 +167,32 @@ def _expect_vec4(value: Any, *, label: str) -> tuple[float, float, float, float]
         _expect_number(value[1], label=f"{label}[1]"),
         _expect_number(value[2], label=f"{label}[2]"),
         _expect_number(value[3], label=f"{label}[3]"),
+
+
+def _decode_path_ref(value: Any, *, label: str) -> PathRef | str:
+    if isinstance(value, str):
+        return value
+
+    raw = _expect_mapping(value, label=label)
+    kind = _expect_string(raw.get("kind"), label=f"{label}.kind")
+    if kind not in {"fixture", "scratch"}:
+        raise ValueError(f"{label}.kind must be fixture|scratch")
+
+    rel = _expect_string(raw.get("rel"), label=f"{label}.rel")
+    return PathRef(kind=kind, rel=rel)
+
+
+def _decode_runtime_config(value: Any) -> RuntimeConfig | None:
+    if value is None:
+        return None
+
+    runtime = _expect_mapping(value, label="request.runtime")
+    paths = _expect_mapping(runtime.get("paths"), label="request.runtime.paths")
+    return RuntimeConfig(
+        paths=RuntimePaths(
+            fixturesRoot=_expect_string(paths.get("fixturesRoot"), label="request.runtime.paths.fixturesRoot"),
+            scratchRoot=_expect_string(paths.get("scratchRoot"), label="request.runtime.paths.scratchRoot"),
+        )
     )
 
 
@@ -518,7 +547,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             )
 
         case "kernels.furnsh":
-            return StepKernelsFurnsh(op=op, file=_expect_string(step.get("file"), label="kernels.furnsh.file"))
+            return StepKernelsFurnsh(op=op, file=_decode_path_ref(step.get("file"), label="kernels.furnsh.file"))
 
         case "kernels.ktotal":
             return StepKernelsKtotal(op=op, kind=_expect_string(step.get("kind"), label="kernels.ktotal.kind"))
@@ -696,5 +725,6 @@ def decode_case_request(raw: Any) -> CaseRequest:
     if not isinstance(workflow_raw, list):
         raise TypeError("request.workflow must be an array")
 
+    runtime = _decode_runtime_config(root.get("runtime"))
     workflow = [_decode_step(item) for item in workflow_raw]
-    return CaseRequest(caseId=case_id, workflow=workflow)
+    return CaseRequest(caseId=case_id, workflow=workflow, runtime=runtime)

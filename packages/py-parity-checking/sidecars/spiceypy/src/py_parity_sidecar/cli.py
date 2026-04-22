@@ -4,11 +4,15 @@ import json
 import sys
 from dataclasses import asdict
 
-import spiceypy as sp
-
 from .decode import decode_case_request
 from .handlers import run_workflow
 from .models import CaseError, CaseResponse
+from .runtime import (
+    before_case_lifecycle,
+    create_default_runtime_paths,
+    create_runtime_context,
+    finalize_case_lifecycle,
+)
 
 
 def _normalize_error(exc: BaseException) -> CaseError:
@@ -19,21 +23,16 @@ def main() -> int:
     raw = json.load(sys.stdin)
     request = decode_case_request(raw)
 
-    # Ensure CSPICE starts in a clean state for this process.
-    try:
-        sp.reset()
-    except BaseException:
-        pass
-    try:
-        sp.kclear()
-    except BaseException:
-        pass
+    runtime_paths = request.runtime.paths if request.runtime is not None else create_default_runtime_paths(request.caseId)
+    context = create_runtime_context(runtime_paths)
+
+    before_case_lifecycle()
 
     response: CaseResponse
     exit_code = 0
 
     try:
-        outputs = run_workflow(request)
+        outputs = run_workflow(request, context)
         response = CaseResponse(
             caseId=request.caseId,
             ok=True,
@@ -49,15 +48,7 @@ def main() -> int:
         )
         exit_code = 1
     finally:
-        # CSPICE must be reset after failures before additional toolkit calls.
-        try:
-            sp.reset()
-        except BaseException:
-            pass
-        try:
-            sp.kclear()
-        except BaseException:
-            pass
+        finalize_case_lifecycle(context)
 
     json.dump(asdict(response), sys.stdout)
     sys.stdout.write("\n")
