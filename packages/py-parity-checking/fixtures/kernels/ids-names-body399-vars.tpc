@@ -1,11 +1,11 @@
 KPL/PCK
 
-\\begindata
+\begindata
 
   BODY399_RADII = ( 1.0 2.0 3.0 )
   BODY399_FOO   = ( 'alpha' )
 
-\\begintext
+\begintext
 
 Body-constant fixture for ids-names py-parity coverage.
 
