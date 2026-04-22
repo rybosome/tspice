@@ -536,16 +536,19 @@ export type StepKernelsUnload = {
 export type StepFileIoExists = {
   op: "file-io.exists";
   path: PathRefLike;
+  alias?: string;
 };
 
 export type StepFileIoGetfat = {
   op: "file-io.getfat";
   path: PathRefLike;
+  alias?: string;
 };
 
 export type StepFileIoDafopr = {
   op: "file-io.dafopr";
   path: PathRefLike;
+  alias?: string;
   handleId: string;
 };
 
@@ -567,6 +570,7 @@ export type StepFileIoDaffna = {
 export type StepFileIoDasopr = {
   op: "file-io.dasopr";
   path: PathRefLike;
+  alias?: string;
   handleId: string;
 };
 
@@ -578,6 +582,7 @@ export type StepFileIoDascls = {
 export type StepFileIoDlaopn = {
   op: "file-io.dlaopn";
   path: PathRefLike;
+  alias?: string;
   ftype: string;
   ifname: string;
   ncomch: number;
@@ -604,6 +609,7 @@ export type StepFileIoDlacls = {
 export type StepFileIoDskopn = {
   op: "file-io.dskopn";
   path: PathRefLike;
+  alias?: string;
   ifname: string;
   ncomch: number;
   handleId: string;
@@ -647,7 +653,7 @@ export type StepFileIoDskw02 = {
   np: number;
   plates: number[];
   spaixId: string;
-
+};
 
 export type StepErrorFailed = {
   op: "error.failed";
