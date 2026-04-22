@@ -14,6 +14,7 @@ import type {
 import {
   normalizeKernelPathForParity,
   resolvePathRef,
+  toPathRef,
   toVirtualKernelPath,
 } from "../../fixtures.js";
 import type { RunTspiceContext } from "../context.js";
@@ -117,13 +118,32 @@ function runKplfrmStep(context: RunTspiceContext, frmcls: number): number[] {
 export function runKernelsStep(context: RunTspiceContext, step: KernelsStep): StepOutput {
   switch (step.op) {
     case "kernels.furnsh": {
-      const resolvedPath = resolvePathRef(context.paths, step.file);
-      const virtualPath = toVirtualKernelPath(step.file);
-      const bytes = fs.readFileSync(resolvedPath);
-      context.spice.raw.furnsh({
-        path: virtualPath,
-        bytes,
-      });
+      const pathRef = toPathRef(step.file);
+      const virtualPath = toVirtualKernelPath(pathRef);
+
+      if (pathRef.kind === "scratch") {
+        const resolvedScratchPath = resolvePathRef(context.paths, pathRef);
+
+        // Scratch refs may point to files created directly inside the backend
+        // (e.g. EK writers in WASM), in which case no host file exists.
+        if (fs.existsSync(resolvedScratchPath)) {
+          const bytes = fs.readFileSync(resolvedScratchPath);
+          context.spice.raw.furnsh({
+            path: virtualPath,
+            bytes,
+          });
+        } else {
+          context.spice.raw.furnsh(virtualPath);
+        }
+      } else {
+        const resolvedPath = resolvePathRef(context.paths, pathRef);
+        const bytes = fs.readFileSync(resolvedPath);
+        context.spice.raw.furnsh({
+          path: virtualPath,
+          bytes,
+        });
+      }
+
       context.state.kernels.loadedVirtualKernelPaths.push(virtualPath);
       return { op: step.op, value: null };
     }
