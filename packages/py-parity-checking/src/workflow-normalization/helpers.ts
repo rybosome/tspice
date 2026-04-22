@@ -24,6 +24,7 @@ export function aliasValueToPathString(value: AliasValue, target: NormalizeTarge
   return `scratch/${value.rel}`;
 }
 
+/** Return either the direct path input or an alias-resolved path-string. */
 export function resolvePathWithOptionalAlias(
   path: string,
   alias: string | undefined,

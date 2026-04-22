@@ -9,6 +9,7 @@ function normalizeAliasName(alias: string): string {
   return normalized;
 }
 
+/** Create an isolated alias map for one workflow-normalization run. */
 export function createNormalizationContext(target: NormalizeTarget): NormalizationContext {
   return {
     target,
@@ -16,6 +17,7 @@ export function createNormalizationContext(target: NormalizeTarget): Normalizati
   };
 }
 
+/** Register an alias value in the normalization context. */
 export function publishAlias(
   context: NormalizationContext,
   alias: string,
@@ -24,6 +26,7 @@ export function publishAlias(
   context.aliases.set(normalizeAliasName(alias), value);
 }
 
+/** Resolve a previously published alias value. */
 export function readAlias(context: NormalizationContext, alias: string): AliasValue {
   const normalizedAlias = normalizeAliasName(alias);
   const resolved = context.aliases.get(normalizedAlias);
