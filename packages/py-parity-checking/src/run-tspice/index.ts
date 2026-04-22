@@ -19,10 +19,11 @@ export function runCaseInTspice(
   fixturesRoot: string,
 ): CaseExecutionResult {
   const context = createRunTspiceContext(spice, fixturesRoot, parityCase.caseId);
-  const workflow = normalizeWorkflow(parityCase.workflow, "tspice");
 
   try {
     clearKernelState(context);
+
+    const workflow = normalizeWorkflow(parityCase.workflow, "tspice");
 
     const outputs: StepOutput[] = [];
     for (const step of workflow) {
