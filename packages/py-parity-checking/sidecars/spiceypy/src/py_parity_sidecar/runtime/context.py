@@ -23,8 +23,18 @@ class KernelsState:
 
 
 @dataclass
+class FileIoHandleState:
+    handle: int
+    kind: str
+    closeWith: str
+    isOpen: bool
+
+
+@dataclass
 class FileIoState:
-    openHandles: dict[str, str] = field(default_factory=dict)
+    handles: dict[str, FileIoHandleState] = field(default_factory=dict)
+    descriptors: dict[str, Any] = field(default_factory=dict)
+    spatialIndexes: dict[str, tuple[Any, Any]] = field(default_factory=dict)
 
 
 @dataclass

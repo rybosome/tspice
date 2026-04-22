@@ -23,7 +23,7 @@ import type {
   StepOutput,
 } from "../../case-types.js";
 import { toVirtualKernelPath } from "../../fixtures.js";
-import type { FileIoHandleState, RunTspiceContext } from "../context.js";
+import type { RunTspiceContext } from "../context.js";
 
 type FileIoStep =
   | StepFileIoExists
@@ -48,8 +48,8 @@ function resolveFileIoPath(path: PathRefLike): string {
   return toVirtualKernelPath(path);
 }
 
-function requireHandleState(context: RunTspiceContext, handleId: string): FileIoHandleState {
-  const state = context.fileIoHandles.get(handleId);
+function requireHandleState(context: RunTspiceContext, handleId: string) {
+  const state = context.state.fileIo.handles.get(handleId);
   if (state == null) {
     throw new Error(`File-io handle does not exist: ${handleId}`);
   }
@@ -63,12 +63,12 @@ function registerHandleState(
   handle: SpiceHandle,
   closeWith: "dafcls" | "dascls",
 ): void {
-  const existing = context.fileIoHandles.get(handleId);
+  const existing = context.state.fileIo.handles.get(handleId);
   if (existing?.isOpen) {
     throw new Error(`File-io handle already exists and is open: ${handleId}`);
   }
 
-  context.fileIoHandles.set(handleId, {
+  context.state.fileIo.handles.set(handleId, {
     handle,
     closeWith,
     isOpen: true,
@@ -76,7 +76,7 @@ function registerHandleState(
 }
 
 function requireDescriptor(context: RunTspiceContext, descrId: string): DlaDescriptor {
-  const descr = context.fileIoDescrs.get(descrId);
+  const descr = context.state.fileIo.descriptors.get(descrId);
   if (descr == null) {
     throw new Error(`File-io descriptor does not exist: ${descrId}`);
   }
@@ -88,7 +88,7 @@ function requireSpatialIndex(
   context: RunTspiceContext,
   spaixId: string,
 ): { spaixd: number[]; spaixi: number[] } {
-  const index = context.fileIoSpatialIndexes.get(spaixId);
+  const index = context.state.fileIo.spatialIndexes.get(spaixId);
   if (index == null) {
     throw new Error(`File-io spatial index does not exist: ${spaixId}`);
   }
@@ -180,11 +180,11 @@ export function runFileIoStep(context: RunTspiceContext, step: FileIoStep): Step
       const state = requireHandleState(context, step.handleId);
       const out = context.spice.raw.dlabfs(state.handle);
       if (!out.found) {
-        context.fileIoDescrs.delete(step.descrId);
+        context.state.fileIo.descriptors.delete(step.descrId);
         return { op: step.op, value: { found: false } };
       }
 
-      context.fileIoDescrs.set(step.descrId, out.descr);
+      context.state.fileIo.descriptors.set(step.descrId, out.descr);
       return { op: step.op, value: { found: true } };
     }
 
@@ -193,11 +193,11 @@ export function runFileIoStep(context: RunTspiceContext, step: FileIoStep): Step
       const descr = requireDescriptor(context, step.descrId);
       const out = context.spice.raw.dlafns(state.handle, descr);
       if (!out.found) {
-        context.fileIoDescrs.delete(step.descrId);
+        context.state.fileIo.descriptors.delete(step.descrId);
         return { op: step.op, value: { found: false } };
       }
 
-      context.fileIoDescrs.set(step.descrId, out.descr);
+      context.state.fileIo.descriptors.set(step.descrId, out.descr);
       return { op: step.op, value: { found: true } };
     }
 
@@ -236,7 +236,7 @@ export function runFileIoStep(context: RunTspiceContext, step: FileIoStep): Step
       const spaixd = [...out.spaixd];
       const spaixi = [...out.spaixi];
       if (step.spaixId != null) {
-        context.fileIoSpatialIndexes.set(step.spaixId, { spaixd, spaixi });
+        context.state.fileIo.spatialIndexes.set(step.spaixId, { spaixd, spaixi });
       }
 
       return {

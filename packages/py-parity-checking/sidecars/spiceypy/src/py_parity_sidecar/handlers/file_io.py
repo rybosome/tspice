@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -27,25 +26,9 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
-from ..runtime import SidecarRuntimeContext, resolve_path_ref
+from ..runtime import FileIoHandleState, FileIoState, SidecarRuntimeContext, resolve_path_ref
 
 SPAIX_HEAD_LIMIT = 8
-
-
-@dataclass
-class HandleState:
-    handle: int
-    kind: str
-    closeWith: str
-    isOpen: bool
-
-
-@dataclass
-class FileIoState:
-    handles: dict[str, HandleState]
-    descriptors: dict[str, Any]
-    spatialIndexes: dict[str, tuple[np.ndarray, np.ndarray]]
-
 
 def _resolve_file_io_path(context: SidecarRuntimeContext, path_value: str) -> str:
     return resolve_path_ref(context.paths, path_value)
@@ -70,7 +53,7 @@ def _register_handle(
     if existing is not None and existing.isOpen:
         raise ValueError(f"File-io handle already exists and is open: {handle_id}")
 
-    state.handles[handle_id] = HandleState(
+    state.handles[handle_id] = FileIoHandleState(
         handle=int(handle),
         kind=kind,
         closeWith=close_with,
@@ -84,7 +67,7 @@ def _require_handle(
     *,
     expected_kind: str | None = None,
     require_open: bool = False,
-) -> HandleState:
+) -> FileIoHandleState:
     handle_state = state.handles.get(handle_id)
     if handle_state is None:
         raise ValueError(f"File-io handle does not exist: {handle_id}")
@@ -156,7 +139,9 @@ def _summarize_spatial_index(spaixd: np.ndarray, spaixi: np.ndarray) -> dict[str
     }
 
 
-def run_file_io_step(step: WorkflowStep, state: FileIoState, context: SidecarRuntimeContext) -> StepOutput | None:
+def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
+    state = context.state.fileIo
+
     if isinstance(step, StepFileIoExists):
         return StepOutput(op=step.op, value=bool(sp.exists(_resolve_file_io_path(context, step.path))))
 

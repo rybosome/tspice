@@ -7,7 +7,7 @@ from .coords_vectors import run_coords_vectors_step
 from .dsk import run_dsk_step
 from .ek import run_ek_step
 from .error import run_error_step
-from .file_io import FileIoState, run_file_io_step
+from .file_io import run_file_io_step
 from .frames import run_frames_step
 from .geometry import run_geometry_step
 from .geometry_gf import run_geometry_gf_step
@@ -20,7 +20,6 @@ from .time import run_time_step
 def _run_step(
     step: WorkflowStep,
     context: SidecarRuntimeContext,
-    file_io: FileIoState,
 ) -> StepOutput:
     out = run_time_step(step, context)
     if out is not None:
@@ -46,7 +45,7 @@ def _run_step(
     if out is not None:
         return out
 
-    out = run_file_io_step(step, file_io, context)
+    out = run_file_io_step(step, context)
     if out is not None:
         return out
 
@@ -78,9 +77,7 @@ def _run_step(
 
 
 def run_workflow(req: CaseRequest, context: SidecarRuntimeContext) -> list[StepOutput]:
-    file_io = FileIoState(handles={}, descriptors={}, spatialIndexes={})
-
     outputs: list[StepOutput] = []
     for step in req.workflow:
-        outputs.append(_run_step(step, context, file_io))
+        outputs.append(_run_step(step, context))
     return outputs
