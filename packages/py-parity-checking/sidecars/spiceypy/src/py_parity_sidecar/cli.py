@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import sys
 from dataclasses import asdict
+from typing import Any
 
 from .decode import decode_case_request
 from .handlers import run_workflow
@@ -19,19 +20,33 @@ def _normalize_error(exc: BaseException) -> CaseError:
     return CaseError(type=type(exc).__name__, message=str(exc))
 
 
+def _extract_case_id(raw: Any) -> str:
+    if isinstance(raw, dict):
+        case_id = raw.get("caseId")
+        if isinstance(case_id, str):
+            return case_id
+    return "<unknown>"
+
+
 def main() -> int:
     raw = json.load(sys.stdin)
-    request = decode_case_request(raw)
-
-    runtime_paths = request.runtime.paths if request.runtime is not None else create_default_runtime_paths(request.caseId)
-    context = create_runtime_context(runtime_paths)
-
-    before_case_lifecycle()
+    case_id = _extract_case_id(raw)
 
     response: CaseResponse
     exit_code = 0
+    context = None
 
     try:
+        request = decode_case_request(raw)
+        case_id = request.caseId
+
+        runtime_paths = (
+            request.runtime.paths if request.runtime is not None else create_default_runtime_paths(request.caseId)
+        )
+        context = create_runtime_context(runtime_paths)
+
+        before_case_lifecycle()
+
         outputs = run_workflow(request, context)
         response = CaseResponse(
             caseId=request.caseId,
@@ -41,14 +56,15 @@ def main() -> int:
         )
     except BaseException as exc:
         response = CaseResponse(
-            caseId=request.caseId,
+            caseId=case_id,
             ok=False,
             outputs=[],
             error=_normalize_error(exc),
         )
         exit_code = 1
     finally:
-        finalize_case_lifecycle(context)
+        if context is not None:
+            finalize_case_lifecycle(context)
 
     json.dump(asdict(response), sys.stdout)
     sys.stdout.write("\n")
