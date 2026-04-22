@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import sys
 from contextlib import contextmanager
-from typing import Any, Iterator
+from typing import Any, Iterator, MutableMapping
 
 import spiceypy as sp
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL
@@ -20,7 +20,8 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
-from .cells_windows import WindowStore
+
+WindowStore = MutableMapping[str, Any]
 
 
 def _require_window(windows: WindowStore, window_id: str) -> Any:
