@@ -10,7 +10,11 @@ import type {
 import { toPathRef } from "../../fixtures.js";
 
 import { publishAlias, readAlias } from "../context.js";
-import type { DomainNormalizer, NormalizationContext } from "../types.js";
+import type {
+  DomainNormalizer,
+  NormalizationContext,
+  WorkflowNormalizationMetadata,
+} from "../types.js";
 
 type FileIoPathStep =
   | StepFileIoExists
@@ -21,6 +25,21 @@ type FileIoPathStep =
   | StepFileIoDskopn;
 
 type FileIoAliasPublisher = StepFileIoDlaopn | StepFileIoDskopn;
+
+function ensureFileIoPostCaseCleanupScope(metadata: WorkflowNormalizationMetadata): void {
+  if (
+    metadata.postCase.cleanupScopes.some(
+      (scope) => scope.domain === "file-io" && scope.scope === "open-handles",
+    )
+  ) {
+    return;
+  }
+
+  metadata.postCase.cleanupScopes.push({
+    domain: "file-io",
+    scope: "open-handles",
+  });
+}
 
 function publishFileIoAlias(step: FileIoAliasPublisher): [string, ReturnType<typeof toPathRef>] | null {
   if (step.alias == null) {
@@ -81,6 +100,26 @@ export const fileIoNormalizer: DomainNormalizer = {
 
       default:
         return step;
+    }
+  },
+
+  analyze(step, _context, metadata) {
+    if (step.op.startsWith("file-io.")) {
+      ensureFileIoPostCaseCleanupScope(metadata);
+    }
+
+    switch (step.op) {
+      case "file-io.dlaopn":
+      case "file-io.dskopn":
+        metadata.preCase.cleanupCandidates.push({
+          domain: "file-io",
+          op: step.op,
+          path: toPathRef(step.path),
+        });
+        return;
+
+      default:
+        return;
     }
   },
 };
