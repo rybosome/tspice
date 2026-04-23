@@ -2,12 +2,7 @@ import type { AliasValue, NormalizationContext, NormalizeTarget } from "./types.
 
 import { readAlias } from "./context.js";
 
-/**
-* Convert alias values into existing path-string contract used by `kernels.kinfo`/`kernels.unload`.
- *
-* For `PathRef` aliases, we map to current string-path forms (`rel` or `scratch/rel`) so consumers
-* can keep using existing path fields without broad step-surface changes.
- */
+/** Convert alias values into path strings (`rel`/`scratch/rel`) for `kernels.kinfo` and `kernels.unload`. */
 export function aliasValueToPathString(value: AliasValue, target: NormalizeTarget): string {
   if (typeof value === "string") {
     return value;

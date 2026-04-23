@@ -34,11 +34,7 @@ export function normalizePathRefRelativePath(rel: string): string {
   return collapsed;
 }
 
-/**
-* Normalize incoming path references.
-*
-* Current default: plain string paths are fixture-relative unless explicitly marked as `scratch`.
-*/
+/** Normalize incoming path references; string paths default to fixture-relative unless marked as `scratch`. */
 export function toPathRef(pathRefLike: PathRefLike): PathRef {
   if (typeof pathRefLike === "string") {
     return {
