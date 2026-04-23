@@ -323,4 +323,90 @@ describe("workflow normalization", () => {
       "Workflow alias already published: shared-kernel",
     );
   });
+
+  it("marks kernels.furnsh EK outputs as scratch paths via shared generated-path context", () => {
+    const workflow: WorkflowStep[] = [
+      {
+        op: "ek.ekopn",
+        path: ".py-parity-ek-scratch.ek",
+        ifname: "wf-test",
+        ncomch: 0,
+        handleId: "H_TEST",
+      },
+      { op: "ek.ekcls", handleId: "H_TEST" },
+      { op: "kernels.furnsh", file: ".py-parity-ek-scratch.ek" },
+    ];
+
+    const normalized = normalizeWorkflow(workflow, "sidecar");
+
+    expect(normalized[2]).toEqual({
+      op: "kernels.furnsh",
+      file: {
+        kind: "scratch",
+        rel: ".py-parity-ek-scratch.ek",
+      },
+    });
+  });
+
+  it("normalizes EK generated-path lookups before matching kernels.furnsh strings", () => {
+    const workflow: WorkflowStep[] = [
+      {
+        op: "ek.ekopn",
+        path: "tmp/../generated.ek",
+        ifname: "wf-test",
+        ncomch: 0,
+        handleId: "H_TEST",
+      },
+      {
+        op: "kernels.furnsh",
+        file: "generated.ek",
+      },
+    ];
+
+    const normalized = normalizeWorkflow(workflow, "sidecar");
+
+    expect(normalized[1]).toEqual({
+      op: "kernels.furnsh",
+      file: {
+        kind: "scratch",
+        rel: "generated.ek",
+      },
+    });
+  });
+
+  it("keeps non-generated kernels.furnsh strings fixture-relative by default", () => {
+    const workflow: WorkflowStep[] = [{ op: "kernels.furnsh", file: "kernels/naif0012.tls" }];
+
+    const normalized = normalizeWorkflow(workflow, "sidecar");
+
+    expect(normalized[0]).toEqual({
+      op: "kernels.furnsh",
+      file: {
+        kind: "fixture",
+        rel: "kernels/naif0012.tls",
+      },
+    });
+  });
+
+  it("normalizes explicit kernels.furnsh path refs unchanged in meaning", () => {
+    const workflow: WorkflowStep[] = [
+      {
+        op: "kernels.furnsh",
+        file: {
+          kind: "scratch",
+          rel: "tmp/../tmp/generated.ek",
+        },
+      },
+    ];
+
+    const normalized = normalizeWorkflow(workflow, "sidecar");
+
+    expect(normalized[0]).toEqual({
+      op: "kernels.furnsh",
+      file: {
+        kind: "scratch",
+        rel: "tmp/generated.ek",
+      },
+    });
+  });
 });
