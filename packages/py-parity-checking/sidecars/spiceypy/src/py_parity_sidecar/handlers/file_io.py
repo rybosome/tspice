@@ -65,17 +65,24 @@ def _require_handle(
     state: FileIoState,
     handle_id: str,
     *,
-    expected_kind: str | None = None,
+    expected_kind: str | tuple[str, ...] | None = None,
     require_open: bool = False,
 ) -> FileIoHandleState:
     handle_state = state.handles.get(handle_id)
     if handle_state is None:
         raise ValueError(f"File-io handle does not exist: {handle_id}")
 
-    if expected_kind is not None and handle_state.kind != expected_kind:
-        raise ValueError(
-            f"File-io handle {handle_id} has kind {handle_state.kind}, expected {expected_kind}",
-        )
+    if expected_kind is not None:
+        expected_kinds = (expected_kind,) if isinstance(expected_kind, str) else expected_kind
+        if len(expected_kinds) == 1:
+            expected_kind_label = expected_kinds[0]
+        else:
+            expected_kind_label = " or ".join(expected_kinds)
+
+        if handle_state.kind not in expected_kinds:
+            raise ValueError(
+                f"File-io handle {handle_id} has kind {handle_state.kind}, expected {expected_kind_label}",
+            )
 
     if require_open and not handle_state.isOpen:
         raise ValueError(f"File-io handle is invalid or closed: {handle_id}")
@@ -195,7 +202,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         handle_state = _require_handle(
             state,
             step.handleId,
-            expected_kind="DAS",
+            expected_kind=("DAS", "DLA"),
             require_open=True,
         )
         sp.dascls(handle_state.handle)
@@ -205,14 +212,14 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
     if isinstance(step, StepFileIoDlaopn):
         _prepare_output_path(_resolve_file_io_path(context, step.path))
         handle = int(sp.dlaopn(_resolve_file_io_path(context, step.path), step.ftype, step.ifname, step.ncomch))
-        _register_handle(state, step.handleId, handle, kind="DAS", close_with="dascls")
+        _register_handle(state, step.handleId, handle, kind="DLA", close_with="dascls")
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepFileIoDlabfs):
         handle_state = _require_handle(
             state,
             step.handleId,
-            expected_kind="DAS",
+            expected_kind=("DAS", "DLA"),
             require_open=True,
         )
         try:
@@ -232,7 +239,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         handle_state = _require_handle(
             state,
             step.handleId,
-            expected_kind="DAS",
+            expected_kind=("DAS", "DLA"),
             require_open=True,
         )
         descr = _require_descriptor(state, step.descrId)
@@ -253,7 +260,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         handle_state = _require_handle(
             state,
             step.handleId,
-            expected_kind="DAS",
+            expected_kind=("DAS", "DLA"),
             require_open=True,
         )
         # SpiceyPy does not expose dlacls; CSPICE defines it as an alias of dascls.
