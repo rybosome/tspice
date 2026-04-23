@@ -920,7 +920,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 np=_expect_int(step.get("np"), label="file-io.dskmi2.np"),
                 plates=_expect_int_list(step.get("plates"), label="file-io.dskmi2.plates"),
                 finscl=_expect_number(step.get("finscl"), label="file-io.dskmi2.finscl"),
-                corscl=_expect_number(step.get("corscl"), label="file-io.dskmi2.corscl"),
+                corscl=_expect_int(step.get("corscl"), label="file-io.dskmi2.corscl"),
                 worksz=_expect_int(step.get("worksz"), label="file-io.dskmi2.worksz"),
                 voxpsz=_expect_int(step.get("voxpsz"), label="file-io.dskmi2.voxpsz"),
                 voxlsz=_expect_int(step.get("voxlsz"), label="file-io.dskmi2.voxlsz"),

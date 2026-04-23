@@ -66,5 +66,27 @@
       }
     ],
     "expectation": { "kind": "error" }
+  },
+  {
+    "caseId": "file-io-dskopn-existing-file-error",
+    "description": "Representative dskopn error when the output file already exists",
+    "workflow": [
+      {
+        "op": "file-io.dskopn",
+        "path": "kernels/generated/dskopn-existing-file.bds",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer0"
+      },
+      { "op": "file-io.dascls", "handleId": "writer0" },
+      {
+        "op": "file-io.dskopn",
+        "path": "kernels/generated/dskopn-existing-file.bds",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer1"
+      }
+    ],
+    "expectation": { "kind": "error" }
   }
 ]

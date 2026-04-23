@@ -103,7 +103,7 @@ class StepFileIoDskmi2:
     np: int
     plates: list[int]
     finscl: float
-    corscl: float
+    corscl: int
     worksz: int
     voxpsz: int
     voxlsz: int

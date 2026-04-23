@@ -31,5 +31,29 @@
       }
     ],
     "expectation": { "kind": "error" }
+  },
+  {
+    "caseId": "file-io-dlaopn-existing-file-error",
+    "description": "Representative dlaopn error when the output file already exists",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "path": "kernels/generated/dlaopn-existing-file.dla",
+        "ftype": "DLA",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer0"
+      },
+      { "op": "file-io.dlacls", "handleId": "writer0" },
+      {
+        "op": "file-io.dlaopn",
+        "path": "kernels/generated/dlaopn-existing-file.dla",
+        "ftype": "DLA",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer1"
+      }
+    ],
+    "expectation": { "kind": "error" }
   }
 ]

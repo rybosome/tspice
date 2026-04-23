@@ -41,5 +41,26 @@
       }
     ],
     "expectation": { "kind": "error" }
+  },
+  {
+    "caseId": "file-io-dskmi2-non-integer-corscl-error",
+    "description": "Representative dskmi2 error for non-integer corscl",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 3,
+        "vrtces": [0, 0, 0, 1, 0, 0, 0, 1, 0],
+        "np": 1,
+        "plates": [1, 2, 3],
+        "finscl": 0.2,
+        "corscl": 5.5,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 200000
+      }
+    ],
+    "expectation": { "kind": "error" }
   }
 ]

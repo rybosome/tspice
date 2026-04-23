@@ -37,8 +37,6 @@ def _resolve_file_io_path(context: SidecarRuntimeContext, path_value: str) -> st
 def _prepare_output_path(path_value: str) -> None:
     path = Path(path_value)
     path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists() and path.is_file():
-        path.unlink()
 
 
 def _register_handle(
@@ -281,7 +279,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             vrtces,
             plates,
             step.finscl,
-            int(step.corscl),
+            step.corscl,
             step.worksz,
             step.voxpsz,
             step.voxlsz,
