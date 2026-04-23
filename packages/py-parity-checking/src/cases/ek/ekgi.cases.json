@@ -37,6 +37,42 @@
     "expectation": { "kind": "success" }
   },
   {
+    "caseId": "ek-ekgi-valid-row-out-of-range-element-found-false",
+    "description": "ekgi returns found=false when elment is out-of-range for a valid query row",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgi-vector.ek",
+        "ifname": "ekgi-vector",
+        "ncomch": 0,
+        "handleId": "H_EKGI_VEC"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGI_VEC",
+        "tabnam": "EKGI_VECTOR",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER, SIZE = 2"],
+        "segmentId": "SEG_EKGI_VEC"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_EKGI_VEC",
+        "column": "ID",
+        "ivals": [42, 84],
+        "entszs": [2],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_VEC" },
+      { "op": "ek.ekcls", "handleId": "H_EKGI_VEC" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-vector.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_VECTOR" },
+      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 2 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
     "caseId": "ek-ekgi-invalid-row-error",
     "description": "ekgi reports row-index errors for out-of-range query rows",
     "workflow": [

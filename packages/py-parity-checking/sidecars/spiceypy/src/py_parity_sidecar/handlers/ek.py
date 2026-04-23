@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 import spiceypy as sp
+from spiceypy.utils.exceptions import NotFoundError
 
 from ..models import (
     PathRef,
@@ -169,6 +170,13 @@ def _resolve_ek_path(context: SidecarRuntimeContext, raw_path: str) -> str:
     )
 
 
+def _is_valid_last_find_row(context: SidecarRuntimeContext, row: int) -> bool:
+    nmrows = context.state.ek.lastSuccessfulFindNmrows
+    if nmrows is None:
+        return False
+    return 0 <= row < nmrows
+
+
 def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepEkEkopn):
         resolved_path = _resolve_ek_path(context, step.path)
@@ -205,7 +213,10 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         context.state.ek.lastQuery = step.query
         nmrows, error_flag, errmsg = sp.ekfind(step.query)
         if int(error_flag) == 0:
-            return StepOutput(op=step.op, value={"ok": True, "nmrows": int(nmrows)})
+            nmrows_int = int(nmrows)
+            context.state.ek.lastSuccessfulFindNmrows = nmrows_int
+            return StepOutput(op=step.op, value={"ok": True, "nmrows": nmrows_int})
+        context.state.ek.lastSuccessfulFindNmrows = None
         return StepOutput(op=step.op, value={"ok": False, "errmsg": str(errmsg)})
 
     if isinstance(step, StepEkEkgc):
@@ -213,11 +224,23 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepEkEkgd):
-        out = _normalize_numeric_get(sp.ekgd(step.selidx, step.row, step.elment), fn_name="ekgd")
+        try:
+            out = _normalize_numeric_get(sp.ekgd(step.selidx, step.row, step.elment), fn_name="ekgd")
+        except NotFoundError:
+            if _is_valid_last_find_row(context, step.row):
+                out = {"found": False}
+            else:
+                raise
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepEkEkgi):
-        out = _normalize_numeric_get(sp.ekgi(step.selidx, step.row, step.elment), fn_name="ekgi")
+        try:
+            out = _normalize_numeric_get(sp.ekgi(step.selidx, step.row, step.elment), fn_name="ekgi")
+        except NotFoundError:
+            if _is_valid_last_find_row(context, step.row):
+                out = {"found": False}
+            else:
+                raise
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepEkEkifld):

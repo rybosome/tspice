@@ -56,6 +56,7 @@ class EkSegmentState:
 @dataclass
 class EkState:
     lastQuery: str | None = None
+    lastSuccessfulFindNmrows: int | None = None
     handles: dict[str, int] = field(default_factory=dict)
     segments: dict[str, EkSegmentState] = field(default_factory=dict)
 
