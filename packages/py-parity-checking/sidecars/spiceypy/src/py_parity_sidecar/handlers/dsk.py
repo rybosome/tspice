@@ -107,10 +107,21 @@ def _normalize_vtxbds(value: Any) -> list[list[float]]:
     rows = [list(row) for row in rows_raw]
 
     if len(rows) == 2 and all(len(row) == 3 for row in rows):
+        # SpiceyPy currently materializes `vtxbds[3][2]` as a `2x3` matrix.
+        # Preserve raw row-major memory order to recover canonical axis pairs:
+        # [[xmin, xmax], [ymin, ymax], [zmin, zmax]].
+        flat = [
+            float(rows[0][0]),
+            float(rows[0][1]),
+            float(rows[0][2]),
+            float(rows[1][0]),
+            float(rows[1][1]),
+            float(rows[1][2]),
+        ]
         return [
-            [float(rows[0][0]), float(rows[1][0])],
-            [float(rows[0][1]), float(rows[1][1])],
-            [float(rows[0][2]), float(rows[1][2])],
+            [flat[0], flat[1]],
+            [flat[2], flat[3]],
+            [flat[4], flat[5]],
         ]
 
     if len(rows) == 3 and all(len(row) == 2 for row in rows):
