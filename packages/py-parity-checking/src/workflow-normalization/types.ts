@@ -3,6 +3,7 @@ import type { PathRef, WorkflowStep } from "../case-types.js";
 export type NormalizeTarget = "sidecar" | "tspice";
 
 export type AliasValue = PathRef | string;
+export type GeneratedPathValue = PathRef;
 
 export type PreCaseCleanupCandidate = {
   domain: "file-io";
@@ -42,6 +43,7 @@ export type NormalizedWorkflowResult = {
 export type NormalizationContext = {
   target: NormalizeTarget;
   aliases: Map<string, AliasValue>;
+  generatedPaths: Map<string, GeneratedPathValue>;
 };
 
 export type DomainNormalizer = {

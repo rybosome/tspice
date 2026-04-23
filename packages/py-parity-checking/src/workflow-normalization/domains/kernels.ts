@@ -6,7 +6,7 @@ import type {
 } from "../../case-types.js";
 import { toPathRef } from "../../fixtures.js";
 
-import { publishAlias } from "../context.js";
+import { publishAlias, readGeneratedPath } from "../context.js";
 import { resolvePathWithOptionalAlias } from "../helpers.js";
 import type { DomainNormalizer, NormalizationContext } from "../types.js";
 
@@ -26,6 +26,22 @@ function normalizeKernelPathConsumer(
     ...step,
     path: resolvePathWithOptionalAlias(step.path, step.alias, context),
   };
+}
+
+function normalizeKernelFurnshFile(
+  step: StepKernelsFurnsh,
+  context: NormalizationContext,
+): StepKernelsFurnsh["file"] {
+  if (typeof step.file !== "string") {
+    return toPathRef(step.file);
+  }
+
+  const generatedPath = readGeneratedPath(context, step.file);
+  if (generatedPath != null) {
+    return generatedPath;
+  }
+
+  return toPathRef(step.file);
 }
 
 export const kernelsNormalizer: DomainNormalizer = {
@@ -50,7 +66,7 @@ export const kernelsNormalizer: DomainNormalizer = {
       case "kernels.furnsh":
         return {
           ...step,
-          file: toPathRef(step.file),
+          file: normalizeKernelFurnshFile(step, context),
         };
 
       case "kernels.kinfo":

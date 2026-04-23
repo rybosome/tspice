@@ -38,7 +38,7 @@ def to_path_ref(path_ref_input: PathRefInput) -> PathRef:
         return PathRef(kind=kind, rel=normalize_path_ref_relative_path(path_ref_input.rel))
 
     if isinstance(path_ref_input, str):
-        # Legacy compatibility: plain strings are fixture-relative.
+        # Current default: plain strings are fixture-relative unless explicitly marked scratch.
         return PathRef(kind="fixture", rel=normalize_path_ref_relative_path(path_ref_input))
 
     raise TypeError(f"Unsupported path-ref input: {path_ref_input!r}")

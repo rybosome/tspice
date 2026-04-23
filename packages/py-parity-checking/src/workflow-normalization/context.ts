@@ -1,4 +1,13 @@
-import type { AliasValue, NormalizationContext, NormalizeTarget } from "./types.js";
+import path from "node:path";
+
+import { normalizePathRefRelativePath } from "../runtime/path-ref.js";
+
+import type {
+  AliasValue,
+  GeneratedPathValue,
+  NormalizationContext,
+  NormalizeTarget,
+} from "./types.js";
 
 function normalizeAliasName(alias: string): string {
   const normalized = alias.trim();
@@ -9,11 +18,24 @@ function normalizeAliasName(alias: string): string {
   return normalized;
 }
 
+function normalizeGeneratedPathKey(rawPath: string): string | null {
+  if (path.isAbsolute(rawPath)) {
+    return null;
+  }
+
+  try {
+    return normalizePathRefRelativePath(rawPath);
+  } catch {
+    return null;
+  }
+}
+
 /** Create an isolated alias map for one workflow-normalization run. */
 export function createNormalizationContext(target: NormalizeTarget): NormalizationContext {
   return {
     target,
     aliases: new Map<string, AliasValue>(),
+    generatedPaths: new Map<string, GeneratedPathValue>(),
   };
 }
 
@@ -40,4 +62,31 @@ export function readAlias(context: NormalizationContext, alias: string): AliasVa
   }
 
   return resolved;
+}
+
+/** Publish a generated path reference so later workflow steps can consume it. */
+export function publishGeneratedPath(
+  context: NormalizationContext,
+  rawPath: string,
+  value: GeneratedPathValue,
+): void {
+  const normalizedKey = normalizeGeneratedPathKey(rawPath);
+  if (normalizedKey == null) {
+    return;
+  }
+
+  context.generatedPaths.set(normalizedKey, value);
+}
+
+/** Read a generated path reference, if one was published for this path. */
+export function readGeneratedPath(
+  context: NormalizationContext,
+  rawPath: string,
+): GeneratedPathValue | null {
+  const normalizedKey = normalizeGeneratedPathKey(rawPath);
+  if (normalizedKey == null) {
+    return null;
+  }
+
+  return context.generatedPaths.get(normalizedKey) ?? null;
 }
