@@ -10,12 +10,12 @@ import { publishAlias, readGeneratedPath } from "../context.js";
 import { resolvePathWithOptionalAlias } from "../helpers.js";
 import type { DomainNormalizer, NormalizationContext } from "../types.js";
 
-function publishKernelAlias(step: StepKernelsFurnsh): [string, ReturnType<typeof toPathRef>] | null {
+function publishKernelAlias(step: StepKernelsFurnsh, context: NormalizationContext): void {
   if (step.alias == null) {
-    return null;
+    return;
   }
 
-  return [step.alias, toPathRef(step.file)];
+  publishAlias(context, step.alias, normalizeKernelFurnshFile(step, context));
 }
 
 function normalizeKernelPathConsumer(
@@ -52,13 +52,7 @@ export const kernelsNormalizer: DomainNormalizer = {
       return;
     }
 
-    const aliasEntry = publishKernelAlias(step);
-    if (aliasEntry == null) {
-      return;
-    }
-
-    const [aliasName, value] = aliasEntry;
-    publishAlias(context, aliasName, value);
+    publishKernelAlias(step, context);
   },
 
   normalize(step: WorkflowStep, context) {

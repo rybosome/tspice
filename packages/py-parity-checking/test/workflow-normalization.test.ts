@@ -348,6 +348,53 @@ describe("workflow normalization", () => {
     });
   });
 
+  it("resolves EK-backed kernels aliases to tspice scratch paths", () => {
+    const workflow: WorkflowStep[] = [
+      {
+        op: "ek.ekopn",
+        path: ".py-parity-ek-scratch.ek",
+        ifname: "wf-test",
+        ncomch: 0,
+        handleId: "H_TEST",
+      },
+      {
+        op: "kernels.furnsh",
+        file: ".py-parity-ek-scratch.ek",
+        alias: "generated-ek",
+      },
+      {
+        op: "kernels.kinfo",
+        path: "placeholder",
+        alias: "generated-ek",
+      },
+    ];
+
+    const normalized = normalizeWorkflow(workflow, "tspice");
+
+    expect(normalized).toEqual([
+      {
+        op: "ek.ekopn",
+        path: ".py-parity-ek-scratch.ek",
+        ifname: "wf-test",
+        ncomch: 0,
+        handleId: "H_TEST",
+      },
+      {
+        op: "kernels.furnsh",
+        file: {
+          kind: "scratch",
+          rel: ".py-parity-ek-scratch.ek",
+        },
+        alias: "generated-ek",
+      },
+      {
+        op: "kernels.kinfo",
+        path: "scratch/.py-parity-ek-scratch.ek",
+        alias: "generated-ek",
+      },
+    ]);
+  });
+
   it("normalizes EK generated-path lookups before matching kernels.furnsh strings", () => {
     const workflow: WorkflowStep[] = [
       {
