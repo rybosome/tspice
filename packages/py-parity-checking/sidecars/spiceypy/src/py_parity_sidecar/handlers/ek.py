@@ -177,6 +177,26 @@ def _is_valid_last_find_row(context: SidecarRuntimeContext, row: int) -> bool:
     return 0 <= row < nmrows
 
 
+_SPICE_SHORT_NOT_FOUND = "SPICE(NOTFOUND)"
+_SPICE_SHORT_INVALID_INDEX = "SPICE(INVALIDINDEX)"
+
+
+def _should_coerce_ek_not_found(context: SidecarRuntimeContext, row: int) -> bool:
+    if not _is_valid_last_find_row(context, row):
+        return False
+
+    if not bool(sp.failed()):
+        return True
+
+    short = str(sp.getmsg("SHORT")).strip()
+    if short == _SPICE_SHORT_NOT_FOUND:
+        return True
+    if short == _SPICE_SHORT_INVALID_INDEX:
+        return False
+
+    return False
+
+
 def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepEkEkopn):
         resolved_path = _resolve_ek_path(context, step.path)
@@ -227,7 +247,7 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         try:
             out = _normalize_numeric_get(sp.ekgd(step.selidx, step.row, step.elment), fn_name="ekgd")
         except NotFoundError:
-            if _is_valid_last_find_row(context, step.row):
+            if _should_coerce_ek_not_found(context, step.row):
                 out = {"found": False}
             else:
                 raise
@@ -237,7 +257,7 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         try:
             out = _normalize_numeric_get(sp.ekgi(step.selidx, step.row, step.elment), fn_name="ekgi")
         except NotFoundError:
-            if _is_valid_last_find_row(context, step.row):
+            if _should_coerce_ek_not_found(context, step.row):
                 out = {"found": False}
             else:
                 raise

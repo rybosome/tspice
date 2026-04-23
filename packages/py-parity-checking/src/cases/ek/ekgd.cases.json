@@ -73,6 +73,42 @@
     "expectation": { "kind": "success" }
   },
   {
+    "caseId": "ek-ekgd-invalid-selidx-error",
+    "description": "ekgd reports invalid-select-index errors for out-of-range selidx values",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgd-invalid-selidx.ek",
+        "ifname": "ekgd-invalid-selidx",
+        "ncomch": 0,
+        "handleId": "H_EKGD_SELIDX"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGD_SELIDX",
+        "tabnam": "EKGD_SELIDX",
+        "nrows": 1,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION"],
+        "segmentId": "SEG_EKGD_SELIDX"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_EKGD_SELIDX",
+        "column": "COST",
+        "dvals": [11.5],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGD_SELIDX" },
+      { "op": "ek.ekcls", "handleId": "H_EKGD_SELIDX" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgd-invalid-selidx.ek" },
+      { "op": "ek.ekfind", "query": "SELECT COST FROM EKGD_SELIDX" },
+      { "op": "ek.ekgd", "selidx": 5, "row": 0, "elment": 0 }
+    ],
+    "expectation": { "kind": "error" }
+  },
+  {
     "caseId": "ek-ekgd-invalid-row-error",
     "description": "ekgd reports row-index errors for out-of-range query rows",
     "workflow": [
