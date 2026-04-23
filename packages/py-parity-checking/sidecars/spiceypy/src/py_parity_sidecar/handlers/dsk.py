@@ -107,18 +107,10 @@ def _normalize_vtxbds(value: Any) -> list[list[float]]:
     rows = [list(row) for row in rows_raw]
 
     if len(rows) == 2 and all(len(row) == 3 for row in rows):
-        flat = [
-            float(rows[0][0]),
-            float(rows[0][1]),
-            float(rows[0][2]),
-            float(rows[1][0]),
-            float(rows[1][1]),
-            float(rows[1][2]),
-        ]
         return [
-            [flat[0], flat[1]],
-            [flat[2], flat[3]],
-            [flat[4], flat[5]],
+            [float(rows[0][0]), float(rows[1][0])],
+            [float(rows[0][1]), float(rows[1][1])],
+            [float(rows[0][2]), float(rows[1][2])],
         ]
 
     if len(rows) == 3 and all(len(row) == 2 for row in rows):
