@@ -9,8 +9,9 @@ import type { Spice } from "@rybosome/tspice";
 
 import { cleanupContext, clearKernelState, createRunTspiceContext } from "./context.js";
 import { dispatchStep } from "./dispatch.js";
+import { runTspicePostCaseHooks } from "./post-case.js";
 import { normalizeError } from "./utils/errors.js";
-import { normalizeWorkflow } from "../workflow-normalization/index.js";
+import { normalizeWorkflowDetailed } from "../workflow-normalization/index.js";
 
 /** Execute one parity case against tspice (WASM backend) with per-case kernel isolation. */
 export function runCaseInTspice(
@@ -23,10 +24,11 @@ export function runCaseInTspice(
   try {
     clearKernelState(context);
 
-    const workflow = normalizeWorkflow(parityCase.workflow, "tspice");
+    const normalized = normalizeWorkflowDetailed(parityCase.workflow, "tspice");
+    context.normalization.metadata = normalized.metadata;
 
     const outputs: StepOutput[] = [];
-    for (const step of workflow) {
+    for (const step of normalized.workflow) {
       outputs.push(dispatchStep(context, step));
     }
 
@@ -47,6 +49,7 @@ export function runCaseInTspice(
     };
     return failed;
   } finally {
+    runTspicePostCaseHooks(context, context.normalization.metadata);
     cleanupContext(context);
   }
 }

@@ -15,8 +15,14 @@ import {
 } from "../runtime/context.js";
 import { beforeCaseLifecycle, finalizeCaseLifecycle } from "../runtime/lifecycle.js";
 import { createCaseRuntimePaths } from "../runtime/path-ref.js";
+import { createEmptyWorkflowNormalizationMetadata } from "../workflow-normalization/index.js";
+import type { WorkflowNormalizationMetadata } from "../workflow-normalization/types.js";
 
-export type RunTspiceContext = RuntimeRunTspiceContext;
+export type RunTspiceContext = RuntimeRunTspiceContext & {
+  normalization: {
+    metadata: WorkflowNormalizationMetadata;
+  };
+};
 
 export {
   getOrCreateCharCell,
@@ -36,36 +42,18 @@ export function createRunTspiceContext(
   fixturesRoot: string,
   caseId: string,
 ): RunTspiceContext {
-  return createRunTspiceContextCore(spice, createCaseRuntimePaths(fixturesRoot, caseId));
+  return {
+    ...createRunTspiceContextCore(spice, createCaseRuntimePaths(fixturesRoot, caseId)),
+    normalization: {
+      metadata: createEmptyWorkflowNormalizationMetadata(),
+    },
+  };
 }
 
 /** Prepare tspice case lifecycle before running steps. */
 export const clearKernelState = beforeCaseLifecycle;
 
-function closeFileIoHandlesBestEffort(context: RunTspiceContext): void {
-  for (const entry of context.state.fileIo.handles.values()) {
-    if (!entry.isOpen) {
-      continue;
-    }
-
-    try {
-      if (entry.closeWith === "dafcls") {
-        context.spice.raw.dafcls(entry.handle);
-      } else {
-        context.spice.raw.dascls(entry.handle);
-      }
-    } catch {
-      // best-effort cleanup only
-    }
-  }
-
-  context.state.fileIo.handles.clear();
-  context.state.fileIo.descriptors.clear();
-  context.state.fileIo.spatialIndexes.clear();
-}
-
 /** Finalize tspice case lifecycle after running steps. */
 export function cleanupContext(context: RunTspiceContext): void {
-  closeFileIoHandlesBestEffort(context);
   finalizeCaseLifecycle(context);
 }
