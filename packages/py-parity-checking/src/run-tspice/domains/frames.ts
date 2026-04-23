@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 import type {
   Matrix6x6,
+  PathRef,
   PathRefLike,
   StepFramesCcifrm,
   StepFramesCidfrm,
@@ -19,7 +20,7 @@ import type {
   StepFramesSxform,
   StepOutput,
 } from "../../case-types.js";
-import { resolvePathRef, toVirtualKernelPath } from "../../fixtures.js";
+import { resolvePathRef, toPathRef, toVirtualKernelPath } from "../../fixtures.js";
 import { getOrCreateWindow, type RunTspiceContext } from "../context.js";
 import { unflattenMatrix } from "../utils/matrix.js";
 
@@ -38,6 +39,28 @@ type FramesStep =
   | StepFramesCkcov
   | StepFramesPxform
   | StepFramesSxform;
+
+type FramesCkPathStep = StepFramesCklpf | StepFramesCkobj | StepFramesCkcov;
+
+function pathRefsEqual(left: PathRef, right: PathRef): boolean {
+  return left.kind === right.kind && left.rel === right.rel;
+}
+
+function canonicalizeFramesCkPath(context: RunTspiceContext, step: FramesCkPathStep): PathRef {
+  const canonical = toPathRef(step.ck);
+
+  for (const hint of context.normalization.metadata.runtimePath.canonicalizationHints) {
+    if (hint.domain !== "frames" || hint.op !== step.op || hint.field !== "ck") {
+      continue;
+    }
+
+    if (pathRefsEqual(hint.canonicalPath, canonical)) {
+      return hint.canonicalPath;
+    }
+  }
+
+  return canonical;
+}
 
 function ensureVirtualCkPath(context: RunTspiceContext, pathRef: PathRefLike): string {
   const virtualPath = toVirtualKernelPath(pathRef);
@@ -260,7 +283,7 @@ export function runFramesStep(context: RunTspiceContext, step: FramesStep): Step
     }
 
     case "frames.cklpf": {
-      const ck = ensureVirtualCkPath(context, step.ck);
+      const ck = ensureVirtualCkPath(context, canonicalizeFramesCkPath(context, step));
       const handle = context.spice.raw.cklpf(ck);
       setCkHandle(context, step.handleId, handle);
       return { op: step.op, value: { opened: true } };
@@ -274,7 +297,7 @@ export function runFramesStep(context: RunTspiceContext, step: FramesStep): Step
     }
 
     case "frames.ckobj": {
-      const ck = ensureVirtualCkPath(context, step.ck);
+      const ck = ensureVirtualCkPath(context, canonicalizeFramesCkPath(context, step));
       const ids = context.spice.kit.newIntCell(step.maxCard ?? 32);
       try {
         context.spice.raw.scard(0, ids);
@@ -296,7 +319,7 @@ export function runFramesStep(context: RunTspiceContext, step: FramesStep): Step
     }
 
     case "frames.ckcov": {
-      const ck = ensureVirtualCkPath(context, step.ck);
+      const ck = ensureVirtualCkPath(context, canonicalizeFramesCkPath(context, step));
       const cover = getOrCreateWindow(context, step.coverId, step.maxIntervals ?? 128);
       context.spice.raw.scard(0, cover);
       context.spice.raw.ckcov(

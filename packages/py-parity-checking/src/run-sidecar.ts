@@ -12,7 +12,8 @@ import {
   removeScratchRootBestEffort,
   type RuntimePaths,
 } from "./runtime/path-ref.js";
-import { normalizeWorkflow } from "./workflow-normalization/index.js";
+import { runSidecarPreCaseHooks } from "./run-sidecar/pre-case.js";
+import { normalizeWorkflowDetailed } from "./workflow-normalization/index.js";
 
 const moduleFile = fileURLToPath(import.meta.url);
 const moduleDir = path.dirname(moduleFile);
@@ -43,12 +44,15 @@ export async function runCaseInSidecar(
   const runtimePaths = createCaseRuntimePaths(fixturesRoot, parityCase.caseId);
 
   try {
+    const normalized = normalizeWorkflowDetailed(parityCase.workflow, "sidecar");
+    runSidecarPreCaseHooks(normalized.metadata, runtimePaths);
+
     const requestPayload: SidecarRequestPayload = {
       caseId: parityCase.caseId,
       runtime: {
         paths: runtimePaths,
       },
-      workflow: normalizeWorkflow(parityCase.workflow, "sidecar"),
+      workflow: normalized.workflow,
     };
 
     const child = spawn(
