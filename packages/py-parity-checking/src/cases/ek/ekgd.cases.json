@@ -37,6 +37,42 @@
     "expectation": { "kind": "success" }
   },
   {
+    "caseId": "ek-ekgd-valid-row-out-of-range-element-found-false",
+    "description": "ekgd returns found=false when elment is out-of-range for a valid query row",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgd-vector.ek",
+        "ifname": "ekgd-vector",
+        "ncomch": 0,
+        "handleId": "H_EKGD_VEC"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGD_VEC",
+        "tabnam": "EKGD_VECTOR",
+        "nrows": 1,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION, SIZE = 2"],
+        "segmentId": "SEG_EKGD_VEC"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_EKGD_VEC",
+        "column": "COST",
+        "dvals": [11.5, 22.75],
+        "entszs": [2],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGD_VEC" },
+      { "op": "ek.ekcls", "handleId": "H_EKGD_VEC" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgd-vector.ek" },
+      { "op": "ek.ekfind", "query": "SELECT COST FROM EKGD_VECTOR" },
+      { "op": "ek.ekgd", "selidx": 0, "row": 0, "elment": 2 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
     "caseId": "ek-ekgd-invalid-row-error",
     "description": "ekgd reports row-index errors for out-of-range query rows",
     "workflow": [
