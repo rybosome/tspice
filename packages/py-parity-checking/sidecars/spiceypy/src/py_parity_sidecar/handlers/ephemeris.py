@@ -168,7 +168,11 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEphemerisSpkcov):
-        cover = _get_window(context, step.coverWindowId, max_intervals=step.maxIntervals or 16)
+        cover = _get_window(
+            context,
+            step.coverWindowId,
+            max_intervals=step.maxIntervals if step.maxIntervals is not None else 16,
+        )
         sp.spkcov(_resolve_path(context, step.spk), step.idcode, cover)
         interval_count = int(sp.wncard(cover))
         intervals: list[list[float]] = []
@@ -217,7 +221,11 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         return StepOutput(op=step.op, value={"pos": pos, "lt": lt})
 
     if isinstance(step, StepEphemerisSpkobj):
-        ids_cell = _get_int_cell(context, step.idsCellId, max_cardinality=step.maxCardinality or 1024)
+        ids_cell = _get_int_cell(
+            context,
+            step.idsCellId,
+            max_cardinality=step.maxCardinality if step.maxCardinality is not None else 1024,
+        )
         sp.spkobj(_resolve_path(context, step.spk), ids_cell)
         ids = [int(value) for value in ids_cell]
         return StepOutput(op=step.op, value={"ids": ids})
