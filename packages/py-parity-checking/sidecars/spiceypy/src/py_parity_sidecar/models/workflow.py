@@ -56,6 +56,18 @@ from .ephemeris import (
     StepEphemerisSpkuds,
     StepEphemerisSpkw08,
 )
+from .dsk import (
+    StepDskDascls,
+    StepDskDasopr,
+    StepDskDlabfs,
+    StepDskDskb02,
+    StepDskDskgd,
+    StepDskDskmi2,
+    StepDskDskobj,
+    StepDskDskopn,
+    StepDskDsksrf,
+    StepDskDskw02,
+)
 from .ek import (
     StepEkEkaclc,
     StepEkEkacld,
@@ -73,6 +85,23 @@ from .ek import (
     StepEkEkopr,
     StepEkEkopw,
     StepEkEktnam,
+)
+from .file_io import (
+    StepFileIoDafbfs,
+    StepFileIoDafcls,
+    StepFileIoDaffna,
+    StepFileIoDafopr,
+    StepFileIoDascls,
+    StepFileIoDasopr,
+    StepFileIoDlabfs,
+    StepFileIoDlacls,
+    StepFileIoDlafns,
+    StepFileIoDlaopn,
+    StepFileIoDskmi2,
+    StepFileIoDskopn,
+    StepFileIoDskw02,
+    StepFileIoExists,
+    StepFileIoGetfat,
 )
 from .error import (
     StepErrorChkin,
@@ -103,6 +132,22 @@ from .geometry_gf import (
     StepGeometryGfGfsstp,
     StepGeometryGfGfstep,
     StepGeometryGfGfstol,
+)
+from .frames import (
+    StepFramesCcifrm,
+    StepFramesCidfrm,
+    StepFramesCkcov,
+    StepFramesCkgp,
+    StepFramesCkgpav,
+    StepFramesCklpf,
+    StepFramesCkobj,
+    StepFramesCkupf,
+    StepFramesCnmfrm,
+    StepFramesFrinfo,
+    StepFramesFrmnam,
+    StepFramesNamfrm,
+    StepFramesPxform,
+    StepFramesSxform,
 )
 from .ids_names import (
     StepIdsNamesBodc2n,
@@ -246,6 +291,21 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpkssb
     | StepEphemerisSpkuds
     | StepEphemerisSpkw08
+    | StepFileIoExists
+    | StepFileIoGetfat
+    | StepFileIoDafopr
+    | StepFileIoDafcls
+    | StepFileIoDafbfs
+    | StepFileIoDaffna
+    | StepFileIoDasopr
+    | StepFileIoDascls
+    | StepFileIoDlaopn
+    | StepFileIoDlabfs
+    | StepFileIoDlafns
+    | StepFileIoDlacls
+    | StepFileIoDskopn
+    | StepFileIoDskmi2
+    | StepFileIoDskw02
     | StepErrorFailed
     | StepErrorReset
     | StepErrorGetmsg
@@ -253,6 +313,20 @@ WorkflowStep: TypeAlias = (
     | StepErrorSigerr
     | StepErrorChkin
     | StepErrorChkout
+    | StepFramesNamfrm
+    | StepFramesFrmnam
+    | StepFramesCidfrm
+    | StepFramesCnmfrm
+    | StepFramesFrinfo
+    | StepFramesCcifrm
+    | StepFramesCkgp
+    | StepFramesCkgpav
+    | StepFramesCklpf
+    | StepFramesCkupf
+    | StepFramesCkobj
+    | StepFramesCkcov
+    | StepFramesPxform
+    | StepFramesSxform
     | StepEkEkopn
     | StepEkEkopr
     | StepEkEkopw
@@ -269,6 +343,16 @@ WorkflowStep: TypeAlias = (
     | StepEkEkacld
     | StepEkEkaclc
     | StepEkEkffld
+    | StepDskDskobj
+    | StepDskDsksrf
+    | StepDskDskopn
+    | StepDskDskmi2
+    | StepDskDskw02
+    | StepDskDasopr
+    | StepDskDascls
+    | StepDskDlabfs
+    | StepDskDskgd
+    | StepDskDskb02
     | StepGeometrySubpnt
     | StepGeometrySubslr
     | StepGeometrySincpt

@@ -2,9 +2,12 @@ import type { StepOutput, WorkflowStep } from "../case-types.js";
 import type { RunTspiceContext } from "./context.js";
 import { runCellsWindowsStep } from "./domains/cells-windows.js";
 import { runCoordsVectorsStep } from "./domains/coords-vectors.js";
+import { runDskStep } from "./domains/dsk.js";
 import { runEphemerisStep } from "./domains/ephemeris.js";
 import { runEkStep } from "./domains/ek.js";
+import { runFileIoStep } from "./domains/file-io.js";
 import { runErrorStep } from "./domains/error.js";
+import { runFramesStep } from "./domains/frames.js";
 import { runGeometryStep } from "./domains/geometry.js";
 import { runGeometryGfStep } from "./domains/geometry-gf.js";
 import { runIdsNamesStep } from "./domains/ids-names.js";
@@ -100,6 +103,23 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "kernels.unload":
       return runKernelsStep(context, step);
 
+    case "file-io.exists":
+    case "file-io.getfat":
+    case "file-io.dafopr":
+    case "file-io.dafcls":
+    case "file-io.dafbfs":
+    case "file-io.daffna":
+    case "file-io.dasopr":
+    case "file-io.dascls":
+    case "file-io.dlaopn":
+    case "file-io.dlabfs":
+    case "file-io.dlafns":
+    case "file-io.dlacls":
+    case "file-io.dskopn":
+    case "file-io.dskmi2":
+    case "file-io.dskw02":
+      return runFileIoStep(context, step);
+
     case "error.failed":
     case "error.reset":
     case "error.getmsg":
@@ -144,6 +164,34 @@ export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): Ste
     case "ek.ekaclc":
     case "ek.ekffld":
       return runEkStep(context, step);
+
+    case "dsk.dskobj":
+    case "dsk.dsksrf":
+    case "dsk.dskopn":
+    case "dsk.dskmi2":
+    case "dsk.dskw02":
+    case "dsk.dasopr":
+    case "dsk.dascls":
+    case "dsk.dlabfs":
+    case "dsk.dskgd":
+    case "dsk.dskb02":
+      return runDskStep(context, step);
+
+    case "frames.namfrm":
+    case "frames.frmnam":
+    case "frames.cidfrm":
+    case "frames.cnmfrm":
+    case "frames.frinfo":
+    case "frames.ccifrm":
+    case "frames.ckgp":
+    case "frames.ckgpav":
+    case "frames.cklpf":
+    case "frames.ckupf":
+    case "frames.ckobj":
+    case "frames.ckcov":
+    case "frames.pxform":
+    case "frames.sxform":
+      return runFramesStep(context, step);
 
     case "geometry.subpnt":
     case "geometry.subslr":
