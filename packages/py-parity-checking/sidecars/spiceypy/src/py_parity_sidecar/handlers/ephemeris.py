@@ -111,17 +111,26 @@ def _resolve_path(context: SidecarRuntimeContext, path_ref_input: Any) -> str:
     return resolve_path_ref(context.paths, path_ref_input)
 
 
+def _close_spk_handle_best_effort(handle: int) -> None:
+    try:
+        sp.spkcls(handle)
+    except BaseException:
+        # best-effort cleanup only
+        pass
+
+
 def _set_spk_handle(context: SidecarRuntimeContext, handle_id: str, handle: int) -> None:
+    existing = context.state.ephemeris.spkHandles.get(handle_id)
+    if existing is not None and existing != handle:
+        _close_spk_handle_best_effort(existing)
+
     context.state.ephemeris.spkHandles[handle_id] = handle
 
     def _finalize() -> None:
         current = context.state.ephemeris.spkHandles.get(handle_id)
         if current is None or current != handle:
             return
-        try:
-            sp.spkcls(handle)
-        except BaseException:
-            pass
+        _close_spk_handle_best_effort(handle)
         context.state.ephemeris.spkHandles.pop(handle_id, None)
 
     context.register_finalizer(f"ephemeris.spkcls:{handle_id}:{handle}", _finalize)
