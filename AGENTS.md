@@ -30,7 +30,7 @@ Use this as the default routing map before editing files.
 | Node backend behavior | `packages/backend-node` | Native addon backend (`backend: "node"`). |
 | WASM backend behavior | `packages/backend-wasm` | Browser/Node WASM backend (`backend: "wasm"`). |
 | Shared C integration layer | `packages/backend-shim-c` | Common C shim used by Node + WASM backends. |
-| CSPICE parity harness/scenarios | `packages/parity-checking` and `docs/parity/` | Reference-parity infrastructure and mapping docs. |
+| CSPICE parity harness/scenarios | `packages/py-parity-checking` and `docs/parity/` | SpiceyPy-backed parity workflows and contract mapping docs. |
 | Docs site/app | `apps/docs` | User documentation site implementation. |
 | Repo-level documentation | `README.md`, `docs/` | Architecture, parity, inventory, screenshots, reference docs. |
 | CI/tooling scripts | `scripts/`, `scripts/ci/`, `tools/` | Validation/build tooling and automation behavior. |

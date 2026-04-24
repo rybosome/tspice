@@ -26,9 +26,6 @@
       "path": "./packages/tspice"
     },
     {
-      "path": "./packages/parity-checking"
-    },
-    {
       "path": "./packages/py-parity-checking"
     }
   ]
