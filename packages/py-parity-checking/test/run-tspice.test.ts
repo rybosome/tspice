@@ -10,6 +10,7 @@ import type { Spice } from "@rybosome/tspice";
 
 import type { ParityCase } from "../src/case-types.js";
 import { cleanupContext, createRunTspiceContext } from "../src/run-tspice/context.js";
+import { runEphemerisStep } from "../src/run-tspice/domains/ephemeris.js";
 import { runTspicePostCaseHooks } from "../src/run-tspice/post-case.js";
 import { runCaseInTspice } from "../src/run-tspice.js";
 import { createEmptyWorkflowNormalizationMetadata } from "../src/workflow-normalization/index.js";
@@ -193,5 +194,106 @@ describe("runCaseInTspice", () => {
       .readdirSync(os.tmpdir(), { withFileTypes: true })
       .filter((entry) => entry.isDirectory() && entry.name.startsWith(scratchPrefix));
     expect(after).toHaveLength(0);
+  });
+});
+
+describe("runEphemerisStep path resolution", () => {
+  it("uses absolute scratch paths for node ephemeris writers", () => {
+    const spkopn = vi.fn(() => asSpiceHandle(9001));
+    const spice = {
+      raw: {
+        kind: "node",
+        spkopn,
+      },
+    } as unknown as Spice;
+
+    const context = createRunTspiceContext(spice, fixturesRoot, `ephemeris-node-writer-${Date.now()}`);
+    const relPath = "nested/output/new-segment.bsp";
+
+    try {
+      const result = runEphemerisStep(context, {
+        op: "ephemeris.spkopn",
+        file: { kind: "scratch", rel: relPath },
+        ifname: "TEST",
+        ncomch: 0,
+        handleId: "writer",
+      });
+
+      const expectedPath = path.join(context.paths.scratchRoot, "nested", "output", "new-segment.bsp");
+      expect(spkopn).toHaveBeenCalledWith(expectedPath, "TEST", 0);
+      expect(fs.existsSync(path.dirname(expectedPath))).toBe(true);
+      expect(result).toEqual({
+        op: "ephemeris.spkopn",
+        value: { handleId: "writer" },
+      });
+    } finally {
+      fs.rmSync(context.paths.scratchRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("uses absolute scratch paths for node ephemeris readers", () => {
+    const spkobj = vi.fn();
+    const card = vi.fn(() => 0);
+    const newIntCell = vi.fn(() => ({}) as ReturnType<Spice["kit"]["newIntCell"]>);
+    const freeCell = vi.fn();
+    const cellGeti = vi.fn();
+    const spice = {
+      raw: {
+        kind: "node",
+        spkobj,
+        card,
+      },
+      kit: {
+        newIntCell,
+        freeCell,
+        cellGeti,
+      },
+    } as unknown as Spice;
+
+    const context = createRunTspiceContext(spice, fixturesRoot, `ephemeris-node-reader-${Date.now()}`);
+    const relPath = "generated/from-node.bsp";
+
+    try {
+      const result = runEphemerisStep(context, {
+        op: "ephemeris.spkobj",
+        spk: { kind: "scratch", rel: relPath },
+        idsCellId: "ids",
+      });
+
+      const expectedPath = path.join(context.paths.scratchRoot, "generated", "from-node.bsp");
+      expect(spkobj).toHaveBeenCalledWith(expectedPath, expect.anything());
+      expect(result).toEqual({
+        op: "ephemeris.spkobj",
+        value: { ids: [] },
+      });
+    } finally {
+      fs.rmSync(context.paths.scratchRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("preserves virtual scratch paths for wasm ephemeris writers", () => {
+    const spkopn = vi.fn(() => asSpiceHandle(7331));
+    const spice = {
+      raw: {
+        kind: "wasm",
+        spkopn,
+      },
+    } as unknown as Spice;
+
+    const context = createRunTspiceContext(spice, fixturesRoot, `ephemeris-wasm-writer-${Date.now()}`);
+
+    try {
+      runEphemerisStep(context, {
+        op: "ephemeris.spkopn",
+        file: { kind: "scratch", rel: "new-output.bsp" },
+        ifname: "TEST",
+        ncomch: 0,
+        handleId: "writer",
+      });
+
+      expect(spkopn).toHaveBeenCalledWith("py-parity/scratch/new-output.bsp", "TEST", 0);
+    } finally {
+      fs.rmSync(context.paths.scratchRoot, { recursive: true, force: true });
+    }
   });
 });
