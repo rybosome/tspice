@@ -32,6 +32,37 @@ describe("backend-node kernel staging", () => {
     expect(fs.existsSync(path.dirname(first))).toBe(true);
   });
 
+  it("unload reclaims staged non-py-parity temp file mappings", () => {
+    const stager = createKernelStager();
+    const native = {
+      furnsh: vi.fn(),
+      unload: vi.fn(),
+      kclear: vi.fn(),
+    };
+
+    const virtualPath = "/kernels/frames-staged.bc";
+    stager.furnsh(
+      {
+        path: virtualPath,
+        bytes: new Uint8Array([9, 8, 7, 6]),
+      },
+      native as any,
+    );
+
+    const stagedPath = stager.resolvePathForSpice(virtualPath);
+    expect(fs.existsSync(stagedPath)).toBe(true);
+
+    stager.unload(virtualPath, native as any);
+
+    expect(native.unload).toHaveBeenCalledTimes(1);
+    expect(native.unload).toHaveBeenCalledWith(stagedPath);
+    expect(fs.existsSync(stagedPath)).toBe(false);
+    expect(stager.resolvePathForSpice(virtualPath)).toBe(virtualPath);
+    expect(stager.virtualizePathFromSpice(stagedPath)).toBe(stagedPath);
+
+    stager.kclear(native as any);
+  });
+
   it("keeps byte-staged py-parity file mapping after unload", () => {
     const stager = createKernelStager();
     const native = {

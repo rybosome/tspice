@@ -220,11 +220,18 @@ export function createKernelStager(): KernelStager {
     unload: (_path, native) => {
       const canonical = tryCanonicalVirtualKernelPath(_path);
       const resolved = canonical ? tempByVirtualPath.get(canonical) : undefined;
-      if (resolved) {
-        if (loadedVirtualPaths.has(canonical!)) {
+      if (canonical && resolved) {
+        if (loadedVirtualPaths.has(canonical)) {
           native.unload(resolved);
-          loadedVirtualPaths.delete(canonical!);
+          loadedVirtualPaths.delete(canonical);
         }
+
+        if (!isPyParityCanonicalPath(canonical)) {
+          safeUnlink(resolved);
+          tempByVirtualPath.delete(canonical);
+          virtualByTempPath.delete(resolved);
+        }
+
         return;
       }
 
