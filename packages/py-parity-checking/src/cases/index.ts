@@ -32,6 +32,10 @@ import coordsVectorsVminusCasesRaw from "./coords-vectors/vminus.cases.json" wit
 import coordsVectorsVnormCasesRaw from "./coords-vectors/vnorm.cases.json" with { type: "json" };
 import coordsVectorsVsclCasesRaw from "./coords-vectors/vscl.cases.json" with { type: "json" };
 import coordsVectorsVsubCasesRaw from "./coords-vectors/vsub.cases.json" with { type: "json" };
+import dskDskb02CasesRaw from "./dsk/dskb02.cases.json" with { type: "json" };
+import dskDskgdCasesRaw from "./dsk/dskgd.cases.json" with { type: "json" };
+import dskDskobjCasesRaw from "./dsk/dskobj.cases.json" with { type: "json" };
+import dskDsksrfCasesRaw from "./dsk/dsksrf.cases.json" with { type: "json" };
 import ekEkaclcCasesRaw from "./ek/ekaclc.cases.json" with { type: "json" };
 import ekEkacldCasesRaw from "./ek/ekacld.cases.json" with { type: "json" };
 import ekEkacliCasesRaw from "./ek/ekacli.cases.json" with { type: "json" };
@@ -65,6 +69,7 @@ import ephemerisSpkssbCasesRaw from "./ephemeris/spkssb.cases.json" with { type:
 import ephemerisSpkudsCasesRaw from "./ephemeris/spkuds.cases.json" with { type: "json" };
 import ephemerisSpkw08CasesRaw from "./ephemeris/spkw08.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
+import { framesCases } from "./frames/index.js";
 import geometryGfGfdistCasesRaw from "./geometry-gf/gfdist.cases.json" with { type: "json" };
 import geometryGfGfrefnCasesRaw from "./geometry-gf/gfrefn.cases.json" with { type: "json" };
 import geometryGfGfrepfCasesRaw from "./geometry-gf/gfrepf.cases.json" with { type: "json" };
@@ -73,6 +78,21 @@ import geometryGfGfsepCasesRaw from "./geometry-gf/gfsep.cases.json" with { type
 import geometryGfGfsstpCasesRaw from "./geometry-gf/gfsstp.cases.json" with { type: "json" };
 import geometryGfGfstepCasesRaw from "./geometry-gf/gfstep.cases.json" with { type: "json" };
 import geometryGfGfstolCasesRaw from "./geometry-gf/gfstol.cases.json" with { type: "json" };
+import fileIoDafbfsCasesRaw from "./file-io/dafbfs.cases.json" with { type: "json" };
+import fileIoDafclsCasesRaw from "./file-io/dafcls.cases.json" with { type: "json" };
+import fileIoDaffnaCasesRaw from "./file-io/daffna.cases.json" with { type: "json" };
+import fileIoDafoprCasesRaw from "./file-io/dafopr.cases.json" with { type: "json" };
+import fileIoDasclsCasesRaw from "./file-io/dascls.cases.json" with { type: "json" };
+import fileIoDasoprCasesRaw from "./file-io/dasopr.cases.json" with { type: "json" };
+import fileIoDlabfsCasesRaw from "./file-io/dlabfs.cases.json" with { type: "json" };
+import fileIoDlaclsCasesRaw from "./file-io/dlacls.cases.json" with { type: "json" };
+import fileIoDlafnsCasesRaw from "./file-io/dlafns.cases.json" with { type: "json" };
+import fileIoDlaopnCasesRaw from "./file-io/dlaopn.cases.json" with { type: "json" };
+import fileIoDskmi2CasesRaw from "./file-io/dskmi2.cases.json" with { type: "json" };
+import fileIoDskopnCasesRaw from "./file-io/dskopn.cases.json" with { type: "json" };
+import fileIoDskw02CasesRaw from "./file-io/dskw02.cases.json" with { type: "json" };
+import fileIoExistsCasesRaw from "./file-io/exists.cases.json" with { type: "json" };
+import fileIoGetfatCasesRaw from "./file-io/getfat.cases.json" with { type: "json" };
 import geometryIllumfCasesRaw from "./geometry/illumf.cases.json" with { type: "json" };
 import geometryIllumgCasesRaw from "./geometry/illumg.cases.json" with { type: "json" };
 import geometryIluminCasesRaw from "./geometry/ilumin.cases.json" with { type: "json" };
@@ -170,6 +190,24 @@ export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsWnfetdCasesRaw as ParityCase[]),
   ...(cellsWindowsWnvaldCasesRaw as ParityCase[]),
 ];
+
+export const fileIoCases: ParityCase[] = [
+  ...(fileIoDafbfsCasesRaw as ParityCase[]),
+  ...(fileIoDafclsCasesRaw as ParityCase[]),
+  ...(fileIoDaffnaCasesRaw as ParityCase[]),
+  ...(fileIoDafoprCasesRaw as ParityCase[]),
+  ...(fileIoDasclsCasesRaw as ParityCase[]),
+  ...(fileIoDasoprCasesRaw as ParityCase[]),
+  ...(fileIoDlabfsCasesRaw as ParityCase[]),
+  ...(fileIoDlaclsCasesRaw as ParityCase[]),
+  ...(fileIoDlafnsCasesRaw as ParityCase[]),
+  ...(fileIoDlaopnCasesRaw as ParityCase[]),
+  ...(fileIoDskmi2CasesRaw as ParityCase[]),
+  ...(fileIoDskopnCasesRaw as ParityCase[]),
+  ...(fileIoDskw02CasesRaw as ParityCase[]),
+  ...(fileIoExistsCasesRaw as ParityCase[]),
+  ...(fileIoGetfatCasesRaw as ParityCase[]),
+];
 export { kernelPoolCases };
 export const ephemerisCases: ParityCase[] = [
   ...(ephemerisSpkclsCasesRaw as ParityCase[]),
@@ -207,7 +245,14 @@ export const ekCases: ParityCase[] = [
   ...(ekEkaclcCasesRaw as ParityCase[]),
   ...(ekEkffldCasesRaw as ParityCase[]),
 ];
+export const dskCases: ParityCase[] = [
+  ...(dskDskobjCasesRaw as ParityCase[]),
+  ...(dskDsksrfCasesRaw as ParityCase[]),
+  ...(dskDskgdCasesRaw as ParityCase[]),
+  ...(dskDskb02CasesRaw as ParityCase[]),
+];
 export { errorCases };
+export { framesCases };
 export const geometryCases: ParityCase[] = [
   ...(geometrySubpntCasesRaw as ParityCase[]),
   ...(geometrySubslrCasesRaw as ParityCase[]),
@@ -249,8 +294,11 @@ export const allCases: ParityCase[] = [
   ...kernelPoolCases,
   ...kernelsCases,
   ...ephemerisCases,
+  ...fileIoCases,
   ...ekCases,
+  ...dskCases,
   ...geometryCases,
   ...geometryGfCases,
   ...errorCases,
+  ...framesCases,
 ];

@@ -18,12 +18,19 @@ import {
   requireSpkHandle,
   requireWindow,
   setSpkHandle,
-  type RunTspiceContext,
+  type RunTspiceContext as RuntimeRunTspiceContext,
 } from "../runtime/context.js";
 import { beforeCaseLifecycle, finalizeCaseLifecycle } from "../runtime/lifecycle.js";
 import { createCaseRuntimePaths } from "../runtime/path-ref.js";
+import { createEmptyWorkflowNormalizationMetadata } from "../workflow-normalization/index.js";
+import type { WorkflowNormalizationMetadata } from "../workflow-normalization/types.js";
 
-export type { RunTspiceContext };
+export type RunTspiceContext = RuntimeRunTspiceContext & {
+  normalization: {
+    metadata: WorkflowNormalizationMetadata;
+  };
+};
+
 export {
   deleteSpkHandle,
   getOrCreateCharCell,
@@ -119,7 +126,12 @@ export function createRunTspiceContext(
   fixturesRoot: string,
   caseId: string,
 ): RunTspiceContext {
-  return createRunTspiceContextCore(spice, createCaseRuntimePaths(fixturesRoot, caseId));
+  return {
+    ...createRunTspiceContextCore(spice, createCaseRuntimePaths(fixturesRoot, caseId)),
+    normalization: {
+      metadata: createEmptyWorkflowNormalizationMetadata(),
+    },
+  };
 }
 
 /** Prepare tspice case lifecycle before running steps. */

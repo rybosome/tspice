@@ -156,6 +156,15 @@ export type Matrix3x3 = [
   [number, number, number],
 ];
 
+export type Matrix6x6 = [
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+  [number, number, number, number, number, number],
+];
+
 export type Vector3 = [number, number, number];
 
 export type StepCoordsVectorsReclat = {
@@ -344,6 +353,51 @@ export type StepCellsWindowsValid = {
 export type StepCellsWindowsWncard = {
   op: "cells-windows.wncard";
   windowId: string;
+};
+
+export type IndexTriple = [number, number, number];
+
+export type DlaDescriptorPayload = {
+  bwdptr: number;
+  fwdptr: number;
+  ibase: number;
+  isize: number;
+  dbase: number;
+  dsize: number;
+  cbase: number;
+  csize: number;
+};
+
+export type DskDescriptorPayload = {
+  surfce: number;
+  center: number;
+  dclass: number;
+  dtype: number;
+  frmcde: number;
+  corsys: number;
+  corpar: number[];
+  co1min: number;
+  co1max: number;
+  co2min: number;
+  co2max: number;
+  co3min: number;
+  co3max: number;
+  start: number;
+  stop: number;
+};
+
+export type DskType2BookkeepingPayload = {
+  nv: number;
+  np: number;
+  nvxtot: number;
+  vtxbds: [[number, number], [number, number], [number, number]];
+  voxsiz: number;
+  voxori: Vec3;
+  vgrext: Vec3;
+  cgscal: number;
+  vtxnpl: number;
+  voxnpt: number;
+  voxnpl: number;
 };
 
 export type StepCellsWindowsWninsd = {
@@ -610,6 +664,128 @@ export type StepEphemerisSpkw08 = {
   step: number;
 };
 
+export type StepFileIoExists = {
+  op: "file-io.exists";
+  path: PathRefLike;
+  alias?: string;
+};
+
+export type StepFileIoGetfat = {
+  op: "file-io.getfat";
+  path: PathRefLike;
+  alias?: string;
+};
+
+export type StepFileIoDafopr = {
+  op: "file-io.dafopr";
+  path: PathRefLike;
+  alias?: string;
+  handleId: string;
+};
+
+export type StepFileIoDafcls = {
+  op: "file-io.dafcls";
+  handleId: string;
+};
+
+export type StepFileIoDafbfs = {
+  op: "file-io.dafbfs";
+  handleId: string;
+};
+
+export type StepFileIoDaffna = {
+  op: "file-io.daffna";
+  handleId: string;
+};
+
+export type StepFileIoDasopr = {
+  op: "file-io.dasopr";
+  path: PathRefLike;
+  alias?: string;
+  handleId: string;
+};
+
+export type StepFileIoDascls = {
+  op: "file-io.dascls";
+  handleId: string;
+};
+
+export type StepFileIoDlaopn = {
+  op: "file-io.dlaopn";
+  path: PathRefLike;
+  alias?: string;
+  ftype: string;
+  ifname: string;
+  ncomch: number;
+  handleId: string;
+};
+
+export type StepFileIoDlabfs = {
+  op: "file-io.dlabfs";
+  handleId: string;
+  descrId: string;
+};
+
+export type StepFileIoDlafns = {
+  op: "file-io.dlafns";
+  handleId: string;
+  descrId: string;
+};
+
+export type StepFileIoDlacls = {
+  op: "file-io.dlacls";
+  handleId: string;
+};
+
+export type StepFileIoDskopn = {
+  op: "file-io.dskopn";
+  path: PathRefLike;
+  alias?: string;
+  ifname: string;
+  ncomch: number;
+  handleId: string;
+};
+
+export type StepFileIoDskmi2 = {
+  op: "file-io.dskmi2";
+  nv: number;
+  vrtces: number[];
+  np: number;
+  plates: number[];
+  finscl: number;
+  corscl: number;
+  worksz: number;
+  voxpsz: number;
+  voxlsz: number;
+  makvtl: boolean;
+  spxisz: number;
+  spaixId?: string;
+};
+
+export type StepFileIoDskw02 = {
+  op: "file-io.dskw02";
+  handleId: string;
+  center: number;
+  surfid: number;
+  dclass: number;
+  frame: string;
+  corsys: number;
+  corpar: number[];
+  mncor1: number;
+  mxcor1: number;
+  mncor2: number;
+  mxcor2: number;
+  mncor3: number;
+  mxcor3: number;
+  first: number;
+  last: number;
+  nv: number;
+  vrtces: number[];
+  np: number;
+  plates: number[];
+  spaixId: string;
+};
+
 export type StepErrorFailed = {
   op: "error.failed";
 };
@@ -641,6 +817,100 @@ export type StepErrorChkin = {
 export type StepErrorChkout = {
   op: "error.chkout";
   name: string;
+};
+
+export type CkCoverageLevel = "SEGMENT" | "INTERVAL";
+export type CkCoverageTimeSystem = "SCLK" | "TDB";
+
+export type StepFramesNamfrm = {
+  op: "frames.namfrm";
+  name: string;
+};
+
+export type StepFramesFrmnam = {
+  op: "frames.frmnam";
+  code: number;
+};
+
+export type StepFramesCidfrm = {
+  op: "frames.cidfrm";
+  center: number;
+};
+
+export type StepFramesCnmfrm = {
+  op: "frames.cnmfrm";
+  centerName: string;
+};
+
+export type StepFramesFrinfo = {
+  op: "frames.frinfo";
+  frameId: number;
+};
+
+export type StepFramesCcifrm = {
+  op: "frames.ccifrm";
+  frameClass: number;
+  classId: number;
+};
+
+export type StepFramesCkgp = {
+  op: "frames.ckgp";
+  inst: number;
+  sclkdp: number;
+  tol: number;
+  ref: string;
+};
+
+export type StepFramesCkgpav = {
+  op: "frames.ckgpav";
+  inst: number;
+  sclkdp: number;
+  tol: number;
+  ref: string;
+};
+
+export type StepFramesCklpf = {
+  op: "frames.cklpf";
+  ck: PathRefLike;
+  handleId: string;
+};
+
+export type StepFramesCkupf = {
+  op: "frames.ckupf";
+  handleId: string;
+};
+
+export type StepFramesCkobj = {
+  op: "frames.ckobj";
+  ck: PathRefLike;
+  idsId: string;
+  maxCard?: number;
+};
+
+export type StepFramesCkcov = {
+  op: "frames.ckcov";
+  ck: PathRefLike;
+  idcode: number;
+  needav: boolean;
+  level: CkCoverageLevel;
+  tol: number;
+  timsys: CkCoverageTimeSystem;
+  coverId: string;
+  maxIntervals?: number;
+};
+
+export type StepFramesPxform = {
+  op: "frames.pxform";
+  from: string;
+  to: string;
+  et: number;
+};
+
+export type StepFramesSxform = {
+  op: "frames.sxform";
+  from: string;
+  to: string;
+  et: number;
 };
 
 export type StepEkEkfind = {
@@ -908,6 +1178,91 @@ export type StepGeometryPl2nvc = {
   plane: SpicePlane;
 };
 
+
+export type StepDskDskobj = {
+  op: "dsk.dskobj";
+  path: PathRefLike;
+};
+
+export type StepDskDsksrf = {
+  op: "dsk.dsksrf";
+  path: PathRefLike;
+  bodyid: number;
+};
+
+export type StepDskDskopn = {
+  op: "dsk.dskopn";
+  handleId: string;
+  path: PathRefLike;
+  ifname: string;
+  ncomch: number;
+};
+
+export type StepDskDskmi2 = {
+  op: "dsk.dskmi2";
+  spatialIndexId: string;
+  vrtces: Vec3[];
+  plates: IndexTriple[];
+  finscl: number;
+  corscl: number;
+  worksz: number;
+  voxpsz: number;
+  voxlsz: number;
+  makvtl: boolean;
+  spxisz: number;
+};
+
+export type StepDskDskw02 = {
+  op: "dsk.dskw02";
+  handleId: string;
+  spatialIndexId: string;
+  center: number;
+  surfid: number;
+  dclass: number;
+  frame: string;
+  corsys: number;
+  corpar: number[];
+  mncor1: number;
+  mxcor1: number;
+  mncor2: number;
+  mxcor2: number;
+  mncor3: number;
+  mxcor3: number;
+  first: number;
+  last: number;
+  vrtces: Vec3[];
+  plates: IndexTriple[];
+};
+
+export type StepDskDasopr = {
+  op: "dsk.dasopr";
+  handleId: string;
+  path: PathRefLike;
+};
+
+export type StepDskDascls = {
+  op: "dsk.dascls";
+  handleId: string;
+};
+
+export type StepDskDlabfs = {
+  op: "dsk.dlabfs";
+  handleId: string;
+  dladscId: string;
+};
+
+export type StepDskDskgd = {
+  op: "dsk.dskgd";
+  handleId: string;
+  dladscId: string;
+};
+
+export type StepDskDskb02 = {
+  op: "dsk.dskb02";
+  handleId: string;
+  dladscId: string;
+};
+
 export type WorkflowStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
@@ -999,6 +1354,21 @@ export type WorkflowStep =
   | StepEphemerisSpkssb
   | StepEphemerisSpkuds
   | StepEphemerisSpkw08
+  | StepFileIoExists
+  | StepFileIoGetfat
+  | StepFileIoDafopr
+  | StepFileIoDafcls
+  | StepFileIoDafbfs
+  | StepFileIoDaffna
+  | StepFileIoDasopr
+  | StepFileIoDascls
+  | StepFileIoDlaopn
+  | StepFileIoDlabfs
+  | StepFileIoDlafns
+  | StepFileIoDlacls
+  | StepFileIoDskopn
+  | StepFileIoDskmi2
+  | StepFileIoDskw02
   | StepErrorFailed
   | StepErrorReset
   | StepErrorGetmsg
@@ -1006,6 +1376,20 @@ export type WorkflowStep =
   | StepErrorSigerr
   | StepErrorChkin
   | StepErrorChkout
+  | StepFramesNamfrm
+  | StepFramesFrmnam
+  | StepFramesCidfrm
+  | StepFramesCnmfrm
+  | StepFramesFrinfo
+  | StepFramesCcifrm
+  | StepFramesCkgp
+  | StepFramesCkgpav
+  | StepFramesCklpf
+  | StepFramesCkupf
+  | StepFramesCkobj
+  | StepFramesCkcov
+  | StepFramesPxform
+  | StepFramesSxform
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -1039,7 +1423,16 @@ export type WorkflowStep =
   | StepGeometryGfGfrepf
   | StepGeometryGfGfsep
   | StepGeometryGfGfdist
-;
+  | StepDskDskobj
+  | StepDskDsksrf
+  | StepDskDskopn
+  | StepDskDskmi2
+  | StepDskDskw02
+  | StepDskDasopr
+  | StepDskDascls
+  | StepDskDlabfs
+  | StepDskDskgd
+  | StepDskDskb02;
 
 export type WorkflowOp = WorkflowStep["op"];
 
@@ -1176,6 +1569,29 @@ export type StepOutput =
       };
     }
   | { op: "ephemeris.spkw08"; value: null }
+  | { op: "file-io.exists"; value: boolean }
+  | { op: "file-io.getfat"; value: { arch: string; type: string } }
+  | { op: "file-io.dafopr"; value: null }
+  | { op: "file-io.dafcls"; value: null }
+  | { op: "file-io.dafbfs"; value: null }
+  | { op: "file-io.daffna"; value: boolean }
+  | { op: "file-io.dasopr"; value: null }
+  | { op: "file-io.dascls"; value: null }
+  | { op: "file-io.dlaopn"; value: null }
+  | { op: "file-io.dlabfs"; value: { found: boolean } }
+  | { op: "file-io.dlafns"; value: { found: boolean } }
+  | { op: "file-io.dlacls"; value: null }
+  | { op: "file-io.dskopn"; value: null }
+  | {
+      op: "file-io.dskmi2";
+      value: {
+        spaixdLength: number;
+        spaixiLength: number;
+        spaixdHead: number[];
+        spaixiHead: number[];
+      };
+    }
+  | { op: "file-io.dskw02"; value: null }
   | { op: "error.failed"; value: boolean }
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }
@@ -1183,6 +1599,51 @@ export type StepOutput =
   | { op: "error.sigerr"; value: null }
   | { op: "error.chkin"; value: null }
   | { op: "error.chkout"; value: null }
+  | { op: "frames.namfrm"; value: { found: false } | { found: true; code: number } }
+  | { op: "frames.frmnam"; value: { found: false } | { found: true; name: string } }
+  | {
+      op: "frames.cidfrm";
+      value: { found: false } | { found: true; frcode: number; frname: string };
+    }
+  | {
+      op: "frames.cnmfrm";
+      value: { found: false } | { found: true; frcode: number; frname: string };
+    }
+  | {
+      op: "frames.frinfo";
+      value:
+        | { found: false }
+        | { found: true; center: number; frameClass: number; classId: number };
+    }
+  | {
+      op: "frames.ccifrm";
+      value:
+        | { found: false }
+        | { found: true; frcode: number; frname: string; center: number };
+    }
+  | {
+      op: "frames.ckgp";
+      value:
+        | { found: false }
+        | { found: true; cmat: Matrix3x3; clkout: number };
+    }
+  | {
+      op: "frames.ckgpav";
+      value:
+        | { found: false }
+        | { found: true; cmat: Matrix3x3; av: [number, number, number]; clkout: number };
+    }
+  | { op: "frames.cklpf"; value: { opened: true } }
+  | { op: "frames.ckupf"; value: { closed: true } }
+  | { op: "frames.ckobj"; value: { ids: number[] } }
+  | {
+      op: "frames.ckcov";
+      value: {
+        intervals: Array<{ left: number; right: number }>;
+      };
+    }
+  | { op: "frames.pxform"; value: Matrix3x3 }
+  | { op: "frames.sxform"; value: Matrix6x6 }
   | {
       op: "ek.ekopn";
       value: { handleId: string };
@@ -1306,7 +1767,23 @@ export type StepOutput =
   | { op: "geometry-gf.gfrepi"; value: null }
   | { op: "geometry-gf.gfrepf"; value: null }
   | { op: "geometry-gf.gfsep"; value: null }
-  | { op: "geometry-gf.gfdist"; value: null };
+  | { op: "geometry-gf.gfdist"; value: null }
+  | {
+      op: "dsk.dskobj";
+      value: { bodyIds: number[] };
+    }
+  | {
+      op: "dsk.dsksrf";
+      value: { surfaceIds: number[] };
+    }
+  | { op: "dsk.dskopn"; value: null }
+  | { op: "dsk.dskmi2"; value: null }
+  | { op: "dsk.dskw02"; value: null }
+  | { op: "dsk.dasopr"; value: null }
+  | { op: "dsk.dascls"; value: null }
+  | { op: "dsk.dlabfs"; value: { found: boolean } }
+  | { op: "dsk.dskgd"; value: DskDescriptorPayload }
+  | { op: "dsk.dskb02"; value: DskType2BookkeepingPayload };
 
 export type CaseError = {
   type: string;
