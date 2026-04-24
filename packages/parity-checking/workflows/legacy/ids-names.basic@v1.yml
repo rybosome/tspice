@@ -1,9 +1,0 @@
-id: workflows/legacy/ids-names.basic@v1
-kind: workflow
-setup:
-  kernels:
-    - $FIXTURES/frames-minimal
-    - $FIXTURES/body399-char-foo.tpc
-notes:
-  - Migrated from legacy scenario ids-names.basic.yml.
-  - Generated during parity-checking migration from backend-verify.

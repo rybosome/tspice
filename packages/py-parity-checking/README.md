@@ -5,7 +5,7 @@ A fixed-case parity package that compares `@rybosome/tspice` behavior against a 
 ## Why this package exists
 
 - This is a fresh implementation under `packages/py-parity-checking`.
-- It is intentionally independent from `packages/parity-checking` and its v3 YAML/spec pipeline.
+- It is intentionally independent from the legacy v3 YAML/spec pipeline.
 - Oracle truth comes from live Python sidecar execution (SpiceyPy), not from baked expected corpora.
 
 ## Architecture (v1)
