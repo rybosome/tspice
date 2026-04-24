@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import type {
   SpkPackedDescriptor,
   StepEphemerisSpkcls,
@@ -18,7 +21,7 @@ import type {
   StepEphemerisSpkw08,
   StepOutput,
 } from "../../case-types.js";
-import { toVirtualKernelPath } from "../../fixtures.js";
+import { resolvePathRef, toPathRef, toVirtualKernelPath } from "../../fixtures.js";
 import {
   deleteSpkHandle,
   getOrCreateEphemerisIntCell,
@@ -70,6 +73,29 @@ function toPackedDescriptor(descr: readonly number[]): SpkPackedDescriptor {
   return [descr[0]!, descr[1]!, descr[2]!, descr[3]!, descr[4]!];
 }
 
+function resolveEphemerisPath(
+  context: RunTspiceContext,
+  pathRefLike:
+    | StepEphemerisSpkcov["spk"]
+    | StepEphemerisSpkobj["spk"]
+    | StepEphemerisSpkopa["file"]
+    | StepEphemerisSpkopn["file"],
+  options?: { ensureParentDirectory?: boolean },
+): string {
+  const pathRef = toPathRef(pathRefLike);
+
+  if (context.spice.raw.kind !== "node") {
+    return toVirtualKernelPath(pathRef);
+  }
+
+  const resolved = resolvePathRef(context.paths, pathRef);
+  if (options?.ensureParentDirectory && pathRef.kind === "scratch") {
+    fs.mkdirSync(path.dirname(resolved), { recursive: true });
+  }
+
+  return resolved;
+}
+
 /** Execute one `ephemeris.*` workflow step in tspice. */
 export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep): StepOutput {
   switch (step.op) {
@@ -82,7 +108,7 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
 
     case "ephemeris.spkcov": {
       const cover = getOrCreateWindow(context, step.coverWindowId, step.maxIntervals ?? 16);
-      context.spice.raw.spkcov(toVirtualKernelPath(step.spk), step.idcode, cover);
+      context.spice.raw.spkcov(resolveEphemerisPath(context, step.spk), step.idcode, cover);
       const count = context.spice.raw.wncard(cover);
       const intervals: [number, number][] = [];
       for (let i = 0; i < count; i++) {
@@ -149,7 +175,7 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
 
     case "ephemeris.spkobj": {
       const ids = getOrCreateEphemerisIntCell(context, step.idsCellId, step.maxCardinality ?? 1024);
-      context.spice.raw.spkobj(toVirtualKernelPath(step.spk), ids);
+      context.spice.raw.spkobj(resolveEphemerisPath(context, step.spk), ids);
       const count = context.spice.raw.card(ids);
       const values: number[] = [];
       for (let i = 0; i < count; i++) {
@@ -164,7 +190,9 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkopa": {
-      const handle = context.spice.raw.spkopa(toVirtualKernelPath(step.file));
+      const handle = context.spice.raw.spkopa(
+        resolveEphemerisPath(context, step.file, { ensureParentDirectory: true }),
+      );
       setSpkHandle(context, step.handleId, handle);
       return {
         op: step.op,
@@ -175,7 +203,11 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkopn": {
-      const handle = context.spice.raw.spkopn(toVirtualKernelPath(step.file), step.ifname, step.ncomch);
+      const handle = context.spice.raw.spkopn(
+        resolveEphemerisPath(context, step.file, { ensureParentDirectory: true }),
+        step.ifname,
+        step.ncomch,
+      );
       setSpkHandle(context, step.handleId, handle);
       return {
         op: step.op,
