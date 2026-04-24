@@ -46,6 +46,8 @@ static std::string NormalizeBodItem(const std::string& itemRaw) {
   return ToUpperAscii(TrimAsciiWhitespace(itemRaw));
 }
 
+constexpr size_t kMaxBodItemChars = 1024;
+
 static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -210,6 +212,13 @@ static Napi::Array Bodvar(const Napi::CallbackInfo& info) {
 
   const int body = info[0].As<Napi::Number>().Int32Value();
   const std::string itemRaw = info[1].As<Napi::String>().Utf8Value();
+  if (itemRaw.size() > kMaxBodItemChars) {
+    ThrowSpiceError(Napi::RangeError::New(
+        env,
+        std::string("Kernel pool item name is too long: ") + std::to_string(itemRaw.size()) +
+            " characters (max " + std::to_string(kMaxBodItemChars) + ")"));
+    return Napi::Array::New(env);
+  }
   const std::string item = NormalizeBodItem(itemRaw);
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
