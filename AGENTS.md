@@ -34,7 +34,6 @@ Use this as the default routing map before editing files.
 | Docs site/app | `apps/docs` | User documentation site implementation. |
 | Repo-level documentation | `README.md`, `docs/` | Architecture, parity, inventory, screenshots, reference docs. |
 | CI/tooling scripts | `scripts/`, `scripts/ci/`, `tools/` | Validation/build tooling and automation behavior. |
-| Benchmarks/contracts | `benchmarks/contracts` and `packages/bench-contract` | Benchmark contract specs and validation workflow. |
 
 ## 3) API layer contract (`raw` vs `kit`)
 
