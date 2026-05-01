@@ -258,7 +258,11 @@ export function exposeTransportToWorker(opts: {
             ok: false,
             error: serializeError(createMalformedRequestPacketError(id, op, args)),
           };
-          self.postMessage(res);
+          try {
+            self.postMessage(res);
+          } catch {
+            // Best-effort protocol-level error reporting only.
+          }
         }
         return;
       }
