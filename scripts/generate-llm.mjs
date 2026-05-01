@@ -19,7 +19,7 @@ const ts = (() => {
 
   return (
     tryRequire(import.meta.url) ??
-    tryRequire(new URL("../../packages/tspice/package.json", import.meta.url)) ??
+    tryRequire(new URL("../packages/tspice/package.json", import.meta.url)) ??
     (() => {
       throw new Error(
         "[generate:llm] Missing dependency: typescript. Install generator deps (e.g. `pnpm install --filter @rybosome/tspice...`).",
