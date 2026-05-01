@@ -95,4 +95,4 @@ When you add a new SPICE binding, treat it as a contract change that must land *
 
 Parity mapping doc (outside the VitePress tree):
 
-- [`docs/parity/spicebackend-cspice-mapping.md`](https://github.com/rybosome/tspice/blob/main/docs/parity/spicebackend-cspice-mapping.md)
+- [`docs/spicebackend-cspice-mapping.md`](https://github.com/rybosome/tspice/blob/main/docs/spicebackend-cspice-mapping.md)
