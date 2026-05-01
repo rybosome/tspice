@@ -112,6 +112,18 @@ export function resolveWorkerRpcInvocation(opts: {
   }
 
   const target = opts.surfaces[ns];
+  if (!Object.prototype.hasOwnProperty.call(target, method)) {
+    throw createCallerFacingWorkerRpcError({
+      summary: "Unknown worker RPC operation",
+      op,
+      namespace: ns,
+      method,
+      expected: `an existing own "${ns}" method`,
+      got: quote(method),
+      hint: 'Call "meta.surfaceMethodKeys" to discover available operations',
+    });
+  }
+
   const fn = target[method];
   if (typeof fn !== "function") {
     throw createCallerFacingWorkerRpcError({
@@ -119,7 +131,7 @@ export function resolveWorkerRpcInvocation(opts: {
       op,
       namespace: ns,
       method,
-      expected: `an existing "${ns}" method`,
+      expected: `an existing own "${ns}" method`,
       got: quote(method),
       hint: 'Call "meta.surfaceMethodKeys" to discover available operations',
     });

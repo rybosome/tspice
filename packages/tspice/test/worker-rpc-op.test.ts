@@ -101,4 +101,28 @@ describe("worker RPC operation resolution", () => {
     expect(error.message).toContain('method="missingMethod"');
     expect(error.message).toContain("Expected: an existing");
   });
+
+  it("rejects inherited methods and only allows own properties", () => {
+    const inheritedSurface = Object.create({
+      inheritedMethod: () => "nope",
+    }) as Record<string, unknown>;
+
+    const error = makeError(() =>
+      resolveWorkerRpcInvocation({
+        op: "raw.inheritedMethod",
+        allowlist: {},
+        surfaces: {
+          raw: inheritedSurface,
+          kit: {
+            toolkitVersion: () => "TSPICE_TEST",
+          },
+        },
+        isSafeRpcKey,
+        blockedStringKeys,
+      }),
+    );
+
+    expect(error.message).toContain("Unknown worker RPC operation");
+    expect(error.message).toContain("Expected: an existing own");
+  });
 });

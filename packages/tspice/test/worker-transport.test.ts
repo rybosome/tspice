@@ -197,4 +197,26 @@ describe("worker transport", () => {
     expect(response.error?.message).toContain("Got:");
     expect(response.error?.message).toContain("Hint:");
   });
+
+  it("does not throw if posting malformed-request errors fails", () => {
+    const scope = new FakeWorkerGlobalScope();
+    scope.onPostMessage = () => {
+      throw new Error("postMessage failed");
+    };
+
+    const server: SpiceTransport = {
+      request: async () => "ok",
+    };
+
+    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+
+    expect(() => {
+      scope.dispatchMessageFromMain({
+        type: tspiceRpcRequestType,
+        id: 8,
+        op: "raw.echo",
+        // Intentionally malformed: missing args array.
+      });
+    }).not.toThrow();
+  });
 });
