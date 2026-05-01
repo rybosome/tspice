@@ -91,8 +91,8 @@ When you add a new SPICE binding, treat it as a contract change that must land *
    - ensure the shim code is compiled into the `.wasm` (see `packages/backend-wasm/emscripten/tspice_backend_wasm_wrapper.c`)
    - add/update the TS domain wrapper (`packages/backend-wasm/src/domains/*`)
    - (when applicable) update the Emscripten module assertions in `packages/backend-wasm/src/lowlevel/exports.ts`
-5. **Tests / parity:** add or update verification coverage (see `packages/parity-checking/`).
+5. **Tests / parity:** add or update verification coverage in the relevant package tests, and update fixed-case CSPICE parity workflows in `packages/py-parity-checking/` when behavior changes.
 
 Parity mapping doc (outside the VitePress tree):
 
-- [`docs/parity/spicebackend-cspice-mapping.md`](https://github.com/rybosome/tspice/blob/main/docs/parity/spicebackend-cspice-mapping.md)
+- [`docs/spicebackend-cspice-mapping.md`](https://github.com/rybosome/tspice/blob/main/docs/spicebackend-cspice-mapping.md)

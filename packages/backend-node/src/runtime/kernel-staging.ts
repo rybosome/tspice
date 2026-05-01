@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
 
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
 import { normalizeVirtualKernelPath } from "@rybosome/tspice-core";
@@ -37,9 +36,11 @@ export type KernelStager = {
 export function createKernelStager(): KernelStager {
   const tempByVirtualPath = new Map<string, string>();
   const virtualByTempPath = new Map<string, string>();
+  const loadedVirtualPaths = new Set<string>();
   let tempKernelRootDir: string | undefined;
 
   const VIRTUAL_KERNEL_ROOT = "/kernels/";
+  const PY_PARITY_VIRTUAL_ROOT = "py-parity/";
 
   /**
    * Canonicalize a virtual kernel identifier to the shared `/kernels/...` form.
@@ -56,7 +57,15 @@ export function createKernelStager(): KernelStager {
     //
     // We *do not* treat arbitrary relative OS paths as virtual identifiers,
     // since that would be surprising for Node consumers (e.g. `./naif0012.tls`).
-    return input.startsWith(VIRTUAL_KERNEL_ROOT) || input.startsWith("kernels/");
+    return (
+      input.startsWith(VIRTUAL_KERNEL_ROOT) ||
+      input.startsWith("kernels/") ||
+      input.startsWith(PY_PARITY_VIRTUAL_ROOT)
+    );
+  }
+
+  function isPyParityCanonicalPath(canonical: string): boolean {
+    return canonical.startsWith(`${VIRTUAL_KERNEL_ROOT}${PY_PARITY_VIRTUAL_ROOT}`);
   }
 
   function tryCanonicalVirtualKernelPath(input: string): string | undefined {
@@ -115,24 +124,67 @@ export function createKernelStager(): KernelStager {
     }
   }
 
+  function createTempPathForVirtualPath(canonicalVirtualPath: string): string {
+    const existing = tempByVirtualPath.get(canonicalVirtualPath);
+    if (existing) {
+      return existing;
+    }
+
+    const rootDir = ensureTempKernelRootDir();
+    const rel = canonicalVirtualPath.startsWith(VIRTUAL_KERNEL_ROOT)
+      ? canonicalVirtualPath.slice(VIRTUAL_KERNEL_ROOT.length)
+      : canonicalVirtualPath.replace(/^\/+/, "");
+
+    const tempPath = path.resolve(rootDir, rel);
+    const relative = path.relative(rootDir, tempPath);
+    if (relative.startsWith("..") || path.isAbsolute(relative)) {
+      throw new Error(
+        `createTempPathForVirtualPath(): virtual path escaped temp root: ${JSON.stringify(canonicalVirtualPath)}`,
+      );
+    }
+
+    fs.mkdirSync(path.dirname(tempPath), { recursive: true });
+    tempByVirtualPath.set(canonicalVirtualPath, tempPath);
+    virtualByTempPath.set(tempPath, canonicalVirtualPath);
+    return tempPath;
+  }
+
   function resolvePathForSpice(input: string): string {
     const canonical = tryCanonicalVirtualKernelPath(input);
     if (!canonical) {
       return input;
     }
 
-    // If this is a valid virtual kernel path but it's not staged, return the
-    // canonical virtual identifier. This keeps the backend behavior stable
-    // regardless of whether callers use `kernels/foo.tm`, `/kernels/foo.tm`,
-    // or other equivalent virtual spellings.
-    return tempByVirtualPath.get(canonical) ?? canonical;
+    const staged = tempByVirtualPath.get(canonical);
+    if (staged) {
+      return staged;
+    }
+
+    // `py-parity/...` paths are backend-internal virtual identifiers used by
+    // parity workflows. Materialize them to deterministic temp paths so native
+    // file APIs (file-io/frames/dsk) can open/read/write them like normal
+    // filesystem paths.
+    if (isPyParityCanonicalPath(canonical)) {
+      return createTempPathForVirtualPath(canonical);
+    }
+
+    // For other virtual ids, preserve existing behavior: unresolved virtual
+    // strings stay virtual and are only mapped when byte-staged.
+    return canonical;
   }
 
   return {
     furnsh: (_kernel, native) => {
       const kernel = _kernel;
       if (typeof kernel === "string") {
-        native.furnsh(resolvePathForSpice(kernel));
+        const resolved = resolvePathForSpice(kernel);
+        native.furnsh(resolved);
+
+        const canonical = tryCanonicalVirtualKernelPath(kernel);
+        if (canonical && tempByVirtualPath.get(canonical) === resolved) {
+          loadedVirtualPaths.add(canonical);
+        }
+
         return;
       }
 
@@ -142,37 +194,44 @@ export function createKernelStager(): KernelStager {
       // We then remember the resolved temp path so `unload(kernel.path)` unloads
       // the correct file.
       const existingTemp = tempByVirtualPath.get(virtualPath);
-      if (existingTemp) {
+      if (existingTemp && loadedVirtualPaths.has(virtualPath)) {
         native.unload(existingTemp);
-        tempByVirtualPath.delete(virtualPath);
-        virtualByTempPath.delete(existingTemp);
-        safeUnlink(existingTemp);
+        loadedVirtualPaths.delete(virtualPath);
       }
 
-      const rootDir = ensureTempKernelRootDir();
-      const fileName = path.basename(virtualPath) || "kernel";
-      const tempPath = path.join(rootDir, `${randomUUID()}-${fileName}`);
+      const tempPath = existingTemp ?? createTempPathForVirtualPath(virtualPath);
       fs.writeFileSync(tempPath, kernel.bytes);
 
       try {
         native.furnsh(tempPath);
       } catch (error) {
         safeUnlink(tempPath);
+        loadedVirtualPaths.delete(virtualPath);
+        tempByVirtualPath.delete(virtualPath);
+        virtualByTempPath.delete(tempPath);
         throw error;
       }
 
       tempByVirtualPath.set(virtualPath, tempPath);
       virtualByTempPath.set(tempPath, virtualPath);
+      loadedVirtualPaths.add(virtualPath);
     },
 
     unload: (_path, native) => {
       const canonical = tryCanonicalVirtualKernelPath(_path);
       const resolved = canonical ? tempByVirtualPath.get(canonical) : undefined;
-      if (resolved) {
-        native.unload(resolved);
-        tempByVirtualPath.delete(canonical!);
-        virtualByTempPath.delete(resolved);
-        safeUnlink(resolved);
+      if (canonical && resolved) {
+        if (loadedVirtualPaths.has(canonical)) {
+          native.unload(resolved);
+          loadedVirtualPaths.delete(canonical);
+        }
+
+        if (!isPyParityCanonicalPath(canonical)) {
+          safeUnlink(resolved);
+          tempByVirtualPath.delete(canonical);
+          virtualByTempPath.delete(resolved);
+        }
+
         return;
       }
 
@@ -186,6 +245,7 @@ export function createKernelStager(): KernelStager {
       for (const tempPath of tempByVirtualPath.values()) {
         safeUnlink(tempPath);
       }
+      loadedVirtualPaths.clear();
       tempByVirtualPath.clear();
       virtualByTempPath.clear();
     },

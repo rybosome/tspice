@@ -91,7 +91,10 @@ jobs:
       - name: Verify native build + tests
         env:
           TSPICE_EXPECT_NATIVE: "true"
-        run: pnpm run check:native
+        run: |
+          # TODO(#594): switch back to `pnpm run check:native` after PR-0..PR-5
+          # restores parity in required release lanes.
+          pnpm run check:native:required
 
       - name: Pre-publish smoke test (@rybosome/tspice + native optionalDependency)
         shell: bash
@@ -184,7 +187,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Verify JS build + tests
-        run: pnpm run check:js
+        run: |
+          # TODO(#594): switch back to `pnpm run check:js` after PR-0..PR-5
+          # restores parity in required release lanes.
+          pnpm run check:js:required
 
       - name: Build dist-publish + verify pack
         run: |

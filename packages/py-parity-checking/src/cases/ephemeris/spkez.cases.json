@@ -1,0 +1,55 @@
+[
+  {
+    "caseId": "ephemeris-spkez-generated-segment-success",
+    "description": "spkez returns state/lt from a generated type-8 segment",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/ephemeris-spkez-happy.bsp",
+        "ifname": "PARITY",
+        "ncomch": 0,
+        "handleId": "H1"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H1",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKEZ_SEG",
+        "degree": 1,
+        "states": [0, 0, 0, 1, 0, 0, 120, 0, 0, 1, 0, 0],
+        "epoch1": 0,
+        "step": 120
+      },
+      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      { "op": "kernels.furnsh", "file": "kernels/ephemeris-spkez-happy.bsp" },
+      {
+        "op": "ephemeris.spkez",
+        "target": 1000,
+        "et": 60,
+        "ref": "J2000",
+        "abcorr": "NONE",
+        "observer": 0
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkez-invalid-frame-error",
+    "description": "spkez rejects an unknown reference frame",
+    "workflow": [
+      {
+        "op": "ephemeris.spkez",
+        "target": 1000,
+        "et": 60,
+        "ref": "NOT_A_FRAME",
+        "abcorr": "NONE",
+        "observer": 0
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

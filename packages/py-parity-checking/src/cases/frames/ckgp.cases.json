@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "frames-ckgp-open-query-close-success",
+    "description": "ckgp pointing query with explicit CK open/close lifecycle",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGP" },
+      {
+        "op": "frames.ckgp",
+        "inst": -94070,
+        "sclkdp": 73348546598.2355,
+        "tol": 1,
+        "ref": "MGS_SPACECRAFT"
+      },
+      { "op": "frames.ckupf", "handleId": "CKH_CKGP" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-ckgp-out-of-coverage-found-false-success",
+    "description": "ckgp miss outside CK coverage returns found=false",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGP_ERR" },
+      {
+        "op": "frames.ckgp",
+        "inst": -94070,
+        "sclkdp": 0,
+        "tol": 0,
+        "ref": "MGS_SPACECRAFT"
+      },
+      { "op": "frames.ckupf", "handleId": "CKH_CKGP_ERR" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

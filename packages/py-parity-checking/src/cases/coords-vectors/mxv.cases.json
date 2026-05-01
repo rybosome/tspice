@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+    "description": "mxv multiplies row-major matrix by a vector",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxv",
+        "m": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            5,
+            6,
+            0
+          ]
+        ],
+        "v": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

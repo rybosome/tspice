@@ -108,7 +108,7 @@ export default defineConfig({
   description: 'TypeScript SPICE toolkit',
   base,
 
-  // Orrery is the visual authority for this repo; keep docs dark.
+  // Keep docs dark to match the docs theme palette.
   appearance: 'force-dark',
 
   // Ensure Turbo can cache the build output via `dist/**`.

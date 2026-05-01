@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "frames-cidfrm-found-success",
+    "description": "cidfrm resolves EARTH center -> frame mapping",
+    "workflow": [{ "op": "frames.cidfrm", "center": 399 }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-cidfrm-not-found-success",
+    "description": "cidfrm miss returns found=false",
+    "workflow": [{ "op": "frames.cidfrm", "center": 999999 }],
+    "expectation": { "kind": "success" }
+  }
+]

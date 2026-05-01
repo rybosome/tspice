@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "cells-windows-card-window-cardinality-success",
+    "description": "card reports endpoint cardinality for a tracked window",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "W_CARD", "left": 1, "right": 2, "maxIntervals": 4 },
+      { "op": "cells-windows.card", "targetKind": "window", "targetId": "W_CARD" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-card-missing-target-error",
+    "description": "Representative card error on missing target handle",
+    "workflow": [{ "op": "cells-windows.card", "targetKind": "int", "targetId": "MISSING_INT" }],
+    "expectation": { "kind": "error" }
+  }
+]

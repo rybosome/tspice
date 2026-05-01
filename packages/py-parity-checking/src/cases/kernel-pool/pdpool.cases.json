@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "kernel-pool-pdpool-write-and-overwrite-lifecycle",
+    "description": "pdpool writes numeric values and later overwrite is visible to read/type checks",
+    "workflow": [
+      { "op": "kernel-pool.pdpool", "name": "KP_PD_NUM", "values": [1.5, 2.5, -3.5] },
+      { "op": "kernel-pool.gdpool", "name": "KP_PD_NUM", "start": 0, "room": 10 },
+      { "op": "kernel-pool.pdpool", "name": "KP_PD_NUM", "values": [42.25] },
+      { "op": "kernel-pool.gdpool", "name": "KP_PD_NUM", "start": 0, "room": 10 },
+      { "op": "kernel-pool.dtpool", "name": "KP_PD_NUM" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-pdpool-empty-name-error",
+    "description": "Representative pdpool validation error for empty names",
+    "workflow": [
+      { "op": "kernel-pool.pdpool", "name": "", "values": [1] }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

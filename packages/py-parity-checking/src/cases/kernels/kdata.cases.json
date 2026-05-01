@@ -1,0 +1,12 @@
+[
+  {
+    "caseId": "kernels-kdata-found-and-miss-success",
+    "description": "kdata returns metadata for loaded kernels and found=false when out of range",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.kdata", "which": 0, "kind": "ALL" },
+      { "op": "kernels.kdata", "which": 99, "kind": "ALL" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

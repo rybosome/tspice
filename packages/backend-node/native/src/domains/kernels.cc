@@ -322,6 +322,11 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
     }
   }
 
+  // Match CSPICE/SpiceyPy behavior: when `nterms==0`, pass a non-null pointer
+  // (NULL can trigger SPICE(NULLPOINTER) in some toolkit builds).
+  char emptyTerms[2] = {'\0', '\0'};
+  char* termsPtr = termsBuf.empty() ? emptyTerms : termsBuf.data();
+
   std::vector<char> wordsqOut(wordsqOutMaxBytes);
   std::vector<char> substr(substrMaxBytes);
 
@@ -332,7 +337,7 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
   const int code = tspice_kxtrct(
       keywd.c_str(),
       (int)termlen,
-      termsBuf.empty() ? nullptr : termsBuf.data(),
+      termsPtr,
       (int)nterms,
       wordsq.c_str(),
       wordsqOut.data(),

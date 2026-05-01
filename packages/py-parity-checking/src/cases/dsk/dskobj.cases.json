@@ -1,0 +1,34 @@
+[
+  {
+    "caseId": "dsk-dskobj-happy-apophis-fixture",
+    "description": "Returns body IDs from checked-in DSK fixture",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskobj-non-dsk-file-error",
+    "description": "Representative dskobj error when path does not reference a DSK",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/naif0012.tls"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

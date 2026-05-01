@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "time-deltet-happy-et-with-lsk",
+    "description": "Computes ET-UTC delta at J2000 ET with LSK loaded",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.deltet", "epoch": 0, "eptype": "ET" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-deltet-missing-lsk-error",
+    "description": "Representative deltet error when leap-seconds kernel is not loaded",
+    "workflow": [{ "op": "time.deltet", "epoch": 0, "eptype": "ET" }],
+    "expectation": { "kind": "error" }
+  }
+]

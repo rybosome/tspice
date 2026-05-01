@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "error-reset-clears-long-message-success",
+    "description": "reset clears previously set long message and failed state",
+    "workflow": [
+      { "op": "error.setmsg", "message": "message before reset" },
+      { "op": "error.getmsg", "which": "LONG" },
+      { "op": "error.reset" },
+      { "op": "error.getmsg", "which": "LONG" },
+      { "op": "error.failed" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

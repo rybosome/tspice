@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "coords-vectors-sphrec-happy-equatorial-quarter-turn",
+    "description": "sphrec spherical-to-rectangular conversion on equator at +Y",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphrec",
+        "radius": 2,
+        "colat": 1.5707963267948966,
+        "lon": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

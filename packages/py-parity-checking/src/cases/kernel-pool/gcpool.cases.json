@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "kernel-pool-gcpool-read-char-values-and-miss",
+    "description": "gcpool returns inserted character values and reports missing variables",
+    "workflow": [
+      { "op": "kernel-pool.pcpool", "name": "KP_GC_CHAR", "values": ["alpha", "beta", "gamma"] },
+      { "op": "kernel-pool.gcpool", "name": "KP_GC_CHAR", "start": 0, "room": 10 },
+      { "op": "kernel-pool.gcpool", "name": "KP_GC_MISSING", "start": 0, "room": 10 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-gcpool-invalid-room-error",
+    "description": "Representative gcpool argument validation error (negative room)",
+    "workflow": [
+      { "op": "kernel-pool.pcpool", "name": "KP_GC_CHAR", "values": ["alpha"] },
+      { "op": "kernel-pool.gcpool", "name": "KP_GC_CHAR", "start": 0, "room": -1 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "caseId": "file-io-daffna-found-after-bfs-success",
+    "description": "daffna returns true after dafbfs on deterministic DAF",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf" },
+      { "op": "file-io.dafbfs", "handleId": "daf" },
+      { "op": "file-io.daffna", "handleId": "daf" },
+      { "op": "file-io.dafcls", "handleId": "daf" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-daffna-without-bfs-error",
+    "description": "Representative daffna error when search is not initialized",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf" },
+      { "op": "file-io.daffna", "handleId": "daf" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

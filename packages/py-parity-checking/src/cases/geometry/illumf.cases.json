@@ -1,0 +1,74 @@
+[
+  {
+    "caseId": "geometry-illumf-happy-path-success",
+    "description": "illumf ellipsoid illumination + visibility flags at stable Moon surface point",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "MOON",
+        "ilusrc": "SUN",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH",
+        "spoint": [
+          1718.83275865333,
+          151.04685579784754,
+          -203.3655701778645
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-invalid-method-error",
+    "description": "Representative illumf method syntax error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "INVALID METHOD",
+        "target": "MOON",
+        "ilusrc": "SUN",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH",
+        "spoint": [
+          1718.83275865333,
+          151.04685579784754,
+          -203.3655701778645
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

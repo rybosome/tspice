@@ -1,0 +1,69 @@
+[
+  {
+    "caseId": "ephemeris-spkopa-append-segment-success",
+    "description": "spkopa reopens an SPK for append and writes an additional segment",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/ephemeris-spkopa-happy.bsp",
+        "ifname": "PARITY",
+        "ncomch": 0,
+        "handleId": "H_CREATE"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H_CREATE",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKOPA_SEG_A",
+        "degree": 1,
+        "states": [0, 0, 0, 1, 0, 0, 120, 0, 0, 1, 0, 0],
+        "epoch1": 0,
+        "step": 120
+      },
+      { "op": "ephemeris.spkcls", "handleId": "H_CREATE" },
+      {
+        "op": "ephemeris.spkopa",
+        "file": "kernels/ephemeris-spkopa-happy.bsp",
+        "handleId": "H_APPEND"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H_APPEND",
+        "body": 1001,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKOPA_SEG_B",
+        "degree": 1,
+        "states": [0, 0, 0, 0, 1, 0, 120, 0, 0, 0, 1, 0],
+        "epoch1": 0,
+        "step": 120
+      },
+      { "op": "ephemeris.spkcls", "handleId": "H_APPEND" },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/ephemeris-spkopa-happy.bsp",
+        "idsCellId": "IDS1",
+        "maxCardinality": 16
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkopa-missing-file-error",
+    "description": "spkopa fails when the target file does not exist",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopa",
+        "file": "kernels/does-not-exist-spkopa.bsp",
+        "handleId": "H_MISSING"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

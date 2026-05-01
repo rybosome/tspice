@@ -1,0 +1,27 @@
+[
+  {
+    "caseId": "kernel-pool-swpool-watcher-lifecycle-and-empty-watch",
+    "description": "swpool establishes watch agents, including empty names watchlists, with expected cvpool toggling",
+    "workflow": [
+      { "op": "kernel-pool.pdpool", "name": "KP_SW_TRACKED", "values": [1] },
+      { "op": "kernel-pool.swpool", "agent": "KP_SW_AGENT", "names": ["KP_SW_TRACKED"] },
+      { "op": "kernel-pool.cvpool", "agent": "KP_SW_AGENT" },
+      { "op": "kernel-pool.cvpool", "agent": "KP_SW_AGENT" },
+      { "op": "kernel-pool.pdpool", "name": "KP_SW_TRACKED", "values": [2] },
+      { "op": "kernel-pool.cvpool", "agent": "KP_SW_AGENT" },
+      { "op": "kernel-pool.cvpool", "agent": "KP_SW_AGENT" },
+      { "op": "kernel-pool.swpool", "agent": "KP_SW_EMPTY_AGENT", "names": [] },
+      { "op": "kernel-pool.cvpool", "agent": "KP_SW_EMPTY_AGENT" },
+      { "op": "kernel-pool.cvpool", "agent": "KP_SW_EMPTY_AGENT" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-swpool-empty-agent-error",
+    "description": "Representative swpool validation error for empty agents",
+    "workflow": [
+      { "op": "kernel-pool.swpool", "agent": "", "names": ["KP_SW_TRACKED"] }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

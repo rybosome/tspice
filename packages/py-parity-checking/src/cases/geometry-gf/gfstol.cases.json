@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "geometry-gf-gfstol-success",
+    "description": "gfstol accepts a small positive convergence tolerance",
+    "workflow": [
+      { "op": "geometry-gf.gfstol", "value": 0.001 },
+      { "op": "geometry-gf.gfrefn", "t1": 0, "t2": 10, "s1": true, "s2": false }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "geometry-gf-gfstol-invalid-value-error",
+    "description": "Representative gfstol invalid tolerance error",
+    "workflow": [{ "op": "geometry-gf.gfstol", "value": -1 }],
+    "expectation": { "kind": "error" }
+  }
+]

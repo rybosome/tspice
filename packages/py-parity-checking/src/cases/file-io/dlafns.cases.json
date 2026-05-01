@@ -1,0 +1,26 @@
+[
+  {
+    "caseId": "file-io-dlafns-next-segment-search-success",
+    "description": "dlafns advances from first DSK segment and reports end of traversal",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bds" },
+      { "op": "file-io.dasopr", "path": "kernels/file-io-minimal.bds", "handleId": "reader" },
+      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
+      { "op": "file-io.dlafns", "handleId": "reader", "descrId": "seg0" },
+      { "op": "file-io.dascls", "handleId": "reader" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dlafns-closed-handle-error",
+    "description": "Representative dlafns error when handle is closed before traversal",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bds" },
+      { "op": "file-io.dasopr", "path": "kernels/file-io-minimal.bds", "handleId": "reader" },
+      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
+      { "op": "file-io.dascls", "handleId": "reader" },
+      { "op": "file-io.dlafns", "handleId": "reader", "descrId": "seg0" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

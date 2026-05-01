@@ -9,6 +9,7 @@ import type {
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+import type { KernelStager } from "../runtime/kernel-staging.js";
 import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 import type { SpiceHandleRegistry, SpiceHandleKind } from "../runtime/spice-handles.js";
 const I32_MIN = -2147483648;
@@ -60,7 +61,13 @@ function normalizeFoundDlaDescriptor(value: unknown, context: string): FoundDlaD
 }
 
 /** Create a {@link FileIoApi} implementation backed by the native Node addon. */
-export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistry): FileIoApi {
+export function createFileIoApi(
+  native: NativeAddon,
+  handles: SpiceHandleRegistry,
+  stager: Pick<KernelStager, "resolvePathForSpice">,
+): FileIoApi {
+  const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
       handle,
@@ -76,13 +83,13 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
 
   const api = {
     exists: (path: string) => {
-      const exists = native.exists(path);
+      const exists = native.exists(resolvePath(path));
       invariant(typeof exists === "boolean", "Expected native backend exists() to return a boolean");
       return exists;
     },
 
     getfat: (path: string) => {
-      const result = native.getfat(path);
+      const result = native.getfat(resolvePath(path));
       invariant(typeof result === "object" && result !== null, "Expected native backend getfat() to return an object");
       const obj = result as { arch?: unknown; type?: unknown };
       invariant(typeof obj.arch === "string", "Expected getfat().arch to be a string");
@@ -90,7 +97,7 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
       return { arch: obj.arch, type: obj.type };
     },
 
-    dafopr: (path: string) => handles.register("DAF", native.dafopr(path)),
+    dafopr: (path: string) => handles.register("DAF", native.dafopr(resolvePath(path))),
     dafcls: (handle: SpiceHandle) =>
       handles.close(handle, ["DAF"], (e) => native.dafcls(e.nativeHandle), "dafcls"),
     dafbfs: (handle: SpiceHandle) =>
@@ -101,11 +108,11 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
       return found;
     },
 
-    dasopr: (path: string) => handles.register("DAS", native.dasopr(path)),
+    dasopr: (path: string) => handles.register("DAS", native.dasopr(resolvePath(path))),
     dascls: (handle: SpiceHandle) => closeDasBacked(handle, "dascls"),
 
     dlaopn: (path: string, ftype: string, ifname: string, ncomch: number) =>
-      handles.register("DLA", native.dlaopn(path, ftype, ifname, ncomch)),
+      handles.register("DLA", native.dlaopn(resolvePath(path), ftype, ifname, ncomch)),
 
     dlabfs: (handle: SpiceHandle) =>
       normalizeFoundDlaDescriptor(
@@ -125,7 +132,7 @@ export function createFileIoApi(native: NativeAddon, handles: SpiceHandleRegistr
 
     dskopn: (path: string, ifname: string, ncomch: number) =>
       // DSKs are DAS-backed; register as DAS so `dascls` can close it.
-      handles.register("DAS", native.dskopn(path, ifname, ncomch)),
+      handles.register("DAS", native.dskopn(resolvePath(path), ifname, ncomch)),
 
     dskmi2: (
       nv: number,

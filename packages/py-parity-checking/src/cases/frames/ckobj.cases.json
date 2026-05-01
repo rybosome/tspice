@@ -1,0 +1,31 @@
+[
+  {
+    "caseId": "frames-ckobj-open-query-close-success",
+    "description": "ckobj object-id query with explicit CK open/close lifecycle",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKOBJ" },
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "idsId": "IDS_MAIN",
+        "maxCard": 32
+      },
+      { "op": "frames.ckupf", "handleId": "CKH_CKOBJ" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-ckobj-missing-file-error",
+    "description": "Representative ckobj error for missing CK file",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/does-not-exist.bc",
+        "idsId": "IDS_ERR",
+        "maxCard": 8
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

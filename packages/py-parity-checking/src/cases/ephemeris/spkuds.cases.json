@@ -1,0 +1,28 @@
+[
+  {
+    "caseId": "ephemeris-spkuds-unpack-descriptor-success",
+    "description": "spkuds unpacks a representative packed descriptor",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "type": 8,
+        "first": 0,
+        "last": 120
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descr": [0, 120, 4.9406564584124654e-321, 1.6975966328216244e-313, 0]
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkuds-arbitrary-packed-input-success",
+    "description": "spkuds accepts arbitrary packed-descriptor bit patterns",
+    "workflow": [{ "op": "ephemeris.spkuds", "descr": [1, 2, 3, 4, 5] }],
+    "expectation": { "kind": "success" }
+  }
+]

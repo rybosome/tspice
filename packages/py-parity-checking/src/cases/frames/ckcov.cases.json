@@ -1,0 +1,40 @@
+[
+  {
+    "caseId": "frames-ckcov-open-query-close-success",
+    "description": "ckcov CK coverage query with explicit cklpf/ckupf lifecycle",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKCOV" },
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "idcode": -94070,
+        "needav": false,
+        "level": "SEGMENT",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV_MAIN",
+        "maxIntervals": 128
+      },
+      { "op": "frames.ckupf", "handleId": "CKH_CKCOV" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-ckcov-missing-file-error",
+    "description": "Representative ckcov error for missing CK file",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/does-not-exist.bc",
+        "idcode": -94070,
+        "needav": false,
+        "level": "SEGMENT",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV_ERR"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

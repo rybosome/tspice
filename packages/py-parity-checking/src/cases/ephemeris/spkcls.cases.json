@@ -1,0 +1,43 @@
+[
+  {
+    "caseId": "ephemeris-spkcls-close-writer-success",
+    "description": "spkcls closes a writer handle so the output can be queried by path",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/ephemeris-spkcls-happy.bsp",
+        "ifname": "PARITY",
+        "ncomch": 0,
+        "handleId": "H1"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H1",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKCLS_SEG",
+        "degree": 1,
+        "states": [0, 0, 0, 1, 0, 0, 120, 0, 0, 1, 0, 0],
+        "epoch1": 0,
+        "step": 120
+      },
+      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/ephemeris-spkcls-happy.bsp",
+        "idsCellId": "IDS1",
+        "maxCardinality": 8
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkcls-missing-handle-error",
+    "description": "spkcls errors when the logical handle ID is unknown",
+    "workflow": [{ "op": "ephemeris.spkcls", "handleId": "MISSING" }],
+    "expectation": { "kind": "error" }
+  }
+]

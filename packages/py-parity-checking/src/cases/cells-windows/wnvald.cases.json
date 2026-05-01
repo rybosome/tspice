@@ -1,0 +1,24 @@
+[
+  {
+    "caseId": "cells-windows-wnvald-normalizes-window-success",
+    "description": "wnvald validates a tracked window and preserves interval access",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "W_WNVALD", "left": 10, "right": 12, "maxIntervals": 6 },
+      { "op": "cells-windows.wninsd", "windowId": "W_WNVALD", "left": 2, "right": 4 },
+      { "op": "cells-windows.wnvald", "size": 12, "n": 4, "windowId": "W_WNVALD" },
+      { "op": "cells-windows.wncard", "windowId": "W_WNVALD" },
+      { "op": "cells-windows.wnfetd", "windowId": "W_WNVALD", "index": 0 },
+      { "op": "cells-windows.wnfetd", "windowId": "W_WNVALD", "index": 1 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-wnvald-negative-n-error",
+    "description": "Representative wnvald argument validation error",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "W_WNVALD_ERR", "left": 1, "right": 2, "maxIntervals": 4 },
+      { "op": "cells-windows.wnvald", "size": 8, "n": -1, "windowId": "W_WNVALD_ERR" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

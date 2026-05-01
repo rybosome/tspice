@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+    "description": "mtxv multiplies transpose(matrix) by a vector",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxv",
+        "m": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            5,
+            6,
+            0
+          ]
+        ],
+        "v": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

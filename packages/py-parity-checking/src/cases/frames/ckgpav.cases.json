@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "frames-ckgpav-open-query-close-success",
+    "description": "ckgpav pointing+AV query with explicit CK open/close lifecycle",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGPAV" },
+      {
+        "op": "frames.ckgpav",
+        "inst": -94070,
+        "sclkdp": 73348546598.2355,
+        "tol": 1,
+        "ref": "MGS_SPACECRAFT"
+      },
+      { "op": "frames.ckupf", "handleId": "CKH_CKGPAV" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-ckgpav-out-of-coverage-found-false-success",
+    "description": "ckgpav miss outside CK coverage returns found=false",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGPAV_ERR" },
+      {
+        "op": "frames.ckgpav",
+        "inst": -94070,
+        "sclkdp": 0,
+        "tol": 0,
+        "ref": "MGS_SPACECRAFT"
+      },
+      { "op": "frames.ckupf", "handleId": "CKH_CKGPAV_ERR" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

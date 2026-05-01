@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "dsk-dsksrf-happy-apophis-fixture",
+    "description": "Returns surface IDs for the known fixture body ID",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds"
+        },
+        "bodyid": 2099942
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-non-dsk-file-error",
+    "description": "Representative dsksrf error when path does not reference a DSK",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/naif0012.tls"
+        },
+        "bodyid": 2099942
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

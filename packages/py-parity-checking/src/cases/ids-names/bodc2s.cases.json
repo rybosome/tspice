@@ -1,0 +1,15 @@
+[
+  {
+    "caseId": "ids-names-bodc2s-known-code-success",
+    "description": "bodc2s resolves body code 399 to EARTH",
+    "workflow": [
+      {
+        "op": "ids-names.bodc2s",
+        "code": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

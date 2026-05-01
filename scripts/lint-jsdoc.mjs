@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import { ESLint } from 'eslint'
 
-import { JSDOC_SOURCE_FILES } from '../eslint/jsdoc.shared.mjs'
+import { JSDOC_SOURCE_FILES } from '../eslint.config.mjs'
 
 const fix = process.argv.includes('--fix')
 
