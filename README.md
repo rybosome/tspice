@@ -159,7 +159,7 @@ Because CSPICE itself is a mature and stable toolkit, long-term API churn in `ts
 In addition to typical unit testing, `tspice` runs **parity tests** with **CSPICE as the reference**, and also checks that the Node and WASM backends stay consistent for the same kernels and inputs. `tspice` preserves CSPICE double-precision semantics; numeric comparisons are verified against CSPICE with defined tolerances.
 
 - **CSPICE reference parity:** the fixed-case SpiceyPy oracle harness (`packages/py-parity-checking`) executes matching workflows against `tspice`, comparing normalized outputs against live CSPICE-backed SpiceyPy behavior.
-- **Method-level contract coverage:** the backend contract is documented method-by-method against CSPICE in [`docs/parity/spicebackend-cspice-mapping.md`](docs/parity/spicebackend-cspice-mapping.md).
+- **Method-level contract coverage:** the backend contract is documented method-by-method against CSPICE in [`docs/spicebackend-cspice-mapping.md`](docs/spicebackend-cspice-mapping.md).
 - **Unit + cross-backend tests:** per-package tests cover API behavior, error handling, and a growing set of direct Node ↔ WASM parity cases.
 
 ## Architecture
