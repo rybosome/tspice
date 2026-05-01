@@ -84,6 +84,74 @@ Notes:
 - `pnpm run check:native` runs the full native pipeline (build + stage + build/test).
 - Native builds require Python 3 and a working `node-gyp` toolchain.
 
+### linux-arm64 CSPICE source build (`nix develop`, Phase 1)
+
+For `linux-arm64` (`aarch64`), use the repo `flake.nix` dev shell to run the known-good CSPICE source build flow from issue #465.
+
+The flake intentionally exposes this build shell only as `devShells.aarch64-linux.default`.
+
+```bash
+# Enter the aarch64 dev shell (includes tcsh/csh, gcc, make, binutils, node)
+nix develop .#devShells.aarch64-linux.default
+
+# Fetch CSPICE source and resolve the source-tree location
+node scripts/fetch-cspice.mjs --source
+TOOLKIT=$(node -p "require('./scripts/cspice.manifest.json').toolkitVersion")
+export CSPICE_DIR="$PWD/.cache/cspice/$TOOLKIT/source/cspice"
+
+# Build CSPICE static libraries from source
+rm -f "$CSPICE_DIR/lib/cspice.a" "$CSPICE_DIR/lib/csupport.a"
+find "$CSPICE_DIR/src/cspice" "$CSPICE_DIR/src/csupport" -maxdepth 1 -type f \( -name '*.o' -o -name '*.a' \) -delete
+( cd "$CSPICE_DIR/src/cspice" && tcsh ./mkprodct.csh )
+( cd "$CSPICE_DIR/src/csupport" && tcsh ./mkprodct.csh )
+
+# Verify required artifacts and wire into tspice scripts
+ls -l "$CSPICE_DIR/lib/cspice.a" "$CSPICE_DIR/lib/csupport.a"
+ls -l "$CSPICE_DIR/include/SpiceUsr.h" "$CSPICE_DIR/include/SpiceZfc.h" "$CSPICE_DIR/include/SpiceZmc.h"
+TSPICE_CSPICE_DIR="$CSPICE_DIR" node scripts/print-cspice-dir.mjs
+```
+
+If you're on a non-`aarch64` host, pass `--system aarch64-linux` and use emulation or a remote `aarch64-linux` builder.
+
+The shell exports these required NAIF build overrides:
+
+- `TKCOMPILER=gcc`
+- `TKCOMPILEOPTIONS='-c -ansi -O2 -fPIC -DNON_UNIX_STDIO'`
+- `TKLINKOPTIONS='-lm'`
+
+### linux-arm64 CSPICE hermetic package (`mkDerivation`, Phase 2)
+
+Phase 2 converts the validated shell flow into a hermetic derivation at `packages.aarch64-linux.cspice-linux-arm64` (also exposed as `.#cspice-linux-arm64`).
+
+The derivation fetches pinned CSPICE source from `scripts/cspice.manifest.json`, builds static libs with the same NAIF env vars as Phase 1, and installs outputs into `$out/include` + `$out/lib`.
+
+```bash
+# Build hermetic CSPICE output (creates ./result symlink)
+nix build .#cspice-linux-arm64
+
+# Verify required artifacts
+OUT="$(readlink -f ./result)"
+ls -l "$OUT/lib/cspice.a" "$OUT/lib/csupport.a"
+ls -l "$OUT/include/SpiceUsr.h" "$OUT/include/SpiceZfc.h" "$OUT/include/SpiceZmc.h"
+
+# Verify archive members are aarch64 objects
+TMPDIR="$(mktemp -d)"
+CSPICE_OBJ="$(ar t "$OUT/lib/cspice.a" | sed -n '1p')"
+CSUPPORT_OBJ="$(ar t "$OUT/lib/csupport.a" | sed -n '1p')"
+ar p "$OUT/lib/cspice.a" "$CSPICE_OBJ" > "$TMPDIR/cspice.o"
+ar p "$OUT/lib/csupport.a" "$CSUPPORT_OBJ" > "$TMPDIR/csupport.o"
+file "$TMPDIR/cspice.o" "$TMPDIR/csupport.o"
+rm -rf "$TMPDIR"
+```
+
+For a quick reproducibility check, compare repeated no-link builds:
+
+```bash
+OUT1="$(nix build --no-link --print-out-paths .#cspice-linux-arm64)"
+OUT2="$(nix build --no-link --print-out-paths .#cspice-linux-arm64)"
+test "$OUT1" = "$OUT2" && echo "repeatable output path: $OUT1"
+```
+
 ### Publishing `@rybosome/tspice`
 
 The publishable entry point is `@rybosome/tspice`.
