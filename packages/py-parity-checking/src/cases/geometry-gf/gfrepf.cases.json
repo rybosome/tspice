@@ -1,0 +1,26 @@
+[
+  {
+    "caseId": "geometry-gf-gfrepf-success",
+    "description": "gfrepf finalizes progress reporting without perturbing previously configured gfstep behavior",
+    "workflow": [
+      { "op": "geometry-gf.gfsstp", "step": 42 },
+      { "op": "geometry-gf.gfstep", "time": 0 },
+      { "op": "cells-windows.wninsd", "windowId": "GFREPF_WIN", "left": 0, "right": 1, "maxIntervals": 8 },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "GFREPF_WIN",
+        "begmss": "GF begin",
+        "endmss": "GF end"
+      },
+      { "op": "geometry-gf.gfrepf" },
+      { "op": "geometry-gf.gfstep", "time": 86400 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "geometry-gf-gfrepf-without-init-success",
+    "description": "gfrepf is currently a no-op when called without prior gfrepi setup",
+    "workflow": [{ "op": "geometry-gf.gfrepf" }],
+    "expectation": { "kind": "success" }
+  }
+]

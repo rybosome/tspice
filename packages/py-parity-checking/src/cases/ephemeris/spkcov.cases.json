@@ -1,0 +1,52 @@
+[
+  {
+    "caseId": "ephemeris-spkcov-generated-file-success",
+    "description": "spkcov returns coverage intervals for a generated SPK",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/ephemeris-spkcov-happy.bsp",
+        "ifname": "PARITY",
+        "ncomch": 0,
+        "handleId": "H1"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H1",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKCOV_SEG",
+        "degree": 1,
+        "states": [0, 0, 0, 1, 0, 0, 120, 0, 0, 1, 0, 0],
+        "epoch1": 0,
+        "step": 120
+      },
+      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/ephemeris-spkcov-happy.bsp",
+        "idcode": 1000,
+        "coverWindowId": "COV1",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkcov-missing-file-error",
+    "description": "spkcov fails for a missing SPK path",
+    "workflow": [
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/does-not-exist-spkcov.bsp",
+        "idcode": 1000,
+        "coverWindowId": "COV_MISSING",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "caseId": "geometry-subslr-happy-path-success",
+    "description": "subslr near-point ellipsoid sub-solar geometry on Moon from Earth frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "Near point: Ellipsoid",
+        "target": "MOON",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-invalid-method-error",
+    "description": "Representative subslr method syntax error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "INVALID METHOD",
+        "target": "MOON",
+        "et": 0,
+        "fixref": "IAU_MOON",
+        "abcorr": "NONE",
+        "observer": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

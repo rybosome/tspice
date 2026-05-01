@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "coords-vectors-latrec-happy-equatorial-quarter-turn",
+    "description": "latrec latitudinal-to-rectangular conversion on equator at +Y",
+    "workflow": [
+      {
+        "op": "coords-vectors.latrec",
+        "radius": 2,
+        "lon": 1.5707963267948966,
+        "lat": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "caseId": "ek-ekopn-happy-open-new-file",
+    "description": "ekopn opens a new EK handle and exposes observable segment count",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekopn-happy.ek",
+        "ifname": "ekopn-happy",
+        "ncomch": 0,
+        "handleId": "H_OPEN"
+      },
+      { "op": "ek.eknseg", "handleId": "H_OPEN" },
+      { "op": "ek.ekcls", "handleId": "H_OPEN" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekopn-duplicate-path-error",
+    "description": "ekopn rejects creating a new EK at an existing path",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekopn-duplicate.ek",
+        "ifname": "ekopn-duplicate",
+        "ncomch": 0,
+        "handleId": "H_FIRST"
+      },
+      { "op": "ek.ekcls", "handleId": "H_FIRST" },
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekopn-duplicate.ek",
+        "ifname": "ekopn-duplicate",
+        "ncomch": 0,
+        "handleId": "H_SECOND"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "caseId": "ek-ekgc-happy-read-two-rows",
+    "description": "ekgc reads string query results from the loaded EK fixture",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
+      { "op": "ek.ekfind", "query": "SELECT NAME FROM PY_PARITY_DATA" },
+      { "op": "ek.ekgc", "selidx": 0, "row": 0, "elment": 0 },
+      { "op": "ek.ekgc", "selidx": 0, "row": 1, "elment": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekgc-invalid-row-error",
+    "description": "ekgc reports row-index errors for out-of-range query rows",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
+      { "op": "ek.ekfind", "query": "SELECT NAME FROM PY_PARITY_DATA" },
+      { "op": "ek.ekgc", "selidx": 0, "row": 99, "elment": 0 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

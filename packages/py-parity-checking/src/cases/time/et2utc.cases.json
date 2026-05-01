@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "time-et2utc-happy-isoc",
+    "description": "Formats J2000 epoch ET as UTC ISO calendar string",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.et2utc", "et": 0, "format": "ISOC", "prec": 3 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-et2utc-invalid-format-error",
+    "description": "Representative formatting error with unsupported format token",
+    "workflow": [{ "op": "time.et2utc", "et": 0, "format": "NOT_A_FORMAT", "prec": 3 }],
+    "expectation": { "kind": "error" }
+  }
+]

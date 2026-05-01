@@ -8,9 +8,6 @@
       "path": "./packages/core"
     },
     {
-      "path": "./packages/bench-contract"
-    },
-    {
       "path": "./packages/perf-analysis"
     },
     {
@@ -26,7 +23,7 @@
       "path": "./packages/tspice"
     },
     {
-      "path": "./packages/parity-checking"
+      "path": "./packages/py-parity-checking"
     }
   ]
 }

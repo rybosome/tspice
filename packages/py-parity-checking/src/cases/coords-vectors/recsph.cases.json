@@ -1,0 +1,19 @@
+[
+  {
+    "caseId": "coords-vectors-recsph-happy-positive-z",
+    "description": "recsph rectangular-to-spherical conversion for +Z axis point",
+    "workflow": [
+      {
+        "op": "coords-vectors.recsph",
+        "rectan": [
+          0,
+          0,
+          2
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

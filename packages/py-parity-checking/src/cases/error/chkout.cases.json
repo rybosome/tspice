@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "error-chkout-balanced-trace-success",
+    "description": "chkout removes prior chkin entry and keeps error status clear",
+    "workflow": [
+      { "op": "error.reset" },
+      { "op": "error.chkin", "name": "PARITY_TRACE_ONLY" },
+      { "op": "error.chkout", "name": "PARITY_TRACE_ONLY" },
+      { "op": "error.failed" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "error-chkout-empty-name-error",
+    "description": "Representative chkout error path for empty traceback name",
+    "workflow": [{ "op": "error.chkout", "name": "" }],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

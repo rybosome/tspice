@@ -1,0 +1,16 @@
+[
+  {
+    "caseId": "coords-vectors-rotate-happy-z-axis-quarter-turn",
+    "description": "rotate builds a +90 degree rotation matrix about the Z axis",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotate",
+        "angle": 1.5707963267948966,
+        "axis": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

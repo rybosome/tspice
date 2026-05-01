@@ -1,0 +1,16 @@
+[
+  {
+    "caseId": "time-tpictr-happy-sample-derived-picture",
+    "description": "Derives a time picture from a representative UTC sample",
+    "workflow": [
+      { "op": "time.tpictr", "sample": "24 Mar 2018  16:23:00 UTC", "pictur": "X" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-tpictr-empty-sample-error",
+    "description": "Representative argument-validation error for empty sample",
+    "workflow": [{ "op": "time.tpictr", "sample": "", "pictur": "X" }],
+    "expectation": { "kind": "error" }
+  }
+]

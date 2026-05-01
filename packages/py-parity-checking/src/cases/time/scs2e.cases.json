@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "time-scs2e-happy-with-cook-sclk",
+    "description": "Converts cookbook spacecraft clock string to ET",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
+      { "op": "time.scs2e", "sc": -77, "sclkch": "593328:90:5:0" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-scs2e-missing-sclk-error",
+    "description": "Representative scs2e error when SCLK kernel is missing",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.scs2e", "sc": -77, "sclkch": "593328:90:5:0" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "caseId": "ek-ekacld-happy-double-column-visible-via-ekgd",
+    "description": "ekacld-written doubles are observable through ekfind and ekgd",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekacld-happy.ek",
+        "ifname": "ekacld-happy",
+        "ncomch": 0,
+        "handleId": "H_ACLD"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_ACLD",
+        "tabnam": "DOUBLE_TABLE",
+        "nrows": 2,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION"],
+        "segmentId": "SEG_ACLD"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_ACLD",
+        "column": "COST",
+        "dvals": [10.5, 20.25],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_ACLD" },
+      { "op": "ek.ekcls", "handleId": "H_ACLD" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekacld-happy.ek" },
+      { "op": "ek.ekfind", "query": "SELECT COST FROM DOUBLE_TABLE ORDER BY COST" },
+      { "op": "ek.ekgd", "selidx": 0, "row": 0, "elment": 0 },
+      { "op": "ek.ekgd", "selidx": 0, "row": 1, "elment": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekacld-missing-column-error",
+    "description": "ekacld errors when writing to a column not declared in the segment",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekacld-error.ek",
+        "ifname": "ekacld-error",
+        "ncomch": 0,
+        "handleId": "H_ACLD_ERR"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_ACLD_ERR",
+        "tabnam": "DOUBLE_ERR",
+        "nrows": 2,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION"],
+        "segmentId": "SEG_ACLD_ERR"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_ACLD_ERR",
+        "column": "MISSING",
+        "dvals": [10.5, 20.25],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

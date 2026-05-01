@@ -1,0 +1,24 @@
+[
+  {
+    "caseId": "coords-vectors-vsub-happy-componentwise-difference",
+    "description": "vsub subtracts vectors componentwise with mixed signs",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsub",
+        "a": [
+          5,
+          3,
+          -3
+        ],
+        "b": [
+          1,
+          -2,
+          3
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "error-getmsg-long-roundtrip-success",
+    "description": "getmsg(LONG) returns value previously set via setmsg",
+    "workflow": [
+      { "op": "error.reset" },
+      { "op": "error.setmsg", "message": "py parity long message" },
+      { "op": "error.getmsg", "which": "LONG" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "error-getmsg-invalid-selector-error",
+    "description": "Representative getmsg selector validation error path",
+    "workflow": [{ "op": "error.getmsg", "which": "NOPE" }],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SHORT", "LONG", "EXPLAIN"]
+    }
+  }
+]

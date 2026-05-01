@@ -1,8 +1,0 @@
-id: workflows/legacy/time.et2utc.basic@v1
-kind: workflow
-setup:
-  kernels:
-    - $FIXTURES/basic-time
-notes:
-  - Migrated from legacy scenario time.et2utc.basic.yml.
-  - Generated during parity-checking migration from backend-verify.

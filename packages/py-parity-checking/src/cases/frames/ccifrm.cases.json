@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "frames-ccifrm-found-success",
+    "description": "ccifrm resolves built-in frame class/class-id mapping",
+    "workflow": [{ "op": "frames.ccifrm", "frameClass": 1, "classId": 1 }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-ccifrm-not-found-success",
+    "description": "ccifrm miss returns found=false",
+    "workflow": [{ "op": "frames.ccifrm", "frameClass": 99, "classId": 99 }],
+    "expectation": { "kind": "success" }
+  }
+]

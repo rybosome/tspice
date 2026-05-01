@@ -1,0 +1,42 @@
+[
+  {
+    "caseId": "file-io-dlacls-alias-for-das-handle-success",
+    "description": "dlacls closes a handle opened by dasopr on a DLA file",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "path": "kernels/generated/dlacls-alias.dla",
+        "ftype": "DLA",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer"
+      },
+      { "op": "file-io.dlacls", "handleId": "writer" },
+      {
+        "op": "file-io.dasopr",
+        "path": "kernels/generated/dlacls-alias.dla",
+        "handleId": "reader"
+      },
+      { "op": "file-io.dlacls", "handleId": "reader" },
+      { "op": "file-io.exists", "path": "kernels/generated/dlacls-alias.dla" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dlacls-double-close-error",
+    "description": "Representative dlacls double-close error",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "path": "kernels/generated/dlacls-double-close.dla",
+        "ftype": "DLA",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "writer"
+      },
+      { "op": "file-io.dlacls", "handleId": "writer" },
+      { "op": "file-io.dlacls", "handleId": "writer" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "caseId": "kernel-pool-cvpool-update-detection-lifecycle",
+    "description": "cvpool reports the expected update flags before and after a tracked variable change",
+    "workflow": [
+      { "op": "kernel-pool.pdpool", "name": "KP_CV_TRACKED", "values": [11] },
+      { "op": "kernel-pool.swpool", "agent": "KP_CV_AGENT", "names": ["KP_CV_TRACKED"] },
+      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" },
+      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" },
+      { "op": "kernel-pool.pdpool", "name": "KP_CV_TRACKED", "values": [12] },
+      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" },
+      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-cvpool-empty-agent-error",
+    "description": "Representative cvpool validation error for empty agents",
+    "workflow": [
+      { "op": "kernel-pool.cvpool", "agent": "" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "caseId": "time-timdef-stateful-get-set",
+    "description": "Exercises timdef state transitions for SYSTEM and CALENDAR",
+    "workflow": [
+      { "op": "time.timdef", "action": "GET", "item": "SYSTEM" },
+      { "op": "time.timdef", "action": "SET", "item": "SYSTEM", "value": "TDB" },
+      { "op": "time.timdef", "action": "GET", "item": "SYSTEM" },
+      { "op": "time.timdef", "action": "SET", "item": "SYSTEM", "value": "UTC" },
+      { "op": "time.timdef", "action": "GET", "item": "SYSTEM" },
+      { "op": "time.timdef", "action": "GET", "item": "CALENDAR" },
+      { "op": "time.timdef", "action": "SET", "item": "CALENDAR", "value": "GREGORIAN" },
+      { "op": "time.timdef", "action": "GET", "item": "CALENDAR" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-timdef-invalid-system-value-error",
+    "description": "Representative timdef error for unsupported SYSTEM value",
+    "workflow": [{ "op": "time.timdef", "action": "SET", "item": "SYSTEM", "value": "NOT_A_TIME_SYSTEM" }],
+    "expectation": { "kind": "error" }
+  }
+]

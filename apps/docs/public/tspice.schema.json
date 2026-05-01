@@ -233,7 +233,7 @@
     "This file is metadata, not a complete spec for SPICE behavior; consult NAIF docs for SPICE semantics."
   ],
   "generatedBy": {
-    "script": "tools/llm/generate.mjs",
+    "script": "scripts/generate-llm.mjs",
     "command": "pnpm generate:llm",
     "outputFile": "apps/docs/public/tspice.schema.json"
   }

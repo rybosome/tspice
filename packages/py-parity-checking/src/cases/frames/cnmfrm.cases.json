@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "frames-cnmfrm-found-success",
+    "description": "cnmfrm resolves EARTH center name -> frame mapping",
+    "workflow": [{ "op": "frames.cnmfrm", "centerName": "EARTH" }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-cnmfrm-not-found-success",
+    "description": "cnmfrm miss returns found=false",
+    "workflow": [{ "op": "frames.cnmfrm", "centerName": "NOT_A_BODY_NAME" }],
+    "expectation": { "kind": "success" }
+  }
+]

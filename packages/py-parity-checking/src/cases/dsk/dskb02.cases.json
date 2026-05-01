@@ -1,0 +1,64 @@
+[
+  {
+    "caseId": "dsk-dskb02-happy-apophis-fixture",
+    "description": "Reads type-2 bookkeeping from first segment in checked-in DSK fixture",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "READ",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dskb02",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "READ"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskb02-closed-handle-error",
+    "description": "Representative dskb02 error when using a closed DAS handle",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "READ",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "READ"
+      },
+      {
+        "op": "dsk.dskb02",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

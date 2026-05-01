@@ -1,0 +1,18 @@
+[
+  {
+    "caseId": "kernels-kxtrct-found-success",
+    "description": "kxtrct extracts a matching substring",
+    "workflow": [
+      { "op": "kernels.kxtrct", "keywd": "A", "terms": [" "], "string": "A B C" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernels-kxtrct-not-found-success",
+    "description": "kxtrct miss returns found=false",
+    "workflow": [
+      { "op": "kernels.kxtrct", "keywd": "MISSING", "terms": [" "], "string": "A B C" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

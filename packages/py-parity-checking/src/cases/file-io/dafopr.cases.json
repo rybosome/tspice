@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "file-io-dafopr-lifecycle-success",
+    "description": "dafopr handle lifecycle validated via dafbfs/daffna/dafcls",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf" },
+      { "op": "file-io.dafbfs", "handleId": "daf" },
+      { "op": "file-io.daffna", "handleId": "daf" },
+      { "op": "file-io.dafcls", "handleId": "daf" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dafopr-missing-file-error",
+    "description": "Representative dafopr missing-file error",
+    "workflow": [
+      { "op": "file-io.dafopr", "path": "kernels/missing-daf.bsp", "handleId": "daf" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

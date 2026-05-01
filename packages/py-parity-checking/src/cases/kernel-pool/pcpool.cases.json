@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "kernel-pool-pcpool-write-and-overwrite-lifecycle",
+    "description": "pcpool writes character values and later overwrite is visible to read/type checks",
+    "workflow": [
+      { "op": "kernel-pool.pcpool", "name": "KP_PC_CHAR", "values": ["alpha", "beta"] },
+      { "op": "kernel-pool.gcpool", "name": "KP_PC_CHAR", "start": 0, "room": 10 },
+      { "op": "kernel-pool.pcpool", "name": "KP_PC_CHAR", "values": ["gamma"] },
+      { "op": "kernel-pool.gcpool", "name": "KP_PC_CHAR", "start": 0, "room": 10 },
+      { "op": "kernel-pool.dtpool", "name": "KP_PC_CHAR" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-pcpool-empty-name-error",
+    "description": "Representative pcpool validation error for empty names",
+    "workflow": [
+      { "op": "kernel-pool.pcpool", "name": "", "values": ["x"] }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]
