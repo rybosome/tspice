@@ -178,10 +178,15 @@ Kernel load order matches call order:
 - TypeScript now requires a non-empty tuple for array calls.
 - Runtime now throws if `[]` is passed (including untyped/JS callers).
 
-Migration options:
+Migration pattern for dynamic arrays:
 
-- Guard dynamic arrays before calling: `if (packs.length) builder = builder.withKernels(packs);`
-- Or append packs one at a time with repeated `withKernels(pack)` calls.
+```ts
+for (const pack of packs) {
+  builder = builder.withKernels(pack);
+}
+```
+
+If you already have a non-empty tuple, you can still call `builder = builder.withKernels(packs)`.
 
 ## Backend notes
 
