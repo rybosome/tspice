@@ -151,7 +151,6 @@ export interface EphemerisApi {
 
   /**
    * Search loaded SPK files for the highest-priority segment applicable to `body` and `et`.
-   *
    * Mapping: direct CSPICE (`spksfs_c`).
    *
    * Note: `handle` is the native SPICE DAF handle for the file containing the segment.

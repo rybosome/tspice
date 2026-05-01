@@ -44,15 +44,14 @@ export interface KernelsApi {
 
   /**
    * Retrieve information about a currently loaded kernel by filename.
-   * Mapping: non-direct/composite; native backend uses `kinfo_c`, WASM
+   * Mapping: composite; native backend uses `kinfo_c`, WASM
    * synthesizes from loaded-kernel metadata.
    */
   kinfo(path: string): Found<KernelInfo>;
 
   /**
    * Extract a substring from a word sequence.
-   *
-   * Mapping: non-direct/composite; native backend uses `kxtrct_c`, WASM uses
+   * Mapping: composite; native backend uses `kxtrct_c`, WASM uses
    * the JS `kxtrctJs` fallback.
    *
    * This is a string-parsing utility (used by some NAIF kernels and tooling).
@@ -67,7 +66,9 @@ export interface KernelsApi {
   /**
    * Return kernel-pool frame IDs for the given frame class.
    * Mapping: direct CSPICE (`kplfrm_c`).
-   * Backend caveat: current WASM bundle does not support this method.
+   *
+   * Backend caveat: in the current WASM bundle, this method throws
+   * `Error("kplfrm not supported in current WASM bundle")`.
    */
   kplfrm(frmcls: number, idset: SpiceIntCell): void;
 

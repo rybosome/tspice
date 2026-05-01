@@ -33,7 +33,7 @@ export interface IdsNamesApi {
 
   /**
    * Return true if a body constant exists in the kernel pool.
-   * Mapping: non-direct/composite; normalizes `item` and checks the derived
+   * Mapping: composite; normalizes `item` and checks the derived
    * `BODY<body>_<ITEM>` kernel-pool variable.
    *
    * Normalization:
@@ -45,7 +45,7 @@ export interface IdsNamesApi {
 
   /**
    * Return values of a body constant from the kernel pool.
-   * Mapping: non-direct/composite; normalizes `item` and reads numeric values
+   * Mapping: composite; normalizes `item` and reads numeric values
    * from the derived `BODY<body>_<ITEM>` kernel-pool variable.
    *
    * Normalization:
