@@ -192,7 +192,7 @@ Notes:
   - `unload(path)` should accept the normalized virtual identifier (even if internally rewritten).
   - `kdata()` should return a stable identifier for byte-backed kernels (ideally the normalized virtual path), rather than leaking randomized temp-file paths that would break parity.
 
-### Audit follow-up (`#569`): non-direct/composite kernels behavior
+### Audit follow-up: non-direct/composite kernels behavior (`#569`)
 
 Audit evidence:
 
@@ -222,23 +222,6 @@ Method-specific deltas:
 Related docs:
 
 - Kernel staging details: [`apps/docs/architecture/kernel-staging/index.md`](https://github.com/rybosome/tspice/blob/main/apps/docs/architecture/kernel-staging/index.md)
-
----
-
-## Domain addendum (audit scope): `file-io` (`FileIoApi`)
-
-> This addendum covers `file-io.dlacls` for issue `#569` without expanding this document to full `file-io` method-level coverage.
-
-| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
-| --- | --- | --- | --- | --- | --- |
-| `file-io.dlacls(handle)` | `dlacls_c` alias semantics via `dascls_c` | `(handle: SpiceHandle): void` | `void` | both backends intentionally alias `dlacls` to DAS close behavior (`dascls`), accepting DAS-backed handles from either `dasopr()` or `dlaopn()` | **stateful**: closes DAS/DLA handle |
-
-Sources:
-
-- Contract intent: [`backend-contract/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-contract/src/domains/file-io.ts#L89-L125)
-- Node alias implementation: [`backend-node/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L64-L75), [`...#L124-L125`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L124-L125)
-- WASM alias implementation: [`backend-wasm/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L159-L170), [`...#L387`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L387)
-- Parity spec: [`dlacls@v2.yml`](https://github.com/rybosome/tspice/blob/main/packages/parity-checking/specs/methods/file-io/dlacls@v2.yml)
 
 ---
 
@@ -308,3 +291,20 @@ Most routines in this domain are **pure math** and require no kernels.
 | `coords-vectors.recgeo(rect, re, f)` | `recgeo_c` | `(rect: SpiceVector3, re: number, f: number)` | `{ lon: number; lat: number; alt: number }` | float tolerance; angles radians | none |
 | `coords-vectors.mxv(m, v)` | `mxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
 | `coords-vectors.mtxv(m, v)` | `mtxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
+
+---
+
+## Appendix: audit follow-ups (`#569`)
+
+### `file-io.dlacls` (`FileIoApi`)
+
+| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
+| --- | --- | --- | --- | --- | --- |
+| `file-io.dlacls(handle)` | `dlacls_c` alias semantics via `dascls_c` | `(handle: SpiceHandle): void` | `void` | both backends intentionally alias `dlacls` to DAS close behavior (`dascls`), accepting DAS-backed handles from either `dasopr()` or `dlaopn()` | **stateful**: closes DAS/DLA handle |
+
+Sources:
+
+- Contract intent: [`backend-contract/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-contract/src/domains/file-io.ts#L89-L125)
+- Node alias implementation: [`backend-node/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L64-L75), [`...#L124-L125`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L124-L125)
+- WASM alias implementation: [`backend-wasm/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L159-L170), [`...#L387`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L387)
+- Parity spec: [`dlacls@v2.yml`](https://github.com/rybosome/tspice/blob/main/packages/parity-checking/specs/methods/file-io/dlacls@v2.yml)
