@@ -7,7 +7,7 @@
   "scripts": {
     "build": "turbo run build && pnpm -C packages/tspice run build:dist-publish",
     "build:js": "turbo run build --filter=!@rybosome/tspice-backend-node",
-    "generate:llm": "node tools/llm/generate.mjs",
+    "generate:llm": "node scripts/generate-llm.mjs",
     "check": "pnpm run check:js",
     "check:compliance": "node scripts/check-compliance-files.mjs",
     "check:js": "pnpm run check:compliance && pnpm run check:versions && pnpm run format:check && pnpm run lint && pnpm run build:js && pnpm run typecheck && pnpm run test:js",

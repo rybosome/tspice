@@ -99,7 +99,7 @@ function extractNamedExports(indexTsSource) {
       if (!clause) {
         throw new Error(
           `[generate:llm] Unsupported star export in packages/tspice/src/index.ts: ${stmt.getText(sourceFile)}. ` +
-            `Use explicit named exports or extend tools/llm/generate.mjs to expand star exports so the public surface can't go incomplete silently.`,
+            `Use explicit named exports or extend scripts/generate-llm.mjs to expand star exports so the public surface can't go incomplete silently.`,
         );
       }
 
@@ -576,7 +576,7 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
     ],
 
     generatedBy: {
-      script: "tools/llm/generate.mjs",
+      script: "scripts/generate-llm.mjs",
       command: "pnpm generate:llm",
       outputFile: "apps/docs/public/tspice.schema.json",
     },
@@ -585,7 +585,7 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
 function main() {
   const scriptPath = fileURLToPath(import.meta.url);
   const scriptDir = path.dirname(scriptPath);
-  const repoRoot = path.resolve(scriptDir, "../..");
+  const repoRoot = path.resolve(scriptDir, "..");
 
   const tspiceIndexAbs = path.join(repoRoot, "packages/tspice/src/index.ts");
   const backendContractTypesAbs = path.join(
