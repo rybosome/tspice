@@ -233,13 +233,15 @@ const urlOnlyPack = kernels.custom().pick(
 - TypeScript requires a non-empty tuple for array calls.
 - Runtime throws if `[]` is passed (including JS/untyped callers).
 
-Migration pattern:
+Migration pattern for dynamic arrays:
 
 ```ts
-if (packs.length > 0) {
-  builder = builder.withKernels(packs);
+for (const pack of packs) {
+  builder = builder.withKernels(pack);
 }
 ```
+
+If you already have a non-empty tuple, you can still call `builder = builder.withKernels(packs)`.
 
 ## Next
 
