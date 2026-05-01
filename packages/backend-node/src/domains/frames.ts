@@ -6,6 +6,7 @@ import type {
 import { brandMat3RowMajor, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+import type { KernelStager } from "../runtime/kernel-staging.js";
 
 const UINT32_MAX = 0xffff_ffff;
 
@@ -25,7 +26,12 @@ function assertOpaqueHandle(handle: unknown, context: string): asserts handle is
 }
 
 /** Create a {@link FramesApi} implementation backed by the native Node addon. */
-export function createFramesApi(native: NativeAddon): FramesApi {
+export function createFramesApi(
+  native: NativeAddon,
+  stager: Pick<KernelStager, "resolvePathForSpice">,
+): FramesApi {
+  const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+
   return {
     namfrm: (name) => {
       const out = native.namfrm(name);
@@ -114,7 +120,7 @@ export function createFramesApi(native: NativeAddon): FramesApi {
     },
 
     cklpf: (ck) => {
-      const handle = native.cklpf(ck);
+      const handle = native.cklpf(resolvePath(ck));
       invariant(typeof handle === "number" && Number.isInteger(handle), "Expected cklpf() to return an integer handle");
       return handle;
     },
@@ -125,13 +131,13 @@ export function createFramesApi(native: NativeAddon): FramesApi {
 
     ckobj: (ck, ids) => {
       assertOpaqueHandle(ids, "ckobj(ids)");
-      native.ckobj(ck, ids);
+      native.ckobj(resolvePath(ck), ids);
     },
 
     ckcov: (ck, idcode, needav, level, tol, timsys, cover) => {
       assertOpaqueHandle(cover, "ckcov(cover)");
       native.ckcov(
-        ck,
+        resolvePath(ck),
         idcode,
         needav,
         level,

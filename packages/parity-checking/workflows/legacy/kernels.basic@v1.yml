@@ -1,5 +1,0 @@
-id: workflows/legacy/kernels.basic@v1
-kind: workflow
-notes:
-  - Migrated from legacy scenario kernels.basic.yml.
-  - Generated during parity-checking migration from backend-verify.

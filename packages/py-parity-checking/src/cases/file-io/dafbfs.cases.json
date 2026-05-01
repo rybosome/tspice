@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "file-io-dafbfs-search-sequence-success",
+    "description": "dafbfs initializes DAF search state used by daffna",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf" },
+      { "op": "file-io.dafbfs", "handleId": "daf" },
+      { "op": "file-io.daffna", "handleId": "daf" },
+      { "op": "file-io.dafcls", "handleId": "daf" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dafbfs-kind-mismatch-error",
+    "description": "Representative dafbfs error when called with DAS handle",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "path": "kernels/generated/dafbfs-kind-mismatch.dla",
+        "ftype": "DLA",
+        "ifname": "TSPICE",
+        "ncomch": 0,
+        "handleId": "dla"
+      },
+      { "op": "file-io.dlacls", "handleId": "dla" },
+      {
+        "op": "file-io.dasopr",
+        "path": "kernels/generated/dafbfs-kind-mismatch.dla",
+        "handleId": "das"
+      },
+      { "op": "file-io.dafbfs", "handleId": "das" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

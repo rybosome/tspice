@@ -1,0 +1,40 @@
+[
+  {
+    "caseId": "ek-ekcls-happy-close-and-reopen",
+    "description": "ekcls closes a handle so the same file can be reopened and inspected",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekcls-happy.ek",
+        "ifname": "ekcls-happy",
+        "ncomch": 0,
+        "handleId": "H_ONE"
+      },
+      { "op": "ek.ekcls", "handleId": "H_ONE" },
+      {
+        "op": "ek.ekopr",
+        "path": ".py-parity-ek-ekcls-happy.ek",
+        "handleId": "H_TWO"
+      },
+      { "op": "ek.eknseg", "handleId": "H_TWO" },
+      { "op": "ek.ekcls", "handleId": "H_TWO" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekcls-double-close-error",
+    "description": "ekcls reports an error on double-close of the same handle",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekcls-double-close.ek",
+        "ifname": "ekcls-double-close",
+        "ncomch": 0,
+        "handleId": "H_DOUBLE"
+      },
+      { "op": "ek.ekcls", "handleId": "H_DOUBLE" },
+      { "op": "ek.ekcls", "handleId": "H_DOUBLE" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

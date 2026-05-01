@@ -36,7 +36,7 @@ export function createSpiceWorker(
 
   if (typeof WorkerCtor !== "function") {
     throw new Error(
-      "createSpiceWorker() requires Web Worker support in the current runtime",
+      `createSpiceWorker(): Worker API is unavailable. Expected: globalThis.Worker to be a constructor function. Got: ${typeof WorkerCtor}. Hint: run in a worker-capable runtime or provide an explicit worker entry URL.`,
     );
   }
 
@@ -58,7 +58,7 @@ export function createSpiceWorker(
   // assets, since the entrypoint URL will be `blob:`.
   if (workerOptions.type !== "module") {
     throw new Error(
-      'createSpiceWorker() inline worker requires a module worker (workerOptions.type="module")',
+      `createSpiceWorker(inline): unsupported workerOptions.type. Expected: "module". Got: ${String(workerOptions.type)}. Hint: omit workerOptions.type or set it to "module".`,
     );
   }
 

@@ -1,0 +1,28 @@
+[
+  {
+    "caseId": "ids-names-bods2c-name-success",
+    "description": "bods2c resolves EARTH to code 399",
+    "workflow": [
+      {
+        "op": "ids-names.bods2c",
+        "name": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-bods2c-not-found-success",
+    "description": "bods2c miss returns found=false",
+    "workflow": [
+      {
+        "op": "ids-names.bods2c",
+        "name": "THIS_IS_NOT_A_BODY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -8,7 +8,7 @@ This recipe shows a browser-first setup that:
 
 If you want a full reference implementation, see the Orrery app:
 
-- `apps/orrery/src/spice/createSpiceClient.ts`
+- `https://github.com/rybosome/orrery/blob/main/src/spice/createSpiceClient.ts`
 
 ## Kernels required (and why)
 

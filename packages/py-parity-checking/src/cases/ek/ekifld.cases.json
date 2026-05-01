@@ -1,0 +1,59 @@
+[
+  {
+    "caseId": "ek-ekifld-happy-segment-initialization-observable",
+    "description": "ekifld initializes a fast-write segment that can be finalized and counted",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekifld-happy.ek",
+        "ifname": "ekifld-happy",
+        "ncomch": 0,
+        "handleId": "H_IFLD"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_IFLD",
+        "tabnam": "IFLD_TABLE",
+        "nrows": 2,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_IFLD"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_IFLD",
+        "column": "ID",
+        "ivals": [101, 202],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_IFLD" },
+      { "op": "ek.eknseg", "handleId": "H_IFLD" },
+      { "op": "ek.ekcls", "handleId": "H_IFLD" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekifld-invalid-nrows-error",
+    "description": "ekifld errors when nrows is outside the allowed range",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekifld-error.ek",
+        "ifname": "ekifld-error",
+        "ncomch": 0,
+        "handleId": "H_IFLD_ERR"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_IFLD_ERR",
+        "tabnam": "BAD_TABLE",
+        "nrows": 0,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_BAD"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

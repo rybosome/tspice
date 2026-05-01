@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "time-unitim-happy-et-to-tai",
+    "description": "Converts ET to TAI with leap-seconds kernel loaded",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.unitim", "epoch": 0, "insys": "ET", "outsys": "TAI" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-unitim-missing-lsk-error",
+    "description": "Representative unitim error when leap-seconds kernel is missing",
+    "workflow": [{ "op": "time.unitim", "epoch": 0, "insys": "ET", "outsys": "TAI" }],
+    "expectation": { "kind": "error" }
+  }
+]

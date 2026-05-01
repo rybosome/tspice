@@ -1,0 +1,48 @@
+[
+  {
+    "caseId": "coords-vectors-mxm-happy-fixed-matrix-product",
+    "description": "mxm matrix multiplication fixed case",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxm",
+        "m1": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            5,
+            6,
+            0
+          ]
+        ],
+        "m2": [
+          [
+            7,
+            8,
+            9
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

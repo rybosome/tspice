@@ -1,0 +1,18 @@
+[
+  {
+    "caseId": "error-failed-clean-state-success",
+    "description": "failed reports false after explicit reset",
+    "workflow": [{ "op": "error.reset" }, { "op": "error.failed" }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "error-failed-setmsg-does-not-fail-success",
+    "description": "setmsg alone does not set failed state",
+    "workflow": [
+      { "op": "error.reset" },
+      { "op": "error.setmsg", "message": "failed-check-message" },
+      { "op": "error.failed" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

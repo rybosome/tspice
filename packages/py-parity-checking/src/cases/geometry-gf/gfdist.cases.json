@@ -1,0 +1,63 @@
+[
+  {
+    "caseId": "geometry-gf-gfdist-success",
+    "description": "Runs gfdist over a confined interval and inspects the first result interval",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/de440s.bsp" },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "GF_DIST_CNFIN",
+        "left": 0,
+        "right": 86400,
+        "maxIntervals": 8
+      },
+      { "op": "geometry-gf.gfsstp", "step": 600 },
+      { "op": "geometry-gf.gfstep", "time": 0 },
+      { "op": "geometry-gf.gfstol", "value": 0.001 },
+      { "op": "geometry-gf.gfrefn", "t1": 0, "t2": 86400, "s1": true, "s2": false },
+      {
+        "op": "geometry-gf.gfdist",
+        "target": "EARTH",
+        "abcorr": "NONE",
+        "obsrvr": "SUN",
+        "relate": ">",
+        "refval": 100000000,
+        "adjust": 0,
+        "step": 600,
+        "nintvls": 1000,
+        "cnfineWindowId": "GF_DIST_CNFIN",
+        "resultWindowId": "GF_DIST_RESULT"
+      },
+      { "op": "cells-windows.wnfetd", "windowId": "GF_DIST_RESULT", "index": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "geometry-gf-gfdist-invalid-nintvls-error",
+    "description": "Representative gfdist nintvls range validation error",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/de440s.bsp" },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "GF_DIST_ERR_CNFIN",
+        "left": 0,
+        "right": 86400,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfdist",
+        "target": "EARTH",
+        "abcorr": "NONE",
+        "obsrvr": "SUN",
+        "relate": ">",
+        "refval": 100000000,
+        "adjust": 0,
+        "step": 600,
+        "nintvls": 0,
+        "cnfineWindowId": "GF_DIST_ERR_CNFIN",
+        "resultWindowId": "GF_DIST_ERR_RESULT"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "caseId": "coords-vectors-recgeo-happy-axis-aligned",
+    "description": "recgeo deterministic axis-aligned case",
+    "workflow": [
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [
+          1,
+          0,
+          0
+        ],
+        "re": 1,
+        "f": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recgeo-invalid-flattening-error",
+    "description": "Representative recgeo invalid flattening error",
+    "workflow": [
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [
+          1,
+          0,
+          0
+        ],
+        "re": 1,
+        "f": 1.5
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

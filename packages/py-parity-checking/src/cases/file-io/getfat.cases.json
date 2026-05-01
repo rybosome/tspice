@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "file-io-getfat-dsk-success",
+    "description": "getfat identifies a deterministic DSK fixture",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bds" },
+      { "op": "file-io.getfat", "path": "kernels/file-io-minimal.bds" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-getfat-missing-file-error",
+    "description": "Representative getfat missing-file error",
+    "workflow": [{ "op": "file-io.getfat", "path": "kernels/does-not-exist.bds" }],
+    "expectation": { "kind": "error" }
+  }
+]

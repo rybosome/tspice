@@ -121,6 +121,11 @@ describe("IDs / names", () => {
     expect(backend.bodfnd(399, "\u00a0radii\u00a0")).toBe(false);
     expect(backend.bodvar(399, "\u00a0radii\u00a0")).toEqual([]);
 
+    // Length guard parity: use JS string length, not UTF-8 byte length.
+    const longNonAsciiItem = "é".repeat(700);
+    expect(longNonAsciiItem).toHaveLength(700);
+    expect(backend.bodvar(399, longNonAsciiItem)).toEqual([]);
+
     expect(backend.bodfnd(399, "NOT_A_ITEM")).toBe(false);
     const missing = backend.bodvar(399, "NOT_A_ITEM");
     expect(missing).toEqual([]);

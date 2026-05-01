@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "cells-windows-insrti-dedupe-success",
+    "description": "insrti inserts into int set cell with de-dupe behavior",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_INSRI", "item": 3, "maxCardinality": 4 },
+      { "op": "cells-windows.insrti", "cellId": "C_INSRI", "item": 1 },
+      { "op": "cells-windows.insrti", "cellId": "C_INSRI", "item": 3 },
+      { "op": "cells-windows.card", "targetKind": "int", "targetId": "C_INSRI" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-insrti-capacity-overflow-error",
+    "description": "Representative insrti overflow error",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_INSRI_ERR", "item": 1, "maxCardinality": 1 },
+      { "op": "cells-windows.insrti", "cellId": "C_INSRI_ERR", "item": 2 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

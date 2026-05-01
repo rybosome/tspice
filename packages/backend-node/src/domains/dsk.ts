@@ -9,6 +9,7 @@ import type {
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+import type { KernelStager } from "../runtime/kernel-staging.js";
 import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
 
 const I32_MIN = -2147483648;
@@ -120,14 +121,20 @@ function normalizeDskType2Bookkeeping(value: unknown, context: string): DskType2
 }
 
 /** Create a {@link DskApi} implementation backed by the native Node addon. */
-export function createDskApi(native: NativeAddon, handles: SpiceHandleRegistry): DskApi {
+export function createDskApi(
+  native: NativeAddon,
+  handles: SpiceHandleRegistry,
+  stager: Pick<KernelStager, "resolvePathForSpice">,
+): DskApi {
+  const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
-      native.dskobj(dsk, bodids as unknown as number);
+      native.dskobj(resolvePath(dsk), bodids as unknown as number);
     },
 
     dsksrf: (dsk: string, bodyid: number, srfids: SpiceIntCell) => {
-      native.dsksrf(dsk, bodyid, srfids as unknown as number);
+      native.dsksrf(resolvePath(dsk), bodyid, srfids as unknown as number);
     },
 
     dskgd: (handle: SpiceHandle, dladsc: DlaDescriptor) => {

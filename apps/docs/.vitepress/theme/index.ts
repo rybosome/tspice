@@ -31,12 +31,12 @@ function getMermaidThemeVariables(): Record<string, string> {
   const styles = getComputedStyle(document.documentElement)
 
   // These are defined in `apps/docs/.vitepress/theme/custom.css`.
-  const bg = getCssVariable(styles, '--orrery-bg')
-  const panelBg = getCssVariable(styles, '--orrery-panel-bg')
-  const panelBorder = getCssVariable(styles, '--orrery-panel-border')
-  const text = getCssVariable(styles, '--orrery-text')
-  const phosphor = getCssVariable(styles, '--orrery-phosphor-fg')
-  const activeBg = getCssVariable(styles, '--orrery-active-bg')
+  const bg = getCssVariable(styles, '--tspice-docs-bg')
+  const panelBg = getCssVariable(styles, '--tspice-docs-panel-bg')
+  const panelBorder = getCssVariable(styles, '--tspice-docs-panel-border')
+  const text = getCssVariable(styles, '--tspice-docs-text')
+  const phosphor = getCssVariable(styles, '--tspice-docs-phosphor-fg')
+  const activeBg = getCssVariable(styles, '--tspice-docs-active-bg')
 
   return {
     background: bg ?? '#0b0f14',

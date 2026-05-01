@@ -1,0 +1,147 @@
+[
+  {
+    "caseId": "ek-ekgd-happy-read-double-results",
+    "description": "ekgd reads double-precision query results from a workflow-created table",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgd-happy.ek",
+        "ifname": "ekgd-happy",
+        "ncomch": 0,
+        "handleId": "H_EKGD"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGD",
+        "tabnam": "EKGD_TABLE",
+        "nrows": 2,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION"],
+        "segmentId": "SEG_EKGD"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_EKGD",
+        "column": "COST",
+        "dvals": [11.5, 22.75],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGD" },
+      { "op": "ek.ekcls", "handleId": "H_EKGD" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgd-happy.ek" },
+      { "op": "ek.ekfind", "query": "SELECT COST FROM EKGD_TABLE ORDER BY COST" },
+      { "op": "ek.ekgd", "selidx": 0, "row": 0, "elment": 0 },
+      { "op": "ek.ekgd", "selidx": 0, "row": 1, "elment": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekgd-valid-row-out-of-range-element-found-false",
+    "description": "ekgd returns found=false when elment is out-of-range for a valid query row",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgd-vector.ek",
+        "ifname": "ekgd-vector",
+        "ncomch": 0,
+        "handleId": "H_EKGD_VEC"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGD_VEC",
+        "tabnam": "EKGD_VECTOR",
+        "nrows": 1,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION, SIZE = 2"],
+        "segmentId": "SEG_EKGD_VEC"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_EKGD_VEC",
+        "column": "COST",
+        "dvals": [11.5, 22.75],
+        "entszs": [2],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGD_VEC" },
+      { "op": "ek.ekcls", "handleId": "H_EKGD_VEC" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgd-vector.ek" },
+      { "op": "ek.ekfind", "query": "SELECT COST FROM EKGD_VECTOR" },
+      { "op": "ek.ekgd", "selidx": 0, "row": 0, "elment": 2 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekgd-invalid-selidx-error",
+    "description": "ekgd reports invalid-select-index errors for out-of-range selidx values",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgd-invalid-selidx.ek",
+        "ifname": "ekgd-invalid-selidx",
+        "ncomch": 0,
+        "handleId": "H_EKGD_SELIDX"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGD_SELIDX",
+        "tabnam": "EKGD_SELIDX",
+        "nrows": 1,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION"],
+        "segmentId": "SEG_EKGD_SELIDX"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_EKGD_SELIDX",
+        "column": "COST",
+        "dvals": [11.5],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGD_SELIDX" },
+      { "op": "ek.ekcls", "handleId": "H_EKGD_SELIDX" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgd-invalid-selidx.ek" },
+      { "op": "ek.ekfind", "query": "SELECT COST FROM EKGD_SELIDX" },
+      { "op": "ek.ekgd", "selidx": 5, "row": 0, "elment": 0 }
+    ],
+    "expectation": { "kind": "error" }
+  },
+  {
+    "caseId": "ek-ekgd-invalid-row-error",
+    "description": "ekgd reports row-index errors for out-of-range query rows",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgd-error.ek",
+        "ifname": "ekgd-error",
+        "ncomch": 0,
+        "handleId": "H_EKGD_ERR"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGD_ERR",
+        "tabnam": "EKGD_ERR",
+        "nrows": 1,
+        "cnames": ["COST"],
+        "decls": ["DATATYPE = DOUBLE PRECISION"],
+        "segmentId": "SEG_EKGD_ERR"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "SEG_EKGD_ERR",
+        "column": "COST",
+        "dvals": [11.5],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGD_ERR" },
+      { "op": "ek.ekcls", "handleId": "H_EKGD_ERR" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgd-error.ek" },
+      { "op": "ek.ekfind", "query": "SELECT COST FROM EKGD_ERR" },
+      { "op": "ek.ekgd", "selidx": 0, "row": 99, "elment": 0 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

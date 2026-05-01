@@ -1,0 +1,27 @@
+[
+  {
+    "caseId": "file-io-dafcls-close-and-reopen-success",
+    "description": "dafcls closes a DAF handle and allows reopen traversal",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf1" },
+      { "op": "file-io.dafcls", "handleId": "daf1" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf2" },
+      { "op": "file-io.dafbfs", "handleId": "daf2" },
+      { "op": "file-io.daffna", "handleId": "daf2" },
+      { "op": "file-io.dafcls", "handleId": "daf2" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dafcls-double-close-error",
+    "description": "Representative dafcls double-close error",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf" },
+      { "op": "file-io.dafcls", "handleId": "daf" },
+      { "op": "file-io.dafcls", "handleId": "daf" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

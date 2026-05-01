@@ -1,0 +1,66 @@
+[
+  {
+    "caseId": "ephemeris-spkw08-write-segment-success",
+    "description": "spkw08 writes a type-8 segment that can be queried for coverage",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/ephemeris-spkw08-happy.bsp",
+        "ifname": "PARITY",
+        "ncomch": 0,
+        "handleId": "H1"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H1",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKW08_SEG",
+        "degree": 1,
+        "states": [0, 0, 0, 1, 0, 0, 120, 0, 0, 1, 0, 0],
+        "epoch1": 0,
+        "step": 120
+      },
+      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/ephemeris-spkw08-happy.bsp",
+        "idcode": 1000,
+        "coverWindowId": "COV1",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkw08-invalid-states-length-error",
+    "description": "spkw08 errors when states is not a non-empty multiple of six",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/ephemeris-spkw08-error.bsp",
+        "ifname": "PARITY",
+        "ncomch": 0,
+        "handleId": "H_ERR"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H_ERR",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKW08_BAD",
+        "degree": 1,
+        "states": [0, 0, 0, 1, 0],
+        "epoch1": 0,
+        "step": 120
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

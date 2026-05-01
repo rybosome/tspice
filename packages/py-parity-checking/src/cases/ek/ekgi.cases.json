@@ -1,0 +1,147 @@
+[
+  {
+    "caseId": "ek-ekgi-happy-read-integer-results",
+    "description": "ekgi reads integer query results from a workflow-created table",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgi-happy.ek",
+        "ifname": "ekgi-happy",
+        "ncomch": 0,
+        "handleId": "H_EKGI"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGI",
+        "tabnam": "EKGI_TABLE",
+        "nrows": 2,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_EKGI"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_EKGI",
+        "column": "ID",
+        "ivals": [42, 84],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGI" },
+      { "op": "ek.ekcls", "handleId": "H_EKGI" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-happy.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_TABLE ORDER BY ID" },
+      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 0 },
+      { "op": "ek.ekgi", "selidx": 0, "row": 1, "elment": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekgi-valid-row-out-of-range-element-found-false",
+    "description": "ekgi returns found=false when elment is out-of-range for a valid query row",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgi-vector.ek",
+        "ifname": "ekgi-vector",
+        "ncomch": 0,
+        "handleId": "H_EKGI_VEC"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGI_VEC",
+        "tabnam": "EKGI_VECTOR",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER, SIZE = 2"],
+        "segmentId": "SEG_EKGI_VEC"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_EKGI_VEC",
+        "column": "ID",
+        "ivals": [42, 84],
+        "entszs": [2],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_VEC" },
+      { "op": "ek.ekcls", "handleId": "H_EKGI_VEC" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-vector.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_VECTOR" },
+      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 2 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekgi-invalid-selidx-error",
+    "description": "ekgi reports invalid-select-index errors for out-of-range selidx values",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgi-invalid-selidx.ek",
+        "ifname": "ekgi-invalid-selidx",
+        "ncomch": 0,
+        "handleId": "H_EKGI_SELIDX"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGI_SELIDX",
+        "tabnam": "EKGI_SELIDX",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_EKGI_SELIDX"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_EKGI_SELIDX",
+        "column": "ID",
+        "ivals": [42],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_SELIDX" },
+      { "op": "ek.ekcls", "handleId": "H_EKGI_SELIDX" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-invalid-selidx.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_SELIDX" },
+      { "op": "ek.ekgi", "selidx": 5, "row": 0, "elment": 0 }
+    ],
+    "expectation": { "kind": "error" }
+  },
+  {
+    "caseId": "ek-ekgi-invalid-row-error",
+    "description": "ekgi reports row-index errors for out-of-range query rows",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekgi-error.ek",
+        "ifname": "ekgi-error",
+        "ncomch": 0,
+        "handleId": "H_EKGI_ERR"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_EKGI_ERR",
+        "tabnam": "EKGI_ERR",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_EKGI_ERR"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_EKGI_ERR",
+        "column": "ID",
+        "ivals": [42],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_ERR" },
+      { "op": "ek.ekcls", "handleId": "H_EKGI_ERR" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-error.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_ERR" },
+      { "op": "ek.ekgi", "selidx": 0, "row": 99, "elment": 0 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

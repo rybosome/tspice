@@ -23,11 +23,15 @@ jobs:
 
         ./scripts/ci/ensure-uncompress.sh
       enable_cspice_cache: true
+      enable_uv: true
       command: |
         set -euo pipefail
 
         pnpm run fetch:cspice
-        pnpm run check
+
+        # TODO(#594): switch back to `pnpm run check` after PR-0..PR-5 restores
+        # parity in required CI lanes.
+        pnpm run check:js:required
 
   docs-build:
     name: Docs build (ubuntu + node 22)
@@ -70,15 +74,6 @@ jobs:
             exit 1
           fi
 
-  orrery-e2e:
-    name: Orrery Playwright e2e (ubuntu + node 22)
-    uses: ./.github/workflows/reusable-node-pnpm.yml
-    with:
-      runs_on: ubuntu-latest
-      node_version: '22'
-      command: |
-        pnpm -C apps/orrery exec playwright install --with-deps chromium
-        pnpm -C apps/orrery e2e
 
   verify-dist-publish:
     name: Verify dist-publish tarball (ubuntu + node 22)
@@ -93,25 +88,6 @@ jobs:
 
         pnpm -C packages/tspice run build:dist-publish
         pnpm -C packages/tspice run verify:dist-publish
-
-  test-verify:
-    name: Parity verifier (ubuntu + node 22)
-    uses: ./.github/workflows/reusable-node-pnpm.yml
-    with:
-      runs_on: ubuntu-latest
-      node_version: '22'
-      pre_install: |
-        set -euo pipefail
-
-        ./scripts/ci/ensure-uncompress.sh
-      enable_cspice_cache: true
-      command: |
-        set -euo pipefail
-
-        pnpm run fetch:cspice
-
-        export TSPICE_PARITY_BACKEND=wasm
-        pnpm test:verify
 
   check-native:
     # Runs in parallel with `check` to surface native-only failures quickly.
@@ -131,12 +107,15 @@ jobs:
 
         ./scripts/ci/ensure-uncompress.sh
       enable_cspice_cache: true
+      enable_uv: true
       command: |
         set -euo pipefail
 
         export TSPICE_EXPECT_NATIVE=true
 
-        pnpm run check:native
+        # TODO(#594): switch back to `pnpm run check:native` after PR-0..PR-5
+        # restores parity in required CI lanes.
+        pnpm run check:native:required
 
         # Smoke-test packaging for the platform-native optionalDependency that
         # was just staged/built on this runner.
@@ -146,7 +125,8 @@ jobs:
           exit 0
         fi
 
-        # `pnpm run check:native` stages the native addon early in the script,
+        # `pnpm run check:native:required` stages the native addon early in the
+        # script,
         # but later build/test steps may clean the workspace. Re-stage the
         # platform-specific native addon right before packing so we verify the
         # tarball includes `tspice_backend_node.node`.

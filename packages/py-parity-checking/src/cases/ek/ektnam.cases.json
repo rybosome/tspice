@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "ek-ektnam-happy-first-table",
+    "description": "ektnam returns the loaded EK table name for index 0",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
+      { "op": "ek.ekntab" },
+      { "op": "ek.ektnam", "n": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ektnam-out-of-range-error",
+    "description": "ektnam errors for a table index outside 0..ekntab-1",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
+      { "op": "ek.ektnam", "n": 99 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

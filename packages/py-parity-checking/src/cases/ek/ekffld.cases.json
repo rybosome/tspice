@@ -1,0 +1,42 @@
+[
+  {
+    "caseId": "ek-ekffld-happy-finalize-and-count-segments",
+    "description": "ekffld finalizes fast-write data so segment count becomes observable",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekffld-happy.ek",
+        "ifname": "ekffld-happy",
+        "ncomch": 0,
+        "handleId": "H_FFLD"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_FFLD",
+        "tabnam": "FFLD_TABLE",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_FFLD"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_FFLD",
+        "column": "ID",
+        "ivals": [7],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_FFLD" },
+      { "op": "ek.eknseg", "handleId": "H_FFLD" },
+      { "op": "ek.ekcls", "handleId": "H_FFLD" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekffld-missing-segment-id-error",
+    "description": "ekffld errors when segmentId does not resolve in workflow state",
+    "workflow": [{ "op": "ek.ekffld", "segmentId": "MISSING_SEGMENT" }],
+    "expectation": { "kind": "error" }
+  }
+]

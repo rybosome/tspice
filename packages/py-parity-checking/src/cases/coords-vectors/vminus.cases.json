@@ -1,0 +1,19 @@
+[
+  {
+    "caseId": "coords-vectors-vminus-happy-negation",
+    "description": "vminus negates each component of an input vector",
+    "workflow": [
+      {
+        "op": "coords-vectors.vminus",
+        "v": [
+          1,
+          -2,
+          3
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

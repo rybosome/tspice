@@ -35,7 +35,7 @@ export async function createBackend(options: CreateBackendOptions): Promise<Spic
 
   if (opts === undefined || (opts as unknown as { backend?: unknown }).backend === undefined) {
     throw new Error(
-      'createBackend() requires an explicit backend selection: { backend: "node" } or { backend: "wasm" }',
+      'createBackend(): backend selection is required. Expected: options.backend to be "node" | "wasm". Got: undefined. Hint: pass { backend: "node" } or { backend: "wasm" }.',
     );
   }
 
@@ -54,7 +54,7 @@ export async function createBackend(options: CreateBackendOptions): Promise<Spic
         return createNodeBackend();
       } catch (error) {
         throw new Error(
-          `Failed to load native backend (required for backend="node"): ${String(error)}`,
+          `createBackend(node): backend module load failed. Expected: @rybosome/tspice-backend-node to load successfully. Got: ${String(error)}. Hint: install/build native backend artifacts or use backend=\"wasm\".`,
         );
       }
 
@@ -69,11 +69,14 @@ export async function createBackend(options: CreateBackendOptions): Promise<Spic
         );
       } catch (error) {
         throw new Error(
-          `Failed to load WASM backend (required for backend="wasm"): ${String(error)}`,
+          `createBackend(wasm): backend module load failed. Expected: @rybosome/tspice-backend-wasm to load successfully. Got: ${String(error)}. Hint: verify WASM package/bundle availability and wasmUrl configuration.`,
         );
       }
 
     default:
-      return assertNever(backend, "Unsupported backend");
+      return assertNever(
+        backend,
+        'createBackend(): unsupported backend discriminator. Expected: "node" | "wasm". Got',
+      );
   }
 }

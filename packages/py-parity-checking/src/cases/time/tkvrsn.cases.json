@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "time-tkvrsn-happy-toolkit",
+    "description": "Returns toolkit version string for TOOLKIT item",
+    "workflow": [{ "op": "time.tkvrsn", "item": "TOOLKIT" }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-tkvrsn-unsupported-item-error",
+    "description": "Representative tkvrsn error for unsupported item",
+    "workflow": [{ "op": "time.tkvrsn", "item": "KERNEL" }],
+    "expectation": { "kind": "error" }
+  }
+]

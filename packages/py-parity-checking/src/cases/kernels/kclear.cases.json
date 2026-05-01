@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "kernels-kclear-clears-loaded-kernels-success",
+    "description": "kclear clears previously loaded kernels from the kernel database",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.furnsh", "file": "kernels/kernel-pool-parity.tpc" },
+      { "op": "kernels.ktotal", "kind": "ALL" },
+      { "op": "kernels.kclear" },
+      { "op": "kernels.ktotal", "kind": "ALL" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

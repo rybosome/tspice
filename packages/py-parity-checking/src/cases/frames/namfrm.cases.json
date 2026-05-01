@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "frames-namfrm-found-success",
+    "description": "namfrm resolves J2000 -> frame code",
+    "workflow": [{ "op": "frames.namfrm", "name": "J2000" }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-namfrm-not-found-success",
+    "description": "namfrm miss returns found=false via code=0 sentinel",
+    "workflow": [{ "op": "frames.namfrm", "name": "NOT_A_FRAME" }],
+    "expectation": { "kind": "success" }
+  }
+]

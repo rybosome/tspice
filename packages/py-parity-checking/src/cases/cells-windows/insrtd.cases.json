@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "cells-windows-insrtd-dedupe-success",
+    "description": "insrtd inserts into double set cell with de-dupe behavior",
+    "workflow": [
+      { "op": "cells-windows.insrtd", "cellId": "C_INSRD", "item": 3.25, "maxCardinality": 4 },
+      { "op": "cells-windows.insrtd", "cellId": "C_INSRD", "item": -1.0 },
+      { "op": "cells-windows.insrtd", "cellId": "C_INSRD", "item": 3.25 },
+      { "op": "cells-windows.card", "targetKind": "double", "targetId": "C_INSRD" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-insrtd-capacity-overflow-error",
+    "description": "Representative insrtd overflow error",
+    "workflow": [
+      { "op": "cells-windows.insrtd", "cellId": "C_INSRD_ERR", "item": 1.0, "maxCardinality": 1 },
+      { "op": "cells-windows.insrtd", "cellId": "C_INSRD_ERR", "item": 2.0 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]
