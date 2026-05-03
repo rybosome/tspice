@@ -55,7 +55,10 @@ export interface FileIoKitApi {
 
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
-  /** Returns whether a file exists at `path`. */
+  /**
+   * Returns whether a file exists at `path`.
+   * Mapping: direct CSPICE (`exists_c`).
+   */
   exists(path: string): boolean;
 
   /** Determine SPICE file architecture + type (see `getfat_c`). */
@@ -66,7 +69,10 @@ export interface FileIoApi {
   /** Open a DAF file for read (see `dafopr_c`). */
   dafopr(path: string): SpiceHandle;
 
-  /** Close a DAF file previously opened by `dafopr()`. */
+  /**
+   * Close a DAF file previously opened by `dafopr()`.
+   * Mapping: direct CSPICE (`dafcls_c`).
+   */
   dafcls(handle: SpiceHandle): void;
 
   /** Begin a forward search for arrays in the given DAF file (see `dafbfs_c`). */

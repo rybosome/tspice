@@ -42,11 +42,17 @@ export interface KernelsApi {
   /** Clear all loaded kernels. */
   kclear(): void;
 
-  /** Retrieve information about a currently loaded kernel by filename. */
+  /**
+   * Retrieve information about a currently loaded kernel by filename.
+   * Mapping: composite; native backend uses `kinfo_c`, WASM
+   * synthesizes from loaded-kernel metadata.
+   */
   kinfo(path: string): Found<KernelInfo>;
 
   /**
    * Extract a substring from a word sequence.
+   * Mapping: composite; native backend uses `kxtrct_c`, WASM uses
+   * the JS `kxtrctJs` fallback.
    *
    * This is a string-parsing utility (used by some NAIF kernels and tooling).
    * It does **not** extract kernel bytes.
@@ -57,7 +63,13 @@ export interface KernelsApi {
     wordsq: string,
   ): Found<{ wordsq: string; substr: string }>;
 
-  /** Return kernel-pool frame IDs for the given frame class. */
+  /**
+   * Return kernel-pool frame IDs for the given frame class.
+   * Mapping: direct CSPICE (`kplfrm_c`).
+   *
+   * Backend caveat: in the current WASM bundle, this method throws
+   * `Error("kplfrm not supported in current WASM bundle")`.
+   */
   kplfrm(frmcls: number, idset: SpiceIntCell): void;
 
   /** Count loaded kernels of a given kind. */

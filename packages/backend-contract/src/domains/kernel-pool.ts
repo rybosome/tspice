@@ -24,6 +24,7 @@ export interface KernelPoolApi {
 
   /**
    * Get numeric (double) kernel pool values.
+   * Mapping: direct CSPICE (`gdpool_c`).
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -34,6 +35,7 @@ export interface KernelPoolApi {
 
   /**
    * Get numeric (integer) kernel pool values.
+   * Mapping: direct CSPICE (`gipool_c`).
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -44,6 +46,7 @@ export interface KernelPoolApi {
 
   /**
    * Get character kernel pool values.
+   * Mapping: direct CSPICE (`gcpool_c`).
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -54,6 +57,7 @@ export interface KernelPoolApi {
 
   /**
    * Get the names of kernel pool variables matching a template.
+   * Mapping: direct CSPICE (`gnpool_c`).
    *
    * Wildcards:
    * - `*` matches any substring
@@ -68,6 +72,7 @@ export interface KernelPoolApi {
 
   /**
    * Get kernel pool variable type (`C` or `N`) and size.
+   * Mapping: direct CSPICE (`dtpool_c`).
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -78,6 +83,7 @@ export interface KernelPoolApi {
 
   /**
    * Put numeric (double) values into the kernel pool.
+   * Mapping: direct CSPICE (`pdpool_c`).
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -88,6 +94,7 @@ export interface KernelPoolApi {
 
   /**
    * Put numeric (integer) values into the kernel pool.
+   * Mapping: direct CSPICE (`pipool_c`).
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -99,6 +106,7 @@ export interface KernelPoolApi {
 
   /**
    * Put character values into the kernel pool.
+   * Mapping: direct CSPICE (`pcpool_c`).
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -110,6 +118,7 @@ export interface KernelPoolApi {
 
   /**
    * Set up a kernel pool "watch" for `agent`.
+   * Mapping: direct CSPICE (`swpool_c`).
    *
    * After calling `swpool`, the next `cvpool(agent)` call will return `true`.
    *
@@ -121,6 +130,7 @@ export interface KernelPoolApi {
 
   /**
    * Check whether watched variables for `agent` have been updated since the last call.
+   * Mapping: direct CSPICE (`cvpool_c`).
    *
    * Validation semantics:
    * - `agent` must not be empty or whitespace-only.
@@ -129,6 +139,7 @@ export interface KernelPoolApi {
 
   /**
    * Check existence of a *numeric* kernel pool variable.
+   * Mapping: direct CSPICE (`expool_c`).
    *
    * NOTE: This does not detect character-valued variables; use `dtpool` if you need a
    * general existence/type check.
