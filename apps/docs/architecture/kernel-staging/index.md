@@ -81,6 +81,20 @@ To keep behavior consistent with WASM, the Node kernel stager:
 - remembers the mapping from virtual id → temp file path
 - virtualizes introspection outputs so `kdata().file` / `kinfo().source` report the **virtual id**, not the temp path
 
+## Audit follow-up: non-direct/composite kernel behavior (`#569`)
+
+This doc keeps the kernel-staging architecture summary concise.
+The canonical method-by-method audit deltas (including `furnsh`/`unload`/`kclear`, `kinfo`, `ktotal`/`kdata`, `kxtrct`, and `kplfrm`) live in:
+
+- [`docs/spicebackend-cspice-mapping.md` → “Audit follow-up: non-direct/composite kernels behavior (#569)”](https://github.com/rybosome/tspice/blob/main/docs/spicebackend-cspice-mapping.md#audit-follow-up-non-directcomposite-kernels-behavior-569)
+
+Kernel-staging architecture takeaways for `#569`:
+
+- Node stages byte-backed kernels to temp files and virtualizes staged paths back to stable virtual IDs.
+- WASM keeps kernel loading in an in-memory `/kernels/<normalized-id>` namespace and rejects OS/URL-like paths.
+- Non-direct/composite kind queries (`ktotal`/`kdata`) normalize and filter consistently, with backend-specific internals hidden behind the same contract.
+- `kplfrm` remains an intentional runtime/tooling split (Node supports raw call; WASM parity tooling composes an emulation path).
+
 ## Virtual outputs (Node backend)
 
 Writer APIs sometimes target a `VirtualOutput` instead of an OS path.

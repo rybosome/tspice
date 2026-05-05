@@ -126,6 +126,21 @@ Notes:
 | --- | --- | --- | --- | --- | --- |
 | `ids-names.bodn2c(name)` | `bodn2c_c` | `(name: string): Found<{ code: number }>` | `Found<{ code: number }>` | exact integer match | requires kernels defining body names/IDs (commonly PCK/SPK and/or mission kernels); “not found” is reported via `found` output flag |
 | `ids-names.bodc2n(code)` | `bodc2n_c` | `(code: number): Found<{ name: string }>` | `Found<{ name: string }>` | exact string match | requires kernels defining body names/IDs; “not found” is reported via `found` output flag |
+| `ids-names.bodfnd(body, item)` | `bodfnd_c` semantics via `dtpool_c` preflight | `(body: number, item: string): boolean` | `boolean` | normalize `item` with `normalizeBodItem` (ASCII trim + ASCII uppercase); existence check returns `true` for both numeric and character-typed pool vars | **stateful**: kernel-pool lookup for `BODY<body>_<ITEM>` |
+| `ids-names.bodvar(body, item)` | `bodvcd_c` (after `dtpool_c` preflight) | `(body: number, item: string): number[]` | `number[]` | normalize `item`; missing/non-numeric vars return `[]` (normal miss), not a thrown SPICE error | **stateful**: kernel-pool lookup for numeric body constants |
+
+Notes:
+
+- `bodfnd` / `bodvar` are intentionally **non-direct** wrappers in both backends:
+  - Node path delegates to the native shim (`tspice_bodfnd` / `tspice_bodvar`) with `dtpool_c` preflight.
+  - WASM path mirrors the same semantics in TS/WASM glue (including `dtpool` existence checks and normalization).
+- Parity expectations for character-typed constants (`bodfnd=true`, `bodvar=[]`) are covered in parity specs/tests.
+
+Sources:
+
+- Node native/shim behavior: [`ids_names.cc`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/native/src/domains/ids_names.cc#L174-L258), [`ids_names.c`](https://github.com/rybosome/tspice/blob/main/packages/backend-shim-c/src/domains/ids_names.c#L232-L364)
+- WASM behavior: [`backend-wasm/src/domains/ids-names.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/ids-names.ts#L47-L123)
+- Parity/test expectations: [`bodfnd.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json), [`bodvar.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json), [`id-name.test.ts`](https://github.com/rybosome/tspice/blob/main/packages/tspice/test/id-name.test.ts#L120-L130)
 
 ---
 
@@ -155,6 +170,9 @@ Notes:
 | `kernels.furnsh(kernel)` | `furnsh_c` | `(kernel: KernelSource): void` | `void` | n/a | **stateful**: mutates kernel pool + loaded-kernel set; `KernelSource` may be a path or `{ path, bytes }` where backend writes bytes then furnshes the path |
 | `kernels.unload(path)` | `unload_c` | `(path: string): void` | `void` | n/a | **stateful**: unloads a previously loaded kernel |
 | `kernels.kclear()` | `kclear_c` | `(): void` | `void` | n/a | **stateful**: clears all loaded kernels and the kernel pool |
+| `kernels.kinfo(path)` | `kinfo_c` (Node direct, WASM cache over `kdata`) | `(path: string): Found<KernelInfo>` | `Found<KernelInfo>` | Node resolves/virtualizes staged paths; WASM resolves virtual IDs and serves from a normalized cache | **stateful**: reads loaded-kernel table |
+| `kernels.kxtrct(keywd, terms, wordsq)` | `kxtrct_c` (Node native) / `kxtrctJs` (WASM) | `(keywd: string, terms: string[], wordsq: string): Found<{ wordsq: string; substr: string }>` | `Found<{ wordsq: string; substr: string }>` | Node trims/guards inputs before native call; WASM uses shared JS implementation | stateless string utility |
+| `kernels.kplfrm(frmcls, idset)` | `kplfrm_c` (Node); WASM raw currently unsupported | `(frmcls: number, idset: SpiceIntCell): void` | `void` | raw WASM throws not-supported; parity runner has a WASM-only composite emulation path | **stateful**: kernel-pool/frame-class lookup |
 | `kernels.ktotal(kind?)` | `ktotal_c` | `(kind?: KernelKindInput): number` | `number` | exact integer match | **stateful**: returns count of currently loaded kernels (optionally filtered) |
 | `kernels.kdata(which, kind?)` | `kdata_c` | `(which: number, kind?: KernelKindInput): Found<KernelData>` | `Found<KernelData>` | `filtyp` exact; path-like fields may require normalization (see Notes) | **stateful**: queries loaded-kernel table; returns `{ found: false }` when `which` is out of range for the selected kind |
 
@@ -173,6 +191,39 @@ Notes:
   Backends may rewrite this identifier to an internal storage path (temp files, virtual FS namespaces), but should do so deterministically and keep it observable:
   - `unload(path)` should accept the normalized virtual identifier (even if internally rewritten).
   - `kdata()` should return a stable identifier for byte-backed kernels (ideally the normalized virtual path), rather than leaking randomized temp-file paths that would break parity.
+
+### Audit follow-up: non-direct/composite kernels behavior (`#569`)
+
+Audit evidence:
+
+- Issue scope: [#569](https://github.com/rybosome/tspice/issues/569)
+- Audit callout: [#556 comment](https://github.com/rybosome/tspice/issues/556#issuecomment-3982873042)
+
+Method-specific deltas:
+
+- `furnsh` / `unload` / `kclear`
+  - Node stages byte-backed kernels to temp files and virtualizes staged IDs.
+  - WASM uses `/kernels/<normalized-id>` virtual paths and rejects OS/URL-like string paths.
+  - Lifecycle caveat: Node `unload()` intentionally skips unlink/staging-map cleanup for staged `/kernels/py-parity/...` artifacts; full staged-file unlink + map cleanup happens on `kclear()`. WASM `unload`/`kclear` clear runtime/cache state but do not unlink virtual FS kernel artifacts.
+  - Source links: [`kernel-staging.ts` (Node staging + cleanup)](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/runtime/kernel-staging.ts#L176-L251), [`kernels.ts` (WASM cache clear + unload/kclear)](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L124-L192), [`fs.ts` (WASM virtual FS writes)](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/runtime/fs.ts#L37-L75), [`kernels.test.ts` (WASM path constraints)](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/test/kernels.test.ts#L76-L81)
+- `kinfo`
+  - Node resolves through staging + virtualizes `source`; WASM serves from a normalized cache built from `kdata("ALL")`.
+  - WASM cache completeness: the `kinfo` cache is explicitly invalidated on `furnsh`, `unload`, and `kclear`.
+  - Source links: [`backend-node/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/kernels.ts#L62-L80), [`backend-wasm/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L124-L202)
+- `ktotal` / `kdata`
+  - Both backends use composite filtering (`ALL` query + JS filter) when the kind query is not directly representable natively.
+  - Source links: [`backend-node/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/kernels.ts#L82-L171), [`backend-wasm/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L210-L258), [`kernels-utils.ts`](https://github.com/rybosome/tspice/blob/main/packages/core/src/spice-runtime/domains/kernels-utils.ts#L101-L259)
+- `kxtrct`
+  - Node calls native `kxtrct` path with argument shaping/guards; WASM uses `kxtrctJs`.
+  - Source links: [`native kernels.cc`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/native/src/domains/kernels.cc#L257-L359), [`backend-wasm/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L204-L206), [`kernels-utils.ts`](https://github.com/rybosome/tspice/blob/main/packages/core/src/spice-runtime/domains/kernels-utils.ts#L262-L307)
+- `kplfrm`
+  - Raw backend behavior intentionally differs: Node supports; WASM raw currently throws.
+  - Parity tooling composes an emulation path for WASM by scanning `FRAME_*_CLASS` kernel-pool entries, and the current fallback enforces `frmcls` in `1..6`.
+  - Source links: [`backend-wasm/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L207-L209), [`run-tspice/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/run-tspice/domains/kernels.ts#L42-L99), [`kplfrm.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/kernels/kplfrm.cases.json)
+
+Related docs:
+
+- Kernel staging details: [`apps/docs/architecture/kernel-staging/index.md`](https://github.com/rybosome/tspice/blob/main/apps/docs/architecture/kernel-staging/index.md)
 
 ---
 
@@ -242,3 +293,20 @@ Most routines in this domain are **pure math** and require no kernels.
 | `coords-vectors.recgeo(rect, re, f)` | `recgeo_c` | `(rect: SpiceVector3, re: number, f: number)` | `{ lon: number; lat: number; alt: number }` | float tolerance; angles radians | none |
 | `coords-vectors.mxv(m, v)` | `mxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
 | `coords-vectors.mtxv(m, v)` | `mtxv_c` | `(m: Mat3RowMajor, v: SpiceVector3)` | `SpiceVector3` | float tolerance | none |
+
+---
+
+## Appendix: audit follow-ups (`#569`)
+
+### `file-io.dlacls` (`FileIoApi`)
+
+| domain.method | CSPICE entrypoint(s) | Args (TS shape) | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels |
+| --- | --- | --- | --- | --- | --- |
+| `file-io.dlacls(handle)` | `dlacls_c` alias semantics via `dascls_c` | `(handle: SpiceHandle): void` | `void` | both backends intentionally alias `dlacls` to DAS close behavior (`dascls`), accepting DAS-backed handles from either `dasopr()` or `dlaopn()` | **stateful**: closes DAS/DLA handle |
+
+Sources:
+
+- Contract intent: [`backend-contract/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-contract/src/domains/file-io.ts#L89-L125)
+- Node alias implementation: [`backend-node/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L64-L75), [`...#L124-L125`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L124-L125)
+- WASM alias implementation: [`backend-wasm/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L159-L170), [`...#L387`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L387)
+- Parity spec: [`dlacls.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/file-io/dlacls.cases.json)
