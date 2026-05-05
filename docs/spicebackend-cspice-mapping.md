@@ -140,7 +140,7 @@ Sources:
 
 - Node native/shim behavior: [`ids_names.cc`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/native/src/domains/ids_names.cc#L174-L258), [`ids_names.c`](https://github.com/rybosome/tspice/blob/main/packages/backend-shim-c/src/domains/ids_names.c#L232-L364)
 - WASM behavior: [`backend-wasm/src/domains/ids-names.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/ids-names.ts#L47-L123)
-- Parity/test expectations: [`bodfnd@v1.yml`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/specs/methods/ids-names/bodfnd@v1.yml), [`bodvar@v1.yml`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/specs/methods/ids-names/bodvar@v1.yml), [`id-name.test.ts`](https://github.com/rybosome/tspice/blob/main/packages/tspice/test/id-name.test.ts#L120-L130)
+- Parity/test expectations: [`bodfnd.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json), [`bodvar.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json), [`id-name.test.ts`](https://github.com/rybosome/tspice/blob/main/packages/tspice/test/id-name.test.ts#L120-L130)
 
 ---
 
@@ -204,7 +204,7 @@ Method-specific deltas:
 - `furnsh` / `unload` / `kclear`
   - Node stages byte-backed kernels to temp files and virtualizes staged IDs.
   - WASM uses `/kernels/<normalized-id>` virtual paths and rejects OS/URL-like string paths.
-  - Lifecycle delta: Node `unload`/`kclear` clean up staged temp files (while clearing staging maps), whereas WASM `unload`/`kclear` clear runtime/cache state but do not unlink virtual FS kernel artifacts.
+  - Lifecycle caveat: Node `unload()` intentionally skips unlink/staging-map cleanup for staged `/kernels/py-parity/...` artifacts; full staged-file unlink + map cleanup happens on `kclear()`. WASM `unload`/`kclear` clear runtime/cache state but do not unlink virtual FS kernel artifacts.
   - Source links: [`kernel-staging.ts` (Node staging + cleanup)](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/runtime/kernel-staging.ts#L176-L251), [`kernels.ts` (WASM cache clear + unload/kclear)](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L124-L192), [`fs.ts` (WASM virtual FS writes)](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/runtime/fs.ts#L37-L75), [`kernels.test.ts` (WASM path constraints)](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/test/kernels.test.ts#L76-L81)
 - `kinfo`
   - Node resolves through staging + virtualizes `source`; WASM serves from a normalized cache built from `kdata("ALL")`.
@@ -218,8 +218,8 @@ Method-specific deltas:
   - Source links: [`native kernels.cc`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/native/src/domains/kernels.cc#L257-L359), [`backend-wasm/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L204-L206), [`kernels-utils.ts`](https://github.com/rybosome/tspice/blob/main/packages/core/src/spice-runtime/domains/kernels-utils.ts#L262-L307)
 - `kplfrm`
   - Raw backend behavior intentionally differs: Node supports; WASM raw currently throws.
-  - Parity tooling composes an emulation path for WASM by scanning `FRAME_*_CLASS` kernel-pool entries.
-  - Source links: [`backend-wasm/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L207-L209), [`tspiceRunner.ts`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/runners/tspiceRunner.ts#L1081-L1119), [`kplfrm@v1.yml`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/specs/methods/kernels/kplfrm@v1.yml)
+  - Parity tooling composes an emulation path for WASM by scanning `FRAME_*_CLASS` kernel-pool entries, and the current fallback enforces `frmcls` in `1..6`.
+  - Source links: [`backend-wasm/src/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/kernels.ts#L207-L209), [`run-tspice/domains/kernels.ts`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/run-tspice/domains/kernels.ts#L42-L99), [`kplfrm.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/kernels/kplfrm.cases.json)
 
 Related docs:
 
@@ -309,4 +309,4 @@ Sources:
 - Contract intent: [`backend-contract/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-contract/src/domains/file-io.ts#L89-L125)
 - Node alias implementation: [`backend-node/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L64-L75), [`...#L124-L125`](https://github.com/rybosome/tspice/blob/main/packages/backend-node/src/domains/file-io.ts#L124-L125)
 - WASM alias implementation: [`backend-wasm/src/domains/file-io.ts`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L159-L170), [`...#L387`](https://github.com/rybosome/tspice/blob/main/packages/backend-wasm/src/domains/file-io.ts#L387)
-- Parity spec: [`dlacls@v2.yml`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/specs/methods/file-io/dlacls@v2.yml)
+- Parity spec: [`dlacls.cases.json`](https://github.com/rybosome/tspice/blob/main/packages/py-parity-checking/src/cases/file-io/dlacls.cases.json)
