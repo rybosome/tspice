@@ -1,0 +1,34 @@
+[
+  {
+    "caseId": "ephemeris-spkpds-pack-descriptor-success",
+    "description": "spkpds packs a segment descriptor for type-8 metadata",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "type": 8,
+        "first": 0,
+        "last": 120
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkpds-invalid-frame-error",
+    "description": "spkpds errors when the frame name is unknown",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 1000,
+        "center": 0,
+        "frame": "NOT_A_FRAME",
+        "type": 8,
+        "first": 0,
+        "last": 120
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

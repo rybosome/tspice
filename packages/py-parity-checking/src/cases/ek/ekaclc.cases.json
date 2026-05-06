@@ -1,0 +1,70 @@
+[
+  {
+    "caseId": "ek-ekaclc-happy-char-column-visible-via-ekgc",
+    "description": "ekaclc-written strings are observable through ekfind and ekgc",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekaclc-happy.ek",
+        "ifname": "ekaclc-happy",
+        "ncomch": 0,
+        "handleId": "H_ACLC"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_ACLC",
+        "tabnam": "CHAR_TABLE",
+        "nrows": 2,
+        "cnames": ["NAME"],
+        "decls": ["DATATYPE = CHARACTER*(*)"],
+        "segmentId": "SEG_ACLC"
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "SEG_ACLC",
+        "column": "NAME",
+        "cvals": ["Alice", "Bob"],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_ACLC" },
+      { "op": "ek.ekcls", "handleId": "H_ACLC" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekaclc-happy.ek" },
+      { "op": "ek.ekfind", "query": "SELECT NAME FROM CHAR_TABLE ORDER BY NAME" },
+      { "op": "ek.ekgc", "selidx": 0, "row": 0, "elment": 0 },
+      { "op": "ek.ekgc", "selidx": 0, "row": 1, "elment": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekaclc-missing-column-error",
+    "description": "ekaclc errors when writing to a column not declared in the segment",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekaclc-error.ek",
+        "ifname": "ekaclc-error",
+        "ncomch": 0,
+        "handleId": "H_ACLC_ERR"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_ACLC_ERR",
+        "tabnam": "CHAR_ERR",
+        "nrows": 2,
+        "cnames": ["NAME"],
+        "decls": ["DATATYPE = CHARACTER*(*)"],
+        "segmentId": "SEG_ACLC_ERR"
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "SEG_ACLC_ERR",
+        "column": "MISSING",
+        "cvals": ["One", "Two"],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

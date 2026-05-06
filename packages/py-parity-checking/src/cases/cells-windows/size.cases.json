@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "cells-windows-size-window-capacity-success",
+    "description": "size reports tracked window capacity",
+    "workflow": [
+      { "op": "cells-windows.wninsd", "windowId": "W_SIZE", "left": 10, "right": 12, "maxIntervals": 5 },
+      { "op": "cells-windows.size", "targetKind": "window", "targetId": "W_SIZE" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-size-missing-target-error",
+    "description": "Representative size error on missing target handle",
+    "workflow": [{ "op": "cells-windows.size", "targetKind": "char", "targetId": "MISSING_CHAR" }],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "error-setmsg-long-roundtrip-success",
+    "description": "setmsg updates the LONG message buffer",
+    "workflow": [
+      { "op": "error.reset" },
+      { "op": "error.setmsg", "message": "setmsg parity message" },
+      { "op": "error.getmsg", "which": "LONG" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "error-setmsg-empty-message-error",
+    "description": "Representative setmsg empty-string error path",
+    "workflow": [{ "op": "error.setmsg", "message": "" }],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

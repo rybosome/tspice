@@ -1,0 +1,23 @@
+[
+  {
+    "caseId": "file-io-dlabfs-first-segment-found-success",
+    "description": "dlabfs finds the first segment in a deterministic DSK fixture",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bds" },
+      { "op": "file-io.dasopr", "path": "kernels/file-io-minimal.bds", "handleId": "reader" },
+      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
+      { "op": "file-io.dascls", "handleId": "reader" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "file-io-dlabfs-kind-mismatch-error",
+    "description": "Representative dlabfs error when called with a DAF handle",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      { "op": "file-io.dafopr", "path": "kernels/file-io-minimal.bsp", "handleId": "daf" },
+      { "op": "file-io.dlabfs", "handleId": "daf", "descrId": "seg0" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

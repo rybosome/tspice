@@ -1,0 +1,36 @@
+[
+  {
+    "caseId": "ek-ekopw-happy-open-created-file-for-write",
+    "description": "ekopw opens an existing EK file for write-mode access",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekopw-happy.ek",
+        "ifname": "ekopw-happy",
+        "ncomch": 0,
+        "handleId": "H_CREATE"
+      },
+      { "op": "ek.ekcls", "handleId": "H_CREATE" },
+      {
+        "op": "ek.ekopw",
+        "path": ".py-parity-ek-ekopw-happy.ek",
+        "handleId": "H_WRITE"
+      },
+      { "op": "ek.eknseg", "handleId": "H_WRITE" },
+      { "op": "ek.ekcls", "handleId": "H_WRITE" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekopw-missing-file-error",
+    "description": "ekopw errors when opening a non-existent EK file",
+    "workflow": [
+      {
+        "op": "ek.ekopw",
+        "path": ".py-parity-ek-ekopw-missing.ek",
+        "handleId": "H_MISSING"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

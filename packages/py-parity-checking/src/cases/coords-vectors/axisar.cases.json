@@ -1,0 +1,20 @@
+[
+  {
+    "caseId": "coords-vectors-axisar-happy-z-axis-quarter-turn",
+    "description": "axisar converts axis-angle form to rotation matrix",
+    "workflow": [
+      {
+        "op": "coords-vectors.axisar",
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "angle": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

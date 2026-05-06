@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "time-sct2e-happy-with-cook-sclk",
+    "description": "Converts cookbook encoded SCLK ticks to ET",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
+      { "op": "time.sct2e", "sc": -77, "sclkdp": 4319435080.0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-sct2e-missing-sclk-error",
+    "description": "Representative sct2e error when SCLK kernel is not loaded",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.sct2e", "sc": -77, "sclkdp": 4319435080.0 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

@@ -38,9 +38,29 @@ type _KernelSourceIsExported = import("@rybosome/tspice").KernelSource;
 type _SpiceBackendIsExported = import("@rybosome/tspice").SpiceBackend;
 type _SpiceIsExported = import("@rybosome/tspice").Spice;
 type _SpiceAsyncIsExported = import("@rybosome/tspice").SpiceAsync;
+type PublicKernelPack = import("@rybosome/tspice").KernelPack;
 
 // --- spiceClients builder contracts ---
 type SpiceClientsBuilder = Tspice["spiceClients"];
+type WithKernelsMethod = SpiceClientsBuilder["withKernels"];
+
+type _WithKernelsAcceptsSinglePack = Assert<
+  WithKernelsMethod extends (pack: PublicKernelPack) => SpiceClientsBuilder ? true : false
+>;
+type _WithKernelsAcceptsNonEmptyTuple = Assert<
+  WithKernelsMethod extends (
+    packs: readonly [PublicKernelPack, ...PublicKernelPack[]]
+  ) => SpiceClientsBuilder
+    ? true
+    : false
+>;
+type _WithKernelsRejectsEmptyTuple = AssertFalse<
+  WithKernelsMethod extends (packs: readonly []) => SpiceClientsBuilder ? true : false
+>;
+type _WithKernelsRejectsMaybeEmptyArray = AssertFalse<
+  WithKernelsMethod extends (packs: PublicKernelPack[]) => SpiceClientsBuilder ? true : false
+>;
+
 type SyncClient = Awaited<ReturnType<SpiceClientsBuilder["toSync"]>>;
 type AsyncClient = Awaited<ReturnType<SpiceClientsBuilder["toAsync"]>>;
 

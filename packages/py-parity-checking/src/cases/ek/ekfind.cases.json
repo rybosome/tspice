@@ -1,0 +1,20 @@
+[
+  {
+    "caseId": "ek-ekfind-happy-query-loaded-fixture",
+    "description": "ekfind returns nmrows for a valid query over the fixed EK fixture",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
+      { "op": "ek.ekfind", "query": "SELECT NAME FROM PY_PARITY_DATA" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekfind-query-error-shape-success",
+    "description": "ekfind parse errors are returned in-value instead of throwing",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
+      { "op": "ek.ekfind", "query": "SELECT * FROM PY_PARITY_DATA" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

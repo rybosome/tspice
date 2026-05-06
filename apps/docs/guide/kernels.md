@@ -10,6 +10,8 @@ Examples:
 
 In `tspice`, you typically **fetch kernels** and **load them** during client construction.
 
+If preload or kernel-selection errors block setup, see [/guide/troubleshooting](/guide/troubleshooting).
+
 ## Kernel packs
 
 `tspice` uses a simple `KernelPack` structure:
@@ -65,7 +67,8 @@ const pack = kernels.tspice().pick(
 - IDs are fully typed as `NaifKernelId` (a ~450 item literal union).
 - Defaults: `origin = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/"`, `pathBase = ""`.
 - Optional overrides: `kernels.naif({ origin?, pathBase?, baseUrl? })`.
-- `origin` is a build-time prefix used to construct each `kernel.url` (`origin + id`).
+- `origin` is a build-time URL prefix used to construct each `kernel.url` (`origin + id`).
+  The name is historical API naming, not the URL authority/origin concept.
 - `pathBase` is a virtual prefix for each `kernel.path` (`pathBase + id`).
 - `baseUrl` becomes `pack.baseUrl` (used to resolve **relative** URLs at load time).
 
@@ -151,6 +154,9 @@ try {
 }
 ```
 
+You can also pass an array: `.withKernels([packA, packB])`.
+Array input must be non-empty.
+
 ## Hosting kernel files (`origin` + `baseUrl`)
 
 Common approaches:
@@ -169,13 +175,18 @@ If you host your app under a base path (for example GitHub Pages), you’ll usua
 > Note: if you use a root-relative `origin` like `"/kernels/naif/"`, the resulting kernel URLs start with `/` and will bypass `baseUrl` by default.
 > For subpath hosting, prefer a relative `origin` (no leading `/`) so `baseUrl` can be applied.
 
-## `kernels.custom({ origin, pathBase, baseUrl? })`
+## `kernels.custom(...)` modes
 
-`kernels.custom(...)` is for mission/application-specific kernels.
+`kernels.custom(...)` is for mission/application-specific kernels and has two modes:
 
-- String ids map to `{ url: origin + id, path: pathBase + id }`.
-- Escape hatch: you can pass explicit `{ url, path? }` entries.
-  If `path` is omitted, tspice derives a stable hashed virtual path.
+- `kernels.custom()` (no opts): URL-entry-only mode.
+  - `pick(...)` accepts only explicit `{ url, path? }` entries.
+- `kernels.custom({ origin, pathBase, baseUrl? })`: mapping mode.
+  - String ids map to `{ url: origin + id, path: pathBase + id }`.
+  - `origin` is a build-time URL prefix (`origin + id`), not URL authority/origin semantics.
+  - You can still pass explicit `{ url, path? }` entries as an escape hatch.
+
+If `path` is omitted on explicit entries, tspice derives a stable hashed virtual path.
 
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
@@ -206,7 +217,34 @@ try {
 }
 ```
 
+URL-entry-only mode example:
+
+```ts
+const urlOnlyPack = kernels.custom().pick(
+  { url: "https://example.com/mission.bsp" },
+  { url: "https://example.com/attitude.ck" },
+);
+```
+
+### Migration note (breaking): `withKernels([])`
+
+`spiceClients.withKernels([])` used to be accepted as a no-op; it is now rejected.
+
+- TypeScript requires a non-empty tuple for array calls.
+- Runtime throws if `[]` is passed (including JS/untyped callers).
+
+Migration pattern for dynamic arrays:
+
+```ts
+for (const pack of packs) {
+  builder = builder.withKernels(pack);
+}
+```
+
+If you already have a non-empty tuple, you can still call `builder = builder.withKernels(packs)`.
+
 ## Next
 
 - Browser specifics: [/guide/browser](/guide/browser)
 - Node specifics: [/guide/node](/guide/node)
+- Troubleshooting: [/guide/troubleshooting](/guide/troubleshooting)

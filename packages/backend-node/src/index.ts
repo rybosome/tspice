@@ -37,7 +37,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
   const timeApi = createTimeApi(native);
-  const fileIoApi = createFileIoApi(native, spiceHandles);
+  const fileIoApi = createFileIoApi(native, spiceHandles, stager);
 
   const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
@@ -46,7 +46,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createKernelsApi(native, stager),
       ...createKernelPoolApi(native),
       ...createIdsNamesApi(native),
-      ...createFramesApi(native),
+      ...createFramesApi(native, stager),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
@@ -55,7 +55,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createErrorApi(native),
       ...createCellsWindowsApi(native),
       ...createEkApi(native, spiceHandles, stager),
-      ...createDskApi(native, spiceHandles),
+      ...createDskApi(native, spiceHandles, stager),
     },
     kit: {
       ...createTimeKitApi(native),

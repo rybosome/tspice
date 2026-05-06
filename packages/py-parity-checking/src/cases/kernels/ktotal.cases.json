@@ -1,0 +1,13 @@
+[
+  {
+    "caseId": "kernels-ktotal-counts-loaded-kernels-success",
+    "description": "ktotal reports loaded kernels across ALL and TEXT selectors",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.furnsh", "file": "kernels/kernel-pool-parity.tpc" },
+      { "op": "kernels.ktotal", "kind": "ALL" },
+      { "op": "kernels.ktotal", "kind": "TEXT" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

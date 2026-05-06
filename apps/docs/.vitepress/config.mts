@@ -108,7 +108,7 @@ export default defineConfig({
   description: 'TypeScript SPICE toolkit',
   base,
 
-  // Orrery is the visual authority for this repo; keep docs dark.
+  // Keep docs dark to match the docs theme palette.
   appearance: 'force-dark',
 
   // Ensure Turbo can cache the build output via `dist/**`.
@@ -153,7 +153,8 @@ export default defineConfig({
             { text: 'Kernels', link: '/guide/kernels' },
             { text: 'Kernel inventory', link: '/guide/kernel-inventory' },
             { text: 'Browser', link: '/guide/browser' },
-            { text: 'Node', link: '/guide/node' }
+            { text: 'Node', link: '/guide/node' },
+            { text: 'Troubleshooting', link: '/guide/troubleshooting' }
           ]
         }
       ],

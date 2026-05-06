@@ -71,6 +71,8 @@ See [/guide/browser](/guide/browser).
 
 Use `.withKernels(pack)` to eagerly fetch and load kernels before you start calling SPICE routines:
 
+If you pass an array (`.withKernels([packA, packB])`), it must be non-empty.
+
 ```ts
 import { kernels, spiceClients } from "@rybosome/tspice";
 
@@ -99,6 +101,8 @@ try {
 Note: in Node, `fetch()` requires absolute URLs. Either build packs with absolute `kernel.url` values (use an absolute `origin`), or set an absolute `baseUrl` when using relative URLs.
 
 Kernels (what they are, where they come from, and hosting strategies) are covered in [/guide/kernels](/guide/kernels).
+
+If client construction fails (backend load, worker setup, kernel preload URL/path/fetch errors), use [/guide/troubleshooting](/guide/troubleshooting).
 
 ## Caching (optional)
 

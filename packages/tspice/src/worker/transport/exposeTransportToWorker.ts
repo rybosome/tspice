@@ -140,6 +140,28 @@ export function exposeTransportToWorker(opts: {
     queuedHead = 0;
   };
 
+  const quote = (value: string): string => JSON.stringify(value);
+
+  const describeMalformedRequestPart = (label: string, value: unknown): string => {
+    if (value === undefined) return `${label}=undefined`;
+    if (Array.isArray(value)) return `${label}=array`;
+    return `${label}=${typeof value}`;
+  };
+
+  const createMalformedRequestPacketError = (id: number, op: unknown, args: unknown): Error => {
+    const context: string[] = [`id=${id}`];
+    if (typeof op === "string") context.push(`op=${quote(op)}`);
+
+    return new Error(
+      [
+        `Internal worker RPC protocol error: malformed request packet (${context.join(", ")}).`,
+        'Expected: id:number, op:string, args:unknown[].',
+        `Got: ${describeMalformedRequestPart("id", id)}, ${describeMalformedRequestPart("op", op)}, ${describeMalformedRequestPart("args", args)}.`,
+        "Hint: This indicates an internal transport/protocol mismatch.",
+      ].join(" "),
+    );
+  };
+
   const drain = (): void => {
     if (disposed) return;
 
@@ -229,6 +251,19 @@ export function exposeTransportToWorker(opts: {
       const args = req.args;
 
       if (typeof id !== "number" || typeof op !== "string" || !Array.isArray(args)) {
+        if (typeof id === "number") {
+          const res: RpcResponse = {
+            type: tspiceRpcResponseType,
+            id,
+            ok: false,
+            error: serializeError(createMalformedRequestPacketError(id, op, args)),
+          };
+          try {
+            self.postMessage(res);
+          } catch {
+            // Best-effort protocol-level error reporting only.
+          }
+        }
         return;
       }
 

@@ -1,0 +1,69 @@
+[
+  {
+    "caseId": "geometry-gf-gfsep-success",
+    "description": "Runs gfsep and verifies the first returned separation interval",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/de440s.bsp" },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "GF_SEP_CNFIN",
+        "left": 0,
+        "right": 86400,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "targ1": "EARTH",
+        "shape1": "POINT",
+        "frame1": "J2000",
+        "targ2": "MOON",
+        "shape2": "POINT",
+        "frame2": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "SUN",
+        "relate": ">",
+        "refval": 0.001,
+        "adjust": 0,
+        "step": 600,
+        "nintvls": 1000,
+        "cnfineWindowId": "GF_SEP_CNFIN",
+        "resultWindowId": "GF_SEP_RESULT"
+      },
+      { "op": "cells-windows.wnfetd", "windowId": "GF_SEP_RESULT", "index": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-invalid-relate-error",
+    "description": "Representative gfsep invalid relation operator error",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/de440s.bsp" },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "GF_SEP_ERR_CNFIN",
+        "left": 0,
+        "right": 86400,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "targ1": "EARTH",
+        "shape1": "POINT",
+        "frame1": "J2000",
+        "targ2": "MOON",
+        "shape2": "POINT",
+        "frame2": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "SUN",
+        "relate": "NOT_A_RELATE",
+        "refval": 0.001,
+        "adjust": 0,
+        "step": 600,
+        "nintvls": 1000,
+        "cnfineWindowId": "GF_SEP_ERR_CNFIN",
+        "resultWindowId": "GF_SEP_ERR_RESULT"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

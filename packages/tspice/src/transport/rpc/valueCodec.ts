@@ -87,9 +87,11 @@ export function encodeRpcValue(value: unknown): unknown {
         (proto as { constructor?: { name?: unknown } }).constructor?.name;
 
       throw new Error(
-        "encodeRpcValue(): unsupported non-plain object for worker RPC " +
-          `(constructor=${String(ctorName)}). ` +
-          "Pass plain objects/arrays/primitives or extend the codec.",
+        "encodeRpcValue(): unsupported non-plain object for worker RPC. " +
+          "Expected: primitive, array, plain object, ArrayBuffer/view, SharedArrayBuffer, " +
+          "or supported tagged value (e.g. Mat3). " +
+          `Got: constructor=${String(ctorName)}. ` +
+          "Hint: convert to plain data or extend the codec.",
       );
     }
 

@@ -1,0 +1,24 @@
+[
+  {
+    "caseId": "coords-vectors-vcrss-happy-right-handed-basis",
+    "description": "vcrss computes right-handed cross product of x-hat and y-hat",
+    "workflow": [
+      {
+        "op": "coords-vectors.vcrss",
+        "a": [
+          1,
+          0,
+          0
+        ],
+        "b": [
+          0,
+          1,
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

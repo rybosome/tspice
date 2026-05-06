@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "kernel-pool-gipool-read-integer-values-and-miss",
+    "description": "gipool returns inserted integer values and misses unknown variables",
+    "workflow": [
+      { "op": "kernel-pool.pipool", "name": "KP_GI_INT", "values": [-2147483648, 0, 2147483647] },
+      { "op": "kernel-pool.gipool", "name": "KP_GI_INT", "start": 0, "room": 2 },
+      { "op": "kernel-pool.gipool", "name": "KP_GI_MISSING", "start": 0, "room": 10 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-gipool-invalid-room-error",
+    "description": "Representative gipool argument validation error (negative room)",
+    "workflow": [
+      { "op": "kernel-pool.pipool", "name": "KP_GI_INT", "values": [1] },
+      { "op": "kernel-pool.gipool", "name": "KP_GI_INT", "start": 0, "room": -1 }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

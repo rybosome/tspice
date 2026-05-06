@@ -1,0 +1,19 @@
+[
+  {
+    "caseId": "coords-vectors-reclat-happy-axis-y",
+    "description": "reclat rectangular-to-latitudinal conversion for +Y unit axis",
+    "workflow": [
+      {
+        "op": "coords-vectors.reclat",
+        "rectan": [
+          0,
+          1,
+          0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

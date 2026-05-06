@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "geometry-nvc2pl-happy-path-success",
+    "description": "nvc2pl normalizes non-unit normal and computes scaled plane constant",
+    "workflow": [{ "op": "geometry.nvc2pl", "normal": [1, 2, 3], "konst": 4 }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "geometry-nvc2pl-zero-vector-error",
+    "description": "Representative nvc2pl zero-normal vector error",
+    "workflow": [{ "op": "geometry.nvc2pl", "normal": [0, 0, 0], "konst": 4 }],
+    "expectation": { "kind": "error" }
+  }
+]

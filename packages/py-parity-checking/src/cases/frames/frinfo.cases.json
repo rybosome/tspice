@@ -1,0 +1,14 @@
+[
+  {
+    "caseId": "frames-frinfo-found-success",
+    "description": "frinfo resolves built-in J2000 frame metadata",
+    "workflow": [{ "op": "frames.frinfo", "frameId": 1 }],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "frames-frinfo-not-found-success",
+    "description": "frinfo miss returns found=false",
+    "workflow": [{ "op": "frames.frinfo", "frameId": 123456789 }],
+    "expectation": { "kind": "success" }
+  }
+]

@@ -23,6 +23,8 @@ type KernelBatch = {
   pack: KernelPack;
 };
 
+type NonEmptyKernelPacks = readonly [KernelPack, ...KernelPack[]];
+
 type BuilderState = {
   cachingOptions?: WithCachingOptions;
   kernelBatches: readonly KernelBatch[];
@@ -73,12 +75,13 @@ export type SpiceClientsBuilder = {
    *
    * Batching semantics:
    * - `withKernels(pack)` appends a single batch
-   * - `withKernels(packs)` appends multiple batches
+   * - `withKernels(packs)` appends multiple batches (must be non-empty)
    *
    * Kernel load order matches call order (batch order preserved; within each
    * pack, kernel order preserved).
    */
-  withKernels(packOrPacks: KernelPack | KernelPack[]): SpiceClientsBuilder;
+  withKernels(pack: KernelPack): SpiceClientsBuilder;
+  withKernels(packs: NonEmptyKernelPacks): SpiceClientsBuilder;
 
   /** Build a sync-ish in-process client. */
   toSync(opts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>>;
@@ -156,13 +159,17 @@ function normalizeTransportMethodKeyList<TKey extends string>(
   label: string,
 ): ReadonlySet<TKey> {
   if (!Array.isArray(value) || !value.every((v): v is string => typeof v === "string")) {
-    throw new Error(`${label} must be a string[]`);
+    throw new Error(
+      `${label}: invalid method-key list type. Expected: string[]. Got: ${Object.prototype.toString.call(value)}. Hint: return an array of method-name strings.`,
+    );
   }
 
   const out = new Set<TKey>();
   for (const key of value) {
     if (!isSafeRpcKey(key) || blockedStringKeys.has(key)) {
-      throw new Error(`${label} contains invalid method key: ${JSON.stringify(key)}`);
+      throw new Error(
+        `${label}: invalid method key. Expected: safe identifier string not in blocked key set. Got: ${JSON.stringify(key)}. Hint: return callable method names only.`,
+      );
     }
     out.add(key as TKey);
   }
@@ -173,7 +180,9 @@ function parseTransportSurfaceMethodKeys(
   value: unknown,
 ): TransportSurfaceMethodKeys<Pick<SpiceAsync, "raw" | "kit">> {
   if (typeof value !== "object" || value === null) {
-    throw new Error("meta.surfaceMethodKeys response must be an object");
+    throw new Error(
+      `meta.surfaceMethodKeys: invalid response envelope. Expected: object with rawMethodKeys and kitMethodKeys arrays. Got: ${Object.prototype.toString.call(value)}.`,
+    );
   }
 
   const rec = value as Record<string, unknown>;
@@ -197,7 +206,7 @@ async function requestTransportSurfaceMethodKeys(
     return parseTransportSurfaceMethodKeys(response);
   } catch (error) {
     throw new Error(
-      "Transport must support meta.surfaceMethodKeys so tspice can enforce known raw/kit proxy keys",
+      `spiceClients.toWebWorker(): transport metadata request failed. Expected: transport.request("meta.surfaceMethodKeys", []) to return { rawMethodKeys: string[], kitMethodKeys: string[] }. Got: ${String(error)}. Hint: implement meta.surfaceMethodKeys on the worker transport endpoint.`,
       { cause: error },
     );
   }
@@ -208,18 +217,24 @@ function createSpiceTransportFromSpiceLike(spice: SpiceLike): SpiceTransport {
     request: async (op: string, args: unknown[]): Promise<unknown> => {
       const dot = op.indexOf(".");
       if (dot <= 0 || dot === op.length - 1) {
-        throw new Error(`Invalid op: ${op}`);
+        throw new Error(
+          `spice transport request: invalid op format. Expected: "<namespace>.<method>" with non-empty namespace and method. Got: ${op}.`,
+        );
       }
 
       const namespace = op.slice(0, dot);
       const method = op.slice(dot + 1);
 
       if (namespace !== "raw" && namespace !== "kit") {
-        throw new Error(`Unknown namespace: ${namespace}`);
+        throw new Error(
+          `spice transport request: unsupported namespace. Expected: "raw" | "kit". Got: ${namespace}.`,
+        );
       }
 
       if (!isSafeRpcKey(method) || blockedStringKeys.has(method)) {
-        throw new Error(`Invalid method name: ${method}`);
+        throw new Error(
+          `spice transport request: invalid method token. Expected: safe identifier not in blocked key set. Got: ${method}.`,
+        );
       }
 
       const ns = namespace satisfies RpcNamespace;
@@ -227,7 +242,9 @@ function createSpiceTransportFromSpiceLike(spice: SpiceLike): SpiceTransport {
       const target = spice[ns] as unknown as Record<string, unknown>;
       const fn = target[method];
       if (typeof fn !== "function") {
-        throw new Error(`Unknown op: ${op}`);
+        throw new Error(
+          `spice transport request: unresolved operation. Expected: an existing function on spice.raw or spice.kit. Got: ${op}. Hint: verify method availability and operation metadata wiring.`,
+        );
       }
 
       // Use Reflect.apply to be defensive about `this`.
@@ -243,18 +260,24 @@ function createSpiceTransportSyncFromSpiceLike(
     request: (op: string, args: unknown[]): unknown => {
       const dot = op.indexOf(".");
       if (dot <= 0 || dot === op.length - 1) {
-        throw new Error(`Invalid op: ${op}`);
+        throw new Error(
+          `spice transport request: invalid op format. Expected: "<namespace>.<method>" with non-empty namespace and method. Got: ${op}.`,
+        );
       }
 
       const namespace = op.slice(0, dot);
       const method = op.slice(dot + 1);
 
       if (namespace !== "raw" && namespace !== "kit") {
-        throw new Error(`Unknown namespace: ${namespace}`);
+        throw new Error(
+          `spice transport request: unsupported namespace. Expected: "raw" | "kit". Got: ${namespace}.`,
+        );
       }
 
       if (!isSafeRpcKey(method) || blockedStringKeys.has(method)) {
-        throw new Error(`Invalid method name: ${method}`);
+        throw new Error(
+          `spice transport request: invalid method token. Expected: safe identifier not in blocked key set. Got: ${method}.`,
+        );
       }
 
       const ns = namespace satisfies RpcNamespace;
@@ -262,7 +285,9 @@ function createSpiceTransportSyncFromSpiceLike(
       const target = spice[ns] as unknown as Record<string, unknown>;
       const fn = target[method];
       if (typeof fn !== "function") {
-        throw new Error(`Unknown op: ${op}`);
+        throw new Error(
+          `spice transport request: unresolved operation. Expected: an existing function on spice.raw or spice.kit. Got: ${op}. Hint: verify method availability and operation metadata wiring.`,
+        );
       }
 
       // Use Reflect.apply to be defensive about `this`.
@@ -298,8 +323,19 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
     withFetch: (fetchFn) => createBuilder({ ...state, kernelFetch: fetchFn }),
 
-    withKernels: (packOrPacks: KernelPack | KernelPack[]) => {
-      const packs = Array.isArray(packOrPacks) ? packOrPacks : [packOrPacks];
+    withKernels: (packOrPacks: KernelPack | NonEmptyKernelPacks) => {
+      const packs = (
+        Array.isArray(packOrPacks)
+          ? packOrPacks
+          : [packOrPacks]
+      ) as readonly KernelPack[];
+
+      if (packs.length === 0) {
+        throw new Error(
+          "spiceClients.withKernels(): expected a KernelPack or a non-empty KernelPack[]",
+        );
+      }
+
       return addKernelBatches(packs);
     },
 

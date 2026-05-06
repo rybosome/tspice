@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "time-timout-happy-tdb-picture",
+    "description": "Formats J2000 ET with a TDB time picture",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "time.timout", "et": 0, "picture": "YYYY-MON-DD HR:MN:SC.### ::TDB" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "time-timout-empty-picture-error",
+    "description": "Representative timout argument validation error for empty picture",
+    "workflow": [{ "op": "time.timout", "et": 0, "picture": "" }],
+    "expectation": { "kind": "error" }
+  }
+]

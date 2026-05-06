@@ -1,0 +1,23 @@
+[
+  {
+    "caseId": "cells-windows-scard-truncates-success",
+    "description": "scard shrinks a populated set cell cardinality",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_SCARD", "item": 1, "maxCardinality": 6 },
+      { "op": "cells-windows.insrti", "cellId": "C_SCARD", "item": 2 },
+      { "op": "cells-windows.insrti", "cellId": "C_SCARD", "item": 3 },
+      { "op": "cells-windows.scard", "card": 2, "targetKind": "int", "targetId": "C_SCARD" },
+      { "op": "cells-windows.card", "targetKind": "int", "targetId": "C_SCARD" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-scard-negative-card-error",
+    "description": "Representative scard argument validation error",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_SCARD_ERR", "item": 1, "maxCardinality": 4 },
+      { "op": "cells-windows.scard", "card": -1, "targetKind": "int", "targetId": "C_SCARD_ERR" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

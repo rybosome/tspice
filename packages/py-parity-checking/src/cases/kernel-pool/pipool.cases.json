@@ -1,0 +1,22 @@
+[
+  {
+    "caseId": "kernel-pool-pipool-write-and-overwrite-lifecycle",
+    "description": "pipool writes integer values and later overwrite is visible to read/type checks",
+    "workflow": [
+      { "op": "kernel-pool.pipool", "name": "KP_PI_INT", "values": [1, -2, 3] },
+      { "op": "kernel-pool.gipool", "name": "KP_PI_INT", "start": 0, "room": 10 },
+      { "op": "kernel-pool.pipool", "name": "KP_PI_INT", "values": [2147483647, -2147483648] },
+      { "op": "kernel-pool.gipool", "name": "KP_PI_INT", "start": 0, "room": 10 },
+      { "op": "kernel-pool.dtpool", "name": "KP_PI_INT" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "kernel-pool-pipool-empty-name-error",
+    "description": "Representative pipool validation error for empty names",
+    "workflow": [
+      { "op": "kernel-pool.pipool", "name": "", "values": [1] }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

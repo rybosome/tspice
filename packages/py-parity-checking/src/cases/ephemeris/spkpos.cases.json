@@ -1,0 +1,55 @@
+[
+  {
+    "caseId": "ephemeris-spkpos-generated-segment-success",
+    "description": "spkpos returns position/lt for string targets from generated SPK data",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/ephemeris-spkpos-happy.bsp",
+        "ifname": "PARITY",
+        "ncomch": 0,
+        "handleId": "H1"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H1",
+        "body": 1000,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 120,
+        "segid": "EPH_SPKPOS_SEG",
+        "degree": 1,
+        "states": [0, 0, 0, 1, 0, 0, 120, 0, 0, 1, 0, 0],
+        "epoch1": 0,
+        "step": 120
+      },
+      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      { "op": "kernels.furnsh", "file": "kernels/ephemeris-spkpos-happy.bsp" },
+      {
+        "op": "ephemeris.spkpos",
+        "target": "1000",
+        "et": 60,
+        "ref": "J2000",
+        "abcorr": "NONE",
+        "observer": "0"
+      }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ephemeris-spkpos-invalid-abcorr-error",
+    "description": "spkpos rejects unsupported aberration correction strings",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpos",
+        "target": "1000",
+        "et": 60,
+        "ref": "J2000",
+        "abcorr": "NOT_A_CORRECTION",
+        "observer": "0"
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

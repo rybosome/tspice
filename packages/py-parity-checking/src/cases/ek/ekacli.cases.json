@@ -1,0 +1,71 @@
+[
+  {
+    "caseId": "ek-ekacli-happy-integer-column-visible-via-ekgi",
+    "description": "ekacli-written integers are observable through ekfind and ekgi",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekacli-happy.ek",
+        "ifname": "ekacli-happy",
+        "ncomch": 0,
+        "handleId": "H_ACLI"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_ACLI",
+        "tabnam": "INTS_TABLE",
+        "nrows": 3,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_ACLI"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_ACLI",
+        "column": "ID",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      { "op": "ek.ekffld", "segmentId": "SEG_ACLI" },
+      { "op": "ek.ekcls", "handleId": "H_ACLI" },
+      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekacli-happy.ek" },
+      { "op": "ek.ekfind", "query": "SELECT ID FROM INTS_TABLE ORDER BY ID" },
+      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 0 },
+      { "op": "ek.ekgi", "selidx": 0, "row": 1, "elment": 0 },
+      { "op": "ek.ekgi", "selidx": 0, "row": 2, "elment": 0 }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "ek-ekacli-missing-column-error",
+    "description": "ekacli errors when writing to a column not declared in the segment",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": ".py-parity-ek-ekacli-error.ek",
+        "ifname": "ekacli-error",
+        "ncomch": 0,
+        "handleId": "H_ACLI_ERR"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "H_ACLI_ERR",
+        "tabnam": "INTS_ERR",
+        "nrows": 2,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE = INTEGER"],
+        "segmentId": "SEG_ACLI_ERR"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "SEG_ACLI_ERR",
+        "column": "MISSING",
+        "ivals": [1, 2],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

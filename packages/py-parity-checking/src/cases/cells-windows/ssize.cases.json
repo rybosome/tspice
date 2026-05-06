@@ -1,0 +1,21 @@
+[
+  {
+    "caseId": "cells-windows-ssize-resizes-cell-success",
+    "description": "ssize updates max cardinality for an existing set cell",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_SSIZE", "item": 1, "maxCardinality": 2 },
+      { "op": "cells-windows.ssize", "size": 6, "targetKind": "int", "targetId": "C_SSIZE" },
+      { "op": "cells-windows.size", "targetKind": "int", "targetId": "C_SSIZE" }
+    ],
+    "expectation": { "kind": "success" }
+  },
+  {
+    "caseId": "cells-windows-ssize-negative-size-error",
+    "description": "Representative ssize argument validation error",
+    "workflow": [
+      { "op": "cells-windows.insrti", "cellId": "C_SSIZE_ERR", "item": 1, "maxCardinality": 2 },
+      { "op": "cells-windows.ssize", "size": -1, "targetKind": "int", "targetId": "C_SSIZE_ERR" }
+    ],
+    "expectation": { "kind": "error" }
+  }
+]

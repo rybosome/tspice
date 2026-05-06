@@ -1,0 +1,12 @@
+[
+  {
+    "caseId": "kernels-kinfo-found-and-miss-success",
+    "description": "kinfo returns metadata for loaded kernels and found=false for unknown kernels",
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
+      { "op": "kernels.kinfo", "path": "kernels/naif0012.tls" },
+      { "op": "kernels.kinfo", "path": "kernels/does-not-exist.tls" }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

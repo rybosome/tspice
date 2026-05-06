@@ -1,0 +1,17 @@
+[
+  {
+    "caseId": "geometry-gf-gfstep-uninitialized-error",
+    "description": "Representative gfstep error when no constant step has been configured",
+    "workflow": [{ "op": "geometry-gf.gfstep", "time": 0 }],
+    "expectation": { "kind": "error" }
+  },
+  {
+    "caseId": "geometry-gf-gfstep-success",
+    "description": "gfstep returns the current constant step size",
+    "workflow": [
+      { "op": "geometry-gf.gfsstp", "step": 42 },
+      { "op": "geometry-gf.gfstep", "time": 86400 }
+    ],
+    "expectation": { "kind": "success" }
+  }
+]

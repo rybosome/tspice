@@ -1,0 +1,19 @@
+KPL/PCK
+
+\\begindata
+
+  TSPICE_PARITY_DOUBLE_VAR = ( 1.5 2.25 -3.75 )
+
+  TSPICE_PARITY_INT_VAR = ( -2147483648 2147483647 )
+
+  TSPICE_PARITY_CHAR_VAR = ( 'alpha' 'beta' )
+
+\\begintext
+
+This is a tiny text kernel fixture used by parity-checking scenarios.
+
+It defines a small set of kernel pool variables with known types/sizes:
+
+- TSPICE_PARITY_DOUBLE_VAR: numeric values with fractional components.
+- TSPICE_PARITY_INT_VAR: numeric values that fit in 32-bit signed integer range.
+- TSPICE_PARITY_CHAR_VAR: character values.
