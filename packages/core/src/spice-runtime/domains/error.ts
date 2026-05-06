@@ -4,8 +4,15 @@ export const GETMSG_WHICH_VALUES = ["SHORT", "LONG", "EXPLAIN"] as const;
 export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
 
 function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
+  try {
+    const json = JSON.stringify(value);
+    if (json !== undefined) return json;
+  } catch {
+    // Fall through to string coercion when JSON serialization fails
+    // (e.g. circular structures or BigInt values).
+  }
+
+  return String(value);
 }
 
 /** Type guard for {@link GetmsgWhich}. */

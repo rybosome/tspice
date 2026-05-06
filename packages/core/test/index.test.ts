@@ -36,6 +36,20 @@ describe("@rybosome/tspice-core", () => {
     expect(() => assertGetmsgWhich("NOPE")).toThrow(/Got:/i);
   });
 
+  it("normalizes getmsg(which) validation errors for circular inputs", () => {
+    const circular: { self?: unknown } = {};
+    circular.self = circular;
+
+    expect(() => assertGetmsgWhich(circular)).toThrow(TypeError);
+    expect(() => assertGetmsgWhich(circular)).toThrow(/Expected: one of/i);
+    expect(() => assertGetmsgWhich(circular)).toThrow(/Got: \[object Object\]/i);
+  });
+
+  it("normalizes getmsg(which) validation errors for non-JSON values", () => {
+    expect(() => assertGetmsgWhich(1n)).toThrow(TypeError);
+    expect(() => assertGetmsgWhich(1n)).toThrow(/Got: 1\b/i);
+  });
+
   it("exports Mat3 branding + validation helpers at runtime", async () => {
     const specifier = "@rybosome/tspice-core";
     const mod = await import(/* @vite-ignore */ specifier);
