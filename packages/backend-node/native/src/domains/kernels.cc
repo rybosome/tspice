@@ -266,7 +266,10 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
   const std::string keywdRaw = info[0].As<Napi::String>().Utf8Value();
   const std::string keywd = tspice_napi::TrimAsciiWhitespace(keywdRaw);
   if (keywd.empty()) {
-    ThrowSpiceError(Napi::RangeError::New(env, "kxtrct keywd must be a non-empty string"));
+    ThrowSpiceError(Napi::RangeError::New(
+        env,
+        std::string("kxtrct(keywd): Expected: a non-empty string. Got: \"") +
+            PreviewForError(keywdRaw) + "\""));
     return Napi::Object::New(env);
   }
 
