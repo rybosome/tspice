@@ -1,3 +1,4 @@
+import { formatGot } from "../shared/format-got.js";
 import type { Found, KernelData, KernelKind, KernelKindInput } from "../shared/types.js";
 
 const SUPPORTED_QUERY_KIND_TOKENS = [
@@ -38,11 +39,6 @@ const NATIVE_KIND_QUERY_ALLOWLIST = new Set<string>([
   "EK",
   "META",
 ]);
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatExpectedGot(context: string, expected: string, got: unknown): string {
   return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;

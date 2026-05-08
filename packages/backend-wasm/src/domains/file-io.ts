@@ -6,7 +6,11 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+  formatGot,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -40,11 +44,6 @@ const DESCR_KEYS = [
   "cbase",
   "csize",
 ] as const;
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatExpectedGot(context: string, expected: string, got: unknown): string {
   return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;

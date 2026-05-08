@@ -1,3 +1,5 @@
+import { formatGot } from "./spice-runtime/shared/format-got.js";
+
 /** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {
@@ -24,11 +26,6 @@ export function invariant(condition: unknown, message = "Invariant violation"): 
  */
 export function assertNever(value: never, message = "Unexpected value"): never {
   throw new Error(`${message}: ${String(value)}`);
-}
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
 }
 
 /**
@@ -133,6 +130,7 @@ export {
 } from "./spice-runtime/shared/spice-int.js";
 
 export { SpiceBackendContractError } from "./spice-runtime/shared/errors.js";
+export { formatGot } from "./spice-runtime/shared/format-got.js";
 export type {
   Found,
   KernelData,

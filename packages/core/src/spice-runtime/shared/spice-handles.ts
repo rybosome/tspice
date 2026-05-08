@@ -4,13 +4,9 @@ import type {
   SpiceHandleKind,
   SpiceHandleRegistry,
 } from "./types.js";
+import { formatGot } from "./format-got.js";
 import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
 import { SpiceBackendContractError } from "./errors.js";
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatExpectedGot(context: string, expected: string, got: unknown): string {
   return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;

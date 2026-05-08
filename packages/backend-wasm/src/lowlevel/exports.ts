@@ -1,3 +1,5 @@
+import { formatGot } from "@rybosome/tspice-core";
+
 // Typed subset of Emscripten module exports used by tspice.
 //
 // NOTE: The `FS` member is intentionally `any` because Emscripten's FS typing is
@@ -1802,11 +1804,6 @@ const REQUIRED_FUNCTION_EXPORTS = [
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
-}
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
 }
 
 /** Assert that an object looks like the expected tspice Emscripten module export surface. */

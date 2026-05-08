@@ -9,14 +9,9 @@ import type {
   SpiceVector3,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { formatGot, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatExpectedGot(context: string, expected: string, got: unknown): string {
   return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;

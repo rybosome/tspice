@@ -1,3 +1,5 @@
+import { formatGot } from "@rybosome/tspice-core";
+
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 /** Default max byte size for error buffers passed into CSPICE wasm shims. */
@@ -10,11 +12,6 @@ export const WASM_ERR_MAX_BYTES = 2048;
  * accidentally flowing into `_malloc()`.
  */
 export const WASM_MAX_ALLOC_BYTES = 256 * 1024 * 1024; // 256 MiB
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatInvalidMallocSize(expected: string, got: unknown): string {
   return `Invalid WASM malloc size. Expected: ${expected}. Got: ${formatGot(got)}`;

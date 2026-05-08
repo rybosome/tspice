@@ -1,13 +1,8 @@
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
-import { normalizeVirtualKernelPath } from "@rybosome/tspice-core";
+import { formatGot, normalizeVirtualKernelPath } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { tspiceCall1Path } from "../codec/calls.js";
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatExpectedGot(context: string, expected: string, got: unknown): string {
   return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;

@@ -1,4 +1,5 @@
 import type { Vec3, Vec6 } from "./types.js";
+import { formatGot } from "./format-got.js";
 
 type FreezeMode = "never" | "dev" | "always";
 
@@ -81,11 +82,6 @@ function isLengthArrayLike(x: unknown, expectedLength: number): x is ArrayLike<u
   );
 }
 
-function formatGotValue(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
-
 function describeShape(value: unknown): string {
   if (Array.isArray(value)) {
     return `Array(length=${value.length})`;
@@ -97,7 +93,7 @@ function describeShape(value: unknown): string {
     const ctorName = value.constructor.name || "TypedArray";
     return `${ctorName}(length=${value.length})`;
   }
-  return formatGotValue(value);
+  return formatGot(value);
 }
 
 function formatExpectedGot(label: string, expected: string, got: string): string {
@@ -157,12 +153,12 @@ function assertVecArrayLikeFinite(
     const v = value[i];
     if (typeof v !== "number") {
       throw new TypeError(
-        formatExpectedGot(label, `a finite number at index ${i}`, formatGotValue(v)),
+        formatExpectedGot(label, `a finite number at index ${i}`, formatGot(v)),
       );
     }
     if (!Number.isFinite(v)) {
       throw new RangeError(
-        formatExpectedGot(label, `a finite number at index ${i}`, formatGotValue(v)),
+        formatExpectedGot(label, `a finite number at index ${i}`, formatGot(v)),
       );
     }
   }

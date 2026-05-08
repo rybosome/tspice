@@ -13,7 +13,7 @@ import type {
   SpkposResult,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32 } from "@rybosome/tspice-core";
+import { assertSpiceInt32, formatGot } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -26,11 +26,6 @@ import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
 
 
 const I32_MAX = 2147483647;
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatExpectedGot(context: string, expected: string, got: unknown): string {
   return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;

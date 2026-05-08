@@ -6,7 +6,7 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { formatGot, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
@@ -16,11 +16,6 @@ const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 function formatExpectedGot(context: string, expected: string, got: unknown): string {
   return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;

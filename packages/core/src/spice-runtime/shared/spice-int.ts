@@ -1,3 +1,5 @@
+import { formatGot } from "./format-got.js";
+
 export const SPICE_INT32_MIN = -0x80000000; // -2147483648
 export const SPICE_INT32_MAX = 0x7fffffff; //  2147483647
 
@@ -7,11 +9,6 @@ export type AssertSpiceInt32Options = {
   /** If provided, enforce `value <= max`. */
   max?: number;
 };
-
-function formatGot(value: unknown): string {
-  const json = JSON.stringify(value);
-  return json === undefined ? String(value) : json;
-}
 
 /**
  * Runtime validation for values that will cross the JS → native boundary as a
