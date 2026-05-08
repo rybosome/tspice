@@ -1,3 +1,4 @@
+import { formatGot } from "../shared/format-got.js";
 import type { Found, KernelData, KernelKind, KernelKindInput } from "../shared/types.js";
 
 const SUPPORTED_QUERY_KIND_TOKENS = [
@@ -39,16 +40,26 @@ const NATIVE_KIND_QUERY_ALLOWLIST = new Set<string>([
   "META",
 ]);
 
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
 function normalizeKindTokenOrThrow(raw: string): KernelKind {
   const trimmed = raw.trim();
   if (trimmed.length === 0) {
-    throw new RangeError("Kernel kind must be a non-empty token");
+    throw new RangeError(
+      formatExpectedGot("normalizeKindInput(kind)", "a non-empty kernel kind token", raw),
+    );
   }
 
   const upper = trimmed.toUpperCase();
   if (!SUPPORTED_QUERY_KIND_SET.has(upper)) {
     throw new RangeError(
-      `Unknown kernel kind: ${trimmed}. Expected one of: ${SUPPORTED_QUERY_KIND_TOKENS.join(", ")}`,
+      formatExpectedGot(
+        "normalizeKindInput(kind)",
+        `one of: ${SUPPORTED_QUERY_KIND_TOKENS.join(", ")}`,
+        trimmed,
+      ),
     );
   }
 
@@ -107,7 +118,9 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
 
   if (Array.isArray(kind)) {
     if (kind.length === 0) {
-      throw new RangeError("Kernel kind array must not be empty");
+      throw new RangeError(
+        formatExpectedGot("normalizeKindInput(kind)", "a non-empty array of kernel kind tokens", kind),
+      );
     }
     rawTokens.push(...kind.map((k) => String(k)));
   } else {
@@ -123,7 +136,9 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
   }
 
   if (rawTokens.length === 0) {
-    throw new RangeError("Kernel kind must not be empty");
+    throw new RangeError(
+      formatExpectedGot("normalizeKindInput(kind)", "at least one kernel kind token", kind),
+    );
   }
 
   // Normalize + deduplicate while preserving first-seen order.
@@ -273,7 +288,9 @@ export function kxtrctJs(
 ): Found<{ wordsq: string; substr: string }> {
   const key = keywd.trim();
   if (key.length === 0) {
-    throw new RangeError("kxtrct keywd must be a non-empty string");
+    throw new RangeError(
+      formatExpectedGot("kxtrct(keywd)", "a non-empty string", keywd),
+    );
   }
 
   const termSet = new Set(terms.map((t) => t.trim()).filter(Boolean));

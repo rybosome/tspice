@@ -24,7 +24,7 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     const emptyTerms = backend.raw.kxtrct("KEY", [" ", "TERM", ""], wordsq);
     expect(emptyTerms).toEqual(baseline);
 
-    expect(() => backend.raw.kxtrct("   ", ["TERM"], wordsq)).toThrow(/kxtrct keywd must be a non-empty string/i);
+    expect(() => backend.raw.kxtrct("   ", ["TERM"], wordsq)).toThrow(/kxtrct\(keywd\).*Expected: a non-empty string/i);
   });
 
   itNative("can furnsh/unload path-backed kernels", () => {

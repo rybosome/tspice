@@ -17,18 +17,19 @@ describe("backend-wasm codec alloc helpers", () => {
   });
 
   it.each([
-    [NaN, /finite/i],
-    [Infinity, /finite/i],
-    [1.5, /safe integer|integer/i],
-    [0, /> 0/i],
-    [-1, /> 0/i],
-    [WASM_MAX_ALLOC_BYTES + 1, /max/i],
-  ])("mallocOrThrow rejects invalid size %s", (size, re) => {
+    [NaN, RangeError, /finite/i],
+    [Infinity, RangeError, /finite/i],
+    [1.5, TypeError, /safe integer|integer/i],
+    [0, RangeError, /> 0/i],
+    [-1, RangeError, /> 0/i],
+    [WASM_MAX_ALLOC_BYTES + 1, RangeError, /<=\s*\d+|max/i],
+  ])("mallocOrThrow rejects invalid size %s", (size, errorClass, re) => {
     const moduleLike = {
       _malloc: () => {
         throw new Error("_malloc should not be called for invalid sizes");
       },
     };
+    expect(() => mallocOrThrow(moduleLike as any, size as any)).toThrow(errorClass);
     expect(() => mallocOrThrow(moduleLike as any, size as any)).toThrow(re);
   });
 

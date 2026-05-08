@@ -1,3 +1,5 @@
+import { formatGot } from "./spice-runtime/shared/format-got.js";
+
 /** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {
@@ -36,11 +38,17 @@ export function assertNever(value: never, message = "Unexpected value"): never {
  * - repeated slashes and `.` segments are collapsed
  */
 export function normalizeVirtualKernelPath(input: string): string {
+  if (typeof input !== "string") {
+    throw new TypeError(`normalizeVirtualKernelPath(input): Expected: a string. Got: ${formatGot(input)}`);
+  }
+
   // NOTE: Avoid `String.prototype.replaceAll` for compatibility with older
   // JS runtimes / conservative build targets.
   const raw = input.replace(/\\/g, "/").trim();
   if (!raw) {
-    throw new Error("Kernel path must be non-empty");
+    throw new RangeError(
+      `normalizeVirtualKernelPath(input): Invalid kernel path. Expected: a non-empty virtual path string. Got: ${formatGot(input)}`,
+    );
   }
 
   // Strip leading slashes so `/kernels/foo.tls` behaves like `kernels/foo.tls`.
@@ -67,13 +75,17 @@ export function normalizeVirtualKernelPath(input: string): string {
       continue;
     }
     if (seg === "..") {
-      throw new Error(`Invalid kernel path (.. not allowed): ${input}`);
+      throw new RangeError(
+        `normalizeVirtualKernelPath(input): Invalid kernel path. Expected: no ".." segments. Got: ${formatGot(input)}`,
+      );
     }
     out.push(seg);
   }
 
   if (out.length === 0) {
-    throw new Error(`Invalid kernel path: ${input}`);
+    throw new RangeError(
+      `normalizeVirtualKernelPath(input): Invalid kernel path. Expected: at least one non-empty segment after normalization. Got: ${formatGot(input)}`,
+    );
   }
 
   return out.join("/");
@@ -118,6 +130,7 @@ export {
 } from "./spice-runtime/shared/spice-int.js";
 
 export { SpiceBackendContractError } from "./spice-runtime/shared/errors.js";
+export { formatGot } from "./spice-runtime/shared/format-got.js";
 export type {
   Found,
   KernelData,

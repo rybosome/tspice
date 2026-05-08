@@ -13,7 +13,7 @@ import type {
   SpkposResult,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32 } from "@rybosome/tspice-core";
+import { assertSpiceInt32, formatGot } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -26,6 +26,63 @@ import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
 
 
 const I32_MAX = 2147483647;
+
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
+function describeStatesInput(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `Array(length=${value.length})`;
+  }
+  if (value instanceof Float64Array) {
+    return `Float64Array(length=${value.length})`;
+  }
+  return formatGot(value);
+}
+
+function throwInvalidVirtualOutput(context: string, value: unknown): never {
+  throw new TypeError(
+    formatExpectedGot(
+      context,
+      `VirtualOutput { kind: \"virtual-output\", path: string }`,
+      value,
+    ),
+  );
+}
+
+function validateSpkw08States(states: readonly number[] | Float64Array): number {
+  if (!Array.isArray(states) && !(states instanceof Float64Array)) {
+    throw new TypeError(
+      formatExpectedGot("spkw08(states)", "number[] or Float64Array", describeStatesInput(states)),
+    );
+  }
+
+  if (states.length === 0 || states.length % 6 !== 0) {
+    throw new RangeError(
+      formatExpectedGot("spkw08(states.length)", "a non-zero multiple of 6", states.length),
+    );
+  }
+
+  const n = states.length / 6;
+  if (!Number.isSafeInteger(n) || n <= 0 || n > I32_MAX) {
+    throw new RangeError(
+      formatExpectedGot("spkw08(n)", `a signed 32-bit integer (1..${I32_MAX})`, n),
+    );
+  }
+
+  if (states.length > I32_MAX) {
+    throw new RangeError(
+      formatExpectedGot(
+        "spkw08(states.length)",
+        `a signed 32-bit integer (<= ${I32_MAX})`,
+        states.length,
+      ),
+    );
+  }
+
+  return n;
+}
 
 function isVirtualOutput(value: unknown): value is VirtualOutput {
   return (
@@ -52,7 +109,7 @@ function resolveSpkPath(file: string | VirtualOutput, context: string): string {
     return resolveKernelPath(file);
   }
   if (!isVirtualOutput(file)) {
-    throw new Error(`${context}: expected VirtualOutput {kind:'virtual-output', path:string}`);
+    throwInvalidVirtualOutput(context, file);
   }
   return resolveKernelPath(file.path);
 }
@@ -136,18 +193,7 @@ function tspiceCallSpkw08(
   const segidPtr = writeUtf8CString(module, segid);
 
   try {
-    const n = states.length / 6;
-    if (!Number.isSafeInteger(n) || n <= 0 || n * 6 !== states.length) {
-      throw new Error("tspiceCallSpkw08(states): expected states.length to be a non-zero multiple of 6");
-    }
-    if (n > I32_MAX) {
-      throw new Error(`tspiceCallSpkw08(states): expected n to be a 32-bit signed integer (got n=${n})`);
-    }
-    if (states.length > I32_MAX) {
-      throw new Error(
-        `tspiceCallSpkw08(states): expected states.length to be a 32-bit signed integer (got states.length=${states.length})`,
-      );
-    }
+    const n = validateSpkw08States(states);
 
     const statesBytes = n * 6 * 8;
 
@@ -787,7 +833,7 @@ export function createEphemerisApi(
       if (typeof file !== "string") {
         // `resolveSpkPath` already validated, but be defensive: callers can cast.
         if (!isVirtualOutput(file)) {
-          throw new Error("spkopn(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+          throwInvalidVirtualOutput("spkopn(file)", file);
         }
         virtualOutputs.markOpen(resolved);
         virtualOutputPathByHandle.set(handle, resolved);
@@ -804,7 +850,7 @@ export function createEphemerisApi(
       const handle = handles.register("SPK", nativeHandle);
       if (typeof file !== "string") {
         if (!isVirtualOutput(file)) {
-          throw new Error("spkopa(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+          throwInvalidVirtualOutput("spkopa(file)", file);
         }
         virtualOutputs.markOpen(resolved);
         virtualOutputPathByHandle.set(handle, resolved);
@@ -840,22 +886,7 @@ export function createEphemerisApi(
       epoch1: number,
       step: number,
     ) => {
-      if (!Array.isArray(states) && !(states instanceof Float64Array)) {
-        throw new Error("spkw08(states): expected number[] or Float64Array");
-      }
-      if (states.length === 0 || states.length % 6 !== 0) {
-        throw new Error("spkw08(): expected states.length to be a non-zero multiple of 6");
-      }
-
-      const n = states.length / 6;
-      if (!Number.isSafeInteger(n) || n <= 0 || n > I32_MAX) {
-        throw new Error(`spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`);
-      }
-      if (states.length > I32_MAX) {
-        throw new Error(
-          `spkw08(): expected states.length to be a 32-bit signed integer (got states.length=${states.length})`,
-        );
-      }
+      validateSpkw08States(states);
 
       const nativeHandle = handles.lookup(handle, ["SPK"], "spkw08").nativeHandle;
       tspiceCallSpkw08(module, nativeHandle, body, center, frame, first, last, segid, degree, states, epoch1, step);

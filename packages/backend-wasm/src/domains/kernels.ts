@@ -205,7 +205,10 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
       return kxtrctJs(keywd, terms, wordsq);
     },
     kplfrm: (_frmcls: number, _idset: SpiceIntCell) => {
-      throw new Error("kplfrm not supported in current WASM bundle");
+      throw new Error(
+        "kplfrm(): not supported in current WASM bundle. " +
+          "Hint: use the Node backend for this call, or use kdata()/ktotal() where applicable.",
+      );
     },
     ktotal: (kind: KernelKindInput = "ALL") => {
       const kinds = normalizeKindInput(kind);

@@ -9,15 +9,35 @@ import type {
   SpiceVector3,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { formatGot, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
+function describeShape(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `Array(length=${value.length})`;
+  }
+  return formatGot(value);
+}
+
 function assertFiniteNumberArrayFixed(value: unknown, expectedLength: number, label: string): asserts value is number[] {
-  invariant(Array.isArray(value) && value.length === expectedLength, `Expected ${label} to be a length-${expectedLength} array`);
+  if (!Array.isArray(value) || value.length !== expectedLength) {
+    throw new TypeError(
+      formatExpectedGot(label, `a length-${expectedLength} number[]`, describeShape(value)),
+    );
+  }
   for (let i = 0; i < expectedLength; i++) {
     const v = value[i];
-    invariant(typeof v === "number" && Number.isFinite(v), `Expected ${label}[${i}] to be a finite number`);
+    if (typeof v !== "number") {
+      throw new TypeError(formatExpectedGot(`${label}[${i}]`, "a finite number", v));
+    }
+    if (!Number.isFinite(v)) {
+      throw new RangeError(formatExpectedGot(`${label}[${i}]`, "a finite number", v));
+    }
   }
 }
 
@@ -160,7 +180,12 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
 
     nvc2pl: (normal, konst) => {
       assertFiniteNumberArrayFixed(normal, 3, "nvc2pl(): normal");
-      invariant(typeof konst === "number" && Number.isFinite(konst), "Expected nvc2pl(): konst to be a finite number");
+      if (typeof konst !== "number") {
+        throw new TypeError(formatExpectedGot("nvc2pl(konst)", "a number", konst));
+      }
+      if (!Number.isFinite(konst)) {
+        throw new RangeError(formatExpectedGot("nvc2pl(konst)", "a finite number", konst));
+      }
 
       const out = native.nvc2pl(normal, konst);
       assertFiniteNumberArrayFixed(out, 4, "nvc2pl(): result");

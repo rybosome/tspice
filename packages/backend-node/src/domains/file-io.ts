@@ -6,7 +6,7 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { formatGot, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
@@ -17,8 +17,14 @@ const I32_MAX = 2147483647;
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
 function assertDlaDescriptor(value: unknown, context: string): asserts value is DlaDescriptor {
-  invariant(typeof value === "object" && value !== null, `${context}: expected an object`);
+  if (typeof value !== "object" || value === null) {
+    throw new TypeError(formatExpectedGot(context, "a DlaDescriptor object", value));
+  }
   const obj = value as Record<string, unknown>;
   for (const key of [
     "bwdptr",
@@ -31,19 +37,25 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
     "csize",
   ] as const) {
     const v = obj[key];
-    invariant(
-      typeof v === "number" &&
-        Number.isInteger(v) &&
-        v >= I32_MIN &&
-        v <= I32_MAX,
-      `${context}: expected ${key} to be a 32-bit signed integer`,
-    );
+    if (
+      typeof v !== "number" ||
+      !Number.isInteger(v) ||
+      v < I32_MIN ||
+      v > I32_MAX
+    ) {
+      throw new TypeError(
+        formatExpectedGot(
+          `${context}.${key}`,
+          `a signed 32-bit integer (${I32_MIN}..${I32_MAX})`,
+          v,
+        ),
+      );
+    }
 
     const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
-    invariant(
-      v >= min,
-      `${context}: expected ${key} to be >= ${min}`,
-    );
+    if (v < min) {
+      throw new RangeError(formatExpectedGot(`${context}.${key}`, `>= ${min}`, v));
+    }
   }
 }
 
@@ -232,10 +244,20 @@ export function createFileIoApi(
 export function createFileIoKitApi(outputs: VirtualOutputStager): FileIoKitApi {
   return {
     readVirtualOutput: (output: VirtualOutput) => {
-      invariant(output && typeof output === "object", "readVirtualOutput(output): expected an object");
+      if (typeof output !== "object" || output === null) {
+        throw new TypeError(
+          formatExpectedGot("readVirtualOutput(output)", "a VirtualOutput object", output),
+        );
+      }
       const obj = output as { kind?: unknown; path?: unknown };
-      invariant(obj.kind === "virtual-output", "readVirtualOutput(output): expected kind='virtual-output'");
-      invariant(typeof obj.path === "string", "readVirtualOutput(output): expected path to be a string");
+      if (obj.kind !== "virtual-output") {
+        throw new TypeError(
+          formatExpectedGot("readVirtualOutput(output.kind)", '"virtual-output"', obj.kind),
+        );
+      }
+      if (typeof obj.path !== "string") {
+        throw new TypeError(formatExpectedGot("readVirtualOutput(output.path)", "a string", obj.path));
+      }
       return outputs.readVirtualOutput({ kind: "virtual-output", path: obj.path });
     },
   };

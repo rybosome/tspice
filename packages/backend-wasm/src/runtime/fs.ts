@@ -1,8 +1,12 @@
 import type { KernelSource } from "@rybosome/tspice-backend-contract";
-import { normalizeVirtualKernelPath } from "@rybosome/tspice-core";
+import { formatGot, normalizeVirtualKernelPath } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { tspiceCall1Path } from "../codec/calls.js";
+
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
 
 export type WasmFsApi = {
   writeFile(path: string, data: Uint8Array): void;
@@ -11,9 +15,13 @@ export type WasmFsApi = {
 
 /** Normalize and validate a virtual kernel path for the WASM FS (under `/kernels`). */
 export function resolveKernelPath(path: string): string {
+  if (typeof path !== "string") {
+    throw new TypeError(formatExpectedGot("resolveKernelPath(path)", "a string", path));
+  }
+
   const raw = path.trim();
   if (!raw) {
-    throw new Error("Kernel path must be non-empty");
+    throw new RangeError(formatExpectedGot("resolveKernelPath(path)", "a non-empty string", path));
   }
 
   // Fail fast for common non-virtual path forms. This improves debuggability for
@@ -26,7 +34,13 @@ export function resolveKernelPath(path: string): string {
     raw.startsWith("\\\\") ||
     (raw.startsWith("/") && !raw.startsWith("/kernels/"))
   ) {
-    throw new Error(`WASM kernel paths must be virtual ids (e.g. "naif0012.tls"), not OS paths/URLs: ${path}`);
+    throw new RangeError(
+      formatExpectedGot(
+        "resolveKernelPath(path)",
+        'virtual ids (for example "naif0012.tls"), not OS paths/URLs',
+        path,
+      ),
+    );
   }
 
   // We treat kernel paths as *virtual* WASM-FS paths under `/kernels`.

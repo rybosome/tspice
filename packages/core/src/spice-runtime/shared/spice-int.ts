@@ -1,3 +1,5 @@
+import { formatGot } from "./format-got.js";
+
 export const SPICE_INT32_MIN = -0x80000000; // -2147483648
 export const SPICE_INT32_MAX = 0x7fffffff; //  2147483647
 
@@ -33,17 +35,23 @@ export function assertSpiceInt32(
   label: string,
   opts: AssertSpiceInt32Options = {},
 ): asserts value is number {
+  if (typeof value !== "number") {
+    throw new TypeError(`${label}: Expected: a number. Got: ${formatGot(value)}`);
+  }
+
   if (!Number.isSafeInteger(value)) {
-    throw new TypeError(`${label} must be a safe integer`);
+    throw new TypeError(`${label}: Expected: a safe integer. Got: ${formatGot(value)}`);
   }
   if (value < SPICE_INT32_MIN || value > SPICE_INT32_MAX) {
-    throw new RangeError(`${label} must be a 32-bit signed integer`);
+    throw new RangeError(
+      `${label}: Expected: a signed 32-bit integer (${SPICE_INT32_MIN}..${SPICE_INT32_MAX}). Got: ${formatGot(value)}`,
+    );
   }
   if (opts.min !== undefined && value < opts.min) {
-    throw new RangeError(`${label} must be >= ${opts.min}`);
+    throw new RangeError(`${label}: Expected: >= ${opts.min}. Got: ${formatGot(value)}`);
   }
   if (opts.max !== undefined && value > opts.max) {
-    throw new RangeError(`${label} must be <= ${opts.max}`);
+    throw new RangeError(`${label}: Expected: <= ${opts.max}. Got: ${formatGot(value)}`);
   }
 }
 

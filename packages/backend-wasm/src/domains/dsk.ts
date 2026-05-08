@@ -6,7 +6,7 @@ import type {
   SpiceHandle,
   SpiceIntCell,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { formatGot } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -34,18 +34,36 @@ const DESCR_KEYS = [
   "csize",
 ] as const;
 
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
+
 function assertDlaDescriptor(value: unknown, context: string): asserts value is DlaDescriptor {
-  invariant(typeof value === "object" && value !== null, `${context}: expected an object`);
+  if (typeof value !== "object" || value === null) {
+    throw new TypeError(formatExpectedGot(context, "a DlaDescriptor object", value));
+  }
   const obj = value as Record<string, unknown>;
   for (const key of DESCR_KEYS) {
     const v = obj[key];
-    invariant(
-      typeof v === "number" &&
-        Number.isInteger(v) &&
-        v >= I32_MIN &&
-        v <= I32_MAX,
-      `${context}: expected ${key} to be a 32-bit signed integer`,
-    );
+    if (
+      typeof v !== "number" ||
+      !Number.isInteger(v) ||
+      v < I32_MIN ||
+      v > I32_MAX
+    ) {
+      throw new TypeError(
+        formatExpectedGot(
+          `${context}.${key}`,
+          `a signed 32-bit integer (${I32_MIN}..${I32_MAX})`,
+          v,
+        ),
+      );
+    }
+
+    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
+    if (v < min) {
+      throw new RangeError(formatExpectedGot(`${context}.${key}`, `>= ${min}`, v));
+    }
   }
 }
 

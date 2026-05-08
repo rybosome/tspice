@@ -60,4 +60,39 @@ describe("SPK writers (type 8)", () => {
       backend.kit.readVirtualOutput({ kind: "virtual-output", path: "naif0012.tls" }),
     ).toThrow(/known virtual output|writer/i);
   });
+
+  it("validates spkw08(states) shape before invoking the wasm call", async () => {
+    const backend = await createWasmBackend();
+
+    expect(() =>
+      backend.raw.spkw08(
+        123 as never,
+        1000,
+        0,
+        "J2000",
+        0,
+        60,
+        "TSPICE_TYPE8_TEST",
+        1,
+        [],
+        0,
+        60,
+      ),
+    ).toThrow(RangeError);
+    expect(() =>
+      backend.raw.spkw08(
+        123 as never,
+        1000,
+        0,
+        "J2000",
+        0,
+        60,
+        "TSPICE_TYPE8_TEST",
+        1,
+        [],
+        0,
+        60,
+      ),
+    ).toThrow(/Expected:.*non-zero multiple of 6/i);
+  });
 });

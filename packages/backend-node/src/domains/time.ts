@@ -1,15 +1,22 @@
 import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
-import { assertNever, invariant } from "@rybosome/tspice-core";
+import { formatGot, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+
+function formatExpectedGot(context: string, expected: string, got: unknown): string {
+  return `${context}: Expected: ${expected}. Got: ${formatGot(got)}`;
+}
 
 /** Create a {@link TimeApi} implementation backed by the native Node addon. */
 export function createTimeApi(native: NativeAddon): TimeApi {
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;
   function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+    if (typeof item !== "string") {
+      throw new TypeError(formatExpectedGot("timdef(item)", "a string", item));
+    }
     if (item.length === 0) {
-      throw new RangeError("timdef(): item must be a non-empty string");
+      throw new RangeError(formatExpectedGot("timdef(item)", "a non-empty string", item));
     }
 
     switch (action) {
@@ -20,22 +27,26 @@ export function createTimeApi(native: NativeAddon): TimeApi {
       }
 
       case "SET": {
-        invariant(typeof value === "string", "timdef(SET) requires a string value");
+        if (typeof value !== "string") {
+          throw new TypeError(formatExpectedGot("timdef(SET, value)", "a string", value));
+        }
         if (value.length === 0) {
-          throw new RangeError("timdef(SET)(): value must be a non-empty string");
+          throw new RangeError(formatExpectedGot("timdef(SET, value)", "a non-empty string", value));
         }
         native.timdefSet(item, value);
         return;
       }
 
       default:
-        return assertNever(action, "Unsupported timdef action");
+        throw new TypeError(formatExpectedGot("timdef(action)", '"GET" | "SET"', action));
     }
   }
 
   return {
     tkvrsn: (item) => {
-      invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
+      if (item !== "TOOLKIT") {
+        throw new TypeError(formatExpectedGot("tkvrsn(item)", '"TOOLKIT"', item));
+      }
       const version = native.spiceVersion();
       invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
       return version;
@@ -52,7 +63,9 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     deltet: (epoch, eptype) => {
-      invariant(eptype === "ET" || eptype === "UTC", `Unsupported deltet eptype: ${eptype}`);
+      if (eptype !== "ET" && eptype !== "UTC") {
+        throw new TypeError(formatExpectedGot("deltet(eptype)", '"ET" | "UTC"', eptype));
+      }
       const delta = native.deltet(epoch, eptype);
       invariant(typeof delta === "number", "Expected deltet() to return a number");
       return delta;
@@ -65,8 +78,11 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     tparse: (timstr) => {
+      if (typeof timstr !== "string") {
+        throw new TypeError(formatExpectedGot("tparse(timstr)", "a string", timstr));
+      }
       if (timstr.length === 0) {
-        throw new RangeError("tparse(): timstr must be a non-empty string");
+        throw new RangeError(formatExpectedGot("tparse(timstr)", "a non-empty string", timstr));
       }
       const et = native.tparse(timstr);
       invariant(typeof et === "number", "Expected tparse() to return a number");
@@ -74,11 +90,17 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     tpictr: (sample, pictur) => {
+      if (typeof sample !== "string") {
+        throw new TypeError(formatExpectedGot("tpictr(sample)", "a string", sample));
+      }
       if (sample.length === 0) {
-        throw new RangeError("tpictr(): sample must be a non-empty string");
+        throw new RangeError(formatExpectedGot("tpictr(sample)", "a non-empty string", sample));
+      }
+      if (typeof pictur !== "string") {
+        throw new TypeError(formatExpectedGot("tpictr(pictur)", "a string", pictur));
       }
       if (pictur.length === 0) {
-        throw new RangeError("tpictr(): pictur must be a non-empty string");
+        throw new RangeError(formatExpectedGot("tpictr(pictur)", "a non-empty string", pictur));
       }
       const out = native.tpictr(sample, pictur);
       invariant(typeof out === "string", "Expected tpictr() to return a string");
