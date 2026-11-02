@@ -13,5 +13,13 @@ packages/tspice/backend-wasm
 packages/*/native/build
 packages/*/native/.node-gyp
 
+# Python sidecar and generated parity fixtures
+__pycache__/
+*.egg-info/
+packages/py-parity-checking/fixtures/kernels/generated/
+
+# Locally built platform-native addon staged for package smoke checks
+packages/tspice-native-*/tspice_backend_node.node
+
 # Generated TypeDoc output (VitePress API reference)
 apps/docs/api/reference/**

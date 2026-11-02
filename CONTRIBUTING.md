@@ -7,6 +7,10 @@ It is maintained on a **best-effort basis**, with intentionally limited maintain
 
 Contributions are welcome, but expectations are explicit.
 
+## Local development setup
+
+See [`docs/development-setup.md`](docs/development-setup.md) for the Node/pnpm bootstrap, Python/SpiceyPy setup, prerequisite checks, CSPICE behavior, and JS/native/WASM validation commands.
+
 ---
 
 ## Bug reports

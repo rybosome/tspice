@@ -18,4 +18,4 @@
 - Added package-local ids-names fixture:
   - `ids-names-body399-vars.tpc`
 
-The EK fixture is generated once via SpiceyPy tooling and checked in so parity tests rely only on repository fixtures (no runtime fixture generation).
+The EK fixture is generated once via SpiceyPy tooling and checked in. Tests that exercise file-creation routines may generate scratch DLA/DSK outputs under `fixtures/kernels/generated/`; these are ignored and are not input fixtures.

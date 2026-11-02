@@ -20,8 +20,8 @@ Each case is isolated by `kclear()` before and after execution on both sides.
 
 ## Fixtures
 
-- Uses checked-in fixtures only.
-- Required kernel fixtures are copied into this package under `fixtures/kernels`.
+- Scientific input kernels are checked in under `fixtures/kernels` and copied here for package isolation.
+- Cases that exercise file-creation routines write scratch kernels under `fixtures/kernels/generated/`; this ignored directory is recreated as needed by the tests.
 - Includes a checked-in EK fixture for fixed `ekfind`/`ekgc` workflows.
 
 ## Local commands
