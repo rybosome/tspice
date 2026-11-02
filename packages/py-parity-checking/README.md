@@ -26,6 +26,8 @@ Each case is isolated by `kclear()` before and after execution on both sides.
 
 ## Local commands
 
+The test command provisions the locked Python environment and imports SpiceyPy before Vitest starts. Downloads and environment setup therefore happen outside each parity case's timeout. To prepare the sidecar separately, run `pnpm -C packages/py-parity-checking setup:sidecar`.
+
 ```bash
 pnpm -C packages/py-parity-checking typecheck
 pnpm -C packages/py-parity-checking test

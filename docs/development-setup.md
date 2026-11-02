@@ -42,7 +42,7 @@ uv python install 3.11
 pnpm install --frozen-lockfile
 ```
 
-The parity runner starts the Python sidecar with `uv run` from `packages/py-parity-checking/sidecars/spiceypy`. Its `pyproject.toml` and `uv.lock` define SpiceyPy and the supported Python range. The first run may download the Python interpreter/packages and NAIF kernel fixtures, so network access is needed until those are cached.
+The parity runner starts the Python sidecar with `uv run` from `packages/py-parity-checking/sidecars/spiceypy`. Its `pyproject.toml` and `uv.lock` define SpiceyPy and the supported Python range. The package's `pretest` command prepares the locked environment and imports SpiceyPy before Vitest starts, so dependency setup does not consume the first parity case's timeout. To prepare it separately, run `pnpm -C packages/py-parity-checking setup:sidecar`. The first run may download the Python interpreter/packages and NAIF kernel fixtures, so network access is needed until those are cached.
 
 ## Validation tiers
 
