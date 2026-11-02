@@ -1,0 +1,83 @@
+# Development setup
+
+This repository uses a pnpm workspace, TypeScript, a Python/SpiceyPy parity sidecar, a native Node addon, and checked-in Emscripten outputs. Most JavaScript contributors do not need to install Emscripten or build CSPICE manually.
+
+## Prerequisites
+
+| Work | Required tools |
+| --- | --- |
+| JS build, typecheck, and parity checks | Node.js 20 or 22; pnpm 10.13.1; `uv`; a CPython 3.11+ interpreter |
+| Native backend checks | JS/parity tools plus a C and C++ compiler, `make`, `tar`, `uncompress`, and a supported CSPICE install |
+| Regenerate checked-in WASM outputs | Node.js, Emscripten (`emcc`), and `tar`/`uncompress` for the first CSPICE source fetch; the build script fetches the pinned source tree itself |
+
+The `doctor` command checks these profiles without installing tools or editing repository files:
+
+```bash
+node scripts/doctor.mjs       # works even before pnpm is on PATH
+pnpm doctor                   # JS and SpiceyPy parity prerequisites
+pnpm doctor:native            # adds compiler, archive, and CSPICE checks
+pnpm doctor:wasm              # adds Emscripten; does not require Python/uv
+```
+
+The preflight's regression tests use temporary fake tools and need only Node. Run them with `node --test scripts/doctor.test.mjs` or `pnpm run test:doctor`; both JS check entrypoints include them.
+
+## Bootstrap
+
+Install Node.js 20 or 22 and ensure its `bin` directory is on `PATH`. Enable Corepack and activate the repository's exact pnpm version:
+
+```bash
+corepack enable
+corepack prepare pnpm@10.13.1 --activate
+node --version
+pnpm --version
+```
+
+Workspace scripts call `pnpm` by name, so the Corepack shim (or a standalone pnpm 10.13.1 installation) must also be on `PATH`. For a keg-only Homebrew Node install, add its `bin` directory to `PATH` for the current shell before running Corepack.
+
+Install uv and a compatible Python, then install the frozen JS workspace dependencies:
+
+```bash
+uv --version
+uv python install 3.11
+pnpm install --frozen-lockfile
+```
+
+The parity runner starts the Python sidecar with `uv run` from `packages/py-parity-checking/sidecars/spiceypy`. Its `pyproject.toml` and `uv.lock` define SpiceyPy and the supported Python range. The first run may download the Python interpreter/packages and NAIF kernel fixtures, so network access is needed until those are cached.
+
+## Validation tiers
+
+Run the JS required lane for routine TypeScript, docs, WASM, and parity changes:
+
+```bash
+pnpm doctor
+pnpm run check:js:required
+```
+
+This lane uses the checked-in WASM binaries and does not need Emscripten or the native addon. It runs the SpiceyPy oracle and WASM-backed cases. CI also runs this lane on Linux and macOS with Node 20 and 22.
+
+For native adapter or cross-backend changes, install the platform's compiler tools and run:
+
+```bash
+pnpm doctor:native
+pnpm run fetch:cspice
+TSPICE_EXPECT_NATIVE=true pnpm run check:native:required
+```
+
+The fetch script reads `scripts/cspice.manifest.json`, verifies the archive checksum, and caches CSPICE below `.cache/cspice/`. Set `TSPICE_CSPICE_DIR` to an existing CSPICE install containing `include/SpiceUsr.h`, `lib/cspice.a`, and `lib/csupport.a` to use a local copy. An invalid explicit override fails the check. Automatic archive downloads are configured for macOS arm64/x64 and Linux x64; other platforms need a compatible CSPICE directory. On macOS, `uncompress` is supplied by `ncompress` if it is absent (`brew install ncompress`).
+
+The native lane currently builds the addon and runs Node cases when its build artifacts exist. The intended expected-native sanity assertion is filtered by Turbo's environment configuration; fixing that guard is a tracked follow-up in the [readiness audit](./project-readiness-audit.md).
+
+Use the WASM regeneration tier only when changing the C sources compiled into the checked-in WebAssembly binary or glue:
+
+```bash
+pnpm doctor:wasm
+node scripts/build-backend-wasm.mjs
+```
+
+The script fetches the pinned CSPICE source into the ignored `.cache/` tree, stages a patched build copy, runs Emscripten, and writes the generated assets under `packages/backend-wasm/emscripten/`. Review and commit those generated assets with the source change. Normal JS checks consume the checked-in artifacts and do not rebuild them.
+
+## Host toolchain notes
+
+If `node-gyp` compiles the C/C++ sources but linking fails with an unknown architecture in macOS SDK `.tbd` files, check that the selected Command Line Tools linker understands the selected SDK. This is an SDK/toolchain pairing issue; do not edit project sources to work around it. The local readiness audit records the SDK versions used to validate this checkout.
+
+For contributor changes, run the narrowest relevant package check first, then the required lane above. GitHub Actions remains the merge authority for its full platform matrix and packed-install smoke tests.
