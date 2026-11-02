@@ -107,6 +107,8 @@ Both required entrypoints now pass on this host after installing the missing too
 
 The first `check:js:required` attempt also showed that the workspace's `pnpm` scripts invoke `pnpm` by name: a cached Corepack version is insufficient unless the shim is on `PATH`. The temporary shim solves this for the current baseline without changing shell configuration. The docs build emits nine TypeDoc warnings and VitePress reports an oversized chunk; both builds complete and should be assessed separately from this setup baseline.
 
+The first PR CI run also exposed parity startup timeouts on macOS/Node 22: the first three cases exceeded 20 seconds while later cases passed. The parity package now prepares its locked Python environment and imports SpiceyPy in `pretest`, before Vitest starts, so environment provisioning happens outside case timeouts. This setup step uses the existing sidecar lockfile and does not increase the test timeout.
+
 ## 6. Remaining audit questions
 
 - The registry contains 305 parity scenarios across 162 routine case files. Local logs show the WASM scenarios passed in the JS lane and all WASM/Node scenario executions passed in the native lane. Per-case assertion quality remains unaudited; the native CI fail-closed sanity test needs the Turbo env allowlist fix described above.

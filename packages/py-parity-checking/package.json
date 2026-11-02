@@ -22,7 +22,8 @@
     "build": "tsc -p tsconfig.json",
     "pretypecheck": "pnpm -w turbo run build --filter=@rybosome/tspice",
     "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly && tsc -p tsconfig.test.json --noEmit",
-    "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice",
+    "setup:sidecar": "uv run --locked --project sidecars/spiceypy python -c \"import spiceypy\"",
+    "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run setup:sidecar",
     "test": "vitest run"
   },
   "dependencies": {
