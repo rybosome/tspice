@@ -109,10 +109,17 @@ The first `check:js:required` attempt also showed that the workspace's `pnpm` sc
 
 The first PR CI run also exposed parity startup timeouts on macOS/Node 22: the first three cases exceeded 20 seconds while later cases passed. The parity package now prepares its locked Python environment and imports SpiceyPy in `pretest`, before Vitest starts, so environment provisioning happens outside case timeouts. This setup step uses the existing sidecar lockfile and does not increase the test timeout.
 
-## 6. Remaining audit questions
+## 6. Docs and package disposition follow-up
+
+The docs/guidance cleanup keeps the active facade, contract, core, fake backend, C shim, native/WASM backends, parity harness, docs app, native wrapper packages, and consumer type fixture. The private `perf-analysis` scaffold was removed with its root TypeScript reference and lockfile importer: tracked-reference inspection found no package consumer, runtime export dependency, workflow, release, or publish integration; its README and entrypoints described layout-only, unimplemented behavior. A future benchmark tool should start from a concrete performance question rather than preserve an unused package surface.
+
+Regeneration also exposed the old inventory generator looking for an interface inheritance list on `SpiceBackend`, which now contains `raw` and `kit` properties. The generator now follows `SpiceRawBackend`, regenerates successfully, and retains the current 652 total / 162 implemented / 487 planned / 3 excluded counts.
+
+The agent guide now records stable routing and invariants without a named agent owner or closed issue-based policy. The obsolete planned-by-domain proposal now points to the generated routine inventory instead of maintaining a duplicate routine list. WASM build documentation follows `scripts/build-backend-wasm.mjs`, which compiles the shared shim sources directly; the historical wrapper aggregator is not a current build input. Parity documentation now describes both backend lanes and the numeric comparison tolerance.
+
+## 7. Remaining audit questions
 
 - The registry contains 305 parity scenarios across 162 routine case files. Local logs show the WASM scenarios passed in the JS lane and all WASM/Node scenario executions passed in the native lane. Per-case assertion quality remains unaudited; the native CI fail-closed sanity test needs the Turbo env allowlist fix described above.
 - Browser/WASM integration tests beyond static docs and current CI configuration.
-- The final keep/remove decision for `perf-analysis`, which should be made only after the inventory is reconciled with maintainer intent.
 - Whether the native addon and CSPICE package should declare macOS 12 as the minimum deployment version, given the static CSPICE objects' recorded target.
 - Whether the setup flow should expose a documented SDK selection or preflight diagnostic for hosts whose newest Command Line Tools SDK is newer than the installed TAPI linker.
