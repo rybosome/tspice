@@ -4,11 +4,11 @@ This repository uses a pnpm workspace, TypeScript, a Python/SpiceyPy parity side
 
 ## Prerequisites
 
-| Work | Required tools |
-| --- | --- |
-| JS build, typecheck, and parity checks | Node.js 20 or 22; pnpm 10.13.1; `uv`; a CPython 3.11+ interpreter |
-| Native backend checks | JS/parity tools plus a C and C++ compiler, `make`, `tar`, `uncompress`, and a supported CSPICE install |
-| Regenerate checked-in WASM outputs | Node.js, Emscripten (`emcc`), and `tar`/`uncompress` for the first CSPICE source fetch; the build script fetches the pinned source tree itself |
+| Work                                   | Required tools                                                                                                                                 |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| JS build, typecheck, and parity checks | Node.js 20 or 22; pnpm 10.13.1; `uv`; a CPython 3.11+ interpreter                                                                              |
+| Native backend checks                  | JS/parity tools plus a C and C++ compiler, `make`, `tar`, `uncompress`, and a supported CSPICE install                                         |
+| Regenerate checked-in WASM outputs     | Node.js, Emscripten (`emcc`), and `tar`/`uncompress` for the first CSPICE source fetch; the build script fetches the pinned source tree itself |
 
 The `doctor` command checks these profiles without installing tools or editing repository files:
 

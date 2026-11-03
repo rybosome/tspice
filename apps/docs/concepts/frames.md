@@ -88,7 +88,7 @@ const cm = [rm[0], rm[3], rm[6], rm[1], rm[4], rm[7], rm[2], rm[5], rm[8]];
 
 ## Gotchas
 
-- **Direction matters:** `pxform(from, to, et)` transforms a vector *expressed in `from`* into the same vector *expressed in `to`*.
+- **Direction matters:** `pxform(from, to, et)` transforms a vector _expressed in `from`_ into the same vector _expressed in `to`_.
 - **Row-major vs column-major:** most rendering/math ecosystems default to column-major; use `Mat3.colMajor` when integrating.
 - **Kernel dependencies are easy to miss:** if a frame is kernel-defined, transforms will fail until you load the right FK/PCK/CK/SCLK.
 - **Time dependence:** transforms for rotating frames vary with `et`; cache carefully.

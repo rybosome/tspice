@@ -20,7 +20,11 @@ type CoordsVectorsBackend = Pick<
   | "mtxv"
 >;
 
-function expectVec3Close(actual: [number, number, number], expected: [number, number, number], precision = 12) {
+function expectVec3Close(
+  actual: [number, number, number],
+  expected: [number, number, number],
+  precision = 12,
+) {
   for (let i = 0; i < 3; i++) {
     expect(actual[i]!).toBeCloseTo(expected[i]!, precision);
   }
@@ -56,14 +60,9 @@ describe("coordinate conversions + vector/matrix helpers", () => {
     expectVec3Close(backend.vcrss([1, 0, 0], [0, 1, 0]), [0, 0, 1]);
 
     // matrix-vector helpers (row-major)
-    const m = brandMat3RowMajor(
-      [
-        1, 2, 3,
-        4, 5, 6,
-        7, 8, 9,
-      ] as const,
-      { label: "test.mxv.m" },
-    );
+    const m = brandMat3RowMajor([1, 2, 3, 4, 5, 6, 7, 8, 9] as const, {
+      label: "test.mxv.m",
+    });
     expectVec3Close(backend.mxv(m, [1, 0, 0]), [1, 4, 7]);
     expectVec3Close(backend.mtxv(m, [1, 0, 0]), [1, 2, 3]);
   }

@@ -36,15 +36,25 @@ function assertStringArrayNoEmptyStrings(
   }
 }
 
-function assertAllFinite(fn: string, field: string, values: readonly number[]): void {
+function assertAllFinite(
+  fn: string,
+  field: string,
+  values: readonly number[],
+): void {
   for (const v of values) {
     if (!Number.isFinite(v)) {
-      throw new RangeError(`${fn}(): ${field} must contain only finite numbers`);
+      throw new RangeError(
+        `${fn}(): ${field} must contain only finite numbers`,
+      );
     }
   }
 }
 
-function assertAllInt32(fn: string, field: string, values: readonly number[]): void {
+function assertAllInt32(
+  fn: string,
+  field: string,
+  values: readonly number[],
+): void {
   for (const v of values) {
     if (!Number.isInteger(v) || v < -2147483648 || v > 2147483647) {
       throw new RangeError(
@@ -54,7 +64,6 @@ function assertAllInt32(fn: string, field: string, values: readonly number[]): v
   }
 }
 
-
 function assertPoolRange(fn: string, start: number, room: number): void {
   if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
     throw new RangeError(`${fn}(): start must be an integer >= 0`);
@@ -63,7 +72,6 @@ function assertPoolRange(fn: string, start: number, room: number): void {
     throw new RangeError(`${fn}(): room must be an integer > 0`);
   }
 }
-
 
 function writeFixedWidthUtf8CStringArray(
   module: Pick<EmscriptenModule, "HEAPU8">,
@@ -378,7 +386,11 @@ function tspiceCallDtpool(
   }
 }
 
-function tspiceCallPdpool(module: EmscriptenModule, name: string, values: readonly number[]): void {
+function tspiceCallPdpool(
+  module: EmscriptenModule,
+  name: string,
+  values: readonly number[],
+): void {
   assertNonEmptyString("pdpool", "name", name);
   assertAllFinite("pdpool", "values", values);
 
@@ -393,24 +405,38 @@ function tspiceCallPdpool(module: EmscriptenModule, name: string, values: readon
     // Emscripten's allocator *usually* returns suitably-aligned pointers, but we
     // don't want to rely on that here (misalignment would cause `valuesPtr >> 3`
     // to truncate and write to the wrong address).
-    withAllocs(module, [WASM_ERR_MAX_BYTES, valuesBytes + 7], (errPtr, rawValuesPtr) => {
-      const valuesPtr = (rawValuesPtr + 7) & ~7;
+    withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, valuesBytes + 7],
+      (errPtr, rawValuesPtr) => {
+        const valuesPtr = (rawValuesPtr + 7) & ~7;
 
-      if (n > 0) {
-        module.HEAPF64.set(values, valuesPtr >> 3);
-      }
+        if (n > 0) {
+          module.HEAPF64.set(values, valuesPtr >> 3);
+        }
 
-      const result = module._tspice_pdpool(namePtr, n, valuesPtr, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-    });
+        const result = module._tspice_pdpool(
+          namePtr,
+          n,
+          valuesPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+      },
+    );
   } finally {
     module._free(namePtr);
   }
 }
 
-function tspiceCallPipool(module: EmscriptenModule, name: string, values: readonly number[]): void {
+function tspiceCallPipool(
+  module: EmscriptenModule,
+  name: string,
+  values: readonly number[],
+): void {
   assertNonEmptyString("pipool", "name", name);
   assertAllInt32("pipool", "values", values);
 
@@ -423,24 +449,38 @@ function tspiceCallPipool(module: EmscriptenModule, name: string, values: readon
     // Ensure 4-byte alignment for `HEAP32` writes.
     // Mirror the `gdpool` pattern (padding + align) to be safe even if our
     // allocator doesn't guarantee alignment.
-    withAllocs(module, [WASM_ERR_MAX_BYTES, valuesBytes + 3], (errPtr, rawValuesPtr) => {
-      const valuesPtr = (rawValuesPtr + 3) & ~3;
+    withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, valuesBytes + 3],
+      (errPtr, rawValuesPtr) => {
+        const valuesPtr = (rawValuesPtr + 3) & ~3;
 
-      if (n > 0) {
-        module.HEAP32.set(values, valuesPtr >> 2);
-      }
+        if (n > 0) {
+          module.HEAP32.set(values, valuesPtr >> 2);
+        }
 
-      const result = module._tspice_pipool(namePtr, n, valuesPtr, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-    });
+        const result = module._tspice_pipool(
+          namePtr,
+          n,
+          valuesPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+      },
+    );
   } finally {
     module._free(namePtr);
   }
 }
 
-function tspiceCallPcpool(module: EmscriptenModule, name: string, values: readonly string[]): void {
+function tspiceCallPcpool(
+  module: EmscriptenModule,
+  name: string,
+  values: readonly string[],
+): void {
   assertNonEmptyString("pcpool", "name", name);
   // NAIF's `pcpool_c` allows `n=0` (set an empty value list). We still reject
   // blank strings.
@@ -456,7 +496,14 @@ function tspiceCallPcpool(module: EmscriptenModule, name: string, values: readon
     withAllocs(module, [WASM_ERR_MAX_BYTES, totalBytes], (errPtr, cvalsPtr) => {
       writeFixedWidthUtf8CStringArray(module, cvalsPtr, lenvals, values);
 
-      const result = module._tspice_pcpool(namePtr, n, lenvals, cvalsPtr, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_pcpool(
+        namePtr,
+        n,
+        lenvals,
+        cvalsPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -466,7 +513,11 @@ function tspiceCallPcpool(module: EmscriptenModule, name: string, values: readon
   }
 }
 
-function tspiceCallSwpool(module: EmscriptenModule, agent: string, names: readonly string[]): void {
+function tspiceCallSwpool(
+  module: EmscriptenModule,
+  agent: string,
+  names: readonly string[],
+): void {
   assertNonEmptyString("swpool", "agent", agent);
   // NAIF's `swpool_c` allows `nnames=0` (watch nothing). We still reject blank strings.
   assertStringArrayNoEmptyStrings("swpool", "names", names);
@@ -481,7 +532,14 @@ function tspiceCallSwpool(module: EmscriptenModule, agent: string, names: readon
     withAllocs(module, [WASM_ERR_MAX_BYTES, totalBytes], (errPtr, namesPtr) => {
       writeFixedWidthUtf8CStringArray(module, namesPtr, namlen, names);
 
-      const result = module._tspice_swpool(agentPtr, nnames, namlen, namesPtr, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_swpool(
+        agentPtr,
+        nnames,
+        namlen,
+        namesPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -497,14 +555,23 @@ function tspiceCallCvpool(module: EmscriptenModule, agent: string): boolean {
   const agentPtr = writeUtf8CString(module, agent);
 
   try {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outUpdatePtr) => {
-      module.HEAP32[outUpdatePtr >> 2] = 0;
-      const result = module._tspice_cvpool(agentPtr, outUpdatePtr, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return (module.HEAP32[outUpdatePtr >> 2] ?? 0) !== 0;
-    });
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, 4],
+      (errPtr, outUpdatePtr) => {
+        module.HEAP32[outUpdatePtr >> 2] = 0;
+        const result = module._tspice_cvpool(
+          agentPtr,
+          outUpdatePtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return (module.HEAP32[outUpdatePtr >> 2] ?? 0) !== 0;
+      },
+    );
   } finally {
     module._free(agentPtr);
   }
@@ -516,14 +583,23 @@ function tspiceCallExpool(module: EmscriptenModule, name: string): boolean {
   const namePtr = writeUtf8CString(module, name);
 
   try {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outFoundPtr) => {
-      module.HEAP32[outFoundPtr >> 2] = 0;
-      const result = module._tspice_expool(namePtr, outFoundPtr, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
-    });
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, 4],
+      (errPtr, outFoundPtr) => {
+        module.HEAP32[outFoundPtr >> 2] = 0;
+        const result = module._tspice_expool(
+          namePtr,
+          outFoundPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return (module.HEAP32[outFoundPtr >> 2] ?? 0) !== 0;
+      },
+    );
   } finally {
     module._free(namePtr);
   }
@@ -535,7 +611,8 @@ export function createKernelPoolApi(module: EmscriptenModule): KernelPoolApi {
     gdpool: (name, start, room) => tspiceCallGdpool(module, name, start, room),
     gipool: (name, start, room) => tspiceCallGipool(module, name, start, room),
     gcpool: (name, start, room) => tspiceCallGcpool(module, name, start, room),
-    gnpool: (template, start, room) => tspiceCallGnpool(module, template, start, room),
+    gnpool: (template, start, room) =>
+      tspiceCallGnpool(module, template, start, room),
     dtpool: (name) => tspiceCallDtpool(module, name),
 
     pdpool: (name, values) => tspiceCallPdpool(module, name, values),

@@ -1,4 +1,9 @@
-import { createSpice, createSpiceAsync, type CreateSpiceAsyncOptions, type CreateSpiceOptions } from "../spice.js";
+import {
+  createSpice,
+  createSpiceAsync,
+  type CreateSpiceAsyncOptions,
+  type CreateSpiceOptions,
+} from "../spice.js";
 import type { Spice, SpiceAsync } from "../kit/types/spice-types.js";
 
 import type { SpiceTransport, SpiceTransportSync } from "../transport/types.js";
@@ -17,7 +22,10 @@ import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js"
 import type { FetchLike, KernelPack } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
-import { createWorkerTransport, type WorkerLike } from "../worker/transport/createWorkerTransport.js";
+import {
+  createWorkerTransport,
+  type WorkerLike,
+} from "../worker/transport/createWorkerTransport.js";
 
 type KernelBatch = {
   pack: KernelPack;
@@ -31,7 +39,9 @@ type BuilderState = {
   kernelFetch?: FetchLike;
 };
 
-export type SpiceClientBuildResult<TSpice extends Spice | SpiceAsync = SpiceAsync> = {
+export type SpiceClientBuildResult<
+  TSpice extends Spice | SpiceAsync = SpiceAsync,
+> = {
   spice: TSpice;
   /**
    * Dispose the client and clean up any worker/caches.
@@ -86,9 +96,13 @@ export type SpiceClientsBuilder = {
   /** Build a sync-ish in-process client. */
   toSync(opts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>>;
   /** Build an async in-process client. */
-  toAsync(opts?: CreateSpiceAsyncOptions): Promise<SpiceClientBuildResult<SpiceAsync>>;
+  toAsync(
+    opts?: CreateSpiceAsyncOptions,
+  ): Promise<SpiceClientBuildResult<SpiceAsync>>;
   /** Build a web-worker client (async). */
-  toWebWorker(opts?: SpiceClientsWebWorkerOptions): Promise<SpiceClientBuildResult<SpiceAsync>>;
+  toWebWorker(
+    opts?: SpiceClientsWebWorkerOptions,
+  ): Promise<SpiceClientBuildResult<SpiceAsync>>;
 };
 
 const blockedStringKeys = new Set<string>([
@@ -123,16 +137,21 @@ type SpiceLike = Pick<Spice, "raw" | "kit"> | Pick<SpiceAsync, "raw" | "kit">;
 
 type RpcNamespace = "raw" | "kit";
 
-type MethodKeys<T extends object> = Extract<{
-  [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
-}[keyof T], string>;
+type MethodKeys<T extends object> = Extract<
+  {
+    [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
+  }[keyof T],
+  string
+>;
 
 type TransportSurfaceMethodKeys<TSpice extends SpiceLike> = {
   raw: ReadonlySet<MethodKeys<TSpice["raw"]>>;
   kit: ReadonlySet<MethodKeys<TSpice["kit"]>>;
 };
 
-function snapshotFunctionKeys<T extends object>(target: T): ReadonlySet<MethodKeys<T>> {
+function snapshotFunctionKeys<T extends object>(
+  target: T,
+): ReadonlySet<MethodKeys<T>> {
   const out = new Set<MethodKeys<T>>();
   const obj = target as Record<string, unknown>;
 
@@ -149,8 +168,12 @@ function snapshotTransportSurfaceMethodKeys<TSpice extends SpiceLike>(
   spice: TSpice,
 ): TransportSurfaceMethodKeys<TSpice> {
   return {
-    raw: snapshotFunctionKeys(spice.raw) as TransportSurfaceMethodKeys<TSpice>["raw"],
-    kit: snapshotFunctionKeys(spice.kit) as TransportSurfaceMethodKeys<TSpice>["kit"],
+    raw: snapshotFunctionKeys(
+      spice.raw,
+    ) as TransportSurfaceMethodKeys<TSpice>["raw"],
+    kit: snapshotFunctionKeys(
+      spice.kit,
+    ) as TransportSurfaceMethodKeys<TSpice>["kit"],
   };
 }
 
@@ -158,7 +181,10 @@ function normalizeTransportMethodKeyList<TKey extends string>(
   value: unknown,
   label: string,
 ): ReadonlySet<TKey> {
-  if (!Array.isArray(value) || !value.every((v): v is string => typeof v === "string")) {
+  if (
+    !Array.isArray(value) ||
+    !value.every((v): v is string => typeof v === "string")
+  ) {
     throw new Error(
       `${label}: invalid method-key list type. Expected: string[]. Got: ${Object.prototype.toString.call(value)}. Hint: return an array of method-name strings.`,
     );
@@ -248,7 +274,11 @@ function createSpiceTransportFromSpiceLike(spice: SpiceLike): SpiceTransport {
       }
 
       // Use Reflect.apply to be defensive about `this`.
-      return await Reflect.apply(fn as (...a: unknown[]) => unknown, target, args);
+      return await Reflect.apply(
+        fn as (...a: unknown[]) => unknown,
+        target,
+        args,
+      );
     },
   };
 }
@@ -297,24 +327,29 @@ function createSpiceTransportSyncFromSpiceLike(
 }
 
 function createBuilder(state: BuilderState): SpiceClientsBuilder {
-  const loadKernelBatches = async (spice: Spice | SpiceAsync): Promise<void> => {
+  const loadKernelBatches = async (
+    spice: Spice | SpiceAsync,
+  ): Promise<void> => {
     for (const batch of state.kernelBatches) {
       await loadKernelPack(
         spice,
         batch.pack,
-        state.kernelFetch === undefined ? undefined : { fetch: state.kernelFetch },
+        state.kernelFetch === undefined
+          ? undefined
+          : { fetch: state.kernelFetch },
       );
     }
   };
 
-  const addKernelBatches = (packs: readonly KernelPack[]): SpiceClientsBuilder =>
+  const addKernelBatches = (
+    packs: readonly KernelPack[],
+  ): SpiceClientsBuilder =>
     createBuilder({
       ...state,
       kernelBatches: state.kernelBatches.concat(
         packs.map((pack) => ({ pack })),
       ),
     });
-
 
   const builder: SpiceClientsBuilder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),
@@ -323,9 +358,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
 
     withKernels: (packOrPacks: KernelPack | NonEmptyKernelPacks) => {
       const packs = (
-        Array.isArray(packOrPacks)
-          ? packOrPacks
-          : [packOrPacks]
+        Array.isArray(packOrPacks) ? packOrPacks : [packOrPacks]
       ) as readonly KernelPack[];
 
       if (packs.length === 0) {
@@ -337,8 +370,12 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       return addKernelBatches(packs);
     },
 
-    toSync: async (inProcessOpts?: CreateSpiceOptions): Promise<SpiceClientBuildResult<Spice>> => {
-      const baseSpice = await createSpice(inProcessOpts ?? defaultInProcessOptions);
+    toSync: async (
+      inProcessOpts?: CreateSpiceOptions,
+    ): Promise<SpiceClientBuildResult<Spice>> => {
+      const baseSpice = await createSpice(
+        inProcessOpts ?? defaultInProcessOptions,
+      );
       const baseTransport = createSpiceTransportSyncFromSpiceLike(baseSpice);
 
       const cachedTransport = state.cachingOptions
@@ -348,12 +385,24 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       // Use an uncached spice instance for kernel loading/cleanup.
       const surfaceMethodKeys = snapshotTransportSurfaceMethodKeys(baseSpice);
 
-      const raw = createSpiceSyncFromTransport(baseTransport, surfaceMethodKeys);
-      const spice = createSpiceSyncFromTransport(cachedTransport ?? baseTransport, surfaceMethodKeys);
+      const raw = createSpiceSyncFromTransport(
+        baseTransport,
+        surfaceMethodKeys,
+      );
+      const spice = createSpiceSyncFromTransport(
+        cachedTransport ?? baseTransport,
+        surfaceMethodKeys,
+      );
 
       // Preserve non-function backend metadata.
-      Object.defineProperty(raw.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
-      Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
+      Object.defineProperty(raw.raw, "kind", {
+        value: baseSpice.raw.kind,
+        enumerable: true,
+      });
+      Object.defineProperty(spice.raw, "kind", {
+        value: baseSpice.raw.kind,
+        enumerable: true,
+      });
 
       let disposePromise: Promise<void> | undefined;
 
@@ -409,7 +458,9 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
     toAsync: async (
       inProcessOpts?: CreateSpiceAsyncOptions,
     ): Promise<SpiceClientBuildResult<SpiceAsync>> => {
-      const baseSpice = await createSpiceAsync(inProcessOpts ?? defaultInProcessOptions);
+      const baseSpice = await createSpiceAsync(
+        inProcessOpts ?? defaultInProcessOptions,
+      );
       const baseTransport = createSpiceTransportFromSpiceLike(baseSpice);
 
       const cachedTransport = state.cachingOptions
@@ -421,7 +472,10 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       const spice = createSpiceAsyncFromTransport(transport, surfaceMethodKeys);
 
       // Preserve non-function backend metadata.
-      Object.defineProperty(spice.raw, "kind", { value: baseSpice.raw.kind, enumerable: true });
+      Object.defineProperty(spice.raw, "kind", {
+        value: baseSpice.raw.kind,
+        enumerable: true,
+      });
 
       let disposePromise: Promise<void> | undefined;
 
@@ -486,7 +540,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
             ww?.wasmUrl === undefined ? undefined : { wasmUrl: ww.wasmUrl },
           ));
       const terminateOnDispose =
-        ww?.terminateOnDispose ?? (typeof workerInput === "function" ? true : false);
+        ww?.terminateOnDispose ??
+        (typeof workerInput === "function" ? true : false);
       const signalDispose = ww?.signalDispose ?? terminateOnDispose;
 
       const workerTransport = createWorkerTransport({
@@ -535,11 +590,18 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       const dispose = (): Promise<void> => disposeAsync();
 
       try {
-        const surfaceMethodKeys = await requestTransportSurfaceMethodKeys(baseTransport);
-        const spice = createSpiceAsyncFromTransport(transport, surfaceMethodKeys);
+        const surfaceMethodKeys =
+          await requestTransportSurfaceMethodKeys(baseTransport);
+        const spice = createSpiceAsyncFromTransport(
+          transport,
+          surfaceMethodKeys,
+        );
 
         // Web-worker clients currently always use the WASM backend.
-        Object.defineProperty(spice.raw, "kind", { value: "wasm", enumerable: true });
+        Object.defineProperty(spice.raw, "kind", {
+          value: "wasm",
+          enumerable: true,
+        });
 
         const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
 

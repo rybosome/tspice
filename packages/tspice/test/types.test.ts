@@ -15,12 +15,18 @@ type _NoCreateBackend = AssertFalse<HasKey<Tspice, "createBackend">>;
 type _NoCreateSpice = AssertFalse<HasKey<Tspice, "createSpice">>;
 type _NoCreateSpiceAsync = AssertFalse<HasKey<Tspice, "createSpiceAsync">>;
 type _NoResolveKernelUrl = AssertFalse<HasKey<Tspice, "resolveKernelUrl">>;
-type _NoAssertMat3ArrayLike9 = AssertFalse<HasKey<Tspice, "assertMat3ArrayLike9">>;
+type _NoAssertMat3ArrayLike9 = AssertFalse<
+  HasKey<Tspice, "assertMat3ArrayLike9">
+>;
 type _NoIsMat3ArrayLike9 = AssertFalse<HasKey<Tspice, "isMat3ArrayLike9">>;
 type _NoBrandMat3ColMajor = AssertFalse<HasKey<Tspice, "brandMat3ColMajor">>;
 type _NoBrandMat3RowMajor = AssertFalse<HasKey<Tspice, "brandMat3RowMajor">>;
-type _NoIsBrandedMat3ColMajor = AssertFalse<HasKey<Tspice, "isBrandedMat3ColMajor">>;
-type _NoIsBrandedMat3RowMajor = AssertFalse<HasKey<Tspice, "isBrandedMat3RowMajor">>;
+type _NoIsBrandedMat3ColMajor = AssertFalse<
+  HasKey<Tspice, "isBrandedMat3ColMajor">
+>;
+type _NoIsBrandedMat3RowMajor = AssertFalse<
+  HasKey<Tspice, "isBrandedMat3RowMajor">
+>;
 type _NoTspiceKernelIds = AssertFalse<HasKey<Tspice, "TSPICE_KERNEL_IDS">>;
 
 // --- removed option types should not be exported from the package root ---
@@ -45,20 +51,26 @@ type SpiceClientsBuilder = Tspice["spiceClients"];
 type WithKernelsMethod = SpiceClientsBuilder["withKernels"];
 
 type _WithKernelsAcceptsSinglePack = Assert<
-  WithKernelsMethod extends (pack: PublicKernelPack) => SpiceClientsBuilder ? true : false
+  WithKernelsMethod extends (pack: PublicKernelPack) => SpiceClientsBuilder
+    ? true
+    : false
 >;
 type _WithKernelsAcceptsNonEmptyTuple = Assert<
   WithKernelsMethod extends (
-    packs: readonly [PublicKernelPack, ...PublicKernelPack[]]
+    packs: readonly [PublicKernelPack, ...PublicKernelPack[]],
   ) => SpiceClientsBuilder
     ? true
     : false
 >;
 type _WithKernelsRejectsEmptyTuple = AssertFalse<
-  WithKernelsMethod extends (packs: readonly []) => SpiceClientsBuilder ? true : false
+  WithKernelsMethod extends (packs: readonly []) => SpiceClientsBuilder
+    ? true
+    : false
 >;
 type _WithKernelsRejectsMaybeEmptyArray = AssertFalse<
-  WithKernelsMethod extends (packs: PublicKernelPack[]) => SpiceClientsBuilder ? true : false
+  WithKernelsMethod extends (packs: PublicKernelPack[]) => SpiceClientsBuilder
+    ? true
+    : false
 >;
 
 type SyncClient = Awaited<ReturnType<SpiceClientsBuilder["toSync"]>>;
@@ -82,21 +94,33 @@ type KeysEqual<A extends object, B extends object> = [keyof A] extends [keyof B]
 type _AsyncSpiceHasRaw = Assert<HasKey<AsyncSpice, "raw">>;
 type _AsyncSpiceHasKit = Assert<HasKey<AsyncSpice, "kit">>;
 type _AsyncSpiceHasNoFurnsh = AssertFalse<HasKey<AsyncSpice, "furnsh">>;
-type _AsyncRawKeysMatch = Assert<KeysEqual<AsyncSpice["raw"], SyncSpice["raw"]>>;
-type _AsyncKitKeysMatch = Assert<KeysEqual<AsyncSpice["kit"], SyncSpice["kit"]>>;
+type _AsyncRawKeysMatch = Assert<
+  KeysEqual<AsyncSpice["raw"], SyncSpice["raw"]>
+>;
+type _AsyncKitKeysMatch = Assert<
+  KeysEqual<AsyncSpice["kit"], SyncSpice["kit"]>
+>;
 
 // Moved helpers: hidden on `raw`, exposed on `kit`.
 type _RawHidesNewIntCell = AssertFalse<HasKey<SyncSpice["raw"], "newIntCell">>;
-type _RawHidesNewDoubleCell = AssertFalse<HasKey<SyncSpice["raw"], "newDoubleCell">>;
-type _RawHidesNewCharCell = AssertFalse<HasKey<SyncSpice["raw"], "newCharCell">>;
+type _RawHidesNewDoubleCell = AssertFalse<
+  HasKey<SyncSpice["raw"], "newDoubleCell">
+>;
+type _RawHidesNewCharCell = AssertFalse<
+  HasKey<SyncSpice["raw"], "newCharCell">
+>;
 type _RawHidesNewWindow = AssertFalse<HasKey<SyncSpice["raw"], "newWindow">>;
 type _RawHidesFreeCell = AssertFalse<HasKey<SyncSpice["raw"], "freeCell">>;
 type _RawHidesFreeWindow = AssertFalse<HasKey<SyncSpice["raw"], "freeWindow">>;
 type _RawHidesCellGeti = AssertFalse<HasKey<SyncSpice["raw"], "cellGeti">>;
 type _RawHidesCellGetd = AssertFalse<HasKey<SyncSpice["raw"], "cellGetd">>;
 type _RawHidesCellGetc = AssertFalse<HasKey<SyncSpice["raw"], "cellGetc">>;
-type _RawHidesSpiceVersion = AssertFalse<HasKey<SyncSpice["raw"], "spiceVersion">>;
-type _RawHidesReadVirtualOutput = AssertFalse<HasKey<SyncSpice["raw"], "readVirtualOutput">>;
+type _RawHidesSpiceVersion = AssertFalse<
+  HasKey<SyncSpice["raw"], "spiceVersion">
+>;
+type _RawHidesReadVirtualOutput = AssertFalse<
+  HasKey<SyncSpice["raw"], "readVirtualOutput">
+>;
 
 type _KitHasNewIntCell = Assert<HasKey<SyncSpice["kit"], "newIntCell">>;
 type _KitHasNewDoubleCell = Assert<HasKey<SyncSpice["kit"], "newDoubleCell">>;
@@ -108,17 +132,25 @@ type _KitHasCellGeti = Assert<HasKey<SyncSpice["kit"], "cellGeti">>;
 type _KitHasCellGetd = Assert<HasKey<SyncSpice["kit"], "cellGetd">>;
 type _KitHasCellGetc = Assert<HasKey<SyncSpice["kit"], "cellGetc">>;
 type _KitHasSpiceVersion = Assert<HasKey<SyncSpice["kit"], "spiceVersion">>;
-type _KitHasReadVirtualOutput = Assert<HasKey<SyncSpice["kit"], "readVirtualOutput">>;
+type _KitHasReadVirtualOutput = Assert<
+  HasKey<SyncSpice["kit"], "readVirtualOutput">
+>;
 
 // Spot-check a few async return types.
 type _AsyncToolkitVersionReturnsPromise = Assert<
-  ReturnType<AsyncSpice["kit"]["toolkitVersion"]> extends Promise<string> ? true : false
+  ReturnType<AsyncSpice["kit"]["toolkitVersion"]> extends Promise<string>
+    ? true
+    : false
 >;
 type _AsyncSpiceVersionReturnsPromise = Assert<
-  ReturnType<AsyncSpice["kit"]["spiceVersion"]> extends Promise<string> ? true : false
+  ReturnType<AsyncSpice["kit"]["spiceVersion"]> extends Promise<string>
+    ? true
+    : false
 >;
 type _AsyncNewIntCellReturnsPromise = Assert<
-  ReturnType<AsyncSpice["kit"]["newIntCell"]> extends Promise<unknown> ? true : false
+  ReturnType<AsyncSpice["kit"]["newIntCell"]> extends Promise<unknown>
+    ? true
+    : false
 >;
 type _AsyncKtotalReturnsPromise = Assert<
   ReturnType<AsyncSpice["raw"]["ktotal"]> extends Promise<number> ? true : false

@@ -114,10 +114,10 @@ function rewriteSpecifiersInFile(destPath) {
   // also includes a raw fallback to ensure the published tarball doesn't
   // mention workspace-only package specifiers.
   for (const [from, to] of SPECIFIER_REWRITES.entries()) {
-    const escapedDqFrom = "\\\"" + from + "\\\"";
-    const escapedDqTo = "\\\"" + to + "\\\"";
-    const escapedDqSubFrom = "\\\"" + from + "/";
-    const escapedDqSubTo = "\\\"" + to + "/";
+    const escapedDqFrom = '\\"' + from + '\\"';
+    const escapedDqTo = '\\"' + to + '\\"';
+    const escapedDqSubFrom = '\\"' + from + "/";
+    const escapedDqSubTo = '\\"' + to + "/";
 
     next = next
       .replaceAll(escapedDqFrom, escapedDqTo)
@@ -193,7 +193,10 @@ function main() {
       }
     }
 
-    copyDir(path.join(pkgRoot, "dist"), path.join(distPublishRoot, p.dest, "dist"));
+    copyDir(
+      path.join(pkgRoot, "dist"),
+      path.join(distPublishRoot, p.dest, "dist"),
+    );
   }
 
   // Top-level docs/compliance.
@@ -218,7 +221,10 @@ function main() {
     }
   }
   if (notices.length) {
-    fs.writeFileSync(path.join(distPublishRoot, "NOTICE"), notices.join("\n\n") + "\n");
+    fs.writeFileSync(
+      path.join(distPublishRoot, "NOTICE"),
+      notices.join("\n\n") + "\n",
+    );
   }
 
   const version = tspicePkg.version;

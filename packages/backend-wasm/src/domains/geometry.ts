@@ -36,8 +36,28 @@ function tspiceCallSubpnt(
   const outTrgepcPtr = module._malloc(8);
   const outSrfvecPtr = module._malloc(3 * 8);
 
-  if (!errPtr || !methodPtr || !targetPtr || !fixrefPtr || !abcorrPtr || !observerPtr || !outSpointPtr || !outTrgepcPtr || !outSrfvecPtr) {
-    for (const ptr of [outSrfvecPtr, outTrgepcPtr, outSpointPtr, observerPtr, abcorrPtr, fixrefPtr, targetPtr, methodPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !observerPtr ||
+    !outSpointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr
+  ) {
+    for (const ptr of [
+      outSrfvecPtr,
+      outTrgepcPtr,
+      outSpointPtr,
+      observerPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -63,9 +83,13 @@ function tspiceCallSubpnt(
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
 
-    const spoint = Array.from(module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const spoint = Array.from(
+      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
     const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
 
     return { spoint, trgepc, srfvec };
   } finally {
@@ -101,8 +125,28 @@ function tspiceCallSubslr(
   const outTrgepcPtr = module._malloc(8);
   const outSrfvecPtr = module._malloc(3 * 8);
 
-  if (!errPtr || !methodPtr || !targetPtr || !fixrefPtr || !abcorrPtr || !observerPtr || !outSpointPtr || !outTrgepcPtr || !outSrfvecPtr) {
-    for (const ptr of [outSrfvecPtr, outTrgepcPtr, outSpointPtr, observerPtr, abcorrPtr, fixrefPtr, targetPtr, methodPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !observerPtr ||
+    !outSpointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr
+  ) {
+    for (const ptr of [
+      outSrfvecPtr,
+      outTrgepcPtr,
+      outSpointPtr,
+      observerPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -128,9 +172,13 @@ function tspiceCallSubslr(
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
 
-    const spoint = Array.from(module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const spoint = Array.from(
+      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
     const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
 
     return { spoint, trgepc, srfvec };
   } finally {
@@ -171,8 +219,34 @@ function tspiceCallSincpt(
   const outSrfvecPtr = module._malloc(3 * 8);
   const outFoundPtr = module._malloc(4);
 
-  if (!errPtr || !methodPtr || !targetPtr || !fixrefPtr || !abcorrPtr || !observerPtr || !drefPtr || !dvecPtr || !outSpointPtr || !outTrgepcPtr || !outSrfvecPtr || !outFoundPtr) {
-    for (const ptr of [outFoundPtr, outSrfvecPtr, outTrgepcPtr, outSpointPtr, dvecPtr, drefPtr, observerPtr, abcorrPtr, fixrefPtr, targetPtr, methodPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !observerPtr ||
+    !drefPtr ||
+    !dvecPtr ||
+    !outSpointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr ||
+    !outFoundPtr
+  ) {
+    for (const ptr of [
+      outFoundPtr,
+      outSrfvecPtr,
+      outTrgepcPtr,
+      outSpointPtr,
+      dvecPtr,
+      drefPtr,
+      observerPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -208,9 +282,13 @@ function tspiceCallSincpt(
       return { found: false };
     }
 
-    const spoint = Array.from(module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const spoint = Array.from(
+      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
     const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
 
     return { found: true, spoint, trgepc, srfvec };
   } finally {
@@ -253,8 +331,34 @@ function tspiceCallIlumin(
   const outIncdncPtr = module._malloc(8);
   const outEmissnPtr = module._malloc(8);
 
-  if (!errPtr || !methodPtr || !targetPtr || !fixrefPtr || !abcorrPtr || !observerPtr || !spointPtr || !outTrgepcPtr || !outSrfvecPtr || !outPhasePtr || !outIncdncPtr || !outEmissnPtr) {
-    for (const ptr of [outEmissnPtr, outIncdncPtr, outPhasePtr, outSrfvecPtr, outTrgepcPtr, spointPtr, observerPtr, abcorrPtr, fixrefPtr, targetPtr, methodPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !observerPtr ||
+    !spointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr ||
+    !outPhasePtr ||
+    !outIncdncPtr ||
+    !outEmissnPtr
+  ) {
+    for (const ptr of [
+      outEmissnPtr,
+      outIncdncPtr,
+      outPhasePtr,
+      outSrfvecPtr,
+      outTrgepcPtr,
+      spointPtr,
+      observerPtr,
+      abcorrPtr,
+      fixrefPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -288,7 +392,9 @@ function tspiceCallIlumin(
     }
 
     const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
     const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
     const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
     const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
@@ -336,8 +442,36 @@ function tspiceCallIllumg(
   const outIncdncPtr = module._malloc(8);
   const outEmissnPtr = module._malloc(8);
 
-  if (!errPtr || !methodPtr || !targetPtr || !ilusrcPtr || !fixrefPtr || !abcorrPtr || !observerPtr || !spointPtr || !outTrgepcPtr || !outSrfvecPtr || !outPhasePtr || !outIncdncPtr || !outEmissnPtr) {
-    for (const ptr of [outEmissnPtr, outIncdncPtr, outPhasePtr, outSrfvecPtr, outTrgepcPtr, spointPtr, observerPtr, abcorrPtr, fixrefPtr, ilusrcPtr, targetPtr, methodPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !ilusrcPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !observerPtr ||
+    !spointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr ||
+    !outPhasePtr ||
+    !outIncdncPtr ||
+    !outEmissnPtr
+  ) {
+    for (const ptr of [
+      outEmissnPtr,
+      outIncdncPtr,
+      outPhasePtr,
+      outSrfvecPtr,
+      outTrgepcPtr,
+      spointPtr,
+      observerPtr,
+      abcorrPtr,
+      fixrefPtr,
+      ilusrcPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -372,7 +506,9 @@ function tspiceCallIllumg(
     }
 
     const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
     const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
     const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
     const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
@@ -423,8 +559,40 @@ function tspiceCallIllumf(
   const outVisiblPtr = module._malloc(4);
   const outLitPtr = module._malloc(4);
 
-  if (!errPtr || !methodPtr || !targetPtr || !ilusrcPtr || !fixrefPtr || !abcorrPtr || !observerPtr || !spointPtr || !outTrgepcPtr || !outSrfvecPtr || !outPhasePtr || !outIncdncPtr || !outEmissnPtr || !outVisiblPtr || !outLitPtr) {
-    for (const ptr of [outLitPtr, outVisiblPtr, outEmissnPtr, outIncdncPtr, outPhasePtr, outSrfvecPtr, outTrgepcPtr, spointPtr, observerPtr, abcorrPtr, fixrefPtr, ilusrcPtr, targetPtr, methodPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !methodPtr ||
+    !targetPtr ||
+    !ilusrcPtr ||
+    !fixrefPtr ||
+    !abcorrPtr ||
+    !observerPtr ||
+    !spointPtr ||
+    !outTrgepcPtr ||
+    !outSrfvecPtr ||
+    !outPhasePtr ||
+    !outIncdncPtr ||
+    !outEmissnPtr ||
+    !outVisiblPtr ||
+    !outLitPtr
+  ) {
+    for (const ptr of [
+      outLitPtr,
+      outVisiblPtr,
+      outEmissnPtr,
+      outIncdncPtr,
+      outPhasePtr,
+      outSrfvecPtr,
+      outTrgepcPtr,
+      spointPtr,
+      observerPtr,
+      abcorrPtr,
+      fixrefPtr,
+      ilusrcPtr,
+      targetPtr,
+      methodPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -463,14 +631,24 @@ function tspiceCallIllumf(
     }
 
     const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const srfvec = Array.from(
+      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
     const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
     const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
     const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
     const visibl = module.HEAP32[outVisiblPtr >> 2] ?? 0;
     const lit = module.HEAP32[outLitPtr >> 2] ?? 0;
 
-    return { trgepc, srfvec, phase, incdnc, emissn, visibl: Boolean(visibl), lit: Boolean(lit) };
+    return {
+      trgepc,
+      srfvec,
+      phase,
+      incdnc,
+      emissn,
+      visibl: Boolean(visibl),
+      lit: Boolean(lit),
+    };
   } finally {
     module._free(outLitPtr);
     module._free(outVisiblPtr);
@@ -490,7 +668,11 @@ function tspiceCallIllumf(
   }
 }
 
-function tspiceCallNvc2pl(module: EmscriptenModule, normal: SpiceVector3, konst: number): SpicePlane {
+function tspiceCallNvc2pl(
+  module: EmscriptenModule,
+  normal: SpiceVector3,
+  konst: number,
+): SpicePlane {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const normalPtr = module._malloc(3 * 8);
@@ -506,12 +688,20 @@ function tspiceCallNvc2pl(module: EmscriptenModule, normal: SpiceVector3, konst:
   try {
     module.HEAPF64.set(normal, normalPtr >> 3);
 
-    const result = module._tspice_nvc2pl(normalPtr, konst, outPlanePtr, errPtr, errMaxBytes);
+    const result = module._tspice_nvc2pl(
+      normalPtr,
+      konst,
+      outPlanePtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
 
-    return Array.from(module.HEAPF64.subarray(outPlanePtr >> 3, (outPlanePtr >> 3) + 4)) as unknown as SpicePlane;
+    return Array.from(
+      module.HEAPF64.subarray(outPlanePtr >> 3, (outPlanePtr >> 3) + 4),
+    ) as unknown as SpicePlane;
   } finally {
     module._free(outPlanePtr);
     module._free(normalPtr);
@@ -519,7 +709,10 @@ function tspiceCallNvc2pl(module: EmscriptenModule, normal: SpiceVector3, konst:
   }
 }
 
-function tspiceCallPl2nvc(module: EmscriptenModule, plane: SpicePlane): Pl2nvcResult {
+function tspiceCallPl2nvc(
+  module: EmscriptenModule,
+  plane: SpicePlane,
+): Pl2nvcResult {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const planePtr = module._malloc(4 * 8);
@@ -537,12 +730,20 @@ function tspiceCallPl2nvc(module: EmscriptenModule, plane: SpicePlane): Pl2nvcRe
     module.HEAPF64.set(plane, planePtr >> 3);
     module.HEAPF64[outKonstPtr >> 3] = 0;
 
-    const result = module._tspice_pl2nvc(planePtr, outNormalPtr, outKonstPtr, errPtr, errMaxBytes);
+    const result = module._tspice_pl2nvc(
+      planePtr,
+      outNormalPtr,
+      outKonstPtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
 
-    const normal = Array.from(module.HEAPF64.subarray(outNormalPtr >> 3, (outNormalPtr >> 3) + 3)) as unknown as SpiceVector3;
+    const normal = Array.from(
+      module.HEAPF64.subarray(outNormalPtr >> 3, (outNormalPtr >> 3) + 3),
+    ) as unknown as SpiceVector3;
     const konst = module.HEAPF64[outKonstPtr >> 3] ?? 0;
 
     return { normal, konst };
@@ -578,8 +779,30 @@ function tspiceCallOccult(
   const observerPtr = writeUtf8CString(module, observer);
   const outOcltidPtr = module._malloc(4);
 
-  if (!errPtr || !targ1Ptr || !shape1Ptr || !frame1Ptr || !targ2Ptr || !shape2Ptr || !frame2Ptr || !abcorrPtr || !observerPtr || !outOcltidPtr) {
-    for (const ptr of [outOcltidPtr, observerPtr, abcorrPtr, frame2Ptr, shape2Ptr, targ2Ptr, frame1Ptr, shape1Ptr, targ1Ptr, errPtr]) {
+  if (
+    !errPtr ||
+    !targ1Ptr ||
+    !shape1Ptr ||
+    !frame1Ptr ||
+    !targ2Ptr ||
+    !shape2Ptr ||
+    !frame2Ptr ||
+    !abcorrPtr ||
+    !observerPtr ||
+    !outOcltidPtr
+  ) {
+    for (const ptr of [
+      outOcltidPtr,
+      observerPtr,
+      abcorrPtr,
+      frame2Ptr,
+      shape2Ptr,
+      targ2Ptr,
+      frame1Ptr,
+      shape1Ptr,
+      targ1Ptr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -621,7 +844,11 @@ function tspiceCallOccult(
   }
 }
 
-function assertFiniteNumberArrayFixed(value: unknown, expectedLength: number, label: string): asserts value is number[] {
+function assertFiniteNumberArrayFixed(
+  value: unknown,
+  expectedLength: number,
+  label: string,
+): asserts value is number[] {
   if (!Array.isArray(value) || value.length !== expectedLength) {
     throw new TypeError(`${label}: expected a length-${expectedLength} array`);
   }
@@ -639,20 +866,127 @@ function assertFiniteNumberArrayFixed(value: unknown, expectedLength: number, la
 /** Create a {@link GeometryApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
-    subpnt: (method: string, target: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string) =>
-      tspiceCallSubpnt(module, method, target, et, fixref, abcorr, observer),
-    subslr: (method: string, target: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string) =>
-      tspiceCallSubslr(module, method, target, et, fixref, abcorr, observer),
-    sincpt: (method: string, target: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string, dref: string, dvec: SpiceVector3) =>
-      tspiceCallSincpt(module, method, target, et, fixref, abcorr, observer, dref, dvec),
-    ilumin: (method: string, target: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string, spoint: SpiceVector3) =>
-      tspiceCallIlumin(module, method, target, et, fixref, abcorr, observer, spoint),
-    illumg: (method: string, target: string, ilusrc: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string, spoint: SpiceVector3) =>
-      tspiceCallIllumg(module, method, target, ilusrc, et, fixref, abcorr, observer, spoint),
-    illumf: (method: string, target: string, ilusrc: string, et: number, fixref: string, abcorr: AbCorr | string, observer: string, spoint: SpiceVector3) =>
-      tspiceCallIllumf(module, method, target, ilusrc, et, fixref, abcorr, observer, spoint),
-    occult: (targ1: string, shape1: string, frame1: string, targ2: string, shape2: string, frame2: string, abcorr: AbCorr | string, observer: string, et: number) =>
-      tspiceCallOccult(module, targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer, et),
+    subpnt: (
+      method: string,
+      target: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr | string,
+      observer: string,
+    ) => tspiceCallSubpnt(module, method, target, et, fixref, abcorr, observer),
+    subslr: (
+      method: string,
+      target: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr | string,
+      observer: string,
+    ) => tspiceCallSubslr(module, method, target, et, fixref, abcorr, observer),
+    sincpt: (
+      method: string,
+      target: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr | string,
+      observer: string,
+      dref: string,
+      dvec: SpiceVector3,
+    ) =>
+      tspiceCallSincpt(
+        module,
+        method,
+        target,
+        et,
+        fixref,
+        abcorr,
+        observer,
+        dref,
+        dvec,
+      ),
+    ilumin: (
+      method: string,
+      target: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr | string,
+      observer: string,
+      spoint: SpiceVector3,
+    ) =>
+      tspiceCallIlumin(
+        module,
+        method,
+        target,
+        et,
+        fixref,
+        abcorr,
+        observer,
+        spoint,
+      ),
+    illumg: (
+      method: string,
+      target: string,
+      ilusrc: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr | string,
+      observer: string,
+      spoint: SpiceVector3,
+    ) =>
+      tspiceCallIllumg(
+        module,
+        method,
+        target,
+        ilusrc,
+        et,
+        fixref,
+        abcorr,
+        observer,
+        spoint,
+      ),
+    illumf: (
+      method: string,
+      target: string,
+      ilusrc: string,
+      et: number,
+      fixref: string,
+      abcorr: AbCorr | string,
+      observer: string,
+      spoint: SpiceVector3,
+    ) =>
+      tspiceCallIllumf(
+        module,
+        method,
+        target,
+        ilusrc,
+        et,
+        fixref,
+        abcorr,
+        observer,
+        spoint,
+      ),
+    occult: (
+      targ1: string,
+      shape1: string,
+      frame1: string,
+      targ2: string,
+      shape2: string,
+      frame2: string,
+      abcorr: AbCorr | string,
+      observer: string,
+      et: number,
+    ) =>
+      tspiceCallOccult(
+        module,
+        targ1,
+        shape1,
+        frame1,
+        targ2,
+        shape2,
+        frame2,
+        abcorr,
+        observer,
+        et,
+      ),
     nvc2pl: (normal: SpiceVector3, konst: number) => {
       assertFiniteNumberArrayFixed(normal, 3, "nvc2pl(): normal");
       if (!Number.isFinite(konst)) {

@@ -53,7 +53,10 @@ export function runIdsNamesStep(
       return { op: step.op, value: null };
 
     case "ids-names.bodfnd":
-      return { op: step.op, value: context.spice.raw.bodfnd(step.body, step.item) };
+      return {
+        op: step.op,
+        value: context.spice.raw.bodfnd(step.body, step.item),
+      };
 
     case "ids-names.bods2c": {
       const out = context.spice.raw.bods2c(step.name);
@@ -66,11 +69,16 @@ export function runIdsNamesStep(
     }
 
     case "ids-names.bodvar":
-      return { op: step.op, value: context.spice.raw.bodvar(step.body, step.item) };
+      return {
+        op: step.op,
+        value: context.spice.raw.bodvar(step.body, step.item),
+      };
 
     default: {
       const exhaustive: never = step;
-      throw new Error(`Unhandled ids-names step: ${JSON.stringify(exhaustive)}`);
+      throw new Error(
+        `Unhandled ids-names step: ${JSON.stringify(exhaustive)}`,
+      );
     }
   }
 }

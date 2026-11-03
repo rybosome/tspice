@@ -24,8 +24,12 @@ describe("backend-node kernel staging", () => {
   it("resolvePathForSpice materializes py-parity virtual paths to deterministic OS temp paths", () => {
     const stager = createKernelStager();
 
-    const first = stager.resolvePathForSpice("py-parity/scratch/generated/file.bds");
-    const second = stager.resolvePathForSpice("py-parity/scratch/generated/file.bds");
+    const first = stager.resolvePathForSpice(
+      "py-parity/scratch/generated/file.bds",
+    );
+    const second = stager.resolvePathForSpice(
+      "py-parity/scratch/generated/file.bds",
+    );
 
     expect(path.isAbsolute(first)).toBe(true);
     expect(first).toBe(second);
@@ -79,7 +83,9 @@ describe("backend-node kernel staging", () => {
       native as any,
     );
 
-    const stagedPath = stager.resolvePathForSpice("py-parity/kernels/frames-staged.bc");
+    const stagedPath = stager.resolvePathForSpice(
+      "py-parity/kernels/frames-staged.bc",
+    );
 
     stager.unload("py-parity/kernels/frames-staged.bc", native as any);
 
@@ -87,7 +93,9 @@ describe("backend-node kernel staging", () => {
     expect(native.unload).toHaveBeenCalledWith(stagedPath);
 
     // Mapping and file remain available for non-kernel file APIs.
-    expect(stager.resolvePathForSpice("py-parity/kernels/frames-staged.bc")).toBe(stagedPath);
+    expect(
+      stager.resolvePathForSpice("py-parity/kernels/frames-staged.bc"),
+    ).toBe(stagedPath);
     expect(fs.existsSync(stagedPath)).toBe(true);
 
     // Re-unload should be a no-op for an already-unloaded virtual kernel.

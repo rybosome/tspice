@@ -12,7 +12,11 @@
         "handleId": "writer"
       },
       { "op": "file-io.dlacls", "handleId": "writer" },
-      { "op": "file-io.dasopr", "path": "kernels/generated/dasopr-open.dla", "handleId": "reader" },
+      {
+        "op": "file-io.dasopr",
+        "path": "kernels/generated/dasopr-open.dla",
+        "handleId": "reader"
+      },
       { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
       { "op": "file-io.dascls", "handleId": "reader" }
     ],
@@ -21,7 +25,13 @@
   {
     "caseId": "file-io-dasopr-missing-file-error",
     "description": "Representative dasopr missing-file error",
-    "workflow": [{ "op": "file-io.dasopr", "path": "kernels/missing-das.dla", "handleId": "das" }],
+    "workflow": [
+      {
+        "op": "file-io.dasopr",
+        "path": "kernels/missing-das.dla",
+        "handleId": "das"
+      }
+    ],
     "expectation": { "kind": "error" }
   }
 ]

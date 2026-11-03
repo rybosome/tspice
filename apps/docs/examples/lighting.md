@@ -7,7 +7,7 @@ This page shows how to compute classic “lighting” angles at a surface point:
 - **emission** angle
 
 It works the same way in **browser (WASM)** and **Node (native addon)**. The only real difference is
-*how you load kernels*.
+_how you load kernels_.
 
 ## Kernels required (and why)
 

@@ -40,10 +40,7 @@ export type RpcMessageFromWorker = RpcResponse;
 export function serializeError(err: unknown): SerializedError {
   const defaultMessage = "Worker request failed";
 
-  const readStringProp = (
-    obj: unknown,
-    key: string,
-  ): string | undefined => {
+  const readStringProp = (obj: unknown, key: string): string | undefined => {
     if (!obj || typeof obj !== "object") return undefined;
     const v = (obj as Record<string, unknown>)[key];
     return typeof v === "string" ? v : undefined;

@@ -5,7 +5,10 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { createNodeBackend } from "@rybosome/tspice-backend-node";
-import type { DlaDescriptor, SpiceHandle } from "@rybosome/tspice-backend-contract";
+import type {
+  DlaDescriptor,
+  SpiceHandle,
+} from "@rybosome/tspice-backend-contract";
 import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 import { loadTestKernels } from "./test-kernels.js";
 
@@ -52,7 +55,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
   itNative("throws on invalid handle usage", () => {
     const backend = createNodeBackend();
 
-    expect(() => backend.raw.dafcls(123 as unknown as SpiceHandle)).toThrow(/invalid|closed/i);
+    expect(() => backend.raw.dafcls(123 as unknown as SpiceHandle)).toThrow(
+      /invalid|closed/i,
+    );
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-file-io-"));
 
@@ -63,7 +68,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       backend.raw.dlacls(dlaHandle);
 
       const dasHandle = backend.raw.dasopr(dlaPath);
-      expect(() => backend.raw.dafbfs(dasHandle as unknown as SpiceHandle)).toThrow(/DAF/i);
+      expect(() =>
+        backend.raw.dafbfs(dasHandle as unknown as SpiceHandle),
+      ).toThrow(/DAF/i);
       backend.raw.dascls(dasHandle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -197,7 +204,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
         csize: 2147483648,
       };
 
-      expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/32-bit|int32/i);
+      expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(
+        /32-bit|int32/i,
+      );
       backend.raw.dlacls(handle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -224,7 +233,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
         csize: 0,
       };
 
-      expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
+      expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(
+        /ibase.*>=\s*0/i,
+      );
       backend.raw.dlacls(handle);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -240,11 +251,7 @@ describe("@rybosome/tspice-backend-node file-io", () => {
       const outPath = path.join(tmpDir, "roundtrip.bds");
 
       const nv = 3;
-      const vrtces = [
-        0, 0, 0,
-        1, 0, 0,
-        0, 1, 0,
-      ];
+      const vrtces = [0, 0, 0, 1, 0, 0, 0, 1, 0];
       const np = 1;
       const plates = [1, 2, 3];
 
@@ -302,7 +309,9 @@ describe("@rybosome/tspice-backend-node file-io", () => {
           throw new Error("Expected to find a DLA segment in the written DSK");
         }
 
-        expect(backend.raw.dlafns(readHandle, first.descr)).toEqual({ found: false });
+        expect(backend.raw.dlafns(readHandle, first.descr)).toEqual({
+          found: false,
+        });
       } finally {
         backend.raw.dascls(readHandle);
       }

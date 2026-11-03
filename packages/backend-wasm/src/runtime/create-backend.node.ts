@@ -4,7 +4,10 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 import * as emscriptenExports from "../lowlevel/exports.js";
 
 import { createCoordsVectorsApi } from "../domains/coords-vectors.js";
-import { createCellsWindowsApi, createCellsWindowsKitApi } from "../domains/cells-windows.js";
+import {
+  createCellsWindowsApi,
+  createCellsWindowsKitApi,
+} from "../domains/cells-windows.js";
 import { createEphemerisApi } from "../domains/ephemeris.js";
 import { createFramesApi } from "../domains/frames.js";
 import { createGeometryApi } from "../domains/geometry.js";
@@ -12,7 +15,11 @@ import { createGeometryGfApi } from "../domains/geometry-gf.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
 import { createKernelPoolApi } from "../domains/kernel-pool.js";
-import { createTimeApi, createTimeKitApi, getToolkitVersion } from "../domains/time.js";
+import {
+  createTimeApi,
+  createTimeKitApi,
+  getToolkitVersion,
+} from "../domains/time.js";
 import { createFileIoApi, createFileIoKitApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
 import { createDskApi } from "../domains/dsk.js";
@@ -84,7 +91,9 @@ export function toExactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 }
 
 /** Read the tspice backend WASM binary from disk (Node-only). */
-export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffer | undefined> {
+export async function readWasmBinaryForNode(
+  wasmUrl: string,
+): Promise<ArrayBuffer | undefined> {
   // Allow http(s) URLs to be fetched by Emscripten.
   if (wasmUrl.startsWith("http://") || wasmUrl.startsWith("https://")) {
     return undefined;
@@ -122,7 +131,11 @@ export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffe
 
     if (URL_SCHEME_WITH_AUTHORITY_RE.test(wasmUrl)) {
       const u = new URL(wasmUrl);
-      if (u.protocol !== "http:" && u.protocol !== "https:" && u.protocol !== "file:") {
+      if (
+        u.protocol !== "http:" &&
+        u.protocol !== "https:" &&
+        u.protocol !== "file:"
+      ) {
         throw new Error(
           `Unsupported wasmUrl scheme '${u.protocol}'. Expected http(s) URL, file:// URL, or a filesystem path.`,
         );
@@ -139,7 +152,9 @@ export async function readWasmBinaryForNode(wasmUrl: string): Promise<ArrayBuffe
     }
   }
 
-  const wasmPath = wasmUrl.startsWith("file://") ? fileURLToPath(wasmUrl) : wasmUrl;
+  const wasmPath = wasmUrl.startsWith("file://")
+    ? fileURLToPath(wasmUrl)
+    : wasmUrl;
 
   const cached = boundedCacheGet(wasmPath);
   if (cached) {
@@ -159,15 +174,20 @@ export async function createWasmBackend(
   // NOTE: Keep this as a literal string so bundlers (Vite) don't generate a
   // runtime glob map for *every* file in this directory (including *.d.ts.map),
   // which can lead to JSON being imported as an ESM module.
-  const wasmUrl = options.wasmUrl?.toString() ?? new URL("../tspice_backend_wasm.wasm", import.meta.url).href;
+  const wasmUrl =
+    options.wasmUrl?.toString() ??
+    new URL("../tspice_backend_wasm.wasm", import.meta.url).href;
 
   const WINDOWS_DRIVE_PATH_RE = /^[A-Za-z]:[\\/]/;
   const URL_SCHEME_WITH_AUTHORITY_RE = /^[A-Za-z][A-Za-z\d+.-]*:\/\//;
   const SINGLE_LETTER_SCHEME_RE = /^[A-Za-z]:/;
 
-  const isWindowsDrivePath = (value: string): boolean => WINDOWS_DRIVE_PATH_RE.test(value);
+  const isWindowsDrivePath = (value: string): boolean =>
+    WINDOWS_DRIVE_PATH_RE.test(value);
   const isAllowedNodeUrl = (value: string): boolean =>
-    value.startsWith("http://") || value.startsWith("https://") || value.startsWith("file://");
+    value.startsWith("http://") ||
+    value.startsWith("https://") ||
+    value.startsWith("file://");
 
   const throwUnsupportedScheme = (u: URL): never => {
     throw new Error(
@@ -189,7 +209,11 @@ export async function createWasmBackend(
 
     if (URL_SCHEME_WITH_AUTHORITY_RE.test(wasmUrl)) {
       const u = new URL(wasmUrl);
-      if (u.protocol !== "http:" && u.protocol !== "https:" && u.protocol !== "file:") {
+      if (
+        u.protocol !== "http:" &&
+        u.protocol !== "https:" &&
+        u.protocol !== "file:"
+      ) {
         throwUnsupportedScheme(u);
       }
     }
@@ -200,16 +224,17 @@ export async function createWasmBackend(
     }
   }
 
-  let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
+  let createEmscriptenModule: (
+    opts: Record<string, unknown>,
+  ) => Promise<unknown>;
   try {
     // NOTE: This must be a literal import path so bundlers like Vite don't
     // rewrite the glue JS into an asset URL module (via `new URL(..., import.meta.url)`
     // + `?url`) which breaks `import()`.
-    ({ default: createEmscriptenModule } = (await import(
-      "../tspice_backend_wasm.node.js"
-    )) as {
-      default: (opts: Record<string, unknown>) => Promise<unknown>;
-    });
+    ({ default: createEmscriptenModule } =
+      (await import("../tspice_backend_wasm.node.js")) as {
+        default: (opts: Record<string, unknown>) => Promise<unknown>;
+      });
   } catch (error) {
     throw new Error(
       `Failed to load tspice WASM glue (../${WASM_JS_FILENAME}): ${String(error)}`,
@@ -226,12 +251,15 @@ export async function createWasmBackend(
 
   if (wasmUrl.startsWith("file://")) {
     wasmBinary = await (async () => {
-      const [{ readFileSync, statSync }, { writeFile, rename }, { fileURLToPath }] =
-        await Promise.all([
-          import("node:fs"),
-          import("node:fs/promises"),
-          import("node:url"),
-        ]);
+      const [
+        { readFileSync, statSync },
+        { writeFile, rename },
+        { fileURLToPath },
+      ] = await Promise.all([
+        import("node:fs"),
+        import("node:fs/promises"),
+        import("node:url"),
+      ]);
 
       const usingDefaultWasmUrl = options.wasmUrl == null;
       const wasmPath = fileURLToPath(wasmUrl);
@@ -244,7 +272,9 @@ export async function createWasmBackend(
       // `WebAssembly` is available in Node, but TypeScript only types it when the DOM
       // lib is enabled. Define a minimal type so we can use `validate()` without pulling
       // in browser-only lib typings.
-      const wasmApi = (globalThis as unknown as { WebAssembly?: WebAssemblyLike }).WebAssembly;
+      const wasmApi = (
+        globalThis as unknown as { WebAssembly?: WebAssemblyLike }
+      ).WebAssembly;
 
       const assertMagicHeader = (
         bytes: Uint8Array,
@@ -284,8 +314,14 @@ export async function createWasmBackend(
         return wasmApi.validate(bytes);
       };
 
-      const readBytesWithSizeCheck = (path: string, urlForMessage: string): Uint8Array => {
-        const readWithSizeCheck = (): { bytes: Uint8Array; statSize: number } => {
+      const readBytesWithSizeCheck = (
+        path: string,
+        urlForMessage: string,
+      ): Uint8Array => {
+        const readWithSizeCheck = (): {
+          bytes: Uint8Array;
+          statSize: number;
+        } => {
           const bytes = readFileSync(path);
           const statSize = statSync(path).size;
           return { bytes, statSize };
@@ -361,7 +397,10 @@ export async function createWasmBackend(
         );
         const fallbackPath = fileURLToPath(fallbackUrl);
 
-        const fallback = await readValidatedOrNull(fallbackPath, fallbackUrl.href);
+        const fallback = await readValidatedOrNull(
+          fallbackPath,
+          fallbackUrl.href,
+        );
         if (fallback) {
           if (options.repairInvalidDistWasm === true) {
             // Best-effort repair so subsequent loads see a valid file.
@@ -418,7 +457,8 @@ export async function createWasmBackend(
     process.env.TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT === "1" ||
     process.env.TSPICE_WASM_SKIP_EMSCRIPTEN_ASSERT === "true";
 
-  const validateEmscriptenModule = options.validateEmscriptenModule ?? !skipAssertViaEnv;
+  const validateEmscriptenModule =
+    options.validateEmscriptenModule ?? !skipAssertViaEnv;
   if (validateEmscriptenModule) {
     emscriptenExports.assertEmscriptenModule(module);
   }
@@ -455,7 +495,6 @@ export async function createWasmBackend(
       ...createFileIoKitApi(module, virtualOutputs),
       ...createCellsWindowsKitApi(module),
     },
-
   } satisfies SpiceBackend;
 
   Object.defineProperties(backend.raw, {

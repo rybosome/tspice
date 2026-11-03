@@ -29,7 +29,7 @@ function normalizeOrigin(origin: string): string {
   const trimmed = origin.trim();
   if (!trimmed) {
     throw new Error(
-      "kernels.*(): invalid origin. Expected: non-empty, non-whitespace string (or \"\" for no prefix). Got: blank/whitespace.",
+      'kernels.*(): invalid origin. Expected: non-empty, non-whitespace string (or "" for no prefix). Got: blank/whitespace.',
     );
   }
   return ensureTrailingSlash(trimmed);
@@ -41,13 +41,15 @@ function normalizePathBase(pathBase: string): string {
   const trimmed = pathBase.trim();
   if (!trimmed) {
     throw new Error(
-      "kernels.*(): invalid pathBase. Expected: non-empty, non-whitespace string (or \"\" for no path prefix). Got: blank/whitespace.",
+      'kernels.*(): invalid pathBase. Expected: non-empty, non-whitespace string (or "" for no path prefix). Got: blank/whitespace.',
     );
   }
   return ensureTrailingSlash(trimmed);
 }
 
-function normalizeOptionalBaseUrl(baseUrl: string | undefined): string | undefined {
+function normalizeOptionalBaseUrl(
+  baseUrl: string | undefined,
+): string | undefined {
   const trimmed = baseUrl?.trim();
   return trimmed ? trimmed : undefined;
 }
@@ -57,7 +59,9 @@ function assertDirectoryStyleBaseUrl(baseUrl: string): void {
   const hasScheme = ABSOLUTE_URL_RE.test(baseUrl);
 
   if (hasScheme || isProtocolRelative) {
-    const base = hasScheme ? new URL(baseUrl) : new URL(baseUrl, "https://tspice.invalid");
+    const base = hasScheme
+      ? new URL(baseUrl)
+      : new URL(baseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
         `kernels.*(): invalid absolute baseUrl. Expected: absolute baseUrl must be directory-style (pathname must end with "/"). Got: ${baseUrl}. Hint: use a directory URL like https://example.com/myapp/.`,
@@ -115,7 +119,10 @@ function normalizePickArgs<T>(
   return [first as T, ...rest];
 }
 
-function dedupePreserveOrder<T, K>(items: readonly T[], key: (item: T) => K): T[] {
+function dedupePreserveOrder<T, K>(
+  items: readonly T[],
+  key: (item: T) => K,
+): T[] {
   const out: T[] = [];
   const seen = new Set<K>();
 
@@ -161,7 +168,8 @@ export type KernelsNaifOptions = {
   pathBase?: string;
 };
 
-const DEFAULT_NAIF_ORIGIN = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
+const DEFAULT_NAIF_ORIGIN =
+  "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
 const DEFAULT_NAIF_PATH_BASE = "";
 
 export type NaifKernelCatalog = {
@@ -218,15 +226,23 @@ export type CustomKernelPick = string | CustomKernelEntry;
 
 export type CustomKernelCatalogUrlOnly = {
   pick(entry: CustomKernelEntry): KernelPack;
-  pick(entries: readonly [CustomKernelEntry, ...CustomKernelEntry[]]): KernelPack;
-  pick(first: CustomKernelEntry, ...rest: readonly CustomKernelEntry[]): KernelPack;
+  pick(
+    entries: readonly [CustomKernelEntry, ...CustomKernelEntry[]],
+  ): KernelPack;
+  pick(
+    first: CustomKernelEntry,
+    ...rest: readonly CustomKernelEntry[]
+  ): KernelPack;
 };
 
 export type CustomKernelCatalog = {
   pick(id: string): KernelPack;
   pick(ids: readonly [string, ...string[]]): KernelPack;
   pick(entries: readonly [CustomKernelPick, ...CustomKernelPick[]]): KernelPack;
-  pick(first: CustomKernelPick, ...rest: readonly CustomKernelPick[]): KernelPack;
+  pick(
+    first: CustomKernelPick,
+    ...rest: readonly CustomKernelPick[]
+  ): KernelPack;
 };
 
 function buildLeafPathKernel(
@@ -249,7 +265,9 @@ export const kernels = {
    */
   naif: (opts?: KernelsNaifOptions): NaifKernelCatalog => {
     const origin = normalizeOrigin(opts?.origin ?? DEFAULT_NAIF_ORIGIN);
-    const pathBase = normalizePathBase(opts?.pathBase ?? DEFAULT_NAIF_PATH_BASE);
+    const pathBase = normalizePathBase(
+      opts?.pathBase ?? DEFAULT_NAIF_PATH_BASE,
+    );
 
     const rawBaseUrl = normalizeOptionalBaseUrl(opts?.baseUrl);
     const baseUrl = isAbsoluteKernelUrlPrefix(origin) ? undefined : rawBaseUrl;
@@ -257,8 +275,14 @@ export const kernels = {
       assertDirectoryStyleBaseUrl(baseUrl);
     }
 
-    const pickImpl = (first: NaifKernelId | readonly NaifKernelId[], rest: readonly NaifKernelId[]) => {
-      const ids = dedupePreserveOrder(normalizePickArgs(first, rest), (id) => id);
+    const pickImpl = (
+      first: NaifKernelId | readonly NaifKernelId[],
+      rest: readonly NaifKernelId[],
+    ) => {
+      const ids = dedupePreserveOrder(
+        normalizePickArgs(first, rest),
+        (id) => id,
+      );
       return {
         ...(baseUrl === undefined ? {} : { baseUrl }),
         kernels: ids.map((id) => buildLeafPathKernel(id, { origin, pathBase })),
@@ -266,8 +290,10 @@ export const kernels = {
     };
 
     return {
-      pick: ((first: NaifKernelId | readonly NaifKernelId[], ...rest: readonly NaifKernelId[]) =>
-        pickImpl(first, rest)) as NaifKernelCatalog["pick"],
+      pick: ((
+        first: NaifKernelId | readonly NaifKernelId[],
+        ...rest: readonly NaifKernelId[]
+      ) => pickImpl(first, rest)) as NaifKernelCatalog["pick"],
     };
   },
 
@@ -289,7 +315,10 @@ export const kernels = {
       first: TspiceKernelId | readonly TspiceKernelId[],
       rest: readonly TspiceKernelId[],
     ): KernelPack => {
-      const ids = dedupePreserveOrder(normalizePickArgs(first, rest), (id) => id);
+      const ids = dedupePreserveOrder(
+        normalizePickArgs(first, rest),
+        (id) => id,
+      );
       for (const id of ids) {
         if (!allowed.has(id)) {
           throw new Error(
@@ -307,8 +336,10 @@ export const kernels = {
     };
 
     return {
-      pick: ((first: TspiceKernelId | readonly TspiceKernelId[], ...rest: readonly TspiceKernelId[]) =>
-        pickImpl(first, rest)) as TspiceKernelCatalog["pick"],
+      pick: ((
+        first: TspiceKernelId | readonly TspiceKernelId[],
+        ...rest: readonly TspiceKernelId[]
+      ) => pickImpl(first, rest)) as TspiceKernelCatalog["pick"],
     };
   },
 
@@ -329,11 +360,16 @@ export const kernels = {
   custom: (() => {
     function custom(): CustomKernelCatalogUrlOnly;
     function custom(opts: KernelsCustomOptions): CustomKernelCatalog;
-    function custom(opts?: KernelsCustomOptions): CustomKernelCatalog | CustomKernelCatalogUrlOnly {
-      const origin = opts === undefined ? undefined : normalizeOrigin(opts.origin);
-      const pathBase = opts === undefined ? undefined : normalizePathBase(opts.pathBase);
+    function custom(
+      opts?: KernelsCustomOptions,
+    ): CustomKernelCatalog | CustomKernelCatalogUrlOnly {
+      const origin =
+        opts === undefined ? undefined : normalizeOrigin(opts.origin);
+      const pathBase =
+        opts === undefined ? undefined : normalizePathBase(opts.pathBase);
 
-      const rawBaseUrl = opts === undefined ? undefined : normalizeOptionalBaseUrl(opts.baseUrl);
+      const rawBaseUrl =
+        opts === undefined ? undefined : normalizeOptionalBaseUrl(opts.baseUrl);
 
       const pickImplWithOpts = (
         first: CustomKernelPick | readonly CustomKernelPick[],
@@ -341,7 +377,8 @@ export const kernels = {
       ): KernelPack => {
         const entries = dedupePreserveOrder(
           normalizePickArgs(first, rest),
-          (entry) => (typeof entry === "string" ? `id:${entry}` : `url:${entry.url}`),
+          (entry) =>
+            typeof entry === "string" ? `id:${entry}` : `url:${entry.url}`,
         );
 
         const kernelsOut = entries.map((entry): KernelPackKernel => {
@@ -364,7 +401,8 @@ export const kernels = {
         // If the pack contains any relative-ish kernel URLs (including root-relative
         // `/...`), include the configured baseUrl so load-time resolution works.
         const baseUrl =
-          rawBaseUrl !== undefined && kernelsOut.some((k) => !isAbsoluteKernelUrlPrefix(k.url))
+          rawBaseUrl !== undefined &&
+          kernelsOut.some((k) => !isAbsoluteKernelUrlPrefix(k.url))
             ? rawBaseUrl
             : undefined;
         if (baseUrl !== undefined) {
@@ -379,14 +417,22 @@ export const kernels = {
 
       if (opts === undefined) {
         return {
-          pick: ((first: CustomKernelEntry | readonly CustomKernelEntry[], ...rest: readonly CustomKernelEntry[]) =>
-            pickImplWithOpts(first, rest)) as CustomKernelCatalogUrlOnly["pick"],
+          pick: ((
+            first: CustomKernelEntry | readonly CustomKernelEntry[],
+            ...rest: readonly CustomKernelEntry[]
+          ) =>
+            pickImplWithOpts(
+              first,
+              rest,
+            )) as CustomKernelCatalogUrlOnly["pick"],
         };
       }
 
       return {
-        pick: ((first: CustomKernelPick | readonly CustomKernelPick[], ...rest: readonly CustomKernelPick[]) =>
-          pickImplWithOpts(first, rest)) as CustomKernelCatalog["pick"],
+        pick: ((
+          first: CustomKernelPick | readonly CustomKernelPick[],
+          ...rest: readonly CustomKernelPick[]
+        ) => pickImplWithOpts(first, rest)) as CustomKernelCatalog["pick"],
       };
     }
 

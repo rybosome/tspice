@@ -31,7 +31,9 @@ function normalizeGeneratedPathKey(rawPath: string): string | null {
 }
 
 /** Create an isolated alias map for one workflow-normalization run. */
-export function createNormalizationContext(target: NormalizeTarget): NormalizationContext {
+export function createNormalizationContext(
+  target: NormalizeTarget,
+): NormalizationContext {
   return {
     target,
     aliases: new Map<string, AliasValue>(),
@@ -54,7 +56,10 @@ export function publishAlias(
 }
 
 /** Resolve a previously published alias value. */
-export function readAlias(context: NormalizationContext, alias: string): AliasValue {
+export function readAlias(
+  context: NormalizationContext,
+  alias: string,
+): AliasValue {
   const normalizedAlias = normalizeAliasName(alias);
   const resolved = context.aliases.get(normalizedAlias);
   if (resolved == null) {

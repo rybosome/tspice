@@ -4,7 +4,11 @@
     "description": "ckupf unloads a CK handle previously opened by cklpf",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKUPF" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKUPF"
+      },
       { "op": "frames.ckupf", "handleId": "CKH_CKUPF" }
     ],
     "expectation": { "kind": "success" }

@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import type { SpiceTransport } from "../src/transport/types.js";
-import { tspiceRpcRequestType, tspiceRpcResponseType } from "../src/transport/rpc/protocol.js";
+import {
+  tspiceRpcRequestType,
+  tspiceRpcResponseType,
+} from "../src/transport/rpc/protocol.js";
 import { nextMacrotask } from "../src/transport/rpc/taskScheduling.js";
 import { createWorkerTransport } from "../src/worker/transport/createWorkerTransport.js";
 import { exposeTransportToWorker } from "../src/worker/transport/exposeTransportToWorker.js";
@@ -28,7 +31,11 @@ describe("worker transport", () => {
     const server: SpiceTransport = {
       request: async (op, args) => ({ op, args }),
     };
-    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+    exposeTransportToWorker({
+      transport: server,
+      self: scope,
+      closeOnDispose: false,
+    });
 
     const transport = createWorkerTransport({ worker: () => worker });
 
@@ -55,7 +62,11 @@ describe("worker transport", () => {
     const server: SpiceTransport = {
       request: async () => "ok",
     };
-    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+    exposeTransportToWorker({
+      transport: server,
+      self: scope,
+      closeOnDispose: false,
+    });
 
     const transport = createWorkerTransport({ worker: () => worker });
 
@@ -121,7 +132,9 @@ describe("worker transport", () => {
 
     const transport = createWorkerTransport({ worker: () => worker });
 
-    const error = await getRejectedError(transport.request("kit.toolkitVersion", []));
+    const error = await getRejectedError(
+      transport.request("kit.toolkitVersion", []),
+    );
 
     expect(error).toBeInstanceOf(Error);
     expect(error.message).toContain("Internal worker RPC protocol error");
@@ -169,7 +182,11 @@ describe("worker transport", () => {
       request: async () => "ok",
     };
 
-    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+    exposeTransportToWorker({
+      transport: server,
+      self: scope,
+      closeOnDispose: false,
+    });
 
     scope.dispatchMessageFromMain({
       type: tspiceRpcRequestType,
@@ -190,7 +207,9 @@ describe("worker transport", () => {
     expect(response.type).toBe(tspiceRpcResponseType);
     expect(response.id).toBe(7);
     expect(response.ok).toBe(false);
-    expect(response.error?.message).toContain("Internal worker RPC protocol error");
+    expect(response.error?.message).toContain(
+      "Internal worker RPC protocol error",
+    );
     expect(response.error?.message).toContain('op="raw.echo"');
     expect(response.error?.message).toContain("id=7");
     expect(response.error?.message).toContain("Expected:");
@@ -208,7 +227,11 @@ describe("worker transport", () => {
       request: async () => "ok",
     };
 
-    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+    exposeTransportToWorker({
+      transport: server,
+      self: scope,
+      closeOnDispose: false,
+    });
 
     expect(() => {
       scope.dispatchMessageFromMain({

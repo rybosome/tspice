@@ -32,15 +32,18 @@ describe("public api smoke", () => {
 
   const itNode = it.runIf(nodeBackendAvailable);
 
-  itNode("can import @rybosome/tspice and build a sync node client", async () => {
-    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+  itNode(
+    "can import @rybosome/tspice and build a sync node client",
+    async () => {
+      const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
 
-    try {
-      const version = spice.kit.toolkitVersion();
-      expect(typeof version).toBe("string");
-      expect(version.length).toBeGreaterThan(0);
-    } finally {
-      await dispose();
-    }
-  });
+      try {
+        const version = spice.kit.toolkitVersion();
+        expect(typeof version).toBe("string");
+        expect(version.length).toBeGreaterThan(0);
+      } finally {
+        await dispose();
+      }
+    },
+  );
 });

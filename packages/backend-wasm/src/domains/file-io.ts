@@ -6,7 +6,10 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -14,7 +17,11 @@ import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
-import type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type {
+  SpiceHandleEntry,
+  SpiceHandleKind,
+  SpiceHandleRegistry,
+} from "../runtime/spice-handles.js";
 import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
@@ -41,7 +48,11 @@ const DESCR_KEYS = [
   "csize",
 ] as const;
 
-function readHeapI32(module: EmscriptenModule, idx: number, context: string): number {
+function readHeapI32(
+  module: EmscriptenModule,
+  idx: number,
+  context: string,
+): number {
   const heap = module.HEAP32;
   const v = heap[idx];
 
@@ -58,18 +69,26 @@ function readHeapI32(module: EmscriptenModule, idx: number, context: string): nu
 
 function heap32IndexFromPtr(ptr: number, context: string): number {
   if (!Number.isFinite(ptr) || !Number.isInteger(ptr)) {
-    throw new TypeError(`${context}: expected ptr to be a finite integer (got ${ptr})`);
+    throw new TypeError(
+      `${context}: expected ptr to be a finite integer (got ${ptr})`,
+    );
   }
   if (ptr < 0) {
     throw new RangeError(`${context}: expected ptr to be >= 0 (got ${ptr})`);
   }
   if (ptr % 4 !== 0) {
-    throw new RangeError(`${context}: expected ptr to be 4-byte aligned (got ${ptr})`);
+    throw new RangeError(
+      `${context}: expected ptr to be 4-byte aligned (got ${ptr})`,
+    );
   }
   return ptr / 4;
 }
 
-function writeDlaDescr8(module: EmscriptenModule, ptr: number, descr: DlaDescriptor): void {
+function writeDlaDescr8(
+  module: EmscriptenModule,
+  ptr: number,
+  descr: DlaDescriptor,
+): void {
   const base = heap32IndexFromPtr(ptr, "writeDlaDescr8(ptr)");
   const heap = module.HEAP32;
 
@@ -115,7 +134,10 @@ function readDlaDescr8(module: EmscriptenModule, ptr: number): DlaDescriptor {
   };
 }
 
-function assertDlaDescriptor(value: unknown, context: string): asserts value is DlaDescriptor {
+function assertDlaDescriptor(
+  value: unknown,
+  context: string,
+): asserts value is DlaDescriptor {
   if (typeof value !== "object" || value === null) {
     throw new Error(`${context}: expected an object`);
   }
@@ -128,7 +150,9 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
       v < I32_MIN ||
       v > I32_MAX
     ) {
-      throw new Error(`${context}: expected ${key} to be a 32-bit signed integer`);
+      throw new Error(
+        `${context}: expected ${key} to be a 32-bit signed integer`,
+      );
     }
 
     const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
@@ -174,14 +198,26 @@ export function createFileIoApi(
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
       try {
-        return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outExistsPtr, errPtr) => {
-          module.HEAP32[outExistsPtr >> 2] = 0;
-          const code = module._tspice_exists(pathPtr, outExistsPtr, errPtr, WASM_ERR_MAX_BYTES);
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outExistsPtr >> 2, "exists(outExistsPtr)") !== 0;
-        });
+        return withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outExistsPtr, errPtr) => {
+            module.HEAP32[outExistsPtr >> 2] = 0;
+            const code = module._tspice_exists(
+              pathPtr,
+              outExistsPtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return (
+              readHeapI32(module, outExistsPtr >> 2, "exists(outExistsPtr)") !==
+              0
+            );
+          },
+        );
       } finally {
         module._free(pathPtr);
       }
@@ -195,25 +231,29 @@ export function createFileIoApi(
       const typeMaxBytes = 64;
 
       try {
-        return withAllocs(module, [archMaxBytes, typeMaxBytes, WASM_ERR_MAX_BYTES], (archPtr, typePtr, errPtr) => {
-          const code = module._tspice_getfat(
-            pathPtr,
-            archPtr,
-            archMaxBytes,
-            typePtr,
-            typeMaxBytes,
-            errPtr,
-            WASM_ERR_MAX_BYTES,
-          );
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
+        return withAllocs(
+          module,
+          [archMaxBytes, typeMaxBytes, WASM_ERR_MAX_BYTES],
+          (archPtr, typePtr, errPtr) => {
+            const code = module._tspice_getfat(
+              pathPtr,
+              archPtr,
+              archMaxBytes,
+              typePtr,
+              typeMaxBytes,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
 
-          return {
-            arch: module.UTF8ToString(archPtr, archMaxBytes).trim(),
-            type: module.UTF8ToString(typePtr, typeMaxBytes).trim(),
-          };
-        });
+            return {
+              arch: module.UTF8ToString(archPtr, archMaxBytes).trim(),
+              type: module.UTF8ToString(typePtr, typeMaxBytes).trim(),
+            };
+          },
+        );
       } finally {
         module._free(pathPtr);
       }
@@ -223,14 +263,27 @@ export function createFileIoApi(
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
       try {
-        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
-          module.HEAP32[outHandlePtr >> 2] = 0;
-          const code = module._tspice_dafopr(pathPtr, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outHandlePtr >> 2, "dafopr(outHandlePtr)");
-        });
+        const nativeHandle = withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outHandlePtr, errPtr) => {
+            module.HEAP32[outHandlePtr >> 2] = 0;
+            const code = module._tspice_dafopr(
+              pathPtr,
+              outHandlePtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return readHeapI32(
+              module,
+              outHandlePtr >> 2,
+              "dafopr(outHandlePtr)",
+            );
+          },
+        );
         return handles.register("DAF", nativeHandle);
       } finally {
         module._free(pathPtr);
@@ -241,7 +294,8 @@ export function createFileIoApi(
       handles.close(
         handle,
         ["DAF"],
-        (entry: SpiceHandleEntry) => callVoidHandle(module, module._tspice_dafcls, entry.nativeHandle),
+        (entry: SpiceHandleEntry) =>
+          callVoidHandle(module, module._tspice_dafcls, entry.nativeHandle),
         "dafcls",
       ),
 
@@ -253,29 +307,57 @@ export function createFileIoApi(
       ),
 
     daffna: (handle: SpiceHandle) => {
-      const nativeHandle = handles.lookup(handle, ["DAF"], "daffna").nativeHandle;
-      return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outFoundPtr, errPtr) => {
-        module.HEAP32[outFoundPtr >> 2] = 0;
-        const code = module._tspice_daffna(nativeHandle, outFoundPtr, errPtr, WASM_ERR_MAX_BYTES);
-        if (code !== 0) {
-          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-        }
-        return readHeapI32(module, outFoundPtr >> 2, "daffna(outFoundPtr)") !== 0;
-      });
+      const nativeHandle = handles.lookup(
+        handle,
+        ["DAF"],
+        "daffna",
+      ).nativeHandle;
+      return withAllocs(
+        module,
+        [4, WASM_ERR_MAX_BYTES],
+        (outFoundPtr, errPtr) => {
+          module.HEAP32[outFoundPtr >> 2] = 0;
+          const code = module._tspice_daffna(
+            nativeHandle,
+            outFoundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+          return (
+            readHeapI32(module, outFoundPtr >> 2, "daffna(outFoundPtr)") !== 0
+          );
+        },
+      );
     },
 
     dasopr: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
       try {
-        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
-          module.HEAP32[outHandlePtr >> 2] = 0;
-          const code = module._tspice_dasopr(pathPtr, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outHandlePtr >> 2, "dasopr(outHandlePtr)");
-        });
+        const nativeHandle = withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outHandlePtr, errPtr) => {
+            module.HEAP32[outHandlePtr >> 2] = 0;
+            const code = module._tspice_dasopr(
+              pathPtr,
+              outHandlePtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return readHeapI32(
+              module,
+              outHandlePtr >> 2,
+              "dasopr(outHandlePtr)",
+            );
+          },
+        );
         return handles.register("DAS", nativeHandle);
       } finally {
         module._free(pathPtr);
@@ -301,22 +383,30 @@ export function createFileIoApi(
       const ifnamePtr = writeUtf8CString(module, ifname);
 
       try {
-        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
-          module.HEAP32[outHandlePtr >> 2] = 0;
-          const code = module._tspice_dlaopn(
-            pathPtr,
-            ftypePtr,
-            ifnamePtr,
-            ncomch,
-            outHandlePtr,
-            errPtr,
-            WASM_ERR_MAX_BYTES,
-          );
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outHandlePtr >> 2, "dlaopn(outHandlePtr)");
-        });
+        const nativeHandle = withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outHandlePtr, errPtr) => {
+            module.HEAP32[outHandlePtr >> 2] = 0;
+            const code = module._tspice_dlaopn(
+              pathPtr,
+              ftypePtr,
+              ifnamePtr,
+              ncomch,
+              outHandlePtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return readHeapI32(
+              module,
+              outHandlePtr >> 2,
+              "dlaopn(outHandlePtr)",
+            );
+          },
+        );
 
         return handles.register("DLA", nativeHandle);
       } finally {
@@ -327,33 +417,46 @@ export function createFileIoApi(
     },
 
     dlabfs: (handle: SpiceHandle): FoundDlaDescriptor => {
-      const nativeHandle = handles.lookup(handle, DAS_BACKED, "dlabfs").nativeHandle;
-      return withAllocs(module, [32, 4, WASM_ERR_MAX_BYTES], (outDescr8Ptr, outFoundPtr, errPtr) => {
-        module.HEAP32[outFoundPtr >> 2] = 0;
+      const nativeHandle = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "dlabfs",
+      ).nativeHandle;
+      return withAllocs(
+        module,
+        [32, 4, WASM_ERR_MAX_BYTES],
+        (outDescr8Ptr, outFoundPtr, errPtr) => {
+          module.HEAP32[outFoundPtr >> 2] = 0;
 
-        const code = module._tspice_dlabfs(
-          nativeHandle,
-          outDescr8Ptr,
-          outFoundPtr,
-          errPtr,
-          WASM_ERR_MAX_BYTES,
-        );
-        if (code !== 0) {
-          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-        }
+          const code = module._tspice_dlabfs(
+            nativeHandle,
+            outDescr8Ptr,
+            outFoundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
 
-        const found = readHeapI32(module, outFoundPtr >> 2, "dlabfs(outFoundPtr)") !== 0;
-        if (!found) {
-          return { found: false };
-        }
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "dlabfs(outFoundPtr)") !== 0;
+          if (!found) {
+            return { found: false };
+          }
 
-        return { found: true, descr: readDlaDescr8(module, outDescr8Ptr) };
-      });
+          return { found: true, descr: readDlaDescr8(module, outDescr8Ptr) };
+        },
+      );
     },
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
       assertDlaDescriptor(descr, "dlafns(descr)");
-      const nativeHandle = handles.lookup(handle, DAS_BACKED, "dlafns").nativeHandle;
+      const nativeHandle = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "dlafns",
+      ).nativeHandle;
 
       return withAllocs(
         module,
@@ -374,12 +477,16 @@ export function createFileIoApi(
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
 
-          const found = readHeapI32(module, outFoundPtr >> 2, "dlafns(outFoundPtr)") !== 0;
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "dlafns(outFoundPtr)") !== 0;
           if (!found) {
             return { found: false };
           }
 
-          return { found: true, descr: readDlaDescr8(module, outNextDescr8Ptr) };
+          return {
+            found: true,
+            descr: readDlaDescr8(module, outNextDescr8Ptr),
+          };
         },
       );
     },
@@ -402,21 +509,29 @@ export function createFileIoApi(
       const ifnamePtr = writeUtf8CString(module, ifname);
 
       try {
-        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
-          module.HEAP32[outHandlePtr >> 2] = 0;
-          const code = module._tspice_dskopn(
-            pathPtr,
-            ifnamePtr,
-            ncomch,
-            outHandlePtr,
-            errPtr,
-            WASM_ERR_MAX_BYTES,
-          );
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outHandlePtr >> 2, "dskopn(outHandlePtr)");
-        });
+        const nativeHandle = withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outHandlePtr, errPtr) => {
+            module.HEAP32[outHandlePtr >> 2] = 0;
+            const code = module._tspice_dskopn(
+              pathPtr,
+              ifnamePtr,
+              ncomch,
+              outHandlePtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return readHeapI32(
+              module,
+              outHandlePtr >> 2,
+              "dskopn(outHandlePtr)",
+            );
+          },
+        );
 
         // DSKs are DAS-backed; register as DAS so `dascls` can close it.
         return handles.register("DAS", nativeHandle);
@@ -452,7 +567,9 @@ export function createFileIoApi(
         throw new RangeError("dskmi2(nv): expected nv > 0");
       }
       if (vrtces.length !== expectedVrtcesLen) {
-        throw new RangeError(`dskmi2(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`);
+        throw new RangeError(
+          `dskmi2(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`,
+        );
       }
 
       const expectedPlatesLen = np * 3;
@@ -460,17 +577,23 @@ export function createFileIoApi(
         throw new RangeError("dskmi2(np): expected np > 0");
       }
       if (plates.length !== expectedPlatesLen) {
-        throw new RangeError(`dskmi2(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
+        throw new RangeError(
+          `dskmi2(plates): expected length ${expectedPlatesLen}, got ${plates.length}`,
+        );
       }
 
       for (let i = 0; i < plates.length; i++) {
         const v = plates[i];
         if (v === undefined) {
-          throw new RangeError(`dskmi2(plates[${i}]): expected a value, got undefined`);
+          throw new RangeError(
+            `dskmi2(plates[${i}]): expected a value, got undefined`,
+          );
         }
         assertSpiceInt32(v, `dskmi2(plates[${i}])`);
         if (v < 1 || v > nv) {
-          throw new RangeError(`dskmi2(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+          throw new RangeError(
+            `dskmi2(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`,
+          );
         }
       }
 
@@ -478,14 +601,18 @@ export function createFileIoApi(
         throw new RangeError("dskmi2(worksz): expected worksz > 0");
       }
       if (worksz > DSKMI2_MAX_SIZE) {
-        throw new RangeError(`dskmi2(worksz): expected worksz <= ${DSKMI2_MAX_SIZE}, got ${worksz}`);
+        throw new RangeError(
+          `dskmi2(worksz): expected worksz <= ${DSKMI2_MAX_SIZE}, got ${worksz}`,
+        );
       }
 
       if (spxisz <= 0) {
         throw new RangeError("dskmi2(spxisz): expected spxisz > 0");
       }
       if (spxisz > DSKMI2_MAX_SIZE) {
-        throw new RangeError(`dskmi2(spxisz): expected spxisz <= ${DSKMI2_MAX_SIZE}, got ${spxisz}`);
+        throw new RangeError(
+          `dskmi2(spxisz): expected spxisz <= ${DSKMI2_MAX_SIZE}, got ${spxisz}`,
+        );
       }
 
       const vrtcesBytes = expectedVrtcesLen * 8;
@@ -495,13 +622,27 @@ export function createFileIoApi(
 
       return withAllocs(
         module,
-        [vrtcesBytes, platesBytes, spaixdBytes, spaixiBytes, WASM_ERR_MAX_BYTES],
+        [
+          vrtcesBytes,
+          platesBytes,
+          spaixdBytes,
+          spaixiBytes,
+          WASM_ERR_MAX_BYTES,
+        ],
         (vrtcesPtr, platesPtr, outSpaixdPtr, outSpaixiPtr, errPtr) => {
           module.HEAPF64.set(vrtces, vrtcesPtr >> 3);
           module.HEAP32.set(plates, platesPtr >> 2);
 
-          module.HEAPF64.fill(0, outSpaixdPtr >> 3, (outSpaixdPtr >> 3) + DSK02_IXDFIX);
-          module.HEAP32.fill(0, outSpaixiPtr >> 2, (outSpaixiPtr >> 2) + spxisz);
+          module.HEAPF64.fill(
+            0,
+            outSpaixdPtr >> 3,
+            (outSpaixdPtr >> 3) + DSK02_IXDFIX,
+          );
+          module.HEAP32.fill(
+            0,
+            outSpaixiPtr >> 2,
+            (outSpaixiPtr >> 2) + spxisz,
+          );
 
           const code = module._tspice_dskmi2(
             nv,
@@ -527,10 +668,16 @@ export function createFileIoApi(
           }
 
           const spaixd = Array.from(
-            module.HEAPF64.subarray(outSpaixdPtr >> 3, (outSpaixdPtr >> 3) + DSK02_IXDFIX),
+            module.HEAPF64.subarray(
+              outSpaixdPtr >> 3,
+              (outSpaixdPtr >> 3) + DSK02_IXDFIX,
+            ),
           );
           const spaixi = Array.from(
-            module.HEAP32.subarray(outSpaixiPtr >> 2, (outSpaixiPtr >> 2) + spxisz),
+            module.HEAP32.subarray(
+              outSpaixiPtr >> 2,
+              (outSpaixiPtr >> 2) + spxisz,
+            ),
           );
 
           return { spaixd, spaixi };
@@ -573,7 +720,9 @@ export function createFileIoApi(
         throw new RangeError("dskw02(nv): expected nv > 0");
       }
       if (vrtces.length !== expectedVrtcesLen) {
-        throw new RangeError(`dskw02(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`);
+        throw new RangeError(
+          `dskw02(vrtces): expected length ${expectedVrtcesLen}, got ${vrtces.length}`,
+        );
       }
 
       const expectedPlatesLen = np * 3;
@@ -581,25 +730,35 @@ export function createFileIoApi(
         throw new RangeError("dskw02(np): expected np > 0");
       }
       if (plates.length !== expectedPlatesLen) {
-        throw new RangeError(`dskw02(plates): expected length ${expectedPlatesLen}, got ${plates.length}`);
+        throw new RangeError(
+          `dskw02(plates): expected length ${expectedPlatesLen}, got ${plates.length}`,
+        );
       }
 
       for (let i = 0; i < plates.length; i++) {
         const v = plates[i];
         if (v === undefined) {
-          throw new RangeError(`dskw02(plates[${i}]): expected a value, got undefined`);
+          throw new RangeError(
+            `dskw02(plates[${i}]): expected a value, got undefined`,
+          );
         }
         assertSpiceInt32(v, `dskw02(plates[${i}])`);
         if (v < 1 || v > nv) {
-          throw new RangeError(`dskw02(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`);
+          throw new RangeError(
+            `dskw02(plates[${i}]): expected value in [1, nv] (nv=${nv}), got ${v}`,
+          );
         }
       }
 
       if (corpar.length !== 10) {
-        throw new RangeError(`dskw02(corpar): expected length 10, got ${corpar.length}`);
+        throw new RangeError(
+          `dskw02(corpar): expected length 10, got ${corpar.length}`,
+        );
       }
       if (spaixd.length !== DSK02_IXDFIX) {
-        throw new RangeError(`dskw02(spaixd): expected length ${DSK02_IXDFIX}, got ${spaixd.length}`);
+        throw new RangeError(
+          `dskw02(spaixd): expected length ${DSK02_IXDFIX}, got ${spaixd.length}`,
+        );
       }
 
       const spaixiLen = spaixi.length;
@@ -611,12 +770,18 @@ export function createFileIoApi(
       for (let i = 0; i < spaixiLen; i++) {
         const v = spaixi[i];
         if (v === undefined) {
-          throw new RangeError(`dskw02(spaixi[${i}]): expected a value, got undefined`);
+          throw new RangeError(
+            `dskw02(spaixi[${i}]): expected a value, got undefined`,
+          );
         }
         assertSpiceInt32(v, `dskw02(spaixi[${i}])`);
       }
 
-      const nativeHandle = handles.lookup(handle, ["DAS"], "dskw02").nativeHandle;
+      const nativeHandle = handles.lookup(
+        handle,
+        ["DAS"],
+        "dskw02",
+      ).nativeHandle;
 
       const framePtr = writeUtf8CString(module, frame);
       try {
@@ -628,7 +793,14 @@ export function createFileIoApi(
 
         withAllocs(
           module,
-          [corparBytes, vrtcesBytes, platesBytes, spaixdBytes, spaixiBytes, WASM_ERR_MAX_BYTES],
+          [
+            corparBytes,
+            vrtcesBytes,
+            platesBytes,
+            spaixdBytes,
+            spaixiBytes,
+            WASM_ERR_MAX_BYTES,
+          ],
           (corparPtr, vrtcesPtr, platesPtr, spaixdPtr, spaixiPtr, errPtr) => {
             module.HEAPF64.set(corpar, corparPtr >> 3);
             module.HEAPF64.set(vrtces, vrtcesPtr >> 3);
@@ -687,10 +859,14 @@ export function createFileIoKitApi(
       }
       const obj = output as { kind?: unknown; path?: unknown };
       if (obj.kind !== "virtual-output") {
-        throw new Error("readVirtualOutput(output): expected kind='virtual-output'");
+        throw new Error(
+          "readVirtualOutput(output): expected kind='virtual-output'",
+        );
       }
       if (typeof obj.path !== "string") {
-        throw new Error("readVirtualOutput(output): expected path to be a string");
+        throw new Error(
+          "readVirtualOutput(output): expected path to be a string",
+        );
       }
 
       const resolved = resolveKernelPath(obj.path);

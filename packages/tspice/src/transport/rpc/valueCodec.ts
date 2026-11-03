@@ -73,7 +73,10 @@ export function encodeRpcValue(value: unknown): unknown {
     // These are structured-clone-safe and commonly used for kernel outputs.
     if (value instanceof ArrayBuffer) return value;
     if (ArrayBuffer.isView(value)) return value;
-    if (typeof SharedArrayBuffer !== "undefined" && value instanceof SharedArrayBuffer) {
+    if (
+      typeof SharedArrayBuffer !== "undefined" &&
+      value instanceof SharedArrayBuffer
+    ) {
       return value;
     }
 

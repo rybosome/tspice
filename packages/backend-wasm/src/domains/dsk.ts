@@ -14,7 +14,10 @@ import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
-import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type {
+  SpiceHandleKind,
+  SpiceHandleRegistry,
+} from "../runtime/spice-handles.js";
 
 import { assertWasmOwnedCellHandle } from "./cells-windows.js";
 
@@ -34,8 +37,14 @@ const DESCR_KEYS = [
   "csize",
 ] as const;
 
-function assertDlaDescriptor(value: unknown, context: string): asserts value is DlaDescriptor {
-  invariant(typeof value === "object" && value !== null, `${context}: expected an object`);
+function assertDlaDescriptor(
+  value: unknown,
+  context: string,
+): asserts value is DlaDescriptor {
+  invariant(
+    typeof value === "object" && value !== null,
+    `${context}: expected an object`,
+  );
   const obj = value as Record<string, unknown>;
   for (const key of DESCR_KEYS) {
     const v = obj[key];
@@ -51,18 +60,26 @@ function assertDlaDescriptor(value: unknown, context: string): asserts value is 
 
 function heap32IndexFromPtr(ptr: number, context: string): number {
   if (!Number.isFinite(ptr) || !Number.isInteger(ptr)) {
-    throw new TypeError(`${context}: expected ptr to be a finite integer (got ${ptr})`);
+    throw new TypeError(
+      `${context}: expected ptr to be a finite integer (got ${ptr})`,
+    );
   }
   if (ptr < 0) {
     throw new RangeError(`${context}: expected ptr to be >= 0 (got ${ptr})`);
   }
   if (ptr % 4 !== 0) {
-    throw new RangeError(`${context}: expected ptr to be 4-byte aligned (got ${ptr})`);
+    throw new RangeError(
+      `${context}: expected ptr to be 4-byte aligned (got ${ptr})`,
+    );
   }
   return ptr / 4;
 }
 
-function writeDlaDescr8(module: EmscriptenModule, ptr: number, descr: DlaDescriptor): void {
+function writeDlaDescr8(
+  module: EmscriptenModule,
+  ptr: number,
+  descr: DlaDescriptor,
+): void {
   const base = heap32IndexFromPtr(ptr, "writeDlaDescr8(ptr)");
   const heap = module.HEAP32;
 
@@ -82,7 +99,11 @@ function writeDlaDescr8(module: EmscriptenModule, ptr: number, descr: DlaDescrip
   heap[base + 7] = descr.csize | 0;
 }
 
-function tspiceCallDskobj(module: EmscriptenModule, dsk: string, bodids: SpiceIntCell): void {
+function tspiceCallDskobj(
+  module: EmscriptenModule,
+  dsk: string,
+  bodids: SpiceIntCell,
+): void {
   const errPtr = module._malloc(WASM_ERR_MAX_BYTES);
   const dskPathPtr = writeUtf8CString(module, resolveKernelPath(dsk));
 
@@ -167,7 +188,10 @@ function tspiceCallDskgd(
         module.HEAP32.subarray(outInts6Ptr >> 2, (outInts6Ptr >> 2) + 6),
       );
       const doubles = Array.from(
-        module.HEAPF64.subarray(outDoubles18Ptr >> 3, (outDoubles18Ptr >> 3) + 18),
+        module.HEAPF64.subarray(
+          outDoubles18Ptr >> 3,
+          (outDoubles18Ptr >> 3) + 18,
+        ),
       );
 
       return {
@@ -218,7 +242,10 @@ function tspiceCallDskb02(
         module.HEAP32.subarray(outInts10Ptr >> 2, (outInts10Ptr >> 2) + 10),
       );
       const doubles = Array.from(
-        module.HEAPF64.subarray(outDoubles10Ptr >> 3, (outDoubles10Ptr >> 3) + 10),
+        module.HEAPF64.subarray(
+          outDoubles10Ptr >> 3,
+          (outDoubles10Ptr >> 3) + 10,
+        ),
       );
 
       return {
@@ -243,15 +270,26 @@ function tspiceCallDskb02(
 }
 
 /** Create a {@link DskApi} implementation backed by a WASM Emscripten module. */
-export function createDskApi(module: EmscriptenModule, handles: SpiceHandleRegistry): DskApi {
+export function createDskApi(
+  module: EmscriptenModule,
+  handles: SpiceHandleRegistry,
+): DskApi {
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
-      assertWasmOwnedCellHandle(module, bodids as unknown as number, "dskobj(bodids)");
+      assertWasmOwnedCellHandle(
+        module,
+        bodids as unknown as number,
+        "dskobj(bodids)",
+      );
       tspiceCallDskobj(module, dsk, bodids);
     },
 
     dsksrf: (dsk: string, bodyid: number, srfids: SpiceIntCell) => {
-      assertWasmOwnedCellHandle(module, srfids as unknown as number, "dsksrf(srfids)");
+      assertWasmOwnedCellHandle(
+        module,
+        srfids as unknown as number,
+        "dsksrf(srfids)",
+      );
       tspiceCallDsksrf(module, dsk, bodyid, srfids);
     },
 

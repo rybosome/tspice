@@ -1,4 +1,8 @@
-import type { SpiceBackend, SpiceHandle, SpiceHandleEntry } from "@rybosome/tspice-backend-contract";
+import type {
+  SpiceBackend,
+  SpiceHandle,
+  SpiceHandleEntry,
+} from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import { getNativeAddon } from "./native.js";
@@ -19,14 +23,20 @@ import { createKernelPoolApi } from "./domains/kernel-pool.js";
 import { createTimeApi, createTimeKitApi } from "./domains/time.js";
 import { createFileIoApi, createFileIoKitApi } from "./domains/file-io.js";
 import { createErrorApi } from "./domains/error.js";
-import { createCellsWindowsApi, createCellsWindowsKitApi } from "./domains/cells-windows.js";
+import {
+  createCellsWindowsApi,
+  createCellsWindowsKitApi,
+} from "./domains/cells-windows.js";
 import { createDskApi } from "./domains/dsk.js";
 import { createEkApi } from "./domains/ek.js";
 
 /** Return the SPICE toolkit version exposed by the native Node addon. */
 export function spiceVersion(): string {
   const version = getNativeAddon().spiceVersion();
-  invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
+  invariant(
+    typeof version === "string",
+    "Expected native backend spiceVersion() to return a string",
+  );
   return version;
 }
 
@@ -65,7 +75,8 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   };
 
   // Internal testing hook (not part of the public backend contract).
-  (backend as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () => native.__ktotalAll();
+  (backend as SpiceBackend & { __ktotalAll(): number }).__ktotalAll = () =>
+    native.__ktotalAll();
 
   // Internal best-effort cleanup hook (not part of the public backend contract).
   // Closes all currently-registered DAF/DAS/DLA/EK/SPK handles and throws an AggregateError if any closes fail.
@@ -73,11 +84,13 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     value: () => {
       const errors: unknown[] = [];
       const entries =
-        (spiceHandles as typeof spiceHandles & {
-          __entries?: () => ReadonlyArray<
-            readonly [SpiceHandle, Readonly<SpiceHandleEntry>]
-          >;
-        }).__entries?.() ?? [];
+        (
+          spiceHandles as typeof spiceHandles & {
+            __entries?: () => ReadonlyArray<
+              readonly [SpiceHandle, Readonly<SpiceHandleEntry>]
+            >;
+          }
+        ).__entries?.() ?? [];
 
       for (const [handle, entry] of entries) {
         try {
@@ -88,12 +101,27 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
           }
 
           if (entry.kind === "DAF") {
-            spiceHandles.close(handle, ["DAF"], (e) => native.dafcls(e.nativeHandle), "disposeAll:dafcls");
+            spiceHandles.close(
+              handle,
+              ["DAF"],
+              (e) => native.dafcls(e.nativeHandle),
+              "disposeAll:dafcls",
+            );
           } else if (entry.kind === "EK") {
-            spiceHandles.close(handle, ["EK"], (e) => native.ekcls(e.nativeHandle), "disposeAll:ekcls");
+            spiceHandles.close(
+              handle,
+              ["EK"],
+              (e) => native.ekcls(e.nativeHandle),
+              "disposeAll:ekcls",
+            );
           } else {
             // In CSPICE, dascls_c closes both DAS and DLA handles (dlacls_c is an alias).
-            spiceHandles.close(handle, ["DAS", "DLA"], (e) => native.dascls(e.nativeHandle), "disposeAll:dascls");
+            spiceHandles.close(
+              handle,
+              ["DAS", "DLA"],
+              (e) => native.dascls(e.nativeHandle),
+              "disposeAll:dascls",
+            );
           }
         } catch (err) {
           errors.push(err);
@@ -108,7 +136,10 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       }
 
       if (errors.length > 0) {
-        throw new AggregateError(errors, `disposeAll(): failed to close ${errors.length} handle(s)`);
+        throw new AggregateError(
+          errors,
+          `disposeAll(): failed to close ${errors.length} handle(s)`,
+        );
       }
     },
     enumerable: false,

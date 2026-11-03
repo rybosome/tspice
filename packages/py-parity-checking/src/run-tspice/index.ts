@@ -7,7 +7,11 @@ import type {
 } from "../case-types.js";
 import type { Spice } from "@rybosome/tspice";
 
-import { cleanupContext, clearKernelState, createRunTspiceContext } from "./context.js";
+import {
+  cleanupContext,
+  clearKernelState,
+  createRunTspiceContext,
+} from "./context.js";
 import { dispatchStep } from "./dispatch.js";
 import { runTspicePostCaseHooks } from "./post-case.js";
 import { normalizeError } from "./utils/errors.js";
@@ -19,7 +23,11 @@ export function runCaseInTspice(
   parityCase: ParityCase,
   fixturesRoot: string,
 ): CaseExecutionResult {
-  const context = createRunTspiceContext(spice, fixturesRoot, parityCase.caseId);
+  const context = createRunTspiceContext(
+    spice,
+    fixturesRoot,
+    parityCase.caseId,
+  );
 
   try {
     clearKernelState(context);

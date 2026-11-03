@@ -3,7 +3,12 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import type { CreateBackendOptions } from "./backend.js";
 import { createBackend } from "./backend.js";
 
-import type { PromisifyObject, Spice, SpiceAsync, SpiceRaw } from "./kit/types/spice-types.js";
+import type {
+  PromisifyObject,
+  Spice,
+  SpiceAsync,
+  SpiceRaw,
+} from "./kit/types/spice-types.js";
 import { createKit } from "./kit/spice/create-kit.js";
 
 export type CreateSpiceOptions = CreateBackendOptions & {
@@ -91,7 +96,10 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 }
 
 function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
-  const wrappedByFn = new WeakMap<(...args: never[]) => unknown, (...args: never[]) => unknown>();
+  const wrappedByFn = new WeakMap<
+    (...args: never[]) => unknown,
+    (...args: never[]) => unknown
+  >();
   const handler: ProxyHandler<T> = {
     get: (t, prop) => {
       const value = Reflect.get(t, prop, t) as unknown;

@@ -20,7 +20,13 @@ import type { SpiceIntCell, SpiceWindow } from "./cells-windows.js";
  *
  * This is the packed form returned by `spksfs` and accepted by `spkuds`.
  */
-export type SpkPackedDescriptor = readonly [number, number, number, number, number];
+export type SpkPackedDescriptor = readonly [
+  number,
+  number,
+  number,
+  number,
+  number,
+];
 
 /** Unpacked SPK segment descriptor (see `spkuds_c`). */
 export type SpkUnpackedDescriptor = {
@@ -154,7 +160,10 @@ export interface EphemerisApi {
    *
    * Note: `handle` is the native SPICE DAF handle for the file containing the segment.
    */
-  spksfs(body: number, et: number): Found<{ handle: number; descr: SpkPackedDescriptor; ident: string }>;
+  spksfs(
+    body: number,
+    et: number,
+  ): Found<{ handle: number; descr: SpkPackedDescriptor; ident: string }>;
 
   /** Pack an SPK segment descriptor via `spkpds`. */
   spkpds(
@@ -194,7 +203,11 @@ export interface EphemerisApi {
    * Callers should retain the `VirtualOutput` they passed to `spkopn`/`spkopa`.
    * It is the identifier used to read bytes back later.
    */
-  spkopn(file: string | VirtualOutput, ifname: string, ncomch: number): SpiceHandle;
+  spkopn(
+    file: string | VirtualOutput,
+    ifname: string,
+    ncomch: number,
+  ): SpiceHandle;
 
   /** Open an existing SPK for append (see `spkopa_c`). Same `file` semantics as `spkopn`. */
   spkopa(file: string | VirtualOutput): SpiceHandle;

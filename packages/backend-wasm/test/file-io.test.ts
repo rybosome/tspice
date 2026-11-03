@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
-import type { DlaDescriptor, SpiceHandle } from "@rybosome/tspice-backend-contract";
+import type {
+  DlaDescriptor,
+  SpiceHandle,
+} from "@rybosome/tspice-backend-contract";
 import { loadTestKernels } from "../../tspice/test/test-kernels.js";
 
 describe("@rybosome/tspice-backend-wasm file-io", () => {
@@ -28,14 +31,18 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
   it("throws on invalid handle usage", async () => {
     const backend = await createWasmBackend();
 
-    expect(() => backend.raw.dafcls(123 as unknown as SpiceHandle)).toThrow(/invalid|closed/i);
+    expect(() => backend.raw.dafcls(123 as unknown as SpiceHandle)).toThrow(
+      /invalid|closed/i,
+    );
 
     const path = "file-io/kind-mismatch.dla";
     const dlaHandle = backend.raw.dlaopn(path, "DLA", "TSPICE", 0);
     backend.raw.dlacls(dlaHandle);
 
     const dasHandle = backend.raw.dasopr(path);
-    expect(() => backend.raw.dafbfs(dasHandle as unknown as SpiceHandle)).toThrow(/DAF/i);
+    expect(() =>
+      backend.raw.dafbfs(dasHandle as unknown as SpiceHandle),
+    ).toThrow(/DAF/i);
     backend.raw.dascls(dasHandle);
   });
 
@@ -145,7 +152,9 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
       csize: 0,
     };
 
-    expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(/ibase.*>=\s*0/i);
+    expect(() => backend.raw.dlafns(handle, badDescr)).toThrow(
+      /ibase.*>=\s*0/i,
+    );
     backend.raw.dlacls(handle);
   });
 
@@ -155,11 +164,7 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
     const path = "file-io/roundtrip.bds";
 
     const nv = 3;
-    const vrtces = [
-      0, 0, 0,
-      1, 0, 0,
-      0, 1, 0,
-    ];
+    const vrtces = [0, 0, 0, 1, 0, 0, 0, 1, 0];
     const np = 1;
     const plates = [1, 2, 3];
 
@@ -216,7 +221,9 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
       if (!first.found) {
         throw new Error("Expected to find a DLA segment in the written DSK");
       }
-      expect(backend.raw.dlafns(readHandle, first.descr)).toEqual({ found: false });
+      expect(backend.raw.dlafns(readHandle, first.descr)).toEqual({
+        found: false,
+      });
     } finally {
       backend.raw.dascls(readHandle);
     }

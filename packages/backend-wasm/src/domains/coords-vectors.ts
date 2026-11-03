@@ -3,10 +3,7 @@ import type {
   Mat3RowMajor,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
-import {
-  assertMat3ArrayLike9,
-  brandMat3RowMajor,
-} from "@rybosome/tspice-core";
+import { assertMat3ArrayLike9, brandMat3RowMajor } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -14,7 +11,11 @@ import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
 
-function mallocChecked(module: EmscriptenModule, bytes: number, allocated: number[]): number {
+function mallocChecked(
+  module: EmscriptenModule,
+  bytes: number,
+  allocated: number[],
+): number {
   const ptr = module._malloc(bytes);
   if (!ptr) {
     // Ensure we don't leak anything that was already allocated.
@@ -30,11 +31,19 @@ function mallocChecked(module: EmscriptenModule, bytes: number, allocated: numbe
   return ptr;
 }
 
-function mallocF64(module: EmscriptenModule, count: number, allocated: number[]): number {
+function mallocF64(
+  module: EmscriptenModule,
+  count: number,
+  allocated: number[],
+): number {
   return mallocChecked(module, count * 8, allocated);
 }
 
-function writeVec3(module: EmscriptenModule, ptr: number, v: SpiceVector3): void {
+function writeVec3(
+  module: EmscriptenModule,
+  ptr: number,
+  v: SpiceVector3,
+): void {
   module.HEAPF64.set(v, ptr >> 3);
 }
 
@@ -44,12 +53,20 @@ function readVec3(module: EmscriptenModule, ptr: number): SpiceVector3 {
   return [h[i] ?? 0, h[i + 1] ?? 0, h[i + 2] ?? 0] as unknown as SpiceVector3;
 }
 
-function writeMat3(module: EmscriptenModule, ptr: number, m: Mat3RowMajor): void {
+function writeMat3(
+  module: EmscriptenModule,
+  ptr: number,
+  m: Mat3RowMajor,
+): void {
   assertMat3ArrayLike9(m);
   module.HEAPF64.set(m, ptr >> 3);
 }
 
-function readMat3(module: EmscriptenModule, ptr: number, label: string): Mat3RowMajor {
+function readMat3(
+  module: EmscriptenModule,
+  ptr: number,
+  label: string,
+): Mat3RowMajor {
   const i = ptr >> 3;
   const h = module.HEAPF64;
   return brandMat3RowMajor(
@@ -68,7 +85,10 @@ function readMat3(module: EmscriptenModule, ptr: number, label: string): Mat3Row
   );
 }
 
-function tspiceCallReclat(module: EmscriptenModule, rect: SpiceVector3): { radius: number; lon: number; lat: number } {
+function tspiceCallReclat(
+  module: EmscriptenModule,
+  rect: SpiceVector3,
+): { radius: number; lon: number; lat: number } {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const rectPtr = mallocF64(module, 3, allocated);
@@ -82,7 +102,14 @@ function tspiceCallReclat(module: EmscriptenModule, rect: SpiceVector3): { radiu
     module.HEAPF64[outLonPtr >> 3] = 0;
     module.HEAPF64[outLatPtr >> 3] = 0;
 
-    const result = module._tspice_reclat(rectPtr, outRadiusPtr, outLonPtr, outLatPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_reclat(
+      rectPtr,
+      outRadiusPtr,
+      outLonPtr,
+      outLatPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -99,7 +126,12 @@ function tspiceCallReclat(module: EmscriptenModule, rect: SpiceVector3): { radiu
   }
 }
 
-function tspiceCallLatrec(module: EmscriptenModule, radius: number, lon: number, lat: number): SpiceVector3 {
+function tspiceCallLatrec(
+  module: EmscriptenModule,
+  radius: number,
+  lon: number,
+  lat: number,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const outRectPtr = mallocF64(module, 3, allocated);
@@ -107,7 +139,14 @@ function tspiceCallLatrec(module: EmscriptenModule, radius: number, lon: number,
   try {
     module.HEAPF64.set([0, 0, 0], outRectPtr >> 3);
 
-    const result = module._tspice_latrec(radius, lon, lat, outRectPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_latrec(
+      radius,
+      lon,
+      lat,
+      outRectPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -120,7 +159,10 @@ function tspiceCallLatrec(module: EmscriptenModule, radius: number, lon: number,
   }
 }
 
-function tspiceCallRecsph(module: EmscriptenModule, rect: SpiceVector3): { radius: number; colat: number; lon: number } {
+function tspiceCallRecsph(
+  module: EmscriptenModule,
+  rect: SpiceVector3,
+): { radius: number; colat: number; lon: number } {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const rectPtr = mallocF64(module, 3, allocated);
@@ -134,7 +176,14 @@ function tspiceCallRecsph(module: EmscriptenModule, rect: SpiceVector3): { radiu
     module.HEAPF64[outColatPtr >> 3] = 0;
     module.HEAPF64[outLonPtr >> 3] = 0;
 
-    const result = module._tspice_recsph(rectPtr, outRadiusPtr, outColatPtr, outLonPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_recsph(
+      rectPtr,
+      outRadiusPtr,
+      outColatPtr,
+      outLonPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -151,7 +200,12 @@ function tspiceCallRecsph(module: EmscriptenModule, rect: SpiceVector3): { radiu
   }
 }
 
-function tspiceCallSphrec(module: EmscriptenModule, radius: number, colat: number, lon: number): SpiceVector3 {
+function tspiceCallSphrec(
+  module: EmscriptenModule,
+  radius: number,
+  colat: number,
+  lon: number,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const outRectPtr = mallocF64(module, 3, allocated);
@@ -159,7 +213,14 @@ function tspiceCallSphrec(module: EmscriptenModule, radius: number, colat: numbe
   try {
     module.HEAPF64.set([0, 0, 0], outRectPtr >> 3);
 
-    const result = module._tspice_sphrec(radius, colat, lon, outRectPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_sphrec(
+      radius,
+      colat,
+      lon,
+      outRectPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -182,7 +243,12 @@ function tspiceCallVnorm(module: EmscriptenModule, v: SpiceVector3): number {
     writeVec3(module, vPtr, v);
     module.HEAPF64[outNormPtr >> 3] = 0;
 
-    const result = module._tspice_vnorm(vPtr, outNormPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_vnorm(
+      vPtr,
+      outNormPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -195,7 +261,10 @@ function tspiceCallVnorm(module: EmscriptenModule, v: SpiceVector3): number {
   }
 }
 
-function tspiceCallVhat(module: EmscriptenModule, v: SpiceVector3): SpiceVector3 {
+function tspiceCallVhat(
+  module: EmscriptenModule,
+  v: SpiceVector3,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const vPtr = mallocF64(module, 3, allocated);
@@ -218,7 +287,11 @@ function tspiceCallVhat(module: EmscriptenModule, v: SpiceVector3): SpiceVector3
   }
 }
 
-function tspiceCallVdot(module: EmscriptenModule, a: SpiceVector3, b: SpiceVector3): number {
+function tspiceCallVdot(
+  module: EmscriptenModule,
+  a: SpiceVector3,
+  b: SpiceVector3,
+): number {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const aPtr = mallocF64(module, 3, allocated);
@@ -230,7 +303,13 @@ function tspiceCallVdot(module: EmscriptenModule, a: SpiceVector3, b: SpiceVecto
     writeVec3(module, bPtr, b);
     module.HEAPF64[outDotPtr >> 3] = 0;
 
-    const result = module._tspice_vdot(aPtr, bPtr, outDotPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_vdot(
+      aPtr,
+      bPtr,
+      outDotPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -243,7 +322,11 @@ function tspiceCallVdot(module: EmscriptenModule, a: SpiceVector3, b: SpiceVecto
   }
 }
 
-function tspiceCallVcrss(module: EmscriptenModule, a: SpiceVector3, b: SpiceVector3): SpiceVector3 {
+function tspiceCallVcrss(
+  module: EmscriptenModule,
+  a: SpiceVector3,
+  b: SpiceVector3,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const aPtr = mallocF64(module, 3, allocated);
@@ -255,7 +338,13 @@ function tspiceCallVcrss(module: EmscriptenModule, a: SpiceVector3, b: SpiceVect
     writeVec3(module, bPtr, b);
     module.HEAPF64.set([0, 0, 0], outPtr >> 3);
 
-    const result = module._tspice_vcrss(aPtr, bPtr, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_vcrss(
+      aPtr,
+      bPtr,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -268,7 +357,11 @@ function tspiceCallVcrss(module: EmscriptenModule, a: SpiceVector3, b: SpiceVect
   }
 }
 
-function tspiceCallMxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVector3): SpiceVector3 {
+function tspiceCallMxv(
+  module: EmscriptenModule,
+  m: Mat3RowMajor,
+  v: SpiceVector3,
+): SpiceVector3 {
   assertMat3ArrayLike9(m, { label: "mxv().m" });
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
@@ -281,7 +374,13 @@ function tspiceCallMxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVector
     writeVec3(module, vPtr, v);
     module.HEAPF64.set([0, 0, 0], outPtr >> 3);
 
-    const result = module._tspice_mxv(mPtr, vPtr, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_mxv(
+      mPtr,
+      vPtr,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -294,7 +393,11 @@ function tspiceCallMxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVector
   }
 }
 
-function tspiceCallMtxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVector3): SpiceVector3 {
+function tspiceCallMtxv(
+  module: EmscriptenModule,
+  m: Mat3RowMajor,
+  v: SpiceVector3,
+): SpiceVector3 {
   assertMat3ArrayLike9(m, { label: "mtxv().m" });
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
@@ -307,7 +410,13 @@ function tspiceCallMtxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVecto
     writeVec3(module, vPtr, v);
     module.HEAPF64.set([0, 0, 0], outPtr >> 3);
 
-    const result = module._tspice_mtxv(mPtr, vPtr, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_mtxv(
+      mPtr,
+      vPtr,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -320,7 +429,11 @@ function tspiceCallMtxv(module: EmscriptenModule, m: Mat3RowMajor, v: SpiceVecto
   }
 }
 
-function tspiceCallMxm(module: EmscriptenModule, a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
+function tspiceCallMxm(
+  module: EmscriptenModule,
+  a: Mat3RowMajor,
+  b: Mat3RowMajor,
+): Mat3RowMajor {
   assertMat3ArrayLike9(a, { label: "mxm().a" });
   assertMat3ArrayLike9(b, { label: "mxm().b" });
 
@@ -334,7 +447,13 @@ function tspiceCallMxm(module: EmscriptenModule, a: Mat3RowMajor, b: Mat3RowMajo
     writeMat3(module, aPtr, a);
     writeMat3(module, bPtr, b);
 
-    const result = module._tspice_mxm(aPtr, bPtr, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_mxm(
+      aPtr,
+      bPtr,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -347,7 +466,11 @@ function tspiceCallMxm(module: EmscriptenModule, a: Mat3RowMajor, b: Mat3RowMajo
   }
 }
 
-function tspiceCallVadd(module: EmscriptenModule, a: SpiceVector3, b: SpiceVector3): SpiceVector3 {
+function tspiceCallVadd(
+  module: EmscriptenModule,
+  a: SpiceVector3,
+  b: SpiceVector3,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const aPtr = mallocF64(module, 3, allocated);
@@ -359,7 +482,13 @@ function tspiceCallVadd(module: EmscriptenModule, a: SpiceVector3, b: SpiceVecto
     writeVec3(module, bPtr, b);
     module.HEAPF64.set([0, 0, 0], outPtr >> 3);
 
-    const result = module._tspice_vadd(aPtr, bPtr, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_vadd(
+      aPtr,
+      bPtr,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -372,7 +501,11 @@ function tspiceCallVadd(module: EmscriptenModule, a: SpiceVector3, b: SpiceVecto
   }
 }
 
-function tspiceCallVsub(module: EmscriptenModule, a: SpiceVector3, b: SpiceVector3): SpiceVector3 {
+function tspiceCallVsub(
+  module: EmscriptenModule,
+  a: SpiceVector3,
+  b: SpiceVector3,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const aPtr = mallocF64(module, 3, allocated);
@@ -384,7 +517,13 @@ function tspiceCallVsub(module: EmscriptenModule, a: SpiceVector3, b: SpiceVecto
     writeVec3(module, bPtr, b);
     module.HEAPF64.set([0, 0, 0], outPtr >> 3);
 
-    const result = module._tspice_vsub(aPtr, bPtr, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_vsub(
+      aPtr,
+      bPtr,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -397,7 +536,10 @@ function tspiceCallVsub(module: EmscriptenModule, a: SpiceVector3, b: SpiceVecto
   }
 }
 
-function tspiceCallVminus(module: EmscriptenModule, v: SpiceVector3): SpiceVector3 {
+function tspiceCallVminus(
+  module: EmscriptenModule,
+  v: SpiceVector3,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const vPtr = mallocF64(module, 3, allocated);
@@ -420,7 +562,11 @@ function tspiceCallVminus(module: EmscriptenModule, v: SpiceVector3): SpiceVecto
   }
 }
 
-function tspiceCallVscl(module: EmscriptenModule, s: number, v: SpiceVector3): SpiceVector3 {
+function tspiceCallVscl(
+  module: EmscriptenModule,
+  s: number,
+  v: SpiceVector3,
+): SpiceVector3 {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const vPtr = mallocF64(module, 3, allocated);
@@ -443,13 +589,23 @@ function tspiceCallVscl(module: EmscriptenModule, s: number, v: SpiceVector3): S
   }
 }
 
-function tspiceCallRotate(module: EmscriptenModule, angle: number, axis: number): Mat3RowMajor {
+function tspiceCallRotate(
+  module: EmscriptenModule,
+  angle: number,
+  axis: number,
+): Mat3RowMajor {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const outPtr = mallocF64(module, 9, allocated);
 
   try {
-    const result = module._tspice_rotate(angle, axis, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_rotate(
+      angle,
+      axis,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -462,7 +618,12 @@ function tspiceCallRotate(module: EmscriptenModule, angle: number, axis: number)
   }
 }
 
-function tspiceCallRotmat(module: EmscriptenModule, m: Mat3RowMajor, angle: number, axis: number): Mat3RowMajor {
+function tspiceCallRotmat(
+  module: EmscriptenModule,
+  m: Mat3RowMajor,
+  angle: number,
+  axis: number,
+): Mat3RowMajor {
   assertMat3ArrayLike9(m, { label: "rotmat().m" });
 
   const allocated: number[] = [];
@@ -473,7 +634,14 @@ function tspiceCallRotmat(module: EmscriptenModule, m: Mat3RowMajor, angle: numb
   try {
     writeMat3(module, mPtr, m);
 
-    const result = module._tspice_rotmat(mPtr, angle, axis, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_rotmat(
+      mPtr,
+      angle,
+      axis,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -486,7 +654,11 @@ function tspiceCallRotmat(module: EmscriptenModule, m: Mat3RowMajor, angle: numb
   }
 }
 
-function tspiceCallAxisar(module: EmscriptenModule, axis: SpiceVector3, angle: number): Mat3RowMajor {
+function tspiceCallAxisar(
+  module: EmscriptenModule,
+  axis: SpiceVector3,
+  angle: number,
+): Mat3RowMajor {
   const allocated: number[] = [];
   const errPtr = mallocChecked(module, ERR_MAX_BYTES, allocated);
   const axisPtr = mallocF64(module, 3, allocated);
@@ -495,7 +667,13 @@ function tspiceCallAxisar(module: EmscriptenModule, axis: SpiceVector3, angle: n
   try {
     writeVec3(module, axisPtr, axis);
 
-    const result = module._tspice_axisar(axisPtr, angle, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_axisar(
+      axisPtr,
+      angle,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -523,7 +701,16 @@ function tspiceCallGeorec(
   try {
     module.HEAPF64.set([0, 0, 0], outPtr >> 3);
 
-    const result = module._tspice_georec(lon, lat, alt, re, f, outPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_georec(
+      lon,
+      lat,
+      alt,
+      re,
+      f,
+      outPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -555,7 +742,16 @@ function tspiceCallRecgeo(
     module.HEAPF64[outLatPtr >> 3] = 0;
     module.HEAPF64[outAltPtr >> 3] = 0;
 
-    const result = module._tspice_recgeo(rectPtr, re, f, outLonPtr, outLatPtr, outAltPtr, errPtr, ERR_MAX_BYTES);
+    const result = module._tspice_recgeo(
+      rectPtr,
+      re,
+      f,
+      outLonPtr,
+      outLatPtr,
+      outAltPtr,
+      errPtr,
+      ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, result);
     }
@@ -573,12 +769,15 @@ function tspiceCallRecgeo(
 }
 
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
-export function createCoordsVectorsApi(module: EmscriptenModule): CoordsVectorsApi {
+export function createCoordsVectorsApi(
+  module: EmscriptenModule,
+): CoordsVectorsApi {
   return {
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),
-    sphrec: (radius, colat, lon) => tspiceCallSphrec(module, radius, colat, lon),
+    sphrec: (radius, colat, lon) =>
+      tspiceCallSphrec(module, radius, colat, lon),
 
     vnorm: (v) => tspiceCallVnorm(module, v),
     vhat: (v) => tspiceCallVhat(module, v),
@@ -599,7 +798,8 @@ export function createCoordsVectorsApi(module: EmscriptenModule): CoordsVectorsA
     rotmat: (m, angle, axis) => tspiceCallRotmat(module, m, angle, axis),
     axisar: (axis, angle) => tspiceCallAxisar(module, axis, angle),
 
-    georec: (lon, lat, alt, re, f) => tspiceCallGeorec(module, lon, lat, alt, re, f),
+    georec: (lon, lat, alt, re, f) =>
+      tspiceCallGeorec(module, lon, lat, alt, re, f),
     recgeo: (rect, re, f) => tspiceCallRecgeo(module, rect, re, f),
   };
 }

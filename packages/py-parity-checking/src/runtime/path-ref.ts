@@ -15,7 +15,11 @@ export function normalizePathRefRelativePath(rel: string): string {
   if (normalized.length === 0) {
     throw new Error("PathRef.rel must be non-empty");
   }
-  if (normalized.startsWith("/") || normalized === ".." || normalized.startsWith("../")) {
+  if (
+    normalized.startsWith("/") ||
+    normalized === ".." ||
+    normalized.startsWith("../")
+  ) {
     throw new Error(`PathRef.rel must be package-relative: ${rel}`);
   }
 
@@ -52,21 +56,31 @@ export function toPathRef(pathRefLike: PathRefLike): PathRef {
 function resolvePathUnderRoot(root: string, rel: string): string {
   const resolvedRoot = path.resolve(root);
   const resolved = path.resolve(resolvedRoot, rel);
-  if (!resolved.startsWith(resolvedRoot + path.sep) && resolved !== resolvedRoot) {
+  if (
+    !resolved.startsWith(resolvedRoot + path.sep) &&
+    resolved !== resolvedRoot
+  ) {
     throw new Error(`Resolved path escapes root: ${rel}`);
   }
   return resolved;
 }
 
 /** Resolve a logical PathRef against runtime fixture/scratch roots with traversal checks. */
-export function resolvePathRef(paths: RuntimePaths, pathRefLike: PathRefLike): string {
+export function resolvePathRef(
+  paths: RuntimePaths,
+  pathRefLike: PathRefLike,
+): string {
   const pathRef = toPathRef(pathRefLike);
-  const root = pathRef.kind === "fixture" ? paths.fixturesRoot : paths.scratchRoot;
+  const root =
+    pathRef.kind === "fixture" ? paths.fixturesRoot : paths.scratchRoot;
   return resolvePathUnderRoot(root, pathRef.rel);
 }
 
 /** Resolve a fixture PathRef (or legacy string fixture path) under fixtures root. */
-export function resolveFixturePath(fixturesRoot: string, fixtureFile: PathRefLike): string {
+export function resolveFixturePath(
+  fixturesRoot: string,
+  fixtureFile: PathRefLike,
+): string {
   const pathRef = toPathRef(fixtureFile);
   if (pathRef.kind !== "fixture") {
     throw new Error(`Expected fixture PathRef; received ${pathRef.kind}`);
@@ -101,7 +115,10 @@ function sanitizeCaseId(caseId: string): string {
 }
 
 /** Build per-case runtime fixture/scratch roots. Scratch root is case-scoped and disposable. */
-export function createCaseRuntimePaths(fixturesRoot: string, caseId: string): RuntimePaths {
+export function createCaseRuntimePaths(
+  fixturesRoot: string,
+  caseId: string,
+): RuntimePaths {
   const scratchPrefix = `py-parity-${sanitizeCaseId(caseId)}-`;
   const scratchRoot = fs.mkdtempSync(path.join(os.tmpdir(), scratchPrefix));
   return {

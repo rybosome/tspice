@@ -23,29 +23,29 @@ Use this as the default routing map before editing files.
 
 - Keep this table in sync with repo structure: if you add, remove, rename, or move a package/app/path listed here, update this table in the same PR.
 
-| If your task is about... | Primary location(s) | Notes |
-| --- | --- | --- |
-| Public facade/API exports | `packages/tspice` | End-user entrypoint (`@rybosome/tspice`) and `raw`/`kit` user-facing surface. |
-| Backend contract shape | `packages/backend-contract` | Shared contract all backends must satisfy. |
-| Node backend behavior | `packages/backend-node` | Native addon backend (`backend: "node"`). |
-| WASM backend behavior | `packages/backend-wasm` | Browser/Node WASM backend (`backend: "wasm"`). |
-| Shared C integration layer | `packages/backend-shim-c` | Common C shim used by Node + WASM backends. |
-| CSPICE parity harness/scenarios | `packages/py-parity-checking` and `docs/spicebackend-cspice-mapping.md` | SpiceyPy-backed parity workflows and contract mapping docs. |
-| Docs site/app | `apps/docs` | User documentation site implementation. |
-| Repo-level documentation | `README.md`, `docs/` | Architecture, parity, inventory, screenshots, reference docs. |
-| CI/tooling scripts | `scripts/`, `scripts/ci/` | Validation/build tooling and automation behavior. |
+| If your task is about...        | Primary location(s)                                                     | Notes                                                                         |
+| ------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Public facade/API exports       | `packages/tspice`                                                       | End-user entrypoint (`@rybosome/tspice`) and `raw`/`kit` user-facing surface. |
+| Backend contract shape          | `packages/backend-contract`                                             | Shared contract all backends must satisfy.                                    |
+| Node backend behavior           | `packages/backend-node`                                                 | Native addon backend (`backend: "node"`).                                     |
+| WASM backend behavior           | `packages/backend-wasm`                                                 | Browser/Node WASM backend (`backend: "wasm"`).                                |
+| Shared C integration layer      | `packages/backend-shim-c`                                               | Common C shim used by Node + WASM backends.                                   |
+| CSPICE parity harness/scenarios | `packages/py-parity-checking` and `docs/spicebackend-cspice-mapping.md` | SpiceyPy-backed parity workflows and contract mapping docs.                   |
+| Docs site/app                   | `apps/docs`                                                             | User documentation site implementation.                                       |
+| Repo-level documentation        | `README.md`, `docs/`                                                    | Architecture, parity, inventory, screenshots, reference docs.                 |
+| CI/tooling scripts              | `scripts/`, `scripts/ci/`                                               | Validation/build tooling and automation behavior.                             |
 
 ## 3) API layer contract (`raw` vs `kit`)
 
 This boundary is core to repo semantics.
 
-| Dimension | `raw` | `kit` |
-| --- | --- | --- |
-| Purpose | Thin, CSPICE/back-end-contract-facing operations | Ergonomic, tspice-invented convenience operations |
-| Semantics | Preserve backend/CSPICE behavior shape | Compose over `raw` with explicit defaults |
-| Allowed change style | Conservative and parity-driven | User-experience-driven (still explicit/tested) |
-| Test obligations | Parity + edge/error behavior coverage expected | Unit/integration coverage for composition + defaults |
-| Docs obligations | CSPICE-linked JSDoc and contract mapping consistency | Clear JSDoc/examples for behavior and defaults |
+| Dimension            | `raw`                                                | `kit`                                                |
+| -------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
+| Purpose              | Thin, CSPICE/back-end-contract-facing operations     | Ergonomic, tspice-invented convenience operations    |
+| Semantics            | Preserve backend/CSPICE behavior shape               | Compose over `raw` with explicit defaults            |
+| Allowed change style | Conservative and parity-driven                       | User-experience-driven (still explicit/tested)       |
+| Test obligations     | Parity + edge/error behavior coverage expected       | Unit/integration coverage for composition + defaults |
+| Docs obligations     | CSPICE-linked JSDoc and contract mapping consistency | Clear JSDoc/examples for behavior and defaults       |
 
 `raw`/`kit` rules:
 
@@ -78,10 +78,10 @@ Test code expectations:
 
 Quick rule of thumb:
 
-| Context | Expectation |
-| --- | --- |
-| Production implementation | Strong typing, no unsafe shortcuts |
-| Test/fixture setup | Practical flexibility allowed, but keep intent explicit |
+| Context                   | Expectation                                             |
+| ------------------------- | ------------------------------------------------------- |
+| Production implementation | Strong typing, no unsafe shortcuts                      |
+| Test/fixture setup        | Practical flexibility allowed, but keep intent explicit |
 
 ## 5) Testing + parity requirements
 
@@ -89,12 +89,12 @@ Default stance: include tests unless there is a strong, explicit reason not to.
 
 Per-change checklist:
 
-| Change type | Minimum validation expectation |
-| --- | --- |
-| `raw` method add/change | Unit coverage + parity impact assessed + mapping/docs updated as needed |
-| `kit` helper add/change | Unit/integration coverage proving composition/defaults/error behavior |
-| Backend contract or backend behavior change | Cross-backend implications checked; parity expectations re-evaluated |
-| Docs-only change | Validate docs coherence; tests optional unless behavior changed |
+| Change type                                 | Minimum validation expectation                                          |
+| ------------------------------------------- | ----------------------------------------------------------------------- |
+| `raw` method add/change                     | Unit coverage + parity impact assessed + mapping/docs updated as needed |
+| `kit` helper add/change                     | Unit/integration coverage proving composition/defaults/error behavior   |
+| Backend contract or backend behavior change | Cross-backend implications checked; parity expectations re-evaluated    |
+| Docs-only change                            | Validate docs coherence; tests optional unless behavior changed         |
 
 Quality expectations:
 
@@ -130,10 +130,10 @@ Documentation touchpoints to check:
 
 GitHub CI is the canonical correctness signal for merge readiness.
 
-| Validation surface | What it is good for | Limitations / caveats |
-| --- | --- | --- |
-| Local/devbox runs | Fast iteration, early feedback, targeted debugging | Environment/platform differences can hide issues |
-| GitHub Actions runners | Canonical end-to-end merge signal, including parity-sensitive checks | Slower feedback loop than local |
+| Validation surface     | What it is good for                                                  | Limitations / caveats                            |
+| ---------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
+| Local/devbox runs      | Fast iteration, early feedback, targeted debugging                   | Environment/platform differences can hide issues |
+| GitHub Actions runners | Canonical end-to-end merge signal, including parity-sensitive checks | Slower feedback loop than local                  |
 
 Platform note:
 

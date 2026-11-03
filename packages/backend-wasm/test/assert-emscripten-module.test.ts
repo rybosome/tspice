@@ -4,7 +4,9 @@ import { assertEmscriptenModule } from "../src/lowlevel/exports.js";
 
 describe("assertEmscriptenModule", () => {
   it("throws when required exports are missing", () => {
-    expect(() => assertEmscriptenModule({})).toThrow(/missing\/invalid exports/i);
+    expect(() => assertEmscriptenModule({})).toThrow(
+      /missing\/invalid exports/i,
+    );
   });
 
   it("accepts a minimally-shaped module", () => {

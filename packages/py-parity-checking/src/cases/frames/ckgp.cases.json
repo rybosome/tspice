@@ -4,7 +4,11 @@
     "description": "ckgp pointing query with explicit CK open/close lifecycle",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGP" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKGP"
+      },
       {
         "op": "frames.ckgp",
         "inst": -94070,
@@ -21,7 +25,11 @@
     "description": "ckgp miss outside CK coverage returns found=false",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGP_ERR" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKGP_ERR"
+      },
       {
         "op": "frames.ckgp",
         "inst": -94070,

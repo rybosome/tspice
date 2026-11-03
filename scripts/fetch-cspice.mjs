@@ -42,7 +42,9 @@ async function sha256File(filePath) {
 async function downloadToFile(url, filePath) {
   const response = await fetch(url, { redirect: "follow" });
   if (!response.ok) {
-    throw new Error(`Download failed (${response.status} ${response.statusText}): ${url}`);
+    throw new Error(
+      `Download failed (${response.status} ${response.statusText}): ${url}`,
+    );
   }
   if (!response.body) {
     throw new Error(`No response body for download: ${url}`);
@@ -72,10 +74,12 @@ function runChecked(command, args, options = {}) {
 }
 
 function ensureTool(tool) {
-  const result = spawnSync("sh", ["-c", `command -v ${shQuote(tool)}`], { encoding: "utf8" });
+  const result = spawnSync("sh", ["-c", `command -v ${shQuote(tool)}`], {
+    encoding: "utf8",
+  });
   if (result.status !== 0) {
     throw new Error(
-      `Required tool "${tool}" not found on PATH. Install it, or set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.`
+      `Required tool "${tool}" not found on PATH. Install it, or set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.`,
     );
   }
 }
@@ -98,7 +102,7 @@ function resolveArchiveKey(manifest, platform, arch) {
 
   const available = Object.keys(manifest.archives ?? {}).sort();
   throw new Error(
-    `No CSPICE archive configured for ${exact}. Available: ${available.join(", ")}`
+    `No CSPICE archive configured for ${exact}. Available: ${available.join(", ")}`,
   );
 }
 
@@ -107,7 +111,11 @@ function validateCspiceDir(cspiceDir) {
   const cspiceLib = path.join(cspiceDir, "lib", "cspice.a");
   const csupportLib = path.join(cspiceDir, "lib", "csupport.a");
 
-  return fs.existsSync(spiceUsr) && fs.existsSync(cspiceLib) && fs.existsSync(csupportLib);
+  return (
+    fs.existsSync(spiceUsr) &&
+    fs.existsSync(cspiceLib) &&
+    fs.existsSync(csupportLib)
+  );
 }
 
 function validateCspiceSourceDir(cspiceDir) {
@@ -140,7 +148,7 @@ async function ensureCachedArchive({ url, sha256, cacheDir, validateDir }) {
       fs.rmSync(archivePath, { force: true });
       fs.rmSync(cspiceDir, { recursive: true, force: true });
       throw new Error(
-        `SHA256 mismatch for ${archiveName}. Expected ${sha256}, got ${actual}. URL: ${url}`
+        `SHA256 mismatch for ${archiveName}. Expected ${sha256}, got ${actual}. URL: ${url}`,
       );
     }
   }
@@ -153,7 +161,9 @@ async function ensureCachedArchive({ url, sha256, cacheDir, validateDir }) {
       extractTarZ(archivePath, extractDir);
       const extractedCspice = path.join(extractDir, "cspice");
       if (!fs.existsSync(extractedCspice)) {
-        throw new Error(`Archive did not contain expected cspice/ directory: ${archivePath}`);
+        throw new Error(
+          `Archive did not contain expected cspice/ directory: ${archivePath}`,
+        );
       }
 
       fs.rmSync(cspiceDir, { recursive: true, force: true });
@@ -178,7 +188,7 @@ async function main() {
     const resolved = path.resolve(override);
     if (!validateCspiceDir(resolved)) {
       throw new Error(
-        `TSPICE_CSPICE_DIR does not look like a CSPICE install (missing include/ and lib/): ${resolved}`
+        `TSPICE_CSPICE_DIR does not look like a CSPICE install (missing include/ and lib/): ${resolved}`,
       );
     }
 
@@ -186,9 +196,13 @@ async function main() {
     return;
   }
 
-  if (mode === "archive" && process.platform === "linux" && process.arch === "arm64") {
+  if (
+    mode === "archive" &&
+    process.platform === "linux" &&
+    process.arch === "arm64"
+  ) {
     throw new Error(
-      "Automatic CSPICE fetch is not supported on linux-arm64. Set TSPICE_CSPICE_DIR to a prebuilt CSPICE install."
+      "Automatic CSPICE fetch is not supported on linux-arm64. Set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.",
     );
   }
 
@@ -202,13 +216,23 @@ async function main() {
   if (mode === "source") {
     const source = manifest.source;
     if (!source || typeof source !== "object") {
-      throw new Error(`No CSPICE source entry found in scripts/cspice.manifest.json`);
+      throw new Error(
+        `No CSPICE source entry found in scripts/cspice.manifest.json`,
+      );
     }
     if (typeof source.url !== "string" || typeof source.sha256 !== "string") {
-      throw new Error(`Invalid CSPICE source entry in scripts/cspice.manifest.json`);
+      throw new Error(
+        `Invalid CSPICE source entry in scripts/cspice.manifest.json`,
+      );
     }
 
-    const cacheDir = path.join(repoRoot, ".cache", "cspice", toolkitVersion, "source");
+    const cacheDir = path.join(
+      repoRoot,
+      ".cache",
+      "cspice",
+      toolkitVersion,
+      "source",
+    );
     const cspiceDir = await ensureCachedArchive({
       url: source.url,
       sha256: source.sha256,
@@ -219,7 +243,11 @@ async function main() {
     return;
   }
 
-  const archiveKey = resolveArchiveKey(manifest, process.platform, process.arch);
+  const archiveKey = resolveArchiveKey(
+    manifest,
+    process.platform,
+    process.arch,
+  );
   const { url, sha256 } = manifest.archives[archiveKey];
 
   const cacheDir = path.join(
@@ -227,7 +255,7 @@ async function main() {
     ".cache",
     "cspice",
     toolkitVersion,
-    `${process.platform}-${process.arch}`
+    `${process.platform}-${process.arch}`,
   );
 
   console.log(`Ensuring CSPICE ${toolkitVersion} (${archiveKey})...`);

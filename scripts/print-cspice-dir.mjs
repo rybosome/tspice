@@ -35,7 +35,7 @@ function main() {
     const resolved = path.resolve(override);
     if (!validateCspiceDir(resolved)) {
       throw new Error(
-        `TSPICE_CSPICE_DIR does not look like a CSPICE install (missing include/ and lib/): ${resolved}`
+        `TSPICE_CSPICE_DIR does not look like a CSPICE install (missing include/ and lib/): ${resolved}`,
       );
     }
 
@@ -49,18 +49,18 @@ function main() {
     "cspice",
     manifest.toolkitVersion,
     `${process.platform}-${process.arch}`,
-    "cspice"
+    "cspice",
   );
 
   if (!validateCspiceDir(cspiceDir)) {
     if (process.platform === "linux" && process.arch === "arm64") {
       throw new Error(
-        `CSPICE not found at ${cspiceDir}. On linux-arm64 you must set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.`
+        `CSPICE not found at ${cspiceDir}. On linux-arm64 you must set TSPICE_CSPICE_DIR to a prebuilt CSPICE install.`,
       );
     }
 
     throw new Error(
-      `CSPICE not found at ${cspiceDir}. Run: pnpm run fetch:cspice (or set TSPICE_CSPICE_DIR).`
+      `CSPICE not found at ${cspiceDir}. Run: pnpm run fetch:cspice (or set TSPICE_CSPICE_DIR).`,
     );
   }
 

@@ -1,4 +1,9 @@
-import type { Found, KernelData, KernelKind, KernelKindInput } from "../shared/types.js";
+import type {
+  Found,
+  KernelData,
+  KernelKind,
+  KernelKindInput,
+} from "../shared/types.js";
 
 const SUPPORTED_QUERY_KIND_TOKENS = [
   "ALL",
@@ -98,7 +103,9 @@ function guessTextKernelSubtype(path: string): KernelKind {
 }
 
 /** Normalize a `ktotal/kdata` kind input into a canonical, non-empty kernel kind list. */
-export function normalizeKindInput(kind: KernelKindInput | undefined): readonly KernelKind[] {
+export function normalizeKindInput(
+  kind: KernelKindInput | undefined,
+): readonly KernelKind[] {
   if (kind == null) {
     return ["ALL"];
   }
@@ -162,7 +169,9 @@ export function normalizeKindInput(kind: KernelKindInput | undefined): readonly 
  * If non-normalized input slips through (e.g. empty arrays or `ALL` mixed with
  * other tokens), this function is defensive and returns null.
  */
-export function nativeKindQueryOrNull(kinds: readonly KernelKind[]): string | null {
+export function nativeKindQueryOrNull(
+  kinds: readonly KernelKind[],
+): string | null {
   // Defensive: callers are expected to pass normalized kinds, but this is an
   // exported helper and should not throw on incidental misuse.
   if (kinds.length === 0) return null;
@@ -180,7 +189,9 @@ export function nativeKindQueryOrNull(kinds: readonly KernelKind[]): string | nu
   return kinds.join(" ");
 }
 
-function normalizeRequestedKindSetIfNeeded(requestedRaw: ReadonlySet<string>): ReadonlySet<string> {
+function normalizeRequestedKindSetIfNeeded(
+  requestedRaw: ReadonlySet<string>,
+): ReadonlySet<string> {
   for (const raw of requestedRaw) {
     const trimmed = raw.trim();
     if (!trimmed || trimmed !== raw || trimmed.toUpperCase() !== trimmed) {
@@ -298,10 +309,12 @@ export function kxtrctJs(
 
   const startSub = words[keyIndex + 1]?.start;
   const endSub = termIndex >= 0 ? words[termIndex]!.start : wordsq.length;
-  const substr = startSub == null ? "" : wordsq.slice(startSub, endSub).trimEnd();
+  const substr =
+    startSub == null ? "" : wordsq.slice(startSub, endSub).trimEnd();
 
   const removalStart = words[keyIndex]!.start;
-  const removalEnd = termIndex >= 0 ? words[(termIndex - 1) as number]!.end + 1 : wordsq.length;
+  const removalEnd =
+    termIndex >= 0 ? words[(termIndex - 1) as number]!.end + 1 : wordsq.length;
   const newWordsq = wordsq.slice(0, removalStart) + wordsq.slice(removalEnd);
 
   return { found: true, wordsq: newWordsq, substr };

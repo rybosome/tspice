@@ -15,7 +15,9 @@ declare const __spiceWindowBrand: unique symbol;
 /** Opaque handle to a CSPICE `SpiceCell` of type `SPICE_INT`. */
 export type SpiceIntCell = number & { readonly [__spiceIntCellBrand]: true };
 /** Opaque handle to a CSPICE `SpiceCell` of type `SPICE_DP`. */
-export type SpiceDoubleCell = number & { readonly [__spiceDoubleCellBrand]: true };
+export type SpiceDoubleCell = number & {
+  readonly [__spiceDoubleCellBrand]: true;
+};
 /** Opaque handle to a CSPICE `SpiceCell` of type `SPICE_CHR`. */
 export type SpiceCharCell = number & { readonly [__spiceCharCellBrand]: true };
 /** Opaque handle to a CSPICE DP window (a `SPICE_DP` cell interpreted as intervals). */
@@ -29,7 +31,6 @@ export type SpiceWindow = number & { readonly [__spiceWindowBrand]: true };
  * for allocation and inspection.
  */
 export interface CellsWindowsKitApi {
-
   // -- Creation / destruction -------------------------------------------------
 
   /** Create an empty integer set cell with the given capacity. */
@@ -81,20 +82,29 @@ export interface CellsWindowsKitApi {
 
 /** Backend contract for low-level raw SPICE cell/window operations. */
 export interface CellsWindowsApi {
-
   // -- Cells ------------------------------------------------------------------
 
   /** Set the maximum cardinality of a cell. (`ssize_c`) */
-  ssize(size: number, cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow): void;
+  ssize(
+    size: number,
+    cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
+  ): void;
 
   /** Set the cardinality of a cell. (`scard_c`) */
-  scard(card: number, cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow): void;
+  scard(
+    card: number,
+    cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
+  ): void;
 
   /** Get the cardinality of a cell. (`card_c`) */
-  card(cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow): number;
+  card(
+    cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
+  ): number;
 
   /** Get the maximum cardinality of a cell. (`size_c`) */
-  size(cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow): number;
+  size(
+    cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
+  ): number;
 
   /** Validate and normalize a set cell. (`valid_c`) */
   valid(
@@ -121,7 +131,10 @@ export interface CellsWindowsApi {
   wncard(window: SpiceWindow): number;
 
   /** Fetch the `index`th interval from a DP window. (`wnfetd_c`) */
-  wnfetd(window: SpiceWindow, index: number): readonly [left: number, right: number];
+  wnfetd(
+    window: SpiceWindow,
+    index: number,
+  ): readonly [left: number, right: number];
 
   /** Validate and normalize a DP window. (`wnvald_c`) */
   wnvald(size: number, n: number, window: SpiceWindow): void;

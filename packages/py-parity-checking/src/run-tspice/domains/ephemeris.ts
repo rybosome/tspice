@@ -21,7 +21,11 @@ import type {
   StepEphemerisSpkw08,
   StepOutput,
 } from "../../case-types.js";
-import { resolvePathRef, toPathRef, toVirtualKernelPath } from "../../fixtures.js";
+import {
+  resolvePathRef,
+  toPathRef,
+  toVirtualKernelPath,
+} from "../../fixtures.js";
 import {
   deleteSpkHandle,
   getOrCreateEphemerisIntCell,
@@ -57,7 +61,9 @@ function toVec3(vec: readonly number[]): [number, number, number] {
   return [vec[0]!, vec[1]!, vec[2]!];
 }
 
-function toVec6(vec: readonly number[]): [number, number, number, number, number, number] {
+function toVec6(
+  vec: readonly number[],
+): [number, number, number, number, number, number] {
   if (vec.length !== 6) {
     throw new Error(`Expected a length-6 vector, got length=${vec.length}`);
   }
@@ -67,7 +73,9 @@ function toVec6(vec: readonly number[]): [number, number, number, number, number
 
 function toPackedDescriptor(descr: readonly number[]): SpkPackedDescriptor {
   if (descr.length !== 5) {
-    throw new Error(`Expected a length-5 packed descriptor, got length=${descr.length}`);
+    throw new Error(
+      `Expected a length-5 packed descriptor, got length=${descr.length}`,
+    );
   }
 
   return [descr[0]!, descr[1]!, descr[2]!, descr[3]!, descr[4]!];
@@ -97,7 +105,10 @@ function resolveEphemerisPath(
 }
 
 /** Execute one `ephemeris.*` workflow step in tspice. */
-export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep): StepOutput {
+export function runEphemerisStep(
+  context: RunTspiceContext,
+  step: EphemerisStep,
+): StepOutput {
   switch (step.op) {
     case "ephemeris.spkcls": {
       const handle = requireSpkHandle(context, step.handleId);
@@ -107,8 +118,16 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkcov": {
-      const cover = getOrCreateWindow(context, step.coverWindowId, step.maxIntervals ?? 16);
-      context.spice.raw.spkcov(resolveEphemerisPath(context, step.spk), step.idcode, cover);
+      const cover = getOrCreateWindow(
+        context,
+        step.coverWindowId,
+        step.maxIntervals ?? 16,
+      );
+      context.spice.raw.spkcov(
+        resolveEphemerisPath(context, step.spk),
+        step.idcode,
+        cover,
+      );
       const count = context.spice.raw.wncard(cover);
       const intervals: [number, number][] = [];
       for (let i = 0; i < count; i++) {
@@ -119,7 +138,13 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkez": {
-      const out = context.spice.raw.spkez(step.target, step.et, step.ref, step.abcorr, step.observer);
+      const out = context.spice.raw.spkez(
+        step.target,
+        step.et,
+        step.ref,
+        step.abcorr,
+        step.observer,
+      );
       return {
         op: step.op,
         value: {
@@ -130,7 +155,13 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkezp": {
-      const out = context.spice.raw.spkezp(step.target, step.et, step.ref, step.abcorr, step.observer);
+      const out = context.spice.raw.spkezp(
+        step.target,
+        step.et,
+        step.ref,
+        step.abcorr,
+        step.observer,
+      );
       return {
         op: step.op,
         value: {
@@ -141,7 +172,13 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkezr": {
-      const out = context.spice.raw.spkezr(step.target, step.et, step.ref, step.abcorr, step.observer);
+      const out = context.spice.raw.spkezr(
+        step.target,
+        step.et,
+        step.ref,
+        step.abcorr,
+        step.observer,
+      );
       return {
         op: step.op,
         value: {
@@ -152,7 +189,12 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkgeo": {
-      const out = context.spice.raw.spkgeo(step.target, step.et, step.ref, step.observer);
+      const out = context.spice.raw.spkgeo(
+        step.target,
+        step.et,
+        step.ref,
+        step.observer,
+      );
       return {
         op: step.op,
         value: {
@@ -163,7 +205,12 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkgps": {
-      const out = context.spice.raw.spkgps(step.target, step.et, step.ref, step.observer);
+      const out = context.spice.raw.spkgps(
+        step.target,
+        step.et,
+        step.ref,
+        step.observer,
+      );
       return {
         op: step.op,
         value: {
@@ -174,7 +221,11 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkobj": {
-      const ids = getOrCreateEphemerisIntCell(context, step.idsCellId, step.maxCardinality ?? 1024);
+      const ids = getOrCreateEphemerisIntCell(
+        context,
+        step.idsCellId,
+        step.maxCardinality ?? 1024,
+      );
       context.spice.raw.spkobj(resolveEphemerisPath(context, step.spk), ids);
       const count = context.spice.raw.card(ids);
       const values: number[] = [];
@@ -191,7 +242,9 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
 
     case "ephemeris.spkopa": {
       const handle = context.spice.raw.spkopa(
-        resolveEphemerisPath(context, step.file, { ensureParentDirectory: true }),
+        resolveEphemerisPath(context, step.file, {
+          ensureParentDirectory: true,
+        }),
       );
       setSpkHandle(context, step.handleId, handle);
       return {
@@ -204,7 +257,9 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
 
     case "ephemeris.spkopn": {
       const handle = context.spice.raw.spkopn(
-        resolveEphemerisPath(context, step.file, { ensureParentDirectory: true }),
+        resolveEphemerisPath(context, step.file, {
+          ensureParentDirectory: true,
+        }),
         step.ifname,
         step.ncomch,
       );
@@ -233,7 +288,13 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
     }
 
     case "ephemeris.spkpos": {
-      const out = context.spice.raw.spkpos(step.target, step.et, step.ref, step.abcorr, step.observer);
+      const out = context.spice.raw.spkpos(
+        step.target,
+        step.et,
+        step.ref,
+        step.abcorr,
+        step.observer,
+      );
       return {
         op: step.op,
         value: {
@@ -309,7 +370,9 @@ export function runEphemerisStep(context: RunTspiceContext, step: EphemerisStep)
 
     default: {
       const exhaustive: never = step;
-      throw new Error(`Unhandled ephemeris step: ${JSON.stringify(exhaustive)}`);
+      throw new Error(
+        `Unhandled ephemeris step: ${JSON.stringify(exhaustive)}`,
+      );
     }
   }
 }

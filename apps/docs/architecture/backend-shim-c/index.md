@@ -63,7 +63,7 @@ Key pieces:
   - `SHORT` message (`getmsg_c("SHORT", ...)`)
   - `LONG` message (`getmsg_c("LONG", ...)`)
   - quick trace (`qcktrc_c(...)`)
-  
+
   …stores them in process-global buffers, and calls `reset_c()`.
 
 Those structured buffers can be retrieved later via:

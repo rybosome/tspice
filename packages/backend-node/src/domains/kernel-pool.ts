@@ -1,6 +1,4 @@
-import type {
-  KernelPoolApi,
-} from "@rybosome/tspice-backend-contract";
+import type { KernelPoolApi } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -13,7 +11,10 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(Array.isArray(out.values), "Expected gdpool().values to be an array");
+      invariant(
+        Array.isArray(out.values),
+        "Expected gdpool().values to be an array",
+      );
       return { found: true, values: out.values };
     },
 
@@ -22,7 +23,10 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(Array.isArray(out.values), "Expected gipool().values to be an array");
+      invariant(
+        Array.isArray(out.values),
+        "Expected gipool().values to be an array",
+      );
       return { found: true, values: out.values };
     },
 
@@ -31,7 +35,10 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(Array.isArray(out.values), "Expected gcpool().values to be an array");
+      invariant(
+        Array.isArray(out.values),
+        "Expected gcpool().values to be an array",
+      );
       return { found: true, values: out.values };
     },
 
@@ -40,7 +47,10 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(Array.isArray(out.values), "Expected gnpool().values to be an array");
+      invariant(
+        Array.isArray(out.values),
+        "Expected gnpool().values to be an array",
+      );
       return { found: true, values: out.values };
     },
 
@@ -49,8 +59,14 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(typeof out.n === "number", "Expected dtpool().n to be a number");
-      invariant(typeof out.type === "string", "Expected dtpool().type to be a string");
+      invariant(
+        typeof out.n === "number",
+        "Expected dtpool().n to be a number",
+      );
+      invariant(
+        typeof out.type === "string",
+        "Expected dtpool().type to be a string",
+      );
       const t = out.type.trim();
       if (t !== "C" && t !== "N") {
         throw new Error(`dtpool(): unexpected type '${t}' for ${name}`);
@@ -76,13 +92,19 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
 
     cvpool: (agent) => {
       const out = native.cvpool(agent);
-      invariant(typeof out === "boolean", "Expected cvpool() to return a boolean");
+      invariant(
+        typeof out === "boolean",
+        "Expected cvpool() to return a boolean",
+      );
       return out;
     },
 
     expool: (name) => {
       const out = native.expool(name);
-      invariant(typeof out === "boolean", "Expected expool() to return a boolean");
+      invariant(
+        typeof out === "boolean",
+        "Expected expool() to return a boolean",
+      );
       return out;
     },
   } satisfies KernelPoolApi;

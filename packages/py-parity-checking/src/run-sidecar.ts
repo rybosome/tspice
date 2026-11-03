@@ -44,7 +44,10 @@ export async function runCaseInSidecar(
   const runtimePaths = createCaseRuntimePaths(fixturesRoot, parityCase.caseId);
 
   try {
-    const normalized = normalizeWorkflowDetailed(parityCase.workflow, "sidecar");
+    const normalized = normalizeWorkflowDetailed(
+      parityCase.workflow,
+      "sidecar",
+    );
     runSidecarPreCaseHooks(normalized.metadata, runtimePaths);
 
     const requestPayload: SidecarRequestPayload = {
@@ -57,7 +60,14 @@ export async function runCaseInSidecar(
 
     const child = spawn(
       "uv",
-      ["run", "--project", sidecarProjectRoot, "python", "-m", "py_parity_sidecar.cli"],
+      [
+        "run",
+        "--project",
+        sidecarProjectRoot,
+        "python",
+        "-m",
+        "py_parity_sidecar.cli",
+      ],
       {
         cwd: packageRoot,
         stdio: ["pipe", "pipe", "pipe"],

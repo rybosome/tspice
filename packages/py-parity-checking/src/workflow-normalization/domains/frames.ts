@@ -6,7 +6,10 @@ import type {
 } from "../../case-types.js";
 import { toPathRef } from "../../fixtures.js";
 
-import type { DomainNormalizer, WorkflowNormalizationMetadata } from "../types.js";
+import type {
+  DomainNormalizer,
+  WorkflowNormalizationMetadata,
+} from "../types.js";
 
 type FramesCkPathStep = StepFramesCklpf | StepFramesCkobj | StepFramesCkcov;
 

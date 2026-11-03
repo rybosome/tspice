@@ -57,6 +57,11 @@ if (!fs.existsSync(SRC_ADDON_PATH)) {
   );
 }
 
-const destPath = path.join(repoRoot, "packages", targetPkg, "tspice_backend_node.node");
+const destPath = path.join(
+  repoRoot,
+  "packages",
+  targetPkg,
+  "tspice_backend_node.node",
+);
 fs.mkdirSync(path.dirname(destPath), { recursive: true });
 fs.copyFileSync(SRC_ADDON_PATH, destPath);

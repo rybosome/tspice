@@ -10,7 +10,10 @@ import { publishAlias, readGeneratedPath } from "../context.js";
 import { resolvePathWithOptionalAlias } from "../helpers.js";
 import type { DomainNormalizer, NormalizationContext } from "../types.js";
 
-function publishKernelAlias(step: StepKernelsFurnsh, context: NormalizationContext): void {
+function publishKernelAlias(
+  step: StepKernelsFurnsh,
+  context: NormalizationContext,
+): void {
   if (step.alias == null) {
     return;
   }

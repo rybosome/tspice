@@ -72,15 +72,7 @@ export type KernelInfo = {
 
 /** SPICE aberration correction string accepted by `spkezr`/`spkpos`. */
 export type AbCorr =
-  | "NONE"
-  | "LT"
-  | "LT+S"
-  | "CN"
-  | "CN+S"
-  | "XLT"
-  | "XLT+S"
-  | "XCN"
-  | "XCN+S";
+  "NONE" | "LT" | "LT+S" | "CN" | "CN+S" | "XLT" | "XLT+S" | "XCN" | "XCN+S";
 
 export type SpiceVector3 = [number, number, number];
 
@@ -90,7 +82,6 @@ export type SpiceVector3 = [number, number, number];
  * This matches CSPICE's `SpicePlane` ABI layout (`normal[3]` + `constant`).
  */
 export type SpicePlane = [number, number, number, number];
-
 
 // -- Branded handles -------------------------------------------------------
 
@@ -111,7 +102,9 @@ export type Vec6 = CoreVec6;
  * runtime validation, and it does not guarantee the string length.
  */
 declare const __fixedStringMaxBrand: unique symbol;
-export type FixedString<Max extends number> = string & { readonly [__fixedStringMaxBrand]: Max };
+export type FixedString<Max extends number> = string & {
+  readonly [__fixedStringMaxBrand]: Max;
+};
 
 /**
  * Result wrapper for APIs that return an array of strings.
@@ -123,8 +116,6 @@ export interface StringArrayResult {
   values: string[];
   truncated: boolean;
 }
-
-
 
 // -- Matrix types -----------------------------------------------------------
 
@@ -141,7 +132,6 @@ export type Mat3RowMajor = CoreMat3RowMajor;
  * Column-major layout: `[m00,m10,m20, m01,m11,m21, m02,m12,m22]`.
  */
 export type Mat3ColMajor = CoreMat3ColMajor;
-
 
 export type SpiceMatrix6x6 = [
   number,
@@ -189,14 +179,7 @@ export type SpiceMatrix6x6 = [
  */
 export type Mat6RowMajor = CoreMat6RowMajor;
 
-export type SpiceStateVector = [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-];
+export type SpiceStateVector = [number, number, number, number, number, number];
 
 export type SpkezrResult = {
   state: SpiceStateVector;

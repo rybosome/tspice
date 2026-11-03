@@ -28,7 +28,9 @@ describe("@rybosome/tspice-backend-wasm ek", () => {
     const ntab = backend.raw.ekntab();
     expect(ntab).toBeGreaterThan(0);
 
-    const tables = Array.from({ length: ntab }, (_, i) => backend.raw.ektnam(i));
+    const tables = Array.from({ length: ntab }, (_, i) =>
+      backend.raw.ektnam(i),
+    );
     expect(tables).toEqual(EXPECTED_TABLES);
 
     const handle = backend.raw.ekopr(kernelPath);
@@ -53,15 +55,37 @@ describe("@rybosome/tspice-backend-wasm ek", () => {
     ] as const;
 
     const nrows = 3;
-    const { segno, rcptrs } = backend.raw.ekifld(handle, "PEOPLE", nrows, cnames, decls);
+    const { segno, rcptrs } = backend.raw.ekifld(
+      handle,
+      "PEOPLE",
+      nrows,
+      cnames,
+      decls,
+    );
     expect(rcptrs.length).toBe(nrows);
 
     const entszs = [1, 1, 1];
     const nlflgs = [false, false, false];
 
     backend.raw.ekacli(handle, segno, "ID", [1, 2, 3], entszs, nlflgs, rcptrs);
-    backend.raw.ekacld(handle, segno, "COST", [10.5, 20.25, 30], entszs, nlflgs, rcptrs);
-    backend.raw.ekaclc(handle, segno, "NAME", ["Alice", "Bob", "Carol"], entszs, nlflgs, rcptrs);
+    backend.raw.ekacld(
+      handle,
+      segno,
+      "COST",
+      [10.5, 20.25, 30],
+      entszs,
+      nlflgs,
+      rcptrs,
+    );
+    backend.raw.ekaclc(
+      handle,
+      segno,
+      "NAME",
+      ["Alice", "Bob", "Carol"],
+      entszs,
+      nlflgs,
+      rcptrs,
+    );
     backend.raw.ekffld(handle, segno, rcptrs);
     backend.raw.ekcls(handle);
 
@@ -114,7 +138,15 @@ describe("@rybosome/tspice-backend-wasm ek", () => {
       ["V"],
       ["DATATYPE = INTEGER, SIZE = 2"],
     );
-    backend.raw.ekacli(vecHandle, vecSegno, "V", [10, 11], [2], [false], vecRcptrs);
+    backend.raw.ekacli(
+      vecHandle,
+      vecSegno,
+      "V",
+      [10, 11],
+      [2],
+      [false],
+      vecRcptrs,
+    );
     backend.raw.ekffld(vecHandle, vecSegno, vecRcptrs);
     backend.raw.ekcls(vecHandle);
 
@@ -125,8 +157,16 @@ describe("@rybosome/tspice-backend-wasm ek", () => {
       throw new Error(`Unexpected ekfind() parse error: ${vecFind.errmsg}`);
     }
     expect(vecFind.nmrows).toBe(1);
-    expect(backend.raw.ekgi(0, 0, 0)).toEqual({ found: true, isNull: false, value: 10 });
-    expect(backend.raw.ekgi(0, 0, 1)).toEqual({ found: true, isNull: false, value: 11 });
+    expect(backend.raw.ekgi(0, 0, 0)).toEqual({
+      found: true,
+      isNull: false,
+      value: 10,
+    });
+    expect(backend.raw.ekgi(0, 0, 1)).toEqual({
+      found: true,
+      isNull: false,
+      value: 11,
+    });
     expect(backend.raw.ekgi(0, 0, 2)).toEqual({ found: false });
 
     // Query parse failures should be surfaced via return value (not throw).

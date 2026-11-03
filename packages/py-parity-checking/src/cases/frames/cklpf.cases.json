@@ -4,7 +4,11 @@
     "description": "cklpf opens CK for subsequent query and closes via ckupf",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKLPF" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKLPF"
+      },
       {
         "op": "frames.ckobj",
         "ck": "kernels/mgs_hga_hinge_v2.bc",
@@ -18,7 +22,13 @@
   {
     "caseId": "frames-cklpf-missing-file-error",
     "description": "Representative cklpf error for missing CK file",
-    "workflow": [{ "op": "frames.cklpf", "ck": "kernels/does-not-exist.bc", "handleId": "CKH_MISSING" }],
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/does-not-exist.bc",
+        "handleId": "CKH_MISSING"
+      }
+    ],
     "expectation": { "kind": "error" }
   }
 ]

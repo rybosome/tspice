@@ -4,9 +4,15 @@
   "license": "MIT",
   "type": "commonjs",
   "main": "./index.js",
-  "os": ["linux"],
-  "cpu": ["x64"],
-  "libc": ["glibc"],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "libc": [
+    "glibc"
+  ],
   "files": [
     "index.js",
     "tspice_backend_node.node",

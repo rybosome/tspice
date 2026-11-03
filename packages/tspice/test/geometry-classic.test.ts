@@ -26,7 +26,10 @@ const SPK = {
   sha256: "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
 } as const;
 
-function vsub(a: readonly number[], b: readonly number[]): [number, number, number] {
+function vsub(
+  a: readonly number[],
+  b: readonly number[],
+): [number, number, number] {
   return [a[0]! - b[0]!, a[1]! - b[1]!, a[2]! - b[2]!];
 }
 
@@ -63,14 +66,13 @@ function ellipsoidSurfaceNormal(opts: {
   const [a, b, c] = opts.radii;
 
   // Gradient of x^2/a^2 + y^2/b^2 + z^2/c^2 = 1 is [x/a^2, y/b^2, z/c^2]
-  return vhat([
-    x / (a * a),
-    y / (b * b),
-    z / (c * c),
-  ]);
+  return vhat([x / (a * a), y / (b * b), z / (c * c)]);
 }
 
-async function furnishNaifKernels(backend: Awaited<ReturnType<typeof createBackend>>, backendKind: "node" | "wasm") {
+async function furnishNaifKernels(
+  backend: Awaited<ReturnType<typeof createBackend>>,
+  backendKind: "node" | "wasm",
+) {
   const pck = await ensureKernelFile(PCK);
   const spk = await ensureKernelFile(SPK);
 
@@ -105,10 +107,35 @@ describe("geometry classic", () => {
     const observer = "EARTH";
     const ilusrc = "SUN";
 
-    const { spoint } = backend.raw.subpnt(subpntMethod, target, et, fixref, abcorr, observer);
+    const { spoint } = backend.raw.subpnt(
+      subpntMethod,
+      target,
+      et,
+      fixref,
+      abcorr,
+      observer,
+    );
 
-    const g = backend.raw.illumg(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
-    const f = backend.raw.illumf(illumMethod, target, ilusrc, et, fixref, abcorr, observer, spoint);
+    const g = backend.raw.illumg(
+      illumMethod,
+      target,
+      ilusrc,
+      et,
+      fixref,
+      abcorr,
+      observer,
+      spoint,
+    );
+    const f = backend.raw.illumf(
+      illumMethod,
+      target,
+      ilusrc,
+      et,
+      fixref,
+      abcorr,
+      observer,
+      spoint,
+    );
 
     // Compute expected illumination angles from definitions (no aberration corrections).
     const radii = backend.raw.bodvar(301, "RADII");
@@ -116,8 +143,10 @@ describe("geometry classic", () => {
     const radii3 = [radii[0]!, radii[1]!, radii[2]!] as const;
 
     const normal = ellipsoidSurfaceNormal({ spoint, radii: radii3 });
-    const obspos = backend.raw.spkpos(observer, et, fixref, abcorr, target).pos as [number, number, number];
-    const srcpos = backend.raw.spkpos(ilusrc, et, fixref, abcorr, target).pos as [number, number, number];
+    const obspos = backend.raw.spkpos(observer, et, fixref, abcorr, target)
+      .pos as [number, number, number];
+    const srcpos = backend.raw.spkpos(ilusrc, et, fixref, abcorr, target)
+      .pos as [number, number, number];
 
     const srfToObs = vsub(obspos, spoint);
     const srfToSrc = vsub(srcpos, spoint);
@@ -149,9 +178,13 @@ describe("geometry classic", () => {
     await runIllumScenario("wasm");
   }, 60_000);
 
-  itNode("node backend: illumg/illumf matches geometric expectations", async () => {
-    await runIllumScenario("node");
-  }, 60_000);
+  itNode(
+    "node backend: illumg/illumf matches geometric expectations",
+    async () => {
+      await runIllumScenario("node");
+    },
+    60_000,
+  );
 
   async function runSincptMissScenario(backendKind: "node" | "wasm") {
     const backend = await createBackend({ backend: backendKind });
@@ -165,10 +198,29 @@ describe("geometry classic", () => {
     const observer = "EARTH";
     const dref = "J2000";
 
-    const { pos: obsToTarg } = backend.raw.spkpos(target, et, dref, abcorr, observer);
-    const dvec: [number, number, number] = [-obsToTarg[0]!, -obsToTarg[1]!, -obsToTarg[2]!];
+    const { pos: obsToTarg } = backend.raw.spkpos(
+      target,
+      et,
+      dref,
+      abcorr,
+      observer,
+    );
+    const dvec: [number, number, number] = [
+      -obsToTarg[0]!,
+      -obsToTarg[1]!,
+      -obsToTarg[2]!,
+    ];
 
-    const out = backend.raw.sincpt(method, target, et, fixref, abcorr, observer, dref, dvec);
+    const out = backend.raw.sincpt(
+      method,
+      target,
+      et,
+      fixref,
+      abcorr,
+      observer,
+      dref,
+      dvec,
+    );
     expect(out).toEqual({ found: false });
   }
 
@@ -176,34 +228,42 @@ describe("geometry classic", () => {
     await runSincptMissScenario("wasm");
   }, 60_000);
 
-  itNode("node backend: sincpt miss returns {found:false}", async () => {
-    await runSincptMissScenario("node");
-  }, 60_000);
+  itNode(
+    "node backend: sincpt miss returns {found:false}",
+    async () => {
+      await runSincptMissScenario("node");
+    },
+    60_000,
+  );
 
-  itNode("node↔wasm parity: nvc2pl/pl2nvc", async () => {
-    const node = await createBackend({ backend: "node" });
-    const wasm = await createBackend({ backend: "wasm" });
+  itNode(
+    "node↔wasm parity: nvc2pl/pl2nvc",
+    async () => {
+      const node = await createBackend({ backend: "node" });
+      const wasm = await createBackend({ backend: "wasm" });
 
-    const normal: [number, number, number] = [1, 2, 3];
-    const konst = 4;
+      const normal: [number, number, number] = [1, 2, 3];
+      const konst = 4;
 
-    const planeNode = node.raw.nvc2pl(normal, konst);
-    const planeWasm = wasm.raw.nvc2pl(normal, konst);
+      const planeNode = node.raw.nvc2pl(normal, konst);
+      const planeWasm = wasm.raw.nvc2pl(normal, konst);
 
-    expect(planeNode).toHaveLength(4);
-    expect(planeWasm).toHaveLength(4);
-    for (let i = 0; i < 4; i++) {
-      expect(planeNode[i]!).toBeCloseTo(planeWasm[i]!, 12);
-    }
+      expect(planeNode).toHaveLength(4);
+      expect(planeWasm).toHaveLength(4);
+      for (let i = 0; i < 4; i++) {
+        expect(planeNode[i]!).toBeCloseTo(planeWasm[i]!, 12);
+      }
 
-    const outNode = node.raw.pl2nvc(planeNode);
-    const outWasm = wasm.raw.pl2nvc(planeWasm);
+      const outNode = node.raw.pl2nvc(planeNode);
+      const outWasm = wasm.raw.pl2nvc(planeWasm);
 
-    expect(outNode.normal).toHaveLength(3);
-    expect(outWasm.normal).toHaveLength(3);
-    for (let i = 0; i < 3; i++) {
-      expect(outNode.normal[i]!).toBeCloseTo(outWasm.normal[i]!, 12);
-    }
-    expect(outNode.konst).toBeCloseTo(outWasm.konst, 12);
-  }, 60_000);
+      expect(outNode.normal).toHaveLength(3);
+      expect(outWasm.normal).toHaveLength(3);
+      for (let i = 0; i < 3; i++) {
+        expect(outNode.normal[i]!).toBeCloseTo(outWasm.normal[i]!, 12);
+      }
+      expect(outNode.konst).toBeCloseTo(outWasm.konst, 12);
+    },
+    60_000,
+  );
 });

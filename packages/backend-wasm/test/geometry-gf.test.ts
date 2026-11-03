@@ -14,7 +14,10 @@ describe("@rybosome/tspice-backend-wasm geometry GF", () => {
 
     // Build a tiny SPK in-process so the test is self-contained.
     // Body 1000: linear motion along +X at 1 km/s.
-    const output = { kind: "virtual-output", path: "geometry-gf-test.bsp" } as const;
+    const output = {
+      kind: "virtual-output",
+      path: "geometry-gf-test.bsp",
+    } as const;
     const handle = backend.raw.spkopn(output, "TSPICE", 0);
 
     const states = [

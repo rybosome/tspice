@@ -4,7 +4,11 @@ import type { KernelSource } from "@rybosome/tspice-backend-contract";
 
 import { kernels } from "../src/kernels/kernels.js";
 import type { NaifKernelId } from "../src/kernels/naifKernelId.js";
-import type { FetchLike, KernelPack, ResponseLike } from "../src/kernels/kernelPack.js";
+import type {
+  FetchLike,
+  KernelPack,
+  ResponseLike,
+} from "../src/kernels/kernelPack.js";
 import { loadKernelPack } from "../src/kernels/kernelPack.js";
 
 function okResponse(bytes: Uint8Array): ResponseLike {
@@ -58,10 +62,10 @@ describe("kernels.naif()", () => {
   });
 
   it("builds a pack, normalizes origin/pathBase, and preserves ordering", () => {
-    const ids = ["spk/planets/de432s.bsp", "lsk/naif0012.tls"] as const satisfies readonly [
-      NaifKernelId,
-      ...NaifKernelId[],
-    ];
+    const ids = [
+      "spk/planets/de432s.bsp",
+      "lsk/naif0012.tls",
+    ] as const satisfies readonly [NaifKernelId, ...NaifKernelId[]];
 
     const pack = kernels
       .naif({
@@ -119,10 +123,12 @@ describe("kernels.naif()", () => {
       pathBase: "naif/",
     });
 
-    expect(() => (catalog.pick as unknown as () => unknown)()).toThrow(/expected at least one id\/entry/);
-    expect(() => (catalog.pick as unknown as (arg: unknown) => unknown)([])).toThrow(
+    expect(() => (catalog.pick as unknown as () => unknown)()).toThrow(
       /expected at least one id\/entry/,
     );
+    expect(() =>
+      (catalog.pick as unknown as (arg: unknown) => unknown)([]),
+    ).toThrow(/expected at least one id\/entry/);
   });
 
   it("dedupes duplicates (preserves first-occurrence order)", () => {
@@ -131,7 +137,12 @@ describe("kernels.naif()", () => {
         origin: "https://cdn.example.com/kernels/",
         pathBase: "naif/",
       })
-      .pick("lsk/naif0012.tls", "lsk/naif0012.tls", "spk/planets/de432s.bsp", "lsk/naif0012.tls");
+      .pick(
+        "lsk/naif0012.tls",
+        "lsk/naif0012.tls",
+        "spk/planets/de432s.bsp",
+        "lsk/naif0012.tls",
+      );
 
     expect(pack.kernels.map((k) => k.path)).toEqual([
       "naif/lsk/naif0012.tls",
@@ -161,9 +172,17 @@ describe("kernels.tspice()", () => {
   it("dedupes duplicates (preserves first-occurrence order)", () => {
     const pack = kernels
       .tspice()
-      .pick("pck/pck00011.tpc", "lsk/naif0012.tls", "pck/pck00011.tpc", "lsk/naif0012.tls");
+      .pick(
+        "pck/pck00011.tpc",
+        "lsk/naif0012.tls",
+        "pck/pck00011.tpc",
+        "lsk/naif0012.tls",
+      );
 
-    expect(pack.kernels.map((k) => k.path)).toEqual(["naif/pck/pck00011.tpc", "naif/lsk/naif0012.tls"]);
+    expect(pack.kernels.map((k) => k.path)).toEqual([
+      "naif/pck/pck00011.tpc",
+      "naif/lsk/naif0012.tls",
+    ]);
   });
 });
 
@@ -185,15 +204,21 @@ describe("kernels.custom()", () => {
   });
 
   it("supports url-only mode when opts are omitted", () => {
-    const pack = kernels.custom().pick({ url: "https://example.com/a/de432s.bsp" });
+    const pack = kernels
+      .custom()
+      .pick({ url: "https://example.com/a/de432s.bsp" });
     expect(pack.kernels).toHaveLength(1);
     expect(pack.kernels[0]?.url).toBe("https://example.com/a/de432s.bsp");
-    expect(pack.kernels[0]?.path).toMatch(/^\/kernels\/[0-9a-f]{12}-de432s\.bsp$/);
+    expect(pack.kernels[0]?.path).toMatch(
+      /^\/kernels\/[0-9a-f]{12}-de432s\.bsp$/,
+    );
   });
 
   it("throws when string ids are used without mapping opts", () => {
     const catalog = kernels.custom();
-    expect(() => (catalog.pick as unknown as (id: unknown) => unknown)("mission.bsp")).toThrow(
+    expect(() =>
+      (catalog.pick as unknown as (id: unknown) => unknown)("mission.bsp"),
+    ).toThrow(
       /string ids require kernels\.custom\(\{ origin, pathBase, baseUrl\? \}\)/,
     );
   });
@@ -206,13 +231,19 @@ describe("kernels.custom()", () => {
       })
       .pick("a.tls", "b.tls", "a.tls");
 
-    expect(pack.kernels.map((k) => k.path)).toEqual(["custom/a.tls", "custom/b.tls"]);
+    expect(pack.kernels.map((k) => k.path)).toEqual([
+      "custom/a.tls",
+      "custom/b.tls",
+    ]);
   });
 
   it("defaults kernel paths to stable hashed values to avoid collisions", () => {
     const pack = kernels
       .custom({ origin: "https://example.com/", pathBase: "custom/" })
-      .pick({ url: "https://example.com/a/de432s.bsp" }, { url: "https://example.com/b/de432s.bsp" });
+      .pick(
+        { url: "https://example.com/a/de432s.bsp" },
+        { url: "https://example.com/b/de432s.bsp" },
+      );
 
     const [a, b] = pack.kernels;
     expect(a?.path).toMatch(/^\/kernels\/[0-9a-f]{12}-de432s\.bsp$/);
@@ -223,18 +254,24 @@ describe("kernels.custom()", () => {
   it("includes querystring in the hash so versioned URLs do not collide", () => {
     const pack = kernels
       .custom({ origin: "https://example.com/", pathBase: "custom/" })
-      .pick({ url: "https://example.com/de432s.bsp?v=1" }, { url: "https://example.com/de432s.bsp?v=2" });
+      .pick(
+        { url: "https://example.com/de432s.bsp?v=1" },
+        { url: "https://example.com/de432s.bsp?v=2" },
+      );
 
     expect(pack.kernels[0]?.path).not.toBe(pack.kernels[1]?.path);
   });
 });
 
-
 describe("loadKernelPack()", () => {
   it("rejects legacy opts.baseUrl (moved to pack.baseUrl)", async () => {
-    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+    const fetch = vi.fn(async (_url: string) =>
+      okResponse(new Uint8Array([1])),
+    ) satisfies FetchLike;
 
-    const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
+    const spice = {
+      kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) },
+    };
     const pack: KernelPack = {
       kernels: [{ url: "a", path: "/a" }],
     };
@@ -250,8 +287,12 @@ describe("loadKernelPack()", () => {
   });
 
   it("throws when pack.baseUrl is not directory-style (missing trailing slash)", async () => {
-    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
-    const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
+    const fetch = vi.fn(async (_url: string) =>
+      okResponse(new Uint8Array([1])),
+    ) satisfies FetchLike;
+    const spice = {
+      kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) },
+    };
 
     const pack: KernelPack = {
       baseUrl: "https://example.com/myapp",
@@ -264,7 +305,9 @@ describe("loadKernelPack()", () => {
   });
 
   it("resolves relative kernel URLs against baseUrl (directory-style)", async () => {
-    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+    const fetch = vi.fn(async (_url: string) =>
+      okResponse(new Uint8Array([1])),
+    ) satisfies FetchLike;
 
     const loadKernel = vi.fn(async (_kernel: KernelSource) => {});
     const spice = { kit: { loadKernel } };
@@ -276,7 +319,9 @@ describe("loadKernelPack()", () => {
 
     await loadKernelPack(spice, pack, { fetch });
 
-    expect(fetch).toHaveBeenCalledWith("https://example.com/myapp/kernels/a.tls");
+    expect(fetch).toHaveBeenCalledWith(
+      "https://example.com/myapp/kernels/a.tls",
+    );
     expect(loadKernel).toHaveBeenCalledWith({
       path: "/kernels/a.tls",
       bytes: new Uint8Array([1]),
@@ -284,20 +329,30 @@ describe("loadKernelPack()", () => {
   });
 
   it("throws on protocol-relative baseUrl (Node fetch requires scheme-based URLs)", async () => {
-    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
-    const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
+    const fetch = vi.fn(async (_url: string) =>
+      okResponse(new Uint8Array([1])),
+    ) satisfies FetchLike;
+    const spice = {
+      kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) },
+    };
 
     const pack: KernelPack = {
       baseUrl: "//example.com/myapp/",
       kernels: [{ url: "kernels/a.tls", path: "/kernels/a.tls" }],
     };
 
-    await expect(loadKernelPack(spice, pack, { fetch })).rejects.toThrow(/scheme-based URLs like "https:\/\//);
+    await expect(loadKernelPack(spice, pack, { fetch })).rejects.toThrow(
+      /scheme-based URLs like "https:\/\//,
+    );
   });
 
   it("supports root-relative URLs with applyBaseOrigin", async () => {
-    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
-    const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
+    const fetch = vi.fn(async (_url: string) =>
+      okResponse(new Uint8Array([1])),
+    ) satisfies FetchLike;
+    const spice = {
+      kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) },
+    };
 
     await loadKernelPack(
       spice,
@@ -344,7 +399,10 @@ describe("loadKernelPack()", () => {
 
   it("can fetch in parallel while still loading kernels sequentially in pack order", async () => {
     const events: string[] = [];
-    const pending: Array<{ url: string; resolve: (res: ResponseLike) => void }> = [];
+    const pending: Array<{
+      url: string;
+      resolve: (res: ResponseLike) => void;
+    }> = [];
 
     const fetch: FetchLike = (url) => {
       events.push(`fetch:${url}`);

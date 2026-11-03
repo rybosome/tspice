@@ -17,5 +17,8 @@ export interface Runner {
   readonly kind: string;
 
   /** Execute a benchmark contract and return success/failure. */
-  runSuite(contract: BenchmarkContract, options?: RunSuiteOptions): Promise<RunnerResult>;
+  runSuite(
+    contract: BenchmarkContract,
+    options?: RunSuiteOptions,
+  ): Promise<RunnerResult>;
 }

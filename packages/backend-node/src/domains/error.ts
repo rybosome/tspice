@@ -8,7 +8,10 @@ export function createErrorApi(native: NativeAddon): ErrorApi {
   return {
     failed: () => {
       const out = native.failed();
-      invariant(typeof out === "boolean", "Expected native backend failed() to return a boolean");
+      invariant(
+        typeof out === "boolean",
+        "Expected native backend failed() to return a boolean",
+      );
       return out;
     },
 
@@ -19,7 +22,10 @@ export function createErrorApi(native: NativeAddon): ErrorApi {
     getmsg: (which) => {
       assertGetmsgWhich(which);
       const out = native.getmsg(which);
-      invariant(typeof out === "string", "Expected native backend getmsg() to return a string");
+      invariant(
+        typeof out === "string",
+        "Expected native backend getmsg() to return a string",
+      );
       return out;
     },
 

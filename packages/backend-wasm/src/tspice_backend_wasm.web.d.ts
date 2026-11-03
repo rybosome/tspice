@@ -1,3 +1,5 @@
-declare const createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
+declare const createEmscriptenModule: (
+  opts: Record<string, unknown>,
+) => Promise<unknown>;
 
 export default createEmscriptenModule;

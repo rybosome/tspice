@@ -38,7 +38,12 @@ function tspiceCallStr2et(module: EmscriptenModule, utc: string): number {
   return withUtf8CString(module, utc, (utcPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEtPtr) => {
       module.HEAPF64[outEtPtr >> 3] = 0;
-      const result = module._tspice_str2et(utcPtr, outEtPtr, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_str2et(
+        utcPtr,
+        outEtPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -56,57 +61,83 @@ function tspiceCallEt2utc(
   const outMaxBytes = WASM_TIME_OUT_MAX_BYTES;
 
   return withUtf8CString(module, format, (formatPtr) => {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
-      module.HEAPU8[outPtr] = 0;
-      const result = module._tspice_et2utc(
-        et,
-        formatPtr,
-        prec,
-        outPtr,
-        outMaxBytes,
-        errPtr,
-        WASM_ERR_MAX_BYTES,
-      );
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return readFixedWidthCString(module, outPtr, outMaxBytes);
-    });
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, outMaxBytes],
+      (errPtr, outPtr) => {
+        module.HEAPU8[outPtr] = 0;
+        const result = module._tspice_et2utc(
+          et,
+          formatPtr,
+          prec,
+          outPtr,
+          outMaxBytes,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return readFixedWidthCString(module, outPtr, outMaxBytes);
+      },
+    );
   });
 }
 
-function tspiceCallTimout(module: EmscriptenModule, et: number, picture: string): string {
+function tspiceCallTimout(
+  module: EmscriptenModule,
+  et: number,
+  picture: string,
+): string {
   const outMaxBytes = WASM_TIME_OUT_MAX_BYTES;
 
   return withUtf8CString(module, picture, (picturePtr) => {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
-      module.HEAPU8[outPtr] = 0;
-      const result = module._tspice_timout(
-        et,
-        picturePtr,
-        outPtr,
-        outMaxBytes,
-        errPtr,
-        WASM_ERR_MAX_BYTES,
-      );
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return readFixedWidthCString(module, outPtr, outMaxBytes);
-    });
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, outMaxBytes],
+      (errPtr, outPtr) => {
+        module.HEAPU8[outPtr] = 0;
+        const result = module._tspice_timout(
+          et,
+          picturePtr,
+          outPtr,
+          outMaxBytes,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return readFixedWidthCString(module, outPtr, outMaxBytes);
+      },
+    );
   });
 }
 
-function tspiceCallDeltet(module: EmscriptenModule, epoch: number, eptype: string): number {
+function tspiceCallDeltet(
+  module: EmscriptenModule,
+  epoch: number,
+  eptype: string,
+): number {
   return withUtf8CString(module, eptype, (eptypePtr) => {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outDeltaPtr) => {
-      module.HEAPF64[outDeltaPtr >> 3] = 0;
-      const result = module._tspice_deltet(epoch, eptypePtr, outDeltaPtr, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return module.HEAPF64[outDeltaPtr >> 3] ?? 0;
-    });
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, 8],
+      (errPtr, outDeltaPtr) => {
+        module.HEAPF64[outDeltaPtr >> 3] = 0;
+        const result = module._tspice_deltet(
+          epoch,
+          eptypePtr,
+          outDeltaPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return module.HEAPF64[outDeltaPtr >> 3] ?? 0;
+      },
+    );
   });
 }
 
@@ -118,21 +149,25 @@ function tspiceCallUnitim(
 ): number {
   return withUtf8CString(module, insys, (insysPtr) => {
     return withUtf8CString(module, outsys, (outsysPtr) => {
-      return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEpochPtr) => {
-        module.HEAPF64[outEpochPtr >> 3] = 0;
-        const result = module._tspice_unitim(
-          epoch,
-          insysPtr,
-          outsysPtr,
-          outEpochPtr,
-          errPtr,
-          WASM_ERR_MAX_BYTES,
-        );
-        if (result !== 0) {
-          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-        }
-        return module.HEAPF64[outEpochPtr >> 3] ?? 0;
-      });
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 8],
+        (errPtr, outEpochPtr) => {
+          module.HEAPF64[outEpochPtr >> 3] = 0;
+          const result = module._tspice_unitim(
+            epoch,
+            insysPtr,
+            outsysPtr,
+            outEpochPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (result !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+          }
+          return module.HEAPF64[outEpochPtr >> 3] ?? 0;
+        },
+      );
     });
   });
 }
@@ -141,7 +176,12 @@ function tspiceCallTparse(module: EmscriptenModule, timstr: string): number {
   return withUtf8CString(module, timstr, (timstrPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEtPtr) => {
       module.HEAPF64[outEtPtr >> 3] = 0;
-      const result = module._tspice_tparse(timstrPtr, outEtPtr, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_tparse(
+        timstrPtr,
+        outEtPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -150,16 +190,49 @@ function tspiceCallTparse(module: EmscriptenModule, timstr: string): number {
   });
 }
 
-function tspiceCallTpictr(module: EmscriptenModule, sample: string, picturIn: string): string {
+function tspiceCallTpictr(
+  module: EmscriptenModule,
+  sample: string,
+  picturIn: string,
+): string {
   const outMaxBytes = WASM_TIME_OUT_MAX_BYTES;
 
   return withUtf8CString(module, sample, (samplePtr) => {
     return withUtf8CString(module, picturIn, (picturInPtr) => {
-      return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, outMaxBytes],
+        (errPtr, outPtr) => {
+          module.HEAPU8[outPtr] = 0;
+          const result = module._tspice_tpictr(
+            samplePtr,
+            picturInPtr,
+            outPtr,
+            outMaxBytes,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (result !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+          }
+          return readFixedWidthCString(module, outPtr, outMaxBytes);
+        },
+      );
+    });
+  });
+}
+
+function tspiceCallTimdefGet(module: EmscriptenModule, item: string): string {
+  const outMaxBytes = WASM_TIME_SMALL_OUT_MAX_BYTES;
+
+  return withUtf8CString(module, item, (itemPtr) => {
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, outMaxBytes],
+      (errPtr, outPtr) => {
         module.HEAPU8[outPtr] = 0;
-        const result = module._tspice_tpictr(
-          samplePtr,
-          picturInPtr,
+        const result = module._tspice_timdef_get(
+          itemPtr,
           outPtr,
           outMaxBytes,
           errPtr,
@@ -169,31 +242,25 @@ function tspiceCallTpictr(module: EmscriptenModule, sample: string, picturIn: st
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
         return readFixedWidthCString(module, outPtr, outMaxBytes);
-      });
-    });
+      },
+    );
   });
 }
 
-function tspiceCallTimdefGet(module: EmscriptenModule, item: string): string {
-  const outMaxBytes = WASM_TIME_SMALL_OUT_MAX_BYTES;
-
-  return withUtf8CString(module, item, (itemPtr) => {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
-      module.HEAPU8[outPtr] = 0;
-      const result = module._tspice_timdef_get(itemPtr, outPtr, outMaxBytes, errPtr, WASM_ERR_MAX_BYTES);
-      if (result !== 0) {
-        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-      }
-      return readFixedWidthCString(module, outPtr, outMaxBytes);
-    });
-  });
-}
-
-function tspiceCallTimdefSet(module: EmscriptenModule, item: string, value: string): void {
+function tspiceCallTimdefSet(
+  module: EmscriptenModule,
+  item: string,
+  value: string,
+): void {
   withUtf8CString(module, item, (itemPtr) => {
     withUtf8CString(module, value, (valuePtr) => {
       withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-        const result = module._tspice_timdef_set(itemPtr, valuePtr, errPtr, WASM_ERR_MAX_BYTES);
+        const result = module._tspice_timdef_set(
+          itemPtr,
+          valuePtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
         if (result !== 0) {
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
@@ -202,11 +269,21 @@ function tspiceCallTimdefSet(module: EmscriptenModule, item: string, value: stri
   });
 }
 
-function tspiceCallScs2e(module: EmscriptenModule, sc: number, sclkch: string): number {
+function tspiceCallScs2e(
+  module: EmscriptenModule,
+  sc: number,
+  sclkch: string,
+): number {
   return withUtf8CString(module, sclkch, (sclkchPtr) => {
     return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEtPtr) => {
       module.HEAPF64[outEtPtr >> 3] = 0;
-      const result = module._tspice_scs2e(sc, sclkchPtr, outEtPtr, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_scs2e(
+        sc,
+        sclkchPtr,
+        outEtPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -215,49 +292,103 @@ function tspiceCallScs2e(module: EmscriptenModule, sc: number, sclkch: string): 
   });
 }
 
-function tspiceCallSce2s(module: EmscriptenModule, sc: number, et: number): string {
+function tspiceCallSce2s(
+  module: EmscriptenModule,
+  sc: number,
+  et: number,
+): string {
   const outMaxBytes = WASM_SCLK_OUT_MAX_BYTES;
 
-  return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
-    module.HEAPU8[outPtr] = 0;
-    const result = module._tspice_sce2s(sc, et, outPtr, outMaxBytes, errPtr, WASM_ERR_MAX_BYTES);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-    }
-    return readFixedWidthCString(module, outPtr, outMaxBytes);
-  });
-}
-
-function tspiceCallScencd(module: EmscriptenModule, sc: number, sclkch: string): number {
-  return withUtf8CString(module, sclkch, (sclkchPtr) => {
-    return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outSclkdpPtr) => {
-      module.HEAPF64[outSclkdpPtr >> 3] = 0;
-      const result = module._tspice_scencd(sc, sclkchPtr, outSclkdpPtr, errPtr, WASM_ERR_MAX_BYTES);
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, outMaxBytes],
+    (errPtr, outPtr) => {
+      module.HEAPU8[outPtr] = 0;
+      const result = module._tspice_sce2s(
+        sc,
+        et,
+        outPtr,
+        outMaxBytes,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
-      return module.HEAPF64[outSclkdpPtr >> 3] ?? 0;
-    });
+      return readFixedWidthCString(module, outPtr, outMaxBytes);
+    },
+  );
+}
+
+function tspiceCallScencd(
+  module: EmscriptenModule,
+  sc: number,
+  sclkch: string,
+): number {
+  return withUtf8CString(module, sclkch, (sclkchPtr) => {
+    return withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, 8],
+      (errPtr, outSclkdpPtr) => {
+        module.HEAPF64[outSclkdpPtr >> 3] = 0;
+        const result = module._tspice_scencd(
+          sc,
+          sclkchPtr,
+          outSclkdpPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        }
+        return module.HEAPF64[outSclkdpPtr >> 3] ?? 0;
+      },
+    );
   });
 }
 
-function tspiceCallScdecd(module: EmscriptenModule, sc: number, sclkdp: number): string {
+function tspiceCallScdecd(
+  module: EmscriptenModule,
+  sc: number,
+  sclkdp: number,
+): string {
   const outMaxBytes = WASM_SCLK_OUT_MAX_BYTES;
 
-  return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
-    module.HEAPU8[outPtr] = 0;
-    const result = module._tspice_scdecd(sc, sclkdp, outPtr, outMaxBytes, errPtr, WASM_ERR_MAX_BYTES);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-    }
-    return readFixedWidthCString(module, outPtr, outMaxBytes);
-  });
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, outMaxBytes],
+    (errPtr, outPtr) => {
+      module.HEAPU8[outPtr] = 0;
+      const result = module._tspice_scdecd(
+        sc,
+        sclkdp,
+        outPtr,
+        outMaxBytes,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
+      return readFixedWidthCString(module, outPtr, outMaxBytes);
+    },
+  );
 }
 
-function tspiceCallSct2e(module: EmscriptenModule, sc: number, sclkdp: number): number {
+function tspiceCallSct2e(
+  module: EmscriptenModule,
+  sc: number,
+  sclkdp: number,
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outEtPtr) => {
     module.HEAPF64[outEtPtr >> 3] = 0;
-    const result = module._tspice_sct2e(sc, sclkdp, outEtPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_sct2e(
+      sc,
+      sclkdp,
+      outEtPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -265,10 +396,20 @@ function tspiceCallSct2e(module: EmscriptenModule, sc: number, sclkdp: number): 
   });
 }
 
-function tspiceCallSce2c(module: EmscriptenModule, sc: number, et: number): number {
+function tspiceCallSce2c(
+  module: EmscriptenModule,
+  sc: number,
+  et: number,
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outSclkdpPtr) => {
     module.HEAPF64[outSclkdpPtr >> 3] = 0;
-    const result = module._tspice_sce2c(sc, et, outSclkdpPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_sce2c(
+      sc,
+      et,
+      outSclkdpPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -279,20 +420,32 @@ function tspiceCallSce2c(module: EmscriptenModule, sc: number, et: number): numb
 /** Read the embedded CSPICE toolkit version string from the WASM module. */
 export function getToolkitVersion(module: EmscriptenModule): string {
   const outMaxBytes = 256;
-  return withAllocs(module, [outMaxBytes, WASM_ERR_MAX_BYTES], (outPtr, errPtr) => {
-    const result = module._tspice_tkvrsn_toolkit(outPtr, outMaxBytes, errPtr, WASM_ERR_MAX_BYTES);
+  return withAllocs(
+    module,
+    [outMaxBytes, WASM_ERR_MAX_BYTES],
+    (outPtr, errPtr) => {
+      const result = module._tspice_tkvrsn_toolkit(
+        outPtr,
+        outMaxBytes,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
 
-    if (result !== 0) {
-      const message = module.UTF8ToString(errPtr, WASM_ERR_MAX_BYTES).trim();
-      throw new Error(message || `CSPICE call failed with code ${result}`);
-    }
+      if (result !== 0) {
+        const message = module.UTF8ToString(errPtr, WASM_ERR_MAX_BYTES).trim();
+        throw new Error(message || `CSPICE call failed with code ${result}`);
+      }
 
-    return module.UTF8ToString(outPtr, outMaxBytes);
-  });
+      return module.UTF8ToString(outPtr, outMaxBytes);
+    },
+  );
 }
 
 /** Create a {@link TimeApi} implementation backed by a WASM Emscripten module. */
-export function createTimeApi(module: EmscriptenModule, toolkitVersion: string): TimeApi {
+export function createTimeApi(
+  module: EmscriptenModule,
+  toolkitVersion: string,
+): TimeApi {
   return {
     tkvrsn: (item) => {
       if (item !== "TOOLKIT") {
@@ -304,7 +457,11 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
     timdef: (() => {
       function timdef(action: "GET", item: string): string;
       function timdef(action: "SET", item: string, value: string): void;
-      function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+      function timdef(
+        action: "GET" | "SET",
+        item: string,
+        value?: string,
+      ): string | void {
         if (item.length === 0) {
           throw new RangeError("timdef(): item must be a non-empty string");
         }
@@ -319,7 +476,9 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
               throw new TypeError("timdef(SET) requires a string value");
             }
             if (value.length === 0) {
-              throw new RangeError("timdef(SET)(): value must be a non-empty string");
+              throw new RangeError(
+                "timdef(SET)(): value must be a non-empty string",
+              );
             }
             tspiceCallTimdefSet(module, item, value);
             return;
@@ -338,7 +497,8 @@ export function createTimeApi(module: EmscriptenModule, toolkitVersion: string):
     timout: (et, picture) => tspiceCallTimout(module, et, picture),
 
     deltet: (epoch, eptype) => tspiceCallDeltet(module, epoch, eptype),
-    unitim: (epoch, insys, outsys) => tspiceCallUnitim(module, epoch, insys, outsys),
+    unitim: (epoch, insys, outsys) =>
+      tspiceCallUnitim(module, epoch, insys, outsys),
 
     tparse: (timstr) => {
       if (timstr.length === 0) {

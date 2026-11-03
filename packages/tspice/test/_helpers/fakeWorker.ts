@@ -49,12 +49,18 @@ export class FakeWorkerGlobalScope {
   /** Hook used by {@link createConnectedWorkerPair}. */
   onPostMessage: ((msg: unknown) => void) | undefined;
 
-  addEventListener(type: "message", listener: (ev: { data: unknown }) => void): void {
+  addEventListener(
+    type: "message",
+    listener: (ev: { data: unknown }) => void,
+  ): void {
     if (type !== "message") return;
     this.messageListeners.add(listener);
   }
 
-  removeEventListener(type: "message", listener: (ev: { data: unknown }) => void): void {
+  removeEventListener(
+    type: "message",
+    listener: (ev: { data: unknown }) => void,
+  ): void {
     if (type !== "message") return;
     this.messageListeners.delete(listener);
   }

@@ -25,7 +25,9 @@ async function readFileAndSha256(filePath: string): Promise<{
 async function downloadBytes(url: string): Promise<Buffer> {
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error(`Failed to download ${url}: ${res.status} ${res.statusText}`);
+    throw new Error(
+      `Failed to download ${url}: ${res.status} ${res.statusText}`,
+    );
   }
   const arrayBuffer = await res.arrayBuffer();
   return Buffer.from(arrayBuffer);

@@ -1,6 +1,9 @@
 import { notImplemented } from "../../../shared/notImplemented.js";
 
-import type { BenchmarkContractV1, NormalizeFixtureRefsOptions } from "./types.js";
+import type {
+  BenchmarkContractV1,
+  NormalizeFixtureRefsOptions,
+} from "./types.js";
 
 /**
  * Normalize fixture references in a v1 benchmark contract (e.g. canonicalize ids/paths).

@@ -16,7 +16,6 @@ const getWorkerConfig = (): TspiceWorkerConfig | undefined => {
   return cfg as TspiceWorkerConfig;
 };
 
-
 const blockedStringKeys = new Set<string>([
   // Promise / thenable
   "then",

@@ -9,7 +9,10 @@ import {
   WASM_WEB_JS_FILENAME,
 } from "./backend-wasm-assets.mjs";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
 
 const WASM_MEMORY_PAGE_BYTES = 64 * 1024;
 const DEFAULT_WASM_INITIAL_MEMORY_BYTES = 128 * 1024 * 1024;
@@ -42,14 +45,22 @@ function readWasmInitialMemoryBytes() {
     );
   }
 
-  console.log(`Using wasm INITIAL_MEMORY=${bytes} bytes from TSPICE_WASM_INITIAL_MEMORY`);
+  console.log(
+    `Using wasm INITIAL_MEMORY=${bytes} bytes from TSPICE_WASM_INITIAL_MEMORY`,
+  );
   return bytes;
 }
 
 const wasmInitialMemoryBytes = readWasmInitialMemoryBytes();
 
-const cspiceManifestPath = path.join(repoRoot, "scripts", "cspice.manifest.json");
-const { toolkitVersion } = JSON.parse(fs.readFileSync(cspiceManifestPath, "utf8"));
+const cspiceManifestPath = path.join(
+  repoRoot,
+  "scripts",
+  "cspice.manifest.json",
+);
+const { toolkitVersion } = JSON.parse(
+  fs.readFileSync(cspiceManifestPath, "utf8"),
+);
 
 const cspiceSourceRoot = path.join(
   repoRoot,
@@ -60,10 +71,14 @@ const cspiceSourceRoot = path.join(
   "cspice",
 );
 
-execFileSync("node", [path.join(repoRoot, "scripts", "fetch-cspice.mjs"), "--source"], {
-  cwd: repoRoot,
-  stdio: "inherit",
-});
+execFileSync(
+  "node",
+  [path.join(repoRoot, "scripts", "fetch-cspice.mjs"), "--source"],
+  {
+    cwd: repoRoot,
+    stdio: "inherit",
+  },
+);
 
 const wasmBuildCacheDir = path.join(repoRoot, ".cache");
 fs.mkdirSync(wasmBuildCacheDir, { recursive: true });
@@ -77,7 +92,11 @@ const wasmBuildDir = path.join(wasmBuildCacheDir, "wasm-build");
     if (rel === "") {
       return false;
     }
-    if (rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)) {
+    if (
+      rel === ".." ||
+      rel.startsWith(`..${path.sep}`) ||
+      path.isAbsolute(rel)
+    ) {
       return false;
     }
     return true;
@@ -86,7 +105,9 @@ const wasmBuildDir = path.join(wasmBuildCacheDir, "wasm-build");
   const cacheRoot = path.resolve(wasmBuildCacheDir);
   const buildRoot = path.resolve(wasmBuildDir);
   if (!isSubdir(cacheRoot, buildRoot)) {
-    throw new Error(`Expected wasm build dir to be under ${cacheRoot}, got: ${buildRoot}`);
+    throw new Error(
+      `Expected wasm build dir to be under ${cacheRoot}, got: ${buildRoot}`,
+    );
   }
 }
 fs.rmSync(wasmBuildDir, { recursive: true, force: true });
@@ -98,22 +119,103 @@ fs.cpSync(cspiceSourceRoot, patchedCspiceSourceRoot, { recursive: true });
 
 const shimSources = [
   path.join(repoRoot, "packages", "backend-shim-c", "src", "errors.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "handle_validation.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernels.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "kernel_pool.c"),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "handle_validation.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "kernels.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "kernel_pool.c",
+  ),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "time.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ids_names.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "frames.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ephemeris.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "geometry_gf.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "coords_vectors.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "file_io.c"),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "ids_names.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "frames.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "ephemeris.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "geometry.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "geometry_gf.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "coords_vectors.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "file_io.c",
+  ),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "ek.c"),
-  path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "cells_windows.c"),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
+    "cells_windows.c",
+  ),
   path.join(repoRoot, "packages", "backend-shim-c", "src", "domains", "dsk.c"),
 ];
-const shimIncludeDir = path.join(repoRoot, "packages", "backend-shim-c", "include");
+const shimIncludeDir = path.join(
+  repoRoot,
+  "packages",
+  "backend-shim-c",
+  "include",
+);
 const outputDir = path.join(repoRoot, "packages", "backend-wasm", "emscripten");
 const outputWebJsPath = path.join(outputDir, WASM_WEB_JS_FILENAME);
 const outputNodeJsPath = path.join(outputDir, WASM_NODE_JS_FILENAME);
@@ -170,7 +272,9 @@ function patchReturnInt(filePath, symbol, indentation = "") {
     console.log(`Patched ${symbol} in ${filePath}`);
     fs.writeFileSync(filePath, contents);
   } else if (needsPatch) {
-    throw new Error(`Expected to patch ${symbol} in ${filePath}, but no changes were made`);
+    throw new Error(
+      `Expected to patch ${symbol} in ${filePath}, but no changes were made`,
+    );
   }
 }
 
@@ -210,7 +314,11 @@ function collectCFiles(dir) {
   return out;
 }
 
-const sources = [...shimSources, ...collectCFiles(cspiceCspiceDir), ...collectCFiles(cspiceCsupportDir)];
+const sources = [
+  ...shimSources,
+  ...collectCFiles(cspiceCspiceDir),
+  ...collectCFiles(cspiceCsupportDir),
+];
 
 const includeDirs = [
   shimIncludeDir,
@@ -306,7 +414,6 @@ const exportedFunctions = [
   "_tspice_dsksrf",
   "_tspice_dskgd",
   "_tspice_dskb02",
-
 
   // --- kernel pool ---
   "_tspice_gdpool",
@@ -503,10 +610,14 @@ const outputNodeWasmPath = outputNodeJsPath.replace(/\.js$/, ".wasm");
 const outputWasmPath = path.join(outputDir, WASM_BINARY_FILENAME);
 
 if (!fs.existsSync(outputWebWasmPath)) {
-  throw new Error(`Expected Emscripten to write ${outputWebWasmPath} but it was missing`);
+  throw new Error(
+    `Expected Emscripten to write ${outputWebWasmPath} but it was missing`,
+  );
 }
 if (!fs.existsSync(outputNodeWasmPath)) {
-  throw new Error(`Expected Emscripten to write ${outputNodeWasmPath} but it was missing`);
+  throw new Error(
+    `Expected Emscripten to write ${outputNodeWasmPath} but it was missing`,
+  );
 }
 
 // emcc derives the wasm filename from the JS glue output filename (e.g. *.web.wasm / *.node.wasm).
@@ -538,14 +649,20 @@ fs.copyFileSync(outputWebWasmPath, outputWasmPath);
     const re = new RegExp(`(['"])${escapeRegExp(oldBasename)}\\1`, "g");
     const patched = jsContents.replace(re, `$1${WASM_BINARY_FILENAME}$1`);
     if (patched === jsContents) {
-      throw new Error(`Expected to patch wasm basename in ${jsPath} but no changes were made`);
+      throw new Error(
+        `Expected to patch wasm basename in ${jsPath} but no changes were made`,
+      );
     }
 
     if (patched.includes(oldBasename)) {
-      throw new Error(`Expected ${jsPath} to no longer reference ${oldBasename} after patching`);
+      throw new Error(
+        `Expected ${jsPath} to no longer reference ${oldBasename} after patching`,
+      );
     }
     if (!patched.includes(WASM_BINARY_FILENAME)) {
-      throw new Error(`Expected ${jsPath} to reference ${WASM_BINARY_FILENAME} after patching`);
+      throw new Error(
+        `Expected ${jsPath} to reference ${WASM_BINARY_FILENAME} after patching`,
+      );
     }
 
     fs.writeFileSync(jsPath, patched);
@@ -601,7 +718,10 @@ function ensureNodeEsmPreamble(jsPath) {
   if (jsContents.includes("createRequire(import.meta.url)")) {
     return;
   }
-  fs.writeFileSync(jsPath, `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`);
+  fs.writeFileSync(
+    jsPath,
+    `${generatedHeader}${nodeEsmPreamble}${jsContents.slice(generatedHeader.length)}`,
+  );
 }
 
 function guardNodeProcessListeners(jsPath) {
@@ -621,13 +741,13 @@ function guardNodeProcessListeners(jsPath) {
   }
 
   const newSnippet =
-    'if(!globalThis.__tspice_backend_wasm_node_listeners_installed){' +
-    'globalThis.__tspice_backend_wasm_node_listeners_installed=true;' +
+    "if(!globalThis.__tspice_backend_wasm_node_listeners_installed){" +
+    "globalThis.__tspice_backend_wasm_node_listeners_installed=true;" +
     'process["on"]("uncaughtException",function(ex){' +
     'if(!(ex&&typeof ex==="object"&&ex.name==="ExitStatus"&&typeof ex.status==="number")){throw ex}' +
-    '});' +
+    "});" +
     'process["on"]("unhandledRejection",function(reason){throw reason});' +
-    '}';
+    "}";
 
   fs.writeFileSync(jsPath, jsContents.replace(oldSnippet, newSnippet));
 }

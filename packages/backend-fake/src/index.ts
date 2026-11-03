@@ -162,7 +162,9 @@ function parseBodyRef(ref: string): number {
 
 function parseFrameName(ref: string): SupportedFrameName {
   const trimmed = normalizeName(ref);
-  const code = FRAME_NAME_TO_CODE.get(trimmed) ?? FRAME_NAME_TO_CODE.get(trimmed.toLowerCase());
+  const code =
+    FRAME_NAME_TO_CODE.get(trimmed) ??
+    FRAME_NAME_TO_CODE.get(trimmed.toLowerCase());
   const name = code === undefined ? undefined : FRAME_CODE_TO_NAME.get(code);
   if (!name) {
     throw new Error(`Fake backend: unsupported frame: ${JSON.stringify(ref)}`);
@@ -220,21 +222,27 @@ function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
   return Math.acos(c);
 }
 
-function ellipsoidSurfaceNormal(spoint: SpiceVector3, radii: SpiceVector3): SpiceVector3 {
+function ellipsoidSurfaceNormal(
+  spoint: SpiceVector3,
+  radii: SpiceVector3,
+): SpiceVector3 {
   const [x, y, z] = spoint;
   const [a, b, c] = radii;
 
   // Gradient of x^2/a^2 + y^2/b^2 + z^2/c^2 = 1 is [x/a^2, y/b^2, z/c^2]
-  if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c) || a === 0 || b === 0 || c === 0) {
+  if (
+    !Number.isFinite(a) ||
+    !Number.isFinite(b) ||
+    !Number.isFinite(c) ||
+    a === 0 ||
+    b === 0 ||
+    c === 0
+  ) {
     // If we don't have radii, fall back to the sphere assumption.
     return vhat(spoint);
   }
 
-  return vhat([
-    x / (a * a),
-    y / (b * b),
-    z / (c * c),
-  ]);
+  return vhat([x / (a * a), y / (b * b), z / (c * c)]);
 }
 
 function canonicalizeZero(n: number): number {
@@ -294,13 +302,22 @@ function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
   }
   // Return a real tuple (and brand) instead of exposing a mutable `number[]`.
   return brandMat3RowMajor(
-    [out[0]!, out[1]!, out[2]!, out[3]!, out[4]!, out[5]!, out[6]!, out[7]!, out[8]!] as const,
+    [
+      out[0]!,
+      out[1]!,
+      out[2]!,
+      out[3]!,
+      out[4]!,
+      out[5]!,
+      out[6]!,
+      out[7]!,
+      out[8]!,
+    ] as const,
     {
       label: "fake.mmul3",
     },
   );
 }
-
 
 function rotateRowMajor(angle: number, axis: number): Mat3RowMajor {
   // CSPICE reduces `iaxis` mod 3 (treating 0 as 3). Mirror that for parity.
@@ -364,12 +381,17 @@ function rotateRowMajor(angle: number, axis: number): Mat3RowMajor {
       );
     default: {
       const _exhaustive: never = spiceAxis;
-      throw new Error(`Fake backend: rotate(): unreachable axis: ${String(_exhaustive)}`);
+      throw new Error(
+        `Fake backend: rotate(): unreachable axis: ${String(_exhaustive)}`,
+      );
     }
   }
 }
 
-function axisAngleToRotationRowMajor(axis: SpiceVector3, angle: number): Mat3RowMajor {
+function axisAngleToRotationRowMajor(
+  axis: SpiceVector3,
+  angle: number,
+): Mat3RowMajor {
   const u = vhat(axis);
   const ux = u[0];
   const uy = u[1];
@@ -377,7 +399,9 @@ function axisAngleToRotationRowMajor(axis: SpiceVector3, angle: number): Mat3Row
 
   // Parity with CSPICE axisar_c: if axis is zero, return identity rotation.
   if (ux === 0 && uy === 0 && uz === 0) {
-    return brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, { label: "fake.axisar" });
+    return brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, {
+      label: "fake.axisar",
+    });
   }
 
   const c = Math.cos(angle);
@@ -402,7 +426,13 @@ function axisAngleToRotationRowMajor(axis: SpiceVector3, angle: number): Mat3Row
   );
 }
 
-function georec(lon: number, lat: number, alt: number, re: number, f: number): SpiceVector3 {
+function georec(
+  lon: number,
+  lat: number,
+  alt: number,
+  re: number,
+  f: number,
+): SpiceVector3 {
   // Match CSPICE validation semantics where feasible.
   if (!Number.isFinite(re) || re <= 0) {
     throw new Error(`Fake backend: georec(): invalid re: ${re} (expected > 0)`);
@@ -429,7 +459,11 @@ function georec(lon: number, lat: number, alt: number, re: number, f: number): S
   return [x, y, z];
 }
 
-function recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: number; alt: number } {
+function recgeo(
+  rect: SpiceVector3,
+  re: number,
+  f: number,
+): { lon: number; lat: number; alt: number } {
   // Match CSPICE validation semantics where feasible.
   if (!Number.isFinite(re) || re <= 0) {
     throw new Error(`Fake backend: recgeo(): invalid re: ${re} (expected > 0)`);
@@ -465,7 +499,10 @@ function recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: 
   const st = Math.sin(theta);
   const ct = Math.cos(theta);
 
-  const lat = Math.atan2(z + ep2 * rp * st * st * st, p - e2 * re * ct * ct * ct);
+  const lat = Math.atan2(
+    z + ep2 * rp * st * st * st,
+    p - e2 * re * ct * ct * ct,
+  );
 
   const slat = Math.sin(lat);
   const n = re / Math.sqrt(1 - e2 * slat * slat);
@@ -494,7 +531,11 @@ function mtxv(m: Mat3RowMajor, v: SpiceVector3): SpiceVector3 {
   return mxv(mtx3(m), v);
 }
 
-function sxformRowMajor(from: SupportedFrameName, to: SupportedFrameName, et: number): SpiceMatrix6x6 {
+function sxformRowMajor(
+  from: SupportedFrameName,
+  to: SupportedFrameName,
+  et: number,
+): SpiceMatrix6x6 {
   const wFrom = FRAME_SPIN_RATE_RAD_PER_SEC[from];
   const wTo = FRAME_SPIN_RATE_RAD_PER_SEC[to];
   const wDelta = wFrom - wTo;
@@ -506,18 +547,48 @@ function sxformRowMajor(from: SupportedFrameName, to: SupportedFrameName, et: nu
   // [ R 0 ; dR R ]
   return [
     // row 0
-    r[0], r[1], r[2], 0, 0, 0,
+    r[0],
+    r[1],
+    r[2],
+    0,
+    0,
+    0,
     // row 1
-    r[3], r[4], r[5], 0, 0, 0,
+    r[3],
+    r[4],
+    r[5],
+    0,
+    0,
+    0,
     // row 2
-    r[6], r[7], r[8], 0, 0, 0,
+    r[6],
+    r[7],
+    r[8],
+    0,
+    0,
+    0,
 
     // row 3
-    dr[0], dr[1], dr[2], r[0], r[1], r[2],
+    dr[0],
+    dr[1],
+    dr[2],
+    r[0],
+    r[1],
+    r[2],
     // row 4
-    dr[3], dr[4], dr[5], r[3], r[4], r[5],
+    dr[3],
+    dr[4],
+    dr[5],
+    r[3],
+    r[4],
+    r[5],
     // row 5
-    dr[6], dr[7], dr[8], r[6], r[7], r[8],
+    dr[6],
+    dr[7],
+    dr[8],
+    r[6],
+    r[7],
+    r[8],
   ];
 }
 
@@ -536,7 +607,10 @@ function mxv6(m: SpiceMatrix6x6, v: SpiceStateVector): SpiceStateVector {
 /**
  * Deterministic toy ephemerides in J2000.
  */
-function getAbsoluteStateInJ2000(bodyId: number, et: number): { posKm: SpiceVector3; velKmPerSec: SpiceVector3 } {
+function getAbsoluteStateInJ2000(
+  bodyId: number,
+  et: number,
+): { posKm: SpiceVector3; velKmPerSec: SpiceVector3 } {
   switch (bodyId) {
     case BODY_IDS.SUN:
       return { posKm: [0, 0, 0], velKmPerSec: [0, 0, 0] };
@@ -576,7 +650,11 @@ function getAbsoluteStateInJ2000(bodyId: number, et: number): { posKm: SpiceVect
 
       return {
         posKm: [earth.posKm[0] + xRel, earth.posKm[1] + yRel, 0],
-        velKmPerSec: [earth.velKmPerSec[0] + vxRel, earth.velKmPerSec[1] + vyRel, 0],
+        velKmPerSec: [
+          earth.velKmPerSec[0] + vxRel,
+          earth.velKmPerSec[1] + vyRel,
+          0,
+        ],
       };
     }
 
@@ -585,7 +663,11 @@ function getAbsoluteStateInJ2000(bodyId: number, et: number): { posKm: SpiceVect
   }
 }
 
-function getRelativeStateInJ2000(target: string, observer: string, et: number): SpiceStateVector {
+function getRelativeStateInJ2000(
+  target: string,
+  observer: string,
+  et: number,
+): SpiceStateVector {
   const targetId = parseBodyRef(target);
   const observerId = parseBodyRef(observer);
 
@@ -598,7 +680,12 @@ function getRelativeStateInJ2000(target: string, observer: string, et: number): 
   return [relPos[0], relPos[1], relPos[2], relVel[0], relVel[1], relVel[2]];
 }
 
-function applyStateTransform(from: SupportedFrameName, to: SupportedFrameName, et: number, state: SpiceStateVector): SpiceStateVector {
+function applyStateTransform(
+  from: SupportedFrameName,
+  to: SupportedFrameName,
+  et: number,
+  state: SpiceStateVector,
+): SpiceStateVector {
   const xform = sxformRowMajor(from, to, et);
   return mxv6(xform, state);
 }
@@ -609,7 +696,9 @@ function isIso8601OrRfc3339Utcish(s: string): boolean {
   // - 2000-01-01T12:00:00Z
   // - 2000-01-01T12:00:00.123Z
   // - 2000-01-01T12:00:00+00:00
-  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(s);
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(
+    s,
+  );
 }
 
 function formatUtcFromMs(ms: number, prec: number): string {
@@ -638,7 +727,10 @@ type KernelRecord = {
   kind: KernelKindNoAll;
 };
 
-function guessKernelKind(path: string, unknownExtension: "throw" | "assume-text"): KernelKindNoAll {
+function guessKernelKind(
+  path: string,
+  unknownExtension: "throw" | "assume-text",
+): KernelKindNoAll {
   const lower = path.toLowerCase();
   if (lower.endsWith(".bsp")) return "SPK";
   if (lower.endsWith(".bc")) return "CK";
@@ -753,7 +845,9 @@ function assertNonEmptyString(fn: string, field: string, value: string): void {
  *
  * Intended for tests and UI development without native/WASM backends.
  */
-export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBackend & { kind: "fake" } {
+export function createFakeBackend(
+  options: FakeBackendOptions = {},
+): SpiceBackend & { kind: "fake" } {
   let nextHandle = 1;
   let spiceFailed = false;
   let spiceShort = "";
@@ -764,8 +858,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
   const unknownExtension = options.unknownExtension ?? "throw";
 
   type KernelPoolEntry =
-    | { type: "N"; values: number[] }
-    | { type: "C"; values: string[] };
+    { type: "N"; values: number[] } | { type: "C"; values: string[] };
 
   const kernelPool = new Map<string, KernelPoolEntry>();
 
@@ -773,9 +866,11 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
   const customNameToBodyCode = new Map<string, number>();
   const customBodyCodeToName = new Map<number, string>();
 
-
   // swpool/cvpool "agent" state.
-  const kernelPoolWatches = new Map<string, { names: string[]; dirty: boolean }>();
+  const kernelPoolWatches = new Map<
+    string,
+    { names: string[]; dirty: boolean }
+  >();
   const kernelPoolWatchesByName = new Map<string, Set<string>>();
 
   const unindexKernelPoolWatch = (agent: string, names: readonly string[]) => {
@@ -815,7 +910,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
   const spiceCellUnsupported =
     "Fake backend does not support SpiceCell/SpiceWindow APIs (use wasm/node backend).";
 
-  const getKernelsOfKind = (kind: KernelKindInput | undefined): readonly KernelRecord[] => {
+  const getKernelsOfKind = (
+    kind: KernelKindInput | undefined,
+  ): readonly KernelRecord[] => {
     const requested = new Set<string>(normalizeKindInput(kind));
     return kernels.filter((k) => matchesKernelKind(requested, k));
   };
@@ -842,7 +939,11 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;
-  function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+  function timdef(
+    action: "GET" | "SET",
+    item: string,
+    value?: string,
+  ): string | void {
     assertNonEmptyString("timdef", "item", item);
 
     if (action === "GET") {
@@ -956,7 +1057,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
         return;
       }
 
-      const idx = kernels.findIndex((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
+      const idx = kernels.findIndex(
+        (k) => normalizeVirtualKernelIdOrNull(k.file) === needle,
+      );
       if (idx >= 0) {
         kernels.splice(idx, 1);
       }
@@ -975,7 +1078,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
         return { found: false };
       }
 
-      const k = kernels.find((k) => normalizeVirtualKernelIdOrNull(k.file) === needle);
+      const k = kernels.find(
+        (k) => normalizeVirtualKernelIdOrNull(k.file) === needle,
+      );
       if (!k) {
         return { found: false };
       }
@@ -1021,7 +1126,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
       if (entry.type !== "N") {
-        throw new Error(`Fake backend: gdpool only supports numeric variables (got ${entry.type})`);
+        throw new Error(
+          `Fake backend: gdpool only supports numeric variables (got ${entry.type})`,
+        );
       }
 
       return {
@@ -1039,7 +1146,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
       if (entry.type !== "N") {
-        throw new Error(`Fake backend: gipool only supports numeric variables (got ${entry.type})`);
+        throw new Error(
+          `Fake backend: gipool only supports numeric variables (got ${entry.type})`,
+        );
       }
 
       return {
@@ -1060,7 +1169,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const entry = kernelPool.get(name);
       if (!entry) return { found: false };
       if (entry.type !== "C") {
-        throw new Error(`Fake backend: gcpool only supports character variables (got ${entry.type})`);
+        throw new Error(
+          `Fake backend: gcpool only supports character variables (got ${entry.type})`,
+        );
       }
 
       return {
@@ -1075,7 +1186,8 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const start0 = start;
       const room0 = room;
 
-      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[[\]\\]/g, "\\$&");
+      const escapeRegex = (s: string) =>
+        s.replace(/[.*+?^${}()|[[\]\\]/g, "\\$&");
 
       // Support escaping wildcard characters via backslash:
       // - `\*` matches a literal `*`
@@ -1107,7 +1219,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
       const re = new RegExp(reSrc);
 
-      const matches = Array.from(kernelPool.keys()).filter((k) => re.test(k)).sort();
+      const matches = Array.from(kernelPool.keys())
+        .filter((k) => re.test(k))
+        .sort();
       if (matches.length === 0) {
         return { found: false };
       }
@@ -1134,7 +1248,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       for (let i = 0; i < values.length; i++) {
         const v = values[i]!;
         if (!Number.isFinite(v)) {
-          throw new RangeError(`pdpool(): values[${i}] must be a finite number (got ${String(v)})`);
+          throw new RangeError(
+            `pdpool(): values[${i}] must be a finite number (got ${String(v)})`,
+          );
         }
       }
       kernelPool.set(name, { type: "N", values: [...values] });
@@ -1189,7 +1305,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     tkvrsn: (item) => {
       if (item !== "TOOLKIT") {
-        throw new Error(`Fake backend: unsupported tkvrsn item: ${String(item)}`);
+        throw new Error(
+          `Fake backend: unsupported tkvrsn item: ${String(item)}`,
+        );
       }
       return FAKE_SPICE_VERSION;
     },
@@ -1202,7 +1320,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       }
       const ms = Date.parse(time);
       if (!Number.isFinite(ms)) {
-        throw new Error(`Fake backend: failed to parse time: ${JSON.stringify(time)}`);
+        throw new Error(
+          `Fake backend: failed to parse time: ${JSON.stringify(time)}`,
+        );
       }
       return (ms - J2000_UTC_MS) / 1000;
     },
@@ -1238,7 +1358,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       }
       const ms = Date.parse(timstr);
       if (!Number.isFinite(ms)) {
-        throw new Error(`Fake backend: failed to parse time: ${JSON.stringify(timstr)}`);
+        throw new Error(
+          `Fake backend: failed to parse time: ${JSON.stringify(timstr)}`,
+        );
       }
       return (ms - J2000_UTC_MS) / 1000;
     },
@@ -1264,7 +1386,8 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
         customNameToBodyCode.get(trimmed.toLowerCase());
       if (custom !== undefined) return { found: true, code: custom };
 
-      const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
+      const id =
+        NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
       if (id === undefined) return { found: false };
       return { found: true, code: id };
     },
@@ -1301,7 +1424,8 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
         customNameToBodyCode.get(trimmed.toLowerCase());
       if (custom !== undefined) return { found: true, code: custom };
 
-      const id = NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
+      const id =
+        NAME_TO_ID.get(trimmed) ?? NAME_TO_ID.get(trimmed.toLowerCase());
       if (id === undefined) return { found: false };
       return { found: true, code: id };
     },
@@ -1332,7 +1456,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     namfrm: (name: string) => {
       const trimmed = normalizeName(name);
-      const code = FRAME_NAME_TO_CODE.get(trimmed) ?? FRAME_NAME_TO_CODE.get(trimmed.toLowerCase());
+      const code =
+        FRAME_NAME_TO_CODE.get(trimmed) ??
+        FRAME_NAME_TO_CODE.get(trimmed.toLowerCase());
       if (code === undefined) return { found: false };
       return { found: true, code };
     },
@@ -1345,22 +1471,33 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     cidfrm: (center: number) => {
       if (center === BODY_IDS.EARTH) {
-        return { found: true, frcode: FRAME_CODES.IAU_EARTH, frname: "IAU_EARTH" };
+        return {
+          found: true,
+          frcode: FRAME_CODES.IAU_EARTH,
+          frname: "IAU_EARTH",
+        };
       }
       if (center === BODY_IDS.MOON) {
-        return { found: true, frcode: FRAME_CODES.IAU_MOON, frname: "IAU_MOON" };
+        return {
+          found: true,
+          frcode: FRAME_CODES.IAU_MOON,
+          frname: "IAU_MOON",
+        };
       }
       return { found: false };
     },
 
     cnmfrm: (centerName: string) => {
-      const id = NAME_TO_ID.get(centerName) ?? NAME_TO_ID.get(centerName.toLowerCase());
+      const id =
+        NAME_TO_ID.get(centerName) ?? NAME_TO_ID.get(centerName.toLowerCase());
       if (id === undefined) return { found: false };
-      return (id === BODY_IDS.EARTH
-        ? { found: true, frcode: FRAME_CODES.IAU_EARTH, frname: "IAU_EARTH" }
-        : id === BODY_IDS.MOON
-          ? { found: true, frcode: FRAME_CODES.IAU_MOON, frname: "IAU_MOON" }
-          : { found: false }) satisfies Found<{ frcode: number; frname: string }>;
+      return (
+        id === BODY_IDS.EARTH
+          ? { found: true, frcode: FRAME_CODES.IAU_EARTH, frname: "IAU_EARTH" }
+          : id === BODY_IDS.MOON
+            ? { found: true, frcode: FRAME_CODES.IAU_MOON, frname: "IAU_MOON" }
+            : { found: false }
+      ) satisfies Found<{ frcode: number; frname: string }>;
     },
 
     frinfo: (frameId: number) => {
@@ -1460,14 +1597,23 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return sxformRowMajor(f, t, et);
     },
 
-    spkezr: (target: string, et: number, ref: string, abcorr: AbCorr | string, observer: string) => {
+    spkezr: (
+      target: string,
+      et: number,
+      ref: string,
+      abcorr: AbCorr | string,
+      observer: string,
+    ) => {
       // Keep these in the signature for API compatibility.
       void (abcorr satisfies AbCorr | string);
 
       const stateJ2000 = getRelativeStateInJ2000(target, observer, et);
 
       const outFrame = parseFrameName(ref);
-      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+      const state =
+        outFrame === "J2000"
+          ? stateJ2000
+          : applyStateTransform("J2000", outFrame, et, stateJ2000);
 
       return { state, lt: 0 };
     },
@@ -1483,9 +1629,10 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       })();
 
       const outFrame = parseFrameName(ref);
-      const transformed = outFrame === "J2000"
-        ? state
-        : applyStateTransform("J2000", outFrame, et, state);
+      const transformed =
+        outFrame === "J2000"
+          ? state
+          : applyStateTransform("J2000", outFrame, et, state);
 
       return {
         pos: [transformed[0], transformed[1], transformed[2]],
@@ -1498,10 +1645,17 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       assertSpiceInt32(target, "spkez(target)");
       assertSpiceInt32(observer, "spkez(observer)");
 
-      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+      const stateJ2000 = getRelativeStateInJ2000(
+        String(target),
+        String(observer),
+        et,
+      );
 
       const outFrame = parseFrameName(ref);
-      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+      const state =
+        outFrame === "J2000"
+          ? stateJ2000
+          : applyStateTransform("J2000", outFrame, et, stateJ2000);
 
       return { state, lt: 0 };
     },
@@ -1511,10 +1665,17 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       assertSpiceInt32(target, "spkezp(target)");
       assertSpiceInt32(observer, "spkezp(observer)");
 
-      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+      const stateJ2000 = getRelativeStateInJ2000(
+        String(target),
+        String(observer),
+        et,
+      );
 
       const outFrame = parseFrameName(ref);
-      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+      const state =
+        outFrame === "J2000"
+          ? stateJ2000
+          : applyStateTransform("J2000", outFrame, et, stateJ2000);
 
       return {
         pos: [state[0], state[1], state[2]],
@@ -1526,10 +1687,17 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       assertSpiceInt32(target, "spkgeo(target)");
       assertSpiceInt32(observer, "spkgeo(observer)");
 
-      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+      const stateJ2000 = getRelativeStateInJ2000(
+        String(target),
+        String(observer),
+        et,
+      );
 
       const outFrame = parseFrameName(ref);
-      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+      const state =
+        outFrame === "J2000"
+          ? stateJ2000
+          : applyStateTransform("J2000", outFrame, et, stateJ2000);
 
       return { state, lt: 0 };
     },
@@ -1538,10 +1706,17 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       assertSpiceInt32(target, "spkgps(target)");
       assertSpiceInt32(observer, "spkgps(observer)");
 
-      const stateJ2000 = getRelativeStateInJ2000(String(target), String(observer), et);
+      const stateJ2000 = getRelativeStateInJ2000(
+        String(target),
+        String(observer),
+        et,
+      );
 
       const outFrame = parseFrameName(ref);
-      const state = outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+      const state =
+        outFrame === "J2000"
+          ? stateJ2000
+          : applyStateTransform("J2000", outFrame, et, stateJ2000);
 
       return {
         pos: [state[0], state[1], state[2]],
@@ -1563,7 +1738,9 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       ];
 
       const outFrame = parseFrameName(ref);
-      return outFrame === "J2000" ? stateJ2000 : applyStateTransform("J2000", outFrame, et, stateJ2000);
+      return outFrame === "J2000"
+        ? stateJ2000
+        : applyStateTransform("J2000", outFrame, et, stateJ2000);
     },
 
     spkcov: (_spk, idcode, _cover) => {
@@ -1601,7 +1778,13 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const emissn = angleBetween(normalJ, srfToObsJ);
 
       const srfvecJ = vsub(spointJ, obsPosJ);
-      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+      const srfvec =
+        frame === "J2000"
+          ? srfvecJ
+          : mxv(
+              rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et),
+              srfvecJ,
+            );
 
       return {
         trgepc: et,
@@ -1640,7 +1823,13 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
       const srfvecJ = vsub(spointJ, obsPosJ);
 
-      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+      const srfvec =
+        frame === "J2000"
+          ? srfvecJ
+          : mxv(
+              rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et),
+              srfvecJ,
+            );
 
       const out = {
         trgepc: et,
@@ -1659,7 +1848,6 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return { ...out, visibl, lit } satisfies IllumfResult;
     },
 
-
     spksfs: (body, et) => {
       assertSpiceInt32(body, "spksfs(body)");
       void et;
@@ -1676,22 +1864,30 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     nvc2pl: (normal, konst) => {
       if (!Array.isArray(normal) || normal.length !== 3) {
-        throw new TypeError("nvc2pl(normal, konst): normal must be a length-3 number[]");
+        throw new TypeError(
+          "nvc2pl(normal, konst): normal must be a length-3 number[]",
+        );
       }
       for (let i = 0; i < 3; i++) {
         const v = normal[i];
         if (typeof v !== "number") {
-          throw new TypeError(`nvc2pl(normal, konst): normal[${i}] must be a number`);
+          throw new TypeError(
+            `nvc2pl(normal, konst): normal[${i}] must be a number`,
+          );
         }
         if (!Number.isFinite(v)) {
-          throw new RangeError(`nvc2pl(normal, konst): normal[${i}] must be a finite number`);
+          throw new RangeError(
+            `nvc2pl(normal, konst): normal[${i}] must be a finite number`,
+          );
         }
       }
       if (typeof konst !== "number") {
         throw new TypeError("nvc2pl(normal, konst): konst must be a number");
       }
       if (!Number.isFinite(konst)) {
-        throw new RangeError("nvc2pl(normal, konst): konst must be a finite number");
+        throw new RangeError(
+          "nvc2pl(normal, konst): konst must be a finite number",
+        );
       }
       return [normal[0], normal[1], normal[2], konst] satisfies SpicePlane;
     },
@@ -1706,14 +1902,18 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
           throw new TypeError(`pl2nvc(plane): plane[${i}] must be a number`);
         }
         if (!Number.isFinite(v)) {
-          throw new RangeError(`pl2nvc(plane): plane[${i}] must be a finite number`);
+          throw new RangeError(
+            `pl2nvc(plane): plane[${i}] must be a finite number`,
+          );
         }
       }
 
       const n = [plane[0], plane[1], plane[2]] as SpiceVector3;
       const mag = vnorm(n);
       if (mag === 0) {
-        throw new RangeError("pl2nvc(plane): plane is degenerate (normal must be non-zero)");
+        throw new RangeError(
+          "pl2nvc(plane): plane is degenerate (normal must be non-zero)",
+        );
       }
       return {
         normal: vscale(1 / mag, n),
@@ -1723,7 +1923,11 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     // --- SPK writers (not implemented in fake backend) ---
 
-    spkopn: (_file: string | VirtualOutput, _ifname: string, _ncomch: number) => {
+    spkopn: (
+      _file: string | VirtualOutput,
+      _ifname: string,
+      _ncomch: number,
+    ) => {
       throw new Error("Fake backend: spkopn() is not implemented");
     },
     spkopa: (_file: string | VirtualOutput) => {
@@ -1758,7 +1962,13 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const obsPosJ = [obsState[0], obsState[1], obsState[2]] as SpiceVector3;
 
       const frame = parseFrameName(fixref);
-      const obsPos = frame === "J2000" ? obsPosJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), obsPosJ);
+      const obsPos =
+        frame === "J2000"
+          ? obsPosJ
+          : mxv(
+              rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et),
+              obsPosJ,
+            );
 
       const n = vhat(obsPos);
       const spoint = vscale(radius, n);
@@ -1778,7 +1988,13 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const sunPosJ = [sunState[0], sunState[1], sunState[2]] as SpiceVector3;
 
       const frame = parseFrameName(fixref);
-      const sunPos = frame === "J2000" ? sunPosJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), sunPosJ);
+      const sunPos =
+        frame === "J2000"
+          ? sunPosJ
+          : mxv(
+              rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et),
+              sunPosJ,
+            );
 
       const n = vhat(sunPos);
       const spoint = vscale(radius, n);
@@ -1787,7 +2003,16 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       return { spoint, trgepc: et, srfvec } satisfies SubPointResult;
     },
 
-    sincpt: (_method, _target, _et, _fixref, _abcorr, _observer, _dref, _dvec) => {
+    sincpt: (
+      _method,
+      _target,
+      _et,
+      _fixref,
+      _abcorr,
+      _observer,
+      _dref,
+      _dvec,
+    ) => {
       return { found: false };
     },
 
@@ -1819,7 +2044,13 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
       const srfvecJ = vsub(spointJ, obsPosJ);
 
-      const srfvec = frame === "J2000" ? srfvecJ : mxv(rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et), srfvecJ);
+      const srfvec =
+        frame === "J2000"
+          ? srfvecJ
+          : mxv(
+              rotZRowMajor(-FRAME_SPIN_RATE_RAD_PER_SEC[frame] * et),
+              srfvecJ,
+            );
 
       return {
         trgepc: et,
@@ -1900,7 +2131,6 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       throw new Error("Fake backend: gfdist() is not implemented");
     },
 
-
     // --- file i/o primitives (not implemented in fake backend) ---
 
     exists: (_path: string) => {
@@ -1927,7 +2157,12 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     dascls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dascls() is not implemented");
     },
-    dlaopn: (_path: string, _ftype: string, _ifname: string, _ncomch: number) => {
+    dlaopn: (
+      _path: string,
+      _ftype: string,
+      _ifname: string,
+      _ncomch: number,
+    ) => {
       throw new Error("Fake backend: dlaopn() is not implemented");
     },
     dlabfs: (_handle: SpiceHandle) => {
@@ -2019,7 +2254,11 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     ) => {
       throw new Error("Fake backend: ekaclc() is not implemented");
     },
-    ekffld: (_handle: SpiceHandle, _segno: number, _rcptrs: readonly number[]) => {
+    ekffld: (
+      _handle: SpiceHandle,
+      _segno: number,
+      _rcptrs: readonly number[],
+    ) => {
       throw new Error("Fake backend: ekffld() is not implemented");
     },
 
@@ -2200,7 +2439,6 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
     mxv: (m, v) => mxv(m, v),
     mtxv: (m, v) => mtxv(m, v),
 
-
     vadd: (a, b) => vadd(a, b),
     vsub: (a, b) => vsub(a, b),
     vminus: (v) => vscale(-1, v),
@@ -2215,7 +2453,8 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
 
     georec: (lon, lat, alt, re, f) => georec(lon, lat, alt, re, f),
     recgeo: (rect, re, f) => recgeo(rect, re, f),
-  } satisfies SpiceRawBackend & Omit<SpiceKitBackend, "spiceVersion" | "readVirtualOutput">;
+  } satisfies SpiceRawBackend &
+    Omit<SpiceKitBackend, "spiceVersion" | "readVirtualOutput">;
 
   const {
     newIntCell,

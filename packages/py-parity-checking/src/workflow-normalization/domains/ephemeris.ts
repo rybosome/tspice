@@ -69,7 +69,10 @@ function ensurePublishedGeneratedSpkPath(
   return writablePath;
 }
 
-function resolveMappedSpkPath(context: NormalizationContext, pathRefLike: PathRefLike): PathRef {
+function resolveMappedSpkPath(
+  context: NormalizationContext,
+  pathRefLike: PathRefLike,
+): PathRef {
   const lookupKey = generatedPathLookupKey(pathRefLike);
   return readGeneratedPath(context, lookupKey) ?? toPathRef(pathRefLike);
 }

@@ -13,7 +13,9 @@ import {
 const DEFAULT_FRAME: FrameName = J2000;
 const DEFAULT_ABERRATION: AberrationCorrection = "NONE";
 
-function splitState(state: readonly [number, number, number, number, number, number]): {
+function splitState(
+  state: readonly [number, number, number, number, number, number],
+): {
   position: Vec3;
   velocity: Vec3;
 } {
@@ -27,12 +29,24 @@ export function createStateKit(cspice: SpiceBackend): {
   getState(args: GetStateArgs): StateVector;
 } {
   return {
-    getState: ({ target, observer, at, frame = DEFAULT_FRAME, aberration = DEFAULT_ABERRATION }) => {
+    getState: ({
+      target,
+      observer,
+      at,
+      frame = DEFAULT_FRAME,
+      aberration = DEFAULT_ABERRATION,
+    }) => {
       try {
         const targetStr = String(target);
         const observerStr = String(observer);
 
-        const { state, lt } = cspice.raw.spkezr(targetStr, at, frame, aberration, observerStr);
+        const { state, lt } = cspice.raw.spkezr(
+          targetStr,
+          at,
+          frame,
+          aberration,
+          observerStr,
+        );
         const { position, velocity } = splitState(state);
         return {
           et: at,

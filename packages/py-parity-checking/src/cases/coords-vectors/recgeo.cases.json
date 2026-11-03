@@ -5,11 +5,7 @@
     "workflow": [
       {
         "op": "coords-vectors.recgeo",
-        "rectan": [
-          1,
-          0,
-          0
-        ],
+        "rectan": [1, 0, 0],
         "re": 1,
         "f": 0
       }
@@ -24,11 +20,7 @@
     "workflow": [
       {
         "op": "coords-vectors.recgeo",
-        "rectan": [
-          1,
-          0,
-          0
-        ],
+        "rectan": [1, 0, 0],
         "re": 1,
         "f": 1.5
       }

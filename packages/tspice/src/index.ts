@@ -21,7 +21,12 @@ export { J2000 } from "./types.js";
 export { SpiceError } from "./errors.js";
 
 export { Mat3 } from "./kit/math/mat3.js";
-export type { Spice, SpiceAsync, SpiceKit, SpiceSync } from "./kit/types/spice-types.js";
+export type {
+  Spice,
+  SpiceAsync,
+  SpiceKit,
+  SpiceSync,
+} from "./kit/types/spice-types.js";
 
 export type {
   SpiceClientBuildResult,
@@ -45,7 +50,4 @@ export type { NaifKernelId } from "./kernels/naifKernelId.js";
 
 export { kernels } from "./kernels/kernels.js";
 
-export type {
-  KernelPack,
-  KernelPackKernel,
-} from "./kernels/kernelPack.js";
+export type { KernelPack, KernelPackKernel } from "./kernels/kernelPack.js";

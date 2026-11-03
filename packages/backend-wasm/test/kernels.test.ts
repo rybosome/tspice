@@ -47,8 +47,9 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     }
     expect(sawKernel).toBe(true);
 
-    expect(backend.raw.ktotal(["META", "TEXT"]))
-      .toBe(backend.raw.ktotal("META") + backend.raw.ktotal("TEXT"));
+    expect(backend.raw.ktotal(["META", "TEXT"])).toBe(
+      backend.raw.ktotal("META") + backend.raw.ktotal("TEXT"),
+    );
 
     backend.raw.unload(kernelPath);
     expect(ktotalAll()).toBe(before);
@@ -64,7 +65,9 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
       backend.raw.insrti(2, idset);
       expect(backend.raw.card(idset)).toBe(2);
 
-      expect(() => backend.raw.kplfrm(1, idset)).toThrow(/kplfrm.*not supported/i);
+      expect(() => backend.raw.kplfrm(1, idset)).toThrow(
+        /kplfrm.*not supported/i,
+      );
 
       // Ensure we don't silently clear/modify the output set.
       expect(backend.raw.card(idset)).toBe(2);
@@ -76,7 +79,11 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
   it("rejects OS/URL-looking string paths (virtual ids only)", async () => {
     const backend = await createWasmBackend();
 
-    expect(() => backend.raw.furnsh("file:///tmp/naif0012.tls")).toThrow(/virtual ids/i);
-    expect(() => backend.raw.unload("/var/data/naif0012.tls")).toThrow(/virtual ids/i);
+    expect(() => backend.raw.furnsh("file:///tmp/naif0012.tls")).toThrow(
+      /virtual ids/i,
+    );
+    expect(() => backend.raw.unload("/var/data/naif0012.tls")).toThrow(
+      /virtual ids/i,
+    );
   });
 });

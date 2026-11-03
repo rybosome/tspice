@@ -5,11 +5,7 @@ export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
 
 /** Type guard for {@link GetmsgWhich}. */
 export function isGetmsgWhich(which: unknown): which is GetmsgWhich {
-  return (
-    which === "SHORT" ||
-    which === "LONG" ||
-    which === "EXPLAIN"
-  );
+  return which === "SHORT" || which === "LONG" || which === "EXPLAIN";
 }
 
 /**
@@ -19,8 +15,12 @@ export function isGetmsgWhich(which: unknown): which is GetmsgWhich {
  * values at runtime (e.g. JS consumers, `as any`, etc.). Backends should reject
  * invalid selectors rather than forwarding them to CSPICE.
  */
-export function assertGetmsgWhich(which: unknown): asserts which is GetmsgWhich {
+export function assertGetmsgWhich(
+  which: unknown,
+): asserts which is GetmsgWhich {
   if (isGetmsgWhich(which)) return;
   const allowed = GETMSG_WHICH_VALUES.map((v) => JSON.stringify(v)).join(" | ");
-  throw new TypeError(`getmsg(which) expected one of ${allowed} (got ${JSON.stringify(which)})`);
+  throw new TypeError(
+    `getmsg(which) expected one of ${allowed} (got ${JSON.stringify(which)})`,
+  );
 }

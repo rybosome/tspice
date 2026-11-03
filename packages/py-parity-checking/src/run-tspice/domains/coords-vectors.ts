@@ -57,7 +57,9 @@ function toVector3(values: readonly number[]): Vector3 {
   const z = values[2];
 
   if (x === undefined || y === undefined || z === undefined) {
-    throw new Error(`Expected vector length 3 with defined entries, got ${JSON.stringify(values)}`);
+    throw new Error(
+      `Expected vector length 3 with defined entries, got ${JSON.stringify(values)}`,
+    );
   }
 
   return [x, y, z];
@@ -126,7 +128,10 @@ export function runCoordsVectorsStep(
     }
 
     case "coords-vectors.mxm": {
-      const out = context.spice.raw.mxm(flattenMatrix(step.m1), flattenMatrix(step.m2));
+      const out = context.spice.raw.mxm(
+        flattenMatrix(step.m1),
+        flattenMatrix(step.m2),
+      );
       return { op: step.op, value: unflattenMatrix(out) };
     }
 
@@ -136,7 +141,11 @@ export function runCoordsVectorsStep(
     }
 
     case "coords-vectors.rotmat": {
-      const out = context.spice.raw.rotmat(flattenMatrix(step.m), step.angle, step.axis);
+      const out = context.spice.raw.rotmat(
+        flattenMatrix(step.m),
+        step.angle,
+        step.axis,
+      );
       return { op: step.op, value: unflattenMatrix(out) };
     }
 
@@ -146,7 +155,13 @@ export function runCoordsVectorsStep(
     }
 
     case "coords-vectors.georec": {
-      const out = context.spice.raw.georec(step.lon, step.lat, step.alt, step.re, step.f);
+      const out = context.spice.raw.georec(
+        step.lon,
+        step.lat,
+        step.alt,
+        step.re,
+        step.f,
+      );
       return { op: step.op, value: toVector3(out) };
     }
 
@@ -167,7 +182,9 @@ export function runCoordsVectorsStep(
 
     default: {
       const exhaustive: never = step;
-      throw new Error(`Unhandled coords-vectors step: ${JSON.stringify(exhaustive)}`);
+      throw new Error(
+        `Unhandled coords-vectors step: ${JSON.stringify(exhaustive)}`,
+      );
     }
   }
 }

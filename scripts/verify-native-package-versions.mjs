@@ -27,7 +27,9 @@ for (const dir of nativeDirs) {
   const pkgPath = path.join(packagesRoot, dir, "package.json");
   const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
   if (pkg.version !== expectedVersion) {
-    mismatches.push(`${pkg.name ?? dir}: ${pkg.version} (expected ${expectedVersion})`);
+    mismatches.push(
+      `${pkg.name ?? dir}: ${pkg.version} (expected ${expectedVersion})`,
+    );
   }
 }
 

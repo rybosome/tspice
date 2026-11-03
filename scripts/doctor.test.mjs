@@ -1,5 +1,11 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -19,12 +25,17 @@ function fixture(t) {
   mkdirSync(bin);
 
   function tool(name, body) {
-    writeFileSync(path.join(bin, name), `#!/bin/sh\n${body}\n`, { mode: 0o755 });
+    writeFileSync(path.join(bin, name), `#!/bin/sh\n${body}\n`, {
+      mode: 0o755,
+    });
   }
 
   function jsTools() {
     tool("pnpm", `echo '${pnpmVersion}'`);
-    tool("uv", 'if [ "$1" = "--version" ]; then echo "uv test"; else echo "cpython-3.11.0-test /test/python"; fi');
+    tool(
+      "uv",
+      'if [ "$1" = "--version" ]; then echo "uv test"; else echo "cpython-3.11.0-test /test/python"; fi',
+    );
   }
 
   function run(profile = "js", extraEnv = {}) {
@@ -68,7 +79,10 @@ test("JS profile explains when the pnpm shim is missing from PATH", (t) => {
 test("JS profile reports interpreter discovery errors instead of suggesting an install", (t) => {
   const f = fixture(t);
   f.jsTools();
-  f.tool("uv", 'if [ "$1" = "--version" ]; then echo "uv test"; else echo "cache permission denied" >&2; exit 2; fi');
+  f.tool(
+    "uv",
+    'if [ "$1" = "--version" ]; then echo "uv test"; else echo "cache permission denied" >&2; exit 2; fi',
+  );
   const result = f.run();
   assert.equal(result.status, 1);
   assert.match(result.output, /cache permission denied/);
@@ -78,7 +92,10 @@ test("JS profile reports interpreter discovery errors instead of suggesting an i
 test("JS profile explains how to install a missing compatible Python", (t) => {
   const f = fixture(t);
   f.jsTools();
-  f.tool("uv", 'if [ "$1" = "--version" ]; then echo "uv test"; else echo "cpython-3.9.0-test /test/python"; fi');
+  f.tool(
+    "uv",
+    'if [ "$1" = "--version" ]; then echo "uv test"; else echo "cpython-3.9.0-test /test/python"; fi',
+  );
   const result = f.run();
   assert.equal(result.status, 1);
   assert.match(result.output, /uv python install 3\.11/);
@@ -88,7 +105,9 @@ test("native profile rejects an invalid explicit CSPICE override", (t) => {
   const f = fixture(t);
   f.jsTools();
   for (const name of ["cc", "c++", "make"]) f.tool(name, 'echo "tool test"');
-  const result = f.run("native", { TSPICE_CSPICE_DIR: path.join(f.root, "missing") });
+  const result = f.run("native", {
+    TSPICE_CSPICE_DIR: path.join(f.root, "missing"),
+  });
   assert.equal(result.status, 1);
   assert.match(result.output, /TSPICE_CSPICE_DIR is invalid/);
 });
@@ -109,7 +128,8 @@ test("native profile accepts a local CSPICE install without archive utilities", 
 
 test("WASM profile works without pnpm, uv, or Python", (t) => {
   const f = fixture(t);
-  for (const name of ["tar", "uncompress", "emcc"]) f.tool(name, 'echo "tool test"');
+  for (const name of ["tar", "uncompress", "emcc"])
+    f.tool(name, 'echo "tool test"');
   assert.equal(f.run("wasm").status, 0);
 });
 

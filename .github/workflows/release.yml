@@ -14,14 +14,14 @@ jobs:
       matrix:
         include:
           - runs_on: macos-14
-            node_version: '22'
+            node_version: "22"
             pkg: tspice-native-darwin-arm64
           # macos-13 is retired; use an Intel runner label for x64 builds.
           - runs_on: macos-15-intel
-            node_version: '22'
+            node_version: "22"
             pkg: tspice-native-darwin-x64
           - runs_on: ubuntu-latest
-            node_version: '22'
+            node_version: "22"
             pkg: tspice-native-linux-x64-gnu
 
     runs-on: ${{ matrix.runs_on }}
@@ -167,7 +167,7 @@ jobs:
       - name: Setup pnpm + Node
         uses: ./.github/actions/setup-pnpm-node
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Set package versions from tag
         shell: bash
@@ -232,15 +232,15 @@ jobs:
       matrix:
         include:
           - runs_on: ubuntu-latest
-            node_version: '22'
-            native_pkg: '@rybosome/tspice-native-linux-x64-gnu'
+            node_version: "22"
+            native_pkg: "@rybosome/tspice-native-linux-x64-gnu"
           # macos-13 is retired; use an Intel runner label for x64 builds.
           - runs_on: macos-15-intel
-            node_version: '22'
-            native_pkg: '@rybosome/tspice-native-darwin-x64'
+            node_version: "22"
+            native_pkg: "@rybosome/tspice-native-darwin-x64"
           - runs_on: macos-14
-            node_version: '22'
-            native_pkg: '@rybosome/tspice-native-darwin-arm64'
+            node_version: "22"
+            native_pkg: "@rybosome/tspice-native-darwin-arm64"
 
     runs-on: ${{ matrix.runs_on }}
 

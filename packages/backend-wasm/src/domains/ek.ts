@@ -1,13 +1,25 @@
 import type { EkApi, SpiceHandle } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32, assertSpiceInt32NonNegative } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  assertSpiceInt32NonNegative,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, WASM_MAX_ALLOC_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
+import {
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+  withAllocs,
+  withMalloc,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
-import type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type {
+  SpiceHandleEntry,
+  SpiceHandleKind,
+  SpiceHandleRegistry,
+} from "../runtime/spice-handles.js";
 
 const UTF8_ENCODER = new TextEncoder();
 
@@ -96,9 +108,15 @@ function writeFixedWidthStringArray(
   }
 }
 
-function sumEntszsChecked(entszs: readonly number[], nlflgs: readonly unknown[], context: string): number {
+function sumEntszsChecked(
+  entszs: readonly number[],
+  nlflgs: readonly unknown[],
+  context: string,
+): number {
   if (entszs.length !== nlflgs.length) {
-    throw new RangeError(`${context}: expected entszs.length === nlflgs.length`);
+    throw new RangeError(
+      `${context}: expected entszs.length === nlflgs.length`,
+    );
   }
 
   let sum = 0;
@@ -111,20 +129,30 @@ function sumEntszsChecked(entszs: readonly number[], nlflgs: readonly unknown[],
     // CSPICE semantics (keep parity with the C shim + Node addon):
     // - NULL entries may have entszs[i] == 0 (and are allowed to be any value >= 0)
     // - non-NULL entries must have entszs[i] >= 1
-    assertSpiceInt32(entszs[i]!, `${context}(entszs[${i}])`, { min: isNull ? 0 : 1 });
+    assertSpiceInt32(entszs[i]!, `${context}(entszs[${i}])`, {
+      min: isNull ? 0 : 1,
+    });
 
     sum += entszs[i]!;
     if (sum > INT32_MAX) {
-      throw new RangeError(`${context}: sum(entszs) overflow (max ${INT32_MAX})`);
+      throw new RangeError(
+        `${context}: sum(entszs) overflow (max ${INT32_MAX})`,
+      );
     }
     if (sum > kMaxEkArrayLen) {
-      throw new RangeError(`${context}: sum(entszs) must be <= ${kMaxEkArrayLen}`);
+      throw new RangeError(
+        `${context}: sum(entszs) must be <= ${kMaxEkArrayLen}`,
+      );
     }
   }
   return sum;
 }
 
-function readHeapI32(module: EmscriptenModule, idx: number, context: string): number {
+function readHeapI32(
+  module: EmscriptenModule,
+  idx: number,
+  context: string,
+): number {
   const heap = module.HEAP32;
   const v = heap[idx];
   if (v === undefined) {
@@ -149,7 +177,10 @@ function callVoidHandle(
 }
 
 /** Create an {@link EkApi} implementation backed by a WASM Emscripten module. */
-export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleRegistry): EkApi {
+export function createEkApi(
+  module: EmscriptenModule,
+  spiceHandles: SpiceHandleRegistry,
+): EkApi {
   const TABLE_NAME_MAX_BYTES = 256;
 
   const api = {
@@ -157,14 +188,27 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
       try {
-        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
-          module.HEAP32[outHandlePtr >> 2] = 0;
-          const code = module._tspice_ekopr(pathPtr, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outHandlePtr >> 2, "ekopr(outHandlePtr)");
-        });
+        const nativeHandle = withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outHandlePtr, errPtr) => {
+            module.HEAP32[outHandlePtr >> 2] = 0;
+            const code = module._tspice_ekopr(
+              pathPtr,
+              outHandlePtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return readHeapI32(
+              module,
+              outHandlePtr >> 2,
+              "ekopr(outHandlePtr)",
+            );
+          },
+        );
         return spiceHandles.register("EK", nativeHandle);
       } finally {
         module._free(pathPtr);
@@ -175,14 +219,27 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
       try {
-        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
-          module.HEAP32[outHandlePtr >> 2] = 0;
-          const code = module._tspice_ekopw(pathPtr, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outHandlePtr >> 2, "ekopw(outHandlePtr)");
-        });
+        const nativeHandle = withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outHandlePtr, errPtr) => {
+            module.HEAP32[outHandlePtr >> 2] = 0;
+            const code = module._tspice_ekopw(
+              pathPtr,
+              outHandlePtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return readHeapI32(
+              module,
+              outHandlePtr >> 2,
+              "ekopw(outHandlePtr)",
+            );
+          },
+        );
         return spiceHandles.register("EK", nativeHandle);
       } finally {
         module._free(pathPtr);
@@ -205,21 +262,29 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       const ifnamePtr = writeUtf8CString(module, ifname);
 
       try {
-        const nativeHandle = withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outHandlePtr, errPtr) => {
-          module.HEAP32[outHandlePtr >> 2] = 0;
-          const code = module._tspice_ekopn(
-            pathPtr,
-            ifnamePtr,
-            ncomch,
-            outHandlePtr,
-            errPtr,
-            WASM_ERR_MAX_BYTES,
-          );
-          if (code !== 0) {
-            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-          }
-          return readHeapI32(module, outHandlePtr >> 2, "ekopn(outHandlePtr)");
-        });
+        const nativeHandle = withAllocs(
+          module,
+          [4, WASM_ERR_MAX_BYTES],
+          (outHandlePtr, errPtr) => {
+            module.HEAP32[outHandlePtr >> 2] = 0;
+            const code = module._tspice_ekopn(
+              pathPtr,
+              ifnamePtr,
+              ncomch,
+              outHandlePtr,
+              errPtr,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code !== 0) {
+              throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+            }
+            return readHeapI32(
+              module,
+              outHandlePtr >> 2,
+              "ekopn(outHandlePtr)",
+            );
+          },
+        );
 
         return spiceHandles.register("EK", nativeHandle);
       } finally {
@@ -232,7 +297,8 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       spiceHandles.close(
         handle,
         EK_ONLY,
-        (entry: SpiceHandleEntry) => callVoidHandle(module, module._tspice_ekcls, entry.nativeHandle),
+        (entry: SpiceHandleEntry) =>
+          callVoidHandle(module, module._tspice_ekcls, entry.nativeHandle),
         "ekcls",
       ),
 
@@ -251,34 +317,59 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
     ektnam: (n: number) => {
       assertSpiceInt32NonNegative(n, "ektnam(n)");
 
-      return withAllocs(module, [TABLE_NAME_MAX_BYTES, WASM_ERR_MAX_BYTES], (outNamePtr, errPtr) => {
-        module.HEAPU8[outNamePtr] = 0;
-        const code = module._tspice_ektnam(
-          n,
-          outNamePtr,
-          TABLE_NAME_MAX_BYTES,
-          errPtr,
-          WASM_ERR_MAX_BYTES,
-        );
-        if (code !== 0) {
-          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-        }
-        return readFixedWidthCString(module, outNamePtr, TABLE_NAME_MAX_BYTES);
-      });
+      return withAllocs(
+        module,
+        [TABLE_NAME_MAX_BYTES, WASM_ERR_MAX_BYTES],
+        (outNamePtr, errPtr) => {
+          module.HEAPU8[outNamePtr] = 0;
+          const code = module._tspice_ektnam(
+            n,
+            outNamePtr,
+            TABLE_NAME_MAX_BYTES,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+          return readFixedWidthCString(
+            module,
+            outNamePtr,
+            TABLE_NAME_MAX_BYTES,
+          );
+        },
+      );
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "eknseg").nativeHandle;
-      return withAllocs(module, [4, WASM_ERR_MAX_BYTES], (outNsegPtr, errPtr) => {
-        module.HEAP32[outNsegPtr >> 2] = 0;
-        const code = module._tspice_eknseg(nativeHandle, outNsegPtr, errPtr, WASM_ERR_MAX_BYTES);
-        if (code !== 0) {
-          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
-        }
-        const nseg = readHeapI32(module, outNsegPtr >> 2, "eknseg(outNsegPtr)");
-        assertSpiceInt32NonNegative(nseg, "eknseg(handle)");
-        return nseg;
-      });
+      const nativeHandle = spiceHandles.lookup(
+        handle,
+        EK_ONLY,
+        "eknseg",
+      ).nativeHandle;
+      return withAllocs(
+        module,
+        [4, WASM_ERR_MAX_BYTES],
+        (outNsegPtr, errPtr) => {
+          module.HEAP32[outNsegPtr >> 2] = 0;
+          const code = module._tspice_eknseg(
+            nativeHandle,
+            outNsegPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+          const nseg = readHeapI32(
+            module,
+            outNsegPtr >> 2,
+            "eknseg(outNsegPtr)",
+          );
+          assertSpiceInt32NonNegative(nseg, "eknseg(handle)");
+          return nseg;
+        },
+      );
     },
 
     ekfind: (query: string) => {
@@ -306,12 +397,25 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
               throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
             }
 
-            const error = readHeapI32(module, outErrorPtr >> 2, "ekfind(outErrorPtr)") !== 0;
+            const error =
+              readHeapI32(module, outErrorPtr >> 2, "ekfind(outErrorPtr)") !==
+              0;
             if (error) {
-              return { ok: false, errmsg: readFixedWidthCString(module, outErrmsgPtr, outErrmsgMaxBytes) };
+              return {
+                ok: false,
+                errmsg: readFixedWidthCString(
+                  module,
+                  outErrmsgPtr,
+                  outErrmsgMaxBytes,
+                ),
+              };
             }
 
-            const nmrows = readHeapI32(module, outNmrowsPtr >> 2, "ekfind(outNmrowsPtr)");
+            const nmrows = readHeapI32(
+              module,
+              outNmrowsPtr >> 2,
+              "ekfind(outNmrowsPtr)",
+            );
             return { ok: true, nmrows };
           },
         );
@@ -326,8 +430,8 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       assertSpiceInt32NonNegative(elment, "ekgc(elment)");
 
       // Keep parity with backend-node's `kOutMaxBytes`: large enough to avoid truncating
-    // before CSPICE's own ~1024-char EK string limit (1024 + NUL).
-    const outMaxBytes = WASM_ERR_MAX_BYTES;
+      // before CSPICE's own ~1024-char EK string limit (1024 + NUL).
+      const outMaxBytes = WASM_ERR_MAX_BYTES;
       return withAllocs(
         module,
         [outMaxBytes, 4, 4, WASM_ERR_MAX_BYTES],
@@ -351,12 +455,14 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
 
-          const found = readHeapI32(module, outFoundPtr >> 2, "ekgc(outFoundPtr)") !== 0;
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "ekgc(outFoundPtr)") !== 0;
           if (!found) {
             return { found: false } as const;
           }
 
-          const isNull = readHeapI32(module, outNullPtr >> 2, "ekgc(outNullPtr)") !== 0;
+          const isNull =
+            readHeapI32(module, outNullPtr >> 2, "ekgc(outNullPtr)") !== 0;
           if (isNull) {
             return { found: true, isNull: true } as const;
           }
@@ -397,12 +503,14 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
 
-          const found = readHeapI32(module, outFoundPtr >> 2, "ekgd(outFoundPtr)") !== 0;
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "ekgd(outFoundPtr)") !== 0;
           if (!found) {
             return { found: false } as const;
           }
 
-          const isNull = readHeapI32(module, outNullPtr >> 2, "ekgd(outNullPtr)") !== 0;
+          const isNull =
+            readHeapI32(module, outNullPtr >> 2, "ekgd(outNullPtr)") !== 0;
           if (isNull) {
             return { found: true, isNull: true } as const;
           }
@@ -440,17 +548,23 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
 
-          const found = readHeapI32(module, outFoundPtr >> 2, "ekgi(outFoundPtr)") !== 0;
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "ekgi(outFoundPtr)") !== 0;
           if (!found) {
             return { found: false } as const;
           }
 
-          const isNull = readHeapI32(module, outNullPtr >> 2, "ekgi(outNullPtr)") !== 0;
+          const isNull =
+            readHeapI32(module, outNullPtr >> 2, "ekgi(outNullPtr)") !== 0;
           if (isNull) {
             return { found: true, isNull: true } as const;
           }
 
-          const value = readHeapI32(module, outIdataPtr >> 2, "ekgi(outIdataPtr)");
+          const value = readHeapI32(
+            module,
+            outIdataPtr >> 2,
+            "ekgi(outIdataPtr)",
+          );
           return { found: true, isNull: false, value } as const;
         },
       );
@@ -474,7 +588,9 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
         throw new RangeError("ekifld(cnames): expected cnames.length > 0");
       }
       if (decls.length !== cnames.length) {
-        throw new RangeError("ekifld(decls): expected decls.length === cnames.length");
+        throw new RangeError(
+          "ekifld(decls): expected decls.length === cnames.length",
+        );
       }
 
       const ncols = cnames.length;
@@ -489,7 +605,11 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
         declen = Math.max(declen, UTF8_ENCODER.encode(s).length + 1);
       }
 
-      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekifld").nativeHandle;
+      const nativeHandle = spiceHandles.lookup(
+        handle,
+        EK_ONLY,
+        "ekifld",
+      ).nativeHandle;
       const tabnamPtr = writeUtf8CString(module, tabnam);
 
       try {
@@ -520,8 +640,15 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
               throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
             }
 
-            const segno = readHeapI32(module, outSegnoPtr >> 2, "ekifld(outSegnoPtr)");
-            const rcptrsView = module.HEAP32.subarray(outRcptrsPtr >> 2, (outRcptrsPtr >> 2) + nrows);
+            const segno = readHeapI32(
+              module,
+              outSegnoPtr >> 2,
+              "ekifld(outSegnoPtr)",
+            );
+            const rcptrsView = module.HEAP32.subarray(
+              outRcptrsPtr >> 2,
+              (outRcptrsPtr >> 2) + nrows,
+            );
             return { segno, rcptrs: Array.from(rcptrsView) };
           },
         );
@@ -542,7 +669,9 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       assertSpiceInt32NonNegative(segno, "ekacli(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
-        throw new RangeError("ekacli(): expected entszs/nlflgs/rcptrs to have the same length");
+        throw new RangeError(
+          "ekacli(): expected entszs/nlflgs/rcptrs to have the same length",
+        );
       }
       if (nrows === 0) {
         throw new RangeError("ekacli(): expected rcptrs.length > 0");
@@ -565,7 +694,11 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
         assertSpiceInt32(rcptrs[i]!, `ekacli(rcptrs[${i}])`);
       }
 
-      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacli").nativeHandle;
+      const nativeHandle = spiceHandles.lookup(
+        handle,
+        EK_ONLY,
+        "ekacli",
+      ).nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
       // `withAllocs()` rejects 0-byte allocations; when all rows are NULL,
@@ -579,7 +712,10 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
           (ivalsPtr, entszsPtr, nlflgsPtr, rcptrsPtr, errPtr) => {
             module.HEAP32.set(Int32Array.from(ivals), ivalsPtr >> 2);
             module.HEAP32.set(Int32Array.from(entszs), entszsPtr >> 2);
-            module.HEAP32.set(Int32Array.from(nlflgs.map((b) => (b ? 1 : 0))), nlflgsPtr >> 2);
+            module.HEAP32.set(
+              Int32Array.from(nlflgs.map((b) => (b ? 1 : 0))),
+              nlflgsPtr >> 2,
+            );
             module.HEAP32.set(Int32Array.from(rcptrs), rcptrsPtr >> 2);
 
             const code = module._tspice_ekacli(
@@ -617,7 +753,9 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       assertSpiceInt32NonNegative(segno, "ekacld(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
-        throw new RangeError("ekacld(): expected entszs/nlflgs/rcptrs to have the same length");
+        throw new RangeError(
+          "ekacld(): expected entszs/nlflgs/rcptrs to have the same length",
+        );
       }
       if (nrows === 0) {
         throw new RangeError("ekacld(): expected rcptrs.length > 0");
@@ -642,7 +780,11 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
         assertSpiceInt32(rcptrs[i]!, `ekacld(rcptrs[${i}])`);
       }
 
-      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekacld").nativeHandle;
+      const nativeHandle = spiceHandles.lookup(
+        handle,
+        EK_ONLY,
+        "ekacld",
+      ).nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
       // `withAllocs()` rejects 0-byte allocations; when all rows are NULL,
@@ -656,7 +798,10 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
           (dvalsPtr, entszsPtr, nlflgsPtr, rcptrsPtr, errPtr) => {
             module.HEAPF64.set(Float64Array.from(dvals), dvalsPtr >> 3);
             module.HEAP32.set(Int32Array.from(entszs), entszsPtr >> 2);
-            module.HEAP32.set(Int32Array.from(nlflgs.map((b) => (b ? 1 : 0))), nlflgsPtr >> 2);
+            module.HEAP32.set(
+              Int32Array.from(nlflgs.map((b) => (b ? 1 : 0))),
+              nlflgsPtr >> 2,
+            );
             module.HEAP32.set(Int32Array.from(rcptrs), rcptrsPtr >> 2);
 
             const code = module._tspice_ekacld(
@@ -694,7 +839,9 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       assertSpiceInt32NonNegative(segno, "ekaclc(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
-        throw new RangeError("ekaclc(): expected entszs/nlflgs/rcptrs to have the same length");
+        throw new RangeError(
+          "ekaclc(): expected entszs/nlflgs/rcptrs to have the same length",
+        );
       }
       if (nrows === 0) {
         throw new RangeError("ekaclc(): expected rcptrs.length > 0");
@@ -715,7 +862,9 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       for (const s of cvals) {
         const bytes = UTF8_ENCODER.encode(s).length + 1;
         if (bytes > kMaxEkVallenBytes) {
-          throw new RangeError(`ekaclc(): value byte length exceeds cap (${kMaxEkVallenBytes})`);
+          throw new RangeError(
+            `ekaclc(): value byte length exceeds cap (${kMaxEkVallenBytes})`,
+          );
         }
         vallen = Math.max(vallen, bytes);
       }
@@ -728,10 +877,16 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       }
       const cvalsMaxBytes = nvals * vallen;
       if (cvalsMaxBytes > WASM_MAX_ALLOC_BYTES) {
-        throw new RangeError(`ekaclc(): cvals buffer too large (${cvalsMaxBytes} bytes)`);
+        throw new RangeError(
+          `ekaclc(): cvals buffer too large (${cvalsMaxBytes} bytes)`,
+        );
       }
 
-      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekaclc").nativeHandle;
+      const nativeHandle = spiceHandles.lookup(
+        handle,
+        EK_ONLY,
+        "ekaclc",
+      ).nativeHandle;
       const columnPtr = writeUtf8CString(module, column);
 
       // `withAllocs()` rejects 0-byte allocations; when all rows are NULL,
@@ -741,11 +896,20 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
       try {
         return withAllocs(
           module,
-          [cvalsAllocBytes, nrows * 4, nrows * 4, nrows * 4, WASM_ERR_MAX_BYTES],
+          [
+            cvalsAllocBytes,
+            nrows * 4,
+            nrows * 4,
+            nrows * 4,
+            WASM_ERR_MAX_BYTES,
+          ],
           (cvalsPtr, entszsPtr, nlflgsPtr, rcptrsPtr, errPtr) => {
             writeFixedWidthStringArray(module, cvalsPtr, vallen, cvals);
             module.HEAP32.set(Int32Array.from(entszs), entszsPtr >> 2);
-            module.HEAP32.set(Int32Array.from(nlflgs.map((b) => (b ? 1 : 0))), nlflgsPtr >> 2);
+            module.HEAP32.set(
+              Int32Array.from(nlflgs.map((b) => (b ? 1 : 0))),
+              nlflgsPtr >> 2,
+            );
             module.HEAP32.set(Int32Array.from(rcptrs), rcptrsPtr >> 2);
 
             const code = module._tspice_ekaclc(
@@ -780,21 +944,33 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
         throw new RangeError("ekffld(rcptrs): expected rcptrs.length > 0");
       }
       if (nrows > kMaxEkArrayLen) {
-        throw new RangeError(`ekffld(): expected rcptrs.length <= ${kMaxEkArrayLen}`);
+        throw new RangeError(
+          `ekffld(): expected rcptrs.length <= ${kMaxEkArrayLen}`,
+        );
       }
 
       for (let i = 0; i < nrows; i++) {
         assertSpiceInt32(rcptrs[i]!, `ekffld(rcptrs[${i}])`);
       }
 
-      const nativeHandle = spiceHandles.lookup(handle, EK_ONLY, "ekffld").nativeHandle;
+      const nativeHandle = spiceHandles.lookup(
+        handle,
+        EK_ONLY,
+        "ekffld",
+      ).nativeHandle;
 
       return withAllocs(
         module,
         [rcptrs.length * 4, WASM_ERR_MAX_BYTES],
         (rcptrsPtr, errPtr) => {
           module.HEAP32.set(Int32Array.from(rcptrs), rcptrsPtr >> 2);
-          const code = module._tspice_ekffld(nativeHandle, segno, rcptrsPtr, errPtr, WASM_ERR_MAX_BYTES);
+          const code = module._tspice_ekffld(
+            nativeHandle,
+            segno,
+            rcptrsPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
           if (code !== 0) {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }
@@ -805,7 +981,9 @@ export function createEkApi(module: EmscriptenModule, spiceHandles: SpiceHandleR
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
     value: () => {
-      const entries = (spiceHandles as unknown as InternalSpiceHandleRegistry).__entries?.();
+      const entries = (
+        spiceHandles as unknown as InternalSpiceHandleRegistry
+      ).__entries?.();
       if (!entries) {
         return spiceHandles.size();
       }

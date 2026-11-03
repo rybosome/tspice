@@ -47,12 +47,13 @@ export type ResponseLike = {
 };
 
 // Structural fetch typing so we don't leak DOM lib types into emitted .d.ts.
-export type FetchLike = (input: string, init?: unknown) => Promise<ResponseLike>;
+export type FetchLike = (
+  input: string,
+  init?: unknown,
+) => Promise<ResponseLike>;
 
 export type RootRelativeKernelUrlBehavior =
-  | "bypassBaseUrl"
-  | "applyBaseOrigin"
-  | "error";
+  "bypassBaseUrl" | "applyBaseOrigin" | "error";
 
 export type LoadKernelPackOptions = {
   /**
@@ -97,7 +98,10 @@ function isAbsoluteUrl(url: string): boolean {
   return false;
 }
 
-function throwProtocolRelativeUrlError(opts: { label: string; url: string }): never {
+function throwProtocolRelativeUrlError(opts: {
+  label: string;
+  url: string;
+}): never {
   throw new Error(
     `${opts.label}: invalid URL form. ` +
       `Expected: scheme-based URLs like "https://..." or non-protocol-relative paths. ` +
@@ -105,7 +109,6 @@ function throwProtocolRelativeUrlError(opts: { label: string; url: string }): ne
       `Hint: replace leading "//" with an explicit scheme.`,
   );
 }
-
 
 /**
  * Resolve a kernel URL against an optional `baseUrl`, respecting the configured
@@ -117,7 +120,10 @@ export function resolveKernelUrl(
   rootRelativeKernelUrlBehavior: RootRelativeKernelUrlBehavior,
 ): string {
   if (url.startsWith("//")) {
-    throwProtocolRelativeUrlError({ label: "loadKernelPack(): kernel.url", url });
+    throwProtocolRelativeUrlError({
+      label: "loadKernelPack(): kernel.url",
+      url,
+    });
   }
 
   const normalizedBaseUrl = baseUrl?.trim();
@@ -126,7 +132,10 @@ export function resolveKernelUrl(
   if (!normalizedBaseUrl) return url;
 
   if (normalizedBaseUrl.startsWith("//")) {
-    throwProtocolRelativeUrlError({ label: "loadKernelPack(): pack.baseUrl", url: normalizedBaseUrl });
+    throwProtocolRelativeUrlError({
+      label: "loadKernelPack(): pack.baseUrl",
+      url: normalizedBaseUrl,
+    });
   }
 
   // If the kernel URL is already absolute, don't apply `baseUrl`.
@@ -199,7 +208,10 @@ export function resolveKernelUrl(
   return `${normalizedBaseUrl}${url}`;
 }
 
-async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {
+async function fetchKernelBytes(
+  fetchFn: FetchLike,
+  url: string,
+): Promise<Uint8Array> {
   const res = await fetchFn(url);
   if (!res.ok) {
     throw new Error(
@@ -225,14 +237,19 @@ export async function loadKernelPack(
   opts?: LoadKernelPackOptions,
 ): Promise<void> {
   // Migration guard: `baseUrl` moved from load options to `pack.baseUrl`.
-  if (opts && Object.prototype.hasOwnProperty.call(opts as unknown as object, "baseUrl")) {
+  if (
+    opts &&
+    Object.prototype.hasOwnProperty.call(opts as unknown as object, "baseUrl")
+  ) {
     throw new Error(
       "loadKernelPack(): deprecated option used. Expected: opts.baseUrl has been removed; set pack.baseUrl instead (and pass the pack to spiceClients.withKernels(pack)). Got: opts.baseUrl provided.",
     );
   }
 
   const fetchFn =
-    opts?.fetch ?? ((globalThis as unknown as { fetch?: FetchLike }).fetch ?? undefined);
+    opts?.fetch ??
+    (globalThis as unknown as { fetch?: FetchLike }).fetch ??
+    undefined;
 
   if (!fetchFn) {
     throw new Error(
@@ -241,7 +258,8 @@ export async function loadKernelPack(
   }
 
   const fetchStrategy = opts?.fetchStrategy ?? "sequential";
-  const rootRelativeKernelUrlBehavior = opts?.rootRelativeKernelUrlBehavior ?? "bypassBaseUrl";
+  const rootRelativeKernelUrlBehavior =
+    opts?.rootRelativeKernelUrlBehavior ?? "bypassBaseUrl";
 
   if (fetchStrategy === "parallel") {
     const bytes = await Promise.all(

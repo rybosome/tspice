@@ -1,32 +1,47 @@
-import type { Mat3ColMajor, Mat3RowMajor } from "@rybosome/tspice-backend-contract";
+import type {
+  Mat3ColMajor,
+  Mat3RowMajor,
+} from "@rybosome/tspice-backend-contract";
 import { brandMat3ColMajor, brandMat3RowMajor } from "@rybosome/tspice-core";
 
 function cloneRowMajor(m: Readonly<Mat3RowMajor>): Mat3RowMajor {
   // Ensure we don't retain a mutable caller-provided array reference.
-  return brandMat3RowMajor([m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]] as const, {
-    label: "Mat3.cloneRowMajor",
-  });
+  return brandMat3RowMajor(
+    [m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]] as const,
+    {
+      label: "Mat3.cloneRowMajor",
+    },
+  );
 }
 
 function cloneColMajor(m: Readonly<Mat3ColMajor>): Mat3ColMajor {
   // Ensure we don't retain a mutable caller-provided array reference.
-  return brandMat3ColMajor([m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]] as const, {
-    label: "Mat3.cloneColMajor",
-  });
+  return brandMat3ColMajor(
+    [m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]] as const,
+    {
+      label: "Mat3.cloneColMajor",
+    },
+  );
 }
 
 function rowMajorToColMajor(m: Readonly<Mat3RowMajor>): Mat3ColMajor {
   // [m00,m01,m02, m10,m11,m12, m20,m21,m22] -> [m00,m10,m20, m01,m11,m21, m02,m12,m22]
-  return brandMat3ColMajor([m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]] as const, {
-    label: "Mat3.rowMajorToColMajor",
-  });
+  return brandMat3ColMajor(
+    [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]] as const,
+    {
+      label: "Mat3.rowMajorToColMajor",
+    },
+  );
 }
 
 function colMajorToRowMajor(m: Readonly<Mat3ColMajor>): Mat3RowMajor {
   // [m00,m10,m20, m01,m11,m21, m02,m12,m22] -> [m00,m01,m02, m10,m11,m12, m20,m21,m22]
-  return brandMat3RowMajor([m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]] as const, {
-    label: "Mat3.colMajorToRowMajor",
-  });
+  return brandMat3RowMajor(
+    [m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]] as const,
+    {
+      label: "Mat3.colMajorToRowMajor",
+    },
+  );
 }
 
 /**
@@ -44,7 +59,10 @@ export class Mat3 {
   #colMajor: Readonly<Mat3ColMajor> | undefined;
 
   /** Create a Mat3 from cached row/col-major representations. Prefer the static constructors. */
-  private constructor(rowMajor: Readonly<Mat3RowMajor>, colMajor?: Readonly<Mat3ColMajor>) {
+  private constructor(
+    rowMajor: Readonly<Mat3RowMajor>,
+    colMajor?: Readonly<Mat3ColMajor>,
+  ) {
     this.#rowMajor = rowMajor;
     this.#colMajor = colMajor;
   }

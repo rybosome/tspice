@@ -35,7 +35,10 @@ function shouldOmitTargetSupport({ name, purpose }) {
   }
 
   // (2) Fortran unit file I/O shims are not meaningful in tspice.
-  if (/^ftn[a-z0-9]*_c$/.test(name) || purpose.toLowerCase().includes("fortran unit")) {
+  if (
+    /^ftn[a-z0-9]*_c$/.test(name) ||
+    purpose.toLowerCase().includes("fortran unit")
+  ) {
     return {
       omit: true,
       justification: "Fortran unit I/O (non-portable)",
@@ -79,7 +82,9 @@ function parseCspiceIndexHtml(html) {
     byName.set(r.name, r);
   }
 
-  const parsed = [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
+  const parsed = [...byName.values()].sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
 
   if (anchorCount !== 0 && parsed.length !== anchorCount) {
     throw new Error(
@@ -93,7 +98,9 @@ function parseCspiceIndexHtml(html) {
 async function fetchCspiceIndex() {
   const res = await fetch(CSPICE_INDEX_URL);
   if (!res.ok) {
-    throw new Error(`Failed to fetch CSPICE index: ${res.status} ${res.statusText}`);
+    throw new Error(
+      `Failed to fetch CSPICE index: ${res.status} ${res.statusText}`,
+    );
   }
   return await res.text();
 }
@@ -129,7 +136,9 @@ function parseArgs(argv) {
   }
 
   if (refreshFromNaif && check) {
-    throw new Error(`Cannot combine --refresh-from-naif and --check.\n\n${usage()}`);
+    throw new Error(
+      `Cannot combine --refresh-from-naif and --check.\n\n${usage()}`,
+    );
   }
 
   return { refreshFromNaif, check };
@@ -190,8 +199,7 @@ function collectInterfaceMethodNames(interfaceBody) {
 function parseNamedImportsByName(sourceText) {
   /** @type {Map<string, string>} */
   const importByName = new Map();
-  const importRe =
-    /import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+"([^"]+)"\s*;/g;
+  const importRe = /import\s+type\s+\{\s*([^}]+)\s*\}\s+from\s+"([^"]+)"\s*;/g;
 
   let match;
   while ((match = importRe.exec(sourceText))) {
@@ -290,7 +298,9 @@ function loadCspiceFunctionsJson(jsonText) {
       );
     }
     if (item.justification != null && typeof item.justification !== "string") {
-      throw new Error(`Invalid item at index ${i}: justification must be string`);
+      throw new Error(
+        `Invalid item at index ${i}: justification must be string`,
+      );
     }
   }
 
@@ -355,7 +365,8 @@ function renderTable({ rows, includeDecision, includeJustification }) {
   for (const r of rows) {
     const cells = [`\`${r.name}\``, escapeTableCell(r.purpose)];
     if (includeDecision) cells.push(r.decision);
-    if (includeJustification) cells.push(escapeTableCell(r.justification ?? ""));
+    if (includeJustification)
+      cells.push(escapeTableCell(r.justification ?? ""));
     lines.push(`| ${cells.join(" | ")} |`);
   }
 
@@ -424,7 +435,9 @@ function renderMarkdown({ functions, implementedNormalized, extendsNames }) {
   lines.push("## Planned (not yet implemented)");
   lines.push("");
 
-  const plannedHasNotes = planned.some((r) => (r.justification ?? "").trim().length > 0);
+  const plannedHasNotes = planned.some(
+    (r) => (r.justification ?? "").trim().length > 0,
+  );
   lines.push(
     renderTable({
       rows: planned,
@@ -452,8 +465,12 @@ function renderMarkdown({ functions, implementedNormalized, extendsNames }) {
 }
 
 function assertJsonCoversImplemented({ functions, implementedNormalized }) {
-  const jsonNormalized = new Set(functions.map((f) => normalizeRoutineName(f.name)));
-  const missing = [...implementedNormalized].filter((n) => !jsonNormalized.has(n));
+  const jsonNormalized = new Set(
+    functions.map((f) => normalizeRoutineName(f.name)),
+  );
+  const missing = [...implementedNormalized].filter(
+    (n) => !jsonNormalized.has(n),
+  );
   if (missing.length > 0) {
     throw new Error(
       `data/cspice-functions.json is missing ${missing.length} routines implemented by SpiceBackend: ${missing
@@ -466,7 +483,8 @@ function assertJsonCoversImplemented({ functions, implementedNormalized }) {
 function assertNoExcludedImplemented({ functions, implementedNormalized }) {
   const bad = functions.filter(
     (f) =>
-      f.decision === "excluded" && implementedNormalized.has(normalizeRoutineName(f.name)),
+      f.decision === "excluded" &&
+      implementedNormalized.has(normalizeRoutineName(f.name)),
   );
   if (bad.length > 0) {
     throw new Error(
@@ -520,7 +538,10 @@ async function checkJsonDriftAgainstNaif() {
     .filter((r) => !byNameNaif.has(r.name))
     .map((r) => r.name);
   const purposeDrift = naifRoutines
-    .filter((r) => byNameJson.has(r.name) && byNameJson.get(r.name).purpose !== r.purpose)
+    .filter(
+      (r) =>
+        byNameJson.has(r.name) && byNameJson.get(r.name).purpose !== r.purpose,
+    )
     .map((r) => r.name);
 
   if (missingInJson.length || extraInJson.length || purposeDrift.length) {
@@ -541,7 +562,9 @@ async function checkJsonDriftAgainstNaif() {
       );
     }
     parts.push("");
-    parts.push("Run: node scripts/generate-cspice-inventory.mjs --refresh-from-naif");
+    parts.push(
+      "Run: node scripts/generate-cspice-inventory.mjs --refresh-from-naif",
+    );
     throw new Error(parts.join("\n"));
   }
 
@@ -567,7 +590,11 @@ async function main() {
   assertJsonCoversImplemented({ functions, implementedNormalized });
   assertNoExcludedImplemented({ functions, implementedNormalized });
 
-  const markdown = renderMarkdown({ functions, implementedNormalized, extendsNames });
+  const markdown = renderMarkdown({
+    functions,
+    implementedNormalized,
+    extendsNames,
+  });
   await writeFile(OUTPUT_PATH, markdown + "\n", "utf8");
 
   const total = functions.length;

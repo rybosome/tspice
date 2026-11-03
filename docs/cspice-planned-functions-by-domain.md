@@ -8,25 +8,25 @@ Planned routines: **648**
 
 ## Proposed taxonomy
 
-| Domain | Count | Description |
-| --- | ---: | --- |
-| `time` | 32 | Time systems, UTC/ET conversions, SCLK, and time constants. |
-| `kernels` | 8 | Kernel bookkeeping: listing, querying, extracting, clearing. |
-| `kernel-pool` | 18 | Kernel pool read/write/query utilities (the shared variable pool). |
-| `ids-names` | 21 | Body/frame/surface ID and name translation utilities. |
-| `frames` | 37 | Reference frame transformations, attitude representations, and CK routines. |
-| `ephemeris-spk` | 50 | SPK access and SPK segment writing/coverage/object utilities (plus closely-related state/orbit helpers). |
-| `pck` | 7 | PCK access and PCK kernel utilities. |
-| `dsk` | 25 | DSK access, DSK segment writing, and shape model utilities. |
-| `ek` | 37 | EK access, segment building, query, and EK I/O utilities. |
-| `geometry` | 84 | Geometric computations (subpoints, intercepts, illumination, occultations, FOV) and GF event finding. |
-| `coords-vectors` | 121 | Coordinate conversions and core vector/matrix/rotation utilities. |
-| `cells-windows` | 73 | SpiceCell set operations and window operations (WN* routines). |
-| `file-io` | 55 | Low-level DAF/DAS/DLA architecture routines and file record operations. |
-| `strings` | 37 | String utilities not otherwise classified (search, replace, word parsing, formatting). |
-| `math` | 25 | Numerical utilities (Chebyshev polynomials, interpolation, root finding, regression). |
-| `error` | 18 | Error system entry/exit, message formatting, and failure-state routines. |
-| `tbd` | 0 | Uncertain classification; grouped here for follow-up review. |
+| Domain           | Count | Description                                                                                              |
+| ---------------- | ----: | -------------------------------------------------------------------------------------------------------- |
+| `time`           |    32 | Time systems, UTC/ET conversions, SCLK, and time constants.                                              |
+| `kernels`        |     8 | Kernel bookkeeping: listing, querying, extracting, clearing.                                             |
+| `kernel-pool`    |    18 | Kernel pool read/write/query utilities (the shared variable pool).                                       |
+| `ids-names`      |    21 | Body/frame/surface ID and name translation utilities.                                                    |
+| `frames`         |    37 | Reference frame transformations, attitude representations, and CK routines.                              |
+| `ephemeris-spk`  |    50 | SPK access and SPK segment writing/coverage/object utilities (plus closely-related state/orbit helpers). |
+| `pck`            |     7 | PCK access and PCK kernel utilities.                                                                     |
+| `dsk`            |    25 | DSK access, DSK segment writing, and shape model utilities.                                              |
+| `ek`             |    37 | EK access, segment building, query, and EK I/O utilities.                                                |
+| `geometry`       |    84 | Geometric computations (subpoints, intercepts, illumination, occultations, FOV) and GF event finding.    |
+| `coords-vectors` |   121 | Coordinate conversions and core vector/matrix/rotation utilities.                                        |
+| `cells-windows`  |    73 | SpiceCell set operations and window operations (WN* routines).                                           |
+| `file-io`        |    55 | Low-level DAF/DAS/DLA architecture routines and file record operations.                                  |
+| `strings`        |    37 | String utilities not otherwise classified (search, replace, word parsing, formatting).                   |
+| `math`           |    25 | Numerical utilities (Chebyshev polynomials, interpolation, root finding, regression).                    |
+| `error`          |    18 | Error system entry/exit, message formatting, and failure-state routines.                                 |
+| `tbd`            |     0 | Uncertain classification; grouped here for follow-up review.                                             |
 
 ## Time (`time`)
 
