@@ -40,11 +40,7 @@ This ensures the Node addon and the WASM module share identical “C-level” se
 
 ### WASM backend (Emscripten)
 
-The WASM build includes the shim as a single translation unit:
-
-- `packages/backend-wasm/emscripten/tspice_backend_wasm_wrapper.c`
-
-That file `#include`s the shim `.c` sources directly so the Emscripten build can compile one wrapper while still reusing the shared shim implementation.
+The WASM build script (`scripts/build-backend-wasm.mjs`) passes the shared shim `.c` files directly to Emscripten alongside the staged CSPICE sources. The script owns the source and export lists for the checked-in WASM artifact. The older `packages/backend-wasm/emscripten/tspice_backend_wasm_wrapper.c` aggregator is not used by this build path.
 
 ## Error model
 
@@ -63,7 +59,7 @@ Key pieces:
   - `SHORT` message (`getmsg_c("SHORT", ...)`)
   - `LONG` message (`getmsg_c("LONG", ...)`)
   - quick trace (`qcktrc_c(...)`)
-  
+
   …stores them in process-global buffers, and calls `reset_c()`.
 
 Those structured buffers can be retrieved later via:

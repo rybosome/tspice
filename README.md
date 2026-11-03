@@ -34,11 +34,9 @@ If your target runtime is a browser, or your application is already TypeScript/N
 
 ## Mental model
 
-SPICE is stateful: loading kernels mutates a process-wide global kernel pool inside SPICE, and many routines read from (and sometimes affect) that shared state.
+SPICE is stateful: loading kernels changes the kernel pool that later operations read. Node backend objects in the same process share native CSPICE state. Each WASM module instance owns its state. Use separate processes for independent native workloads and separate WASM instances/workers for independent portable workloads.
 
-Isolation (separating kernel-sets and workloads) can be achieved by creating multiple process or WebWorker instances, depending on runtime.
-
-## Quickstart 
+## Quickstart
 
 ### Installation
 
@@ -141,7 +139,7 @@ main().catch(console.error);
 
 ## Coverage
 
-CSPICE exposes 652 public routines; 162 are currently implemented in `tspice`.
+The generated routine inventory records the current implemented, planned, and explicitly excluded CSPICE routines. Implementation breadth, per-backend support, and meaningful parity scenario coverage are separate measures; contract or case-file presence alone does not establish per-backend correctness or scenario quality.
 
 - **Detailed function inventory:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
 
@@ -152,7 +150,6 @@ CSPICE exposes 652 public routines; 162 are currently implemented in `tspice`.
 `tspice` follows SemVer. As a pre-1.0.0 project, **minor versions may introduce breaking changes**. Within a given minor line (e.g. `0.1.x`), patch releases are guaranteed not to break the public API.
 
 Because CSPICE itself is a mature and stable toolkit, long-term API churn in `tspice` is expected to be low.
-
 
 ## Validation
 
@@ -184,13 +181,13 @@ flowchart TD
 
 ## Backend comparison (Node native vs WASM)
 
-| | Node native (`backend: "node"`) | WASM (`backend: "wasm"`) |
-| --- | --- | --- |
-| Runs in | Node.js only | Browsers + Node.js |
-| Artifact | Native addon (`.node`) | Prebuilt WebAssembly (`.wasm`) + JS glue |
-| Best for | Node services, local kernel archives, potential performance wins | Browsers, Web Workers, portability |
-| Kernel I/O shape | OS filesystem paths (plus optional byte staging) | Byte-backed loads into a virtual filesystem |
-| Operational constraints | **none** | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
+|                         | Node native (`backend: "node"`)                                                                                 | WASM (`backend: "wasm"`)                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Runs in                 | Node.js only                                                                                                    | Browsers + Node.js                                                                                              |
+| Artifact                | Native addon (`.node`)                                                                                          | Prebuilt WebAssembly (`.wasm`) + JS glue                                                                        |
+| Best for                | Node services, local kernel archives, potential performance wins                                                | Browsers, Web Workers, portability                                                                              |
+| Kernel I/O shape        | OS filesystem paths (plus optional byte staging)                                                                | Byte-backed loads into a virtual filesystem                                                                     |
+| Operational constraints | Requires a compatible platform addon; CSPICE state is shared within the process and native calls are serialized | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
 
 ## Roadmap (high-level)
 

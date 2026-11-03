@@ -1,201 +1,60 @@
-# AGENTS.md
+# Agent guide
 
-This file is the working contract for how agents (including Charlie) should operate in `rybosome/tspice`.
+`tspice` provides a TypeScript facade over CSPICE for Node and browser runtimes. Use this guide for stable architectural constraints and file routing; use [development setup](docs/development-setup.md) for prerequisites and command details.
 
-Use it as practical guidance for planning, implementation, testing, docs updates, and PR handoff quality.
+## Architecture and state
 
-## 1) Start here: 30-second mental model
+- The public entrypoint is `packages/tspice`, centered on `spiceClients` and `kernels`. Callers own the returned `dispose()` lifecycle.
+- `raw` follows the shared backend contract and CSPICE semantics. `kit` composes ergonomic helpers over `raw` and documents its defaults.
+- Node's native backend shares CSPICE state across backend objects in a process and serializes native operations. Independent native workloads need process isolation.
+- Each WASM module instance owns its CSPICE state. Workers provide thread isolation for synchronous, CPU-heavy calls.
+- The shared C shim owns common error, memory, and handle behavior. Keep Node and WASM adapters consistent with it.
 
-- `tspice` is a TypeScript-first SPICE toolkit for Node + browser runtimes.
-- SPICE behavior is stateful: kernel loading mutates shared SPICE state; isolation requires process/worker separation.
-- Public API usage is centered on `spiceClients` + `kernels`, with explicit `dispose()` lifecycle handling.
-- `spice` is split into two layers:
-  - `raw`: backend/CSPICE-shaped operations (close to contract semantics).
-  - `kit`: ergonomic helpers composed over `raw`.
-- Treat `raw` correctness + parity expectations as strict.
-- Treat `kit` ergonomics as flexible, but still test/documented.
-- `raw` and `kit` changes are both expected to be type-safe and well-tested.
-- GitHub CI results are the canonical merge truth source.
+## File routing
 
-## 2) Repo map + package responsibilities
+| Surface                                                   | Location                      |
+| --------------------------------------------------------- | ----------------------------- |
+| Public exports, clients, `raw` / `kit`, kernel catalogs   | `packages/tspice`             |
+| Backend interfaces and shared types                       | `packages/backend-contract`   |
+| Shared TypeScript validation and runtime helpers          | `packages/core`               |
+| Node adapter and C++ addon                                | `packages/backend-node`       |
+| WASM adapters, loaders, and checked-in Emscripten outputs | `packages/backend-wasm`       |
+| Shared C ABI, errors, and handle registries               | `packages/backend-shim-c`     |
+| Deterministic facade/testing backend                      | `packages/backend-fake`       |
+| Live SpiceyPy oracle, case registry, and fixtures         | `packages/py-parity-checking` |
+| Published native addon wrappers                           | `packages/tspice-native-*`    |
+| Consumer typecheck without DOM libraries                  | `fixtures/consumer-nodom`     |
+| Documentation site and API reference generation           | `apps/docs`                   |
+| Contributor docs, mapping, inventory, and reset plan      | `docs`                        |
+| Build, generation, validation, and CI setup               | `scripts`, `.github`          |
 
-Use this as the default routing map before editing files.
+Update this map when package ownership or repository structure changes.
 
-- Keep this table in sync with repo structure: if you add, remove, rename, or move a package/app/path listed here, update this table in the same PR.
+## Change requirements
 
-| If your task is about... | Primary location(s) | Notes |
-| --- | --- | --- |
-| Public facade/API exports | `packages/tspice` | End-user entrypoint (`@rybosome/tspice`) and `raw`/`kit` user-facing surface. |
-| Backend contract shape | `packages/backend-contract` | Shared contract all backends must satisfy. |
-| Node backend behavior | `packages/backend-node` | Native addon backend (`backend: "node"`). |
-| WASM backend behavior | `packages/backend-wasm` | Browser/Node WASM backend (`backend: "wasm"`). |
-| Shared C integration layer | `packages/backend-shim-c` | Common C shim used by Node + WASM backends. |
-| CSPICE parity harness/scenarios | `packages/py-parity-checking` and `docs/spicebackend-cspice-mapping.md` | SpiceyPy-backed parity workflows and contract mapping docs. |
-| Docs site/app | `apps/docs` | User documentation site implementation. |
-| Repo-level documentation | `README.md`, `docs/` | Architecture, parity, inventory, screenshots, reference docs. |
-| CI/tooling scripts | `scripts/`, `scripts/ci/` | Validation/build tooling and automation behavior. |
+- Preserve `raw` / `kit` responsibilities. A convenience helper must make its defaults and composition explicit.
+- For a raw routine or backend change, trace the contract, shared C shim, Node adapter, WASM adapter, memory/handle lifecycle, errors, parity cases, and mapping documentation. State intentional backend exceptions explicitly.
+- Validate unknown runtime values. Keep production types explicit; avoid `any`, double casts, and suppression comments that bypass contracts. A necessary exception must be narrow and explained inline.
+- Cover meaningful success, edge, error, and cleanup behavior for changed code. Docs-only changes can use documentation validation instead of runtime tests.
+- Keep three signals separate: routine implementation breadth, scenario/backend parity, and source line/branch coverage. A registered case alone does not prove semantic coverage.
+- Update public JSDoc and affected examples with behavior changes. Follow [the CSPICE mapping](docs/spicebackend-cspice-mapping.md) and [generated routine inventory](docs/cspice-function-inventory.md).
+- Regenerate owned artifacts with their source scripts. Never edit the checked-in WASM/glue or generated API/LLM output by hand. CSPICE downloads and build trees stay under ignored caches.
 
-## 3) API layer contract (`raw` vs `kit`)
+## Validation and handoff
 
-This boundary is core to repo semantics.
-
-| Dimension | `raw` | `kit` |
-| --- | --- | --- |
-| Purpose | Thin, CSPICE/back-end-contract-facing operations | Ergonomic, tspice-invented convenience operations |
-| Semantics | Preserve backend/CSPICE behavior shape | Compose over `raw` with explicit defaults |
-| Allowed change style | Conservative and parity-driven | User-experience-driven (still explicit/tested) |
-| Test obligations | Parity + edge/error behavior coverage expected | Unit/integration coverage for composition + defaults |
-| Docs obligations | CSPICE-linked JSDoc and contract mapping consistency | Clear JSDoc/examples for behavior and defaults |
-
-`raw`/`kit` rules:
-
-- New `raw` API work MUST keep semantics aligned with backend contract/CSPICE expectations.
-- New `raw` API work MUST include parity implications (tests and mapping updates when applicable).
-- New `kit` API work MUST be explicit about defaults, composition, and error/edge behavior.
-- `kit` MUST NOT silently redefine underlying `raw` semantics without clear rationale + docs.
-
-## 4) Type-safety expectations
-
-Production code quality gates (for new/changed production code):
-
-- Avoid introducing unsafe escape hatches:
-  - no `as unknown as ...`
-  - no `as any`
-  - no unbounded `any`
-  - no `// @ts-ignore`
-  - no `// @ts-expect-error` without a narrow, documented reason
-  - no `eslint-disable` used to bypass type-safety rules
-  - no unsafe casts used to bypass typing/contracts
-- If an exception is truly necessary, keep it narrow and document the reason inline.
-- Prefer explicit types and narrowings that explain intent.
-- Keep public API types stable and legible.
-- If runtime input is uncertain, validate/parse explicitly instead of asserting blindly.
-
-Test code expectations:
-
-- Test code can be more flexible when needed for fixtures/mocks.
-- Even in tests, prefer local, contained casts with clear intent.
-
-Quick rule of thumb:
-
-| Context | Expectation |
-| --- | --- |
-| Production implementation | Strong typing, no unsafe shortcuts |
-| Test/fixture setup | Practical flexibility allowed, but keep intent explicit |
-
-## 5) Testing + parity requirements
-
-Default stance: include tests unless there is a strong, explicit reason not to.
-
-Per-change checklist:
-
-| Change type | Minimum validation expectation |
-| --- | --- |
-| `raw` method add/change | Unit coverage + parity impact assessed + mapping/docs updated as needed |
-| `kit` helper add/change | Unit/integration coverage proving composition/defaults/error behavior |
-| Backend contract or backend behavior change | Cross-backend implications checked; parity expectations re-evaluated |
-| Docs-only change | Validate docs coherence; tests optional unless behavior changed |
-
-Quality expectations:
-
-- Cover non-happy-path behavior (errors/edge cases), not just smoke paths.
-- Call out any test gap explicitly in PR body when full coverage is impractical.
-- If parity behavior changes, make that visible in both tests and PR narrative.
-
-Common repo commands:
+Run a narrow package check first, then the relevant required lane:
 
 ```bash
-pnpm test:js
-pnpm check:js
-pnpm typecheck
+pnpm doctor
+pnpm run check:js:required
+
+# Native or cross-backend changes
+pnpm doctor:native
+TSPICE_EXPECT_NATIVE=true pnpm run check:native:required
 ```
 
-## 6) Documentation + JSDoc standards
+The JS lane uses checked-in WASM artifacts. Regenerating those artifacts requires Emscripten; see [development setup](docs/development-setup.md). For docs changes, use `pnpm docs:build` and regenerate `pnpm generate:llm` when its inputs change.
 
-Documentation should move with code.
+A PR handoff states the exact scope, behavior and backend implications, commands actually run, generated files updated, and remaining gaps. GitHub Actions provides the final platform and packaged-install evidence before merge. Keep PRs coherent and resolve actionable review feedback.
 
-- Public-facing behavior changes SHOULD ship with docs updates in the same PR.
-- `raw` functions SHOULD have consistently formatted JSDoc with CSPICE linkage.
-- Public API entries (`raw` and `kit`) SHOULD describe behavior, parameters, return shape, and notable caveats.
-- If a PR would make docs inaccurate, update docs in that PR unless there is an explicit, documented exception.
-
-Documentation touchpoints to check:
-
-- `README.md`
-- `apps/docs`
-- `docs/`
-- Inline JSDoc in relevant packages
-
-## 7) CI/platform truth table
-
-GitHub CI is the canonical correctness signal for merge readiness.
-
-| Validation surface | What it is good for | Limitations / caveats |
-| --- | --- | --- |
-| Local/devbox runs | Fast iteration, early feedback, targeted debugging | Environment/platform differences can hide issues |
-| GitHub Actions runners | Canonical end-to-end merge signal, including parity-sensitive checks | Slower feedback loop than local |
-
-Platform note:
-
-- Local Linux ARM64 constraints can make local signals incomplete for final correctness.
-- PRs MUST be evaluated by GitHub CI before merge decisions.
-
-## 8) PR/review protocol + Definition of Done (DoD)
-
-PR author expectations:
-
-- Keep scope coherent; split unrelated work.
-- Summarize behavior changes and risk clearly.
-- Include what was validated (and what was intentionally not, if any).
-- Update docs/JSDoc when behavior/public surface changed.
-
-Review communication expectations:
-
-- Distinguish blocking vs non-blocking feedback.
-- Resolve threads or explicitly track follow-ups before merge.
-- Prefer concrete, testable requests over ambiguous style guidance.
-
-Definition of Done checklist:
-
-- [ ] Scope matches issue/intent.
-- [ ] Type-safety expectations are met.
-- [ ] Required tests/parity expectations are met (or explicitly exceptioned).
-- [ ] Docs/JSDoc are updated when needed.
-- [ ] GitHub CI required checks have completed (not pending) and are green.
-- [ ] PR description captures validation and any known limitations.
-
-## 9) Labeling policy status (placeholder only)
-
-- There is currently **NO formal issue labeling system** in this repository.
-- Agents **SHOULD NOT** follow, assume, or enforce any label taxonomy at this time.
-- Roadmap/prioritization labeling behavior is deferred until [#529](https://github.com/rybosome/tspice/issues/529) is designed and implemented.
-- Until then, do not infer workflow state from labels; rely on issue/PR discussion and maintainer direction.
-
-## 10) Agent operating guardrails (non-prescriptive)
-
-Hard quality gates (MUST):
-
-- Preserve the `raw` vs `kit` contract boundaries in both code and docs.
-- Keep production code type-safe without unsafe escape hatches.
-- Ensure required tests/parity expectations are satisfied for the scope of change.
-- Keep docs/JSDoc aligned with public behavior changes.
-- Treat GitHub CI as the canonical merge-readiness truth source.
-- State assumptions and caveats explicitly when certainty is limited.
-
-Flexible execution patterns (MAY):
-
-- Choose discovery/edit/test order dynamically based on task risk.
-- Parallelize independent subtasks when it improves cycle time and clarity.
-- Use incremental commits/checkpoints or single-pass execution as appropriate.
-- Adapt implementation approach to scope, provided quality gates remain intact.
-
-This section is intentionally not a rigid workflow. It defines outcomes and quality bars, not one required sequence of steps.
-
-## 11) Lightweight maintenance + drift policy
-
-- `AGENTS.md` is maintained by **Charlie**.
-- If Charlie notices a mismatch between this file and repo reality, Charlie should call it out immediately in the active work thread.
-- Small drift should be fixed directly in the in-flight change when practical.
-- Larger drift should be captured in a dedicated follow-up issue/PR with clear linkage.
-- If guidance here conflicts with observed repo truth, surface the conflict explicitly instead of silently choosing one.
-- Keep this file practical, concise, and actionable; avoid process bloat.
+When this guide disagrees with code, report the concrete mismatch and update the guidance in the appropriate change. Keep temporary plans and historical issue references in the [reset plan](docs/project-reset-and-coverage-plan.md), rather than turning them into permanent agent policy.
