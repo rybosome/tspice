@@ -92,8 +92,7 @@ jobs:
         env:
           TSPICE_EXPECT_NATIVE: "true"
         run: |
-          # TODO(#594): switch back to `pnpm run check:native` after PR-0..PR-5
-          # restores parity in required release lanes.
+          # Require native presence in addition to backend parity before publishing.
           pnpm run check:native:required
 
       - name: Pre-publish smoke test (@rybosome/tspice + native optionalDependency)
@@ -188,8 +187,7 @@ jobs:
 
       - name: Verify JS build + tests
         run: |
-          # TODO(#594): switch back to `pnpm run check:js` after PR-0..PR-5
-          # restores parity in required release lanes.
+          # Validate the portable facade and WASM parity lane before publishing.
           pnpm run check:js:required
 
       - name: Build dist-publish + verify pack

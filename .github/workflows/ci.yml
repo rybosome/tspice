@@ -29,8 +29,7 @@ jobs:
 
         pnpm run fetch:cspice
 
-        # TODO(#594): switch back to `pnpm run check` after PR-0..PR-5 restores
-        # parity in required CI lanes.
+        # Run the WASM parity lane without building the optional native addon.
         pnpm run check:js:required
 
   docs-build:
@@ -113,8 +112,7 @@ jobs:
 
         export TSPICE_EXPECT_NATIVE=true
 
-        # TODO(#594): switch back to `pnpm run check:native` after PR-0..PR-5
-        # restores parity in required CI lanes.
+        # Turbo forwards and hashes TSPICE_EXPECT_NATIVE for required test tasks.
         pnpm run check:native:required
 
         # Smoke-test packaging for the platform-native optionalDependency that
