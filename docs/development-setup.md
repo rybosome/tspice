@@ -65,7 +65,9 @@ TSPICE_EXPECT_NATIVE=true pnpm run check:native:required
 
 The fetch script reads `scripts/cspice.manifest.json`, verifies the archive checksum, and caches CSPICE below `.cache/cspice/`. Set `TSPICE_CSPICE_DIR` to an existing CSPICE install containing `include/SpiceUsr.h`, `lib/cspice.a`, and `lib/csupport.a` to use a local copy. An invalid explicit override fails the check. Automatic archive downloads are configured for macOS arm64/x64 and Linux x64; other platforms need a compatible CSPICE directory. On macOS, `uncompress` is supplied by `ncompress` if it is absent (`brew install ncompress`).
 
-The native lane currently builds the addon and runs Node cases when its build artifacts exist. The intended expected-native sanity assertion is filtered by Turbo's environment configuration; fixing that guard is a tracked follow-up in the [readiness audit](./project-readiness-audit.md).
+Native CI sets `TSPICE_EXPECT_NATIVE=true`. Turbo forwards this flag to test tasks and includes its value in their cache keys, so a successful optional-native run cannot satisfy a required-native run. The parity suite's native-presence sanity assertion fails when the production addon or backend entrypoint is missing. Local runs without the flag may still skip native cases.
+
+`pnpm run test:native-ci-guard` exercises the actual Turbo configuration and parity sanity assertion in a temporary workspace: optional native absence skips, required absence fails, a test addon alone fails, and production artifact presence runs the assertion. Both JS check entrypoints include this regression. The fixture checks discovery; the full native lane builds, loads, and compares the actual backend against SpiceyPy.
 
 Use the WASM regeneration tier only when changing the C sources compiled into the checked-in WebAssembly binary or glue:
 

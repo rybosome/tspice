@@ -28,5 +28,5 @@ export const nodeBackendAvailable = (() => {
     return false;
   }
 
-  return fs.readdirSync(releaseDir).some((file) => file.endsWith(".node"));
+  return fs.existsSync(path.join(releaseDir, "tspice_backend_node.node"));
 })();
