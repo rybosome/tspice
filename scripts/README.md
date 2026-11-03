@@ -35,6 +35,9 @@ This directory contains repository tools used by workspace commands and GitHub A
 | File | Purpose / inputs and outputs |
 | --- | --- |
 | `generate-cspice-inventory.mjs` | Reconciles `data/cspice-functions.json` with the backend contract and writes `docs/cspice-function-inventory.md`. `--check` checks drift against NAIF's live index; `--refresh-from-naif` refreshes the JSON input first. |
+| `generate-coverage-ledger.mjs` | Reconciles inventory, contract, backend/shim routes, checked-in WASM exports, case registry, fixtures, and CI lanes into `data/coverage-ledger.json` and `docs/coverage-ledger.md`. Run `pnpm generate:coverage-ledger`; `pnpm check:coverage-ledger` rejects unexplained drift or stale output. |
+| `coverage-ledger/source-analysis.mjs` | TypeScript AST and balanced-token C/C++ analysis shared by the ledger generator and regression tests. |
+| `coverage-ledger.test.mjs` | Isolated mutation tests prove missing routes, registrations, cases, exports, CI lanes, and stale reports fail; run `pnpm test:coverage-ledger`. |
 | `generate-naif-generic-kernel-inventory.mjs` | Crawls the NAIF generic-kernel listing and adds curated descriptions to write `apps/docs/guide/kernel-inventory.md`. |
 | `generate-naif-kernel-id-type.mjs` | Reads `naif-generic-kernel-leaf-paths.json` and writes the generated `NaifKernelId` union in `packages/tspice/src/kernels/naifKernelId.ts`. |
 | `naif-generic-kernel-leaf-paths.json` | Curated input list for the generated kernel ID type. |

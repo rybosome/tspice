@@ -35,16 +35,20 @@
     "docs:api": "node scripts/docs-api.mjs",
     "docs:build": "pnpm docs:api && pnpm --filter @rybosome/docs build",
     "lint:jsdoc": "node scripts/lint-jsdoc.mjs",
-    "lint:jsdoc:fix": "node scripts/lint-jsdoc.mjs --fix"
+    "lint:jsdoc:fix": "node scripts/lint-jsdoc.mjs --fix",
+    "generate:coverage-ledger": "node scripts/generate-coverage-ledger.mjs",
+    "check:coverage-ledger": "node scripts/generate-coverage-ledger.mjs --check",
+    "test:coverage-ledger": "node --test scripts/coverage-ledger.test.mjs"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
-    "turbo": "^2.5.5",
-    "eslint": "^9.39.1",
-    "eslint-plugin-jsdoc": "^62.5.4",
-    "typescript": "^5.9.3",
     "@eslint/js": "^9.39.1",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-jsdoc": "^62.5.4",
+    "turbo": "^2.5.5",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.24.1",
-    "eslint-config-prettier": "^10.1.1"
+    "yaml": "^2.8.2"
   }
 }

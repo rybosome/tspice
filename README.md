@@ -144,6 +144,7 @@ main().catch(console.error);
 CSPICE exposes 652 public routines; 162 are currently implemented in `tspice`.
 
 - **Detailed function inventory:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
+- **Backend and scenario evidence:** [generated coverage ledger](docs/coverage-ledger.md), with [machine-readable routine records](data/coverage-ledger.json). This distinguishes contract presence, backend routes, registered scenarios, and known fallbacks; semantic coverage remains unaudited.
 
 ## API Stability
 
