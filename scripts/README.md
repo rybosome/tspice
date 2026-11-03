@@ -9,6 +9,7 @@ This directory contains repository tools used by workspace commands and GitHub A
 | `check-compliance-files.mjs` | Checks required compliance and disclosure files and links. Run with `pnpm run check:compliance`. |
 | `verify-native-package-versions.mjs` | Checks that the public facade and platform-native package versions agree. Run with `pnpm run check:versions`. |
 | `doctor.mjs` | Read-only prerequisite check for the JS/parity, native, or WASM regeneration profile. Run with `pnpm doctor`, `pnpm doctor:native`, or `pnpm doctor:wasm`. |
+| `native-ci-guard.test.mjs` | Exercises the real native-presence sanity assertion through strict Turbo environment filtering and caching; run with `pnpm run test:native-ci-guard`. Both JS check entrypoints include it. |
 | `doctor.test.mjs` | Exercises preflight success and failure behavior using isolated fake tools; run with `pnpm run test:doctor`. Both JS check entrypoints include it. |
 | `lint-jsdoc.mjs` | Checks or fixes public API JSDoc (`pnpm run lint:jsdoc` / `pnpm run lint:jsdoc:fix`). |
 | `smoke-tspice-native.mjs` | Verifies a packed `@rybosome/tspice` install can resolve and load its optional native addon; CI runs it in a temporary consumer project. |
