@@ -95,13 +95,11 @@ function rewriteSpecifiersInFile(destPath) {
     // Replace only in string literal import specifiers.
     // This intentionally avoids trying to parse JS/TS.
     next = next
-      // Double-quoted literals: normal + escaped (e.g. in generated strings).
-      .replaceAll(`"${from}"`, `"${to}"`)
+      // Normal double-quoted literals; escaped source blobs are handled below.
       .replaceAll(`"${from}"`, `"${to}"`)
       // Single-quoted literals.
       .replaceAll(`'${from}'`, `'${to}'`)
       // Subpath imports.
-      .replaceAll(`"${from}/`, `"${to}/`)
       .replaceAll(`"${from}/`, `"${to}/`)
       .replaceAll(`'${from}/`, `'${to}/`);
   }
