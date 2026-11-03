@@ -12,7 +12,9 @@
   {
     "caseId": "kernels-furnsh-missing-file-error",
     "description": "Representative furnsh missing-file error path",
-    "workflow": [{ "op": "kernels.furnsh", "file": "kernels/does-not-exist.tls" }],
+    "workflow": [
+      { "op": "kernels.furnsh", "file": "kernels/does-not-exist.tls" }
+    ],
     "expectation": { "kind": "error" }
   }
 ]

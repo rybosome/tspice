@@ -30,7 +30,10 @@
       { "op": "ek.ekffld", "segmentId": "SEG_ACLD" },
       { "op": "ek.ekcls", "handleId": "H_ACLD" },
       { "op": "kernels.furnsh", "file": ".py-parity-ek-ekacld-happy.ek" },
-      { "op": "ek.ekfind", "query": "SELECT COST FROM DOUBLE_TABLE ORDER BY COST" },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT COST FROM DOUBLE_TABLE ORDER BY COST"
+      },
       { "op": "ek.ekgd", "selidx": 0, "row": 0, "elment": 0 },
       { "op": "ek.ekgd", "selidx": 0, "row": 1, "elment": 0 }
     ],

@@ -2,10 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 
-import type { EkFindResult, EkGetResult } from "@rybosome/tspice-backend-contract";
 import { fileURLToPath } from "node:url";
 
-import type { SpiceIntCell, SpiceWindow } from "@rybosome/tspice-backend-contract";
+import type {
+  SpiceIntCell,
+  SpiceWindow,
+} from "@rybosome/tspice-backend-contract";
 
 export type NativeAddon = {
   spiceVersion(): string;
@@ -26,11 +28,21 @@ export type NativeAddon = {
   kdata(
     which: number,
     kind?: string,
-  ): { found: boolean; file?: string; filtyp?: string; source?: string; handle?: number };
-
+  ): {
+    found: boolean;
+    file?: string;
+    filtyp?: string;
+    source?: string;
+    handle?: number;
+  };
 
   // --- kernel management ---
-  kinfo(path: string): { found: boolean; filtyp?: string; source?: string; handle?: number };
+  kinfo(path: string): {
+    found: boolean;
+    filtyp?: string;
+    source?: string;
+    handle?: number;
+  };
   kxtrct(
     keywd: string,
     terms: readonly string[],
@@ -39,10 +51,26 @@ export type NativeAddon = {
   kplfrm(frmcls: number, idset: number): void;
 
   // --- kernel pool ---
-  gdpool(name: string, start: number, room: number): { found: boolean; values?: number[] };
-  gipool(name: string, start: number, room: number): { found: boolean; values?: number[] };
-  gcpool(name: string, start: number, room: number): { found: boolean; values?: string[] };
-  gnpool(template: string, start: number, room: number): { found: boolean; values?: string[] };
+  gdpool(
+    name: string,
+    start: number,
+    room: number,
+  ): { found: boolean; values?: number[] };
+  gipool(
+    name: string,
+    start: number,
+    room: number,
+  ): { found: boolean; values?: number[] };
+  gcpool(
+    name: string,
+    start: number,
+    room: number,
+  ): { found: boolean; values?: string[] };
+  gnpool(
+    template: string,
+    start: number,
+    room: number,
+  ): { found: boolean; values?: string[] };
   dtpool(name: string): { found: boolean; n?: number; type?: string };
 
   pdpool(name: string, values: readonly number[]): void;
@@ -63,7 +91,6 @@ export type NativeAddon = {
   timdefGet(item: string): string;
   timdefSet(item: string, value: string): void;
 
-
   // --- file i/o primitives ---
 
   exists(path: string): boolean;
@@ -79,7 +106,10 @@ export type NativeAddon = {
 
   dlaopn(path: string, ftype: string, ifname: string, ncomch: number): number;
   dlabfs(handle: number): { found: boolean; descr?: Record<string, unknown> };
-  dlafns(handle: number, descr: Record<string, unknown>): { found: boolean; descr?: Record<string, unknown> };
+  dlafns(
+    handle: number,
+    descr: Record<string, unknown>,
+  ): { found: boolean; descr?: Record<string, unknown> };
   dlacls(handle: number): void;
 
   // --- EK ---
@@ -93,22 +123,33 @@ export type NativeAddon = {
   eknseg(handle: number): number;
 
   // --- EK query + fast write ---
-  ekfind(query: string): { ok: true; nmrows: number } | { ok: false; errmsg: string };
+  ekfind(
+    query: string,
+  ): { ok: true; nmrows: number } | { ok: false; errmsg: string };
   ekgc(
     selidx: number,
     row: number,
     elment: number,
-  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: string };
+  ):
+    | { found: false }
+    | { found: true; isNull: true }
+    | { found: true; isNull: false; value: string };
   ekgd(
     selidx: number,
     row: number,
     elment: number,
-  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: number };
+  ):
+    | { found: false }
+    | { found: true; isNull: true }
+    | { found: true; isNull: false; value: number };
   ekgi(
     selidx: number,
     row: number,
     elment: number,
-  ): { found: false } | { found: true; isNull: true } | { found: true; isNull: false; value: number };
+  ):
+    | { found: false }
+    | { found: true; isNull: true }
+    | { found: true; isNull: false; value: number };
   ekifld(
     handle: number,
     tabnam: string,
@@ -188,9 +229,14 @@ export type NativeAddon = {
 
   dskobj(dsk: string, bodidsCellHandle: number): void;
   dsksrf(dsk: string, bodyid: number, srfidsCellHandle: number): void;
-  dskgd(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
-  dskb02(handle: number, dladsc: Record<string, unknown>): Record<string, unknown>;
-
+  dskgd(
+    handle: number,
+    dladsc: Record<string, unknown>,
+  ): Record<string, unknown>;
+  dskb02(
+    handle: number,
+    dladsc: Record<string, unknown>,
+  ): Record<string, unknown>;
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
@@ -202,9 +248,21 @@ export type NativeAddon = {
   namfrm(name: string): { found: boolean; code?: number };
   frmnam(code: number): { found: boolean; name?: string };
   cidfrm(center: number): { found: boolean; frcode?: number; frname?: string };
-  cnmfrm(centerName: string): { found: boolean; frcode?: number; frname?: string };
-  frinfo(frameId: number): { found: boolean; center?: number; frameClass?: number; classId?: number };
-  ccifrm(frameClass: number, classId: number): { found: boolean; frcode?: number; frname?: string; center?: number };
+  cnmfrm(centerName: string): {
+    found: boolean;
+    frcode?: number;
+    frname?: string;
+  };
+  frinfo(frameId: number): {
+    found: boolean;
+    center?: number;
+    frameClass?: number;
+    classId?: number;
+  };
+  ccifrm(
+    frameClass: number,
+    classId: number,
+  ): { found: boolean; frcode?: number; frname?: string; center?: number };
 
   scs2e(sc: number, sclkch: string): number;
   sce2s(sc: number, et: number): string;
@@ -243,7 +301,7 @@ export type NativeAddon = {
     et: number,
     ref: string,
     abcorr: string,
-    obs: string
+    obs: string,
   ): { state: number[]; lt: number };
 
   spkpos(
@@ -251,7 +309,7 @@ export type NativeAddon = {
     et: number,
     ref: string,
     abcorr: string,
-    obs: string
+    obs: string,
   ): { pos: number[]; lt: number };
 
   spkez(
@@ -259,7 +317,7 @@ export type NativeAddon = {
     et: number,
     ref: string,
     abcorr: string,
-    obs: number
+    obs: number,
   ): { state: number[]; lt: number };
 
   spkezp(
@@ -267,21 +325,21 @@ export type NativeAddon = {
     et: number,
     ref: string,
     abcorr: string,
-    obs: number
+    obs: number,
   ): { pos: number[]; lt: number };
 
   spkgeo(
     target: number,
     et: number,
     ref: string,
-    obs: number
+    obs: number,
   ): { state: number[]; lt: number };
 
   spkgps(
     target: number,
     et: number,
     ref: string,
-    obs: number
+    obs: number,
   ): { pos: number[]; lt: number };
 
   // Geometry classic
@@ -294,7 +352,13 @@ export type NativeAddon = {
     abcorr: string,
     observer: string,
     spoint: number[],
-  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
+  ): {
+    trgepc: number;
+    srfvec: number[];
+    phase: number;
+    incdnc: number;
+    emissn: number;
+  };
 
   illumf(
     method: string,
@@ -315,11 +379,7 @@ export type NativeAddon = {
     lit: boolean;
   };
 
-  spkssb(
-    target: number,
-    et: number,
-    ref: string,
-  ): number[];
+  spkssb(target: number, et: number, ref: string): number[];
 
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
 
@@ -327,12 +387,31 @@ export type NativeAddon = {
   pl2nvc(plane: number[]): { normal: number[]; konst: number };
   spkobj(spk: string, ids: SpiceIntCell): void;
 
-  spksfs(body: number, et: number): { found: boolean; handle?: number; descr?: number[]; ident?: string };
+  spksfs(
+    body: number,
+    et: number,
+  ): { found: boolean; handle?: number; descr?: number[]; ident?: string };
 
-  spkpds(body: number, center: number, frame: string, type: number, first: number, last: number): number[];
-  spkuds(descr: ReadonlyArray<number>): { body: number; center: number; frame: number; type: number; first: number; last: number; baddr: number; eaddr: number };
+  spkpds(
+    body: number,
+    center: number,
+    frame: string,
+    type: number,
+    first: number,
+    last: number,
+  ): number[];
+  spkuds(descr: ReadonlyArray<number>): {
+    body: number;
+    center: number;
+    frame: number;
+    type: number;
+    first: number;
+    last: number;
+    baddr: number;
+    eaddr: number;
+  };
 
-// --- SPK writers ---
+  // --- SPK writers ---
 
   spkopn(path: string, ifname: string, ncomch: number): number;
   spkopa(path: string): number;
@@ -388,7 +467,13 @@ export type NativeAddon = {
     abcorr: string,
     observer: string,
     spoint: number[],
-  ): { trgepc: number; srfvec: number[]; phase: number; incdnc: number; emissn: number };
+  ): {
+    trgepc: number;
+    srfvec: number[];
+    phase: number;
+    incdnc: number;
+    emissn: number;
+  };
 
   occult(
     targ1: string,
@@ -466,8 +551,18 @@ export type NativeAddon = {
   rotmat(m: readonly number[], angle: number, axis: number): number[];
   axisar(axis: readonly number[], angle: number): number[];
 
-  georec(lon: number, lat: number, alt: number, re: number, f: number): number[];
-  recgeo(rect: readonly number[], re: number, f: number): { lon: number; lat: number; alt: number };
+  georec(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  recgeo(
+    rect: readonly number[],
+    re: number,
+    f: number,
+  ): { lon: number; lat: number; alt: number };
 
   // Cells + windows
   newIntCell(size: number): number;
@@ -539,7 +634,7 @@ function loadAddon(require: NodeRequire, bindingPath: string): NativeAddon {
       `Failed to load tspice native backend at "${resolved}" for ${platform}-${arch}. ` +
         `${BUILD_HINT} ` +
         `Original error: ${errorMessage}`,
-      { cause: error }
+      { cause: error },
     );
   }
 }
@@ -573,7 +668,9 @@ function tryGetPlatformBindingPath(require: NodeRequire): string | undefined {
     return undefined;
   } catch (error) {
     // If the platform package isn't installed, that's expected.
-    if ((error as NodeJS.ErrnoException | undefined)?.code === "MODULE_NOT_FOUND") {
+    if (
+      (error as NodeJS.ErrnoException | undefined)?.code === "MODULE_NOT_FOUND"
+    ) {
       return undefined;
     }
     throw error;
@@ -596,7 +693,7 @@ export function getNativeAddon(): NativeAddon {
     if (!fs.existsSync(resolvedOverride)) {
       const { arch, platform } = process;
       throw new Error(
-        `TSPICE_BACKEND_NODE_BINDING_PATH points to a non-existent file: ${resolvedOverride} (platform=${platform}, arch=${arch}). Ensure it points to a built ${ADDON_FILE}.`
+        `TSPICE_BACKEND_NODE_BINDING_PATH points to a non-existent file: ${resolvedOverride} (platform=${platform}, arch=${arch}). Ensure it points to a built ${ADDON_FILE}.`,
       );
     }
 
@@ -621,7 +718,7 @@ export function getNativeAddon(): NativeAddon {
       `Native addon ${ADDON_FILE} not found for ${platform}-${arch}. Looked for:\n` +
         candidates.map((p) => `- ${p}`).join("\n") +
         `\n\nIf you built a Debug addon locally, set TSPICE_BACKEND_NODE_BINDING_PATH to its path.` +
-        `\n\n${BUILD_HINT}`
+        `\n\n${BUILD_HINT}`,
     );
   }
 

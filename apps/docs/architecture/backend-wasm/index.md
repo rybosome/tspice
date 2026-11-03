@@ -5,7 +5,7 @@ The WASM backend is the portable implementation of the `SpiceBackend` contract.
 - Package: `packages/backend-wasm/` (`@rybosome/tspice-backend-wasm`)
 - Runtime: an Emscripten-compiled CSPICE-derived `.wasm` + glue JS
 
-This page focuses on what’s *specific* to the WASM backend.
+This page focuses on what’s _specific_ to the WASM backend.
 
 ## Where the artifacts live
 

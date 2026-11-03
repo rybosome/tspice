@@ -32,6 +32,9 @@ export function defaultKernelPathFromUrl(url: string): string {
   // Fall back to a stable sentinel instead of generating `/kernels/<hash>-`.
   const safeBase = (base || "kernel").replace(/[\\/]/g, "_");
 
-  const hash = fnv1a64Hex(withoutFragment).slice(0, DEFAULT_URL_HASH_HEX_PREFIX_LEN);
+  const hash = fnv1a64Hex(withoutFragment).slice(
+    0,
+    DEFAULT_URL_HASH_HEX_PREFIX_LEN,
+  );
   return `/kernels/${hash}-${safeBase}`;
 }

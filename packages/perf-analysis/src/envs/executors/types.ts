@@ -16,5 +16,9 @@ export interface ExecResult {
  */
 export interface Executor {
   /** Execute a command and capture stdout/stderr + exit code. */
-  exec(command: string, args: readonly string[], options?: ExecOptions): Promise<ExecResult>;
+  exec(
+    command: string,
+    args: readonly string[],
+    options?: ExecOptions,
+  ): Promise<ExecResult>;
 }

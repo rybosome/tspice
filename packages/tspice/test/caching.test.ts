@@ -71,9 +71,16 @@ describe("withCaching()", () => {
         },
       };
 
-      const transport = withCaching(base, { maxEntries: Infinity, now: () => 0 });
-      await expect(transport.request("kit.loadKernel", ["/a.tls"])).resolves.toBe(1);
-      await expect(transport.request("kit.loadKernel", ["/a.tls"])).resolves.toBe(2);
+      const transport = withCaching(base, {
+        maxEntries: Infinity,
+        now: () => 0,
+      });
+      await expect(
+        transport.request("kit.loadKernel", ["/a.tls"]),
+      ).resolves.toBe(1);
+      await expect(
+        transport.request("kit.loadKernel", ["/a.tls"]),
+      ).resolves.toBe(2);
       expect(calls).toBe(2);
     }
 
@@ -92,8 +99,12 @@ describe("withCaching()", () => {
         policy: { "kit.loadKernel": "cache" },
         allowUnsafePolicyOverrides: true,
       });
-      await expect(transport.request("kit.loadKernel", ["/a.tls"])).resolves.toBe(1);
-      await expect(transport.request("kit.loadKernel", ["/a.tls"])).resolves.toBe(1);
+      await expect(
+        transport.request("kit.loadKernel", ["/a.tls"]),
+      ).resolves.toBe(1);
+      await expect(
+        transport.request("kit.loadKernel", ["/a.tls"]),
+      ).resolves.toBe(1);
       expect(calls).toBe(1);
     }
   });
@@ -119,6 +130,8 @@ describe("withCaching()", () => {
   });
 
   it("disables caching when args contain binary-like data", () => {
-    expect(defaultSpiceCacheKey("raw.foo", [new Uint8Array([1, 2, 3])])).toBe(null);
+    expect(defaultSpiceCacheKey("raw.foo", [new Uint8Array([1, 2, 3])])).toBe(
+      null,
+    );
   });
 });

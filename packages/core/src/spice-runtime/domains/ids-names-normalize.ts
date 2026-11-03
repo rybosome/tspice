@@ -69,7 +69,7 @@ function toAsciiUppercase(s: string): string {
 
   for (let i = 0; i < s.length; i++) {
     const code = s.charCodeAt(i);
-    const isAsciiLower = code >= 97 /* 'a' */ && code <= 122 /* 'z' */;
+    const isAsciiLower = code >= 97 /* 'a' */ && code <= 122; /* 'z' */
 
     if (out === undefined) {
       if (!isAsciiLower) continue;
@@ -87,4 +87,3 @@ function toAsciiUppercase(s: string): string {
 
   return out ?? s;
 }
-

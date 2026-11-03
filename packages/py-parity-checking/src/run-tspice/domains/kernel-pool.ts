@@ -29,7 +29,9 @@ type KernelPoolStep =
   | StepKernelPoolCvpool
   | StepKernelPoolExpool;
 
-function normalizeFoundNumbers(out: { found: false } | { found: true; values: number[] }): KernelPoolFoundNumbers {
+function normalizeFoundNumbers(
+  out: { found: false } | { found: true; values: number[] },
+): KernelPoolFoundNumbers {
   if (!out.found) {
     return { found: false };
   }
@@ -37,7 +39,9 @@ function normalizeFoundNumbers(out: { found: false } | { found: true; values: nu
   return { found: true, values: out.values };
 }
 
-function normalizeFoundStrings(out: { found: false } | { found: true; values: string[] }): KernelPoolFoundStrings {
+function normalizeFoundStrings(
+  out: { found: false } | { found: true; values: string[] },
+): KernelPoolFoundStrings {
   if (!out.found) {
     return { found: false };
   }
@@ -54,25 +58,33 @@ export function runKernelPoolStep(
     case "kernel-pool.gdpool":
       return {
         op: step.op,
-        value: normalizeFoundNumbers(context.spice.raw.gdpool(step.name, step.start, step.room)),
+        value: normalizeFoundNumbers(
+          context.spice.raw.gdpool(step.name, step.start, step.room),
+        ),
       };
 
     case "kernel-pool.gipool":
       return {
         op: step.op,
-        value: normalizeFoundNumbers(context.spice.raw.gipool(step.name, step.start, step.room)),
+        value: normalizeFoundNumbers(
+          context.spice.raw.gipool(step.name, step.start, step.room),
+        ),
       };
 
     case "kernel-pool.gcpool":
       return {
         op: step.op,
-        value: normalizeFoundStrings(context.spice.raw.gcpool(step.name, step.start, step.room)),
+        value: normalizeFoundStrings(
+          context.spice.raw.gcpool(step.name, step.start, step.room),
+        ),
       };
 
     case "kernel-pool.gnpool":
       return {
         op: step.op,
-        value: normalizeFoundStrings(context.spice.raw.gnpool(step.template, step.start, step.room)),
+        value: normalizeFoundStrings(
+          context.spice.raw.gnpool(step.template, step.start, step.room),
+        ),
       };
 
     case "kernel-pool.dtpool": {
@@ -115,7 +127,9 @@ export function runKernelPoolStep(
 
     default: {
       const exhaustive: never = step;
-      throw new Error(`Unhandled kernel-pool step: ${JSON.stringify(exhaustive)}`);
+      throw new Error(
+        `Unhandled kernel-pool step: ${JSON.stringify(exhaustive)}`,
+      );
     }
   }
 }

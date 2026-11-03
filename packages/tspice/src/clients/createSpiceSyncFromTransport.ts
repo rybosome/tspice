@@ -2,9 +2,12 @@ import type { Spice } from "../kit/types/spice-types.js";
 
 import type { SpiceTransportSync } from "../transport/types.js";
 
-type MethodKeys<T extends object> = Extract<{
-  [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
-}[keyof T], string>;
+type MethodKeys<T extends object> = Extract<
+  {
+    [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
+  }[keyof T],
+  string
+>;
 
 type SurfaceMethodKeySnapshot = {
   /** Surface snapshot to avoid exposing phantom RPC methods via property access. */
@@ -67,7 +70,8 @@ function createNamespacedProxy(
       return cached;
     }
 
-    const fn: RpcFn = (...args: unknown[]) => t.request(`${namespace}.${prop}`, args);
+    const fn: RpcFn = (...args: unknown[]) =>
+      t.request(`${namespace}.${prop}`, args);
 
     if (fnCache.size >= MAX_FN_CACHE_ENTRIES) {
       const oldest = fnCache.keys().next().value as string | undefined;
@@ -189,7 +193,15 @@ export function createSpiceSyncFromTransport(
   const kitMethodKeys = surfaceMethodKeys?.kit;
 
   return {
-    raw: createNamespacedProxy(t, "raw", rawMethodKeys) as unknown as Spice["raw"],
-    kit: createNamespacedProxy(t, "kit", kitMethodKeys) as unknown as Spice["kit"],
+    raw: createNamespacedProxy(
+      t,
+      "raw",
+      rawMethodKeys,
+    ) as unknown as Spice["raw"],
+    kit: createNamespacedProxy(
+      t,
+      "kit",
+      kitMethodKeys,
+    ) as unknown as Spice["kit"],
   };
 }

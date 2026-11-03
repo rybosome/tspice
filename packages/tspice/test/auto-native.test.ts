@@ -36,7 +36,9 @@ const nativeAvailable = (() => {
     mod = require(pkgName) as unknown;
   } catch (err) {
     // Skip only when the platform package is genuinely missing.
-    if ((err as NodeJS.ErrnoException | undefined)?.code === "MODULE_NOT_FOUND") {
+    if (
+      (err as NodeJS.ErrnoException | undefined)?.code === "MODULE_NOT_FOUND"
+    ) {
       return false;
     }
     throw err;
@@ -58,15 +60,18 @@ const nativeAvailable = (() => {
   return true;
 })();
 
-describe("spiceClients.toSync({ backend: \"node\" })", () => {
+describe('spiceClients.toSync({ backend: "node" })', () => {
   const itNative = it.runIf(nativeAvailable);
 
-  itNative("prefers native backend when the platform package is present", async () => {
-    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
-    try {
-      expect(spice.raw.tkvrsn("TOOLKIT")).not.toBe("");
-    } finally {
-      await dispose();
-    }
-  });
+  itNative(
+    "prefers native backend when the platform package is present",
+    async () => {
+      const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+      try {
+        expect(spice.raw.tkvrsn("TOOLKIT")).not.toBe("");
+      } finally {
+        await dispose();
+      }
+    },
+  );
 });

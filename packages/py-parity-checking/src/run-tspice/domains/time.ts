@@ -38,7 +38,10 @@ type TimeStep =
   | StepTimeSce2c;
 
 /** Execute one `time.*` workflow step in tspice. */
-export function runTimeStep(context: RunTspiceContext, step: TimeStep): StepOutput {
+export function runTimeStep(
+  context: RunTspiceContext,
+  step: TimeStep,
+): StepOutput {
   switch (step.op) {
     case "time.str2et":
       return { op: step.op, value: context.spice.raw.str2et(step.time) };
@@ -87,7 +90,10 @@ export function runTimeStep(context: RunTspiceContext, step: TimeStep): StepOutp
 
     case "time.timdef":
       if (step.action === "GET") {
-        return { op: step.op, value: context.spice.raw.timdef("GET", step.item) };
+        return {
+          op: step.op,
+          value: context.spice.raw.timdef("GET", step.item),
+        };
       }
 
       context.spice.raw.timdef("SET", step.item, step.value);

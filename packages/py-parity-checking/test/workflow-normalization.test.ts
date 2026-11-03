@@ -33,7 +33,9 @@ describe("workflow normalization", () => {
   });
 
   it("returns deterministic empty metadata lanes when no domain emits metadata", () => {
-    const workflow: WorkflowStep[] = [{ op: "kernels.furnsh", file: "kernels/naif0012.tls" }];
+    const workflow: WorkflowStep[] = [
+      { op: "kernels.furnsh", file: "kernels/naif0012.tls" },
+    ];
 
     const firstPass = normalizeWorkflowDetailed(workflow, "sidecar");
     const secondPass = normalizeWorkflowDetailed(workflow, "sidecar");
@@ -464,7 +466,9 @@ describe("workflow normalization", () => {
   });
 
   it("keeps non-generated kernels.furnsh strings fixture-relative by default", () => {
-    const workflow: WorkflowStep[] = [{ op: "kernels.furnsh", file: "kernels/naif0012.tls" }];
+    const workflow: WorkflowStep[] = [
+      { op: "kernels.furnsh", file: "kernels/naif0012.tls" },
+    ];
 
     const normalized = normalizeWorkflow(workflow, "sidecar");
 

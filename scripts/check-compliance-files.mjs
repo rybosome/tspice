@@ -48,7 +48,9 @@ function isOutsideRoot(root, target) {
   if (rel === "" || rel === ".") {
     return false;
   }
-  return rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel);
+  return (
+    rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel)
+  );
 }
 
 const scriptsDir = path.dirname(fileURLToPath(import.meta.url));
@@ -104,12 +106,16 @@ for (const docRel of complianceDocs) {
 
       // Only enforce links that point at repo files.
       if (target.startsWith("/")) {
-        linkedFromDocs.add(path.relative(repoRoot, path.resolve(repoRoot, target.slice(1))));
+        linkedFromDocs.add(
+          path.relative(repoRoot, path.resolve(repoRoot, target.slice(1))),
+        );
         continue;
       }
 
       if (target.startsWith("./") || target.startsWith("../")) {
-        linkedFromDocs.add(path.relative(repoRoot, path.resolve(docDir, target)));
+        linkedFromDocs.add(
+          path.relative(repoRoot, path.resolve(docDir, target)),
+        );
         continue;
       }
     }
@@ -136,7 +142,8 @@ for (const relativePath of requiredPaths) {
       path: relativePath,
       error: {
         code: "EABSOLUTE",
-        message: "Path in requiredPaths must be repo-relative (configuration error)",
+        message:
+          "Path in requiredPaths must be repo-relative (configuration error)",
       },
     });
     continue;
@@ -184,7 +191,10 @@ for (const relativePath of requiredPaths) {
 
     fs.accessSync(realAbsolutePath, fs.constants.R_OK);
   } catch (error) {
-    missingOrUnreadable.push({ path: relativePath, error: describeError(error) });
+    missingOrUnreadable.push({
+      path: relativePath,
+      error: describeError(error),
+    });
   }
 }
 

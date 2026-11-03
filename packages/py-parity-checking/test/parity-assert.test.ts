@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import type { CaseExecutionResult, ParityCase, StepOutput } from "../src/case-types.js";
+import type {
+  CaseExecutionResult,
+  ParityCase,
+  StepOutput,
+} from "../src/case-types.js";
 import { assertCaseParity } from "../src/parity-assert.js";
 
 const parityCase: ParityCase = {
@@ -45,7 +49,9 @@ describe("assertCaseParity", () => {
       },
     ]);
 
-    expect(() => assertCaseParity(parityCase, sidecarResult, tspiceResult)).not.toThrow();
+    expect(() =>
+      assertCaseParity(parityCase, sidecarResult, tspiceResult),
+    ).not.toThrow();
   });
 
   it("rejects meaningful numeric drift", () => {
@@ -73,8 +79,8 @@ describe("assertCaseParity", () => {
       },
     ]);
 
-    expect(() => assertCaseParity(parityCase, sidecarResult, tspiceResult)).toThrow(
-      /Output mismatch for success case geometry\.sincpt\.tolerance\./,
-    );
+    expect(() =>
+      assertCaseParity(parityCase, sidecarResult, tspiceResult),
+    ).toThrow(/Output mismatch for success case geometry\.sincpt\.tolerance\./);
   });
 });

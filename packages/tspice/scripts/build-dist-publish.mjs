@@ -95,14 +95,12 @@ function rewriteSpecifiersInFile(destPath) {
     // Replace only in string literal import specifiers.
     // This intentionally avoids trying to parse JS/TS.
     next = next
-      // Double-quoted literals: normal + escaped (e.g. in generated strings).
+      // Normal double-quoted literals; escaped source blobs are handled below.
       .replaceAll(`"${from}"`, `"${to}"`)
-      .replaceAll(`\"${from}\"`, `\"${to}\"`)
       // Single-quoted literals.
       .replaceAll(`'${from}'`, `'${to}'`)
       // Subpath imports.
       .replaceAll(`"${from}/`, `"${to}/`)
-      .replaceAll(`\"${from}/`, `\"${to}/`)
       .replaceAll(`'${from}/`, `'${to}/`);
   }
 
@@ -114,10 +112,10 @@ function rewriteSpecifiersInFile(destPath) {
   // also includes a raw fallback to ensure the published tarball doesn't
   // mention workspace-only package specifiers.
   for (const [from, to] of SPECIFIER_REWRITES.entries()) {
-    const escapedDqFrom = "\\\"" + from + "\\\"";
-    const escapedDqTo = "\\\"" + to + "\\\"";
-    const escapedDqSubFrom = "\\\"" + from + "/";
-    const escapedDqSubTo = "\\\"" + to + "/";
+    const escapedDqFrom = '\\"' + from + '\\"';
+    const escapedDqTo = '\\"' + to + '\\"';
+    const escapedDqSubFrom = '\\"' + from + "/";
+    const escapedDqSubTo = '\\"' + to + "/";
 
     next = next
       .replaceAll(escapedDqFrom, escapedDqTo)
@@ -193,7 +191,10 @@ function main() {
       }
     }
 
-    copyDir(path.join(pkgRoot, "dist"), path.join(distPublishRoot, p.dest, "dist"));
+    copyDir(
+      path.join(pkgRoot, "dist"),
+      path.join(distPublishRoot, p.dest, "dist"),
+    );
   }
 
   // Top-level docs/compliance.
@@ -218,7 +219,10 @@ function main() {
     }
   }
   if (notices.length) {
-    fs.writeFileSync(path.join(distPublishRoot, "NOTICE"), notices.join("\n\n") + "\n");
+    fs.writeFileSync(
+      path.join(distPublishRoot, "NOTICE"),
+      notices.join("\n\n") + "\n",
+    );
   }
 
   const version = tspicePkg.version;

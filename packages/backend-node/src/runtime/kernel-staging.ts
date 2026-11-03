@@ -65,7 +65,9 @@ export function createKernelStager(): KernelStager {
   }
 
   function isPyParityCanonicalPath(canonical: string): boolean {
-    return canonical.startsWith(`${VIRTUAL_KERNEL_ROOT}${PY_PARITY_VIRTUAL_ROOT}`);
+    return canonical.startsWith(
+      `${VIRTUAL_KERNEL_ROOT}${PY_PARITY_VIRTUAL_ROOT}`,
+    );
   }
 
   function tryCanonicalVirtualKernelPath(input: string): string | undefined {
@@ -109,7 +111,9 @@ export function createKernelStager(): KernelStager {
     if (tempKernelRootDir) {
       return tempKernelRootDir;
     }
-    tempKernelRootDir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-kernels-"));
+    tempKernelRootDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), "tspice-kernels-"),
+    );
     return tempKernelRootDir;
   }
 
@@ -199,7 +203,8 @@ export function createKernelStager(): KernelStager {
         loadedVirtualPaths.delete(virtualPath);
       }
 
-      const tempPath = existingTemp ?? createTempPathForVirtualPath(virtualPath);
+      const tempPath =
+        existingTemp ?? createTempPathForVirtualPath(virtualPath);
       fs.writeFileSync(tempPath, kernel.bytes);
 
       try {

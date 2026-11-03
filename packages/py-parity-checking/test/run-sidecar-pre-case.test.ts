@@ -8,7 +8,10 @@ import { runSidecarPreCaseHooks } from "../src/run-sidecar/pre-case.js";
 import { createEmptyWorkflowNormalizationMetadata } from "../src/workflow-normalization/index.js";
 import type { WorkflowNormalizationMetadata } from "../src/workflow-normalization/types.js";
 
-function createRuntimeRoots(seed: string): { fixturesRoot: string; scratchRoot: string } {
+function createRuntimeRoots(seed: string): {
+  fixturesRoot: string;
+  scratchRoot: string;
+} {
   return {
     fixturesRoot: fs.mkdtempSync(path.join(os.tmpdir(), `${seed}-fixtures-`)),
     scratchRoot: fs.mkdtempSync(path.join(os.tmpdir(), `${seed}-scratch-`)),
@@ -20,7 +23,10 @@ describe("runSidecarPreCaseHooks", () => {
     const roots = createRuntimeRoots("pre-case-empty");
     try {
       expect(() =>
-        runSidecarPreCaseHooks(createEmptyWorkflowNormalizationMetadata(), roots),
+        runSidecarPreCaseHooks(
+          createEmptyWorkflowNormalizationMetadata(),
+          roots,
+        ),
       ).not.toThrow();
     } finally {
       fs.rmSync(roots.fixturesRoot, { recursive: true, force: true });
@@ -30,11 +36,23 @@ describe("runSidecarPreCaseHooks", () => {
 
   it("dedupes deletes and ignores out-of-policy cleanup candidates", () => {
     const roots = createRuntimeRoots("pre-case-policy");
-    const allowedFile = path.join(roots.fixturesRoot, "kernels/generated/delete-me.dla");
-    const outsidePrefixFile = path.join(roots.fixturesRoot, "kernels/keep-me.dla");
-    const unsupportedExtensionFile = path.join(roots.fixturesRoot, "kernels/generated/keep-me.txt");
+    const allowedFile = path.join(
+      roots.fixturesRoot,
+      "kernels/generated/delete-me.dla",
+    );
+    const outsidePrefixFile = path.join(
+      roots.fixturesRoot,
+      "kernels/keep-me.dla",
+    );
+    const unsupportedExtensionFile = path.join(
+      roots.fixturesRoot,
+      "kernels/generated/keep-me.txt",
+    );
     const scratchFile = path.join(roots.scratchRoot, "generated/keep-me.bds");
-    const directoryCandidate = path.join(roots.fixturesRoot, "kernels/generated/dir-only.bds");
+    const directoryCandidate = path.join(
+      roots.fixturesRoot,
+      "kernels/generated/dir-only.bds",
+    );
 
     const cleanupMetadata: WorkflowNormalizationMetadata = {
       preCase: {

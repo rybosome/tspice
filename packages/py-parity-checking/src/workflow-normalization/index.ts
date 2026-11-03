@@ -61,6 +61,9 @@ export function normalizeWorkflowDetailed(
 }
 
 /** Normalize a parity workflow via deterministic publish/normalize/analyze processing. */
-export function normalizeWorkflow(workflow: WorkflowStep[], target: NormalizeTarget): WorkflowStep[] {
+export function normalizeWorkflow(
+  workflow: WorkflowStep[],
+  target: NormalizeTarget,
+): WorkflowStep[] {
   return normalizeWorkflowDetailed(workflow, target).workflow;
 }

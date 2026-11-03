@@ -13,7 +13,9 @@ describe("backend-wasm codec alloc helpers", () => {
     const moduleLike = {
       _malloc: () => 0,
     };
-    expect(() => mallocOrThrow(moduleLike as any, 16)).toThrow(/malloc failed/i);
+    expect(() => mallocOrThrow(moduleLike as any, 16)).toThrow(
+      /malloc failed/i,
+    );
   });
 
   it.each([
@@ -60,7 +62,9 @@ describe("backend-wasm codec alloc helpers", () => {
       _free: (ptr: number) => freed.push(ptr),
     };
 
-    expect(() => withAllocs(moduleLike as any, [8, 16], () => undefined)).toThrow(/malloc failed/i);
+    expect(() =>
+      withAllocs(moduleLike as any, [8, 16], () => undefined),
+    ).toThrow(/malloc failed/i);
     expect(freed).toEqual([111]);
   });
 
@@ -76,7 +80,9 @@ describe("backend-wasm codec alloc helpers", () => {
       _free: (ptr: number) => freed.push(ptr),
     };
 
-    expect(() => withAllocs(moduleLike as any, [8, Infinity], () => undefined)).toThrow(/invalid wasm malloc size/i);
+    expect(() =>
+      withAllocs(moduleLike as any, [8, Infinity], () => undefined),
+    ).toThrow(/invalid wasm malloc size/i);
     expect(freed).toEqual([111]);
   });
 
@@ -102,6 +108,8 @@ describe("backend-wasm codec alloc helpers", () => {
     const moduleLike = {
       UTF8ToString: () => "  test error  ",
     };
-    expect(decodeWasmSpiceError(moduleLike as any, 1, 2048, 123)).toBe("test error");
+    expect(decodeWasmSpiceError(moduleLike as any, 1, 2048, 123)).toBe(
+      "test error",
+    );
   });
 });

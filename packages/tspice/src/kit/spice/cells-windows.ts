@@ -1,4 +1,7 @@
-import type { CellsWindowsKitApi, SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type {
+  CellsWindowsKitApi,
+  SpiceBackend,
+} from "@rybosome/tspice-backend-contract";
 
 import { wrapSpiceError } from "../../errors.js";
 

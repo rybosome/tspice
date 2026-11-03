@@ -1178,7 +1178,6 @@ export type StepGeometryPl2nvc = {
   plane: SpicePlane;
 };
 
-
 export type StepDskDskobj = {
   op: "dsk.dskobj";
   path: PathRefLike;
@@ -1436,8 +1435,10 @@ export type WorkflowStep =
 
 export type WorkflowOp = WorkflowStep["op"];
 
-export type KernelPoolFoundNumbers = { found: false } | { found: true; values: number[] };
-export type KernelPoolFoundStrings = { found: false } | { found: true; values: string[] };
+export type KernelPoolFoundNumbers =
+  { found: false } | { found: true; values: number[] };
+export type KernelPoolFoundStrings =
+  { found: false } | { found: true; values: string[] };
 
 export type EkGetStringResult =
   | { found: false }
@@ -1465,16 +1466,31 @@ export type StepOutput =
   | { op: "time.scdecd"; value: string }
   | { op: "time.sct2e"; value: number }
   | { op: "time.sce2c"; value: number }
-  | { op: "ids-names.bodn2c"; value: { found: false } | { found: true; code: number } }
-  | { op: "ids-names.bodc2n"; value: { found: false } | { found: true; name: string } }
+  | {
+      op: "ids-names.bodn2c";
+      value: { found: false } | { found: true; code: number };
+    }
+  | {
+      op: "ids-names.bodc2n";
+      value: { found: false } | { found: true; name: string };
+    }
   | { op: "ids-names.bodc2s"; value: string }
   | { op: "ids-names.boddef"; value: null }
   | { op: "ids-names.bodfnd"; value: boolean }
-  | { op: "ids-names.bods2c"; value: { found: false } | { found: true; code: number } }
+  | {
+      op: "ids-names.bods2c";
+      value: { found: false } | { found: true; code: number };
+    }
   | { op: "ids-names.bodvar"; value: number[] }
-  | { op: "coords-vectors.reclat"; value: { radius: number; lon: number; lat: number } }
+  | {
+      op: "coords-vectors.reclat";
+      value: { radius: number; lon: number; lat: number };
+    }
   | { op: "coords-vectors.latrec"; value: Vector3 }
-  | { op: "coords-vectors.recsph"; value: { radius: number; colat: number; lon: number } }
+  | {
+      op: "coords-vectors.recsph";
+      value: { radius: number; colat: number; lon: number };
+    }
   | { op: "coords-vectors.sphrec"; value: Vector3 }
   | { op: "coords-vectors.vnorm"; value: number }
   | { op: "coords-vectors.vhat"; value: Vector3 }
@@ -1489,7 +1505,10 @@ export type StepOutput =
   | { op: "coords-vectors.rotmat"; value: Matrix3x3 }
   | { op: "coords-vectors.axisar"; value: Matrix3x3 }
   | { op: "coords-vectors.georec"; value: Vector3 }
-  | { op: "coords-vectors.recgeo"; value: { lon: number; lat: number; alt: number } }
+  | {
+      op: "coords-vectors.recgeo";
+      value: { lon: number; lat: number; alt: number };
+    }
   | { op: "coords-vectors.mxv"; value: Vector3 }
   | { op: "coords-vectors.mtxv"; value: Vector3 }
   | { op: "cells-windows.card"; value: number }
@@ -1528,7 +1547,9 @@ export type StepOutput =
   | { op: "kernels.ktotal"; value: number }
   | {
       op: "kernels.kdata";
-      value: { found: false } | { found: true; file: string; filtyp: string; source: string };
+      value:
+        | { found: false }
+        | { found: true; file: string; filtyp: string; source: string };
     }
   | {
       op: "kernels.kxtrct";
@@ -1540,21 +1561,53 @@ export type StepOutput =
       op: "ephemeris.spkcov";
       value: { intervals: [number, number][] };
     }
-  | { op: "ephemeris.spkez"; value: { state: [number, number, number, number, number, number]; lt: number } }
-  | { op: "ephemeris.spkezp"; value: { pos: [number, number, number]; lt: number } }
-  | { op: "ephemeris.spkezr"; value: { state: [number, number, number, number, number, number]; lt: number } }
-  | { op: "ephemeris.spkgeo"; value: { state: [number, number, number, number, number, number]; lt: number } }
-  | { op: "ephemeris.spkgps"; value: { pos: [number, number, number]; lt: number } }
+  | {
+      op: "ephemeris.spkez";
+      value: {
+        state: [number, number, number, number, number, number];
+        lt: number;
+      };
+    }
+  | {
+      op: "ephemeris.spkezp";
+      value: { pos: [number, number, number]; lt: number };
+    }
+  | {
+      op: "ephemeris.spkezr";
+      value: {
+        state: [number, number, number, number, number, number];
+        lt: number;
+      };
+    }
+  | {
+      op: "ephemeris.spkgeo";
+      value: {
+        state: [number, number, number, number, number, number];
+        lt: number;
+      };
+    }
+  | {
+      op: "ephemeris.spkgps";
+      value: { pos: [number, number, number]; lt: number };
+    }
   | { op: "ephemeris.spkobj"; value: { ids: number[] } }
   | { op: "ephemeris.spkopa"; value: { handleId: string } }
   | { op: "ephemeris.spkopn"; value: { handleId: string } }
   | { op: "ephemeris.spkpds"; value: SpkPackedDescriptor }
-  | { op: "ephemeris.spkpos"; value: { pos: [number, number, number]; lt: number } }
+  | {
+      op: "ephemeris.spkpos";
+      value: { pos: [number, number, number]; lt: number };
+    }
   | {
       op: "ephemeris.spksfs";
-      value: { found: false } | { found: true; descr: SpkPackedDescriptor; ident: string };
+      value:
+        | { found: false }
+        | { found: true; descr: SpkPackedDescriptor; ident: string };
     }
-  | { op: "ephemeris.spkssb"; value: [number, number, number, number, number, number] }
+  | {
+      op: "ephemeris.spkssb";
+      value: [number, number, number, number, number, number];
+    }
   | {
       op: "ephemeris.spkuds";
       value: {
@@ -1599,8 +1652,14 @@ export type StepOutput =
   | { op: "error.sigerr"; value: null }
   | { op: "error.chkin"; value: null }
   | { op: "error.chkout"; value: null }
-  | { op: "frames.namfrm"; value: { found: false } | { found: true; code: number } }
-  | { op: "frames.frmnam"; value: { found: false } | { found: true; name: string } }
+  | {
+      op: "frames.namfrm";
+      value: { found: false } | { found: true; code: number };
+    }
+  | {
+      op: "frames.frmnam";
+      value: { found: false } | { found: true; name: string };
+    }
   | {
       op: "frames.cidfrm";
       value: { found: false } | { found: true; frcode: number; frname: string };
@@ -1624,14 +1683,18 @@ export type StepOutput =
   | {
       op: "frames.ckgp";
       value:
-        | { found: false }
-        | { found: true; cmat: Matrix3x3; clkout: number };
+        { found: false } | { found: true; cmat: Matrix3x3; clkout: number };
     }
   | {
       op: "frames.ckgpav";
       value:
         | { found: false }
-        | { found: true; cmat: Matrix3x3; av: [number, number, number]; clkout: number };
+        | {
+            found: true;
+            cmat: Matrix3x3;
+            av: [number, number, number];
+            clkout: number;
+          };
     }
   | { op: "frames.cklpf"; value: { opened: true } }
   | { op: "frames.ckupf"; value: { closed: true } }

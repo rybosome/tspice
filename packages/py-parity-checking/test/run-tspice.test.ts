@@ -9,7 +9,10 @@ import type { SpiceHandle } from "@rybosome/tspice-backend-contract";
 import type { Spice } from "@rybosome/tspice";
 
 import type { ParityCase } from "../src/case-types.js";
-import { cleanupContext, createRunTspiceContext } from "../src/run-tspice/context.js";
+import {
+  cleanupContext,
+  createRunTspiceContext,
+} from "../src/run-tspice/context.js";
 import { runEphemerisStep } from "../src/run-tspice/domains/ephemeris.js";
 import { runTspicePostCaseHooks } from "../src/run-tspice/post-case.js";
 import { runCaseInTspice } from "../src/run-tspice.js";
@@ -48,7 +51,11 @@ function createSpiceMock(): {
 describe("run-tspice post-case hooks", () => {
   it("is a no-op when post-case metadata is empty", () => {
     const { spice, raw } = createSpiceMock();
-    const context = createRunTspiceContext(spice, fixturesRoot, `post-case-empty-${Date.now()}`);
+    const context = createRunTspiceContext(
+      spice,
+      fixturesRoot,
+      `post-case-empty-${Date.now()}`,
+    );
 
     try {
       context.state.fileIo.handles.set("open", {
@@ -57,7 +64,10 @@ describe("run-tspice post-case hooks", () => {
         isOpen: true,
       });
 
-      runTspicePostCaseHooks(context, createEmptyWorkflowNormalizationMetadata());
+      runTspicePostCaseHooks(
+        context,
+        createEmptyWorkflowNormalizationMetadata(),
+      );
 
       expect(raw.dafcls).not.toHaveBeenCalled();
       expect(raw.dascls).not.toHaveBeenCalled();
@@ -69,7 +79,11 @@ describe("run-tspice post-case hooks", () => {
 
   it("closes open handles best-effort via closeWith semantics and clears file-io maps", () => {
     const { spice, raw } = createSpiceMock();
-    const context = createRunTspiceContext(spice, fixturesRoot, `post-case-close-${Date.now()}`);
+    const context = createRunTspiceContext(
+      spice,
+      fixturesRoot,
+      `post-case-close-${Date.now()}`,
+    );
 
     try {
       context.state.fileIo.handles.set("daf-open", {
@@ -97,7 +111,10 @@ describe("run-tspice post-case hooks", () => {
         cbase: 0,
         csize: 0,
       });
-      context.state.fileIo.spatialIndexes.set("index", { spaixd: [1], spaixi: [2] });
+      context.state.fileIo.spatialIndexes.set("index", {
+        spaixd: [1],
+        spaixi: [2],
+      });
 
       const metadata = createEmptyWorkflowNormalizationMetadata();
       metadata.postCase.cleanupScopes.push({
@@ -122,7 +139,11 @@ describe("run-tspice post-case hooks", () => {
 
   it("cleanupContext no longer owns file-io handle cleanup", () => {
     const { spice, raw } = createSpiceMock();
-    const context = createRunTspiceContext(spice, fixturesRoot, `context-cleanup-${Date.now()}`);
+    const context = createRunTspiceContext(
+      spice,
+      fixturesRoot,
+      `context-cleanup-${Date.now()}`,
+    );
 
     try {
       context.state.fileIo.handles.set("open", {
@@ -151,7 +172,9 @@ describe("runCaseInTspice", () => {
 
     const before = fs
       .readdirSync(os.tmpdir(), { withFileTypes: true })
-      .filter((entry) => entry.isDirectory() && entry.name.startsWith(scratchPrefix));
+      .filter(
+        (entry) => entry.isDirectory() && entry.name.startsWith(scratchPrefix),
+      );
     expect(before).toHaveLength(0);
 
     const kclear = vi.fn();
@@ -165,7 +188,8 @@ describe("runCaseInTspice", () => {
 
     const parityCase: ParityCase = {
       caseId,
-      description: "normalization failure should still clean up runtime context",
+      description:
+        "normalization failure should still clean up runtime context",
       expectation: { kind: "error" },
       workflow: [
         {
@@ -192,7 +216,9 @@ describe("runCaseInTspice", () => {
 
     const after = fs
       .readdirSync(os.tmpdir(), { withFileTypes: true })
-      .filter((entry) => entry.isDirectory() && entry.name.startsWith(scratchPrefix));
+      .filter(
+        (entry) => entry.isDirectory() && entry.name.startsWith(scratchPrefix),
+      );
     expect(after).toHaveLength(0);
   });
 });
@@ -207,7 +233,11 @@ describe("runEphemerisStep path resolution", () => {
       },
     } as unknown as Spice;
 
-    const context = createRunTspiceContext(spice, fixturesRoot, `ephemeris-node-writer-${Date.now()}`);
+    const context = createRunTspiceContext(
+      spice,
+      fixturesRoot,
+      `ephemeris-node-writer-${Date.now()}`,
+    );
     const relPath = "nested/output/new-segment.bsp";
 
     try {
@@ -219,7 +249,12 @@ describe("runEphemerisStep path resolution", () => {
         handleId: "writer",
       });
 
-      const expectedPath = path.join(context.paths.scratchRoot, "nested", "output", "new-segment.bsp");
+      const expectedPath = path.join(
+        context.paths.scratchRoot,
+        "nested",
+        "output",
+        "new-segment.bsp",
+      );
       expect(spkopn).toHaveBeenCalledWith(expectedPath, "TEST", 0);
       expect(fs.existsSync(path.dirname(expectedPath))).toBe(true);
       expect(result).toEqual({
@@ -234,7 +269,9 @@ describe("runEphemerisStep path resolution", () => {
   it("uses absolute scratch paths for node ephemeris readers", () => {
     const spkobj = vi.fn();
     const card = vi.fn(() => 0);
-    const newIntCell = vi.fn(() => ({}) as ReturnType<Spice["kit"]["newIntCell"]>);
+    const newIntCell = vi.fn(
+      () => ({}) as ReturnType<Spice["kit"]["newIntCell"]>,
+    );
     const freeCell = vi.fn();
     const cellGeti = vi.fn();
     const spice = {
@@ -250,7 +287,11 @@ describe("runEphemerisStep path resolution", () => {
       },
     } as unknown as Spice;
 
-    const context = createRunTspiceContext(spice, fixturesRoot, `ephemeris-node-reader-${Date.now()}`);
+    const context = createRunTspiceContext(
+      spice,
+      fixturesRoot,
+      `ephemeris-node-reader-${Date.now()}`,
+    );
     const relPath = "generated/from-node.bsp";
 
     try {
@@ -260,7 +301,11 @@ describe("runEphemerisStep path resolution", () => {
         idsCellId: "ids",
       });
 
-      const expectedPath = path.join(context.paths.scratchRoot, "generated", "from-node.bsp");
+      const expectedPath = path.join(
+        context.paths.scratchRoot,
+        "generated",
+        "from-node.bsp",
+      );
       expect(spkobj).toHaveBeenCalledWith(expectedPath, expect.anything());
       expect(result).toEqual({
         op: "ephemeris.spkobj",
@@ -280,7 +325,11 @@ describe("runEphemerisStep path resolution", () => {
       },
     } as unknown as Spice;
 
-    const context = createRunTspiceContext(spice, fixturesRoot, `ephemeris-wasm-writer-${Date.now()}`);
+    const context = createRunTspiceContext(
+      spice,
+      fixturesRoot,
+      `ephemeris-wasm-writer-${Date.now()}`,
+    );
 
     try {
       runEphemerisStep(context, {
@@ -291,7 +340,11 @@ describe("runEphemerisStep path resolution", () => {
         handleId: "writer",
       });
 
-      expect(spkopn).toHaveBeenCalledWith("py-parity/scratch/new-output.bsp", "TEST", 0);
+      expect(spkopn).toHaveBeenCalledWith(
+        "py-parity/scratch/new-output.bsp",
+        "TEST",
+        0,
+      );
     } finally {
       fs.rmSync(context.paths.scratchRoot, { recursive: true, force: true });
     }

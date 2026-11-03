@@ -21,7 +21,11 @@ import type {
   StepDskDskw02,
   StepOutput,
 } from "../../case-types.js";
-import { resolvePathRef, toPathRef, toVirtualKernelPath } from "../../fixtures.js";
+import {
+  resolvePathRef,
+  toPathRef,
+  toVirtualKernelPath,
+} from "../../fixtures.js";
 import { registerFinalizer, type RunTspiceContext } from "../context.js";
 
 type DskStep =
@@ -58,7 +62,10 @@ function ensureDskCleanupFinalizer(context: RunTspiceContext): void {
   context.state.dsk.cleanupRegistered = true;
 }
 
-function resolveDskPathRef(context: RunTspiceContext, pathRefLike: PathRefLike): string {
+function resolveDskPathRef(
+  context: RunTspiceContext,
+  pathRefLike: PathRefLike,
+): string {
   const pathRef = toPathRef(pathRefLike);
   const key = `${pathRef.kind}:${pathRef.rel}`;
   const cached = context.state.dsk.resolvedPathRefs.get(key);
@@ -85,7 +92,9 @@ function resolveDskPathRef(context: RunTspiceContext, pathRefLike: PathRefLike):
   return scratchPath;
 }
 
-function flattenVec3Rows(rows: readonly (readonly [number, number, number])[]): number[] {
+function flattenVec3Rows(
+  rows: readonly (readonly [number, number, number])[],
+): number[] {
   const out: number[] = [];
   for (const row of rows) {
     out.push(row[0], row[1], row[2]);
@@ -93,7 +102,9 @@ function flattenVec3Rows(rows: readonly (readonly [number, number, number])[]): 
   return out;
 }
 
-function flattenIndexTriples(rows: readonly (readonly [number, number, number])[]): number[] {
+function flattenIndexTriples(
+  rows: readonly (readonly [number, number, number])[],
+): number[] {
   const out: number[] = [];
   for (const row of rows) {
     out.push(row[0], row[1], row[2]);
@@ -110,7 +121,11 @@ function readIntCell(context: RunTspiceContext, cell: SpiceIntCell): number[] {
   return out;
 }
 
-function setTrackedHandle(context: RunTspiceContext, handleId: string, handle: SpiceHandle): void {
+function setTrackedHandle(
+  context: RunTspiceContext,
+  handleId: string,
+  handle: SpiceHandle,
+): void {
   context.state.dsk.handles.set(handleId, { handle, isOpen: true });
 }
 
@@ -133,7 +148,10 @@ function requireDlaDescriptor(context: RunTspiceContext, dladscId: string) {
   return dladsc;
 }
 
-function requireSpatialIndex(context: RunTspiceContext, spatialIndexId: string) {
+function requireSpatialIndex(
+  context: RunTspiceContext,
+  spatialIndexId: string,
+) {
   const spatialIndex = context.state.dsk.spatialIndexes.get(spatialIndexId);
   if (spatialIndex == null) {
     throw new Error(`DSK spatial index does not exist: ${spatialIndexId}`);
@@ -210,7 +228,10 @@ function toDskType2BookkeepingPayload(value: {
 }
 
 /** Execute one `dsk.*` workflow step in tspice. */
-export function runDskStep(context: RunTspiceContext, step: DskStep): StepOutput {
+export function runDskStep(
+  context: RunTspiceContext,
+  step: DskStep,
+): StepOutput {
   ensureDskCleanupFinalizer(context);
 
   switch (step.op) {
@@ -227,8 +248,15 @@ export function runDskStep(context: RunTspiceContext, step: DskStep): StepOutput
     case "dsk.dsksrf": {
       const cell = context.spice.kit.newIntCell(10_000);
       try {
-        context.spice.raw.dsksrf(resolveDskPathRef(context, step.path), step.bodyid, cell);
-        return { op: step.op, value: { surfaceIds: readIntCell(context, cell) } };
+        context.spice.raw.dsksrf(
+          resolveDskPathRef(context, step.path),
+          step.bodyid,
+          cell,
+        );
+        return {
+          op: step.op,
+          value: { surfaceIds: readIntCell(context, cell) },
+        };
       } finally {
         context.spice.kit.freeCell(cell);
       }
@@ -309,7 +337,9 @@ export function runDskStep(context: RunTspiceContext, step: DskStep): StepOutput
     }
 
     case "dsk.dasopr": {
-      const handle = context.spice.raw.dasopr(resolveDskPathRef(context, step.path));
+      const handle = context.spice.raw.dasopr(
+        resolveDskPathRef(context, step.path),
+      );
       setTrackedHandle(context, step.handleId, handle);
       return { op: step.op, value: null };
     }

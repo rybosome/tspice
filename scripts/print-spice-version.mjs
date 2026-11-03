@@ -19,7 +19,7 @@ try {
     }
 
     const tspiceEntry = pathToFileURL(
-      path.join(repoRoot, "packages", "tspice", "dist", "index.js")
+      path.join(repoRoot, "packages", "tspice", "dist", "index.js"),
     );
     ({ spiceClients } = await import(tspiceEntry.href));
   }
@@ -32,7 +32,7 @@ try {
   }
 } catch (error) {
   console.error(
-    "Failed to load @rybosome/tspice (from node_modules or local dist). Ensure it is built and its native bindings are available."
+    "Failed to load @rybosome/tspice (from node_modules or local dist). Ensure it is built and its native bindings are available.",
   );
   throw error;
 }

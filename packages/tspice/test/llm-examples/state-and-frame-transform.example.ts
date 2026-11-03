@@ -32,8 +32,10 @@ export async function earthStateAndEarthFixedPosition(kernels: KernelBytes) {
   try {
     spice.kit.loadKernel({ path: "naif0012.tls", bytes: kernels.lsk });
     spice.kit.loadKernel({ path: "de405s.bsp", bytes: kernels.spk });
-    if (kernels.fk) spice.kit.loadKernel({ path: "frames.tf", bytes: kernels.fk });
-    if (kernels.pck) spice.kit.loadKernel({ path: "pck.tpc", bytes: kernels.pck });
+    if (kernels.fk)
+      spice.kit.loadKernel({ path: "frames.tf", bytes: kernels.fk });
+    if (kernels.pck)
+      spice.kit.loadKernel({ path: "pck.tpc", bytes: kernels.pck });
 
     const et = spice.kit.utcToEt("2000 JAN 01 12:00:00");
 
@@ -46,7 +48,10 @@ export async function earthStateAndEarthFixedPosition(kernels: KernelBytes) {
     });
 
     const j2000ToEarthFixed = spice.kit.frameTransform(J2000, "IAU_EARTH", et);
-    const positionEarthFixed = applyMat3(j2000ToEarthFixed, stateJ2000.position);
+    const positionEarthFixed = applyMat3(
+      j2000ToEarthFixed,
+      stateJ2000.position,
+    );
 
     return { stateJ2000, positionEarthFixed };
   } finally {

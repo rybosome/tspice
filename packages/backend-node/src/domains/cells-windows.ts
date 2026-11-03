@@ -55,14 +55,23 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
     },
     wncard: (window) => {
       const out = native.wncard(window);
-      invariant(typeof out === "number", "Expected wncard() to return a number");
+      invariant(
+        typeof out === "number",
+        "Expected wncard() to return a number",
+      );
       return out;
     },
     wnfetd: (window, index) => {
       assertSpiceInt32NonNegative(index, "wnfetd(index)");
       const out = native.wnfetd(window, index);
-      invariant(Array.isArray(out) && out.length === 2, "Expected wnfetd() to return [left,right]");
-      invariant(typeof out[0] === "number" && typeof out[1] === "number", "Expected wnfetd() to return numbers");
+      invariant(
+        Array.isArray(out) && out.length === 2,
+        "Expected wnfetd() to return [left,right]",
+      );
+      invariant(
+        typeof out[0] === "number" && typeof out[1] === "number",
+        "Expected wnfetd() to return numbers",
+      );
       return [out[0], out[1]] as const;
     },
     wnvald: (size, n, window) => {
@@ -74,31 +83,45 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
 }
 
 /** Create backend kit hooks for cells/windows backed by the native Node addon. */
-export function createCellsWindowsKitApi(native: NativeAddon): CellsWindowsKitApi {
+export function createCellsWindowsKitApi(
+  native: NativeAddon,
+): CellsWindowsKitApi {
   return {
     newIntCell: (size) => {
       assertSpiceInt32NonNegative(size, "newIntCell(size)");
       const handle = native.newIntCell(size);
-      invariant(typeof handle === "number", "Expected newIntCell() to return a number handle");
+      invariant(
+        typeof handle === "number",
+        "Expected newIntCell() to return a number handle",
+      );
       return handle as SpiceIntCell;
     },
     newDoubleCell: (size) => {
       assertSpiceInt32NonNegative(size, "newDoubleCell(size)");
       const handle = native.newDoubleCell(size);
-      invariant(typeof handle === "number", "Expected newDoubleCell() to return a number handle");
+      invariant(
+        typeof handle === "number",
+        "Expected newDoubleCell() to return a number handle",
+      );
       return handle as SpiceDoubleCell;
     },
     newCharCell: (size, length) => {
       assertSpiceInt32NonNegative(size, "newCharCell(size)");
       assertSpiceInt32(length, "newCharCell(length)", { min: 1 });
       const handle = native.newCharCell(size, length);
-      invariant(typeof handle === "number", "Expected newCharCell() to return a number handle");
+      invariant(
+        typeof handle === "number",
+        "Expected newCharCell() to return a number handle",
+      );
       return handle as SpiceCharCell;
     },
     newWindow: (maxIntervals) => {
       assertSpiceInt32NonNegative(maxIntervals, "newWindow(maxIntervals)");
       const handle = native.newWindow(maxIntervals);
-      invariant(typeof handle === "number", "Expected newWindow() to return a number handle");
+      invariant(
+        typeof handle === "number",
+        "Expected newWindow() to return a number handle",
+      );
       return handle as SpiceWindow;
     },
 
@@ -107,26 +130,38 @@ export function createCellsWindowsKitApi(native: NativeAddon): CellsWindowsKitAp
       native.freeCell(cell);
     },
     freeWindow: (window) => {
-      assertSpiceInt32NonNegative(window as unknown as number, "freeWindow(window)");
+      assertSpiceInt32NonNegative(
+        window as unknown as number,
+        "freeWindow(window)",
+      );
       native.freeWindow(window);
     },
 
     cellGeti: (cell, index) => {
       assertSpiceInt32NonNegative(index, "cellGeti(index)");
       const out = native.cellGeti(cell, index);
-      invariant(typeof out === "number", "Expected cellGeti() to return a number");
+      invariant(
+        typeof out === "number",
+        "Expected cellGeti() to return a number",
+      );
       return out;
     },
     cellGetd: (cell, index) => {
       assertSpiceInt32NonNegative(index, "cellGetd(index)");
       const out = native.cellGetd(cell, index);
-      invariant(typeof out === "number", "Expected cellGetd() to return a number");
+      invariant(
+        typeof out === "number",
+        "Expected cellGetd() to return a number",
+      );
       return out;
     },
     cellGetc: (cell, index) => {
       assertSpiceInt32NonNegative(index, "cellGetc(index)");
       const out = native.cellGetc(cell, index);
-      invariant(typeof out === "string", "Expected cellGetc() to return a string");
+      invariant(
+        typeof out === "string",
+        "Expected cellGetc() to return a string",
+      );
       return out.trimEnd();
     },
   };

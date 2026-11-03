@@ -12,14 +12,18 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.kclear",
 ]) satisfies readonly string[];
 
-const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> = Object.freeze(
-  DEFAULT_UNSAFE_NO_STORE_OPS.reduce<Record<string, true>>((acc, op) => {
-    acc[op] = true;
-    return acc;
-  }, {}),
-);
+const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> =
+  Object.freeze(
+    DEFAULT_UNSAFE_NO_STORE_OPS.reduce<Record<string, true>>((acc, op) => {
+      acc[op] = true;
+      return acc;
+    }, {}),
+  );
 
-const matchesAnyPrefix = (op: string, prefixes: readonly string[] | undefined): boolean => {
+const matchesAnyPrefix = (
+  op: string,
+  prefixes: readonly string[] | undefined,
+): boolean => {
   if (!prefixes || prefixes.length === 0) return false;
   for (const prefix of prefixes) {
     if (prefix && op.startsWith(prefix)) return true;
@@ -43,7 +47,9 @@ export type CreateCachePolicyOptions = {
  * Creates a cache-policy resolver with the same precedence / guardrails used by
  * `withCaching()` and `withCachingSync()`.
  */
-export function createCachePolicy(opts: CreateCachePolicyOptions): (op: string) => CachePolicy {
+export function createCachePolicy(
+  opts: CreateCachePolicyOptions,
+): (op: string) => CachePolicy {
   // Warning de-dupe (per wrapper instance).
   const warnedBroadNoStorePrefixSets = new Set<string>();
   const shouldWarnBroadNoStorePrefixes = (warnKey: string): boolean => {
@@ -54,13 +60,21 @@ export function createCachePolicy(opts: CreateCachePolicyOptions): (op: string) 
 
   // Normalize once up-front so callers can't accidentally pass whitespace or
   // an empty string that behaves like a wildcard (`op.startsWith("") === true`).
-  const noStorePrefixes = opts.noStorePrefixes?.map((p) => p.trim()).filter((p) => p.length > 0);
+  const noStorePrefixes = opts.noStorePrefixes
+    ?.map((p) => p.trim())
+    .filter((p) => p.length > 0);
 
   const allowUnsafePolicyOverrides = opts.allowUnsafePolicyOverrides === true;
   const allowBroadNoStorePrefixes = opts.allowBroadNoStorePrefixes === true;
 
-  if (!allowBroadNoStorePrefixes && noStorePrefixes && noStorePrefixes.length > 0) {
-    const broad = noStorePrefixes.filter((p) => p.length < 3 || !p.includes("."));
+  if (
+    !allowBroadNoStorePrefixes &&
+    noStorePrefixes &&
+    noStorePrefixes.length > 0
+  ) {
+    const broad = noStorePrefixes.filter(
+      (p) => p.length < 3 || !p.includes("."),
+    );
     if (broad.length > 0) {
       const normalized = Array.from(new Set(broad)).sort();
       const warnKey = normalized.join("\u0000");

@@ -4,7 +4,10 @@
  * These types are intentionally minimal and may evolve as the contract is implemented.
  */
 
-import type { FixtureRef, FixtureRoots } from "../../../shared/fixtures/types.js";
+import type {
+  FixtureRef,
+  FixtureRoots,
+} from "../../../shared/fixtures/types.js";
 
 export type BenchmarkContractVersion = 1;
 

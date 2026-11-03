@@ -39,8 +39,12 @@ describe("SPICE errors (wasm backend)", () => {
   });
 
   it("rejects invalid getmsg(which) selectors at the boundary", () => {
-    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
-    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(
+      /getmsg\(which\)/i,
+    );
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(
+      /SHORT|LONG|EXPLAIN/,
+    );
   });
 });
 
@@ -53,8 +57,16 @@ describe("wasm lowlevel bindings", () => {
     lengthBytesUTF8(s: string): number;
     stringToUTF8(s: string, ptr: number, maxBytes: number): void;
 
-    _tspice_setmsg(messagePtr: number, errPtr: number, errMaxBytes: number): number;
-    _tspice_sigerr(shortPtr: number, errPtr: number, errMaxBytes: number): number;
+    _tspice_setmsg(
+      messagePtr: number,
+      errPtr: number,
+      errMaxBytes: number,
+    ): number;
+    _tspice_sigerr(
+      shortPtr: number,
+      errPtr: number,
+      errMaxBytes: number,
+    ): number;
     _tspice_chkin(namePtr: number, errPtr: number, errMaxBytes: number): number;
     _tspice_reset(errPtr: number, errMaxBytes: number): number;
     _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
@@ -96,13 +108,15 @@ describe("wasm lowlevel bindings", () => {
   };
 
   beforeAll(async () => {
-    const { default: createEmscriptenModule } = (await import(
-      "../emscripten/tspice_backend_wasm.node.js"
-    )) as {
-      default: (opts: Record<string, unknown>) => Promise<unknown>;
-    };
+    const { default: createEmscriptenModule } =
+      (await import("../emscripten/tspice_backend_wasm.node.js")) as {
+        default: (opts: Record<string, unknown>) => Promise<unknown>;
+      };
 
-    const wasmUrl = new URL("../emscripten/tspice_backend_wasm.wasm", import.meta.url);
+    const wasmUrl = new URL(
+      "../emscripten/tspice_backend_wasm.wasm",
+      import.meta.url,
+    );
     const wasmBytes = await readFile(fileURLToPath(wasmUrl));
     const wasmBinary = wasmBytes.buffer.slice(
       wasmBytes.byteOffset,
@@ -138,8 +152,12 @@ describe("wasm lowlevel bindings", () => {
         // Signaling an error sets the structured buffers and resets CSPICE status.
         expect(module._tspice_sigerr(shortPtr, errPtr, ERR_MAX_BYTES)).toBe(1);
 
-        expect(readOut(module._tspice_get_last_error_short)).toContain("SPICE(FAKE)");
-        expect(readOut(module._tspice_get_last_error_long)).toContain("something went wrong");
+        expect(readOut(module._tspice_get_last_error_short)).toContain(
+          "SPICE(FAKE)",
+        );
+        expect(readOut(module._tspice_get_last_error_long)).toContain(
+          "something went wrong",
+        );
         expect(readOut(module._tspice_get_last_error_trace)).toContain("A");
 
         expect(module._tspice_reset(errPtr, ERR_MAX_BYTES)).toBe(0);
@@ -187,11 +205,12 @@ describe("wasm lowlevel bindings", () => {
       expect(module.HEAPU8[outNamePtr]).toBe(0);
 
       const msg = module.UTF8ToString(errPtr, ERR_MAX_BYTES);
-      expect(msg).toContain("outFrnameMaxBytes must be >= TSPICE_FRNAME_MAX_BYTES (33)");
+      expect(msg).toContain(
+        "outFrnameMaxBytes must be >= TSPICE_FRNAME_MAX_BYTES (33)",
+      );
     } finally {
       module._free(outNamePtr);
       module._free(errPtr);
     }
   });
-
 });

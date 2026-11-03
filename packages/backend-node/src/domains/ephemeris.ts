@@ -20,11 +20,20 @@ import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 
 const I32_MAX = 2147483647;
 
-function assertSpkPackedDescriptor(out: unknown, label: string): asserts out is SpkPackedDescriptor {
-  invariant(Array.isArray(out) && out.length === 5, `Expected ${label} to be a length-5 array`);
+function assertSpkPackedDescriptor(
+  out: unknown,
+  label: string,
+): asserts out is SpkPackedDescriptor {
+  invariant(
+    Array.isArray(out) && out.length === 5,
+    `Expected ${label} to be a length-5 array`,
+  );
   for (let i = 0; i < 5; i++) {
     const v = out[i];
-    invariant(typeof v === "number" && Number.isFinite(v), `Expected ${label}[${i}] to be a finite number`);
+    invariant(
+      typeof v === "number" && Number.isFinite(v),
+      `Expected ${label}[${i}] to be a finite number`,
+    );
   }
 }
 
@@ -37,13 +46,20 @@ function isVirtualOutput(value: unknown): value is VirtualOutput {
   );
 }
 
-function resolveSpkPath(outputs: VirtualOutputStager, file: string | VirtualOutput, context: string): string {
+function resolveSpkPath(
+  outputs: VirtualOutputStager,
+  file: string | VirtualOutput,
+  context: string,
+): string {
   if (typeof file === "string") {
     return file;
   }
 
   // Be defensive: callers can cast.
-  invariant(isVirtualOutput(file), `${context}: expected VirtualOutput {kind:'virtual-output', path:string}`);
+  invariant(
+    isVirtualOutput(file),
+    `${context}: expected VirtualOutput {kind:'virtual-output', path:string}`,
+  );
   return outputs.resolvePathForSpice(file);
 }
 
@@ -59,9 +75,18 @@ export function createEphemerisApi(
   return {
     spkezr: (target, et, ref, abcorr, observer) => {
       const out = native.spkezr(target, et, ref, abcorr, observer);
-      invariant(out && typeof out === "object", "Expected spkezr() to return an object");
-      invariant(Array.isArray(out.state) && out.state.length === 6, "Expected spkezr().state to be a length-6 array");
-      invariant(typeof out.lt === "number", "Expected spkezr().lt to be a number");
+      invariant(
+        out && typeof out === "object",
+        "Expected spkezr() to return an object",
+      );
+      invariant(
+        Array.isArray(out.state) && out.state.length === 6,
+        "Expected spkezr().state to be a length-6 array",
+      );
+      invariant(
+        typeof out.lt === "number",
+        "Expected spkezr().lt to be a number",
+      );
       const state = out.state as SpiceStateVector;
       const result: SpkezrResult = { state, lt: out.lt };
       return result;
@@ -69,9 +94,18 @@ export function createEphemerisApi(
 
     spkpos: (target, et, ref, abcorr, observer) => {
       const out = native.spkpos(target, et, ref, abcorr, observer);
-      invariant(out && typeof out === "object", "Expected spkpos() to return an object");
-      invariant(Array.isArray(out.pos) && out.pos.length === 3, "Expected spkpos().pos to be a length-3 array");
-      invariant(typeof out.lt === "number", "Expected spkpos().lt to be a number");
+      invariant(
+        out && typeof out === "object",
+        "Expected spkpos() to return an object",
+      );
+      invariant(
+        Array.isArray(out.pos) && out.pos.length === 3,
+        "Expected spkpos().pos to be a length-3 array",
+      );
+      invariant(
+        typeof out.lt === "number",
+        "Expected spkpos().lt to be a number",
+      );
       const pos = out.pos as SpiceVector3;
       const result: SpkposResult = { pos, lt: out.lt };
       return result;
@@ -79,9 +113,18 @@ export function createEphemerisApi(
 
     spkez: (target, et, ref, abcorr, observer) => {
       const out = native.spkez(target, et, ref, abcorr, observer);
-      invariant(out && typeof out === "object", "Expected spkez() to return an object");
-      invariant(Array.isArray(out.state) && out.state.length === 6, "Expected spkez().state to be a length-6 array");
-      invariant(typeof out.lt === "number", "Expected spkez().lt to be a number");
+      invariant(
+        out && typeof out === "object",
+        "Expected spkez() to return an object",
+      );
+      invariant(
+        Array.isArray(out.state) && out.state.length === 6,
+        "Expected spkez().state to be a length-6 array",
+      );
+      invariant(
+        typeof out.lt === "number",
+        "Expected spkez().lt to be a number",
+      );
       const state = out.state as SpiceStateVector;
       const result: SpkezrResult = { state, lt: out.lt };
       return result;
@@ -89,9 +132,18 @@ export function createEphemerisApi(
 
     spkezp: (target, et, ref, abcorr, observer) => {
       const out = native.spkezp(target, et, ref, abcorr, observer);
-      invariant(out && typeof out === "object", "Expected spkezp() to return an object");
-      invariant(Array.isArray(out.pos) && out.pos.length === 3, "Expected spkezp().pos to be a length-3 array");
-      invariant(typeof out.lt === "number", "Expected spkezp().lt to be a number");
+      invariant(
+        out && typeof out === "object",
+        "Expected spkezp() to return an object",
+      );
+      invariant(
+        Array.isArray(out.pos) && out.pos.length === 3,
+        "Expected spkezp().pos to be a length-3 array",
+      );
+      invariant(
+        typeof out.lt === "number",
+        "Expected spkezp().lt to be a number",
+      );
       const pos = out.pos as SpiceVector3;
       const result: SpkposResult = { pos, lt: out.lt };
       return result;
@@ -99,9 +151,18 @@ export function createEphemerisApi(
 
     spkgeo: (target, et, ref, observer) => {
       const out = native.spkgeo(target, et, ref, observer);
-      invariant(out && typeof out === "object", "Expected spkgeo() to return an object");
-      invariant(Array.isArray(out.state) && out.state.length === 6, "Expected spkgeo().state to be a length-6 array");
-      invariant(typeof out.lt === "number", "Expected spkgeo().lt to be a number");
+      invariant(
+        out && typeof out === "object",
+        "Expected spkgeo() to return an object",
+      );
+      invariant(
+        Array.isArray(out.state) && out.state.length === 6,
+        "Expected spkgeo().state to be a length-6 array",
+      );
+      invariant(
+        typeof out.lt === "number",
+        "Expected spkgeo().lt to be a number",
+      );
       const state = out.state as SpiceStateVector;
       const result: SpkezrResult = { state, lt: out.lt };
       return result;
@@ -109,9 +170,18 @@ export function createEphemerisApi(
 
     spkgps: (target, et, ref, observer) => {
       const out = native.spkgps(target, et, ref, observer);
-      invariant(out && typeof out === "object", "Expected spkgps() to return an object");
-      invariant(Array.isArray(out.pos) && out.pos.length === 3, "Expected spkgps().pos to be a length-3 array");
-      invariant(typeof out.lt === "number", "Expected spkgps().lt to be a number");
+      invariant(
+        out && typeof out === "object",
+        "Expected spkgps() to return an object",
+      );
+      invariant(
+        Array.isArray(out.pos) && out.pos.length === 3,
+        "Expected spkgps().pos to be a length-3 array",
+      );
+      invariant(
+        typeof out.lt === "number",
+        "Expected spkgps().lt to be a number",
+      );
       const pos = out.pos as SpiceVector3;
       const result: SpkposResult = { pos, lt: out.lt };
       return result;
@@ -119,7 +189,10 @@ export function createEphemerisApi(
 
     spkssb: (target, et, ref) => {
       const out = native.spkssb(target, et, ref);
-      invariant(Array.isArray(out) && out.length === 6, "Expected spkssb() to return a length-6 array");
+      invariant(
+        Array.isArray(out) && out.length === 6,
+        "Expected spkssb() to return a length-6 array",
+      );
       return out as SpiceStateVector;
     },
 
@@ -135,16 +208,28 @@ export function createEphemerisApi(
 
     spksfs: (body: number, et: number) => {
       const out = native.spksfs(body, et);
-      invariant(out && typeof out === "object", "Expected spksfs() to return an object");
-      invariant(typeof out.found === "boolean", "Expected spksfs().found to be a boolean");
+      invariant(
+        out && typeof out === "object",
+        "Expected spksfs() to return an object",
+      );
+      invariant(
+        typeof out.found === "boolean",
+        "Expected spksfs().found to be a boolean",
+      );
       if (!out.found) {
         return { found: false };
       }
 
-      invariant(typeof out.handle === "number", "Expected spksfs().handle to be a number when found");
+      invariant(
+        typeof out.handle === "number",
+        "Expected spksfs().handle to be a number when found",
+      );
       const descr = out.descr;
       assertSpkPackedDescriptor(descr, "spksfs().descr");
-      invariant(typeof out.ident === "string", "Expected spksfs().ident to be a string when found");
+      invariant(
+        typeof out.ident === "string",
+        "Expected spksfs().ident to be a string when found",
+      );
 
       return {
         found: true,
@@ -154,7 +239,14 @@ export function createEphemerisApi(
       };
     },
 
-    spkpds: (body: number, center: number, frame: string, type: number, first: number, last: number) => {
+    spkpds: (
+      body: number,
+      center: number,
+      frame: string,
+      type: number,
+      first: number,
+      last: number,
+    ) => {
       const out = native.spkpds(body, center, frame, type, first, last);
       assertSpkPackedDescriptor(out, "spkpds() output");
       return out;
@@ -162,12 +254,27 @@ export function createEphemerisApi(
 
     spkuds: (descr: SpkPackedDescriptor) => {
       const out = native.spkuds(descr);
-      invariant(out && typeof out === "object", "Expected spkuds() to return an object");
+      invariant(
+        out && typeof out === "object",
+        "Expected spkuds() to return an object",
+      );
       const obj = out as Record<string, unknown>;
 
-      const keys = ["body", "center", "frame", "type", "first", "last", "baddr", "eaddr"] as const;
+      const keys = [
+        "body",
+        "center",
+        "frame",
+        "type",
+        "first",
+        "last",
+        "baddr",
+        "eaddr",
+      ] as const;
       for (const k of keys) {
-        invariant(typeof obj[k] === "number", `Expected spkuds().${k} to be a number`);
+        invariant(
+          typeof obj[k] === "number",
+          `Expected spkuds().${k} to be a number`,
+        );
       }
 
       return out as SpkUnpackedDescriptor;
@@ -182,7 +289,10 @@ export function createEphemerisApi(
       const handle = handles.register("SPK", nativeHandle);
       if (typeof file !== "string") {
         // `resolveSpkPath` already validated, but be defensive: callers can cast.
-        invariant(isVirtualOutput(file), "spkopn(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        invariant(
+          isVirtualOutput(file),
+          "spkopn(file): expected VirtualOutput {kind:'virtual-output', path:string}",
+        );
         const out: VirtualOutput = { kind: "virtual-output", path: file.path };
         outputs.markOpen(out);
         virtualOutputByHandle.set(handle, out);
@@ -197,7 +307,10 @@ export function createEphemerisApi(
 
       const handle = handles.register("SPK", nativeHandle);
       if (typeof file !== "string") {
-        invariant(isVirtualOutput(file), "spkopa(file): expected VirtualOutput {kind:'virtual-output', path:string}");
+        invariant(
+          isVirtualOutput(file),
+          "spkopa(file): expected VirtualOutput {kind:'virtual-output', path:string}",
+        );
         const out: VirtualOutput = { kind: "virtual-output", path: file.path };
         outputs.markOpen(out);
         virtualOutputByHandle.set(handle, out);
@@ -208,7 +321,12 @@ export function createEphemerisApi(
 
     spkcls: (handle: SpiceHandle) => {
       const out = virtualOutputByHandle.get(handle);
-      handles.close(handle, ["SPK"], (e) => native.spkcls(e.nativeHandle), "spkcls");
+      handles.close(
+        handle,
+        ["SPK"],
+        (e) => native.spkcls(e.nativeHandle),
+        "spkcls",
+      );
       if (out) {
         outputs.markClosed(out);
         virtualOutputByHandle.delete(handle);
@@ -232,8 +350,14 @@ export function createEphemerisApi(
         Array.isArray(states) || states instanceof Float64Array,
         "spkw08(states): expected number[] or Float64Array",
       );
-      invariant(states.length % 6 === 0, "spkw08(): expected states.length to be a multiple of 6");
-      invariant(states.length > 0, "spkw08(): expected at least one state record");
+      invariant(
+        states.length % 6 === 0,
+        "spkw08(): expected states.length to be a multiple of 6",
+      );
+      invariant(
+        states.length > 0,
+        "spkw08(): expected at least one state record",
+      );
 
       const n = states.length / 6;
       invariant(
@@ -241,8 +365,24 @@ export function createEphemerisApi(
         `spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`,
       );
 
-      const nativeHandle = handles.lookup(handle, ["SPK"], "spkw08").nativeHandle;
-      native.spkw08(nativeHandle, body, center, frame, first, last, segid, degree, states, epoch1, step);
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw08",
+      ).nativeHandle;
+      native.spkw08(
+        nativeHandle,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        states,
+        epoch1,
+        step,
+      );
     },
   };
 }

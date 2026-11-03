@@ -33,7 +33,14 @@
   {
     "caseId": "ephemeris-spkssb-invalid-frame-error",
     "description": "spkssb rejects an unknown reference frame",
-    "workflow": [{ "op": "ephemeris.spkssb", "target": 1000, "et": 60, "ref": "NOT_A_FRAME" }],
+    "workflow": [
+      {
+        "op": "ephemeris.spkssb",
+        "target": 1000,
+        "et": 60,
+        "ref": "NOT_A_FRAME"
+      }
+    ],
     "expectation": { "kind": "error" }
   }
 ]

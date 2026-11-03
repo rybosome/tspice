@@ -33,12 +33,13 @@ export type {
 } from "./shared/types.js";
 
 export type { AssertSpiceInt32Options } from "./shared/spice-int.js";
-export {
-  SPICE_INT32_MIN,
-  SPICE_INT32_MAX,
-} from "./shared/spice-int.js";
+export { SPICE_INT32_MIN, SPICE_INT32_MAX } from "./shared/spice-int.js";
 
-export type { SpiceHandleEntry, SpiceHandleKind, SpiceHandleRegistry } from "./shared/spice-handles.js";
+export type {
+  SpiceHandleEntry,
+  SpiceHandleKind,
+  SpiceHandleRegistry,
+} from "./shared/spice-handles.js";
 
 // Explicit re-exports to ensure these types are always available from the package root.
 // (Some TS build modes can be sensitive to type-only exports being pulled via `export *`.)
@@ -71,14 +72,18 @@ import type { GeometryGfApi } from "./domains/geometry-gf.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";
 import type { FileIoApi, FileIoKitApi } from "./domains/file-io.js";
 import type { ErrorApi } from "./domains/error.js";
-import type { CellsWindowsApi, CellsWindowsKitApi } from "./domains/cells-windows.js";
+import type {
+  CellsWindowsApi,
+  CellsWindowsKitApi,
+} from "./domains/cells-windows.js";
 import type { DskApi } from "./domains/dsk.js";
 
 export type SpiceBackendKind = "node" | "wasm" | "fake";
 
 /** Composition of all raw domain APIs.  */
 export interface SpiceRawBackend
-  extends TimeApi,
+  extends
+    TimeApi,
     KernelsApi,
     KernelPoolApi,
     EkApi,
@@ -91,13 +96,11 @@ export interface SpiceRawBackend
     FileIoApi,
     ErrorApi,
     CellsWindowsApi,
-    DskApi { }
+    DskApi {}
 
 /** Composition of all kit domain APIs.  */
 export interface SpiceKitBackend
-  extends CellsWindowsKitApi,
-    TimeKitApi,
-    FileIoKitApi { }
+  extends CellsWindowsKitApi, TimeKitApi, FileIoKitApi {}
 
 /** Unified backend contract */
 export interface SpiceBackend {

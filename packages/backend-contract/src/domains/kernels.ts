@@ -6,7 +6,12 @@
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
 import type { KernelKindInput as CoreKernelKindInput } from "@rybosome/tspice-core";
-import type { Found, KernelData, KernelInfo, KernelSource } from "../shared/types.js";
+import type {
+  Found,
+  KernelData,
+  KernelInfo,
+  KernelSource,
+} from "../shared/types.js";
 import type { SpiceIntCell } from "./cells-windows.js";
 
 /**

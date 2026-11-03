@@ -17,7 +17,10 @@ export function normalizeFixtureRelativePath(file: string): string {
 }
 
 /** Resolve fixture file refs under fixtures root (supports PathRef and plain string forms). */
-export function resolveFixturePath(fixturesRoot: string, fixtureFile: PathRefLike): string {
+export function resolveFixturePath(
+  fixturesRoot: string,
+  fixtureFile: PathRefLike,
+): string {
   return resolveFixturePathCore(fixturesRoot, fixtureFile);
 }
 

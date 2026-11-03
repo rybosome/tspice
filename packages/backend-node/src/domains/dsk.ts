@@ -10,15 +10,24 @@ import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
-import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type {
+  SpiceHandleKind,
+  SpiceHandleRegistry,
+} from "../runtime/spice-handles.js";
 
 const I32_MIN = -2147483648;
 const I32_MAX = 2147483647;
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 
-function assertDlaDescriptor(value: unknown, context: string): asserts value is DlaDescriptor {
-  invariant(typeof value === "object" && value !== null, `${context}: expected an object`);
+function assertDlaDescriptor(
+  value: unknown,
+  context: string,
+): asserts value is DlaDescriptor {
+  invariant(
+    typeof value === "object" && value !== null,
+    `${context}: expected an object`,
+  );
   const obj = value as Record<string, unknown>;
   for (const key of [
     "bwdptr",
@@ -51,15 +60,34 @@ function assertI32(value: unknown, context: string): asserts value is number {
   );
 }
 
-function assertFiniteNumber(value: unknown, context: string): asserts value is number {
-  invariant(typeof value === "number" && Number.isFinite(value), `${context}: expected a finite number`);
+function assertFiniteNumber(
+  value: unknown,
+  context: string,
+): asserts value is number {
+  invariant(
+    typeof value === "number" && Number.isFinite(value),
+    `${context}: expected a finite number`,
+  );
 }
 
-function normalizeDskDescriptor(value: unknown, context: string): DskDescriptor {
-  invariant(typeof value === "object" && value !== null, `${context}: expected an object`);
+function normalizeDskDescriptor(
+  value: unknown,
+  context: string,
+): DskDescriptor {
+  invariant(
+    typeof value === "object" && value !== null,
+    `${context}: expected an object`,
+  );
   const obj = value as Record<string, unknown>;
 
-  for (const k of ["surfce", "center", "dclass", "dtype", "frmcde", "corsys"] as const) {
+  for (const k of [
+    "surfce",
+    "center",
+    "dclass",
+    "dtype",
+    "frmcde",
+    "corsys",
+  ] as const) {
     assertI32(obj[k], `${context}.${k}`);
   }
 
@@ -85,11 +113,25 @@ function normalizeDskDescriptor(value: unknown, context: string): DskDescriptor 
   return obj as unknown as DskDescriptor;
 }
 
-function normalizeDskType2Bookkeeping(value: unknown, context: string): DskType2Bookkeeping {
-  invariant(typeof value === "object" && value !== null, `${context}: expected an object`);
+function normalizeDskType2Bookkeeping(
+  value: unknown,
+  context: string,
+): DskType2Bookkeeping {
+  invariant(
+    typeof value === "object" && value !== null,
+    `${context}: expected an object`,
+  );
   const obj = value as Record<string, unknown>;
 
-  for (const k of ["nv", "np", "nvxtot", "cgscal", "vtxnpl", "voxnpt", "voxnpl"] as const) {
+  for (const k of [
+    "nv",
+    "np",
+    "nvxtot",
+    "cgscal",
+    "vtxnpl",
+    "voxnpt",
+    "voxnpl",
+  ] as const) {
     assertI32(obj[k], `${context}.${k}`);
   }
 
@@ -97,8 +139,14 @@ function normalizeDskType2Bookkeeping(value: unknown, context: string): DskType2
   invariant(obj.vtxbds.length === 3, `${context}.vtxbds: expected length 3`);
   for (let axis = 0; axis < 3; axis++) {
     const pair = obj.vtxbds[axis];
-    invariant(Array.isArray(pair), `${context}.vtxbds[${axis}]: expected an array`);
-    invariant(pair.length === 2, `${context}.vtxbds[${axis}]: expected length 2`);
+    invariant(
+      Array.isArray(pair),
+      `${context}.vtxbds[${axis}]: expected an array`,
+    );
+    invariant(
+      pair.length === 2,
+      `${context}.vtxbds[${axis}]: expected length 2`,
+    );
     assertFiniteNumber(pair[0], `${context}.vtxbds[${axis}][0]`);
     assertFiniteNumber(pair[1], `${context}.vtxbds[${axis}][1]`);
   }
@@ -140,14 +188,23 @@ export function createDskApi(
     dskgd: (handle: SpiceHandle, dladsc: DlaDescriptor) => {
       assertDlaDescriptor(dladsc, "dskgd(dladsc)");
       const entry = handles.lookup(handle, DAS_BACKED, "dskgd");
-      return normalizeDskDescriptor(native.dskgd(entry.nativeHandle, dladsc as unknown as Record<string, unknown>), "dskgd()");
+      return normalizeDskDescriptor(
+        native.dskgd(
+          entry.nativeHandle,
+          dladsc as unknown as Record<string, unknown>,
+        ),
+        "dskgd()",
+      );
     },
 
     dskb02: (handle: SpiceHandle, dladsc: DlaDescriptor) => {
       assertDlaDescriptor(dladsc, "dskb02(dladsc)");
       const entry = handles.lookup(handle, DAS_BACKED, "dskb02");
       return normalizeDskType2Bookkeeping(
-        native.dskb02(entry.nativeHandle, dladsc as unknown as Record<string, unknown>),
+        native.dskb02(
+          entry.nativeHandle,
+          dladsc as unknown as Record<string, unknown>,
+        ),
         "dskb02()",
       );
     },

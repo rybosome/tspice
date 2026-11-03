@@ -22,8 +22,12 @@ describe("runtime path refs", () => {
   });
 
   it("resolves fixture and scratch refs under runtime roots", () => {
-    const fixturesRoot = fs.mkdtempSync(path.join(os.tmpdir(), "py-parity-fixtures-"));
-    const scratchRoot = fs.mkdtempSync(path.join(os.tmpdir(), "py-parity-scratch-"));
+    const fixturesRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "py-parity-fixtures-"),
+    );
+    const scratchRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "py-parity-scratch-"),
+    );
 
     try {
       expect(
@@ -40,12 +44,12 @@ describe("runtime path refs", () => {
         ),
       ).toBe(path.resolve(scratchRoot, "tmp", "generated.tls"));
 
-      expect(toVirtualKernelPath({ kind: "fixture", rel: "kernels/naif0012.tls" })).toBe(
-        "py-parity/kernels/naif0012.tls",
-      );
-      expect(toVirtualKernelPath({ kind: "scratch", rel: "tmp/generated.tls" })).toBe(
-        "py-parity/scratch/tmp/generated.tls",
-      );
+      expect(
+        toVirtualKernelPath({ kind: "fixture", rel: "kernels/naif0012.tls" }),
+      ).toBe("py-parity/kernels/naif0012.tls");
+      expect(
+        toVirtualKernelPath({ kind: "scratch", rel: "tmp/generated.tls" }),
+      ).toBe("py-parity/scratch/tmp/generated.tls");
     } finally {
       fs.rmSync(fixturesRoot, { recursive: true, force: true });
       fs.rmSync(scratchRoot, { recursive: true, force: true });
@@ -53,11 +57,16 @@ describe("runtime path refs", () => {
   });
 
   it("rejects traversal attempts", () => {
-    expect(() => normalizePathRefRelativePath("../escape.txt")).toThrow(/relative|escapes/i);
+    expect(() => normalizePathRefRelativePath("../escape.txt")).toThrow(
+      /relative|escapes/i,
+    );
   });
 
   it("creates and disposes case-scoped scratch roots", () => {
-    const runtimePaths = createCaseRuntimePaths(path.join(os.tmpdir(), "fixtures"), "Case 42/PathRef");
+    const runtimePaths = createCaseRuntimePaths(
+      path.join(os.tmpdir(), "fixtures"),
+      "Case 42/PathRef",
+    );
 
     const marker = path.join(runtimePaths.scratchRoot, "tmp", "marker.txt");
     fs.mkdirSync(path.dirname(marker), { recursive: true });

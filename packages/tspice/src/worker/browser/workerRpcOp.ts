@@ -1,6 +1,8 @@
 export type WorkerRpcNamespace = "raw" | "kit";
 
-export type WorkerRpcAllowlist = Partial<Record<WorkerRpcNamespace, ReadonlySet<string>>>;
+export type WorkerRpcAllowlist = Partial<
+  Record<WorkerRpcNamespace, ReadonlySet<string>>
+>;
 
 type WorkerRpcSurface = Record<string, unknown>;
 
@@ -19,8 +21,10 @@ const formatWorkerRpcContext = (context: {
   method?: string;
 }): string => {
   const parts = [`op=${quote(context.op)}`];
-  if (context.namespace !== undefined) parts.push(`namespace=${quote(context.namespace)}`);
-  if (context.method !== undefined) parts.push(`method=${quote(context.method)}`);
+  if (context.namespace !== undefined)
+    parts.push(`namespace=${quote(context.namespace)}`);
+  if (context.method !== undefined)
+    parts.push(`method=${quote(context.method)}`);
   return `(${parts.join(", ")})`;
 };
 

@@ -16,7 +16,10 @@ import { runKernelsStep } from "./domains/kernels.js";
 import { runTimeStep } from "./domains/time.js";
 
 /** Dispatch one workflow step to its corresponding tspice domain handler. */
-export function dispatchStep(context: RunTspiceContext, step: WorkflowStep): StepOutput {
+export function dispatchStep(
+  context: RunTspiceContext,
+  step: WorkflowStep,
+): StepOutput {
   switch (step.op) {
     case "time.str2et":
     case "time.et2utc":

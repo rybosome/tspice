@@ -48,6 +48,9 @@ export function assertSpiceInt32(
 }
 
 /** Assert that a value is a non-negative signed 32-bit integer. */
-export function assertSpiceInt32NonNegative(value: number, label: string): asserts value is number {
+export function assertSpiceInt32NonNegative(
+  value: number,
+  label: string,
+): asserts value is number {
   assertSpiceInt32(value, label, { min: 0 });
 }

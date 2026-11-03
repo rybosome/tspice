@@ -4,7 +4,11 @@
     "description": "ckcov CK coverage query with explicit cklpf/ckupf lifecycle",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKCOV" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKCOV"
+      },
       {
         "op": "frames.ckcov",
         "ck": "kernels/mgs_hga_hinge_v2.bc",

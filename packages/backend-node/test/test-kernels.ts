@@ -9,7 +9,9 @@ const KERNEL_CACHE_DIR = path.join(os.tmpdir(), "tspice-test-kernels");
 async function downloadFile(url: string, outPath: string): Promise<void> {
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error(`Failed to download ${url}: ${res.status} ${res.statusText}`);
+    throw new Error(
+      `Failed to download ${url}: ${res.status} ${res.statusText}`,
+    );
   }
 
   const bytes = new Uint8Array(await res.arrayBuffer());
@@ -45,7 +47,8 @@ async function readCached(url: string): Promise<Uint8Array> {
   return fs.readFileSync(cachePath);
 }
 
-const NAIF_GENERIC_KERNELS_ORIGIN = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
+const NAIF_GENERIC_KERNELS_ORIGIN =
+  "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/";
 
 const TEST_KERNEL_IDS = {
   LSK: "lsk/naif0012.tls",

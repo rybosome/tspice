@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { Mat3 } from "../src/kit/math/mat3.js";
-import { decodeRpcValue, encodeRpcValue } from "../src/transport/rpc/valueCodec.js";
+import {
+  decodeRpcValue,
+  encodeRpcValue,
+} from "../src/transport/rpc/valueCodec.js";
 
 describe("rpc valueCodec", () => {
   it("round-trips Mat3 via tagged encoding", () => {
@@ -26,7 +29,9 @@ describe("rpc valueCodec", () => {
   });
 
   it("throws on non-plain objects (e.g. Date)", () => {
-    expect(() => encodeRpcValue(new Date())).toThrow(/unsupported non-plain object/i);
+    expect(() => encodeRpcValue(new Date())).toThrow(
+      /unsupported non-plain object/i,
+    );
   });
 
   it("recursively encodes/decodes arrays and plain objects", () => {

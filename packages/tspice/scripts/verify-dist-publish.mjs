@@ -10,7 +10,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
-const distPublishRoot = path.join(repoRoot, "packages", "tspice", "dist-publish");
+const distPublishRoot = path.join(
+  repoRoot,
+  "packages",
+  "tspice",
+  "dist-publish",
+);
 
 if (!fs.existsSync(path.join(distPublishRoot, "package.json"))) {
   throw new Error(
@@ -37,10 +42,7 @@ function listDirectorySubpaths(rootDir) {
       if (entry.name.startsWith(".")) continue;
 
       const abs = path.join(dir, entry.name);
-      const rel = path
-        .relative(rootDir, abs)
-        .split(path.sep)
-        .join("/");
+      const rel = path.relative(rootDir, abs).split(path.sep).join("/");
 
       out.push(rel);
       walk(abs);
@@ -64,7 +66,9 @@ function deriveAllowedSubpaths(exportsField) {
     if (!hasSubpathKeys) return [""];
 
     // Ignore non-subpath keys (e.g. "import" / "default").
-    return keys.filter((k) => k === "." || k.startsWith("./")).map(normalizeExportKey);
+    return keys
+      .filter((k) => k === "." || k.startsWith("./"))
+      .map(normalizeExportKey);
   }
 
   return [""];
@@ -109,7 +113,9 @@ if (!tarballName) {
 
 const tarballPath = path.join(distPublishRoot, tarballName);
 if (!fs.existsSync(tarballPath)) {
-  throw new Error(`npm pack reported ${tarballName}, but it was not created at ${tarballPath}`);
+  throw new Error(
+    `npm pack reported ${tarballName}, but it was not created at ${tarballPath}`,
+  );
 }
 
 // 2) Simulate a real consumer install and ensure ESM imports work.
@@ -119,10 +125,14 @@ try {
   run("npm", ["init", "-y"], { cwd: tmpDir, stdio: "ignore" });
 
   // Avoid hitting the network for optional platform-native deps during CI.
-  run("npm", ["install", "--omit=optional", "--no-audit", "--no-fund", tarballPath], {
-    cwd: tmpDir,
-    stdio: "inherit",
-  });
+  run(
+    "npm",
+    ["install", "--omit=optional", "--no-audit", "--no-fund", tarballPath],
+    {
+      cwd: tmpDir,
+      stdio: "inherit",
+    },
+  );
 
   const smokePath = path.join(tmpDir, "smoke-imports.mjs");
   fs.writeFileSync(
@@ -150,20 +160,20 @@ try {
       ``,
       `for (const subpath of candidateSubpaths) {`,
       `  const specifier = subpath === "" ? "@rybosome/tspice" : ` +
-        '`@rybosome/tspice/${subpath}`;',
+        "`@rybosome/tspice/${subpath}`;",
       `  const shouldImport = allowed.has(subpath);`,
       ``,
       `  try {`,
       `    await import(specifier);`,
       `    if (!shouldImport) {`,
       `      throw new Error(` +
-        '`Unexpected export: ${specifier} is importable but is not listed in package.json#exports`' +
+        "`Unexpected export: ${specifier} is importable but is not listed in package.json#exports`" +
         `);`,
       `    }`,
       `  } catch (err) {`,
       `    if (shouldImport) {`,
       `      throw new Error(` +
-        '`Expected ${specifier} to be importable (listed in package.json#exports), but import failed: ${String(err)}`' +
+        "`Expected ${specifier} to be importable (listed in package.json#exports), but import failed: ${String(err)}`" +
         `);`,
       `    }`,
       ``,
@@ -185,8 +195,16 @@ try {
 
   // Validate internal-only package.json `imports` aliases ("#...") are wired up
   // correctly for vendored workspace modules.
-  const installedPkgRoot = path.join(tmpDir, "node_modules", "@rybosome", "tspice");
-  const internalSmokePath = path.join(installedPkgRoot, "internal-imports-smoke.mjs");
+  const installedPkgRoot = path.join(
+    tmpDir,
+    "node_modules",
+    "@rybosome",
+    "tspice",
+  );
+  const internalSmokePath = path.join(
+    installedPkgRoot,
+    "internal-imports-smoke.mjs",
+  );
   fs.writeFileSync(
     internalSmokePath,
     [
@@ -207,7 +225,10 @@ try {
     "utf8",
   );
 
-  run("node", ["./internal-imports-smoke.mjs"], { cwd: installedPkgRoot, stdio: "inherit" });
+  run("node", ["./internal-imports-smoke.mjs"], {
+    cwd: installedPkgRoot,
+    stdio: "inherit",
+  });
 } finally {
   fs.rmSync(tmpDir, { recursive: true, force: true });
   fs.rmSync(tarballPath, { force: true });

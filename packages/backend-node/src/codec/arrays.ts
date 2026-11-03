@@ -31,30 +31,48 @@ function assertArrayLikeFiniteLength(
   label: string,
 ): asserts value is ArrayLike<number> {
   invariant(isArrayLike(value), `${label}: expected an array-like result`);
-  invariant((value as ArrayLike<unknown>).length === expectedLength, `${label}: expected length ${expectedLength}`);
+  invariant(
+    (value as ArrayLike<unknown>).length === expectedLength,
+    `${label}: expected length ${expectedLength}`,
+  );
 
   for (let i = 0; i < expectedLength; i++) {
     const v = (value as ArrayLike<unknown>)[i];
-    invariant(typeof v === "number" && Number.isFinite(v), `${label}: expected finite number at index ${i}`);
+    invariant(
+      typeof v === "number" && Number.isFinite(v),
+      `${label}: expected finite number at index ${i}`,
+    );
   }
 }
 
 /** Assert that a value is an array-like of length 3 containing finite numbers. */
-export function assertLength3(value: unknown, label = "Vec3"): asserts value is ArrayLike<number> {
+export function assertLength3(
+  value: unknown,
+  label = "Vec3",
+): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 3, label);
 }
 
 /** Assert that a value is an array-like of length 6 containing finite numbers. */
-export function assertLength6(value: unknown, label = "Vec6"): asserts value is ArrayLike<number> {
+export function assertLength6(
+  value: unknown,
+  label = "Vec6",
+): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 6, label);
 }
 
 /** Assert that a value is an array-like of length 9 containing finite numbers. */
-export function assertLength9(value: unknown, label = "Mat3"): asserts value is ArrayLike<number> {
+export function assertLength9(
+  value: unknown,
+  label = "Mat3",
+): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 9, label);
 }
 
 /** Assert that a value is an array-like of length 36 containing finite numbers. */
-export function assertLength36(value: unknown, label = "Mat6"): asserts value is ArrayLike<number> {
+export function assertLength36(
+  value: unknown,
+  label = "Mat6",
+): asserts value is ArrayLike<number> {
   assertArrayLikeFiniteLength(value, 36, label);
 }

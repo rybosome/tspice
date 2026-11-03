@@ -12,29 +12,42 @@ const BODY_NAME_MAX_BYTES = 256;
 const BODY_CONST_MAX_VALUES = 1024;
 
 function tspiceCallBodc2s(module: EmscriptenModule, code: number): string {
-  return withAllocs(module, [WASM_ERR_MAX_BYTES, BODY_NAME_MAX_BYTES], (errPtr, outPtr) => {
-    module.HEAPU8[outPtr] = 0;
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, BODY_NAME_MAX_BYTES],
+    (errPtr, outPtr) => {
+      module.HEAPU8[outPtr] = 0;
 
-    const result = module._tspice_bodc2s(
-      code,
-      outPtr,
-      BODY_NAME_MAX_BYTES,
-      errPtr,
-      WASM_ERR_MAX_BYTES,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-    }
+      const result = module._tspice_bodc2s(
+        code,
+        outPtr,
+        BODY_NAME_MAX_BYTES,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
 
-    return readFixedWidthCString(module, outPtr, BODY_NAME_MAX_BYTES);
-  });
+      return readFixedWidthCString(module, outPtr, BODY_NAME_MAX_BYTES);
+    },
+  );
 }
 
-function tspiceCallBoddef(module: EmscriptenModule, name: string, code: number): void {
+function tspiceCallBoddef(
+  module: EmscriptenModule,
+  name: string,
+  code: number,
+): void {
   const namePtr = writeUtf8CString(module, name);
   try {
     return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
-      const result = module._tspice_boddef(namePtr, code, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_boddef(
+        namePtr,
+        code,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -44,7 +57,11 @@ function tspiceCallBoddef(module: EmscriptenModule, name: string, code: number):
   }
 }
 
-function tspiceCallBodfnd(module: EmscriptenModule, body: number, item: string): boolean {
+function tspiceCallBodfnd(
+  module: EmscriptenModule,
+  body: number,
+  item: string,
+): boolean {
   // `bodfnd_c()` is an existence check: it returns true even when the pool var
   // exists but is character-typed ('C') vs numeric ('N').
   //
@@ -85,7 +102,11 @@ function tspiceCallBodfnd(module: EmscriptenModule, body: number, item: string):
   }
 }
 
-function tspiceCallBodvar(module: EmscriptenModule, body: number, item: string): number[] {
+function tspiceCallBodvar(
+  module: EmscriptenModule,
+  body: number,
+  item: string,
+): number[] {
   const itemPtr = writeUtf8CString(module, item);
   const maxn = BODY_CONST_MAX_VALUES;
 
@@ -150,7 +171,8 @@ export function createIdsNamesApi(module: EmscriptenModule): IdsNamesApi {
       return { found: true, code: out.value };
     },
 
-    boddef: (name: string, code: number) => tspiceCallBoddef(module, name, code),
+    boddef: (name: string, code: number) =>
+      tspiceCallBoddef(module, name, code),
 
     bodfnd: (body: number, item: string) =>
       tspiceCallBodfnd(module, body, normalizeBodItem(item)),

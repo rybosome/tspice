@@ -38,7 +38,7 @@ SPICE is stateful: loading kernels mutates a process-wide global kernel pool ins
 
 Isolation (separating kernel-sets and workloads) can be achieved by creating multiple process or WebWorker instances, depending on runtime.
 
-## Quickstart 
+## Quickstart
 
 ### Installation
 
@@ -153,7 +153,6 @@ CSPICE exposes 652 public routines; 162 are currently implemented in `tspice`.
 
 Because CSPICE itself is a mature and stable toolkit, long-term API churn in `tspice` is expected to be low.
 
-
 ## Validation
 
 In addition to typical unit testing, `tspice` runs **parity tests** with **CSPICE as the reference**, and also checks that the Node and WASM backends stay consistent for the same kernels and inputs. `tspice` preserves CSPICE double-precision semantics; numeric comparisons are verified against CSPICE with defined tolerances.
@@ -184,13 +183,13 @@ flowchart TD
 
 ## Backend comparison (Node native vs WASM)
 
-| | Node native (`backend: "node"`) | WASM (`backend: "wasm"`) |
-| --- | --- | --- |
-| Runs in | Node.js only | Browsers + Node.js |
-| Artifact | Native addon (`.node`) | Prebuilt WebAssembly (`.wasm`) + JS glue |
-| Best for | Node services, local kernel archives, potential performance wins | Browsers, Web Workers, portability |
-| Kernel I/O shape | OS filesystem paths (plus optional byte staging) | Byte-backed loads into a virtual filesystem |
-| Operational constraints | **none** | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
+|                         | Node native (`backend: "node"`)                                  | WASM (`backend: "wasm"`)                                                                                        |
+| ----------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Runs in                 | Node.js only                                                     | Browsers + Node.js                                                                                              |
+| Artifact                | Native addon (`.node`)                                           | Prebuilt WebAssembly (`.wasm`) + JS glue                                                                        |
+| Best for                | Node services, local kernel archives, potential performance wins | Browsers, Web Workers, portability                                                                              |
+| Kernel I/O shape        | OS filesystem paths (plus optional byte staging)                 | Byte-backed loads into a virtual filesystem                                                                     |
+| Operational constraints | **none**                                                         | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
 
 ## Roadmap (high-level)
 

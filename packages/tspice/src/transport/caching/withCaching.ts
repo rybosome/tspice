@@ -470,8 +470,7 @@ export function withCaching(
     if (existing) cache.delete(k);
 
     // Cache the in-flight promise to dedupe concurrent callers.
-    let promise!: Promise<unknown>;
-    promise = base.request(op, args).then(
+    const promise: Promise<unknown> = base.request(op, args).then(
       (value) => {
         if (ttlMs !== undefined && ttlMs > 0) {
           const current = cache.get(k);

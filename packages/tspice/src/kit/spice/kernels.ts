@@ -1,4 +1,7 @@
-import type { KernelSource, SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type {
+  KernelSource,
+  SpiceBackend,
+} from "@rybosome/tspice-backend-contract";
 import { normalizeVirtualKernelPath } from "@rybosome/tspice-core";
 
 import { wrapSpiceError } from "../../errors.js";

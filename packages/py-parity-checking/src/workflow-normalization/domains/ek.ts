@@ -13,7 +13,10 @@ import type { DomainNormalizer, NormalizationContext } from "../types.js";
 
 type EkPathPublisherStep = StepEkEkopn | StepEkEkopr | StepEkEkopw;
 
-function publishGeneratedEkPath(step: EkPathPublisherStep, context: NormalizationContext): void {
+function publishGeneratedEkPath(
+  step: EkPathPublisherStep,
+  context: NormalizationContext,
+): void {
   if (path.isAbsolute(step.path)) {
     return;
   }

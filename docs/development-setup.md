@@ -4,11 +4,11 @@ This repository uses a pnpm workspace, TypeScript, a Python/SpiceyPy parity side
 
 ## Prerequisites
 
-| Work | Required tools |
-| --- | --- |
-| JS build, typecheck, and parity checks | Node.js 20 or 22; pnpm 10.13.1; `uv`; a CPython 3.11+ interpreter |
-| Native backend checks | JS/parity tools plus a C and C++ compiler, `make`, `tar`, `uncompress`, and a supported CSPICE install |
-| Regenerate checked-in WASM outputs | Node.js, Emscripten (`emcc`), and `tar`/`uncompress` for the first CSPICE source fetch; the build script fetches the pinned source tree itself |
+| Work                                   | Required tools                                                                                                                                 |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| JS build, typecheck, and parity checks | Node.js 20 or 22; pnpm 10.13.1; `uv`; a CPython 3.11+ interpreter                                                                              |
+| Native backend checks                  | JS/parity tools plus a C and C++ compiler, `make`, `tar`, `uncompress`, and a supported CSPICE install                                         |
+| Regenerate checked-in WASM outputs     | Node.js, Emscripten (`emcc`), and `tar`/`uncompress` for the first CSPICE source fetch; the build script fetches the pinned source tree itself |
 
 The `doctor` command checks these profiles without installing tools or editing repository files:
 
@@ -45,6 +45,10 @@ pnpm install --frozen-lockfile
 The parity runner starts the Python sidecar with `uv run` from `packages/py-parity-checking/sidecars/spiceypy`. Its `pyproject.toml` and `uv.lock` define SpiceyPy and the supported Python range. The package's `pretest` command prepares the locked environment and imports SpiceyPy before Vitest starts, so dependency setup does not consume the first parity case's timeout. To prepare it separately, run `pnpm -C packages/py-parity-checking setup:sidecar`. The first run may download the Python interpreter/packages and NAIF kernel fixtures, so network access is needed until those are cached.
 
 ## Validation tiers
+
+Formatting and linting use Git's tracked-file inventory, print the number of files evaluated, and fail if the selected scope is empty. Run `pnpm format:check` to check hand-maintained JavaScript/TypeScript, JSON/JSONC, YAML, Markdown, CSS, HTML, and Vue files; `pnpm format` applies the formatter. `pnpm lint` checks tracked JavaScript/TypeScript with ESLint correctness rules and the existing public-API JSDoc requirements. Both reject warnings as well as errors. `pnpm lint:jsdoc` remains available for a JSDoc-only pass.
+
+Generated Emscripten glue, build/cache output, the pnpm lockfile, generated API/inventory/schema documents, and the generated kernel ID type belong to their generators and are excluded. Native C/C++ and Python sources are outside these formatter/ESLint scopes and continue to be validated by their compilation and parity lanes. The authoritative file policy is `scripts/quality-files.mjs`; add new source files to Git before checking them. `pnpm run test:quality-gates` exercises actual formatting/lint defects, empty scopes, and generated-file preservation.
 
 Run the JS required lane for routine TypeScript, docs, WASM, and parity changes:
 

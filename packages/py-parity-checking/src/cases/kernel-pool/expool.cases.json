@@ -14,9 +14,7 @@
   {
     "caseId": "kernel-pool-expool-empty-name-error",
     "description": "Representative expool validation error for empty names",
-    "workflow": [
-      { "op": "kernel-pool.expool", "name": "" }
-    ],
+    "workflow": [{ "op": "kernel-pool.expool", "name": "" }],
     "expectation": { "kind": "error" }
   }
 ]

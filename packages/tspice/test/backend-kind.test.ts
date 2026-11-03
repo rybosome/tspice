@@ -25,12 +25,12 @@ vi.mock("@rybosome/tspice-backend-wasm", () => {
 import { createBackend } from "../dist/backend.js";
 
 describe("createBackend()", () => {
-  it("adds kind=\"node\"", async () => {
+  it('adds kind="node"', async () => {
     const backend = await createBackend({ backend: "node" });
     expect(backend.kind).toBe("node");
   });
 
-  it("adds kind=\"wasm\"", async () => {
+  it('adds kind="wasm"', async () => {
     const backend = await createBackend({ backend: "wasm" });
     expect(backend.kind).toBe("wasm");
   });

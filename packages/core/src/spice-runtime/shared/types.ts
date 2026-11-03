@@ -62,7 +62,11 @@ export type SpiceHandleEntry = {
 
 export type SpiceHandleRegistry = {
   register: (kind: SpiceHandleKind, nativeHandle: number) => SpiceHandle;
-  lookup: (handle: SpiceHandle, expected: readonly SpiceHandleKind[], context: string) => SpiceHandleEntry;
+  lookup: (
+    handle: SpiceHandle,
+    expected: readonly SpiceHandleKind[],
+    context: string,
+  ) => SpiceHandleEntry;
   close: (
     handle: SpiceHandle,
     expected: readonly SpiceHandleKind[],
@@ -76,7 +80,9 @@ export type SpiceHandleRegistry = {
 
 // Type-only brands (no runtime Symbol export).
 declare const __vec3Brand: unique symbol;
-export type Vec3 = readonly [number, number, number] & { readonly [__vec3Brand]: true };
+export type Vec3 = readonly [number, number, number] & {
+  readonly [__vec3Brand]: true;
+};
 
 // Type-only brands (no runtime Symbol export).
 declare const __vec6Brand: unique symbol;
@@ -168,4 +174,6 @@ export type SpiceMatrix6x6 = [
  */
 // Type-only brand (no runtime Symbol export).
 declare const __mat6RowMajorBrand: unique symbol;
-export type Mat6RowMajor = Readonly<SpiceMatrix6x6> & { readonly [__mat6RowMajorBrand]: true };
+export type Mat6RowMajor = Readonly<SpiceMatrix6x6> & {
+  readonly [__mat6RowMajorBrand]: true;
+};

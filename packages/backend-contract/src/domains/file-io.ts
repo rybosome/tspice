@@ -98,7 +98,12 @@ export interface FileIoApi {
   // --- DLA -----------------------------------------------------------------
 
   /** Create and open a DLA file for write (see `dlaopn_c`). */
-  dlaopn(path: string, ftype: string, ifname: string, ncomch: number): SpiceHandle;
+  dlaopn(
+    path: string,
+    ftype: string,
+    ifname: string,
+    ncomch: number,
+  ): SpiceHandle;
 
   /**
    * Begin a forward search for DLA segments (see `dlabfs_c`).

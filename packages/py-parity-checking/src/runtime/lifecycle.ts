@@ -1,4 +1,8 @@
-import { registerFinalizer, runFinalizersBestEffort, type RunTspiceContext } from "./context.js";
+import {
+  registerFinalizer,
+  runFinalizersBestEffort,
+  type RunTspiceContext,
+} from "./context.js";
 import { removeScratchRootBestEffort } from "./path-ref.js";
 
 /** Prepare toolkit lifecycle for a case: always kclear + reset before executing steps. */

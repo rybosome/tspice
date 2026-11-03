@@ -56,7 +56,10 @@
         "step": 120
       },
       { "op": "ephemeris.spkcls", "handleId": "H2" },
-      { "op": "kernels.furnsh", "file": "kernels/ephemeris-spksfs-not-found.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/ephemeris-spksfs-not-found.bsp"
+      },
       { "op": "ephemeris.spksfs", "body": 999999, "et": 60 }
     ],
     "expectation": { "kind": "success" }

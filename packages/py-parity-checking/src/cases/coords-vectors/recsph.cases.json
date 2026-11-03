@@ -5,11 +5,7 @@
     "workflow": [
       {
         "op": "coords-vectors.recsph",
-        "rectan": [
-          0,
-          0,
-          2
-        ]
+        "rectan": [0, 0, 2]
       }
     ],
     "expectation": {

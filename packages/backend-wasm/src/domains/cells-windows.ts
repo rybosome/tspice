@@ -18,10 +18,18 @@ import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
-function tspiceCallNewIntCell(module: EmscriptenModule, size: number): SpiceIntCell {
+function tspiceCallNewIntCell(
+  module: EmscriptenModule,
+  size: number,
+): SpiceIntCell {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
     module.HEAP32[outCellPtr >> 2] = 0;
-    const result = module._tspice_new_int_cell(size, outCellPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_new_int_cell(
+      size,
+      outCellPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -30,10 +38,18 @@ function tspiceCallNewIntCell(module: EmscriptenModule, size: number): SpiceIntC
   });
 }
 
-function tspiceCallNewDoubleCell(module: EmscriptenModule, size: number): SpiceDoubleCell {
+function tspiceCallNewDoubleCell(
+  module: EmscriptenModule,
+  size: number,
+): SpiceDoubleCell {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
     module.HEAP32[outCellPtr >> 2] = 0;
-    const result = module._tspice_new_double_cell(size, outCellPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_new_double_cell(
+      size,
+      outCellPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -42,10 +58,20 @@ function tspiceCallNewDoubleCell(module: EmscriptenModule, size: number): SpiceD
   });
 }
 
-function tspiceCallNewCharCell(module: EmscriptenModule, size: number, length: number): SpiceCharCell {
+function tspiceCallNewCharCell(
+  module: EmscriptenModule,
+  size: number,
+  length: number,
+): SpiceCharCell {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
     module.HEAP32[outCellPtr >> 2] = 0;
-    const result = module._tspice_new_char_cell(size, length, outCellPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_new_char_cell(
+      size,
+      length,
+      outCellPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -54,10 +80,18 @@ function tspiceCallNewCharCell(module: EmscriptenModule, size: number, length: n
   });
 }
 
-function tspiceCallNewWindow(module: EmscriptenModule, maxIntervals: number): SpiceWindow {
+function tspiceCallNewWindow(
+  module: EmscriptenModule,
+  maxIntervals: number,
+): SpiceWindow {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outWindowPtr) => {
     module.HEAP32[outWindowPtr >> 2] = 0;
-    const result = module._tspice_new_window(maxIntervals, outWindowPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_new_window(
+      maxIntervals,
+      outWindowPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -77,14 +111,22 @@ function tspiceCallFreeCell(module: EmscriptenModule, cell: number): void {
 
 function tspiceCallFreeWindow(module: EmscriptenModule, window: number): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_free_window(window, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_free_window(
+      window,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
   });
 }
 
-function tspiceCallSsize(module: EmscriptenModule, size: number, cell: number): void {
+function tspiceCallSsize(
+  module: EmscriptenModule,
+  size: number,
+  cell: number,
+): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const result = module._tspice_ssize(size, cell, errPtr, WASM_ERR_MAX_BYTES);
     if (result !== 0) {
@@ -93,7 +135,11 @@ function tspiceCallSsize(module: EmscriptenModule, size: number, cell: number): 
   });
 }
 
-function tspiceCallScard(module: EmscriptenModule, card: number, cell: number): void {
+function tspiceCallScard(
+  module: EmscriptenModule,
+  card: number,
+  cell: number,
+): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const result = module._tspice_scard(card, cell, errPtr, WASM_ERR_MAX_BYTES);
     if (result !== 0) {
@@ -105,7 +151,12 @@ function tspiceCallScard(module: EmscriptenModule, card: number, cell: number): 
 function tspiceCallCard(module: EmscriptenModule, cell: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCardPtr) => {
     module.HEAP32[outCardPtr >> 2] = 0;
-    const result = module._tspice_card(cell, outCardPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_card(
+      cell,
+      outCardPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -116,7 +167,12 @@ function tspiceCallCard(module: EmscriptenModule, cell: number): number {
 function tspiceCallSize(module: EmscriptenModule, cell: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outSizePtr) => {
     module.HEAP32[outSizePtr >> 2] = 0;
-    const result = module._tspice_size(cell, outSizePtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_size(
+      cell,
+      outSizePtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -124,38 +180,76 @@ function tspiceCallSize(module: EmscriptenModule, cell: number): number {
   });
 }
 
-function tspiceCallValid(module: EmscriptenModule, size: number, n: number, cell: number): void {
+function tspiceCallValid(
+  module: EmscriptenModule,
+  size: number,
+  n: number,
+  cell: number,
+): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_valid(size, n, cell, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_valid(
+      size,
+      n,
+      cell,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
   });
 }
 
-function tspiceCallInsrti(module: EmscriptenModule, item: number, cell: number): void {
+function tspiceCallInsrti(
+  module: EmscriptenModule,
+  item: number,
+  cell: number,
+): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_insrti(item, cell, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_insrti(
+      item,
+      cell,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
   });
 }
 
-function tspiceCallInsrtd(module: EmscriptenModule, item: number, cell: number): void {
+function tspiceCallInsrtd(
+  module: EmscriptenModule,
+  item: number,
+  cell: number,
+): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_insrtd(item, cell, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_insrtd(
+      item,
+      cell,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
   });
 }
 
-function tspiceCallInsrtc(module: EmscriptenModule, item: string, cell: number): void {
+function tspiceCallInsrtc(
+  module: EmscriptenModule,
+  item: string,
+  cell: number,
+): void {
   const itemPtr = writeUtf8CString(module, item);
   try {
     withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-      const result = module._tspice_insrtc(itemPtr, cell, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_insrtc(
+        itemPtr,
+        cell,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -165,10 +259,20 @@ function tspiceCallInsrtc(module: EmscriptenModule, item: string, cell: number):
   }
 }
 
-function tspiceCallCellGeti(module: EmscriptenModule, cell: number, index: number): number {
+function tspiceCallCellGeti(
+  module: EmscriptenModule,
+  cell: number,
+  index: number,
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outItemPtr) => {
     module.HEAP32[outItemPtr >> 2] = 0;
-    const result = module._tspice_cell_geti(cell, index, outItemPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_cell_geti(
+      cell,
+      index,
+      outItemPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -176,10 +280,20 @@ function tspiceCallCellGeti(module: EmscriptenModule, cell: number, index: numbe
   });
 }
 
-function tspiceCallCellGetd(module: EmscriptenModule, cell: number, index: number): number {
+function tspiceCallCellGetd(
+  module: EmscriptenModule,
+  cell: number,
+  index: number,
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outItemPtr) => {
     module.HEAPF64[outItemPtr >> 3] = 0;
-    const result = module._tspice_cell_getd(cell, index, outItemPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_cell_getd(
+      cell,
+      index,
+      outItemPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -193,19 +307,41 @@ function tspiceCallCellGetc(
   index: number,
   outMaxBytes: number,
 ): string {
-  return withAllocs(module, [WASM_ERR_MAX_BYTES, outMaxBytes], (errPtr, outPtr) => {
-    module.HEAPU8[outPtr] = 0;
-    const result = module._tspice_cell_getc(cell, index, outPtr, outMaxBytes, errPtr, WASM_ERR_MAX_BYTES);
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-    }
-    return module.UTF8ToString(outPtr, outMaxBytes).trimEnd();
-  });
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, outMaxBytes],
+    (errPtr, outPtr) => {
+      module.HEAPU8[outPtr] = 0;
+      const result = module._tspice_cell_getc(
+        cell,
+        index,
+        outPtr,
+        outMaxBytes,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
+      return module.UTF8ToString(outPtr, outMaxBytes).trimEnd();
+    },
+  );
 }
 
-function tspiceCallWninsd(module: EmscriptenModule, left: number, right: number, window: number): void {
+function tspiceCallWninsd(
+  module: EmscriptenModule,
+  left: number,
+  right: number,
+  window: number,
+): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_wninsd(left, right, window, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_wninsd(
+      left,
+      right,
+      window,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -215,7 +351,12 @@ function tspiceCallWninsd(module: EmscriptenModule, left: number, right: number,
 function tspiceCallWncard(module: EmscriptenModule, window: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCardPtr) => {
     module.HEAP32[outCardPtr >> 2] = 0;
-    const result = module._tspice_wncard(window, outCardPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_wncard(
+      window,
+      outCardPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -223,29 +364,51 @@ function tspiceCallWncard(module: EmscriptenModule, window: number): number {
   });
 }
 
-function tspiceCallWnfetd(module: EmscriptenModule, window: number, index: number): readonly [number, number] {
-  return withAllocs(module, [WASM_ERR_MAX_BYTES, 8, 8], (errPtr, outLeftPtr, outRightPtr) => {
-    module.HEAPF64[outLeftPtr >> 3] = 0;
-    module.HEAPF64[outRightPtr >> 3] = 0;
+function tspiceCallWnfetd(
+  module: EmscriptenModule,
+  window: number,
+  index: number,
+): readonly [number, number] {
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, 8, 8],
+    (errPtr, outLeftPtr, outRightPtr) => {
+      module.HEAPF64[outLeftPtr >> 3] = 0;
+      module.HEAPF64[outRightPtr >> 3] = 0;
 
-    const result = module._tspice_wnfetd(
+      const result = module._tspice_wnfetd(
+        window,
+        index,
+        outLeftPtr,
+        outRightPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      }
+      return [
+        module.HEAPF64[outLeftPtr >> 3] ?? 0,
+        module.HEAPF64[outRightPtr >> 3] ?? 0,
+      ] as const;
+    },
+  );
+}
+
+function tspiceCallWnvald(
+  module: EmscriptenModule,
+  size: number,
+  n: number,
+  window: number,
+): void {
+  withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
+    const result = module._tspice_wnvald(
+      size,
+      n,
       window,
-      index,
-      outLeftPtr,
-      outRightPtr,
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-    }
-    return [module.HEAPF64[outLeftPtr >> 3] ?? 0, module.HEAPF64[outRightPtr >> 3] ?? 0] as const;
-  });
-}
-
-function tspiceCallWnvald(module: EmscriptenModule, size: number, n: number, window: number): void {
-  withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_wnvald(size, n, window, errPtr, WASM_ERR_MAX_BYTES);
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -262,9 +425,14 @@ type WasmHandleOwnership = {
 //
 // This gives other WASM domains an O(1) way to reject foreign cell/window
 // handles (e.g. Node backend numeric handle ids) before calling into the shim.
-const WASM_HANDLE_OWNERSHIP = new WeakMap<EmscriptenModule, WasmHandleOwnership>();
+const WASM_HANDLE_OWNERSHIP = new WeakMap<
+  EmscriptenModule,
+  WasmHandleOwnership
+>();
 
-function getOrInitWasmHandleOwnership(module: EmscriptenModule): WasmHandleOwnership {
+function getOrInitWasmHandleOwnership(
+  module: EmscriptenModule,
+): WasmHandleOwnership {
   let ownership = WASM_HANDLE_OWNERSHIP.get(module);
   if (!ownership) {
     ownership = {
@@ -283,11 +451,19 @@ export function assertWasmOwnedCellHandle(
   handle: number,
   context: string,
 ): void {
-  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
-    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+  if (
+    typeof handle !== "number" ||
+    !Number.isFinite(handle) ||
+    !Number.isInteger(handle)
+  ) {
+    throw new TypeError(
+      `${context}: expected handle to be an integer number (got ${handle})`,
+    );
   }
   if (handle <= 0) {
-    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
+    throw new RangeError(
+      `${context}: expected handle to be > 0 (got ${handle})`,
+    );
   }
 
   const { allocatedCells } = getOrInitWasmHandleOwnership(module);
@@ -304,11 +480,19 @@ export function assertWasmOwnedWindowHandle(
   handle: number,
   context: string,
 ): void {
-  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
-    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+  if (
+    typeof handle !== "number" ||
+    !Number.isFinite(handle) ||
+    !Number.isInteger(handle)
+  ) {
+    throw new TypeError(
+      `${context}: expected handle to be an integer number (got ${handle})`,
+    );
   }
   if (handle <= 0) {
-    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
+    throw new RangeError(
+      `${context}: expected handle to be > 0 (got ${handle})`,
+    );
   }
 
   const { allocatedWindows } = getOrInitWasmHandleOwnership(module);
@@ -320,7 +504,9 @@ export function assertWasmOwnedWindowHandle(
 }
 
 /** Create a {@link CellsWindowsApi} implementation backed by a WASM Emscripten module. */
-export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi {
+export function createCellsWindowsApi(
+  module: EmscriptenModule,
+): CellsWindowsApi {
   emscriptenExports.assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.
@@ -328,7 +514,8 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
   // In the WASM backend, cell/window handles are raw pointers. Without this
   // tracking, callers could attempt to free arbitrary pointers or double-free
   // previously-freed handles.
-  const { allocatedCells, allocatedWindows } = getOrInitWasmHandleOwnership(module);
+  const { allocatedCells, allocatedWindows } =
+    getOrInitWasmHandleOwnership(module);
 
   function assertKnownCell(handle: number, context: string): void {
     if (!allocatedCells.has(handle)) {
@@ -416,7 +603,9 @@ export function createCellsWindowsApi(module: EmscriptenModule): CellsWindowsApi
 }
 
 /** Create backend kit hooks for cells/windows backed by a WASM Emscripten module. */
-export function createCellsWindowsKitApi(module: EmscriptenModule): CellsWindowsKitApi {
+export function createCellsWindowsKitApi(
+  module: EmscriptenModule,
+): CellsWindowsKitApi {
   emscriptenExports.assertEmscriptenModule(module);
 
   // Security + correctness: track allocated pointers per backend instance.
@@ -424,7 +613,8 @@ export function createCellsWindowsKitApi(module: EmscriptenModule): CellsWindows
   // In the WASM backend, cell/window handles are raw pointers. Without this
   // tracking, callers could attempt to free arbitrary pointers or double-free
   // previously-freed handles.
-  const { allocatedCells, allocatedWindows, charCellLengths } = getOrInitWasmHandleOwnership(module);
+  const { allocatedCells, allocatedWindows, charCellLengths } =
+    getOrInitWasmHandleOwnership(module);
 
   function assertKnownCell(handle: number, context: string): void {
     if (!allocatedCells.has(handle)) {
@@ -500,7 +690,9 @@ export function createCellsWindowsKitApi(module: EmscriptenModule): CellsWindows
       const handle = cell as unknown as number;
       const outMaxBytes = charCellLengths.get(handle);
       if (outMaxBytes === undefined) {
-        throw new RangeError(`cellGetc(): unknown/expired char cell handle ${handle} (handles are per-module)`);
+        throw new RangeError(
+          `cellGetc(): unknown/expired char cell handle ${handle} (handles are per-module)`,
+        );
       }
       return tspiceCallCellGetc(module, cell, index, outMaxBytes);
     },

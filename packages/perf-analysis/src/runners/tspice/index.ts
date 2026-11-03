@@ -12,6 +12,8 @@ export interface CreateTspiceRunnerOptions {
  *
  * NOTE: runner orchestration is intentionally unimplemented in this scaffold.
  */
-export function createTspiceRunner(_options: CreateTspiceRunnerOptions = {}): Runner {
+export function createTspiceRunner(
+  _options: CreateTspiceRunnerOptions = {},
+): Runner {
   return notImplemented("createTspiceRunner()");
 }

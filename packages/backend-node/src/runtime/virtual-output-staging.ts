@@ -98,13 +98,19 @@ export function createVirtualOutputStager(): VirtualOutputStager {
     return tempRootDir;
   }
 
-  function resolveVirtualOutputPath(virtualPath: string, context: string): string {
+  function resolveVirtualOutputPath(
+    virtualPath: string,
+    context: string,
+  ): string {
     const root = ensureTempRootDir();
     let rel: string;
     try {
       rel = normalizeVirtualKernelPath(virtualPath);
     } catch (error) {
-      throw new Error(`${context}: invalid VirtualOutput.path ${JSON.stringify(virtualPath)}`, { cause: error });
+      throw new Error(
+        `${context}: invalid VirtualOutput.path ${JSON.stringify(virtualPath)}`,
+        { cause: error },
+      );
     }
 
     // Harden against path traversal / absolute-path escapes (including Windows
@@ -125,7 +131,10 @@ export function createVirtualOutputStager(): VirtualOutputStager {
       if (typeof target === "string") {
         return target;
       }
-      const outPath = resolveVirtualOutputPath(target.path, "resolvePathForSpice(target)");
+      const outPath = resolveVirtualOutputPath(
+        target.path,
+        "resolvePathForSpice(target)",
+      );
 
       // Ensure parent directories exist so CSPICE can create the file.
       fs.mkdirSync(path.dirname(outPath), { recursive: true });
@@ -135,7 +144,10 @@ export function createVirtualOutputStager(): VirtualOutputStager {
 
     readVirtualOutput: (output) => {
       ensureNotDisposed("readVirtualOutput(output)");
-      const outPath = resolveVirtualOutputPath(output.path, "readVirtualOutput(output)");
+      const outPath = resolveVirtualOutputPath(
+        output.path,
+        "readVirtualOutput(output)",
+      );
 
       if ((openOutputRefCount.get(outPath) ?? 0) > 0) {
         throw new Error(
@@ -164,12 +176,18 @@ export function createVirtualOutputStager(): VirtualOutputStager {
     markOpen: (output) => {
       ensureNotDisposed("markOpen(output)");
       const outPath = resolveVirtualOutputPath(output.path, "markOpen(output)");
-      openOutputRefCount.set(outPath, (openOutputRefCount.get(outPath) ?? 0) + 1);
+      openOutputRefCount.set(
+        outPath,
+        (openOutputRefCount.get(outPath) ?? 0) + 1,
+      );
     },
 
     markClosed: (output) => {
       ensureNotDisposed("markClosed(output)");
-      const outPath = resolveVirtualOutputPath(output.path, "markClosed(output)");
+      const outPath = resolveVirtualOutputPath(
+        output.path,
+        "markClosed(output)",
+      );
       const next = (openOutputRefCount.get(outPath) ?? 0) - 1;
       if (next <= 0) {
         openOutputRefCount.delete(outPath);

@@ -5,11 +5,7 @@
     "workflow": [
       {
         "op": "coords-vectors.axisar",
-        "axis": [
-          0,
-          0,
-          1
-        ],
+        "axis": [0, 0, 1],
         "angle": 1.5707963267948966
       }
     ],

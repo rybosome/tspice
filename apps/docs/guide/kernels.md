@@ -17,7 +17,7 @@ If preload or kernel-selection errors block setup, see [/guide/troubleshooting](
 `tspice` uses a simple `KernelPack` structure:
 
 - `url`: where to fetch bytes from
-- `path`: a *virtual* identifier used when loading into tspice
+- `path`: a _virtual_ identifier used when loading into tspice
 - `baseUrl` (optional): base URL/path prefix used to resolve **relative** `kernel.url` values
 
 A pack is just:
@@ -36,7 +36,7 @@ All built-in catalogs (`kernels.tspice()`, `kernels.naif()`, `kernels.custom(...
 - `pick(...)` returns a `KernelPack` immediately.
 - **No ordering magic:** `pick(...)` preserves caller-provided order.
 
-This means *you* control (and are responsible for) kernel load order.
+This means _you_ control (and are responsible for) kernel load order.
 
 ## `kernels.tspice()` (curated community mirror)
 
@@ -166,7 +166,7 @@ Common approaches:
 
 If you host your app under a base path (for example GitHub Pages), you’ll usually want to set `baseUrl` so **relative** kernel URLs resolve correctly.
 
-`baseUrl` is a URL/path *directory* prefix:
+`baseUrl` is a URL/path _directory_ prefix:
 
 - It can be an absolute URL (`"https://cdn.example.com/myapp/"`) or a path prefix (`"/myapp/"`, `"myapp/"`).
 - It must end with a trailing `/`.

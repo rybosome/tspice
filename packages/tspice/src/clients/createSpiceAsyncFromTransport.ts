@@ -2,9 +2,12 @@ import type { SpiceAsync } from "../kit/types/spice-types.js";
 
 import type { SpiceTransport } from "../transport/types.js";
 
-type MethodKeys<T extends object> = Extract<{
-  [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
-}[keyof T], string>;
+type MethodKeys<T extends object> = Extract<
+  {
+    [K in keyof T]-?: T[K] extends (...args: unknown[]) => unknown ? K : never;
+  }[keyof T],
+  string
+>;
 
 type SurfaceMethodKeySnapshot = {
   /** Surface snapshot to avoid exposing phantom RPC methods via property access. */
@@ -57,7 +60,9 @@ function createNamespacedProxy(
 
   const inspectCustom = Symbol.for("nodejs.util.inspect.custom");
 
-  const getOrCreateRpcFn = (prop: string): ((...args: unknown[]) => Promise<unknown>) => {
+  const getOrCreateRpcFn = (
+    prop: string,
+  ): ((...args: unknown[]) => Promise<unknown>) => {
     const cached = fnCache.get(prop);
     // `fnCache` only stores functions, so `undefined` is a safe miss sentinel.
     if (cached !== undefined) {

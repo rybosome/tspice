@@ -49,7 +49,10 @@ export type NormalizationContext = {
 export type DomainNormalizer = {
   name: string;
   publish?: (step: WorkflowStep, context: NormalizationContext) => void;
-  normalize?: (step: WorkflowStep, context: NormalizationContext) => WorkflowStep;
+  normalize?: (
+    step: WorkflowStep,
+    context: NormalizationContext,
+  ) => WorkflowStep;
   analyze?: (
     step: WorkflowStep,
     context: NormalizationContext,

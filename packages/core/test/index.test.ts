@@ -20,11 +20,17 @@ describe("@rybosome/tspice-core", () => {
   });
 
   it("normalizes flexible virtual kernel path forms", () => {
-    expect(normalizeVirtualKernelPath("/kernels//naif0012.tls")).toBe("naif0012.tls");
+    expect(normalizeVirtualKernelPath("/kernels//naif0012.tls")).toBe(
+      "naif0012.tls",
+    );
 
     // Guard against the prefix-only edge case.
-    expect(() => normalizeVirtualKernelPath("/kernels")).toThrow("Invalid kernel path");
-    expect(() => normalizeVirtualKernelPath("kernels")).toThrow("Invalid kernel path");
+    expect(() => normalizeVirtualKernelPath("/kernels")).toThrow(
+      "Invalid kernel path",
+    );
+    expect(() => normalizeVirtualKernelPath("kernels")).toThrow(
+      "Invalid kernel path",
+    );
   });
 
   it("exports Mat3 branding + validation helpers at runtime", async () => {
@@ -36,13 +42,19 @@ describe("@rybosome/tspice-core", () => {
     expect(mod.assertMat3ArrayLike9).toBeTypeOf("function");
     expect(mod.isMat3ArrayLike9).toBeTypeOf("function");
 
-    const m = mod.brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, { freeze: "never" });
+    const m = mod.brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1] as const, {
+      freeze: "never",
+    });
     expect(mod.isBrandedMat3RowMajor(m)).toBe(true);
     expect(mod.isBrandedMat3ColMajor(m)).toBe(false);
     expect(mod.isMat3ArrayLike9(m)).toBe(true);
 
-    expect(() => mod.brandMat3RowMajor([1, 2, 3] as unknown)).toThrow(/length-9/i);
-    expect(() => mod.brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, Infinity] as unknown)).toThrow(/finite/i);
+    expect(() => mod.brandMat3RowMajor([1, 2, 3] as unknown)).toThrow(
+      /length-9/i,
+    );
+    expect(() =>
+      mod.brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, Infinity] as unknown),
+    ).toThrow(/finite/i);
   });
 
   it("exports Vec/Mat6 branding + validation helpers at runtime", async () => {
@@ -64,7 +76,9 @@ describe("@rybosome/tspice-core", () => {
 
     expect(() => mod.brandVec3([1, 2] as unknown)).toThrow(/length-3/i);
     expect(() => mod.brandVec3([1, 2, Infinity] as unknown)).toThrow(/finite/i);
-    expect(() => mod.brandVec3(new DataView(new ArrayBuffer(24)) as unknown)).toThrow(/DataView/i);
+    expect(() =>
+      mod.brandVec3(new DataView(new ArrayBuffer(24)) as unknown),
+    ).toThrow(/DataView/i);
 
     const v6 = mod.brandVec6([1, 2, 3, 4, 5, 6], { freeze: "never" });
     expect(mod.isBrandedVec6(v6)).toBe(true);
@@ -77,8 +91,12 @@ describe("@rybosome/tspice-core", () => {
     const m6 = mod.brandMat6RowMajor(m36, { freeze: "never" });
     expect(mod.isBrandedMat6RowMajor(m6)).toBe(true);
     expect(mod.isMat6ArrayLike36(m6)).toBe(true);
-    expect(() => mod.brandMat6RowMajor(Array.from({ length: 35 }, () => 0) as unknown)).toThrow(/length-36/i);
-    expect(() => mod.brandMat6RowMajor([...m36.slice(0, 35), Infinity] as unknown)).toThrow(/finite/i);
+    expect(() =>
+      mod.brandMat6RowMajor(Array.from({ length: 35 }, () => 0) as unknown),
+    ).toThrow(/length-36/i);
+    expect(() =>
+      mod.brandMat6RowMajor([...m36.slice(0, 35), Infinity] as unknown),
+    ).toThrow(/finite/i);
   });
 
   it("exports ids/names normalization helpers at runtime", async () => {
@@ -103,7 +121,9 @@ describe("@rybosome/tspice-core", () => {
     const handle = registry.register("EK", 42);
     const entriesHook = (
       registry as unknown as {
-        __entries?: () => ReadonlyArray<readonly [unknown, Readonly<{ kind: string; nativeHandle: number }>]>
+        __entries?: () => ReadonlyArray<
+          readonly [unknown, Readonly<{ kind: string; nativeHandle: number }>]
+        >;
       }
     ).__entries;
 
@@ -125,62 +145,92 @@ describe("@rybosome/tspice-core", () => {
   });
 });
 
-
 describe("matchesKernelKind", () => {
   it("treats requested tokens as trim + case-insensitive", () => {
     const requested = new Set([" spk ", "cK"]);
 
-    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(true);
-    expect(matchesKernelKind(requested, { file: "a.bc", filtyp: "CK" })).toBe(true);
-    expect(matchesKernelKind(requested, { file: "a.tpc", filtyp: "PCK" })).toBe(false);
+    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(
+      true,
+    );
+    expect(matchesKernelKind(requested, { file: "a.bc", filtyp: "CK" })).toBe(
+      true,
+    );
+    expect(matchesKernelKind(requested, { file: "a.tpc", filtyp: "PCK" })).toBe(
+      false,
+    );
   });
 
   it("normalizes the ALL token", () => {
     const requested = new Set([" all "]);
 
-    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(true);
-    expect(matchesKernelKind(requested, { file: "a.bc", filtyp: "CK" })).toBe(true);
+    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(
+      true,
+    );
+    expect(matchesKernelKind(requested, { file: "a.bc", filtyp: "CK" })).toBe(
+      true,
+    );
   });
 
   it("normalizes TEXT-subtype matching (e.g. LSK)", () => {
     const requested = new Set([" lsk "]);
 
-    expect(matchesKernelKind(requested, { file: "naif0012.tls", filtyp: "TEXT" })).toBe(true);
-    expect(matchesKernelKind(requested, { file: "some_kernel.txt", filtyp: "TEXT" })).toBe(false);
+    expect(
+      matchesKernelKind(requested, { file: "naif0012.tls", filtyp: "TEXT" }),
+    ).toBe(true);
+    expect(
+      matchesKernelKind(requested, { file: "some_kernel.txt", filtyp: "TEXT" }),
+    ).toBe(false);
   });
 
   it("ignores empty requested tokens", () => {
     const requested = new Set(["   "]);
-    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(false);
+    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(
+      false,
+    );
   });
 
   it("ignores empty-string requested tokens", () => {
     const requested = new Set([""]);
-    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(false);
+    expect(matchesKernelKind(requested, { file: "a.bsp", filtyp: "SPK" })).toBe(
+      false,
+    );
   });
 
   it("treats unknown kernel.filtyp values as non-matching", () => {
     const requested = new Set(["SPK"]);
 
-    expect(matchesKernelKind(requested, { file: "a.unknown", filtyp: "WAT" })).toBe(false);
-    expect(matchesKernelKind(requested, { file: "a.unknown", filtyp: "UNKNOWN" })).toBe(false);
-    expect(matchesKernelKind(new Set(["TEXT"]), { file: "a.tls", filtyp: "WAT" })).toBe(false);
+    expect(
+      matchesKernelKind(requested, { file: "a.unknown", filtyp: "WAT" }),
+    ).toBe(false);
+    expect(
+      matchesKernelKind(requested, { file: "a.unknown", filtyp: "UNKNOWN" }),
+    ).toBe(false);
+    expect(
+      matchesKernelKind(new Set(["TEXT"]), { file: "a.tls", filtyp: "WAT" }),
+    ).toBe(false);
   });
 
   it("treats unknown requested tokens as non-matching (lenient)", () => {
-    expect(matchesKernelKind(new Set(["wat"]), { file: "a.bsp", filtyp: "SPK" })).toBe(false);
-    expect(matchesKernelKind(new Set(["wat", "spk"]), { file: "a.bsp", filtyp: "SPK" })).toBe(true);
+    expect(
+      matchesKernelKind(new Set(["wat"]), { file: "a.bsp", filtyp: "SPK" }),
+    ).toBe(false);
+    expect(
+      matchesKernelKind(new Set(["wat", "spk"]), {
+        file: "a.bsp",
+        filtyp: "SPK",
+      }),
+    ).toBe(true);
   });
 });
-
 
 describe("normalizeKindInput", () => {
   it("throws RangeError for empty arrays", () => {
     expect(() => normalizeKindInput([])).toThrowError(RangeError);
-    expect(() => normalizeKindInput([])).toThrowError("Kernel kind array must not be empty");
+    expect(() => normalizeKindInput([])).toThrowError(
+      "Kernel kind array must not be empty",
+    );
   });
 });
-
 
 describe("nativeKindQueryOrNull", () => {
   it("forwards allowlisted kind queries", () => {
@@ -188,23 +238,33 @@ describe("nativeKindQueryOrNull", () => {
   });
 
   it("treats ALL as an override", () => {
-    expect(nativeKindQueryOrNull(normalizeKindInput(["ALL", "SPK"]))).toBe("ALL");
+    expect(nativeKindQueryOrNull(normalizeKindInput(["ALL", "SPK"]))).toBe(
+      "ALL",
+    );
   });
 
   it("deduplicates while preserving first-occurrence order", () => {
-    expect(nativeKindQueryOrNull(normalizeKindInput(["CK", "SPK", "CK", "SPK"]))).toBe("CK SPK");
+    expect(
+      nativeKindQueryOrNull(normalizeKindInput(["CK", "SPK", "CK", "SPK"])),
+    ).toBe("CK SPK");
   });
 
   it("returns null for TEXT subtypes unless TEXT is also requested", () => {
     expect(nativeKindQueryOrNull(normalizeKindInput(["LSK"]))).toBeNull();
-    expect(nativeKindQueryOrNull(normalizeKindInput(["SPK", "LSK"]))).toBeNull();
+    expect(
+      nativeKindQueryOrNull(normalizeKindInput(["SPK", "LSK"])),
+    ).toBeNull();
 
     expect(nativeKindQueryOrNull(["FK"])).toBeNull();
     expect(nativeKindQueryOrNull(["IK"])).toBeNull();
     expect(nativeKindQueryOrNull(["SCLK"])).toBeNull();
 
-    expect(nativeKindQueryOrNull(normalizeKindInput(["TEXT", "LSK"]))).toBe("TEXT");
-    expect(nativeKindQueryOrNull(normalizeKindInput(["LSK", "TEXT"]))).toBe("TEXT");
+    expect(nativeKindQueryOrNull(normalizeKindInput(["TEXT", "LSK"]))).toBe(
+      "TEXT",
+    );
+    expect(nativeKindQueryOrNull(normalizeKindInput(["LSK", "TEXT"]))).toBe(
+      "TEXT",
+    );
   });
 
   it("supports whitespace-separated kind strings via normalizeKindInput", () => {
@@ -214,7 +274,6 @@ describe("nativeKindQueryOrNull", () => {
 
   it("is defensive for non-normalized inputs (returns null instead of throwing)", () => {
     expect(nativeKindQueryOrNull([])).toBeNull();
-    expect(nativeKindQueryOrNull(["ALL", "SPK"]))
-      .toBeNull();
+    expect(nativeKindQueryOrNull(["ALL", "SPK"])).toBeNull();
   });
 });

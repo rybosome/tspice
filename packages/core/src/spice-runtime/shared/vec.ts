@@ -27,7 +27,9 @@ const VEC6_BRAND = Symbol("Vec6");
 
 function isDevEnv(): boolean {
   // Safe in non-node runtimes.
-  return typeof process !== "undefined" && process?.env?.NODE_ENV !== "production";
+  return (
+    typeof process !== "undefined" && process?.env?.NODE_ENV !== "production"
+  );
 }
 
 function shouldFreeze(mode: FreezeMode): boolean {
@@ -71,7 +73,10 @@ function isTypedArrayView(x: unknown): x is TypedArrayView {
   );
 }
 
-function isLengthArrayLike(x: unknown, expectedLength: number): x is ArrayLike<unknown> {
+function isLengthArrayLike(
+  x: unknown,
+  expectedLength: number,
+): x is ArrayLike<unknown> {
   return (
     x !== null &&
     typeof x === "object" &&
@@ -81,7 +86,11 @@ function isLengthArrayLike(x: unknown, expectedLength: number): x is ArrayLike<u
   );
 }
 
-function formatVecError(label: string, expectedLength: number, detail: string): string {
+function formatVecError(
+  label: string,
+  expectedLength: number,
+  detail: string,
+): string {
   return `${label}: expected a length-${expectedLength} array of finite numbers (${detail})`;
 }
 
@@ -115,7 +124,9 @@ function assertVecArrayLikeFinite(
   const { label, length } = options;
 
   if (value instanceof DataView) {
-    throw new Error(`${label}: DataView is not a supported vector input (use a TypedArray or number[]).`);
+    throw new Error(
+      `${label}: DataView is not a supported vector input (use a TypedArray or number[]).`,
+    );
   }
 
   if (!isLengthArrayLike(value, length)) {
@@ -125,19 +136,33 @@ function assertVecArrayLikeFinite(
   for (let i = 0; i < length; i++) {
     const v = value[i];
     if (!isFiniteNumber(v)) {
-      throw new Error(formatVecError(label, length, `index ${i} was ${String(v)}`));
+      throw new Error(
+        formatVecError(label, length, `index ${i} was ${String(v)}`),
+      );
     }
   }
 }
 
 /** Assert that a value is an array-like Vec3 (length 3) of finite numbers. */
-export function assertVec3ArrayLike3(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
-  assertVecArrayLikeFinite(value, { label: options?.label ?? "Vec3", length: 3 });
+export function assertVec3ArrayLike3(
+  value: unknown,
+  options?: { readonly label?: string },
+): asserts value is ArrayLike<number> {
+  assertVecArrayLikeFinite(value, {
+    label: options?.label ?? "Vec3",
+    length: 3,
+  });
 }
 
 /** Assert that a value is an array-like Vec6 (length 6) of finite numbers. */
-export function assertVec6ArrayLike6(value: unknown, options?: { readonly label?: string }): asserts value is ArrayLike<number> {
-  assertVecArrayLikeFinite(value, { label: options?.label ?? "Vec6", length: 6 });
+export function assertVec6ArrayLike6(
+  value: unknown,
+  options?: { readonly label?: string },
+): asserts value is ArrayLike<number> {
+  assertVecArrayLikeFinite(value, {
+    label: options?.label ?? "Vec6",
+    length: 6,
+  });
 }
 
 /** Validate and brand a value as a {@link Vec3}. */

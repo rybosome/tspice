@@ -6,8 +6,14 @@ import process from "node:process";
 
 const REPO_ROOT = path.resolve(process.cwd());
 
-const IDS_JSON_PATH = path.join(REPO_ROOT, "scripts/naif-generic-kernel-leaf-paths.json");
-const OUTPUT_TS_PATH = path.join(REPO_ROOT, "packages/tspice/src/kernels/naifKernelId.ts");
+const IDS_JSON_PATH = path.join(
+  REPO_ROOT,
+  "scripts/naif-generic-kernel-leaf-paths.json",
+);
+const OUTPUT_TS_PATH = path.join(
+  REPO_ROOT,
+  "packages/tspice/src/kernels/naifKernelId.ts",
+);
 
 function usage() {
   return [
@@ -35,7 +41,9 @@ function parseIdsJson(parsed) {
     }
     const trimmed = v.trim();
     if (!trimmed) {
-      throw new Error(`Expected non-empty string at index ${i} in ${IDS_JSON_PATH}`);
+      throw new Error(
+        `Expected non-empty string at index ${i} in ${IDS_JSON_PATH}`,
+      );
     }
     if (trimmed !== v) {
       throw new Error(
@@ -56,7 +64,10 @@ function parseIdsJson(parsed) {
   if (dupes.length) {
     throw new Error(
       `Found ${dupes.length} duplicate kernel ids in ${IDS_JSON_PATH}:\n` +
-        dupes.slice(0, 50).map((d) => `- ${d}`).join("\n") +
+        dupes
+          .slice(0, 50)
+          .map((d) => `- ${d}`)
+          .join("\n") +
         (dupes.length > 50 ? `\n... (${dupes.length - 50} more)` : ""),
     );
   }
@@ -108,6 +119,8 @@ async function main() {
 }
 
 main().catch((err) => {
-  process.stderr.write(`${err instanceof Error ? err.stack ?? err.message : String(err)}\n`);
+  process.stderr.write(
+    `${err instanceof Error ? (err.stack ?? err.message) : String(err)}\n`,
+  );
   process.exit(1);
 });
