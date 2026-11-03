@@ -34,9 +34,7 @@ If your target runtime is a browser, or your application is already TypeScript/N
 
 ## Mental model
 
-SPICE is stateful: loading kernels mutates a process-wide global kernel pool inside SPICE, and many routines read from (and sometimes affect) that shared state.
-
-Isolation (separating kernel-sets and workloads) can be achieved by creating multiple process or WebWorker instances, depending on runtime.
+SPICE is stateful: loading kernels changes the kernel pool that later operations read. Node backend objects in the same process share native CSPICE state. Each WASM module instance owns its state. Use separate processes for independent native workloads and separate WASM instances/workers for independent portable workloads.
 
 ## Quickstart 
 
@@ -141,7 +139,7 @@ main().catch(console.error);
 
 ## Coverage
 
-CSPICE exposes 652 public routines; 162 are currently implemented in `tspice`.
+The generated routine inventory records the current implemented, planned, and explicitly excluded CSPICE routines. Implementation breadth, per-backend support, and meaningful parity scenario coverage are separate measures; contract or case-file presence alone does not establish per-backend correctness or scenario quality.
 
 - **Detailed function inventory:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
 
@@ -190,7 +188,7 @@ flowchart TD
 | Artifact | Native addon (`.node`) | Prebuilt WebAssembly (`.wasm`) + JS glue |
 | Best for | Node services, local kernel archives, potential performance wins | Browsers, Web Workers, portability |
 | Kernel I/O shape | OS filesystem paths (plus optional byte staging) | Byte-backed loads into a virtual filesystem |
-| Operational constraints | **none** | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
+| Operational constraints | Requires a compatible platform addon; CSPICE state is shared within the process and native calls are serialized | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
 
 ## Roadmap (high-level)
 

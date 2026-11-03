@@ -88,7 +88,7 @@ When you add a new SPICE binding, treat it as a contract change that must land *
    - expose the binding from the native addon (`packages/backend-node/native/src/domains/*`)
    - add/update the TS domain wrapper (`packages/backend-node/src/domains/*`)
 4. **WASM backend:**
-   - ensure the shim code is compiled into the `.wasm` (see `packages/backend-wasm/emscripten/tspice_backend_wasm_wrapper.c`)
+   - ensure the shim source and exported symbol are included by `scripts/build-backend-wasm.mjs`, then regenerate the checked-in WASM/glue
    - add/update the TS domain wrapper (`packages/backend-wasm/src/domains/*`)
    - (when applicable) update the Emscripten module assertions in `packages/backend-wasm/src/lowlevel/exports.ts`
 5. **Tests / parity:** add or update verification coverage in the relevant package tests, and update fixed-case CSPICE parity workflows in `packages/py-parity-checking/` when behavior changes.

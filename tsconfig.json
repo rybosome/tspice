@@ -8,9 +8,6 @@
       "path": "./packages/core"
     },
     {
-      "path": "./packages/perf-analysis"
-    },
-    {
       "path": "./packages/backend-node"
     },
     {
