@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "exceptions": {
+    "kplfrm": {
+      "wasm": {
+        "status": "unsupported",
+        "reason": "The raw WASM method throws; the parity harness substitutes a kernel-pool fallback instead of exercising raw.kplfrm.",
+        "message": "kplfrm not supported in current WASM bundle",
+        "harnessFile": "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+        "harnessFunction": "runWasmKplfrmFallback",
+        "harnessDispatcher": "runKplfrmStep",
+        "operation": "kernels.kplfrm",
+        "errorType": "Error"
+      }
+    }
+  },
+  "routes": {
+    "furnsh": {
+      "node": {
+        "classification": "delegated-shim-route",
+        "requiresCall": "stager.furnsh",
+        "file": "packages/backend-node/src/runtime/kernel-staging.ts",
+        "function": "createKernelStager",
+        "method": "furnsh",
+        "reason": "Kernel staging delegates the native call and maintains byte-backed kernel lifecycle.",
+        "binding": "stager",
+        "bindingFactory": "createKernelStager"
+      }
+    },
+    "unload": {
+      "node": {
+        "classification": "delegated-shim-route",
+        "requiresCall": "stager.unload",
+        "file": "packages/backend-node/src/runtime/kernel-staging.ts",
+        "function": "createKernelStager",
+        "method": "unload",
+        "reason": "Kernel staging delegates the native call and maintains byte-backed kernel lifecycle.",
+        "binding": "stager",
+        "bindingFactory": "createKernelStager"
+      }
+    },
+    "kclear": {
+      "node": {
+        "classification": "delegated-shim-route",
+        "requiresCall": "stager.kclear",
+        "file": "packages/backend-node/src/runtime/kernel-staging.ts",
+        "function": "createKernelStager",
+        "method": "kclear",
+        "reason": "Kernel staging delegates the native call and maintains byte-backed kernel lifecycle.",
+        "binding": "stager",
+        "bindingFactory": "createKernelStager"
+      }
+    },
+    "tkvrsn": {
+      "wasm": {
+        "classification": "cached-shim-result",
+        "requiresIdentifier": "toolkitVersion",
+        "file": "packages/backend-wasm/src/domains/time.ts",
+        "function": "getToolkitVersion",
+        "reason": "The backend obtains TOOLKIT during creation and passes the cached value into createTimeApi."
+      }
+    },
+    "kxtrct": {
+      "wasm": {
+        "classification": "javascript-implementation",
+        "requiresCall": "kxtrctJs",
+        "file": "packages/core/src/spice-runtime/domains/kernels-utils.ts",
+        "function": "kxtrctJs",
+        "reason": "The WASM adapter delegates keyword extraction to the shared JavaScript implementation, not to CSPICE.",
+        "importedFrom": "@rybosome/tspice-core",
+        "exportIndex": "packages/core/src/index.ts",
+        "exportModule": "./spice-runtime/domains/kernels-utils.js"
+      }
+    }
+  },
+  "mappingNotes": {
+    "bodfnd": {
+      "node": {
+        "reason": "Existence is tested through dtpool so character-valued body variables are included.",
+        "expectedEntrypoints": ["dtpool_c"]
+      },
+      "wasm": {
+        "reason": "Existence is tested through dtpool so character-valued body variables are included.",
+        "expectedEntrypoints": ["dtpool_c"]
+      }
+    },
+    "bodvar": {
+      "node": {
+        "reason": "The wrapper queries pool dimensions and delegates numeric retrieval to bodvcd.",
+        "expectedEntrypoints": ["dtpool_c", "bodvcd_c"]
+      },
+      "wasm": {
+        "reason": "The wrapper queries pool dimensions and delegates numeric retrieval to bodvcd.",
+        "expectedEntrypoints": ["dtpool_c", "bodvcd_c"]
+      }
+    },
+    "dlacls": {
+      "node": {
+        "reason": "tspice exposes dlacls as a DAS close alias; CSPICE DAS close handles DLA files.",
+        "expectedEntrypoints": ["dascls_c"]
+      },
+      "wasm": {
+        "reason": "tspice exposes dlacls as a DAS close alias; CSPICE DAS close handles DLA files.",
+        "expectedEntrypoints": ["dascls_c"]
+      }
+    },
+    "kinfo": {
+      "wasm": {
+        "reason": "The WASM adapter caches loaded kernel metadata assembled with ktotal and kdata.",
+        "expectedEntrypoints": ["ktotal_c", "kdata_c"]
+      }
+    },
+    "kxtrct": {
+      "wasm": {
+        "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
+        "expectedEntrypoints": []
+      }
+    }
+  }
+}

@@ -41,6 +41,16 @@ jobs:
       node_version: '22'
       command: pnpm docs:build
 
+  coverage-ledger:
+    name: Coverage ledger (ubuntu + node 22)
+    uses: ./.github/workflows/reusable-node-pnpm.yml
+    with:
+      runs_on: ubuntu-latest
+      node_version: '22'
+      command: |
+        pnpm run check:coverage-ledger
+        pnpm run test:coverage-ledger
+
   check-llm-artifacts:
     name: check:llm-artifacts (ubuntu + node 22)
     runs-on: ubuntu-latest
