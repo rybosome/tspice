@@ -12,21 +12,21 @@
 
 ## File routing
 
-| Surface | Location |
-| --- | --- |
-| Public exports, clients, `raw` / `kit`, kernel catalogs | `packages/tspice` |
-| Backend interfaces and shared types | `packages/backend-contract` |
-| Shared TypeScript validation and runtime helpers | `packages/core` |
-| Node adapter and C++ addon | `packages/backend-node` |
-| WASM adapters, loaders, and checked-in Emscripten outputs | `packages/backend-wasm` |
-| Shared C ABI, errors, and handle registries | `packages/backend-shim-c` |
-| Deterministic facade/testing backend | `packages/backend-fake` |
-| Live SpiceyPy oracle, case registry, and fixtures | `packages/py-parity-checking` |
-| Published native addon wrappers | `packages/tspice-native-*` |
-| Consumer typecheck without DOM libraries | `fixtures/consumer-nodom` |
-| Documentation site and API reference generation | `apps/docs` |
-| Contributor docs, mapping, inventory, and reset plan | `docs` |
-| Build, generation, validation, and CI setup | `scripts`, `.github` |
+| Surface                                                   | Location                      |
+| --------------------------------------------------------- | ----------------------------- |
+| Public exports, clients, `raw` / `kit`, kernel catalogs   | `packages/tspice`             |
+| Backend interfaces and shared types                       | `packages/backend-contract`   |
+| Shared TypeScript validation and runtime helpers          | `packages/core`               |
+| Node adapter and C++ addon                                | `packages/backend-node`       |
+| WASM adapters, loaders, and checked-in Emscripten outputs | `packages/backend-wasm`       |
+| Shared C ABI, errors, and handle registries               | `packages/backend-shim-c`     |
+| Deterministic facade/testing backend                      | `packages/backend-fake`       |
+| Live SpiceyPy oracle, case registry, and fixtures         | `packages/py-parity-checking` |
+| Published native addon wrappers                           | `packages/tspice-native-*`    |
+| Consumer typecheck without DOM libraries                  | `fixtures/consumer-nodom`     |
+| Documentation site and API reference generation           | `apps/docs`                   |
+| Contributor docs, mapping, inventory, and reset plan      | `docs`                        |
+| Build, generation, validation, and CI setup               | `scripts`, `.github`          |
 
 Update this map when package ownership or repository structure changes.
 

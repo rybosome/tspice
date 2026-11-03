@@ -36,7 +36,7 @@ If your target runtime is a browser, or your application is already TypeScript/N
 
 SPICE is stateful: loading kernels changes the kernel pool that later operations read. Node backend objects in the same process share native CSPICE state. Each WASM module instance owns its state. Use separate processes for independent native workloads and separate WASM instances/workers for independent portable workloads.
 
-## Quickstart 
+## Quickstart
 
 ### Installation
 
@@ -151,7 +151,6 @@ The generated routine inventory records the current implemented, planned, and ex
 
 Because CSPICE itself is a mature and stable toolkit, long-term API churn in `tspice` is expected to be low.
 
-
 ## Validation
 
 In addition to typical unit testing, `tspice` runs **parity tests** with **CSPICE as the reference**, and also checks that the Node and WASM backends stay consistent for the same kernels and inputs. `tspice` preserves CSPICE double-precision semantics; numeric comparisons are verified against CSPICE with defined tolerances.
@@ -182,12 +181,12 @@ flowchart TD
 
 ## Backend comparison (Node native vs WASM)
 
-| | Node native (`backend: "node"`) | WASM (`backend: "wasm"`) |
-| --- | --- | --- |
-| Runs in | Node.js only | Browsers + Node.js |
-| Artifact | Native addon (`.node`) | Prebuilt WebAssembly (`.wasm`) + JS glue |
-| Best for | Node services, local kernel archives, potential performance wins | Browsers, Web Workers, portability |
-| Kernel I/O shape | OS filesystem paths (plus optional byte staging) | Byte-backed loads into a virtual filesystem |
+|                         | Node native (`backend: "node"`)                                                                                 | WASM (`backend: "wasm"`)                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Runs in                 | Node.js only                                                                                                    | Browsers + Node.js                                                                                              |
+| Artifact                | Native addon (`.node`)                                                                                          | Prebuilt WebAssembly (`.wasm`) + JS glue                                                                        |
+| Best for                | Node services, local kernel archives, potential performance wins                                                | Browsers, Web Workers, portability                                                                              |
+| Kernel I/O shape        | OS filesystem paths (plus optional byte staging)                                                                | Byte-backed loads into a virtual filesystem                                                                     |
 | Operational constraints | Requires a compatible platform addon; CSPICE state is shared within the process and native calls are serialized | Needs the `.wasm` asset to be served/bundled correctly (often via bundler asset handling or explicit `wasmUrl`) |
 
 ## Roadmap (high-level)

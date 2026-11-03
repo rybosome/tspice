@@ -59,7 +59,7 @@ Because `kclear()` resets the CSPICE kernel pool globally, `createSpice()` also 
 
 Source: `packages/backend-contract/src/index.ts`
 
-`SpiceBackend` is built by *composing* a set of small “domain” interfaces:
+`SpiceBackend` is built by _composing_ a set of small “domain” interfaces:
 
 - `TimeApi`
 - `KernelsApi`
@@ -78,7 +78,7 @@ This keeps “add a new SPICE capability” work localized to a domain instead o
 
 ## Adding a new capability (contributor checklist)
 
-When you add a new SPICE binding, treat it as a contract change that must land *end-to-end*:
+When you add a new SPICE binding, treat it as a contract change that must land _end-to-end_:
 
 1. **Contract:** add types + method signature to `@rybosome/tspice-backend-contract` (usually in an existing `src/domains/*.ts` file, then re-export via `src/index.ts`).
 2. **Shared shim:** implement a stable C ABI wrapper in `packages/backend-shim-c/`:

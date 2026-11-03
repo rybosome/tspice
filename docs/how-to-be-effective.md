@@ -4,18 +4,18 @@ Start with [development setup](./development-setup.md) for the pinned toolchain,
 
 ## Main entrypoints
 
-| Work | Start here |
-| --- | --- |
-| Public API, backend selection, clients, kernels, packaging | [`packages/tspice`](../packages/tspice/README.md) |
-| Shared backend API shape | [`packages/backend-contract`](../packages/backend-contract/README.md) |
-| Native C++ adapter and addon loading | [`packages/backend-node`](../packages/backend-node/README.md) |
-| Portable adapters, loaders, and WASM assets | [`packages/backend-wasm`](../packages/backend-wasm/README.md) |
-| Common C errors, memory, and opaque handles | [`packages/backend-shim-c`](../packages/backend-shim-c/README.md) |
-| Shared TypeScript runtime helpers | [`packages/core`](../packages/core/README.md) |
-| Deterministic fake backend | [`packages/backend-fake`](../packages/backend-fake/README.md) |
-| SpiceyPy oracle and parity scenarios | [`packages/py-parity-checking`](../packages/py-parity-checking/README.md) |
-| Build and generator ownership | [`scripts`](../scripts/README.md) |
-| User-facing explanations and architecture | [`apps/docs`](../apps/docs/README.md) |
+| Work                                                       | Start here                                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Public API, backend selection, clients, kernels, packaging | [`packages/tspice`](../packages/tspice/README.md)                         |
+| Shared backend API shape                                   | [`packages/backend-contract`](../packages/backend-contract/README.md)     |
+| Native C++ adapter and addon loading                       | [`packages/backend-node`](../packages/backend-node/README.md)             |
+| Portable adapters, loaders, and WASM assets                | [`packages/backend-wasm`](../packages/backend-wasm/README.md)             |
+| Common C errors, memory, and opaque handles                | [`packages/backend-shim-c`](../packages/backend-shim-c/README.md)         |
+| Shared TypeScript runtime helpers                          | [`packages/core`](../packages/core/README.md)                             |
+| Deterministic fake backend                                 | [`packages/backend-fake`](../packages/backend-fake/README.md)             |
+| SpiceyPy oracle and parity scenarios                       | [`packages/py-parity-checking`](../packages/py-parity-checking/README.md) |
+| Build and generator ownership                              | [`scripts`](../scripts/README.md)                                         |
+| User-facing explanations and architecture                  | [`apps/docs`](../apps/docs/README.md)                                     |
 
 Orrery is a separate application maintained in [its own repository](https://github.com/rybosome/orrery).
 
