@@ -549,7 +549,6 @@ export function createWorkerTransport(opts: {
       // paths (timeout, abort, response receipt, or dispose()) depending on
       // ordering.
       let didCleanup = false;
-      let onAbort: (() => void) | undefined;
 
       const cleanup = (): void => {
         if (didCleanup) return;
@@ -577,7 +576,7 @@ export function createWorkerTransport(opts: {
       };
       pendingById.set(id, pending);
 
-      onAbort = (): void => {
+      const onAbort = (): void => {
         if (pendingById.get(id) !== pending) return;
         pendingById.delete(id);
         pending.rejectAndCleanup(createAbortError());

@@ -33,7 +33,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
   // - prototype methods aren't lost (object spread only copies own props)
   // - methods are bound to the original backend instance (avoid mis-bound `this`)
   // - method identity is stable (`raw.furnsh === raw.furnsh`)
-  const boundMethods = new Map<PropertyKey, Function>();
+  const boundMethods = new Map<PropertyKey, (...args: never[]) => unknown>();
   const internalHandler: ProxyHandler<SpiceBackend["raw"]> = {
     get: (target, prop) => {
       // Use `target` as the receiver so accessor/prototype lookups see
@@ -91,7 +91,7 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
 }
 
 function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
-  const wrappedByFn = new WeakMap<Function, Function>();
+  const wrappedByFn = new WeakMap<(...args: never[]) => unknown, (...args: never[]) => unknown>();
   const handler: ProxyHandler<T> = {
     get: (t, prop) => {
       const value = Reflect.get(t, prop, t) as unknown;

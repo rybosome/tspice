@@ -30,7 +30,7 @@ type _NoCreateBackendOptions = import("@rybosome/tspice").CreateBackendOptions;
 // @ts-expect-error `CreateSpiceOptions` is internal-only.
 type _NoCreateSpiceOptions = import("@rybosome/tspice").CreateSpiceOptions;
 // @ts-expect-error `CreateSpiceAsyncOptions` is internal-only.
-type _NoCreateSpiceAsyncOptions = import("@rybosome/tspice").CreateSpiceAsyncOptions;
+type _NoAsyncOptionsExport = import("@rybosome/tspice").CreateSpiceAsyncOptions;
 
 // --- key public types should remain exported ---
 type _KernelPackIsExported = import("@rybosome/tspice").KernelPack;

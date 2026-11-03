@@ -97,12 +97,12 @@ function rewriteSpecifiersInFile(destPath) {
     next = next
       // Double-quoted literals: normal + escaped (e.g. in generated strings).
       .replaceAll(`"${from}"`, `"${to}"`)
-      .replaceAll(`\"${from}\"`, `\"${to}\"`)
+      .replaceAll(`"${from}"`, `"${to}"`)
       // Single-quoted literals.
       .replaceAll(`'${from}'`, `'${to}'`)
       // Subpath imports.
       .replaceAll(`"${from}/`, `"${to}/`)
-      .replaceAll(`\"${from}/`, `\"${to}/`)
+      .replaceAll(`"${from}/`, `"${to}/`)
       .replaceAll(`'${from}/`, `'${to}/`);
   }
 

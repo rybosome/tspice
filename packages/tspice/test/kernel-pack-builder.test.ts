@@ -264,7 +264,7 @@ describe("loadKernelPack()", () => {
   });
 
   it("resolves relative kernel URLs against baseUrl (directory-style)", async () => {
-    const fetch = vi.fn(async (url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
 
     const loadKernel = vi.fn(async (_kernel: KernelSource) => {});
     const spice = { kit: { loadKernel } };
@@ -284,7 +284,7 @@ describe("loadKernelPack()", () => {
   });
 
   it("throws on protocol-relative baseUrl (Node fetch requires scheme-based URLs)", async () => {
-    const fetch = vi.fn(async (url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
     const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
 
     const pack: KernelPack = {
@@ -292,11 +292,11 @@ describe("loadKernelPack()", () => {
       kernels: [{ url: "kernels/a.tls", path: "/kernels/a.tls" }],
     };
 
-    await expect(loadKernelPack(spice, pack, { fetch })).rejects.toThrow(/scheme-based URLs like \"https:\/\//);
+    await expect(loadKernelPack(spice, pack, { fetch })).rejects.toThrow(/scheme-based URLs like "https:\/\//);
   });
 
   it("supports root-relative URLs with applyBaseOrigin", async () => {
-    const fetch = vi.fn(async (url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
+    const fetch = vi.fn(async (_url: string) => okResponse(new Uint8Array([1]))) satisfies FetchLike;
     const spice = { kit: { loadKernel: vi.fn(async (_kernel: KernelSource) => {}) } };
 
     await loadKernelPack(

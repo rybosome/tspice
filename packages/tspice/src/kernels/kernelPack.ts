@@ -100,9 +100,9 @@ function isAbsoluteUrl(url: string): boolean {
 function throwProtocolRelativeUrlError(opts: { label: string; url: string }): never {
   throw new Error(
     `${opts.label}: invalid URL form. ` +
-      `Expected: scheme-based URLs like \"https://...\" or non-protocol-relative paths. ` +
+      `Expected: scheme-based URLs like "https://..." or non-protocol-relative paths. ` +
       `Got: ${opts.url}. ` +
-      `Hint: replace leading \"//\" with an explicit scheme.`,
+      `Hint: replace leading "//" with an explicit scheme.`,
   );
 }
 
@@ -140,9 +140,9 @@ export function resolveKernelUrl(
     if (rootRelativeKernelUrlBehavior === "error") {
       throw new Error(
         `loadKernelPack(): incompatible root-relative kernel URL with current behavior. ` +
-          `Expected: relative kernel.url when rootRelativeKernelUrlBehavior=\"error\". ` +
+          `Expected: relative kernel.url when rootRelativeKernelUrlBehavior="error". ` +
           `Got: kernel.url=${url}, baseUrl=${normalizedBaseUrl}. ` +
-          `Hint: use a relative kernel URL or set rootRelativeKernelUrlBehavior to \"bypassBaseUrl\" or \"applyBaseOrigin\".`,
+          `Hint: use a relative kernel URL or set rootRelativeKernelUrlBehavior to "bypassBaseUrl" or "applyBaseOrigin".`,
       );
     }
 
@@ -166,7 +166,7 @@ export function resolveKernelUrl(
     // file-vs-directory behavior of `new URL(url, baseUrl)`.
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): invalid absolute baseUrl. Expected: absolute baseUrl must be directory-style (pathname must end with \"/\"). Got: ${normalizedBaseUrl}. Hint: append a trailing slash to indicate directory semantics.`,
+        `loadKernelPack(): invalid absolute baseUrl. Expected: absolute baseUrl must be directory-style (pathname must end with "/"). Got: ${normalizedBaseUrl}. Hint: append a trailing slash to indicate directory semantics.`,
       );
     }
 
@@ -180,7 +180,7 @@ export function resolveKernelUrl(
     const base = new URL(normalizedBaseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): invalid path-absolute baseUrl. Expected: path-absolute baseUrl pathname to end with \"/\". Got: ${normalizedBaseUrl}. Hint: use /myapp/ instead of /myapp.`,
+        `loadKernelPack(): invalid path-absolute baseUrl. Expected: path-absolute baseUrl pathname to end with "/". Got: ${normalizedBaseUrl}. Hint: use /myapp/ instead of /myapp.`,
       );
     }
 
@@ -192,7 +192,7 @@ export function resolveKernelUrl(
   // Treat the base as a directory prefix.
   if (!normalizedBaseUrl.endsWith("/")) {
     throw new Error(
-      `loadKernelPack(): invalid relative baseUrl. Expected: baseUrl to be directory-style (end with \"/\"). Got: ${normalizedBaseUrl}. Hint: use myapp/ instead of myapp.`,
+      `loadKernelPack(): invalid relative baseUrl. Expected: baseUrl to be directory-style (end with "/"). Got: ${normalizedBaseUrl}. Hint: use myapp/ instead of myapp.`,
     );
   }
 

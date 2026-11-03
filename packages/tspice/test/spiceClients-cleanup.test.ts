@@ -68,7 +68,7 @@ describe("spiceClients cleanup", () => {
       ).rejects.toThrow(/Failed to fetch kernel/i);
     } finally {
       if (originalFetch === undefined) {
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+
         delete (globalThis as unknown as { fetch?: unknown }).fetch;
       } else {
         (globalThis as unknown as { fetch: unknown }).fetch = originalFetch;

@@ -54,7 +54,7 @@ export async function createBackend(options: CreateBackendOptions): Promise<Spic
         return createNodeBackend();
       } catch (error) {
         throw new Error(
-          `createBackend(node): backend module load failed. Expected: @rybosome/tspice-backend-node to load successfully. Got: ${String(error)}. Hint: install/build native backend artifacts or use backend=\"wasm\".`,
+          `createBackend(node): backend module load failed. Expected: @rybosome/tspice-backend-node to load successfully. Got: ${String(error)}. Hint: install/build native backend artifacts or use backend="wasm".`,
         );
       }
 

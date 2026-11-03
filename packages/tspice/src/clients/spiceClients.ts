@@ -17,7 +17,7 @@ import { createSpiceSyncFromTransport } from "./createSpiceSyncFromTransport.js"
 import type { FetchLike, KernelPack } from "../kernels/kernelPack.js";
 import { loadKernelPack } from "../kernels/kernelPack.js";
 import { createSpiceWorker } from "../worker/browser/createSpiceWorker.js";
-import { createWorkerTransport, type WorkerLike, type WorkerTransport } from "../worker/transport/createWorkerTransport.js";
+import { createWorkerTransport, type WorkerLike } from "../worker/transport/createWorkerTransport.js";
 
 type KernelBatch = {
   pack: KernelPack;
@@ -297,8 +297,6 @@ function createSpiceTransportSyncFromSpiceLike(
 }
 
 function createBuilder(state: BuilderState): SpiceClientsBuilder {
-  let builder!: SpiceClientsBuilder;
-
   const loadKernelBatches = async (spice: Spice | SpiceAsync): Promise<void> => {
     for (const batch of state.kernelBatches) {
       await loadKernelPack(
@@ -318,7 +316,7 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
     });
 
 
-  builder = {
+  const builder: SpiceClientsBuilder = {
     caching: (opts) => createBuilder({ ...state, cachingOptions: opts }),
 
     withFetch: (fetchFn) => createBuilder({ ...state, kernelFetch: fetchFn }),
@@ -391,8 +389,9 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       const client: SpiceClientBuildResult<Spice> = { spice, dispose };
 
       // Runtime alias for Explicit Resource Management. Do not polyfill.
-      if (typeof (Symbol as any).asyncDispose === "symbol") {
-        (client as any)[(Symbol as any).asyncDispose] = dispose;
+      const asyncDisposeSymbol: unknown = Reflect.get(Symbol, "asyncDispose");
+      if (typeof asyncDisposeSymbol === "symbol") {
+        Reflect.set(client, asyncDisposeSymbol, dispose);
       }
 
       try {
@@ -458,8 +457,9 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
       const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
 
       // Runtime alias for Explicit Resource Management. Do not polyfill.
-      if (typeof (Symbol as any).asyncDispose === "symbol") {
-        (client as any)[(Symbol as any).asyncDispose] = dispose;
+      const asyncDisposeSymbol: unknown = Reflect.get(Symbol, "asyncDispose");
+      if (typeof asyncDisposeSymbol === "symbol") {
+        Reflect.set(client, asyncDisposeSymbol, dispose);
       }
 
       try {
@@ -544,8 +544,9 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
         const client: SpiceClientBuildResult<SpiceAsync> = { spice, dispose };
 
         // Runtime alias for Explicit Resource Management. Do not polyfill.
-        if (typeof (Symbol as any).asyncDispose === "symbol") {
-          (client as any)[(Symbol as any).asyncDispose] = dispose;
+        const asyncDisposeSymbol: unknown = Reflect.get(Symbol, "asyncDispose");
+        if (typeof asyncDisposeSymbol === "symbol") {
+          Reflect.set(client, asyncDisposeSymbol, dispose);
         }
 
         // Eagerly create/validate the worker transport so `.toWebWorker()` throws

@@ -1,4 +1,4 @@
-import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
+import type { SpiceBackend, SpiceHandle, SpiceHandleEntry } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 
 import { getNativeAddon } from "./native.js";
@@ -73,9 +73,9 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     value: () => {
       const errors: unknown[] = [];
       const entries =
-        (spiceHandles as unknown as {
+        (spiceHandles as typeof spiceHandles & {
           __entries?: () => ReadonlyArray<
-            readonly [unknown, { kind: "DAF" | "DAS" | "DLA" | "EK" | "SPK"; nativeHandle: number }]
+            readonly [SpiceHandle, Readonly<SpiceHandleEntry>]
           >;
         }).__entries?.() ?? [];
 
@@ -83,17 +83,17 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
         try {
           if (entry.kind === "SPK") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
-            backend.raw.spkcls(handle as any);
+            backend.raw.spkcls(handle);
             continue;
           }
 
           if (entry.kind === "DAF") {
-            spiceHandles.close(handle as any, ["DAF"], (e) => native.dafcls(e.nativeHandle), "disposeAll:dafcls");
+            spiceHandles.close(handle, ["DAF"], (e) => native.dafcls(e.nativeHandle), "disposeAll:dafcls");
           } else if (entry.kind === "EK") {
-            spiceHandles.close(handle as any, ["EK"], (e) => native.ekcls(e.nativeHandle), "disposeAll:ekcls");
+            spiceHandles.close(handle, ["EK"], (e) => native.ekcls(e.nativeHandle), "disposeAll:ekcls");
           } else {
             // In CSPICE, dascls_c closes both DAS and DLA handles (dlacls_c is an alias).
-            spiceHandles.close(handle as any, ["DAS", "DLA"], (e) => native.dascls(e.nativeHandle), "disposeAll:dascls");
+            spiceHandles.close(handle, ["DAS", "DLA"], (e) => native.dascls(e.nativeHandle), "disposeAll:dascls");
           }
         } catch (err) {
           errors.push(err);

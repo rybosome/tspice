@@ -1,7 +1,6 @@
 import type { KernelSource, SpiceBackend, SpiceCharCell, SpiceDoubleCell, SpiceIntCell, SpiceWindow, VirtualOutput } from "@rybosome/tspice-backend-contract";
 
 import type {
-  AberrationCorrection,
   FrameName,
   GetStateArgs,
   SpiceTime,

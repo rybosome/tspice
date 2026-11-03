@@ -1606,8 +1606,12 @@ export type EmscriptenModule = {
   ): number;
   _tspice_wnvald(size: number, n: number, window: number, errPtr: number, errMaxBytes: number): number;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  FS: any;
+  FS: {
+    mkdirTree(path: string): void;
+    writeFile(path: string, data: Uint8Array): void;
+    readFile(path: string, options: { encoding: "binary" }): Uint8Array;
+    unlink(path: string): void;
+  };
 };
 
 const REQUIRED_FUNCTION_EXPORTS = [
@@ -1822,11 +1826,11 @@ export function assertEmscriptenModule(m: unknown): asserts m is EmscriptenModul
   if (!(m.HEAP32 instanceof Int32Array)) invalid.push("HEAP32");
   if (!(m.HEAPF64 instanceof Float64Array)) invalid.push("HEAPF64");
 
-  if (typeof m.FS !== "object" || m.FS === null) {
+  if (!isRecord(m.FS)) {
     invalid.push("FS");
   } else {
     // We rely on this for file I/O (see createWasmFs + file-io domain).
-    if (typeof (m.FS as any).mkdirTree !== "function") {
+    if (typeof m.FS.mkdirTree !== "function") {
       invalid.push("FS.mkdirTree");
     }
   }

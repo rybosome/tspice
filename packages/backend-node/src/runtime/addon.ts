@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 
-import type { EkFindResult, EkGetResult } from "@rybosome/tspice-backend-contract";
 import { fileURLToPath } from "node:url";
 
 import type { SpiceIntCell, SpiceWindow } from "@rybosome/tspice-backend-contract";

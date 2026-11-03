@@ -8,21 +8,21 @@ const originalRevokeObjectURL = (URL as unknown as { revokeObjectURL?: unknown }
 
 afterEach(() => {
   if (originalWorker === undefined) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+
     delete (globalThis as unknown as { Worker?: unknown }).Worker;
   } else {
     (globalThis as unknown as { Worker?: unknown }).Worker = originalWorker;
   }
 
   if (originalCreateObjectURL === undefined) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+
     delete (URL as unknown as { createObjectURL?: unknown }).createObjectURL;
   } else {
     (URL as unknown as { createObjectURL?: unknown }).createObjectURL = originalCreateObjectURL;
   }
 
   if (originalRevokeObjectURL === undefined) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+
     delete (URL as unknown as { revokeObjectURL?: unknown }).revokeObjectURL;
   } else {
     (URL as unknown as { revokeObjectURL?: unknown }).revokeObjectURL = originalRevokeObjectURL;

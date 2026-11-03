@@ -1,6 +1,5 @@
 import type {
   KernelPoolApi,
-  KernelPoolVarType,
 } from "@rybosome/tspice-backend-contract";
 import { invariant } from "@rybosome/tspice-core";
 

@@ -13,9 +13,9 @@ function isAbsoluteKernelUrlPrefix(kernelUrlPrefix: string): boolean {
   if (kernelUrlPrefix.startsWith("//")) {
     throw new Error(
       `kernels.*(): invalid origin URL prefix. ` +
-        `Expected: scheme-based URLs like \"https://...\" or non-protocol-relative paths. ` +
+        `Expected: scheme-based URLs like "https://..." or non-protocol-relative paths. ` +
         `Got: ${kernelUrlPrefix}. ` +
-        `Hint: replace leading \"//\" with an explicit scheme.`,
+        `Hint: replace leading "//" with an explicit scheme.`,
     );
   }
 

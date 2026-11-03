@@ -10,6 +10,9 @@ This directory contains repository tools used by workspace commands and GitHub A
 | `verify-native-package-versions.mjs` | Checks that the public facade and platform-native package versions agree. Run with `pnpm run check:versions`. |
 | `doctor.mjs` | Read-only prerequisite check for the JS/parity, native, or WASM regeneration profile. Run with `pnpm doctor`, `pnpm doctor:native`, or `pnpm doctor:wasm`. |
 | `doctor.test.mjs` | Exercises preflight success and failure behavior using isolated fake tools; run with `pnpm run test:doctor`. Both JS check entrypoints include it. |
+| `quality-files.mjs` | Selects tracked code, config, and documentation files and excludes generated/binary/build output for the quality gates. |
+| `quality-check.mjs` | Runs real fail-closed `format:check` / `format --write` and `lint` checks, printing the selected file count. |
+| `quality-check.test.mjs` | Verifies empty scopes fail, real violations fail, and generated files remain untouched; run with `pnpm run test:quality-gates`. Both JS check entrypoints include it. |
 | `lint-jsdoc.mjs` | Checks or fixes public API JSDoc (`pnpm run lint:jsdoc` / `pnpm run lint:jsdoc:fix`). |
 | `smoke-tspice-native.mjs` | Verifies a packed `@rybosome/tspice` install can resolve and load its optional native addon; CI runs it in a temporary consumer project. |
 | `set-release-version.mjs` | Updates package manifests to a release version supplied on the command line; used by the release workflow. |

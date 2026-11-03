@@ -6,7 +6,6 @@ import type {
   StepEphemerisSpkcov,
   StepEphemerisSpkobj,
   StepEphemerisSpkopa,
-  StepEphemerisSpkopn,
   WorkflowStep,
 } from "../../case-types.js";
 import { toPathRef } from "../../fixtures.js";

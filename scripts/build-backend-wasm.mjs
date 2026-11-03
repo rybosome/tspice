@@ -529,7 +529,7 @@ fs.copyFileSync(outputWebWasmPath, outputWasmPath);
   const webWasmBasename = path.basename(outputWebWasmPath);
   const nodeWasmBasename = path.basename(outputNodeWasmPath);
 
-  const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\$&");
+  const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[[\]\\]/g, "$&");
 
   const patchWasmBasename = (jsPath, oldBasename) => {
     const jsContents = fs.readFileSync(jsPath, "utf8");

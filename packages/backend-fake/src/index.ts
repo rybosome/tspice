@@ -1075,7 +1075,7 @@ export function createFakeBackend(options: FakeBackendOptions = {}): SpiceBacken
       const start0 = start;
       const room0 = room;
 
-      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\[\]\\]/g, "\\$&");
+      const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[[\]\\]/g, "\\$&");
 
       // Support escaping wildcard characters via backslash:
       // - `\*` matches a literal `*`
