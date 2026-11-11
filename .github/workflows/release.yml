@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runs_on: macos-14
+          - runs_on: macos-15
             node_version: "22"
             pkg: tspice-native-darwin-arm64
           # macos-13 is retired; use an Intel runner label for x64 builds.
@@ -236,7 +236,7 @@ jobs:
           - runs_on: macos-15-intel
             node_version: "22"
             native_pkg: "@rybosome/tspice-native-darwin-x64"
-          - runs_on: macos-14
+          - runs_on: macos-15
             node_version: "22"
             native_pkg: "@rybosome/tspice-native-darwin-arm64"
 

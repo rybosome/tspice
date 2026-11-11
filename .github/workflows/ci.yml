@@ -182,7 +182,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14, macos-15-intel]
+        os: [ubuntu-latest, macos-15, macos-15-intel]
 
     uses: ./.github/workflows/reusable-node-pnpm.yml
     with:
