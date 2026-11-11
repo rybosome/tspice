@@ -142,6 +142,7 @@ main().catch(console.error);
 The generated routine inventory records the current implemented, planned, and explicitly excluded CSPICE routines. Implementation breadth, per-backend support, and meaningful parity scenario coverage are separate measures; contract or case-file presence alone does not establish per-backend correctness or scenario quality.
 
 - **Detailed function inventory:** [`docs/cspice-function-inventory.md`](docs/cspice-function-inventory.md)
+- **Backend and scenario evidence:** [generated coverage ledger](docs/coverage-ledger.md), with [machine-readable routine records](data/coverage-ledger.json). This distinguishes contract presence, backend routes, registered scenarios, and known fallbacks; semantic coverage remains unaudited.
 
 ## API Stability
 
