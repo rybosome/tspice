@@ -6,7 +6,7 @@
 #include <stdatomic.h>
 #include <string.h>
 
-static atomic_bool g_initialized = ATOMIC_VAR_INIT(false);
+static atomic_bool g_initialized = false;
 
 // Last-error storage to allow JS backends (notably WASM) to retrieve structured
 // error details without parsing the formatted error string.
