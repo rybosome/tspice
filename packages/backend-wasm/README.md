@@ -12,7 +12,7 @@ This backend provides a CSPICE-derived `.wasm` artifact. See [`NOTICE`](./NOTICE
 
 ## Purpose / Why this exists
 
-This package exists to reserve a “WASM backend” slot in the architecture so we can evolve toward a portable (non-native-addon) backend over time.
+This package implements the portable backend used in browsers, Web Workers, and Node. Its TypeScript domain adapters call a CSPICE-derived Emscripten module compiled from the shared C shim and CSPICE sources. Each module instance owns its CSPICE state.
 
 ## How it fits into `tspice`
 

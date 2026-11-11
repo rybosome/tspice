@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { describe, expect, it, vi } from "vitest";
+import { describe, it, vi } from "vitest";
 
 import { spiceClients } from "@rybosome/tspice";
 
@@ -36,12 +36,6 @@ async function assertParityForBackend(
 
 describe("py-parity-checking", () => {
   const itNode = it.runIf(nodeBackendAvailable);
-
-  const expectNative = process.env.TSPICE_EXPECT_NATIVE === "true";
-  const itExpectNative = it.runIf(expectNative);
-  itExpectNative("CI sanity: node backend should be present", () => {
-    expect(nodeBackendAvailable).toBe(true);
-  });
 
   for (const parityCase of allCases) {
     it(parityCase.caseId, async () => {

@@ -12,6 +12,7 @@
     },
     "test": {
       "dependsOn": ["build"],
+      "env": ["TSPICE_EXPECT_NATIVE"],
       "outputs": []
     }
   }

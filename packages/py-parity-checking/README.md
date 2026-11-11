@@ -4,19 +4,18 @@ A fixed-case parity package that compares `@rybosome/tspice` behavior against a 
 
 ## Why this package exists
 
-- This is a fresh implementation under `packages/py-parity-checking`.
-- It is intentionally independent from the legacy v3 YAML/spec pipeline.
+- The fixed JSON case registry is the maintained source of parity scenarios.
 - Oracle truth comes from live Python sidecar execution (SpiceyPy), not from baked expected corpora.
 
-## Architecture (v1)
+## Architecture
 
-- **TypeScript runner**: executes fixed workflow cases against `@rybosome/tspice` (WASM backend in tests).
+- **TypeScript runner**: executes registered workflows against WASM and, when the native backend is available, Node. Each backend result is compared with the live sidecar result.
 - **Python sidecar**: executes the same workflow against SpiceyPy.
 - **Parity assertions**:
-  - Success path: strict equality on normalized outputs.
+  - Success path: recursive equality on normalized outputs, with absolute or relative numeric tolerance of `1e-12`.
   - Error path: minimal matching (error/no-error + lightweight class/message checks).
 
-Each case is isolated by `kclear()` before and after execution on both sides.
+Case runners clear kernel state and reset SPICE errors before each workflow, then attempt resource cleanup and another clear/reset afterward. Case registration establishes executable scenarios; it does not establish that every routine and backend has meaningful success, edge, and error coverage.
 
 ## Fixtures
 

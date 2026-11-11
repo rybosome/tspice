@@ -12,15 +12,12 @@ This page focuses on what’s _specific_ to the WASM backend.
 Checked-in Emscripten outputs:
 
 - `packages/backend-wasm/emscripten/tspice_backend_wasm.web.js`
-- `packages/backend-wasm/emscripten/tspice_backend_wasm.web.wasm`
 - `packages/backend-wasm/emscripten/tspice_backend_wasm.node.js`
 - `packages/backend-wasm/emscripten/tspice_backend_wasm.wasm`
 
 (The `.node.js` vs `.web.js` glue differs by environment, but the contract surface is the same.)
 
-The C-side integration is just the shared shim compiled for WASM:
-
-- `packages/backend-wasm/emscripten/tspice_backend_wasm_wrapper.c`
+The C-side integration is the shared shim compiled for WASM. The authoritative `sources` list in `scripts/build-backend-wasm.mjs` passes the shim `.c` files and a staged CSPICE source tree directly to Emscripten. The older `tspice_backend_wasm_wrapper.c` aggregator is not an input to that build script.
 
 ## Loader split: `create-backend.web.ts` vs `create-backend.node.ts`
 
