@@ -4,7 +4,12 @@
  * - Methods throw on invalid arguments or SPICE errors.
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
-import type { Found, Mat3RowMajor, SpiceMatrix6x6, SpiceVector3 } from "../shared/types.js";
+import type {
+  Found,
+  Mat3RowMajor,
+  SpiceMatrix6x6,
+  SpiceVector3,
+} from "../shared/types.js";
 
 import type { SpiceIntCell, SpiceWindow } from "./cells-windows.js";
 
@@ -27,10 +32,15 @@ export interface FramesApi {
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
   /** SPICE `frinfo_c`: get center + frame class info for a frame ID. */
-  frinfo(frameId: number): Found<{ center: number; frameClass: number; classId: number }>;
+  frinfo(
+    frameId: number,
+  ): Found<{ center: number; frameClass: number; classId: number }>;
 
   /** SPICE `ccifrm_c`: map frame class + class ID to a frame code/name/center triple. */
-  ccifrm(frameClass: number, classId: number): Found<{ frcode: number; frname: string; center: number }>;
+  ccifrm(
+    frameClass: number,
+    classId: number,
+  ): Found<{ frcode: number; frname: string; center: number }>;
 
   /** Get pointing (attitude) for a CK instrument at a given encoded spacecraft clock time. */
   ckgp(

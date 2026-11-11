@@ -43,42 +43,60 @@ function mat3TimesMat3T(m: number[]): number[] {
 describe("frames + SPK ephemerides", () => {
   const itNode = it.runIf(nodeBackendAvailable);
 
-  itNode("node backend: pxform/sxform/spkezr/spkpos", async () => {
-    const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
-    const backend = spice.raw;
-    try {
-      const pck = await ensureKernelFile(PCK);
-      const spk = await ensureKernelFile(SPK);
+  itNode(
+    "node backend: pxform/sxform/spkezr/spkpos",
+    async () => {
+      const { spice, dispose } = await spiceClients.toSync({ backend: "node" });
+      const backend = spice.raw;
+      try {
+        const pck = await ensureKernelFile(PCK);
+        const spk = await ensureKernelFile(SPK);
 
-    backend.kclear();
-    backend.furnsh(lskPath);
-    backend.furnsh(pck.path);
-    backend.furnsh(spk.path);
+        backend.kclear();
+        backend.furnsh(lskPath);
+        backend.furnsh(pck.path);
+        backend.furnsh(spk.path);
 
-    const rot = backend.pxform("J2000", "IAU_EARTH", 0);
-    expect(rot).toHaveLength(9);
-    const identish = mat3TimesMat3T([...rot]);
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        const expected = i === j ? 1 : 0;
-        expect(Math.abs(identish[i * 3 + j]! - expected)).toBeLessThan(1e-9);
+        const rot = backend.pxform("J2000", "IAU_EARTH", 0);
+        expect(rot).toHaveLength(9);
+        const identish = mat3TimesMat3T([...rot]);
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            const expected = i === j ? 1 : 0;
+            expect(Math.abs(identish[i * 3 + j]! - expected)).toBeLessThan(
+              1e-9,
+            );
+          }
+        }
+
+        const xform = backend.sxform("J2000", "IAU_EARTH", 0);
+        expect(xform).toHaveLength(36);
+
+        const { state, lt } = backend.spkezr(
+          "EARTH",
+          0,
+          "J2000",
+          "NONE",
+          "SUN",
+        );
+        expect(state).toHaveLength(6);
+        expect(lt).toBeGreaterThan(0);
+
+        const { pos, lt: lt2 } = backend.spkpos(
+          "EARTH",
+          0,
+          "J2000",
+          "NONE",
+          "SUN",
+        );
+        expect(pos).toHaveLength(3);
+        expect(lt2).toBeGreaterThan(0);
+      } finally {
+        await dispose();
       }
-    }
-
-    const xform = backend.sxform("J2000", "IAU_EARTH", 0);
-    expect(xform).toHaveLength(36);
-
-    const { state, lt } = backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
-    expect(state).toHaveLength(6);
-    expect(lt).toBeGreaterThan(0);
-
-      const { pos, lt: lt2 } = backend.spkpos("EARTH", 0, "J2000", "NONE", "SUN");
-      expect(pos).toHaveLength(3);
-      expect(lt2).toBeGreaterThan(0);
-    } finally {
-      await dispose();
-    }
-  }, 60_000);
+    },
+    60_000,
+  );
 
   it("wasm backend: pxform/sxform/spkezr/spkpos", async () => {
     const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" });
@@ -88,29 +106,35 @@ describe("frames + SPK ephemerides", () => {
       const pck = await ensureKernelFile(PCK);
       const spk = await ensureKernelFile(SPK);
 
-    backend.kclear();
-    backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
-    backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
-    backend.furnsh({ path: `${SPK.name}`, bytes: spk.bytes });
+      backend.kclear();
+      backend.furnsh({ path: "naif0012.tls", bytes: lskBytes });
+      backend.furnsh({ path: `${PCK.name}`, bytes: pck.bytes });
+      backend.furnsh({ path: `${SPK.name}`, bytes: spk.bytes });
 
-    const rot = backend.pxform("J2000", "IAU_EARTH", 0);
-    expect(rot).toHaveLength(9);
-    const identish = mat3TimesMat3T([...rot]);
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        const expected = i === j ? 1 : 0;
-        expect(Math.abs(identish[i * 3 + j]! - expected)).toBeLessThan(1e-9);
+      const rot = backend.pxform("J2000", "IAU_EARTH", 0);
+      expect(rot).toHaveLength(9);
+      const identish = mat3TimesMat3T([...rot]);
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          const expected = i === j ? 1 : 0;
+          expect(Math.abs(identish[i * 3 + j]! - expected)).toBeLessThan(1e-9);
+        }
       }
-    }
 
-    const xform = backend.sxform("J2000", "IAU_EARTH", 0);
-    expect(xform).toHaveLength(36);
+      const xform = backend.sxform("J2000", "IAU_EARTH", 0);
+      expect(xform).toHaveLength(36);
 
-    const { state, lt } = backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
-    expect(state).toHaveLength(6);
-    expect(lt).toBeGreaterThan(0);
+      const { state, lt } = backend.spkezr("EARTH", 0, "J2000", "NONE", "SUN");
+      expect(state).toHaveLength(6);
+      expect(lt).toBeGreaterThan(0);
 
-      const { pos, lt: lt2 } = backend.spkpos("EARTH", 0, "J2000", "NONE", "SUN");
+      const { pos, lt: lt2 } = backend.spkpos(
+        "EARTH",
+        0,
+        "J2000",
+        "NONE",
+        "SUN",
+      );
       expect(pos).toHaveLength(3);
       expect(lt2).toBeGreaterThan(0);
     } finally {

@@ -17,10 +17,22 @@ import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 
 /** Create a {@link KernelsApi} implementation backed by the native Node addon + kernel staging. */
-export function createKernelsApi(native: NativeAddon, stager: KernelStager): KernelsApi {
-  const kernelKindProbeFromNative = (result: { file?: unknown; filtyp?: unknown }) => {
-    invariant(typeof result.file === "string", "Expected kdata().file to be a string");
-    invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
+export function createKernelsApi(
+  native: NativeAddon,
+  stager: KernelStager,
+): KernelsApi {
+  const kernelKindProbeFromNative = (result: {
+    file?: unknown;
+    filtyp?: unknown;
+  }) => {
+    invariant(
+      typeof result.file === "string",
+      "Expected kdata().file to be a string",
+    );
+    invariant(
+      typeof result.filtyp === "string",
+      "Expected kdata().filtyp to be a string",
+    );
     return {
       file: stager.virtualizePathFromSpice(result.file),
       filtyp: result.filtyp,
@@ -33,10 +45,22 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
     source?: unknown;
     handle?: unknown;
   }): KernelData => {
-    invariant(typeof result.file === "string", "Expected kdata().file to be a string");
-    invariant(typeof result.filtyp === "string", "Expected kdata().filtyp to be a string");
-    invariant(typeof result.source === "string", "Expected kdata().source to be a string");
-    invariant(typeof result.handle === "number", "Expected kdata().handle to be a number");
+    invariant(
+      typeof result.file === "string",
+      "Expected kdata().file to be a string",
+    );
+    invariant(
+      typeof result.filtyp === "string",
+      "Expected kdata().filtyp to be a string",
+    );
+    invariant(
+      typeof result.source === "string",
+      "Expected kdata().source to be a string",
+    );
+    invariant(
+      typeof result.handle === "number",
+      "Expected kdata().handle to be a number",
+    );
 
     return {
       file: stager.virtualizePathFromSpice(result.file),
@@ -67,9 +91,18 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
         return { found: false };
       }
 
-      invariant(typeof result.filtyp === "string", "Expected kinfo().filtyp to be a string");
-      invariant(typeof result.source === "string", "Expected kinfo().source to be a string");
-      invariant(typeof result.handle === "number", "Expected kinfo().handle to be a number");
+      invariant(
+        typeof result.filtyp === "string",
+        "Expected kinfo().filtyp to be a string",
+      );
+      invariant(
+        typeof result.source === "string",
+        "Expected kinfo().source to be a string",
+      );
+      invariant(
+        typeof result.handle === "number",
+        "Expected kinfo().handle to be a number",
+      );
 
       return {
         found: true,
@@ -85,8 +118,14 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
         return { found: false };
       }
 
-      invariant(typeof result.wordsq === "string", "Expected kxtrct().wordsq to be a string");
-      invariant(typeof result.substr === "string", "Expected kxtrct().substr to be a string");
+      invariant(
+        typeof result.wordsq === "string",
+        "Expected kxtrct().wordsq to be a string",
+      );
+      invariant(
+        typeof result.substr === "string",
+        "Expected kxtrct().substr to be a string",
+      );
 
       return { found: true, wordsq: result.wordsq, substr: result.substr };
     },
@@ -101,14 +140,20 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
       const nativeQuery = nativeKindQueryOrNull(kinds);
       if (nativeQuery != null) {
         const total = native.ktotal(nativeQuery);
-        invariant(typeof total === "number", "Expected native backend ktotal() to return a number");
+        invariant(
+          typeof total === "number",
+          "Expected native backend ktotal() to return a number",
+        );
         return total;
       }
 
       const requested = new Set(kinds);
 
       const totalAll = native.ktotal("ALL");
-      invariant(typeof totalAll === "number", "Expected native backend ktotal() to return a number");
+      invariant(
+        typeof totalAll === "number",
+        "Expected native backend ktotal() to return a number",
+      );
 
       let count = 0;
       for (let i = 0; i < totalAll; i++) {
@@ -146,7 +191,10 @@ export function createKernelsApi(native: NativeAddon, stager: KernelStager): Ker
       const requested = new Set(kinds);
 
       const totalAll = native.ktotal("ALL");
-      invariant(typeof totalAll === "number", "Expected native backend ktotal() to return a number");
+      invariant(
+        typeof totalAll === "number",
+        "Expected native backend ktotal() to return a number",
+      );
 
       let matchIndex = 0;
       for (let i = 0; i < totalAll; i++) {

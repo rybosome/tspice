@@ -1,6 +1,6 @@
 # Kernel staging + virtual paths
 
-Kernel loading is one of the main places the Node and WASM backends *intentionally* diverge.
+Kernel loading is one of the main places the Node and WASM backends _intentionally_ diverge.
 
 The contract surface tries to keep the caller experience consistent by using:
 
@@ -34,7 +34,7 @@ If you want portable behavior across backends, prefer passing bytes and treating
 
 Shared helper: `packages/core/src/index.ts` (`@rybosome/tspice-core`)
 
-`normalizeVirtualKernelPath(input)` intentionally does *not* behave like general filesystem normalization:
+`normalizeVirtualKernelPath(input)` intentionally does _not_ behave like general filesystem normalization:
 
 - rejects `..`
 - strips leading slashes and `kernels/` prefixes
@@ -57,7 +57,7 @@ Relevant code:
 
 In the WASM backend:
 
-- all kernel paths are treated as *virtual* paths
+- all kernel paths are treated as _virtual_ paths
 - the canonical resolved form is `/kernels/<normalized-id>`
 - byte-backed kernels are written into the Emscripten FS before calling `furnsh`
 
@@ -95,7 +95,7 @@ In Node, virtual outputs are staged to temp files via:
 
 - `packages/backend-node/src/runtime/virtual-output-staging.ts`
 
-Key lifecycle rule: a virtual output is only guaranteed readable *after* the writer handle has been closed (e.g. `spkcls(handle)` for SPKs).
+Key lifecycle rule: a virtual output is only guaranteed readable _after_ the writer handle has been closed (e.g. `spkcls(handle)` for SPKs).
 
 ## Common failure modes + debug tips
 

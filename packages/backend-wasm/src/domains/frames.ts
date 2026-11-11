@@ -9,7 +9,10 @@ import type {
   SpiceVector3,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32NonNegative, brandMat3RowMajor } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32NonNegative,
+  brandMat3RowMajor,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -19,7 +22,10 @@ import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
 
-import { assertWasmOwnedCellHandle, assertWasmOwnedWindowHandle } from "./cells-windows.js";
+import {
+  assertWasmOwnedCellHandle,
+  assertWasmOwnedWindowHandle,
+} from "./cells-windows.js";
 
 function tspiceCallCidfrm(
   module: EmscriptenModule,
@@ -52,7 +58,15 @@ function tspiceCallCidfrm(
     module.HEAPU8[outNamePtr] = 0;
     module.HEAP32[outCodePtr >> 2] = 0;
     module.HEAP32[foundPtr >> 2] = 0;
-    const result = fn(center, outCodePtr, outNamePtr, outNameMaxBytes, foundPtr, errPtr, errMaxBytes);
+    const result = fn(
+      center,
+      outCodePtr,
+      outNamePtr,
+      outNameMaxBytes,
+      foundPtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
@@ -95,7 +109,13 @@ function tspiceCallCnmfrm(
   const foundPtr = module._malloc(4);
 
   if (!errPtr || !centerNamePtr || !outNamePtr || !outCodePtr || !foundPtr) {
-    for (const ptr of [foundPtr, outCodePtr, outNamePtr, centerNamePtr, errPtr]) {
+    for (const ptr of [
+      foundPtr,
+      outCodePtr,
+      outNamePtr,
+      centerNamePtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -105,7 +125,15 @@ function tspiceCallCnmfrm(
     module.HEAPU8[outNamePtr] = 0;
     module.HEAP32[outCodePtr >> 2] = 0;
     module.HEAP32[foundPtr >> 2] = 0;
-    const result = fn(centerNamePtr, outCodePtr, outNamePtr, outNameMaxBytes, foundPtr, errPtr, errMaxBytes);
+    const result = fn(
+      centerNamePtr,
+      outCodePtr,
+      outNamePtr,
+      outNameMaxBytes,
+      foundPtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
@@ -237,7 +265,17 @@ function tspiceCallCkgp(
   try {
     module.HEAPF64[outClkoutPtr >> 3] = 0;
     module.HEAP32[foundPtr >> 2] = 0;
-    const result = module._tspice_ckgp(inst, sclkdp, tol, refPtr, outCmatPtr, outClkoutPtr, foundPtr, errPtr, errMaxBytes);
+    const result = module._tspice_ckgp(
+      inst,
+      sclkdp,
+      tol,
+      refPtr,
+      outCmatPtr,
+      outClkoutPtr,
+      foundPtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
@@ -246,7 +284,9 @@ function tspiceCallCkgp(
       return { found: false };
     }
     const cmat = brandMat3RowMajor(
-      Array.from(module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9)),
+      Array.from(
+        module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
+      ),
       { label: "ckgp().cmat" },
     );
     const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
@@ -274,8 +314,22 @@ function tspiceCallCkgpav(
   const outAvPtr = module._malloc(3 * 8);
   const outClkoutPtr = module._malloc(8);
   const foundPtr = module._malloc(4);
-  if (!errPtr || !refPtr || !outCmatPtr || !outAvPtr || !outClkoutPtr || !foundPtr) {
-    for (const ptr of [foundPtr, outClkoutPtr, outAvPtr, outCmatPtr, refPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !refPtr ||
+    !outCmatPtr ||
+    !outAvPtr ||
+    !outClkoutPtr ||
+    !foundPtr
+  ) {
+    for (const ptr of [
+      foundPtr,
+      outClkoutPtr,
+      outAvPtr,
+      outCmatPtr,
+      refPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -304,7 +358,9 @@ function tspiceCallCkgpav(
       return { found: false };
     }
     const cmat = brandMat3RowMajor(
-      Array.from(module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9)),
+      Array.from(
+        module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
+      ),
       { label: "ckgpav().cmat" },
     );
     const av = Array.from(
@@ -333,7 +389,12 @@ function tspiceCallCklpf(module: EmscriptenModule, ck: string): number {
 
     try {
       module.HEAP32[outHandlePtr >> 2] = 0;
-      const code = module._tspice_cklpf(ckPathPtr, outHandlePtr, errPtr, WASM_ERR_MAX_BYTES);
+      const code = module._tspice_cklpf(
+        ckPathPtr,
+        outHandlePtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (code !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
       }
@@ -354,7 +415,11 @@ function tspiceCallCkupf(module: EmscriptenModule, handle: number): void {
   });
 }
 
-function tspiceCallCkobj(module: EmscriptenModule, ck: string, ids: SpiceIntCell): void {
+function tspiceCallCkobj(
+  module: EmscriptenModule,
+  ck: string,
+  ids: SpiceIntCell,
+): void {
   return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
     const ckPathPtr = writeUtf8CString(module, resolveKernelPath(ck));
     if (!ckPathPtr) {
@@ -362,7 +427,12 @@ function tspiceCallCkobj(module: EmscriptenModule, ck: string, ids: SpiceIntCell
     }
 
     try {
-      const code = module._tspice_ckobj(ckPathPtr, ids as unknown as number, errPtr, WASM_ERR_MAX_BYTES);
+      const code = module._tspice_ckobj(
+        ckPathPtr,
+        ids as unknown as number,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (code !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
       }
@@ -416,7 +486,12 @@ function tspiceCallCkcov(
   });
 }
 
-function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et: number): Mat3RowMajor {
+function tspiceCallPxform(
+  module: EmscriptenModule,
+  from: string,
+  to: string,
+  et: number,
+): Mat3RowMajor {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const fromPtr = writeUtf8CString(module, from);
@@ -431,11 +506,20 @@ function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et
   }
 
   try {
-    const result = module._tspice_pxform(fromPtr, toPtr, et, outPtr, errPtr, errMaxBytes);
+    const result = module._tspice_pxform(
+      fromPtr,
+      toPtr,
+      et,
+      outPtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
-    const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 9));
+    const out = Array.from(
+      module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 9),
+    );
     return brandMat3RowMajor(out, { label: "pxform()" });
   } finally {
     module._free(outPtr);
@@ -445,7 +529,12 @@ function tspiceCallPxform(module: EmscriptenModule, from: string, to: string, et
   }
 }
 
-function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et: number): SpiceMatrix6x6 {
+function tspiceCallSxform(
+  module: EmscriptenModule,
+  from: string,
+  to: string,
+  et: number,
+): SpiceMatrix6x6 {
   const errMaxBytes = 2048;
   const errPtr = module._malloc(errMaxBytes);
   const fromPtr = writeUtf8CString(module, from);
@@ -460,11 +549,20 @@ function tspiceCallSxform(module: EmscriptenModule, from: string, to: string, et
   }
 
   try {
-    const result = module._tspice_sxform(fromPtr, toPtr, et, outPtr, errPtr, errMaxBytes);
+    const result = module._tspice_sxform(
+      fromPtr,
+      toPtr,
+      et,
+      outPtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
-    const out = Array.from(module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 36));
+    const out = Array.from(
+      module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 36),
+    );
     return out as unknown as SpiceMatrix6x6;
   } finally {
     module._free(outPtr);
@@ -488,13 +586,16 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
       return { found: true, name: out.value };
     },
 
-    cidfrm: (center: number) => tspiceCallCidfrm(module, module._tspice_cidfrm, center),
-    cnmfrm: (centerName: string) => tspiceCallCnmfrm(module, module._tspice_cnmfrm, centerName),
+    cidfrm: (center: number) =>
+      tspiceCallCidfrm(module, module._tspice_cidfrm, center),
+    cnmfrm: (centerName: string) =>
+      tspiceCallCnmfrm(module, module._tspice_cnmfrm, centerName),
     frinfo: (frameId: number) => tspiceCallFrinfo(module, frameId),
-    ccifrm: (frameClass: number, classId: number) => tspiceCallCcifrm(module, frameClass, classId),
+    ccifrm: (frameClass: number, classId: number) =>
+      tspiceCallCcifrm(module, frameClass, classId),
 
-
-    ckgp: (inst: number, sclkdp: number, tol: number, ref: string) => tspiceCallCkgp(module, inst, sclkdp, tol, ref),
+    ckgp: (inst: number, sclkdp: number, tol: number, ref: string) =>
+      tspiceCallCkgp(module, inst, sclkdp, tol, ref),
     ckgpav: (inst: number, sclkdp: number, tol: number, ref: string) =>
       tspiceCallCkgpav(module, inst, sclkdp, tol, ref),
 
@@ -513,11 +614,17 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
       timsys: CkCoverageTimeSystem,
       cover: SpiceWindow,
     ) => {
-      assertWasmOwnedWindowHandle(module, cover as unknown as number, "ckcov(cover)");
+      assertWasmOwnedWindowHandle(
+        module,
+        cover as unknown as number,
+        "ckcov(cover)",
+      );
       tspiceCallCkcov(module, ck, idcode, needav, level, tol, timsys, cover);
     },
 
-    pxform: (from: string, to: string, et: number) => tspiceCallPxform(module, from, to, et),
-    sxform: (from: string, to: string, et: number) => tspiceCallSxform(module, from, to, et),
+    pxform: (from: string, to: string, et: number) =>
+      tspiceCallPxform(module, from, to, et),
+    sxform: (from: string, to: string, et: number) =>
+      tspiceCallSxform(module, from, to, et),
   };
 }

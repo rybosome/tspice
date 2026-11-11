@@ -24,7 +24,9 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     const emptyTerms = backend.raw.kxtrct("KEY", [" ", "TERM", ""], wordsq);
     expect(emptyTerms).toEqual(baseline);
 
-    expect(() => backend.raw.kxtrct("   ", ["TERM"], wordsq)).toThrow(/kxtrct keywd must be a non-empty string/i);
+    expect(() => backend.raw.kxtrct("   ", ["TERM"], wordsq)).toThrow(
+      /kxtrct keywd must be a non-empty string/i,
+    );
   });
 
   itNative("can furnsh/unload path-backed kernels", () => {
@@ -85,8 +87,9 @@ describe("@rybosome/tspice-backend-node kernels", () => {
     expect(sawVirtual).toBe(true);
 
     // Array input should behave like an OR of kinds.
-    expect(backend.raw.ktotal(["META", "TEXT"]))
-      .toBe(backend.raw.ktotal("META") + backend.raw.ktotal("TEXT"));
+    expect(backend.raw.ktotal(["META", "TEXT"])).toBe(
+      backend.raw.ktotal("META") + backend.raw.ktotal("TEXT"),
+    );
 
     backend.raw.unload(kernelPath);
     expect(withTesting.__ktotalAll()).toBe(before);

@@ -2,15 +2,7 @@
 export type Vec3 = readonly [number, number, number];
 
 /** 6-vector, typically (x,y,z,vx,vy,vz). */
-export type Vec6 = readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-];
-
+export type Vec6 = readonly [number, number, number, number, number, number];
 
 /** SPICE frame name (e.g. "J2000", "IAU_EARTH"). */
 export type FrameName = string;
@@ -20,15 +12,7 @@ export const J2000 = "J2000" as const satisfies FrameName;
 
 /** Aberration correction string accepted by `spkezr`. */
 export type AberrationCorrection =
-  | "NONE"
-  | "LT"
-  | "LT+S"
-  | "CN"
-  | "CN+S"
-  | "XLT"
-  | "XLT+S"
-  | "XCN"
-  | "XCN+S";
+  "NONE" | "LT" | "LT+S" | "CN" | "CN+S" | "XLT" | "XLT+S" | "XCN" | "XCN+S";
 
 /** Seconds past J2000 (ET). */
 export type SpiceTime = number;

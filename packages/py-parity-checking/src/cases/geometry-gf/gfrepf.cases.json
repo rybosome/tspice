@@ -5,7 +5,13 @@
     "workflow": [
       { "op": "geometry-gf.gfsstp", "step": 42 },
       { "op": "geometry-gf.gfstep", "time": 0 },
-      { "op": "cells-windows.wninsd", "windowId": "GFREPF_WIN", "left": 0, "right": 1, "maxIntervals": 8 },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "GFREPF_WIN",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 8
+      },
       {
         "op": "geometry-gf.gfrepi",
         "windowId": "GFREPF_WIN",

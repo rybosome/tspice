@@ -7,7 +7,11 @@ import type { NativeAddon } from "../runtime/addon.js";
 export function createTimeApi(native: NativeAddon): TimeApi {
   function timdef(action: "GET", item: string): string;
   function timdef(action: "SET", item: string, value: string): void;
-  function timdef(action: "GET" | "SET", item: string, value?: string): string | void {
+  function timdef(
+    action: "GET" | "SET",
+    item: string,
+    value?: string,
+  ): string | void {
     if (item.length === 0) {
       throw new RangeError("timdef(): item must be a non-empty string");
     }
@@ -15,14 +19,22 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     switch (action) {
       case "GET": {
         const out = native.timdefGet(item);
-        invariant(typeof out === "string", "Expected timdef(GET) to return a string");
+        invariant(
+          typeof out === "string",
+          "Expected timdef(GET) to return a string",
+        );
         return out;
       }
 
       case "SET": {
-        invariant(typeof value === "string", "timdef(SET) requires a string value");
+        invariant(
+          typeof value === "string",
+          "timdef(SET) requires a string value",
+        );
         if (value.length === 0) {
-          throw new RangeError("timdef(SET)(): value must be a non-empty string");
+          throw new RangeError(
+            "timdef(SET)(): value must be a non-empty string",
+          );
         }
         native.timdefSet(item, value);
         return;
@@ -37,7 +49,10 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     tkvrsn: (item) => {
       invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
       const version = native.spiceVersion();
-      invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
+      invariant(
+        typeof version === "string",
+        "Expected native backend spiceVersion() to return a string",
+      );
       return version;
     },
 
@@ -52,15 +67,24 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     deltet: (epoch, eptype) => {
-      invariant(eptype === "ET" || eptype === "UTC", `Unsupported deltet eptype: ${eptype}`);
+      invariant(
+        eptype === "ET" || eptype === "UTC",
+        `Unsupported deltet eptype: ${eptype}`,
+      );
       const delta = native.deltet(epoch, eptype);
-      invariant(typeof delta === "number", "Expected deltet() to return a number");
+      invariant(
+        typeof delta === "number",
+        "Expected deltet() to return a number",
+      );
       return delta;
     },
 
     unitim: (epoch, insys, outsys) => {
       const out = native.unitim(epoch, insys, outsys);
-      invariant(typeof out === "number", "Expected unitim() to return a number");
+      invariant(
+        typeof out === "number",
+        "Expected unitim() to return a number",
+      );
       return out;
     },
 
@@ -81,7 +105,10 @@ export function createTimeApi(native: NativeAddon): TimeApi {
         throw new RangeError("tpictr(): pictur must be a non-empty string");
       }
       const out = native.tpictr(sample, pictur);
-      invariant(typeof out === "string", "Expected tpictr() to return a string");
+      invariant(
+        typeof out === "string",
+        "Expected tpictr() to return a string",
+      );
       return out;
     },
 
@@ -101,13 +128,19 @@ export function createTimeApi(native: NativeAddon): TimeApi {
 
     scencd: (sc, sclkch) => {
       const out = native.scencd(sc, sclkch);
-      invariant(typeof out === "number", "Expected scencd() to return a number");
+      invariant(
+        typeof out === "number",
+        "Expected scencd() to return a number",
+      );
       return out;
     },
 
     scdecd: (sc, sclkdp) => {
       const out = native.scdecd(sc, sclkdp);
-      invariant(typeof out === "string", "Expected scdecd() to return a string");
+      invariant(
+        typeof out === "string",
+        "Expected scdecd() to return a string",
+      );
       return out;
     },
 
@@ -130,7 +163,10 @@ export function createTimeKitApi(native: NativeAddon): TimeKitApi {
   return {
     spiceVersion: () => {
       const version = native.spiceVersion();
-      invariant(typeof version === "string", "Expected native backend spiceVersion() to return a string");
+      invariant(
+        typeof version === "string",
+        "Expected native backend spiceVersion() to return a string",
+      );
       return version;
     },
   };

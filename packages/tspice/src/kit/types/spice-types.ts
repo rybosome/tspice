@@ -1,7 +1,14 @@
-import type { KernelSource, SpiceBackend, SpiceCharCell, SpiceDoubleCell, SpiceIntCell, SpiceWindow, VirtualOutput } from "@rybosome/tspice-backend-contract";
+import type {
+  KernelSource,
+  SpiceBackend,
+  SpiceCharCell,
+  SpiceDoubleCell,
+  SpiceIntCell,
+  SpiceWindow,
+  VirtualOutput,
+} from "@rybosome/tspice-backend-contract";
 
 import type {
-  AberrationCorrection,
   FrameName,
   GetStateArgs,
   SpiceTime,
@@ -85,7 +92,7 @@ export interface SpiceKit {
    * Backends may right-trim whitespace to match common CSPICE string handling.
    */
   cellGetc(cell: SpiceCharCell, index: number): string;
-};
+}
 
 export type PromisifyFn<T> = T extends (...args: infer A) => infer R
   ? (...args: A) => Promise<Awaited<R>>

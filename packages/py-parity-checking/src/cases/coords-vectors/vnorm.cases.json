@@ -5,11 +5,7 @@
     "workflow": [
       {
         "op": "coords-vectors.vnorm",
-        "v": [
-          3,
-          4,
-          12
-        ]
+        "v": [3, 4, 12]
       }
     ],
     "expectation": {

@@ -54,9 +54,24 @@ describe("@rybosome/tspice-backend-fake", () => {
     const k1 = b.raw.kdata(1);
     const k2 = b.raw.kdata(2);
 
-    expect(k0).toMatchObject({ found: true, file: "/kernels/a.bsp", filtyp: "SPK", handle: 1 });
-    expect(k1).toMatchObject({ found: true, file: "/kernels/b.tls", filtyp: "TEXT", handle: 2 });
-    expect(k2).toMatchObject({ found: true, file: "/kernels/c.bc", filtyp: "CK", handle: 3 });
+    expect(k0).toMatchObject({
+      found: true,
+      file: "/kernels/a.bsp",
+      filtyp: "SPK",
+      handle: 1,
+    });
+    expect(k1).toMatchObject({
+      found: true,
+      file: "/kernels/b.tls",
+      filtyp: "TEXT",
+      handle: 2,
+    });
+    expect(k2).toMatchObject({
+      found: true,
+      file: "/kernels/c.bc",
+      filtyp: "CK",
+      handle: 3,
+    });
 
     expect(b.raw.kdata(3)).toEqual({ found: false });
 
@@ -87,12 +102,16 @@ describe("@rybosome/tspice-backend-fake", () => {
 
   it("returns identity pxform for same-frame transforms", () => {
     const b = createFakeBackend();
-    expect(b.raw.pxform("J2000", "J2000", 0)).toEqual([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+    expect(b.raw.pxform("J2000", "J2000", 0)).toEqual([
+      1, 0, 0, 0, 1, 0, 0, 0, 1,
+    ]);
   });
 
   it("rejects non-integer rotate() axes for CSPICE parity", () => {
     const b = createFakeBackend();
-    expect(() => b.raw.rotate(0.123, 1.9)).toThrow(/expected a finite integer/i);
+    expect(() => b.raw.rotate(0.123, 1.9)).toThrow(
+      /expected a finite integer/i,
+    );
   });
 
   it("throws on invalid kernel-pool start/room args", () => {
@@ -197,7 +216,6 @@ describe("@rybosome/tspice-backend-fake", () => {
     const nameBackslash = "A" + "\\" + "B";
     b.raw.pdpool(nameBackslash, [1]);
 
-
     const tplEscStar = "A" + "\\" + "*B";
     const tplEscPct = "A" + "\\" + "%B";
     const tplEscBackslash = "A" + "\\" + "\\" + "B";
@@ -206,11 +224,19 @@ describe("@rybosome/tspice-backend-fake", () => {
     expect([...tplEscPct]).toEqual(["A", "\\", "%", "B"]);
     expect([...tplEscBackslash]).toEqual(["A", "\\", "\\", "B"]);
 
-    expect(b.raw.gnpool(tplEscStar, 0, 10)).toEqual({ found: true, values: ["A*B"] });
-    expect(b.raw.gnpool(tplEscPct, 0, 10)).toEqual({ found: true, values: ["A%B"] });
-    expect(b.raw.gnpool(tplEscBackslash, 0, 10)).toEqual({ found: true, values: [nameBackslash] });
+    expect(b.raw.gnpool(tplEscStar, 0, 10)).toEqual({
+      found: true,
+      values: ["A*B"],
+    });
+    expect(b.raw.gnpool(tplEscPct, 0, 10)).toEqual({
+      found: true,
+      values: ["A%B"],
+    });
+    expect(b.raw.gnpool(tplEscBackslash, 0, 10)).toEqual({
+      found: true,
+      values: [nameBackslash],
+    });
   });
-
 
   it("handles near-pole recgeo() inputs without numerical instability", () => {
     const b = createFakeBackend();

@@ -1,9 +1,16 @@
-import type { AliasValue, NormalizationContext, NormalizeTarget } from "./types.js";
+import type {
+  AliasValue,
+  NormalizationContext,
+  NormalizeTarget,
+} from "./types.js";
 
 import { readAlias } from "./context.js";
 
 /** Convert alias values into path strings (`rel`/`scratch/rel`) for `kernels.kinfo` and `kernels.unload`. */
-export function aliasValueToPathString(value: AliasValue, target: NormalizeTarget): string {
+export function aliasValueToPathString(
+  value: AliasValue,
+  target: NormalizeTarget,
+): string {
   if (typeof value === "string") {
     return value;
   }
@@ -13,7 +20,9 @@ export function aliasValueToPathString(value: AliasValue, target: NormalizeTarge
   }
 
   if (target === "sidecar") {
-    throw new Error("Scratch-path aliases are not supported for sidecar path consumers");
+    throw new Error(
+      "Scratch-path aliases are not supported for sidecar path consumers",
+    );
   }
 
   return `scratch/${value.rel}`;

@@ -38,6 +38,7 @@ If you have an idea:
 - Be clear about scope and tradeoffs
 
 `tspice` prioritizes:
+
 - API clarity
 - Cross-backend consistency
 - Long-term maintainability
@@ -60,6 +61,7 @@ Before writing code:
 3. Wait for explicit alignment
 
 Accepted PRs are expected to:
+
 - Be narrowly scoped
 - Follow existing patterns closely
 - Include tests where appropriate
@@ -84,6 +86,7 @@ Automation is part of the project’s maintenance model.
 `tspice` is a personal project maintained alongside a demanding full-time role.
 
 As a result:
+
 - Response times vary
 - Some issues may remain open
 - Some PRs may be declined without detailed feedback

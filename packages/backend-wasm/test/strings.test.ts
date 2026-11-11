@@ -28,7 +28,10 @@ function makeWriteModule(totalBytes = 4096): {
   // Start allocations at a non-zero address; Emscripten treats `0` as null.
   let nextPtr = 8;
 
-  const module: Pick<EmscriptenModule, "_malloc" | "_free" | "HEAPU8" | "HEAPU32"> = {
+  const module: Pick<
+    EmscriptenModule,
+    "_malloc" | "_free" | "HEAPU8" | "HEAPU32"
+  > = {
     HEAPU8,
     HEAPU32,
     _malloc(size: number) {
@@ -81,10 +84,7 @@ describe("backend-wasm codec/strings", () => {
   });
 
   it("readFixedWidthCString: right-trims only", () => {
-    const module = makeModule([
-      ...UTF8.encode("  hi  "),
-      0,
-    ]);
+    const module = makeModule([...UTF8.encode("  hi  "), 0]);
 
     // Leading spaces preserved; trailing spaces trimmed.
     expect(readFixedWidthCString(module, 0, 7)).toBe("  hi");

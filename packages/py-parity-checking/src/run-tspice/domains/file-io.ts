@@ -75,7 +75,10 @@ function registerHandleState(
   });
 }
 
-function requireDescriptor(context: RunTspiceContext, descrId: string): DlaDescriptor {
+function requireDescriptor(
+  context: RunTspiceContext,
+  descrId: string,
+): DlaDescriptor {
   const descr = context.state.fileIo.descriptors.get(descrId);
   if (descr == null) {
     throw new Error(`File-io descriptor does not exist: ${descrId}`);
@@ -96,7 +99,10 @@ function requireSpatialIndex(
   return index;
 }
 
-function summarizeSpatialIndex(spaixd: number[], spaixi: number[]): {
+function summarizeSpatialIndex(
+  spaixd: number[],
+  spaixi: number[],
+): {
   spaixdLength: number;
   spaixiLength: number;
   spaixdHead: number[];
@@ -111,7 +117,10 @@ function summarizeSpatialIndex(spaixd: number[], spaixi: number[]): {
 }
 
 /** Execute one `file-io.*` workflow step in tspice. */
-export function runFileIoStep(context: RunTspiceContext, step: FileIoStep): StepOutput {
+export function runFileIoStep(
+  context: RunTspiceContext,
+  step: FileIoStep,
+): StepOutput {
   switch (step.op) {
     case "file-io.exists":
       return {
@@ -236,7 +245,10 @@ export function runFileIoStep(context: RunTspiceContext, step: FileIoStep): Step
       const spaixd = [...out.spaixd];
       const spaixi = [...out.spaixi];
       if (step.spaixId != null) {
-        context.state.fileIo.spatialIndexes.set(step.spaixId, { spaixd, spaixi });
+        context.state.fileIo.spatialIndexes.set(step.spaixId, {
+          spaixd,
+          spaixi,
+        });
       }
 
       return {

@@ -1,6 +1,4 @@
-import type {
-  GeometryGfApi,
-} from "@rybosome/tspice-backend-contract";
+import type { GeometryGfApi } from "@rybosome/tspice-backend-contract";
 import { assertSpiceInt32, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -10,19 +8,35 @@ const UINT32_MAX = 0xffff_ffff;
 // Opaque window handles are represented as branded numbers in the backend
 // contract, but we still validate them at runtime to keep error behavior
 // consistent across backends.
-function assertOpaqueHandle(handle: unknown, context: string): asserts handle is number {
-  if (typeof handle !== "number" || !Number.isFinite(handle) || !Number.isInteger(handle)) {
-    throw new TypeError(`${context}: expected handle to be an integer number (got ${handle})`);
+function assertOpaqueHandle(
+  handle: unknown,
+  context: string,
+): asserts handle is number {
+  if (
+    typeof handle !== "number" ||
+    !Number.isFinite(handle) ||
+    !Number.isInteger(handle)
+  ) {
+    throw new TypeError(
+      `${context}: expected handle to be an integer number (got ${handle})`,
+    );
   }
   if (handle <= 0) {
-    throw new RangeError(`${context}: expected handle to be > 0 (got ${handle})`);
+    throw new RangeError(
+      `${context}: expected handle to be > 0 (got ${handle})`,
+    );
   }
   if (!Number.isSafeInteger(handle) || handle > UINT32_MAX) {
-    throw new RangeError(`${context}: expected handle to be a non-zero uint32 (got ${handle})`);
+    throw new RangeError(
+      `${context}: expected handle to be a non-zero uint32 (got ${handle})`,
+    );
   }
 }
 
-function assertFiniteNumber(value: unknown, context: string): asserts value is number {
+function assertFiniteNumber(
+  value: unknown,
+  context: string,
+): asserts value is number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new RangeError(`${context}: expected a finite number (got ${value})`);
   }
@@ -39,7 +53,10 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
     gfstep: (time) => {
       assertFiniteNumber(time, "gfstep(time)");
       const out = native.gfstep(time);
-      invariant(typeof out === "number" && Number.isFinite(out), "Expected gfstep() to return a finite number");
+      invariant(
+        typeof out === "number" && Number.isFinite(out),
+        "Expected gfstep() to return a finite number",
+      );
       return out;
     },
 
@@ -52,7 +69,10 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       assertFiniteNumber(t1, "gfrefn(t1)");
       assertFiniteNumber(t2, "gfrefn(t2)");
       const out = native.gfrefn(t1, t2, s1, s2);
-      invariant(typeof out === "number" && Number.isFinite(out), "Expected gfrefn() to return a finite number");
+      invariant(
+        typeof out === "number" && Number.isFinite(out),
+        "Expected gfrefn() to return a finite number",
+      );
       return out;
     },
 
@@ -108,7 +128,18 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       );
     },
 
-    gfdist: (target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result) => {
+    gfdist: (
+      target,
+      abcorr,
+      obsrvr,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
       assertSpiceInt32(nintvls, "gfdist(nintvls)", { min: 1 });
       assertFiniteNumber(refval, "gfdist(refval)");
       assertFiniteNumber(adjust, "gfdist(adjust)");

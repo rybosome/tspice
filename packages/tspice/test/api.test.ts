@@ -4,7 +4,11 @@ import { spiceClients } from "@rybosome/tspice";
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 import { loadTestKernels } from "./test-kernels.js";
 
-function expectClose(a: number, b: number, { atol = 1e-6, rtol = 1e-12 } = {}): void {
+function expectClose(
+  a: number,
+  b: number,
+  { atol = 1e-6, rtol = 1e-12 } = {},
+): void {
   const diff = Math.abs(a - b);
   const scale = Math.max(Math.abs(a), Math.abs(b));
   expect(diff).toBeLessThanOrEqual(atol + rtol * scale);
@@ -15,7 +19,9 @@ describe("mid-level API parity (node vs wasm)", () => {
     const { lsk } = await loadTestKernels();
     const kernelId = "naif0012.tls";
 
-    const { spice: wasm, dispose: disposeWasm } = await spiceClients.toSync({ backend: "wasm" });
+    const { spice: wasm, dispose: disposeWasm } = await spiceClients.toSync({
+      backend: "wasm",
+    });
     try {
       wasm.kit.loadKernel({ path: kernelId, bytes: lsk });
       expect(wasm.raw.ktotal("ALL")).toBeGreaterThan(0);
@@ -29,7 +35,9 @@ describe("mid-level API parity (node vs wasm)", () => {
 
     // Native backend isn't available in JS-only CI.
     if (nodeBackendAvailable) {
-      const { spice: node, dispose: disposeNode } = await spiceClients.toSync({ backend: "node" });
+      const { spice: node, dispose: disposeNode } = await spiceClients.toSync({
+        backend: "node",
+      });
       try {
         node.kit.loadKernel({ path: kernelId, bytes: lsk });
         expect(node.raw.ktotal("ALL")).toBeGreaterThan(0);
@@ -49,8 +57,12 @@ describe("mid-level API parity (node vs wasm)", () => {
     // JS-only CI does not build the native backend.
     if (!nodeBackendAvailable) return;
 
-    const { spice: wasm, dispose: disposeWasm } = await spiceClients.toSync({ backend: "wasm" });
-    const { spice: node, dispose: disposeNode } = await spiceClients.toSync({ backend: "node" });
+    const { spice: wasm, dispose: disposeWasm } = await spiceClients.toSync({
+      backend: "wasm",
+    });
+    const { spice: node, dispose: disposeNode } = await spiceClients.toSync({
+      backend: "node",
+    });
     try {
       wasm.kit.loadKernel({ path: "naif0012.tls", bytes: lsk });
       wasm.kit.loadKernel({ path: "de405s.bsp", bytes: spk });

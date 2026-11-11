@@ -26,11 +26,7 @@ async function assertParityForBackend(
 
   const setup = await spiceClients.toSync({ backend });
   try {
-    const tspiceResult = runCaseInTspice(
-      setup.spice,
-      parityCase,
-      fixturesRoot,
-    );
+    const tspiceResult = runCaseInTspice(setup.spice, parityCase, fixturesRoot);
 
     assertCaseParity(parityCase, sidecarResult, tspiceResult);
   } finally {

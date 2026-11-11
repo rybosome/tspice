@@ -10,7 +10,10 @@ describe("SPK writers (type 8)", () => {
   itNative("writes a minimal type 8 segment and reads it back", () => {
     const backend = createNodeBackend();
 
-    const output = { kind: "virtual-output", path: "spk-writer-test.bsp" } as const;
+    const output = {
+      kind: "virtual-output",
+      path: "spk-writer-test.bsp",
+    } as const;
 
     const handle = backend.raw.spkopn(output, "TSPICE", 0);
 
@@ -66,7 +69,11 @@ describe("SPK writers (type 8)", () => {
     const backend = createNodeBackend();
 
     expect(() =>
-      backend.raw.spkopn({ kind: "virtual-output", path: "../evil.bsp" }, "TSPICE", 0),
+      backend.raw.spkopn(
+        { kind: "virtual-output", path: "../evil.bsp" },
+        "TSPICE",
+        0,
+      ),
     ).toThrow(/\.\.|invalid/i);
   });
 
@@ -74,7 +81,10 @@ describe("SPK writers (type 8)", () => {
     const backend = createNodeBackend();
 
     expect(() =>
-      backend.kit.readVirtualOutput({ kind: "virtual-output", path: "missing-output.bsp" }),
+      backend.kit.readVirtualOutput({
+        kind: "virtual-output",
+        path: "missing-output.bsp",
+      }),
     ).toThrow(/no staged file found|virtual output/i);
   });
 });

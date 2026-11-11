@@ -20,7 +20,11 @@ describe("spiceClients cleanup", () => {
         throw new Error(`Unexpected op: ${op}`);
       },
     };
-    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+    exposeTransportToWorker({
+      transport: server,
+      self: scope,
+      closeOnDispose: false,
+    });
 
     await expect(
       spiceClients.toWebWorker({ worker: () => worker }),
@@ -46,7 +50,11 @@ describe("spiceClients cleanup", () => {
         throw new Error(`Unexpected op: ${op}`);
       },
     };
-    exposeTransportToWorker({ transport: server, self: scope, closeOnDispose: false });
+    exposeTransportToWorker({
+      transport: server,
+      self: scope,
+      closeOnDispose: false,
+    });
 
     const originalFetch = (globalThis as unknown as { fetch?: unknown }).fetch;
     (globalThis as unknown as { fetch: unknown }).fetch = async () => ({
@@ -68,7 +76,6 @@ describe("spiceClients cleanup", () => {
       ).rejects.toThrow(/Failed to fetch kernel/i);
     } finally {
       if (originalFetch === undefined) {
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete (globalThis as unknown as { fetch?: unknown }).fetch;
       } else {
         (globalThis as unknown as { fetch: unknown }).fetch = originalFetch;

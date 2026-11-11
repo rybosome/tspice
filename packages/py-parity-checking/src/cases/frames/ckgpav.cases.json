@@ -4,7 +4,11 @@
     "description": "ckgpav pointing+AV query with explicit CK open/close lifecycle",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGPAV" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKGPAV"
+      },
       {
         "op": "frames.ckgpav",
         "inst": -94070,
@@ -21,7 +25,11 @@
     "description": "ckgpav miss outside CK coverage returns found=false",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKGPAV_ERR" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKGPAV_ERR"
+      },
       {
         "op": "frames.ckgpav",
         "inst": -94070,

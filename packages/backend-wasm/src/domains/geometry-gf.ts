@@ -12,7 +12,10 @@ import { writeUtf8CString } from "../codec/strings.js";
 
 import { assertWasmOwnedWindowHandle } from "./cells-windows.js";
 
-function assertFiniteNumber(value: unknown, context: string): asserts value is number {
+function assertFiniteNumber(
+  value: unknown,
+  context: string,
+): asserts value is number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new RangeError(`${context}: expected a finite number (got ${value})`);
   }
@@ -30,7 +33,12 @@ function tspiceCallGfsstp(module: EmscriptenModule, step: number): void {
 function tspiceCallGfstep(module: EmscriptenModule, time: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outStepPtr) => {
     module.HEAPF64[outStepPtr >> 3] = 0;
-    const result = module._tspice_gfstep(time, outStepPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_gfstep(
+      time,
+      outStepPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -50,10 +58,24 @@ function tspiceCallGfstol(module: EmscriptenModule, value: number): void {
   });
 }
 
-function tspiceCallGfrefn(module: EmscriptenModule, t1: number, t2: number, s1: boolean, s2: boolean): number {
+function tspiceCallGfrefn(
+  module: EmscriptenModule,
+  t1: number,
+  t2: number,
+  s1: boolean,
+  s2: boolean,
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outTPtr) => {
     module.HEAPF64[outTPtr >> 3] = 0;
-    const result = module._tspice_gfrefn(t1, t2, s1 ? 1 : 0, s2 ? 1 : 0, outTPtr, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_gfrefn(
+      t1,
+      t2,
+      s1 ? 1 : 0,
+      s2 ? 1 : 0,
+      outTPtr,
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -64,7 +86,12 @@ function tspiceCallGfrefn(module: EmscriptenModule, t1: number, t2: number, s1: 
   });
 }
 
-function tspiceCallGfrepi(module: EmscriptenModule, window: SpiceWindow, begmss: string, endmss: string): void {
+function tspiceCallGfrepi(
+  module: EmscriptenModule,
+  window: SpiceWindow,
+  begmss: string,
+  endmss: string,
+): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const begmssPtr = writeUtf8CString(module, begmss);
     const endmssPtr = writeUtf8CString(module, endmss);
@@ -75,7 +102,13 @@ function tspiceCallGfrepi(module: EmscriptenModule, window: SpiceWindow, begmss:
     }
 
     try {
-      const result = module._tspice_gfrepi(window, begmssPtr, endmssPtr, errPtr, WASM_ERR_MAX_BYTES);
+      const result = module._tspice_gfrepi(
+        window,
+        begmssPtr,
+        endmssPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
@@ -124,8 +157,28 @@ function tspiceCallGfsep(
     const obsrvrPtr = writeUtf8CString(module, obsrvr);
     const relatePtr = writeUtf8CString(module, relate);
 
-    if (!targ1Ptr || !shape1Ptr || !frame1Ptr || !targ2Ptr || !shape2Ptr || !frame2Ptr || !abcorrPtr || !obsrvrPtr || !relatePtr) {
-      for (const ptr of [relatePtr, obsrvrPtr, abcorrPtr, frame2Ptr, shape2Ptr, targ2Ptr, frame1Ptr, shape1Ptr, targ1Ptr]) {
+    if (
+      !targ1Ptr ||
+      !shape1Ptr ||
+      !frame1Ptr ||
+      !targ2Ptr ||
+      !shape2Ptr ||
+      !frame2Ptr ||
+      !abcorrPtr ||
+      !obsrvrPtr ||
+      !relatePtr
+    ) {
+      for (const ptr of [
+        relatePtr,
+        obsrvrPtr,
+        abcorrPtr,
+        frame2Ptr,
+        shape2Ptr,
+        targ2Ptr,
+        frame1Ptr,
+        shape1Ptr,
+        targ1Ptr,
+      ]) {
         if (ptr) module._free(ptr);
       }
       throw new Error("WASM malloc failed");
@@ -230,7 +283,11 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
     gfrefn: (t1, t2, s1, s2) => tspiceCallGfrefn(module, t1, t2, s1, s2),
 
     gfrepi: (window, begmss, endmss) => {
-      assertWasmOwnedWindowHandle(module, window as unknown as number, "gfrepi(window)");
+      assertWasmOwnedWindowHandle(
+        module,
+        window as unknown as number,
+        "gfrepi(window)",
+      );
       tspiceCallGfrepi(module, window, begmss, endmss);
     },
     gfrepf: () => tspiceCallGfrepf(module),
@@ -256,8 +313,16 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       assertFiniteNumber(refval, "gfsep(refval)");
       assertFiniteNumber(adjust, "gfsep(adjust)");
       assertFiniteNumber(step, "gfsep(step)");
-      assertWasmOwnedWindowHandle(module, cnfine as unknown as number, "gfsep(cnfine)");
-      assertWasmOwnedWindowHandle(module, result as unknown as number, "gfsep(result)");
+      assertWasmOwnedWindowHandle(
+        module,
+        cnfine as unknown as number,
+        "gfsep(cnfine)",
+      );
+      assertWasmOwnedWindowHandle(
+        module,
+        result as unknown as number,
+        "gfsep(result)",
+      );
       tspiceCallGfsep(
         module,
         targ1,
@@ -278,13 +343,32 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       );
     },
 
-    gfdist: (target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result) => {
+    gfdist: (
+      target,
+      abcorr,
+      obsrvr,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
       assertSpiceInt32(nintvls, "gfdist(nintvls)", { min: 1 });
       assertFiniteNumber(refval, "gfdist(refval)");
       assertFiniteNumber(adjust, "gfdist(adjust)");
       assertFiniteNumber(step, "gfdist(step)");
-      assertWasmOwnedWindowHandle(module, cnfine as unknown as number, "gfdist(cnfine)");
-      assertWasmOwnedWindowHandle(module, result as unknown as number, "gfdist(result)");
+      assertWasmOwnedWindowHandle(
+        module,
+        cnfine as unknown as number,
+        "gfdist(cnfine)",
+      );
+      assertWasmOwnedWindowHandle(
+        module,
+        result as unknown as number,
+        "gfdist(result)",
+      );
       tspiceCallGfdist(
         module,
         target,

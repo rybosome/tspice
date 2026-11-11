@@ -26,7 +26,9 @@ export function resolveKernelPath(path: string): string {
     raw.startsWith("\\\\") ||
     (raw.startsWith("/") && !raw.startsWith("/kernels/"))
   ) {
-    throw new Error(`WASM kernel paths must be virtual ids (e.g. "naif0012.tls"), not OS paths/URLs: ${path}`);
+    throw new Error(
+      `WASM kernel paths must be virtual ids (e.g. "naif0012.tls"), not OS paths/URLs: ${path}`,
+    );
   }
 
   // We treat kernel paths as *virtual* WASM-FS paths under `/kernels`.
@@ -64,7 +66,11 @@ export function createWasmFs(module: EmscriptenModule): WasmFsApi {
 /**
  * Write a {@link KernelSource} into the WASM FS (if needed) and return the path to load.
  */
-export function writeKernelSource(module: EmscriptenModule, fs: WasmFsApi, kernel: KernelSource): string {
+export function writeKernelSource(
+  module: EmscriptenModule,
+  fs: WasmFsApi,
+  kernel: KernelSource,
+): string {
   if (typeof kernel === "string") {
     return kernel;
   }
@@ -73,4 +79,3 @@ export function writeKernelSource(module: EmscriptenModule, fs: WasmFsApi, kerne
   fs.writeFile(resolved, kernel.bytes);
   return resolved;
 }
-

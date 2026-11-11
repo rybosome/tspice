@@ -63,7 +63,11 @@ function resolveEkPath(rawPath: string): string {
 export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
   switch (step.op) {
     case "ek.ekopn": {
-      const handle = context.spice.raw.ekopn(resolveEkPath(step.path), step.ifname, step.ncomch);
+      const handle = context.spice.raw.ekopn(
+        resolveEkPath(step.path),
+        step.ifname,
+        step.ncomch,
+      );
       registerEkHandle(context, step.handleId, handle);
       return { op: step.op, value: { handleId: step.handleId } };
     }
@@ -100,17 +104,32 @@ export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
       return { op: step.op, value: context.spice.raw.ekfind(step.query) };
 
     case "ek.ekgc":
-      return { op: step.op, value: context.spice.raw.ekgc(step.selidx, step.row, step.elment) };
+      return {
+        op: step.op,
+        value: context.spice.raw.ekgc(step.selidx, step.row, step.elment),
+      };
 
     case "ek.ekgd":
-      return { op: step.op, value: context.spice.raw.ekgd(step.selidx, step.row, step.elment) };
+      return {
+        op: step.op,
+        value: context.spice.raw.ekgd(step.selidx, step.row, step.elment),
+      };
 
     case "ek.ekgi":
-      return { op: step.op, value: context.spice.raw.ekgi(step.selidx, step.row, step.elment) };
+      return {
+        op: step.op,
+        value: context.spice.raw.ekgi(step.selidx, step.row, step.elment),
+      };
 
     case "ek.ekifld": {
       const handle = requireEkHandle(context, step.handleId);
-      const out = context.spice.raw.ekifld(handle, step.tabnam, step.nrows, step.cnames, step.decls);
+      const out = context.spice.raw.ekifld(
+        handle,
+        step.tabnam,
+        step.nrows,
+        step.cnames,
+        step.decls,
+      );
       registerEkSegment(context, step.segmentId, {
         handleId: step.handleId,
         segno: out.segno,

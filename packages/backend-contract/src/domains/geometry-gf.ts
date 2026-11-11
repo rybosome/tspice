@@ -15,7 +15,8 @@ import type { AbCorr } from "../shared/types.js";
 import type { SpiceWindow } from "./cells-windows.js";
 
 /** Relation operators accepted by many high-level GF searches. */
-export type GfRelate = ">" | "<" | "=" | "ABSMAX" | "ABSMIN" | "LOCMAX" | "LOCMIN";
+export type GfRelate =
+  ">" | "<" | "=" | "ABSMAX" | "ABSMIN" | "LOCMAX" | "LOCMIN";
 
 /** Backend contract for Geometry Finder (GF) event-finding routines. */
 export interface GeometryGfApi {

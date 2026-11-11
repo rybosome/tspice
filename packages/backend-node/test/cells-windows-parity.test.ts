@@ -29,9 +29,17 @@ function runScenario(b: SpiceBackend) {
     b.raw.wninsd(0.5, 2.5, win);
 
     return {
-      ints: [b.kit.cellGeti(icell, 0), b.kit.cellGeti(icell, 1), b.kit.cellGeti(icell, 2)],
+      ints: [
+        b.kit.cellGeti(icell, 0),
+        b.kit.cellGeti(icell, 1),
+        b.kit.cellGeti(icell, 2),
+      ],
       doubles: [b.kit.cellGetd(dcell, 0), b.kit.cellGetd(dcell, 1)],
-      chars: [b.kit.cellGetc(ccell, 0), b.kit.cellGetc(ccell, 1), b.kit.cellGetc(ccell, 2)],
+      chars: [
+        b.kit.cellGetc(ccell, 0),
+        b.kit.cellGetc(ccell, 1),
+        b.kit.cellGetc(ccell, 2),
+      ],
       winCard: b.raw.wncard(win),
       win0: b.raw.wnfetd(win, 0),
     };
@@ -46,13 +54,17 @@ function runScenario(b: SpiceBackend) {
 describe("cells/windows parity (node vs wasm)", () => {
   const itNative = it.runIf(nodeAddonAvailable());
 
-  itNative("matches for basic cells + windows ops", async () => {
-    const node = createNodeBackend();
-    const wasm = await createWasmBackend();
+  itNative(
+    "matches for basic cells + windows ops",
+    async () => {
+      const node = createNodeBackend();
+      const wasm = await createWasmBackend();
 
-    const nodeOut = runScenario(node);
-    const wasmOut = runScenario(wasm);
+      const nodeOut = runScenario(node);
+      const wasmOut = runScenario(wasm);
 
-    expect(nodeOut).toEqual(wasmOut);
-  }, 20_000);
+      expect(nodeOut).toEqual(wasmOut);
+    },
+    20_000,
+  );
 });

@@ -38,14 +38,24 @@ export function createErrorApi(module: EmscriptenModule): ErrorApi {
       const outMaxBytes = WASM_ERR_MAX_BYTES;
       const whichPtr = writeUtf8CString(module, which);
       try {
-        return withAllocs(module, [outMaxBytes, errMaxBytes], (outPtr, errPtr) => {
-          module.HEAPU8[outPtr] = 0;
-          const result = module._tspice_getmsg(whichPtr, outPtr, outMaxBytes, errPtr, errMaxBytes);
-          if (result !== 0) {
-            throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-          }
-          return module.UTF8ToString(outPtr, outMaxBytes).trim();
-        });
+        return withAllocs(
+          module,
+          [outMaxBytes, errMaxBytes],
+          (outPtr, errPtr) => {
+            module.HEAPU8[outPtr] = 0;
+            const result = module._tspice_getmsg(
+              whichPtr,
+              outPtr,
+              outMaxBytes,
+              errPtr,
+              errMaxBytes,
+            );
+            if (result !== 0) {
+              throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+            }
+            return module.UTF8ToString(outPtr, outMaxBytes).trim();
+          },
+        );
       } finally {
         module._free(whichPtr);
       }

@@ -40,7 +40,11 @@ describe("SPICE errors (node backend)", () => {
 
   itNative("rejects invalid getmsg(which) selectors at the boundary", () => {
     const backend = createNodeBackend();
-    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/getmsg\(which\)/i);
-    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(/SHORT|LONG|EXPLAIN/);
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(
+      /getmsg\(which\)/i,
+    );
+    expect(() => backend.raw.getmsg("NOPE" as never)).toThrow(
+      /SHORT|LONG|EXPLAIN/,
+    );
   });
 });

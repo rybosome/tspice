@@ -39,9 +39,14 @@ function resolveKernelPathForTspice(pathValue: string): string {
   return toVirtualKernelPath(pathValue);
 }
 
-function runWasmKplfrmFallback(context: RunTspiceContext, frmcls: number): number[] {
+function runWasmKplfrmFallback(
+  context: RunTspiceContext,
+  frmcls: number,
+): number[] {
   if (frmcls < 1 || frmcls > 6) {
-    throw new Error(`Frame class specifier FRMCLS was ${frmcls}; this value is not supported.`);
+    throw new Error(
+      `Frame class specifier FRMCLS was ${frmcls}; this value is not supported.`,
+    );
   }
 
   const classVariables = context.spice.raw.gnpool("FRAME_*_CLASS", 0, 10_000);
@@ -115,7 +120,10 @@ function runKplfrmStep(context: RunTspiceContext, frmcls: number): number[] {
 }
 
 /** Execute one `kernels.*` workflow step in tspice. */
-export function runKernelsStep(context: RunTspiceContext, step: KernelsStep): StepOutput {
+export function runKernelsStep(
+  context: RunTspiceContext,
+  step: KernelsStep,
+): StepOutput {
   switch (step.op) {
     case "kernels.furnsh": {
       const pathRef = toPathRef(step.file);
@@ -153,7 +161,9 @@ export function runKernelsStep(context: RunTspiceContext, step: KernelsStep): St
       return { op: step.op, value: null };
 
     case "kernels.kinfo": {
-      const out = context.spice.raw.kinfo(resolveKernelPathForTspice(step.path));
+      const out = context.spice.raw.kinfo(
+        resolveKernelPathForTspice(step.path),
+      );
       if (!out.found) {
         return { op: step.op, value: { found: false } };
       }

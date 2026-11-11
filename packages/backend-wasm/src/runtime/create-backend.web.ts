@@ -4,7 +4,10 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 import * as emscriptenExports from "../lowlevel/exports.js";
 
 import { createCoordsVectorsApi } from "../domains/coords-vectors.js";
-import { createCellsWindowsApi, createCellsWindowsKitApi } from "../domains/cells-windows.js";
+import {
+  createCellsWindowsApi,
+  createCellsWindowsKitApi,
+} from "../domains/cells-windows.js";
 import { createEphemerisApi } from "../domains/ephemeris.js";
 import { createFramesApi } from "../domains/frames.js";
 import { createGeometryApi } from "../domains/geometry.js";
@@ -12,7 +15,11 @@ import { createGeometryGfApi } from "../domains/geometry-gf.js";
 import { createIdsNamesApi } from "../domains/ids-names.js";
 import { createKernelsApi } from "../domains/kernels.js";
 import { createKernelPoolApi } from "../domains/kernel-pool.js";
-import { createTimeApi, createTimeKitApi, getToolkitVersion } from "../domains/time.js";
+import {
+  createTimeApi,
+  createTimeKitApi,
+  getToolkitVersion,
+} from "../domains/time.js";
 import { createFileIoApi, createFileIoKitApi } from "../domains/file-io.js";
 import { createErrorApi } from "../domains/error.js";
 import { createDskApi } from "../domains/dsk.js";
@@ -52,7 +59,13 @@ export async function createWasmBackend(
 
     // In web builds, `blob:` URLs are a real-world possibility (some bundlers and
     // runtime loaders produce them). `data:` is also generally fetchable.
-    const allowedProtocols = new Set<string>(["http:", "https:", "file:", "blob:", "data:"]);
+    const allowedProtocols = new Set<string>([
+      "http:",
+      "https:",
+      "file:",
+      "blob:",
+      "data:",
+    ]);
 
     if (!allowedProtocols.has(u.protocol)) {
       throw new Error(
@@ -61,16 +74,17 @@ export async function createWasmBackend(
     }
   }
 
-  let createEmscriptenModule: (opts: Record<string, unknown>) => Promise<unknown>;
+  let createEmscriptenModule: (
+    opts: Record<string, unknown>,
+  ) => Promise<unknown>;
   try {
     // NOTE: This must be a literal import path so bundlers like Vite don't
     // rewrite the glue JS into an asset URL module (via `new URL(..., import.meta.url)`
     // + `?url`) which breaks `import()`.
-    ({ default: createEmscriptenModule } = (await import(
-      "../tspice_backend_wasm.web.js"
-    )) as {
-      default: (opts: Record<string, unknown>) => Promise<unknown>;
-    });
+    ({ default: createEmscriptenModule } =
+      (await import("../tspice_backend_wasm.web.js")) as {
+        default: (opts: Record<string, unknown>) => Promise<unknown>;
+      });
   } catch (error) {
     throw new Error(
       `Failed to load tspice WASM glue (../${WASM_JS_FILENAME}): ${String(error)}`,
@@ -95,12 +109,10 @@ export async function createWasmBackend(
     );
   }
 
-
   const validateEmscriptenModule = options.validateEmscriptenModule ?? true;
   if (validateEmscriptenModule) {
     emscriptenExports.assertEmscriptenModule(module);
   }
-
 
   // The toolkit version is constant for the lifetime of a loaded module.
   const toolkitVersion = getToolkitVersion(module);

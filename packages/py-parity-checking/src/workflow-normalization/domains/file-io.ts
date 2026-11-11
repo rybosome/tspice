@@ -26,7 +26,9 @@ type FileIoPathStep =
 
 type FileIoAliasPublisher = StepFileIoDlaopn | StepFileIoDskopn;
 
-function ensureFileIoPostCaseCleanupScope(metadata: WorkflowNormalizationMetadata): void {
+function ensureFileIoPostCaseCleanupScope(
+  metadata: WorkflowNormalizationMetadata,
+): void {
   if (
     metadata.postCase.cleanupScopes.some(
       (scope) => scope.domain === "file-io" && scope.scope === "open-handles",
@@ -41,7 +43,9 @@ function ensureFileIoPostCaseCleanupScope(metadata: WorkflowNormalizationMetadat
   });
 }
 
-function publishFileIoAlias(step: FileIoAliasPublisher): [string, ReturnType<typeof toPathRef>] | null {
+function publishFileIoAlias(
+  step: FileIoAliasPublisher,
+): [string, ReturnType<typeof toPathRef>] | null {
   if (step.alias == null) {
     return null;
   }

@@ -13,7 +13,7 @@ const samplePack = kernels
 describe("spiceClients.withKernels()", () => {
   it("throws for an empty pack array at runtime", () => {
     expect(() =>
-      (spiceClients.withKernels as unknown as (packs: unknown) => unknown)([])
+      (spiceClients.withKernels as unknown as (packs: unknown) => unknown)([]),
     ).toThrow(/non-empty KernelPack\[\]/);
   });
 

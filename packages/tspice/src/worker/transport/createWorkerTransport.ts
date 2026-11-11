@@ -1,14 +1,24 @@
 import type { SpiceTransport } from "../../transport/types.js";
 
-import type { RpcDispose, RpcRequest, RpcResponse } from "../../transport/rpc/protocol.js";
+import type {
+  RpcDispose,
+  RpcRequest,
+  RpcResponse,
+} from "../../transport/rpc/protocol.js";
 import {
   deserializeError,
   tspiceRpcDisposeType,
   tspiceRpcRequestType,
   tspiceRpcResponseType,
 } from "../../transport/rpc/protocol.js";
-import { decodeRpcValue, encodeRpcValue } from "../../transport/rpc/valueCodec.js";
-import { canQueueMacrotask, queueMacrotask } from "../../transport/rpc/taskScheduling.js";
+import {
+  decodeRpcValue,
+  encodeRpcValue,
+} from "../../transport/rpc/valueCodec.js";
+import {
+  canQueueMacrotask,
+  queueMacrotask,
+} from "../../transport/rpc/taskScheduling.js";
 
 export type WorkerLike = {
   postMessage(message: unknown): void;
@@ -116,7 +126,8 @@ export function createWorkerTransport(opts: {
   let canScheduleMacrotask: boolean | undefined;
 
   const terminateOnDispose =
-    opts.terminateOnDispose ?? (typeof opts.worker === "function" ? true : false);
+    opts.terminateOnDispose ??
+    (typeof opts.worker === "function" ? true : false);
 
   const signalDispose = opts.signalDispose ?? terminateOnDispose;
 
@@ -206,7 +217,9 @@ export function createWorkerTransport(opts: {
     }
   };
 
-  const rejectAllPending = (getReason: (pending: Pending, id: number) => unknown): void => {
+  const rejectAllPending = (
+    getReason: (pending: Pending, id: number) => unknown,
+  ): void => {
     for (const [id, pending] of pendingById) {
       pendingById.delete(id);
       pending.rejectAndCleanup(getReason(pending, id));
@@ -325,7 +338,11 @@ export function createWorkerTransport(opts: {
       settlement.error = undefined;
 
       if (disposed) {
-        pending.reject(new Error(`Worker transport disposed ${formatRequestContext(op, id)}`));
+        pending.reject(
+          new Error(
+            `Worker transport disposed ${formatRequestContext(op, id)}`,
+          ),
+        );
         continue;
       }
 
@@ -344,7 +361,9 @@ export function createWorkerTransport(opts: {
     if (settlementQueued) return;
     settlementQueued = true;
 
-    const ok = queueMacrotask(flushQueuedSettlements, { allowSyncFallback: false });
+    const ok = queueMacrotask(flushQueuedSettlements, {
+      allowSyncFallback: false,
+    });
     if (ok) {
       canScheduleMacrotask = true;
       return;
@@ -357,10 +376,13 @@ export function createWorkerTransport(opts: {
 
   const onMessage = (ev: unknown): void => {
     const msg = (ev as { data?: unknown } | null | undefined)?.data as
-      | Partial<RpcResponse>
-      | null
-      | undefined;
-    if (!msg || msg.type !== tspiceRpcResponseType || typeof msg.id !== "number") return;
+      Partial<RpcResponse> | null | undefined;
+    if (
+      !msg ||
+      msg.type !== tspiceRpcResponseType ||
+      typeof msg.id !== "number"
+    )
+      return;
 
     const id = msg.id;
 
@@ -402,7 +424,9 @@ export function createWorkerTransport(opts: {
         });
       } else {
         kind = "resolve";
-        value = decodeRpcValue((msg as Extract<RpcResponse, { ok: true }>).value);
+        value = decodeRpcValue(
+          (msg as Extract<RpcResponse, { ok: true }>).value,
+        );
       }
     } else if (msg.ok === false) {
       if (!("error" in msg)) {
@@ -417,7 +441,9 @@ export function createWorkerTransport(opts: {
         });
       } else {
         kind = "reject";
-        error = deserializeError((msg as Extract<RpcResponse, { ok: false }>).error);
+        error = deserializeError(
+          (msg as Extract<RpcResponse, { ok: false }>).error,
+        );
       }
     } else {
       kind = "reject";
@@ -438,12 +464,16 @@ export function createWorkerTransport(opts: {
   const onError = (ev: unknown): void => {
     let message: string | undefined;
     try {
-      message = (ev as { message?: unknown } | null | undefined)?.message as string | undefined;
+      message = (ev as { message?: unknown } | null | undefined)?.message as
+        string | undefined;
     } catch {
       // ignore
     }
 
-    const safeMessage = typeof message === "string" && message.length > 0 ? message : "Worker error";
+    const safeMessage =
+      typeof message === "string" && message.length > 0
+        ? message
+        : "Worker error";
     const baseMessage = `Internal worker runtime error: ${safeMessage}`;
 
     terminalTeardown(new Error(baseMessage), {
@@ -476,7 +506,8 @@ export function createWorkerTransport(opts: {
       // Lazily construct/attach so transports can be created in environments
       // that don't immediately support `Worker`.
       try {
-        worker = typeof opts.worker === "function" ? opts.worker() : opts.worker;
+        worker =
+          typeof opts.worker === "function" ? opts.worker() : opts.worker;
       } catch (err) {
         const out = new Error("Failed to create Worker");
         (out as Error & { cause?: unknown }).cause = err;
@@ -512,7 +543,9 @@ export function createWorkerTransport(opts: {
 
     terminalTeardown(new Error("Worker transport disposed"), {
       getReason: (pending, id) =>
-        new Error(`Worker transport disposed ${formatRequestContext(pending.op, id)}`),
+        new Error(
+          `Worker transport disposed ${formatRequestContext(pending.op, id)}`,
+        ),
       deferTerminate: true,
     });
   };
@@ -523,7 +556,8 @@ export function createWorkerTransport(opts: {
     requestOpts?: WorkerTransportRequestOptions,
   ): Promise<unknown> => {
     if (terminalError) throw terminalError;
-    if (disposed) throw new Error(`Worker transport disposed ${formatRequestContext(op)}`);
+    if (disposed)
+      throw new Error(`Worker transport disposed ${formatRequestContext(op)}`);
     if (canScheduleMacrotask === false) throw createNoMacrotaskSchedulerError();
 
     const id = nextId++;
@@ -549,7 +583,6 @@ export function createWorkerTransport(opts: {
       // paths (timeout, abort, response receipt, or dispose()) depending on
       // ordering.
       let didCleanup = false;
-      let onAbort: (() => void) | undefined;
 
       const cleanup = (): void => {
         if (didCleanup) return;
@@ -577,7 +610,7 @@ export function createWorkerTransport(opts: {
       };
       pendingById.set(id, pending);
 
-      onAbort = (): void => {
+      const onAbort = (): void => {
         if (pendingById.get(id) !== pending) return;
         pendingById.delete(id);
         pending.rejectAndCleanup(createAbortError());
@@ -611,7 +644,9 @@ export function createWorkerTransport(opts: {
       } catch (err) {
         if (pendingById.get(id) === pending) pendingById.delete(id);
 
-        const out = new Error(`Worker postMessage failed ${formatRequestContext(op, id)}`);
+        const out = new Error(
+          `Worker postMessage failed ${formatRequestContext(op, id)}`,
+        );
         (out as Error & { cause?: unknown }).cause = err;
         pending.rejectAndCleanup(out);
       }

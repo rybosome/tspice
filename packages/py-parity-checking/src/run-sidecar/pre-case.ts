@@ -2,12 +2,17 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { resolvePathRef, type RuntimePaths } from "../runtime/path-ref.js";
-import type { PreCaseCleanupCandidate, WorkflowNormalizationMetadata } from "../workflow-normalization/types.js";
+import type {
+  PreCaseCleanupCandidate,
+  WorkflowNormalizationMetadata,
+} from "../workflow-normalization/types.js";
 
 const GENERATED_FIXTURE_PREFIX = "kernels/generated/";
 const WRITER_EXTENSION_ALLOWLIST = new Set([".dla", ".bds"]);
 
-function isAllowedFixtureCleanupCandidate(candidate: PreCaseCleanupCandidate): boolean {
+function isAllowedFixtureCleanupCandidate(
+  candidate: PreCaseCleanupCandidate,
+): boolean {
   if (candidate.path.kind !== "fixture") {
     return false;
   }

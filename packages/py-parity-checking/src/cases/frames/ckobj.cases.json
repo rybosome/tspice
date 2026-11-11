@@ -4,7 +4,11 @@
     "description": "ckobj object-id query with explicit CK open/close lifecycle",
     "workflow": [
       { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
-      { "op": "frames.cklpf", "ck": "kernels/mgs_hga_hinge_v2.bc", "handleId": "CKH_CKOBJ" },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "CKH_CKOBJ"
+      },
       {
         "op": "frames.ckobj",
         "ck": "kernels/mgs_hga_hinge_v2.bc",

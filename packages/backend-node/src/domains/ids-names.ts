@@ -11,7 +11,10 @@ export function createIdsNamesApi(native: NativeAddon): IdsNamesApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(typeof out.code === "number", "Expected bodn2c().code to be a number");
+      invariant(
+        typeof out.code === "number",
+        "Expected bodn2c().code to be a number",
+      );
       return { found: true, code: out.code };
     },
 
@@ -20,13 +23,19 @@ export function createIdsNamesApi(native: NativeAddon): IdsNamesApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(typeof out.name === "string", "Expected bodc2n().name to be a string");
+      invariant(
+        typeof out.name === "string",
+        "Expected bodc2n().name to be a string",
+      );
       return { found: true, name: out.name };
     },
 
     bodc2s: (code) => {
       const out = native.bodc2s(code);
-      invariant(typeof out === "string", "Expected bodc2s() to return a string");
+      invariant(
+        typeof out === "string",
+        "Expected bodc2s() to return a string",
+      );
       return out;
     },
 
@@ -35,7 +44,10 @@ export function createIdsNamesApi(native: NativeAddon): IdsNamesApi {
       if (!out.found) {
         return { found: false };
       }
-      invariant(typeof out.code === "number", "Expected bods2c().code to be a number");
+      invariant(
+        typeof out.code === "number",
+        "Expected bods2c().code to be a number",
+      );
       return { found: true, code: out.code };
     },
 
@@ -46,7 +58,10 @@ export function createIdsNamesApi(native: NativeAddon): IdsNamesApi {
     bodfnd: (body, item) => {
       // `item` normalization is handled by the native addon.
       const out = native.bodfnd(body, item);
-      invariant(typeof out === "boolean", "Expected bodfnd() to return a boolean");
+      invariant(
+        typeof out === "boolean",
+        "Expected bodfnd() to return a boolean",
+      );
       return out;
     },
 

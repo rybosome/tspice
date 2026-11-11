@@ -6,13 +6,21 @@ import { describe, expect, it } from "vitest";
 
 import type { Spice } from "@rybosome/tspice";
 
-import { createRunTspiceContext, registerFinalizer } from "../src/runtime/context.js";
-import { beforeCaseLifecycle, finalizeCaseLifecycle } from "../src/runtime/lifecycle.js";
+import {
+  createRunTspiceContext,
+  registerFinalizer,
+} from "../src/runtime/context.js";
+import {
+  beforeCaseLifecycle,
+  finalizeCaseLifecycle,
+} from "../src/runtime/lifecycle.js";
 
 describe("runtime lifecycle", () => {
   it("runs finalizers best-effort in stable order and always resets toolkit", () => {
     const calls: string[] = [];
-    const scratchRoot = fs.mkdtempSync(path.join(os.tmpdir(), "py-parity-lifecycle-"));
+    const scratchRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "py-parity-lifecycle-"),
+    );
 
     const spice = {
       raw: {

@@ -4,7 +4,10 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type { SpiceBackend, SpiceIntCell } from "@rybosome/tspice-backend-contract";
+import type {
+  SpiceBackend,
+  SpiceIntCell,
+} from "@rybosome/tspice-backend-contract";
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
@@ -137,7 +140,9 @@ describe("dsk parity", () => {
     const bodids = node.kit.newIntCell(10);
     node.kit.freeCell(bodids);
     try {
-      expect(() => (node.raw as any).dskobj(dskPath, bodids)).toThrow(RangeError);
+      expect(() => (node.raw as any).dskobj(dskPath, bodids)).toThrow(
+        RangeError,
+      );
     } finally {
       node.raw.kclear();
     }

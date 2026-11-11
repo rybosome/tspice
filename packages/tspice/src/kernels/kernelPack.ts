@@ -47,12 +47,13 @@ export type ResponseLike = {
 };
 
 // Structural fetch typing so we don't leak DOM lib types into emitted .d.ts.
-export type FetchLike = (input: string, init?: unknown) => Promise<ResponseLike>;
+export type FetchLike = (
+  input: string,
+  init?: unknown,
+) => Promise<ResponseLike>;
 
 export type RootRelativeKernelUrlBehavior =
-  | "bypassBaseUrl"
-  | "applyBaseOrigin"
-  | "error";
+  "bypassBaseUrl" | "applyBaseOrigin" | "error";
 
 export type LoadKernelPackOptions = {
   /**
@@ -97,15 +98,17 @@ function isAbsoluteUrl(url: string): boolean {
   return false;
 }
 
-function throwProtocolRelativeUrlError(opts: { label: string; url: string }): never {
+function throwProtocolRelativeUrlError(opts: {
+  label: string;
+  url: string;
+}): never {
   throw new Error(
     `${opts.label}: invalid URL form. ` +
-      `Expected: scheme-based URLs like \"https://...\" or non-protocol-relative paths. ` +
+      `Expected: scheme-based URLs like "https://..." or non-protocol-relative paths. ` +
       `Got: ${opts.url}. ` +
-      `Hint: replace leading \"//\" with an explicit scheme.`,
+      `Hint: replace leading "//" with an explicit scheme.`,
   );
 }
-
 
 /**
  * Resolve a kernel URL against an optional `baseUrl`, respecting the configured
@@ -117,7 +120,10 @@ export function resolveKernelUrl(
   rootRelativeKernelUrlBehavior: RootRelativeKernelUrlBehavior,
 ): string {
   if (url.startsWith("//")) {
-    throwProtocolRelativeUrlError({ label: "loadKernelPack(): kernel.url", url });
+    throwProtocolRelativeUrlError({
+      label: "loadKernelPack(): kernel.url",
+      url,
+    });
   }
 
   const normalizedBaseUrl = baseUrl?.trim();
@@ -126,7 +132,10 @@ export function resolveKernelUrl(
   if (!normalizedBaseUrl) return url;
 
   if (normalizedBaseUrl.startsWith("//")) {
-    throwProtocolRelativeUrlError({ label: "loadKernelPack(): pack.baseUrl", url: normalizedBaseUrl });
+    throwProtocolRelativeUrlError({
+      label: "loadKernelPack(): pack.baseUrl",
+      url: normalizedBaseUrl,
+    });
   }
 
   // If the kernel URL is already absolute, don't apply `baseUrl`.
@@ -140,9 +149,9 @@ export function resolveKernelUrl(
     if (rootRelativeKernelUrlBehavior === "error") {
       throw new Error(
         `loadKernelPack(): incompatible root-relative kernel URL with current behavior. ` +
-          `Expected: relative kernel.url when rootRelativeKernelUrlBehavior=\"error\". ` +
+          `Expected: relative kernel.url when rootRelativeKernelUrlBehavior="error". ` +
           `Got: kernel.url=${url}, baseUrl=${normalizedBaseUrl}. ` +
-          `Hint: use a relative kernel URL or set rootRelativeKernelUrlBehavior to \"bypassBaseUrl\" or \"applyBaseOrigin\".`,
+          `Hint: use a relative kernel URL or set rootRelativeKernelUrlBehavior to "bypassBaseUrl" or "applyBaseOrigin".`,
       );
     }
 
@@ -166,7 +175,7 @@ export function resolveKernelUrl(
     // file-vs-directory behavior of `new URL(url, baseUrl)`.
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): invalid absolute baseUrl. Expected: absolute baseUrl must be directory-style (pathname must end with \"/\"). Got: ${normalizedBaseUrl}. Hint: append a trailing slash to indicate directory semantics.`,
+        `loadKernelPack(): invalid absolute baseUrl. Expected: absolute baseUrl must be directory-style (pathname must end with "/"). Got: ${normalizedBaseUrl}. Hint: append a trailing slash to indicate directory semantics.`,
       );
     }
 
@@ -180,7 +189,7 @@ export function resolveKernelUrl(
     const base = new URL(normalizedBaseUrl, "https://tspice.invalid");
     if (!base.pathname.endsWith("/")) {
       throw new Error(
-        `loadKernelPack(): invalid path-absolute baseUrl. Expected: path-absolute baseUrl pathname to end with \"/\". Got: ${normalizedBaseUrl}. Hint: use /myapp/ instead of /myapp.`,
+        `loadKernelPack(): invalid path-absolute baseUrl. Expected: path-absolute baseUrl pathname to end with "/". Got: ${normalizedBaseUrl}. Hint: use /myapp/ instead of /myapp.`,
       );
     }
 
@@ -192,14 +201,17 @@ export function resolveKernelUrl(
   // Treat the base as a directory prefix.
   if (!normalizedBaseUrl.endsWith("/")) {
     throw new Error(
-      `loadKernelPack(): invalid relative baseUrl. Expected: baseUrl to be directory-style (end with \"/\"). Got: ${normalizedBaseUrl}. Hint: use myapp/ instead of myapp.`,
+      `loadKernelPack(): invalid relative baseUrl. Expected: baseUrl to be directory-style (end with "/"). Got: ${normalizedBaseUrl}. Hint: use myapp/ instead of myapp.`,
     );
   }
 
   return `${normalizedBaseUrl}${url}`;
 }
 
-async function fetchKernelBytes(fetchFn: FetchLike, url: string): Promise<Uint8Array> {
+async function fetchKernelBytes(
+  fetchFn: FetchLike,
+  url: string,
+): Promise<Uint8Array> {
   const res = await fetchFn(url);
   if (!res.ok) {
     throw new Error(
@@ -225,14 +237,19 @@ export async function loadKernelPack(
   opts?: LoadKernelPackOptions,
 ): Promise<void> {
   // Migration guard: `baseUrl` moved from load options to `pack.baseUrl`.
-  if (opts && Object.prototype.hasOwnProperty.call(opts as unknown as object, "baseUrl")) {
+  if (
+    opts &&
+    Object.prototype.hasOwnProperty.call(opts as unknown as object, "baseUrl")
+  ) {
     throw new Error(
       "loadKernelPack(): deprecated option used. Expected: opts.baseUrl has been removed; set pack.baseUrl instead (and pass the pack to spiceClients.withKernels(pack)). Got: opts.baseUrl provided.",
     );
   }
 
   const fetchFn =
-    opts?.fetch ?? ((globalThis as unknown as { fetch?: FetchLike }).fetch ?? undefined);
+    opts?.fetch ??
+    (globalThis as unknown as { fetch?: FetchLike }).fetch ??
+    undefined;
 
   if (!fetchFn) {
     throw new Error(
@@ -241,7 +258,8 @@ export async function loadKernelPack(
   }
 
   const fetchStrategy = opts?.fetchStrategy ?? "sequential";
-  const rootRelativeKernelUrlBehavior = opts?.rootRelativeKernelUrlBehavior ?? "bypassBaseUrl";
+  const rootRelativeKernelUrlBehavior =
+    opts?.rootRelativeKernelUrlBehavior ?? "bypassBaseUrl";
 
   if (fetchStrategy === "parallel") {
     const bytes = await Promise.all(

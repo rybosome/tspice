@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node: ['20', '22']
+        node: ["20", "22"]
 
     uses: ./.github/workflows/reusable-node-pnpm.yml
     with:
@@ -37,7 +37,7 @@ jobs:
     uses: ./.github/workflows/reusable-node-pnpm.yml
     with:
       runs_on: ubuntu-latest
-      node_version: '22'
+      node_version: "22"
       command: pnpm docs:build
 
   check-llm-artifacts:
@@ -51,7 +51,7 @@ jobs:
       - name: Setup pnpm + Node
         uses: ./.github/actions/setup-pnpm-node
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install dependencies (generator deps)
         run: pnpm install --frozen-lockfile --filter @rybosome/docs... --filter @rybosome/tspice...
@@ -73,13 +73,12 @@ jobs:
             exit 1
           fi
 
-
   verify-dist-publish:
     name: Verify dist-publish tarball (ubuntu + node 22)
     uses: ./.github/workflows/reusable-node-pnpm.yml
     with:
       runs_on: ubuntu-latest
-      node_version: '22'
+      node_version: "22"
       command: |
         set -euo pipefail
 
@@ -95,7 +94,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node: ['20', '22']
+        node: ["20", "22"]
 
     uses: ./.github/workflows/reusable-node-pnpm.yml
     with:
@@ -183,12 +182,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14, macos-15-intel]
+        os: [ubuntu-latest, macos-15, macos-15-intel]
 
     uses: ./.github/workflows/reusable-node-pnpm.yml
     with:
       runs_on: ${{ matrix.os }}
-      node_version: '22'
+      node_version: "22"
       pre_install: |
         set -euo pipefail
 

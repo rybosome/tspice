@@ -8,13 +8,20 @@ import {
   WASM_WEB_JS_FILENAME,
 } from "./backend-wasm-assets.mjs";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
 
 const backendWasmRoot = path.join(repoRoot, "packages", "backend-wasm");
 const srcDir = path.join(backendWasmRoot, "emscripten");
 const distDir = path.join(backendWasmRoot, "dist");
 
-const assets = [WASM_WEB_JS_FILENAME, WASM_NODE_JS_FILENAME, WASM_BINARY_FILENAME];
+const assets = [
+  WASM_WEB_JS_FILENAME,
+  WASM_NODE_JS_FILENAME,
+  WASM_BINARY_FILENAME,
+];
 
 function fsyncDirBestEffort(dir) {
   // Best-effort durability; not supported everywhere.
@@ -45,9 +52,17 @@ function atomicWriteFileSync(destPath, bytes) {
     // Some Node/platform combos can surface short writes when using a raw fd.
     let offset = 0;
     while (offset < bytes.length) {
-      const written = fs.writeSync(fd, bytes, offset, bytes.length - offset, offset);
+      const written = fs.writeSync(
+        fd,
+        bytes,
+        offset,
+        bytes.length - offset,
+        offset,
+      );
       if (written <= 0) {
-        throw new Error(`Short write while copying ${destPath} (wrote ${written} bytes).`);
+        throw new Error(
+          `Short write while copying ${destPath} (wrote ${written} bytes).`,
+        );
       }
       offset += written;
     }
@@ -82,7 +97,9 @@ function validateWasmSync(wasmPath, expectedSize) {
     void module;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    throw new Error(`WASM compilation failed after copy: ${wasmPath}: ${message}`);
+    throw new Error(
+      `WASM compilation failed after copy: ${wasmPath}: ${message}`,
+    );
   }
 }
 

@@ -265,7 +265,6 @@ export const geometryCases: ParityCase[] = [
   ...(geometryPl2nvcCasesRaw as ParityCase[]),
 ];
 
-
 export const geometryGfGfdistCases = geometryGfGfdistCasesRaw as ParityCase[];
 export const geometryGfGfrefnCases = geometryGfGfrefnCasesRaw as ParityCase[];
 export const geometryGfGfrepfCases = geometryGfGfrepfCasesRaw as ParityCase[];

@@ -47,7 +47,10 @@ function indexToLineCol(text, index) {
   return { line, col: col + 1 };
 }
 
-export function assertNoInternalWorkspaceSpecifiers({ rootDir, forbidden } = {}) {
+export function assertNoInternalWorkspaceSpecifiers({
+  rootDir,
+  forbidden,
+} = {}) {
   if (!rootDir) {
     throw new Error("assertNoInternalWorkspaceSpecifiers: missing rootDir");
   }
@@ -95,11 +98,13 @@ export function assertNoInternalWorkspaceSpecifiers({ rootDir, forbidden } = {})
     const header = `dist-publish still contains internal workspace specifiers (root: ${rootDir})`;
     const details = hits
       .slice(0, 50)
-      .map((h) => `- ${h.file}:${h.line}:${h.col} contains ${JSON.stringify(h.specifier)}`)
+      .map(
+        (h) =>
+          `- ${h.file}:${h.line}:${h.col} contains ${JSON.stringify(h.specifier)}`,
+      )
       .join("\n");
 
-    const suffix =
-      hits.length > 50 ? `\n...and ${hits.length - 50} more` : "";
+    const suffix = hits.length > 50 ? `\n...and ${hits.length - 50} more` : "";
 
     throw new Error(`${header}\n${details}${suffix}`);
   }

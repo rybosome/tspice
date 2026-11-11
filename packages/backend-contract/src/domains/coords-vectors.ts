@@ -67,9 +67,19 @@ export interface CoordsVectorsApi {
   axisar(axis: SpiceVector3, angle: number): Mat3RowMajor;
 
   /** SPICE `georec_c`: geodetic lon/lat/alt -> rectangular coordinates. */
-  georec(lon: number, lat: number, alt: number, re: number, f: number): SpiceVector3;
+  georec(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): SpiceVector3;
   /** SPICE `recgeo_c`: rectangular -> geodetic lon/lat/alt coordinates. */
-  recgeo(rect: SpiceVector3, re: number, f: number): { lon: number; lat: number; alt: number };
+  recgeo(
+    rect: SpiceVector3,
+    re: number,
+    f: number,
+  ): { lon: number; lat: number; alt: number };
 
   /** SPICE `mxv_c`: multiply matrix by vector. */
   mxv(m: Mat3RowMajor, v: SpiceVector3): SpiceVector3;

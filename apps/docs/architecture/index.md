@@ -24,10 +24,10 @@ flowchart TD
 
 ## One CSPICE state space (and why we serialize)
 
-CSPICE keeps a lot of state in C globals (loaded kernels, the kernel pool, error status, and many internal registries). How *global* that state is depends on the backend runtime:
+CSPICE keeps a lot of state in C globals (loaded kernels, the kernel pool, error status, and many internal registries). How _global_ that state is depends on the backend runtime:
 
 - **Node backend:** CSPICE is **process-global**. Creating multiple `SpiceBackend` objects does **not** create multiple independent CSPICE instances, so backend calls must be **serialized** to avoid re-entrancy issues and to keep handle/error registries consistent.
-- **WASM backend:** CSPICE globals live *inside the Emscripten module instance*. Each module instance has its own isolated CSPICE state; calls are serialized per instance (and you can run multiple instances in workers for parallelism).
+- **WASM backend:** CSPICE globals live _inside the Emscripten module instance_. Each module instance has its own isolated CSPICE state; calls are serialized per instance (and you can run multiple instances in workers for parallelism).
 
 Serialization model today:
 

@@ -28,8 +28,12 @@ describe("spiceClients.toAsync()", () => {
       expect(spice.raw.kind).toBe("wasm");
 
       // Helpers moved from `raw` to `kit` should be hidden on the raw namespace.
-      expect((spice.raw as { spiceVersion?: unknown }).spiceVersion).toBeUndefined();
-      expect((spice.raw as { newIntCell?: unknown }).newIntCell).toBeUndefined();
+      expect(
+        (spice.raw as { spiceVersion?: unknown }).spiceVersion,
+      ).toBeUndefined();
+      expect(
+        (spice.raw as { newIntCell?: unknown }).newIntCell,
+      ).toBeUndefined();
 
       // Raw methods are awaitable.
       await spice.raw.kclear();

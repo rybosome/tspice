@@ -3,7 +3,10 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { mallocOrThrow } from "./alloc.js";
 
 type Utf8CStringWriteModule = Pick<EmscriptenModule, "_malloc" | "HEAPU8">;
-type Utf8CStringArrayWriteModule = Pick<EmscriptenModule, "_malloc" | "_free" | "HEAPU8" | "HEAPU32">;
+type Utf8CStringArrayWriteModule = Pick<
+  EmscriptenModule,
+  "_malloc" | "_free" | "HEAPU8" | "HEAPU32"
+>;
 type Utf8CStringArrayFreeModule = Pick<EmscriptenModule, "_free">;
 
 type Utf8CStringArray = {
@@ -19,7 +22,10 @@ const UTF8_DECODER = new TextDecoder();
 const UTF8_ENCODER = new TextEncoder();
 
 /** Allocate and write a null-terminated UTF-8 C string into the WASM heap; returns the pointer. */
-export function writeUtf8CString(module: Utf8CStringWriteModule, value: string): number {
+export function writeUtf8CString(
+  module: Utf8CStringWriteModule,
+  value: string,
+): number {
   const encoded = UTF8_ENCODER.encode(value);
   const ptr = mallocOrThrow(module, encoded.length + 1);
   module.HEAPU8.set(encoded, ptr);
@@ -33,7 +39,10 @@ export function writeUtf8CString(module: Utf8CStringWriteModule, value: string):
  *
  * The caller owns the returned memory and must free it with {@link freeUtf8CStringArray}.
  */
-export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, values: string[]): Utf8CStringArray {
+export function writeUtf8CStringArray(
+  module: Utf8CStringArrayWriteModule,
+  values: string[],
+): Utf8CStringArray {
   if (values.length === 0) {
     return { ptr: 0, itemPtrs: [] };
   }
@@ -42,7 +51,7 @@ export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, value
   // If we ever add wasm64, this should be revisited to use the correct pointer heap.
   const ptrBytes = module.HEAPU32.BYTES_PER_ELEMENT;
   if (ptrBytes !== 4) {
-    throw new Error('writeUtf8CStringArray assumes 32-bit pointers (wasm32).');
+    throw new Error("writeUtf8CStringArray assumes 32-bit pointers (wasm32).");
   }
 
   const arr: Utf8CStringArray = { ptr: 0, itemPtrs: [] };
@@ -50,7 +59,9 @@ export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, value
 
   try {
     if (arr.ptr % ptrBytes !== 0) {
-      throw new Error(`Internal error: unaligned pointer array base pointer (ptr=${arr.ptr}, ptrBytes=${ptrBytes})`);
+      throw new Error(
+        `Internal error: unaligned pointer array base pointer (ptr=${arr.ptr}, ptrBytes=${ptrBytes})`,
+      );
     }
 
     const baseIndex = arr.ptr / ptrBytes;
@@ -65,7 +76,9 @@ export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, value
       const itemPtr = writeUtf8CString(module, values[i]!);
       // Safety: HEAPU32 stores unsigned 32-bit pointers; guard against accidental truncation.
       if (!Number.isInteger(itemPtr) || itemPtr < 0 || itemPtr > 0xffff_ffff) {
-        throw new Error(`Internal error: string item pointer out of u32 range (itemPtr=${itemPtr})`);
+        throw new Error(
+          `Internal error: string item pointer out of u32 range (itemPtr=${itemPtr})`,
+        );
       }
 
       arr.itemPtrs.push(itemPtr);
@@ -80,7 +93,10 @@ export function writeUtf8CStringArray(module: Utf8CStringArrayWriteModule, value
 }
 
 /** Free memory allocated by {@link writeUtf8CStringArray} (idempotent). */
-export function freeUtf8CStringArray(module: Utf8CStringArrayFreeModule, arr: Utf8CStringArray): void {
+export function freeUtf8CStringArray(
+  module: Utf8CStringArrayFreeModule,
+  arr: Utf8CStringArray,
+): void {
   for (const itemPtr of arr.itemPtrs) {
     if (itemPtr) {
       module._free(itemPtr);
@@ -95,7 +111,6 @@ export function freeUtf8CStringArray(module: Utf8CStringArrayFreeModule, arr: Ut
   }
   arr.ptr = 0;
 }
-
 
 /**
  * Reads a fixed-width C string (padded/truncated) from the WASM heap.

@@ -12,7 +12,9 @@ if (!version) {
 
 // Basic semver validation (allows pre-release and build metadata).
 if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?(?:\+[0-9A-Za-z-.]+)?$/.test(version)) {
-  throw new Error(`Invalid version: ${version} (expected semver like 1.2.3 or 1.2.3-rc.1)`);
+  throw new Error(
+    `Invalid version: ${version} (expected semver like 1.2.3 or 1.2.3-rc.1)`,
+  );
 }
 
 const repoRoot = path.resolve(__dirname, "..");

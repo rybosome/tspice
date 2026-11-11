@@ -76,14 +76,21 @@ describe("SCLK conversions + CK attitude", () => {
     expect(Math.abs(et3 - et)).toBeLessThan(1e-6);
   });
 
-  itNode("node backend: deltet/unitim throw when no LSK is loaded", async () => {
-    const backend = await createBackend({ backend: "node" });
+  itNode(
+    "node backend: deltet/unitim throw when no LSK is loaded",
+    async () => {
+      const backend = await createBackend({ backend: "node" });
 
-    backend.raw.kclear();
+      backend.raw.kclear();
 
-    expect(() => backend.raw.deltet(0, "ET")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
-    expect(() => backend.raw.unitim(0, "ET", "TAI")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
-  });
+      expect(() => backend.raw.deltet(0, "ET")).toThrow(
+        /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+      );
+      expect(() => backend.raw.unitim(0, "ET", "TAI")).toThrow(
+        /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+      );
+    },
+  );
 
   itNode("node backend: scencd throws when no SCLK is loaded", async () => {
     const backend = await createBackend({ backend: "node" });
@@ -104,8 +111,12 @@ describe("SCLK conversions + CK attitude", () => {
     const tol = 0.0;
     const ref = "J2000";
 
-    expect(() => backend.raw.ckgp(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
-    expect(() => backend.raw.ckgpav(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
+    expect(() => backend.raw.ckgp(inst, sclkdp, tol, ref)).toThrow(
+      /NOLOADEDFILES|CKLPF/i,
+    );
+    expect(() => backend.raw.ckgpav(inst, sclkdp, tol, ref)).toThrow(
+      /NOLOADEDFILES|CKLPF/i,
+    );
   });
 
   itNode("node backend: loading transfer-format CK throws", async () => {
@@ -167,8 +178,12 @@ describe("SCLK conversions + CK attitude", () => {
 
     backend.raw.kclear();
 
-    expect(() => backend.raw.deltet(0, "ET")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
-    expect(() => backend.raw.unitim(0, "ET", "TAI")).toThrow(/NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i);
+    expect(() => backend.raw.deltet(0, "ET")).toThrow(
+      /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+    );
+    expect(() => backend.raw.unitim(0, "ET", "TAI")).toThrow(
+      /NOLEAPSECONDS|KERNELVARNOTFOUND|MISSINGTIMEINFO/i,
+    );
   });
 
   it("wasm backend: scencd throws when no SCLK is loaded", async () => {
@@ -192,8 +207,12 @@ describe("SCLK conversions + CK attitude", () => {
     const tol = 0.0;
     const ref = "J2000";
 
-    expect(() => backend.raw.ckgp(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
-    expect(() => backend.raw.ckgpav(inst, sclkdp, tol, ref)).toThrow(/NOLOADEDFILES|CKLPF/i);
+    expect(() => backend.raw.ckgp(inst, sclkdp, tol, ref)).toThrow(
+      /NOLOADEDFILES|CKLPF/i,
+    );
+    expect(() => backend.raw.ckgpav(inst, sclkdp, tol, ref)).toThrow(
+      /NOLOADEDFILES|CKLPF/i,
+    );
   });
 
   it("wasm backend: loading transfer-format CK throws", async () => {
@@ -208,51 +227,66 @@ describe("SCLK conversions + CK attitude", () => {
     backend.raw.furnsh({ path: "cook_01.tsc", bytes: tscBytes });
 
     // Transfer-format CKs (like cook_01.tc) are not loadable by CSPICE.
-    expect(() => backend.raw.furnsh({ path: "cook_01.tc", bytes: tcBytes })).toThrow(/TRANSFERFILE/i);
+    expect(() =>
+      backend.raw.furnsh({ path: "cook_01.tc", bytes: tcBytes }),
+    ).toThrow(/TRANSFERFILE/i);
   });
 
-  itNode("node backend: CK read-only happy path (cklpf/ckobj/ckcov/ckupf)", async () => {
-    const backend = await createBackend({ backend: "node" });
+  itNode(
+    "node backend: CK read-only happy path (cklpf/ckobj/ckcov/ckupf)",
+    async () => {
+      const backend = await createBackend({ backend: "node" });
 
-    backend.raw.kclear();
-    backend.raw.furnsh(lskPath);
-    backend.raw.furnsh(mgsSclkPath);
+      backend.raw.kclear();
+      backend.raw.furnsh(lskPath);
+      backend.raw.furnsh(mgsSclkPath);
 
-    // Load CK via cklpf/ckupf so we can validate the handle-based unload path.
-    const ckHandle = backend.raw.cklpf(mgsCkPath);
+      // Load CK via cklpf/ckupf so we can validate the handle-based unload path.
+      const ckHandle = backend.raw.cklpf(mgsCkPath);
 
-    const ids = backend.kit.newIntCell(32);
-    const cover = backend.kit.newWindow(128);
+      const ids = backend.kit.newIntCell(32);
+      const cover = backend.kit.newWindow(128);
 
-    let inst = 0;
-    let sclkdp = 0;
+      let inst = 0;
+      let sclkdp = 0;
 
-    try {
-      backend.raw.ckobj(mgsCkPath, ids);
-      const nIds = backend.raw.card(ids);
-      expect(nIds).toBeGreaterThan(0);
+      try {
+        backend.raw.ckobj(mgsCkPath, ids);
+        const nIds = backend.raw.card(ids);
+        expect(nIds).toBeGreaterThan(0);
 
-      inst = backend.kit.cellGeti(ids, 0);
+        inst = backend.kit.cellGeti(ids, 0);
 
-      backend.raw.ckcov(mgsCkPath, inst, false, "SEGMENT", 0.0, "SCLK", cover);
-      const nIntervals = backend.raw.wncard(cover);
-      expect(nIntervals).toBeGreaterThan(0);
+        backend.raw.ckcov(
+          mgsCkPath,
+          inst,
+          false,
+          "SEGMENT",
+          0.0,
+          "SCLK",
+          cover,
+        );
+        const nIntervals = backend.raw.wncard(cover);
+        expect(nIntervals).toBeGreaterThan(0);
 
-      const [left, right] = backend.raw.wnfetd(cover, 0);
-      sclkdp = (left + right) / 2;
-      const tol = Math.max(1, (right - left) / 2);
+        const [left, right] = backend.raw.wnfetd(cover, 0);
+        sclkdp = (left + right) / 2;
+        const tol = Math.max(1, (right - left) / 2);
 
-      const out = backend.raw.ckgp(inst, sclkdp, tol, "MGS_SPACECRAFT");
-      expect(out.found).toBe(true);
-    } finally {
-      backend.kit.freeCell(ids);
-      backend.kit.freeWindow(cover);
-      backend.raw.ckupf(ckHandle);
-    }
+        const out = backend.raw.ckgp(inst, sclkdp, tol, "MGS_SPACECRAFT");
+        expect(out.found).toBe(true);
+      } finally {
+        backend.kit.freeCell(ids);
+        backend.kit.freeWindow(cover);
+        backend.raw.ckupf(ckHandle);
+      }
 
-    // Exact short codes vary across CSPICE versions/backends.
-    expect(() => backend.raw.ckgp(inst, sclkdp, 0.0, "MGS_SPACECRAFT")).toThrow();
-  });
+      // Exact short codes vary across CSPICE versions/backends.
+      expect(() =>
+        backend.raw.ckgp(inst, sclkdp, 0.0, "MGS_SPACECRAFT"),
+      ).toThrow();
+    },
+  );
 
   it("wasm backend: CK read-only happy path (cklpf/ckobj/ckcov/ckupf)", async () => {
     const backend = await createBackend({ backend: "wasm" });
@@ -285,7 +319,15 @@ describe("SCLK conversions + CK attitude", () => {
 
       inst = backend.kit.cellGeti(ids, 0);
 
-      backend.raw.ckcov("mgs_hga_hinge_v2.bc", inst, false, "SEGMENT", 0.0, "SCLK", cover);
+      backend.raw.ckcov(
+        "mgs_hga_hinge_v2.bc",
+        inst,
+        false,
+        "SEGMENT",
+        0.0,
+        "SCLK",
+        cover,
+      );
       const nIntervals = backend.raw.wncard(cover);
       expect(nIntervals).toBeGreaterThan(0);
 
@@ -302,6 +344,8 @@ describe("SCLK conversions + CK attitude", () => {
     }
 
     // Exact short codes vary across CSPICE versions/backends.
-    expect(() => backend.raw.ckgp(inst, sclkdp, 0.0, "MGS_SPACECRAFT")).toThrow();
+    expect(() =>
+      backend.raw.ckgp(inst, sclkdp, 0.0, "MGS_SPACECRAFT"),
+    ).toThrow();
   });
 });

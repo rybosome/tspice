@@ -15,7 +15,7 @@ on:
         description: Optional shell commands to run before `pnpm install`.
         required: false
         type: string
-        default: ''
+        default: ""
       command:
         description: Commands to run after `pnpm install` (multiline supported)
         required: true
@@ -78,4 +78,3 @@ jobs:
 
       - name: Run command
         run: ${{ inputs.command }}
-

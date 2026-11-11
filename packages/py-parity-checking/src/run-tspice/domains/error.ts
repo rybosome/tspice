@@ -20,7 +20,10 @@ type ErrorStep =
   | StepErrorChkout;
 
 /** Execute one `error.*` workflow step in tspice. */
-export function runErrorStep(context: RunTspiceContext, step: ErrorStep): StepOutput {
+export function runErrorStep(
+  context: RunTspiceContext,
+  step: ErrorStep,
+): StepOutput {
   switch (step.op) {
     case "error.failed":
       return { op: step.op, value: context.spice.raw.failed() };

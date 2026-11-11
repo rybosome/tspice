@@ -6,7 +6,10 @@ describe("SPK writers (type 8)", () => {
   it("writes a minimal type 8 segment and reads it back", async () => {
     const backend = await createWasmBackend();
 
-    const output = { kind: "virtual-output", path: "spk-writer-test.bsp" } as const;
+    const output = {
+      kind: "virtual-output",
+      path: "spk-writer-test.bsp",
+    } as const;
 
     const handle = backend.raw.spkopn(output, "TSPICE", 0);
 
@@ -57,7 +60,10 @@ describe("SPK writers (type 8)", () => {
     const backend = await createWasmBackend();
 
     expect(() =>
-      backend.kit.readVirtualOutput({ kind: "virtual-output", path: "naif0012.tls" }),
+      backend.kit.readVirtualOutput({
+        kind: "virtual-output",
+        path: "naif0012.tls",
+      }),
     ).toThrow(/known virtual output|writer/i);
   });
 });

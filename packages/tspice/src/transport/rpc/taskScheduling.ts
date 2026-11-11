@@ -50,7 +50,10 @@ export function canQueueMacrotask(): boolean {
 }
 
 /** Queue `fn` on the next macrotask (MessageChannel preferred; setTimeout fallback). */
-export function queueMacrotask(fn: () => void, opts?: QueueMacrotaskOptions): boolean {
+export function queueMacrotask(
+  fn: () => void,
+  opts?: QueueMacrotaskOptions,
+): boolean {
   const allowSyncFallback = opts?.allowSyncFallback ?? true;
 
   // Prefer MessageChannel when available. This schedules a real task boundary

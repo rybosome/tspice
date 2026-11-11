@@ -85,13 +85,21 @@ export function runCellsWindowsStep(
     }
 
     case "cells-windows.insrtd": {
-      const cell = getOrCreateDoubleCell(context, step.cellId, step.maxCardinality ?? 8);
+      const cell = getOrCreateDoubleCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
       context.spice.raw.insrtd(step.item, cell);
       return { op: step.op, value: null };
     }
 
     case "cells-windows.insrti": {
-      const cell = getOrCreateIntCell(context, step.cellId, step.maxCardinality ?? 8);
+      const cell = getOrCreateIntCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
       context.spice.raw.insrti(step.item, cell);
       return { op: step.op, value: null };
     }
@@ -127,7 +135,11 @@ export function runCellsWindowsStep(
     }
 
     case "cells-windows.wninsd": {
-      const window = getOrCreateWindow(context, step.windowId, step.maxIntervals ?? 8);
+      const window = getOrCreateWindow(
+        context,
+        step.windowId,
+        step.maxIntervals ?? 8,
+      );
       context.spice.raw.wninsd(step.left, step.right, window);
       return { op: step.op, value: null };
     }
@@ -146,7 +158,9 @@ export function runCellsWindowsStep(
 
     default: {
       const exhaustive: never = step;
-      throw new Error(`Unhandled cells-windows step: ${JSON.stringify(exhaustive)}`);
+      throw new Error(
+        `Unhandled cells-windows step: ${JSON.stringify(exhaustive)}`,
+      );
     }
   }
 }

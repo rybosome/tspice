@@ -5,7 +5,7 @@ The Node backend is the “native” implementation of the `SpiceBackend` contra
 - Package: `packages/backend-node/` (`@rybosome/tspice-backend-node`)
 - Primary output: a `.node` addon loaded via N-API (`node-addon-api` + `node-gyp`)
 
-This page focuses on what’s *specific* to the Node backend.
+This page focuses on what’s _specific_ to the Node backend.
 
 ## High-level layout
 
@@ -38,7 +38,7 @@ It also compiles in the shared C shim from `packages/backend-shim-c/` (see the `
 
 CSPICE is not treated as re-entrant.
 
-The native addon serializes *all* CSPICE + shared-registry operations behind a single process-global mutex:
+The native addon serializes _all_ CSPICE + shared-registry operations behind a single process-global mutex:
 
 - `packages/backend-node/native/src/addon_common.{h,cc}` (`g_cspice_mutex`)
 

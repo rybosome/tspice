@@ -92,7 +92,10 @@ export type RunTspiceContext = {
 };
 
 /** Create per-case execution context with mirrored domain state slices. */
-export function createRunTspiceContext(spice: Spice, paths: RuntimePaths): RunTspiceContext {
+export function createRunTspiceContext(
+  spice: Spice,
+  paths: RuntimePaths,
+): RunTspiceContext {
   return {
     spice,
     paths,
@@ -109,13 +112,19 @@ export function createRunTspiceContext(spice: Spice, paths: RuntimePaths): RunTs
       fileIo: {
         handles: new Map<string, FileIoHandleState>(),
         descriptors: new Map<string, DlaDescriptor>(),
-        spatialIndexes: new Map<string, { spaixd: number[]; spaixi: number[] }>(),
+        spatialIndexes: new Map<
+          string,
+          { spaixd: number[]; spaixi: number[] }
+        >(),
       },
       dsk: {
         loadedSegments: 0,
         handles: new Map<string, { handle: SpiceHandle; isOpen: boolean }>(),
         dlaDescriptors: new Map<string, DlaDescriptor>(),
-        spatialIndexes: new Map<string, { spaixd: number[]; spaixi: number[] }>(),
+        spatialIndexes: new Map<
+          string,
+          { spaixd: number[]; spaixi: number[] }
+        >(),
         resolvedPathRefs: new Map<string, string>(),
         cleanupRegistered: false,
       },
@@ -186,7 +195,10 @@ export function getOrCreateIntCell(
 }
 
 /** Require a previously created int cell by ID. */
-export function requireIntCell(context: RunTspiceContext, cellId: string): SpiceIntCell {
+export function requireIntCell(
+  context: RunTspiceContext,
+  cellId: string,
+): SpiceIntCell {
   const cell = context.state.cellsWindows.intCells.get(cellId);
   if (cell == null) {
     throw new Error(`Int cell does not exist: ${cellId}`);
@@ -218,7 +230,10 @@ export function getOrCreateDoubleCell(
 }
 
 /** Require a previously created double cell by ID. */
-export function requireDoubleCell(context: RunTspiceContext, cellId: string): SpiceDoubleCell {
+export function requireDoubleCell(
+  context: RunTspiceContext,
+  cellId: string,
+): SpiceDoubleCell {
   const cell = context.state.cellsWindows.doubleCells.get(cellId);
   if (cell == null) {
     throw new Error(`Double cell does not exist: ${cellId}`);
@@ -251,7 +266,10 @@ export function getOrCreateCharCell(
 }
 
 /** Require a previously created char cell by ID. */
-export function requireCharCell(context: RunTspiceContext, cellId: string): SpiceCharCell {
+export function requireCharCell(
+  context: RunTspiceContext,
+  cellId: string,
+): SpiceCharCell {
   const cell = context.state.cellsWindows.charCells.get(cellId);
   if (cell == null) {
     throw new Error(`Char cell does not exist: ${cellId}`);
@@ -283,7 +301,10 @@ export function getOrCreateWindow(
 }
 
 /** Require a previously created window by ID. */
-export function requireWindow(context: RunTspiceContext, windowId: string): SpiceWindow {
+export function requireWindow(
+  context: RunTspiceContext,
+  windowId: string,
+): SpiceWindow {
   const window = context.state.cellsWindows.windows.get(windowId);
   if (window == null) {
     throw new Error(`Window does not exist: ${windowId}`);
@@ -315,7 +336,10 @@ export function getOrCreateEphemerisIntCell(
 }
 
 /** Require a previously created int cell by ID in the ephemeris slice. */
-export function requireEphemerisIntCell(context: RunTspiceContext, cellId: string): SpiceIntCell {
+export function requireEphemerisIntCell(
+  context: RunTspiceContext,
+  cellId: string,
+): SpiceIntCell {
   const cell = context.state.ephemeris.intCells.get(cellId);
   if (cell == null) {
     throw new Error(`Int cell does not exist: ${cellId}`);
@@ -323,7 +347,10 @@ export function requireEphemerisIntCell(context: RunTspiceContext, cellId: strin
   return cell;
 }
 
-function closeSpkHandleBestEffort(context: RunTspiceContext, handle: SpiceHandle): void {
+function closeSpkHandleBestEffort(
+  context: RunTspiceContext,
+  handle: SpiceHandle,
+): void {
   try {
     context.spice.raw.spkcls(handle);
   } catch {
@@ -332,26 +359,37 @@ function closeSpkHandleBestEffort(context: RunTspiceContext, handle: SpiceHandle
 }
 
 /** Register an SPK handle under a logical ID for subsequent ephemeris workflow steps. */
-export function setSpkHandle(context: RunTspiceContext, handleId: string, handle: SpiceHandle): void {
+export function setSpkHandle(
+  context: RunTspiceContext,
+  handleId: string,
+  handle: SpiceHandle,
+): void {
   const existing = context.state.ephemeris.spkHandles.get(handleId);
   if (existing != null) {
     closeSpkHandleBestEffort(context, existing);
   }
 
   context.state.ephemeris.spkHandles.set(handleId, handle);
-  registerFinalizer(context, `ephemeris.spkcls:${handleId}:${String(handle)}`, () => {
-    const current = context.state.ephemeris.spkHandles.get(handleId);
-    if (current == null || current !== handle) {
-      return;
-    }
+  registerFinalizer(
+    context,
+    `ephemeris.spkcls:${handleId}:${String(handle)}`,
+    () => {
+      const current = context.state.ephemeris.spkHandles.get(handleId);
+      if (current == null || current !== handle) {
+        return;
+      }
 
-    closeSpkHandleBestEffort(context, handle);
-    context.state.ephemeris.spkHandles.delete(handleId);
-  });
+      closeSpkHandleBestEffort(context, handle);
+      context.state.ephemeris.spkHandles.delete(handleId);
+    },
+  );
 }
 
 /** Require a previously registered SPK handle by ID. */
-export function requireSpkHandle(context: RunTspiceContext, handleId: string): SpiceHandle {
+export function requireSpkHandle(
+  context: RunTspiceContext,
+  handleId: string,
+): SpiceHandle {
   const handle = context.state.ephemeris.spkHandles.get(handleId);
   if (handle == null) {
     throw new Error(`SPK handle does not exist: ${handleId}`);
@@ -360,6 +398,9 @@ export function requireSpkHandle(context: RunTspiceContext, handleId: string): S
 }
 
 /** Remove a previously registered SPK handle ID. */
-export function deleteSpkHandle(context: RunTspiceContext, handleId: string): void {
+export function deleteSpkHandle(
+  context: RunTspiceContext,
+  handleId: string,
+): void {
   context.state.ephemeris.spkHandles.delete(handleId);
 }

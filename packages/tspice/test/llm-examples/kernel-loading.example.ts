@@ -1,4 +1,8 @@
-import { spiceClients, type KernelSource, type SpiceSync } from "@rybosome/tspice";
+import {
+  spiceClients,
+  type KernelSource,
+  type SpiceSync,
+} from "@rybosome/tspice";
 
 import { readFile } from "node:fs/promises";
 

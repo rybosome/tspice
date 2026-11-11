@@ -13,21 +13,30 @@ export const WASM_MAX_ALLOC_BYTES = 256 * 1024 * 1024; // 256 MiB
 
 function assertValidMallocSize(size: number): void {
   if (!Number.isFinite(size)) {
-    throw new Error(`Invalid WASM malloc size: ${String(size)} (expected a finite number)`);
+    throw new Error(
+      `Invalid WASM malloc size: ${String(size)} (expected a finite number)`,
+    );
   }
   if (!Number.isSafeInteger(size)) {
-    throw new Error(`Invalid WASM malloc size: ${String(size)} (expected a safe integer)`);
+    throw new Error(
+      `Invalid WASM malloc size: ${String(size)} (expected a safe integer)`,
+    );
   }
   if (size <= 0) {
     throw new Error(`Invalid WASM malloc size: ${String(size)} (expected > 0)`);
   }
   if (size > WASM_MAX_ALLOC_BYTES) {
-    throw new Error(`Invalid WASM malloc size: ${String(size)} (max ${WASM_MAX_ALLOC_BYTES})`);
+    throw new Error(
+      `Invalid WASM malloc size: ${String(size)} (max ${WASM_MAX_ALLOC_BYTES})`,
+    );
   }
 }
 
 /** Allocate WASM memory via `_malloc` with validation and a hard max size guard. */
-export function mallocOrThrow(module: Pick<EmscriptenModule, "_malloc">, size: number): number {
+export function mallocOrThrow(
+  module: Pick<EmscriptenModule, "_malloc">,
+  size: number,
+): number {
   assertValidMallocSize(size);
   const ptr = module._malloc(size);
   if (!ptr) {

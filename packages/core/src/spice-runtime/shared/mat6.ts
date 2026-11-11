@@ -25,7 +25,9 @@ const MAT6_ROW_MAJOR_BRAND = Symbol("Mat6RowMajor");
 
 function isDevEnv(): boolean {
   // Safe in non-node runtimes.
-  return typeof process !== "undefined" && process?.env?.NODE_ENV !== "production";
+  return (
+    typeof process !== "undefined" && process?.env?.NODE_ENV !== "production"
+  );
 }
 
 function shouldFreeze(mode: FreezeMode): boolean {
@@ -91,7 +93,9 @@ export function assertMat6ArrayLike36(
   const label = options?.label ?? "Mat6";
 
   if (value instanceof DataView) {
-    throw new Error(`${label}: DataView is not a supported Mat6 input (use a TypedArray or number[]).`);
+    throw new Error(
+      `${label}: DataView is not a supported Mat6 input (use a TypedArray or number[]).`,
+    );
   }
 
   if (!isLength36ArrayLike(value)) {
@@ -144,7 +148,10 @@ function maybeFreeze<T extends object>(value: T, mode: FreezeMode): T {
 }
 
 /** Validate + brand a value as a row-major 6x6 matrix. */
-export function brandMat6RowMajor(value: unknown, options?: BrandMat6Options): Mat6RowMajor {
+export function brandMat6RowMajor(
+  value: unknown,
+  options?: BrandMat6Options,
+): Mat6RowMajor {
   const label = options?.label ?? "Mat6RowMajor";
   const freeze = options?.freeze ?? DEFAULT_FREEZE_MODE;
 
@@ -160,5 +167,7 @@ export function brandMat6RowMajor(value: unknown, options?: BrandMat6Options): M
  */
 export function isBrandedMat6RowMajor(value: unknown): value is Mat6RowMajor {
   if (!isLength36ArrayLike(value)) return false;
-  return Boolean((value as unknown as Record<symbol, unknown>)[MAT6_ROW_MAJOR_BRAND]);
+  return Boolean(
+    (value as unknown as Record<symbol, unknown>)[MAT6_ROW_MAJOR_BRAND],
+  );
 }

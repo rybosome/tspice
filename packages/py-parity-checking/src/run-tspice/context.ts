@@ -20,7 +20,10 @@ import {
   setSpkHandle,
   type RunTspiceContext as RuntimeRunTspiceContext,
 } from "../runtime/context.js";
-import { beforeCaseLifecycle, finalizeCaseLifecycle } from "../runtime/lifecycle.js";
+import {
+  beforeCaseLifecycle,
+  finalizeCaseLifecycle,
+} from "../runtime/lifecycle.js";
 import { createCaseRuntimePaths } from "../runtime/path-ref.js";
 import { createEmptyWorkflowNormalizationMetadata } from "../workflow-normalization/index.js";
 import type { WorkflowNormalizationMetadata } from "../workflow-normalization/types.js";
@@ -75,7 +78,10 @@ export function registerEkHandle(
 }
 
 /** Require an existing EK handle by workflow-local ID. */
-export function requireEkHandle(context: RunTspiceContext, handleId: string): SpiceHandle {
+export function requireEkHandle(
+  context: RunTspiceContext,
+  handleId: string,
+): SpiceHandle {
   const handle = context.state.ek.handles.get(handleId);
   if (handle == null) {
     throw new Error(`EK handle does not exist: ${handleId}`);
@@ -83,7 +89,10 @@ export function requireEkHandle(context: RunTspiceContext, handleId: string): Sp
   return handle;
 }
 
-function clearSegmentsForHandle(context: RunTspiceContext, handleId: string): void {
+function clearSegmentsForHandle(
+  context: RunTspiceContext,
+  handleId: string,
+): void {
   for (const [segmentId, segment] of context.state.ek.segments.entries()) {
     if (segment.handleId === handleId) {
       context.state.ek.segments.delete(segmentId);
@@ -92,7 +101,10 @@ function clearSegmentsForHandle(context: RunTspiceContext, handleId: string): vo
 }
 
 /** Close and remove an EK handle by workflow-local ID. */
-export function closeEkHandle(context: RunTspiceContext, handleId: string): void {
+export function closeEkHandle(
+  context: RunTspiceContext,
+  handleId: string,
+): void {
   const handle = requireEkHandle(context, handleId);
   context.spice.raw.ekcls(handle);
   context.state.ek.handles.delete(handleId);
@@ -112,7 +124,10 @@ export function registerEkSegment(
 }
 
 /** Require an existing EK segment by workflow-local ID. */
-export function requireEkSegment(context: RunTspiceContext, segmentId: string): EkSegmentState {
+export function requireEkSegment(
+  context: RunTspiceContext,
+  segmentId: string,
+): EkSegmentState {
   const segment = context.state.ek.segments.get(segmentId);
   if (segment == null) {
     throw new Error(`EK segment does not exist: ${segmentId}`);
@@ -127,7 +142,10 @@ export function createRunTspiceContext(
   caseId: string,
 ): RunTspiceContext {
   return {
-    ...createRunTspiceContextCore(spice, createCaseRuntimePaths(fixturesRoot, caseId)),
+    ...createRunTspiceContextCore(
+      spice,
+      createCaseRuntimePaths(fixturesRoot, caseId),
+    ),
     normalization: {
       metadata: createEmptyWorkflowNormalizationMetadata(),
     },

@@ -23,13 +23,17 @@ describe("wasmUrl parsing (node runtime)", () => {
     }
 
     expect(err).toBeInstanceOf(Error);
-    expect((err as Error).message).toContain("Failed to read tspice WASM binary");
+    expect((err as Error).message).toContain(
+      "Failed to read tspice WASM binary",
+    );
     expect((err as Error).message).not.toContain("Unsupported wasmUrl scheme");
   });
 
   it("rejects unsupported scheme:// URLs with a clear error", async () => {
     await expect(
-      createNodeWasmBackend({ wasmUrl: "ftp://example.com/tspice_backend_wasm.wasm" }),
+      createNodeWasmBackend({
+        wasmUrl: "ftp://example.com/tspice_backend_wasm.wasm",
+      }),
     ).rejects.toThrow(/Unsupported wasmUrl scheme 'ftp:'/);
   });
 
@@ -46,8 +50,12 @@ describe("wasmUrl parsing (node runtime)", () => {
       }
 
       expect(err).toBeInstanceOf(Error);
-      expect((err as Error).message).toContain("Failed to read tspice WASM binary");
-      expect((err as Error).message).not.toContain("Unsupported wasmUrl scheme");
+      expect((err as Error).message).toContain(
+        "Failed to read tspice WASM binary",
+      );
+      expect((err as Error).message).not.toContain(
+        "Unsupported wasmUrl scheme",
+      );
     }
   });
 
@@ -59,27 +67,23 @@ describe("wasmUrl parsing (node runtime)", () => {
 });
 
 describe("wasmUrl parsing (web runtime)", () => {
-  it(
-    "accepts blob: URLs",
-    async () => {
-      const wasmPath = fileURLToPath(
-        new URL("../dist/tspice_backend_wasm.wasm", import.meta.url),
-      );
-      const wasmBytes = await readFile(wasmPath);
+  it("accepts blob: URLs", async () => {
+    const wasmPath = fileURLToPath(
+      new URL("../dist/tspice_backend_wasm.wasm", import.meta.url),
+    );
+    const wasmBytes = await readFile(wasmPath);
 
-      const blobUrl = URL.createObjectURL(
-        new Blob([wasmBytes], { type: "application/wasm" }),
-      );
+    const blobUrl = URL.createObjectURL(
+      new Blob([wasmBytes], { type: "application/wasm" }),
+    );
 
-      try {
-        const backend = await createWebWasmBackend({ wasmUrl: blobUrl });
-        expect(backend.kind).toBe("wasm");
-      } finally {
-        URL.revokeObjectURL(blobUrl);
-      }
-    },
-    20_000,
-  );
+    try {
+      const backend = await createWebWasmBackend({ wasmUrl: blobUrl });
+      expect(backend.kind).toBe("wasm");
+    } finally {
+      URL.revokeObjectURL(blobUrl);
+    }
+  }, 20_000);
 
   it("rejects ambiguous 'c:foo' forms as URL schemes", async () => {
     await expect(createWebWasmBackend({ wasmUrl: "c:foo" })).rejects.toThrow(

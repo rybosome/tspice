@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { isCachingTransportSync, withCachingSync } from "../src/transport/caching/withCachingSync.js";
+import {
+  isCachingTransportSync,
+  withCachingSync,
+} from "../src/transport/caching/withCachingSync.js";
 import type { SpiceTransportSync } from "../src/transport/types.js";
 
 describe("withCachingSync()", () => {
@@ -88,7 +91,10 @@ describe("withCachingSync()", () => {
         },
       };
 
-      const transport = withCachingSync(base, { maxEntries: Infinity, now: () => 0 });
+      const transport = withCachingSync(base, {
+        maxEntries: Infinity,
+        now: () => 0,
+      });
       expect(transport.request("kit.loadKernel", ["/a.tls"])).toBe(1);
       expect(transport.request("kit.loadKernel", ["/a.tls"])).toBe(2);
       expect(calls).toBe(2);
@@ -143,7 +149,10 @@ describe("withCachingSync()", () => {
       },
     };
 
-    const transport = withCachingSync(base, { maxEntries: Infinity, now: () => 0 });
+    const transport = withCachingSync(base, {
+      maxEntries: Infinity,
+      now: () => 0,
+    });
 
     expect(() => transport.request("raw.fail", [1])).toThrow("boom");
     expect(() => transport.request("raw.fail", [1])).toThrow("boom");

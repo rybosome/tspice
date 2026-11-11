@@ -36,7 +36,12 @@ function tspiceCallKtotal(module: EmscriptenModule, kind: string): number {
 
   try {
     module.HEAP32[outCountPtr >> 2] = 0;
-    const result = module._tspice_ktotal(kindPtr, outCountPtr, errPtr, errMaxBytes);
+    const result = module._tspice_ktotal(
+      kindPtr,
+      outCountPtr,
+      errPtr,
+      errMaxBytes,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, errMaxBytes, result);
     }
@@ -66,8 +71,24 @@ function tspiceCallKdata(
   const handlePtr = module._malloc(4);
   const foundPtr = module._malloc(4);
 
-  if (!errPtr || !kindPtr || !filePtr || !filtypPtr || !sourcePtr || !handlePtr || !foundPtr) {
-    for (const ptr of [foundPtr, handlePtr, sourcePtr, filtypPtr, filePtr, kindPtr, errPtr]) {
+  if (
+    !errPtr ||
+    !kindPtr ||
+    !filePtr ||
+    !filtypPtr ||
+    !sourcePtr ||
+    !handlePtr ||
+    !foundPtr
+  ) {
+    for (const ptr of [
+      foundPtr,
+      handlePtr,
+      sourcePtr,
+      filtypPtr,
+      filePtr,
+      kindPtr,
+      errPtr,
+    ]) {
       if (ptr) module._free(ptr);
     }
     throw new Error("WASM malloc failed");
@@ -120,7 +141,10 @@ function tspiceCallKdata(
 }
 
 /** Create a {@link KernelsApi} implementation backed by a WASM Emscripten module + WASM FS. */
-export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): KernelsApi {
+export function createKernelsApi(
+  module: EmscriptenModule,
+  fs: WasmFsApi,
+): KernelsApi {
   let kinfoCache: Map<string, KernelInfo> | null = null;
 
   const clearKinfoCache = (): void => {
@@ -173,7 +197,11 @@ export function createKernelsApi(module: EmscriptenModule, fs: WasmFsApi): Kerne
         //
         // NOTE: This behavior is backend-specific. In the Node backend,
         // `furnsh(string)` is an OS filesystem path.
-        tspiceCall1Path(module, module._tspice_furnsh, resolveKernelPath(kernel));
+        tspiceCall1Path(
+          module,
+          module._tspice_furnsh,
+          resolveKernelPath(kernel),
+        );
         return;
       }
 

@@ -1,18 +1,31 @@
 import type { SpiceTransport } from "../../transport/types.js";
 
-import type { RpcMessageFromMain, RpcRequest, RpcResponse } from "../../transport/rpc/protocol.js";
+import type {
+  RpcMessageFromMain,
+  RpcRequest,
+  RpcResponse,
+} from "../../transport/rpc/protocol.js";
 import {
   serializeError,
   tspiceRpcDisposeType,
   tspiceRpcRequestType,
   tspiceRpcResponseType,
 } from "../../transport/rpc/protocol.js";
-import { decodeRpcValue, encodeRpcValue } from "../../transport/rpc/valueCodec.js";
+import {
+  decodeRpcValue,
+  encodeRpcValue,
+} from "../../transport/rpc/valueCodec.js";
 import { queueMacrotask } from "../../transport/rpc/taskScheduling.js";
 
 type WorkerGlobalScopeLike = {
-  addEventListener(type: "message", listener: (ev: { data: unknown }) => void): void;
-  removeEventListener(type: "message", listener: (ev: { data: unknown }) => void): void;
+  addEventListener(
+    type: "message",
+    listener: (ev: { data: unknown }) => void,
+  ): void;
+  removeEventListener(
+    type: "message",
+    listener: (ev: { data: unknown }) => void,
+  ): void;
   postMessage(msg: unknown): void;
   close?: () => void;
 };
@@ -63,23 +76,32 @@ export function exposeTransportToWorker(opts: {
   if (maxConcurrentRequests !== Infinity) {
     // Guard against deadlocking the queue when `maxConcurrentRequests` is 0/NaN/etc.
     if (!Number.isFinite(maxConcurrentRequests) || maxConcurrentRequests < 1) {
-      throw new Error("exposeTransportToWorker(): maxConcurrentRequests must be >= 1");
+      throw new Error(
+        "exposeTransportToWorker(): maxConcurrentRequests must be >= 1",
+      );
     }
     // Prefer integers for deterministic queue semantics.
     if (!Number.isInteger(maxConcurrentRequests)) {
-      throw new Error("exposeTransportToWorker(): maxConcurrentRequests must be an integer");
+      throw new Error(
+        "exposeTransportToWorker(): maxConcurrentRequests must be an integer",
+      );
     }
   }
   let inFlight = 0;
 
-  const defaultMaxQueuedRequests = maxConcurrentRequests === Infinity ? Infinity : 1000;
+  const defaultMaxQueuedRequests =
+    maxConcurrentRequests === Infinity ? Infinity : 1000;
   const maxQueuedRequests = opts.maxQueuedRequests ?? defaultMaxQueuedRequests;
   if (maxQueuedRequests !== Infinity) {
     if (!Number.isFinite(maxQueuedRequests) || maxQueuedRequests < 0) {
-      throw new Error("exposeTransportToWorker(): maxQueuedRequests must be >= 0");
+      throw new Error(
+        "exposeTransportToWorker(): maxQueuedRequests must be >= 0",
+      );
     }
     if (!Number.isInteger(maxQueuedRequests)) {
-      throw new Error("exposeTransportToWorker(): maxQueuedRequests must be an integer");
+      throw new Error(
+        "exposeTransportToWorker(): maxQueuedRequests must be an integer",
+      );
     }
   }
 
@@ -97,7 +119,10 @@ export function exposeTransportToWorker(opts: {
 
   const FAIL_QUEUED_REQUESTS_CHUNK_SIZE = 100;
 
-  const failQueuedRequests = async (reqs: readonly QueuedRequest[], err: unknown): Promise<void> => {
+  const failQueuedRequests = async (
+    reqs: readonly QueuedRequest[],
+    err: unknown,
+  ): Promise<void> => {
     // Best-effort (avoid throwing during disposal).
     try {
       for (let i = 0; i < reqs.length; i += FAIL_QUEUED_REQUESTS_CHUNK_SIZE) {
@@ -142,20 +167,27 @@ export function exposeTransportToWorker(opts: {
 
   const quote = (value: string): string => JSON.stringify(value);
 
-  const describeMalformedRequestPart = (label: string, value: unknown): string => {
+  const describeMalformedRequestPart = (
+    label: string,
+    value: unknown,
+  ): string => {
     if (value === undefined) return `${label}=undefined`;
     if (Array.isArray(value)) return `${label}=array`;
     return `${label}=${typeof value}`;
   };
 
-  const createMalformedRequestPacketError = (id: number, op: unknown, args: unknown): Error => {
+  const createMalformedRequestPacketError = (
+    id: number,
+    op: unknown,
+    args: unknown,
+  ): Error => {
     const context: string[] = [`id=${id}`];
     if (typeof op === "string") context.push(`op=${quote(op)}`);
 
     return new Error(
       [
         `Internal worker RPC protocol error: malformed request packet (${context.join(", ")}).`,
-        'Expected: id:number, op:string, args:unknown[].',
+        "Expected: id:number, op:string, args:unknown[].",
         `Got: ${describeMalformedRequestPart("id", id)}, ${describeMalformedRequestPart("op", op)}, ${describeMalformedRequestPart("args", args)}.`,
         "Hint: This indicates an internal transport/protocol mismatch.",
       ].join(" "),
@@ -179,7 +211,10 @@ export function exposeTransportToWorker(opts: {
 
     void (async () => {
       try {
-        const value = await opts.transport.request(req.op, req.args.map(decodeRpcValue));
+        const value = await opts.transport.request(
+          req.op,
+          req.args.map(decodeRpcValue),
+        );
         if (disposed) return;
 
         const res: RpcResponse = {
@@ -250,13 +285,19 @@ export function exposeTransportToWorker(opts: {
       const op = req.op;
       const args = req.args;
 
-      if (typeof id !== "number" || typeof op !== "string" || !Array.isArray(args)) {
+      if (
+        typeof id !== "number" ||
+        typeof op !== "string" ||
+        !Array.isArray(args)
+      ) {
         if (typeof id === "number") {
           const res: RpcResponse = {
             type: tspiceRpcResponseType,
             id,
             ok: false,
-            error: serializeError(createMalformedRequestPacketError(id, op, args)),
+            error: serializeError(
+              createMalformedRequestPacketError(id, op, args),
+            ),
           };
           try {
             self.postMessage(res);

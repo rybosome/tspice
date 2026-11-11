@@ -20,6 +20,12 @@ export function nodeAddonAvailable(): boolean {
     return fs.existsSync(resolvedOverride);
   }
 
-  const candidate = path.join(packageRoot, "native", "build", "Release", ADDON_FILE);
+  const candidate = path.join(
+    packageRoot,
+    "native",
+    "build",
+    "Release",
+    ADDON_FILE,
+  );
   return fs.existsSync(candidate);
 }

@@ -5,11 +5,15 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const repoRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+);
 const packageJson = JSON.parse(
   readFileSync(path.join(repoRoot, "package.json"), "utf8"),
 );
-const expectedPnpmVersion = packageJson.packageManager?.match(/^pnpm@(.+)$/)?.[1];
+const expectedPnpmVersion =
+  packageJson.packageManager?.match(/^pnpm@(.+)$/)?.[1];
 const cspiceManifest = JSON.parse(
   readFileSync(path.join(repoRoot, "scripts", "cspice.manifest.json"), "utf8"),
 );
@@ -130,7 +134,8 @@ function checkExecutable(name, args, guidance) {
 }
 
 function isOnPath(name) {
-  const extensions = process.platform === "win32" ? [".exe", ".cmd", ".bat", ""] : [""];
+  const extensions =
+    process.platform === "win32" ? [".exe", ".cmd", ".bat", ""] : [""];
   for (const directory of (process.env.PATH ?? "").split(path.delimiter)) {
     for (const extension of extensions) {
       try {
@@ -154,11 +159,18 @@ function isReadable(filePath) {
 }
 
 function checkArchiveTools(required) {
-  const optionalDetail = "not needed because the pinned CSPICE source/install is already available";
+  const optionalDetail =
+    "not needed because the pinned CSPICE source/install is already available";
   if (!required && !isOnPath("tar")) report("tar", true, optionalDetail);
-  else checkExecutable("tar", ["--version"], "Install tar to extract the pinned CSPICE archive");
+  else
+    checkExecutable(
+      "tar",
+      ["--version"],
+      "Install tar to extract the pinned CSPICE archive",
+    );
 
-  if (!required && !isOnPath("uncompress")) report("uncompress", true, optionalDetail);
+  if (!required && !isOnPath("uncompress"))
+    report("uncompress", true, optionalDetail);
   else {
     checkExecutable(
       "uncompress",
@@ -222,7 +234,8 @@ function checkWasm() {
     "source",
     "cspice",
   );
-  const hasSource = isReadable(path.join(sourceDir, "src")) &&
+  const hasSource =
+    isReadable(path.join(sourceDir, "src")) &&
     isReadable(path.join(sourceDir, "include", "SpiceUsr.h"));
   checkArchiveTools(!hasSource);
   checkExecutable(
@@ -247,5 +260,7 @@ if (failures.length > 0) {
   );
   process.exitCode = 1;
 } else {
-  process.stdout.write(`\nPrerequisites for the ${profile} profile are available.\n`);
+  process.stdout.write(
+    `\nPrerequisites for the ${profile} profile are available.\n`,
+  );
 }

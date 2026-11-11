@@ -27,7 +27,7 @@ jobs:
       - name: Setup pnpm + Node
         uses: ./.github/actions/setup-pnpm-node
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

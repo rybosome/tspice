@@ -6,8 +6,18 @@
       { "op": "kernel-pool.pdpool", "name": "KP_GN_NUM", "values": [10.5] },
       { "op": "kernel-pool.pipool", "name": "KP_GN_INT", "values": [7] },
       { "op": "kernel-pool.pcpool", "name": "KP_GN_CHAR", "values": ["x"] },
-      { "op": "kernel-pool.gnpool", "template": "KP_GN_*", "start": 0, "room": 10 },
-      { "op": "kernel-pool.gnpool", "template": "KP_GN_MISSING*", "start": 0, "room": 10 }
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "KP_GN_*",
+        "start": 0,
+        "room": 10
+      },
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "KP_GN_MISSING*",
+        "start": 0,
+        "room": 10
+      }
     ],
     "expectation": { "kind": "success" }
   },
@@ -16,7 +26,12 @@
     "description": "Representative gnpool argument validation error (negative room)",
     "workflow": [
       { "op": "kernel-pool.pdpool", "name": "KP_GN_NUM", "values": [10.5] },
-      { "op": "kernel-pool.gnpool", "template": "KP_GN_*", "start": 0, "room": -1 }
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "KP_GN_*",
+        "start": 0,
+        "room": -1
+      }
     ],
     "expectation": { "kind": "error" }
   }

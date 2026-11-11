@@ -10,7 +10,10 @@ import {
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
-import type { SpiceHandleKind, SpiceHandleRegistry } from "../runtime/spice-handles.js";
+import type {
+  SpiceHandleKind,
+  SpiceHandleRegistry,
+} from "../runtime/spice-handles.js";
 
 const I32_MAX = 2147483647;
 
@@ -43,8 +46,14 @@ export function createEkApi<
   N extends NativeEkDeps,
   S extends KernelStagerEkDeps | undefined,
 >(native: N, handles: SpiceHandleRegistry, stager?: S): EkApi {
-  const registerEkHandle = (nativeHandle: number, context: string): SpiceHandle => {
-    invariant(typeof nativeHandle === "number", `Expected native backend ${context} to return a number handle`);
+  const registerEkHandle = (
+    nativeHandle: number,
+    context: string,
+  ): SpiceHandle => {
+    invariant(
+      typeof nativeHandle === "number",
+      `Expected native backend ${context} to return a number handle`,
+    );
     assertSpiceInt32(nativeHandle, `native backend ${context} handle`);
     return handles.register("EK", nativeHandle);
   };
@@ -57,7 +66,8 @@ export function createEkApi<
     } catch (error) {
       // Best-effort path resolution for *virtual-ish* kernel IDs only. If this
       // was an OS path (or some unexpected staging invariant), surface the error.
-      const isVirtualish = path.startsWith("kernels/") || path.startsWith("/kernels/");
+      const isVirtualish =
+        path.startsWith("kernels/") || path.startsWith("/kernels/");
       if (!isVirtualish) {
         throw error;
       }
@@ -66,23 +76,30 @@ export function createEkApi<
   };
 
   const api = {
-    ekopr: (path: string) => registerEkHandle(native.ekopr(resolvePath(path)), "ekopr(path)"),
-    ekopw: (path: string) => registerEkHandle(native.ekopw(resolvePath(path)), "ekopw(path)"),
+    ekopr: (path: string) =>
+      registerEkHandle(native.ekopr(resolvePath(path)), "ekopr(path)"),
+    ekopw: (path: string) =>
+      registerEkHandle(native.ekopw(resolvePath(path)), "ekopw(path)"),
     ekopn: (path: string, ifname: string, ncomch: number) => {
       assertSpiceInt32NonNegative(ncomch, "ekopn(ncomch)");
-      return registerEkHandle(native.ekopn(resolvePath(path), ifname, ncomch), "ekopn(path,ifname,ncomch)");
+      return registerEkHandle(
+        native.ekopn(resolvePath(path), ifname, ncomch),
+        "ekopn(path,ifname,ncomch)",
+      );
     },
     ekcls: (handle: SpiceHandle) =>
-      handles.close(handle, EK_ONLY, (e) => native.ekcls(e.nativeHandle), "ekcls"),
+      handles.close(
+        handle,
+        EK_ONLY,
+        (e) => native.ekcls(e.nativeHandle),
+        "ekcls",
+      ),
 
     ekntab: () => {
       const n = native.ekntab();
 
       invariant(
-        typeof n === "number" &&
-          Number.isInteger(n) &&
-          n >= 0 &&
-          n <= I32_MAX,
+        typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= I32_MAX,
         "Expected native backend ekntab() to return a non-negative 32-bit signed integer",
       );
       return n;
@@ -91,12 +108,17 @@ export function createEkApi<
     ektnam: (n: number) => {
       assertSpiceInt32NonNegative(n, "ektnam(n)");
       const name = native.ektnam(n);
-      invariant(typeof name === "string", "Expected native backend ektnam(n) to return a string");
+      invariant(
+        typeof name === "string",
+        "Expected native backend ektnam(n) to return a string",
+      );
       return name;
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nseg = native.eknseg(handles.lookup(handle, EK_ONLY, "eknseg").nativeHandle);
+      const nseg = native.eknseg(
+        handles.lookup(handle, EK_ONLY, "eknseg").nativeHandle,
+      );
       invariant(
         typeof nseg === "number" &&
           Number.isInteger(nseg) &&
@@ -138,7 +160,13 @@ export function createEkApi<
       decls: readonly string[],
     ) => {
       assertSpiceInt32(nrows, "ekifld(nrows)", { min: 1 });
-      return native.ekifld(handles.lookup(handle, EK_ONLY, "ekifld").nativeHandle, tabnam, nrows, cnames, decls);
+      return native.ekifld(
+        handles.lookup(handle, EK_ONLY, "ekifld").nativeHandle,
+        tabnam,
+        nrows,
+        cnames,
+        decls,
+      );
     },
 
     ekacli: (
@@ -206,7 +234,11 @@ export function createEkApi<
 
     ekffld: (handle: SpiceHandle, segno: number, rcptrs: readonly number[]) => {
       assertSpiceInt32NonNegative(segno, "ekffld(segno)");
-      native.ekffld(handles.lookup(handle, EK_ONLY, "ekffld").nativeHandle, segno, rcptrs);
+      native.ekffld(
+        handles.lookup(handle, EK_ONLY, "ekffld").nativeHandle,
+        segno,
+        rcptrs,
+      );
     },
   } satisfies EkApi;
 

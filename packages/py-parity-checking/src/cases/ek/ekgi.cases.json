@@ -102,7 +102,10 @@
       },
       { "op": "ek.ekffld", "segmentId": "SEG_EKGI_SELIDX" },
       { "op": "ek.ekcls", "handleId": "H_EKGI_SELIDX" },
-      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-invalid-selidx.ek" },
+      {
+        "op": "kernels.furnsh",
+        "file": ".py-parity-ek-ekgi-invalid-selidx.ek"
+      },
       { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_SELIDX" },
       { "op": "ek.ekgi", "selidx": 5, "row": 0, "elment": 0 }
     ],

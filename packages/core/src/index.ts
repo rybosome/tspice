@@ -11,7 +11,10 @@ export class InvariantError extends Error {
  *
  * Throws {@link InvariantError} when the assertion fails.
  */
-export function invariant(condition: unknown, message = "Invariant violation"): asserts condition {
+export function invariant(
+  condition: unknown,
+  message = "Invariant violation",
+): asserts condition {
   if (!condition) {
     throw new InvariantError(message);
   }

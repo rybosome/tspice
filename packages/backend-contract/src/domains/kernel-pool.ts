@@ -30,7 +30,11 @@ export interface KernelPoolApi {
    * - `start` must be a finite integer >= 0 (0-based).
    * - `room` must be a finite integer > 0.
    */
-  gdpool(name: string, start: number, room: number): Found<{ values: number[] }>;
+  gdpool(
+    name: string,
+    start: number,
+    room: number,
+  ): Found<{ values: number[] }>;
 
   /**
    * Get numeric (integer) kernel pool values.
@@ -40,7 +44,11 @@ export interface KernelPoolApi {
    * - `start` must be a finite integer >= 0 (0-based).
    * - `room` must be a finite integer > 0.
    */
-  gipool(name: string, start: number, room: number): Found<{ values: number[] }>;
+  gipool(
+    name: string,
+    start: number,
+    room: number,
+  ): Found<{ values: number[] }>;
 
   /**
    * Get character kernel pool values.
@@ -50,7 +58,11 @@ export interface KernelPoolApi {
    * - `start` must be a finite integer >= 0 (0-based).
    * - `room` must be a finite integer > 0.
    */
-  gcpool(name: string, start: number, room: number): Found<{ values: string[] }>;
+  gcpool(
+    name: string,
+    start: number,
+    room: number,
+  ): Found<{ values: string[] }>;
 
   /**
    * Get the names of kernel pool variables matching a template.
@@ -64,7 +76,11 @@ export interface KernelPoolApi {
    * - `start` must be a finite integer >= 0 (0-based).
    * - `room` must be a finite integer > 0.
    */
-  gnpool(template: string, start: number, room: number): Found<{ values: string[] }>;
+  gnpool(
+    template: string,
+    start: number,
+    room: number,
+  ): Found<{ values: string[] }>;
 
   /**
    * Get kernel pool variable type (`C` or `N`) and size.

@@ -53,7 +53,9 @@ function stageWasmBinaryForInlineWorker() {
     "tspice_backend_wasm.wasm",
   );
 
-  const resolvedSrc = fs.existsSync(srcWasmPath) ? srcWasmPath : fallbackWasmPath;
+  const resolvedSrc = fs.existsSync(srcWasmPath)
+    ? srcWasmPath
+    : fallbackWasmPath;
 
   if (!fs.existsSync(resolvedSrc)) {
     throw new Error(

@@ -16,9 +16,9 @@
   --tspice-docs-active-border: rgba(136, 255, 136, 0.4);
 
   /* --- Typography --- */
-  --vp-font-family-base: system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
-    Arial, sans-serif;
-  --vp-font-family-mono: ui-monospace, 'SF Mono', monospace;
+  --vp-font-family-base:
+    system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  --vp-font-family-mono: ui-monospace, "SF Mono", monospace;
 
   /* --- Base colors --- */
   --vp-c-bg: var(--tspice-docs-bg);
@@ -94,7 +94,7 @@
 }
 
 /* Code blocks */
-div[class*='language-'] {
+div[class*="language-"] {
   border: 1px solid var(--tspice-docs-panel-border);
   border-radius: 6px;
 }

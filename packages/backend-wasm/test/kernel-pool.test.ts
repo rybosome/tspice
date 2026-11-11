@@ -29,7 +29,6 @@ describe("@rybosome/tspice-backend-wasm kernel pool", () => {
     }
   });
 
-
   it("swpool rejects empty/blank names entries", async () => {
     const b = await createWasmBackend();
 

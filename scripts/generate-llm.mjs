@@ -145,8 +145,15 @@ function extractNamedExports(indexTsSource) {
       continue;
     }
 
-    if (ts.isEnumDeclaration(stmt) || ts.isClassDeclaration(stmt) || ts.isFunctionDeclaration(stmt)) {
-      invariant(stmt.name, `[generate:llm] Missing name for exported declaration: ${stmt.getText(sourceFile)}`);
+    if (
+      ts.isEnumDeclaration(stmt) ||
+      ts.isClassDeclaration(stmt) ||
+      ts.isFunctionDeclaration(stmt)
+    ) {
+      invariant(
+        stmt.name,
+        `[generate:llm] Missing name for exported declaration: ${stmt.getText(sourceFile)}`,
+      );
       add(stmt.name.text, false);
       continue;
     }
@@ -188,7 +195,10 @@ function extractKernelSourceTypeDefinition(sharedTypesTsSource) {
     }
   }
 
-  invariant(matches.length === 1, `Expected exactly one KernelSource type alias, found ${matches.length}`);
+  invariant(
+    matches.length === 1,
+    `Expected exactly one KernelSource type alias, found ${matches.length}`,
+  );
 
   const node = matches[0];
   invariant(
@@ -210,12 +220,18 @@ function extractWorkerLikeTypeDefinition(createWorkerTransportTsSource) {
    */
   const matches = [];
   for (const stmt of sourceFile.statements) {
-    if ((ts.isTypeAliasDeclaration(stmt) || ts.isInterfaceDeclaration(stmt)) && stmt.name.text === "WorkerLike") {
+    if (
+      (ts.isTypeAliasDeclaration(stmt) || ts.isInterfaceDeclaration(stmt)) &&
+      stmt.name.text === "WorkerLike"
+    ) {
       matches.push(stmt);
     }
   }
 
-  invariant(matches.length === 1, `Expected exactly one WorkerLike declaration, found ${matches.length}`);
+  invariant(
+    matches.length === 1,
+    `Expected exactly one WorkerLike declaration, found ${matches.length}`,
+  );
 
   const node = matches[0];
   invariant(
@@ -226,7 +242,9 @@ function extractWorkerLikeTypeDefinition(createWorkerTransportTsSource) {
   return node.getText(sourceFile);
 }
 
-function extractSpiceClientsWebWorkerOptionsTypeDefinition(spiceClientsTsSource) {
+function extractSpiceClientsWebWorkerOptionsTypeDefinition(
+  spiceClientsTsSource,
+) {
   const sourceFile = createTypeScriptSourceFile({
     fileName: "packages/tspice/src/clients/spiceClients.ts",
     sourceText: spiceClientsTsSource,
@@ -260,7 +278,10 @@ function extractSpiceClientsWebWorkerOptionsTypeDefinition(spiceClientsTsSource)
 }
 
 function readExamples(exampleDirAbs, repoRootAbs) {
-  invariant(fs.existsSync(exampleDirAbs), `Missing examples directory: ${path.relative(repoRootAbs, exampleDirAbs)}`);
+  invariant(
+    fs.existsSync(exampleDirAbs),
+    `Missing examples directory: ${path.relative(repoRootAbs, exampleDirAbs)}`,
+  );
 
   const entries = fs.readdirSync(exampleDirAbs, { withFileTypes: true });
   const files = entries
@@ -268,11 +289,16 @@ function readExamples(exampleDirAbs, repoRootAbs) {
     .map((e) => e.name)
     .sort(compareStringsDeterministic);
 
-  invariant(files.length > 0, `No .example.ts examples found in: ${path.relative(repoRootAbs, exampleDirAbs)}`);
+  invariant(
+    files.length > 0,
+    `No .example.ts examples found in: ${path.relative(repoRootAbs, exampleDirAbs)}`,
+  );
 
   return files.map((name) => {
     const absPath = path.join(exampleDirAbs, name);
-    const relPath = path.relative(repoRootAbs, absPath).replaceAll(path.sep, "/");
+    const relPath = path
+      .relative(repoRootAbs, absPath)
+      .replaceAll(path.sep, "/");
     const content = readTextFile(absPath).trimEnd();
     return { relPath, content };
   });
@@ -316,7 +342,13 @@ Repo paths:
 - Do not assume network access; kernel bytes may come from local files, fetch, or other sources.
 `;
 }
-function buildLlmsFullTxt({ exports, kernelSourceType, workerLikeType, spiceClientsWebWorkerOptionsType, examples }) {
+function buildLlmsFullTxt({
+  exports,
+  kernelSourceType,
+  workerLikeType,
+  spiceClientsWebWorkerOptionsType,
+  examples,
+}) {
   const quickstartDecisionGuideSection = `## Quickstart Decision Guide\n\n1. **Fastest browser demo (no kernel hosting):** use \`kernels.tspice().pick(...)\` + \`.toAsync({ backend: "wasm" })\` (main thread, async).\n2. **Browser app with heavier workloads:** still use async APIs, but switch to \`.toWebWorker()\` so SPICE work runs off the main thread.\n3. **Node service/CLI:** use \`.toSync(...)\` or \`.toAsync(...)\` with explicit backend selection and your own kernel strategy.\n4. **Production deployments:** prefer \`kernels.naif(...)\` or \`kernels.custom(...)\` with self-hosted/proxied kernels; treat \`kernels.tspice()\` as quickstart/demo-only.\n`;
 
   const mentalModelSection = `## Mental model\n\n- Configure a client builder first (optional \`.caching(...)\`, \`.withFetch(...)\`, \`.withKernels(...)\`).\n- Call one terminal builder method (\`.toSync()\`, \`.toAsync()\`, or \`.toWebWorker()\`) to create the client.\n- Terminal methods eagerly validate/setup and may preload kernel packs.\n- You always get \`{ spice, dispose }\`; call \`dispose()\` when done.\n`;
@@ -360,10 +392,7 @@ try {
   const kernelSourceSection = `## KernelSource (generated)\n\nSource: \`packages/backend-contract/src/shared/types.ts\`\n\n\`\`\`ts\n${kernelSourceType}\n\`\`\`\n\nNotes:\n\n- \`KernelSource\` is accepted by \`spice.kit.loadKernel()\` and lower-level backend APIs like \`raw.furnsh()\`.\n- Passing an object form (\`{ path, bytes }\`) is the most portable approach across WASM + Node backends.\n`;
 
   const examplesSection = `## Golden examples (typechecked in CI)\n\nThese example files are committed and typechecked as part of the monorepo TypeScript build.\n\n${examples
-    .map(
-      (ex) =>
-        `### \`${ex.relPath}\`\n\n\`\`\`ts\n${ex.content}\n\`\`\``,
-    )
+    .map((ex) => `### \`${ex.relPath}\`\n\n\`\`\`ts\n${ex.content}\n\`\`\``)
     .join("\n\n")}\n`;
 
   const policiesSection = `## Policies / disclosures\n\nThese are the canonical repo files:\n\n- \`docs/cspice-policy.md\`\n- \`docs/cspice-naif-disclosure.md\`\n- \`THIRD_PARTY_NOTICES.md\`\n`;
@@ -378,7 +407,8 @@ try {
 function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
   const exportValueDescriptions = {
     Mat3: "3×3 matrix helper for frame transforms and vector math.",
-    J2000: "Constant frame name for the canonical inertial reference frame (J2000).",
+    J2000:
+      "Constant frame name for the canonical inertial reference frame (J2000).",
     SpiceError: "Error thrown when underlying SPICE/CSPICE operations fail.",
 
     createBackend:
@@ -416,7 +446,8 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
     SpiceBackend:
       "Low-level backend interface implemented by the WASM and Node.js backends.",
 
-    Mat3ColMajor: "Branded type for a 3×3 matrix encoded in column-major order.",
+    Mat3ColMajor:
+      "Branded type for a 3×3 matrix encoded in column-major order.",
     Mat3RowMajor: "Branded type for a 3×3 matrix encoded in row-major order.",
 
     CreateBackendOptions:
@@ -424,9 +455,11 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
 
     AberrationCorrection:
       "Allowed aberration correction strings for state/position queries (e.g. 'NONE', 'LT', ...).",
-    BodyRef: "Body identifier accepted by kit APIs (NAIF name string or numeric id).",
+    BodyRef:
+      "Body identifier accepted by kit APIs (NAIF name string or numeric id).",
     FrameName: "SPICE frame name string (e.g. 'J2000', 'IAU_EARTH').",
-    GetStateArgs: "Argument object for kit.getState() (target, observer, time, frame, aberration).",
+    GetStateArgs:
+      "Argument object for kit.getState() (target, observer, time, frame, aberration).",
     SpiceTime: "Seconds past J2000 (ET).",
     StateVector:
       "Structured result returned by kit.getState() (position, velocity, light time, and query metadata).",
@@ -435,7 +468,8 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
 
     Spice: "Sync-ish client type: { raw, kit }.",
     SpiceSync: "Alias of Spice (sync-ish client).",
-    SpiceAsync: "Async client type mirroring Spice; all methods return Promises.",
+    SpiceAsync:
+      "Async client type mirroring Spice; all methods return Promises.",
     SpiceKit: "High-level convenience API built on top of the raw backend.",
 
     CreateSpiceOptions:
@@ -451,11 +485,13 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
 
     KernelsNaifOptions:
       "Options for kernels.naif({ origin, pathBase, baseUrl? }) (typed NAIF kernel catalog).",
-    NaifKernelId: "Union of supported NAIF kernel ids (leaf paths) accepted by kernels.naif(...).pick(...).",
+    NaifKernelId:
+      "Union of supported NAIF kernel ids (leaf paths) accepted by kernels.naif(...).pick(...).",
     NaifKernelCatalog:
       "Catalog object returned by kernels.naif(opts); call pick(...) to create a KernelPack.",
 
-    TspiceKernelId: "Union of curated kernel ids accepted by kernels.tspice().pick(...).",
+    TspiceKernelId:
+      "Union of curated kernel ids accepted by kernels.tspice().pick(...).",
     TspiceKernelCatalog:
       "Catalog returned by kernels.tspice(); call pick(...) to create a KernelPack.",
 
@@ -470,8 +506,7 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
 
     KernelPack:
       "A small ordered set of kernels (URLs + load paths), plus an optional baseUrl for rooting relative kernel URLs at load time.",
-    KernelPackKernel:
-      "A single kernel entry in a KernelPack: { url, path }.",
+    KernelPackKernel: "A single kernel entry in a KernelPack: { url, path }.",
   };
 
   const exampleDescriptionsByPath = {
@@ -483,7 +518,8 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
       "Kernel loading patterns via KernelSource (filesystem path vs bytes).",
     "packages/tspice/test/llm-examples/state-and-frame-transform.example.ts":
       "Ephemeris state query (getState) + frame transform (frameTransform) + Mat3 usage.",
-    "packages/tspice/test/llm-examples/time-conversion.example.ts": "UTC ↔ ET time conversions.",
+    "packages/tspice/test/llm-examples/time-conversion.example.ts":
+      "UTC ↔ ET time conversions.",
     "packages/tspice/test/llm-examples/webworker-client.example.ts":
       "WebWorker client creation via spiceClients.toWebWorker() + kernels.*().pick(...) kernel packs.",
   };
@@ -497,12 +533,14 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
   const goldenExamples = examples.map((ex) => ({
     repoPath: ex.relPath,
     description:
-      exampleDescriptionsByPath[ex.relPath] ?? "Golden TypeScript example (typechecked in CI).",
+      exampleDescriptionsByPath[ex.relPath] ??
+      "Golden TypeScript example (typechecked in CI).",
   }));
 
   return {
     format: "tspice.schema.json",
-    intent: "Structured JSON metadata summary for LLMs and tool/integration builders.",
+    intent:
+      "Structured JSON metadata summary for LLMs and tool/integration builders.",
 
     hostedUrls: {
       llmsTxt: "https://rybosome.github.io/tspice/llms.txt",
@@ -547,7 +585,10 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
 
     exports: {
       sourceFile: "packages/tspice/src/index.ts",
-      valueExports: toExportEntries(exports.valueExports, exportValueDescriptions),
+      valueExports: toExportEntries(
+        exports.valueExports,
+        exportValueDescriptions,
+      ),
       typeExports: toExportEntries(exports.typeExports, exportTypeDescriptions),
     },
 
@@ -556,7 +597,8 @@ function buildTspiceSchemaSummary({ exports, kernelSourceType, examples }) {
     policiesAndDisclosures: [
       {
         repoPath: "docs/cspice-policy.md",
-        description: "Project policy for CSPICE usage and redistribution constraints.",
+        description:
+          "Project policy for CSPICE usage and redistribution constraints.",
       },
       {
         repoPath: "docs/cspice-naif-disclosure.md",
@@ -602,12 +644,21 @@ function main() {
   );
 
   const exports = extractNamedExports(readTextFile(tspiceIndexAbs));
-  const kernelSourceType = extractKernelSourceTypeDefinition(readTextFile(backendContractTypesAbs));
-  const workerLikeType = extractWorkerLikeTypeDefinition(readTextFile(createWorkerTransportAbs));
+  const kernelSourceType = extractKernelSourceTypeDefinition(
+    readTextFile(backendContractTypesAbs),
+  );
+  const workerLikeType = extractWorkerLikeTypeDefinition(
+    readTextFile(createWorkerTransportAbs),
+  );
   const spiceClientsWebWorkerOptionsType =
-    extractSpiceClientsWebWorkerOptionsTypeDefinition(readTextFile(spiceClientsAbs));
+    extractSpiceClientsWebWorkerOptionsTypeDefinition(
+      readTextFile(spiceClientsAbs),
+    );
 
-  const examplesDirAbs = path.join(repoRoot, "packages/tspice/test/llm-examples");
+  const examplesDirAbs = path.join(
+    repoRoot,
+    "packages/tspice/test/llm-examples",
+  );
   const examples = readExamples(examplesDirAbs, repoRoot);
 
   const llmsTxt = buildLlmsTxt();
@@ -618,14 +669,26 @@ function main() {
     spiceClientsWebWorkerOptionsType,
     examples,
   });
-  const schema = buildTspiceSchemaSummary({ exports, kernelSourceType, examples });
+  const schema = buildTspiceSchemaSummary({
+    exports,
+    kernelSourceType,
+    examples,
+  });
 
   writeTextFile(path.join(repoRoot, "llms.txt"), llmsTxt);
   writeTextFile(path.join(repoRoot, "apps/docs/public/llms.txt"), llmsTxt);
-  writeTextFile(path.join(repoRoot, "apps/docs/public/llms-full.txt"), llmsFull);
-  writeJsonFile(path.join(repoRoot, "apps/docs/public/tspice.schema.json"), schema);
+  writeTextFile(
+    path.join(repoRoot, "apps/docs/public/llms-full.txt"),
+    llmsFull,
+  );
+  writeJsonFile(
+    path.join(repoRoot, "apps/docs/public/tspice.schema.json"),
+    schema,
+  );
 
-  console.log("[generate:llm] wrote llms.txt + apps/docs/public/{llms.txt,llms-full.txt,tspice.schema.json}");
+  console.log(
+    "[generate:llm] wrote llms.txt + apps/docs/public/{llms.txt,llms-full.txt,tspice.schema.json}",
+  );
 }
 
 main();

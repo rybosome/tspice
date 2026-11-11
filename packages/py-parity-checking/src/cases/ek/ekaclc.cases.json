@@ -30,7 +30,10 @@
       { "op": "ek.ekffld", "segmentId": "SEG_ACLC" },
       { "op": "ek.ekcls", "handleId": "H_ACLC" },
       { "op": "kernels.furnsh", "file": ".py-parity-ek-ekaclc-happy.ek" },
-      { "op": "ek.ekfind", "query": "SELECT NAME FROM CHAR_TABLE ORDER BY NAME" },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT NAME FROM CHAR_TABLE ORDER BY NAME"
+      },
       { "op": "ek.ekgc", "selidx": 0, "row": 0, "elment": 0 },
       { "op": "ek.ekgc", "selidx": 0, "row": 1, "elment": 0 }
     ],

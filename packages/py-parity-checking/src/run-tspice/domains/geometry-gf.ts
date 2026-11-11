@@ -9,7 +9,11 @@ import type {
   StepGeometryGfGfstol,
   StepOutput,
 } from "../../case-types.js";
-import { getOrCreateWindow, requireWindow, type RunTspiceContext } from "../context.js";
+import {
+  getOrCreateWindow,
+  requireWindow,
+  type RunTspiceContext,
+} from "../context.js";
 
 type GeometryGfStep =
   | StepGeometryGfGfdist
@@ -21,14 +25,20 @@ type GeometryGfStep =
   | StepGeometryGfGfstep
   | StepGeometryGfGfstol;
 
-function assertBoolean(value: unknown, context: string): asserts value is boolean {
+function assertBoolean(
+  value: unknown,
+  context: string,
+): asserts value is boolean {
   if (typeof value !== "boolean") {
     throw new TypeError(`${context}: expected boolean`);
   }
 }
 
 /** Execute one `geometry-gf.*` workflow step in tspice. */
-export function runGeometryGfStep(context: RunTspiceContext, step: GeometryGfStep): StepOutput {
+export function runGeometryGfStep(
+  context: RunTspiceContext,
+  step: GeometryGfStep,
+): StepOutput {
   switch (step.op) {
     case "geometry-gf.gfsstp":
       context.spice.raw.gfsstp(step.step);
@@ -44,7 +54,10 @@ export function runGeometryGfStep(context: RunTspiceContext, step: GeometryGfSte
     case "geometry-gf.gfrefn": {
       assertBoolean(step.s1, "geometry-gf.gfrefn.s1");
       assertBoolean(step.s2, "geometry-gf.gfrefn.s2");
-      return { op: step.op, value: context.spice.raw.gfrefn(step.t1, step.t2, step.s1, step.s2) };
+      return {
+        op: step.op,
+        value: context.spice.raw.gfrefn(step.t1, step.t2, step.s1, step.s2),
+      };
     }
 
     case "geometry-gf.gfrepi": {
@@ -59,7 +72,11 @@ export function runGeometryGfStep(context: RunTspiceContext, step: GeometryGfSte
 
     case "geometry-gf.gfsep": {
       const cnfine = requireWindow(context, step.cnfineWindowId);
-      const result = getOrCreateWindow(context, step.resultWindowId, Math.max(step.nintvls, 8));
+      const result = getOrCreateWindow(
+        context,
+        step.resultWindowId,
+        Math.max(step.nintvls, 8),
+      );
       context.spice.raw.gfsep(
         step.targ1,
         step.shape1,
@@ -82,7 +99,11 @@ export function runGeometryGfStep(context: RunTspiceContext, step: GeometryGfSte
 
     case "geometry-gf.gfdist": {
       const cnfine = requireWindow(context, step.cnfineWindowId);
-      const result = getOrCreateWindow(context, step.resultWindowId, Math.max(step.nintvls, 8));
+      const result = getOrCreateWindow(
+        context,
+        step.resultWindowId,
+        Math.max(step.nintvls, 8),
+      );
       context.spice.raw.gfdist(
         step.target,
         step.abcorr,
@@ -100,7 +121,9 @@ export function runGeometryGfStep(context: RunTspiceContext, step: GeometryGfSte
 
     default: {
       const exhaustive: never = step;
-      throw new Error(`Unhandled geometry-gf step: ${JSON.stringify(exhaustive)}`);
+      throw new Error(
+        `Unhandled geometry-gf step: ${JSON.stringify(exhaustive)}`,
+      );
     }
   }
 }

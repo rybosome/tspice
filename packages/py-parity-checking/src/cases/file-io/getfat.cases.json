@@ -11,7 +11,9 @@
   {
     "caseId": "file-io-getfat-missing-file-error",
     "description": "Representative getfat missing-file error",
-    "workflow": [{ "op": "file-io.getfat", "path": "kernels/does-not-exist.bds" }],
+    "workflow": [
+      { "op": "file-io.getfat", "path": "kernels/does-not-exist.bds" }
+    ],
     "expectation": { "kind": "error" }
   }
 ]
