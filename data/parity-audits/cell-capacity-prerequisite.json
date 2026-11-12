@@ -19,7 +19,14 @@
     "packages/backend-wasm/src/codec/alloc.ts",
     "packages/backend-wasm/src/codec/errors.ts",
     "packages/backend-wasm/src/lowlevel/exports.ts",
-    "packages/tspice/test/cells-capacity-bounds.test.ts"
+    "packages/tspice/test/cells-capacity-bounds.test.ts",
+    "packages/backend-wasm/src/domains/cells-windows.ts",
+    "packages/backend-wasm/src/domains/kernels.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/domains/frames.ts",
+    "packages/backend-wasm/src/domains/dsk.ts",
+    "packages/backend-wasm/src/domains/geometry-gf.ts",
+    "packages/backend-wasm/test/cell-handle-ownership.test.ts"
   ],
   "executions": [
     {
@@ -46,7 +53,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
     },
     {
       "id": "local-allocation-safety-wasm-2026-11-12",
@@ -72,7 +80,60 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
+    },
+    {
+      "id": "local-opaque-handles-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b9e8b175a2ac1f8bd55b2b53a7f1198fe1ed92fecf062ded3164fbfcd4dd9c84",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
+    },
+    {
+      "id": "local-opaque-handles-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b9e8b175a2ac1f8bd55b2b53a7f1198fe1ed92fecf062ded3164fbfcd4dd9c84",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
     }
   ],
   "routines": [
@@ -102,7 +163,7 @@
       "errorAssessment": "NAIF allocation-size preconditions are not diagnosed by CSPICE and must not be tested by unsafe oracle access. Safe direct tests use n=0 and assert rejection before descriptor changes. Live valid n>size requires INVALIDSIZE, wnvald odd n requires UNMATCHENDPTS and n>size requires WINDOWTOOSMALL. Negative size/n are existing typed wrapper checks, not claimed as live CSPICE diagnostic equivalence.",
       "fixtures": [],
       "fixtureRationale": "No kernels or external data; authored finite cells, initialized zero storage, integer endpoints and local allocation markers only.",
-      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection.",
+      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection. WASM tokens retire only after successful free; private pointers cannot be guessed from Node IDs or revived by allocator reuse. Token issuance occurs before C allocation, including fail-closed exhaustion. Separate host realms retain caller context affinity.",
       "tolerance": "Capacities/cardinalities and fixture integers compare exactly at the existing 1e-12 absolute/relative threshold; sorted char strings, complete lengths/keys and endpoints are preserved. Fractions are binary-exact. No tolerance changes.",
       "findings": [
         {
@@ -151,9 +212,22 @@
         },
         {
           "id": "wasm-handle-address-aliasing",
-          "status": "open",
+          "status": "repaired",
           "summary": "Separate direct tests in the in-progress cell audit fail when a foreign module allocates the same pointer and when an expired pointer is reused. Numeric pointer membership does not establish lifetime/owner identity. The capacity fix does not claim to repair this; a focused WASM handle prerequisite follows.",
-          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
+          "evidence": [
+            "packages/backend-wasm/src/domains/cells-windows.ts",
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/dsk.ts",
+            "packages/backend-wasm/src/domains/geometry-gf.ts",
+            "packages/backend-wasm/test/cell-handle-ownership.test.ts"
+          ],
+          "repair": "Issue non-reused host-realm tokens above uint32 before allocating a cell, retain module-local token/pointer maps, and resolve every cell/window argument at the compiled call boundary. Actual backend regressions reject same-address foreign cells, allocator-reused expired cells/windows, invalid frees and foreign arguments across all ten other raw consumers; valid contents remain unchanged.",
+          "caseIds": [
+            "cells-windows-ssize-resizes-cell-success",
+            "cells-windows-ssize-audit-shrink-restore-original"
+          ]
         }
       ],
       "backends": {
@@ -161,13 +235,13 @@
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-allocation-safety-node-2026-11-12"]
+          "executions": ["local-opaque-handles-node-2026-11-12"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair"],
+          "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-allocation-safety-wasm-2026-11-12"]
+          "executions": ["local-opaque-handles-wasm-2026-11-12"]
         }
       }
     },
@@ -212,7 +286,7 @@
       "errorAssessment": "NAIF allocation-size preconditions are not diagnosed by CSPICE and must not be tested by unsafe oracle access. Safe direct tests use n=0 and assert rejection before descriptor changes. Live valid n>size requires INVALIDSIZE, wnvald odd n requires UNMATCHENDPTS and n>size requires WINDOWTOOSMALL. Negative size/n are existing typed wrapper checks, not claimed as live CSPICE diagnostic equivalence.",
       "fixtures": [],
       "fixtureRationale": "No kernels or external data; authored finite cells, initialized zero storage, integer endpoints and local allocation markers only.",
-      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection.",
+      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection. WASM tokens retire only after successful free; private pointers cannot be guessed from Node IDs or revived by allocator reuse. Token issuance occurs before C allocation, including fail-closed exhaustion. Separate host realms retain caller context affinity.",
       "tolerance": "Capacities/cardinalities and fixture integers compare exactly at the existing 1e-12 absolute/relative threshold; sorted char strings, complete lengths/keys and endpoints are preserved. Fractions are binary-exact. No tolerance changes.",
       "findings": [
         {
@@ -291,9 +365,24 @@
         },
         {
           "id": "wasm-handle-address-aliasing",
-          "status": "open",
+          "status": "repaired",
           "summary": "Separate direct tests in the in-progress cell audit fail when a foreign module allocates the same pointer and when an expired pointer is reused. Numeric pointer membership does not establish lifetime/owner identity. The capacity fix does not claim to repair this; a focused WASM handle prerequisite follows.",
-          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
+          "evidence": [
+            "packages/backend-wasm/src/domains/cells-windows.ts",
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/dsk.ts",
+            "packages/backend-wasm/src/domains/geometry-gf.ts",
+            "packages/backend-wasm/test/cell-handle-ownership.test.ts"
+          ],
+          "repair": "Issue non-reused host-realm tokens above uint32 before allocating a cell, retain module-local token/pointer maps, and resolve every cell/window argument at the compiled call boundary. Actual backend regressions reject same-address foreign cells, allocator-reused expired cells/windows, invalid frees and foreign arguments across all ten other raw consumers; valid contents remain unchanged.",
+          "caseIds": [
+            "cells-windows-valid-normalizes-set-success",
+            "cells-windows-valid-audit-unsorted-duplicate-int",
+            "cells-windows-valid-audit-unsorted-duplicate-double",
+            "cells-windows-valid-audit-unsorted-duplicate-char"
+          ]
         }
       ],
       "backends": {
@@ -301,13 +390,13 @@
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-allocation-safety-node-2026-11-12"]
+          "executions": ["local-opaque-handles-node-2026-11-12"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair"],
+          "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-allocation-safety-wasm-2026-11-12"]
+          "executions": ["local-opaque-handles-wasm-2026-11-12"]
         }
       }
     },
@@ -347,7 +436,7 @@
       "errorAssessment": "NAIF allocation-size preconditions are not diagnosed by CSPICE and must not be tested by unsafe oracle access. Safe direct tests use n=0 and assert rejection before descriptor changes. Live valid n>size requires INVALIDSIZE, wnvald odd n requires UNMATCHENDPTS and n>size requires WINDOWTOOSMALL. Negative size/n are existing typed wrapper checks, not claimed as live CSPICE diagnostic equivalence.",
       "fixtures": [],
       "fixtureRationale": "No kernels or external data; authored finite cells, initialized zero storage, integer endpoints and local allocation markers only.",
-      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection.",
+      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection. WASM tokens retire only after successful free; private pointers cannot be guessed from Node IDs or revived by allocator reuse. Token issuance occurs before C allocation, including fail-closed exhaustion. Separate host realms retain caller context affinity.",
       "tolerance": "Capacities/cardinalities and fixture integers compare exactly at the existing 1e-12 absolute/relative threshold; sorted char strings, complete lengths/keys and endpoints are preserved. Fractions are binary-exact. No tolerance changes.",
       "findings": [
         {
@@ -422,9 +511,22 @@
         },
         {
           "id": "wasm-handle-address-aliasing",
-          "status": "open",
+          "status": "repaired",
           "summary": "Separate direct tests in the in-progress cell audit fail when a foreign module allocates the same pointer and when an expired pointer is reused. Numeric pointer membership does not establish lifetime/owner identity. The capacity fix does not claim to repair this; a focused WASM handle prerequisite follows.",
-          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
+          "evidence": [
+            "packages/backend-wasm/src/domains/cells-windows.ts",
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/dsk.ts",
+            "packages/backend-wasm/src/domains/geometry-gf.ts",
+            "packages/backend-wasm/test/cell-handle-ownership.test.ts"
+          ],
+          "repair": "Issue non-reused host-realm tokens above uint32 before allocating a cell, retain module-local token/pointer maps, and resolve every cell/window argument at the compiled call boundary. Actual backend regressions reject same-address foreign cells, allocator-reused expired cells/windows, invalid frees and foreign arguments across all ten other raw consumers; valid contents remain unchanged.",
+          "caseIds": [
+            "cells-windows-wnvald-normalizes-window-success",
+            "cells-windows-wnvald-audit-unsorted-zero-pair"
+          ]
         }
       ],
       "backends": {
@@ -432,16 +534,16 @@
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-allocation-safety-node-2026-11-12"]
+          "executions": ["local-opaque-handles-node-2026-11-12"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair"],
+          "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-allocation-safety-wasm-2026-11-12"]
+          "executions": ["local-opaque-handles-wasm-2026-11-12"]
         }
       }
     }
   ],
-  "verificationNote": "Final source-bound local lanes passed for allocation bounds, rollback and checked arithmetic. Current CI is pending. WASM pointer-identity defects remain explicitly open where applicable and require the separate repair before semantic completion."
+  "verificationNote": "The known pointer-identity repair and all current-source local required lanes passed. CI observations for this new source digest remain pending; no static registration or parent execution alone establishes completion."
 }

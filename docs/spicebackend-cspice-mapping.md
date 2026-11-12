@@ -247,3 +247,7 @@ Most routines in this domain are **pure math** and require no kernels.
 ### Cell backing bounds
 
 `ssize`, `valid`, and `wnvald` may change logical sizes only within the originally allocated cell capacity. The shared registry retains that original bound independently of mutable descriptors; requests beyond it throw before CSPICE runs. NAIF documents that CSPICE cannot detect an oversized backing declaration. `ssize` clears cardinality; `valid` sorts/deduplicates stored elements; `wnvald` sorts/merges endpoint pairs. The audit compares these observable effects and uses safe direct regressions for allocation-precondition violations rather than asking SpiceyPy to access invalid storage.
+
+### Opaque cell identity
+
+WASM cells/windows use host-issued opaque integer tokens above the uint32 range, with private token-to-pointer maps scoped to each module. Tokens are never reused within that host realm. Pointer reuse therefore cannot revive a freed handle or alias another live WASM instance. All raw cell/window consumers resolve tokens at the compiled boundary, including kplfrm, SPK/CK coverage/object queries, DSK object/surface queries, GF searches and progress-reporter initialization. Preserve the complete numeric handle and keep it with its owning process/module; handles are not portable across isolated workers or processes.

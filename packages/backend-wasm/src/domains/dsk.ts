@@ -19,7 +19,7 @@ import type {
   SpiceHandleRegistry,
 } from "../runtime/spice-handles.js";
 
-import { assertWasmOwnedCellHandle } from "./cells-windows.js";
+import { assertWasmOwnedCellHandle, wasmCellPointer } from "./cells-windows.js";
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 
@@ -116,7 +116,7 @@ function tspiceCallDskobj(
   try {
     const code = module._tspice_dskobj(
       dskPathPtr,
-      bodids as unknown as number,
+      wasmCellPointer(module, bodids, "dskobj()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -148,7 +148,7 @@ function tspiceCallDsksrf(
     const code = module._tspice_dsksrf(
       dskPathPtr,
       bodyid,
-      srfids as unknown as number,
+      wasmCellPointer(module, srfids, "dsksrf()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -276,20 +276,12 @@ export function createDskApi(
 ): DskApi {
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
-      assertWasmOwnedCellHandle(
-        module,
-        bodids as unknown as number,
-        "dskobj(bodids)",
-      );
+      assertWasmOwnedCellHandle(module, bodids, "dskobj(bodids)");
       tspiceCallDskobj(module, dsk, bodids);
     },
 
     dsksrf: (dsk: string, bodyid: number, srfids: SpiceIntCell) => {
-      assertWasmOwnedCellHandle(
-        module,
-        srfids as unknown as number,
-        "dsksrf(srfids)",
-      );
+      assertWasmOwnedCellHandle(module, srfids, "dsksrf(srfids)");
       tspiceCallDsksrf(module, dsk, bodyid, srfids);
     },
 

@@ -7,7 +7,7 @@
       "routines": ["ssize_c", "valid_c", "wnvald_c"],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/683"],
-      "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification."
+      "nextAction": "Run both required lanes and observe current-source CI after the WASM token identity repair; retain earlier observations as historical."
     },
     {
       "id": "cells-windows",
@@ -224,7 +224,7 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy."
     },
     {
       "id": "ids-names",
@@ -280,7 +280,7 @@
       "routines": ["kplfrm_c"],
       "dependsOn": ["vectors-arithmetic"],
       "prs": ["https://github.com/rybosome/tspice/pull/680"],
-      "nextAction": "Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical."
+      "nextAction": "Run both required lanes and observe current-source CI after the WASM token identity repair; retain earlier observations as historical."
     },
     {
       "id": "time-1",

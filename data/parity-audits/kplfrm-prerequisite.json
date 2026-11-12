@@ -18,7 +18,13 @@
     "packages/backend-shim-c/src/errors.c",
     "packages/backend-shim-c/src/handle_validation.c",
     "packages/backend-node/native/src/cell_handles.cc",
-    "packages/backend-node/native/src/cell_handles.h"
+    "packages/backend-node/native/src/cell_handles.h",
+    "packages/backend-wasm/src/domains/kernels.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/domains/frames.ts",
+    "packages/backend-wasm/src/domains/dsk.ts",
+    "packages/backend-wasm/src/domains/geometry-gf.ts",
+    "packages/backend-wasm/test/cell-handle-ownership.test.ts"
   ],
   "executions": [
     {
@@ -148,7 +154,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
     },
     {
       "id": "local-allocation-safety-wasm-2026-11-12",
@@ -165,7 +172,42 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
+    },
+    {
+      "id": "local-opaque-handles-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9f2e112546cb8df0b73c2d7894c4a7ed876c0f0ae6bd167c869fd14def6cc623",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
+    },
+    {
+      "id": "local-opaque-handles-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9f2e112546cb8df0b73c2d7894c4a7ed876c0f0ae6bd167c869fd14def6cc623",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
     }
   ],
   "routines": [
@@ -211,7 +253,7 @@
         }
       ],
       "fixtureRationale": "One existing minimal FK distinguishes nonempty ID retrieval from constant-empty output. Empty-pool and invalid-class cases need no kernels. No new scientific data is distributed.",
-      "cleanup": "The harness allocates a fresh real integer cell and frees it in finally on success/error. The WASM adapter verifies live per-module cell ownership and frees the error buffer in withMalloc finally. C shim validates registry/type and resets CSPICE errors after failure. Case lifecycle clears pool/error state before/after each workflow; test client disposal runs in finally. Python owns its ctypes cell memory and runs case finalizers.",
+      "cleanup": "The harness allocates a fresh real integer cell and frees it in finally on success/error. The WASM adapter verifies live per-module cell ownership and frees the error buffer in withMalloc finally. C shim validates registry/type and resets CSPICE errors after failure. Case lifecycle clears pool/error state before/after each workflow; test client disposal runs in finally. Python owns its ctypes cell memory and runs case finalizers. WASM tokens retire only after successful free; private pointers cannot be guessed from Node IDs or revived by allocator reuse. Token issuance occurs before C allocation, including fail-closed exhaustion. Separate host realms retain caller context affinity.",
       "tolerance": "IDs and cardinalities are integral and compared as complete sorted sets. At the fixture ID scale, the existing 1e-12 relative tolerance is much smaller than one ID unit; no tolerance change. Direct unit tests also assert exact IDs and lengths.",
       "findings": [
         {
@@ -275,9 +317,23 @@
         },
         {
           "id": "shared-wasm-cell-handle-identity",
-          "status": "open",
+          "status": "repaired",
           "summary": "Later cell audit demonstrated same-address foreign handles and reused expired pointers can pass the shared WASM membership guard, including consumers such as kplfrm. A separate opaque-token lifetime repair is in progress; earlier support/class tests do not certify this misuse boundary.",
-          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
+          "evidence": [
+            "packages/backend-wasm/src/domains/cells-windows.ts",
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/dsk.ts",
+            "packages/backend-wasm/src/domains/geometry-gf.ts",
+            "packages/backend-wasm/test/cell-handle-ownership.test.ts"
+          ],
+          "repair": "Issue non-reused host-realm tokens above uint32 before allocating a cell, retain module-local token/pointer maps, and resolve every cell/window argument at the compiled call boundary. Actual backend regressions reject same-address foreign cells, allocator-reused expired cells/windows, invalid frees and foreign arguments across all ten other raw consumers; valid contents remain unchanged.",
+          "caseIds": [
+            "kernels-kplfrm-class-4-success",
+            "kernels-kplfrm-all-inertial-unload-success",
+            "kernels-kplfrm-empty-pool-success"
+          ]
         }
       ],
       "backends": {
@@ -291,7 +347,7 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-allocation-safety-node-2026-11-12"]
+          "executions": ["local-opaque-handles-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -300,14 +356,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "needs-repair"
+            "needs-repair",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-allocation-safety-wasm-2026-11-12"]
+          "executions": ["local-opaque-handles-wasm-2026-11-12"]
         }
       }
     }
   ],
-  "verificationNote": "Final source-bound local lanes passed for allocation bounds, rollback and checked arithmetic. Current CI is pending. WASM pointer-identity defects remain explicitly open where applicable and require the separate repair before semantic completion."
+  "verificationNote": "The known pointer-identity repair and all current-source local required lanes passed. CI observations for this new source digest remain pending; no static registration or parent execution alone establishes completion."
 }
