@@ -56,14 +56,14 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 
 | Backend | Unreviewed | Reviewed; verification pending | Needs repair | Verified |
 | --- | ---: | ---: | ---: | ---: |
-| node | 141 | 20 | 0 | 1 |
-| wasm | 141 | 20 | 0 | 1 |
+| node | 141 | 1 | 0 | 20 |
+| wasm | 141 | 0 | 1 | 20 |
 
 | Batch | Routines | Node / WASM verified | PRs / dependencies | Next action |
 | --- | --- | --- | --- | --- |
 | cells-windows | `card_c`, `insrtc_c`, `insrtd_c`, `insrti_c`, `scard_c`, `size_c`, `ssize_c`, `valid_c`, `wncard_c`, `wnfetd_c`, `wninsd_c`, `wnvald_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/679 | Rerun both backends and observe current-source CI after shared coordinate contract/adapters changed. |
-| coordinates-matrices | `axisar_c`, `georec_c`, `latrec_c`, `mtxv_c`, `mxm_c`, `mxv_c`, `recgeo_c`, `reclat_c`, `recsph_c`, `rotate_c`, `rotmat_c`, `sphrec_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/681, kplfrm-prerequisite | Observe current-source CI and record both backend jobs after coordinate axis/coverage repairs. |
+| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 8 / 8 | https://github.com/rybosome/tspice/pull/679 | Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change. |
+| coordinates-matrices | `axisar_c`, `georec_c`, `latrec_c`, `mtxv_c`, `mxm_c`, `mxv_c`, `recgeo_c`, `reclat_c`, `recsph_c`, `rotate_c`, `rotmat_c`, `sphrec_c` | 12 / 12 | https://github.com/rybosome/tspice/pull/681, kplfrm-prerequisite | Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change. |
 | dsk | `dskb02_c`, `dskgd_c`, `dskobj_c`, `dsksrf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ek-1 | `ekaclc_c`, `ekacld_c`, `ekacli_c`, `ekcls_c`, `ekffld_c`, `ekfind_c`, `ekgc_c`, `ekgd_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ek-2 | `ekgi_c`, `ekifld_c`, `eknseg_c`, `ekntab_c`, `ekopn_c`, `ekopr_c`, `ekopw_c`, `ektnam_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
@@ -78,7 +78,7 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 | geometry-gf | `gfdist_c`, `gfrefn_c`, `gfrepf_c`, `gfrepi_c`, `gfsep_c`, `gfsstp_c`, `gfstep_c`, `gfstol_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ids-names | `bodc2n_c`, `bodc2s_c`, `boddef_c`, `bodfnd_c`, `bodn2c_c`, `bods2c_c`, `bodvar_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | kernel-pool | `cvpool_c`, `dtpool_c`, `expool_c`, `gcpool_c`, `gdpool_c`, `gipool_c`, `gnpool_c`, `pcpool_c`, `pdpool_c`, `pipool_c`, `swpool_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| kplfrm-prerequisite | `kplfrm_c` | 1 / 1 | https://github.com/rybosome/tspice/pull/680, vectors-arithmetic | Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change. |
+| kplfrm-prerequisite | `kplfrm_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/680, vectors-arithmetic | Complete the separate WASM handle lifetime repair; successful valid-handle comparisons do not certify the open ownership boundary. |
 | kernels | `furnsh_c`, `kclear_c`, `kdata_c`, `kinfo_c`, `ktotal_c`, `kxtrct_c`, `unload_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | time-1 | `deltet_c`, `et2utc_c`, `scdecd_c`, `sce2c_c`, `sce2s_c`, `scencd_c`, `scs2e_c`, `sct2e_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | time-2 | `str2et_c`, `timdef_c`, `timout_c`, `tkvrsn_c`, `tparse_c`, `tpictr_c`, `unitim_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |

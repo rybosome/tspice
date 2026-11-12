@@ -234,11 +234,23 @@
             "kernels-kplfrm-empty-pool-success",
             "kernels-kplfrm-set-too-small-error"
           ]
+        },
+        {
+          "id": "shared-wasm-cell-handle-identity",
+          "status": "open",
+          "summary": "A later cell audit demonstrated foreign same-address handles and allocator-reused expired pointers can pass the common WASM membership guard. The separate lifetime prerequisite repairs this; valid-handle parity alone does not certify ownership.",
+          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
@@ -247,7 +259,13 @@
           ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair"
+          ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
@@ -258,5 +276,5 @@
       }
     }
   ],
-  "verificationNote": "Current-source local and observed CI execution passed after native handle/class repairs. Earlier compiled-repair observations remain historical. Recheck CI/rebaseability after metadata updates or restacking."
+  "verificationNote": "Successful valid-handle results remain recorded; the subsequently discovered shared WASM pointer-identity boundary needs the separate lifetime repair."
 }

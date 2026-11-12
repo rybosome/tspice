@@ -36,7 +36,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Rerun both backends and observe current-source CI after shared coordinate contract/adapters changed."
+      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
     },
     {
       "id": "coordinates-matrices",
@@ -56,7 +56,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/681"],
-      "nextAction": "Observe current-source CI and record both backend jobs after coordinate axis/coverage repairs."
+      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
     },
     {
       "id": "dsk",
@@ -277,7 +277,7 @@
       "routines": ["kplfrm_c"],
       "dependsOn": ["vectors-arithmetic"],
       "prs": ["https://github.com/rybosome/tspice/pull/680"],
-      "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change."
+      "nextAction": "Complete the separate WASM handle lifetime repair; successful valid-handle comparisons do not certify the open ownership boundary."
     },
     {
       "id": "kernels",
