@@ -9,11 +9,25 @@
         "item": 3,
         "maxCardinality": 4
       },
-      { "op": "cells-windows.insrti", "cellId": "C_INSRI", "item": 1 },
-      { "op": "cells-windows.insrti", "cellId": "C_INSRI", "item": 3 },
-      { "op": "cells-windows.card", "targetKind": "int", "targetId": "C_INSRI" }
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C_INSRI",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C_INSRI",
+        "item": 3
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "C_INSRI"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-insrti-capacity-overflow-error",
@@ -25,8 +39,89 @@
         "item": 1,
         "maxCardinality": 1
       },
-      { "op": "cells-windows.insrti", "cellId": "C_INSRI_ERR", "item": 2 }
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C_INSRI_ERR",
+        "item": 2
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-insrti-audit-complete-sorted-values",
+    "description": "Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 2147483647,
+        "maxCardinality": 6,
+        "length": 16
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": -7
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-insrti-audit-duplicate-at-full-capacity",
+    "description": "Duplicate insertion into a full set succeeds without changing contents.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 2147483647,
+        "maxCardinality": 1,
+        "length": 16
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-insrti-audit-zero-capacity",
+    "description": "Explicit zero capacity must not become the default and insertion must fail in CSPICE.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 2147483647,
+        "maxCardinality": 0,
+        "length": 16
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
   }
 ]

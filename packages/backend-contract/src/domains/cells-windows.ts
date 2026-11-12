@@ -99,18 +99,31 @@ export interface CellsWindowsApi {
     cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
   ): void;
 
-  /** Set the cardinality of a cell. (`scard_c`) */
+  /**
+   * Set cardinality without sorting, initializing, or clearing stored elements.
+   * `card` must be a non-negative SpiceInt no greater than logical capacity;
+   * exceeding capacity signals SPICE(INVALIDCARDINALITY). Use zero to empty a
+   * set/window; subsequent insertion overwrites retired data as needed.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scard_c.html
+   */
   scard(
     card: number,
     cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
   ): void;
 
-  /** Get the cardinality of a cell. (`card_c`) */
+  /**
+   * Return stored element count; for windows this counts endpoints, not intervals.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/card_c.html
+   */
   card(
     cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
   ): number;
 
-  /** Get the maximum cardinality of a cell. (`size_c`) */
+  /**
+   * Return logical maximum element count, independently of current cardinality.
+   * For windows this counts endpoints. Insertion does not resize storage.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/size_c.html
+   */
   size(
     cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
   ): number;
@@ -127,24 +140,54 @@ export interface CellsWindowsApi {
     cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
   ): void;
 
-  /** Insert an integer into an integer set cell. (`insrti_c`) */
+  /**
+   * Insert a signed 32-bit integer into a sorted integer set, ignoring duplicates.
+   * A new value beyond capacity signals SPICE(SETEXCESS); duplicates in a full
+   * set succeed. The handle must belong to a live integer cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/insrti_c.html
+   */
   insrti(item: number, cell: SpiceIntCell): void;
 
-  /** Insert a double into a double set cell. (`insrtd_c`) */
+  /**
+   * Insert a double into a sorted double set, ignoring duplicates.
+   * A new value beyond capacity signals SPICE(SETEXCESS); the live handle must
+   * refer to a double cell. No units or tolerance are applied to set membership.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/insrtd_c.html
+   */
   insrtd(item: number, cell: SpiceDoubleCell): void;
 
-  /** Insert a string into a character set cell. (`insrtc_c`) */
+  /**
+   * Insert a string into a sorted character set, ignoring duplicates. CSPICE
+   * compares keys after truncation to cell string length (excluding NUL), ignores
+   * trailing blanks, and preserves leading blanks. A new key beyond capacity
+   * signals SPICE(SETEXCESS). Non-string JavaScript inputs throw TypeError.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/insrtc_c.html
+   */
   insrtc(item: string, cell: SpiceCharCell): void;
 
   // -- Windows ----------------------------------------------------------------
 
-  /** Insert an interval into a DP window, merging overlaps. (`wninsd_c`) */
+  /**
+   * Insert closed [left, right], merging overlapping or touching intervals.
+   * Endpoints use caller units; equal endpoints create singleton intervals.
+   * Reversed endpoints signal SPICE(BADENDPOINTS); insufficient endpoint storage
+   * signals SPICE(WINDOWEXCESS). Insertion mutates the live window in place.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wninsd_c.html
+   */
   wninsd(left: number, right: number, window: SpiceWindow): void;
 
-  /** Return the number of intervals in a DP window. (`wncard_c`) */
+  /**
+   * Return interval count (half the endpoint cardinality) of a live DP window.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wncard_c.html
+   */
   wncard(window: SpiceWindow): number;
 
-  /** Fetch the `index`th interval from a DP window. (`wnfetd_c`) */
+  /**
+   * Return [left, right] for a zero-based interval index in caller endpoint units.
+   * Index must be a non-negative SpiceInt; an index beyond stored intervals
+   * signals SPICE(NOINTERVAL). The returned pair is a copy.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnfetd_c.html
+   */
   wnfetd(
     window: SpiceWindow,
     index: number,

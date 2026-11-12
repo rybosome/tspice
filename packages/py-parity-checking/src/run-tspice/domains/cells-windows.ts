@@ -113,7 +113,12 @@ export function runCellsWindowsStep(
         step.length ?? 32,
       );
       context.spice.raw.insrtc(step.item, cell);
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGetc(cell, i),
+        ),
+      };
     }
 
     case "cells-windows.insrtd": {
@@ -123,7 +128,12 @@ export function runCellsWindowsStep(
         step.maxCardinality ?? 8,
       );
       context.spice.raw.insrtd(step.item, cell);
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGetd(cell, i),
+        ),
+      };
     }
 
     case "cells-windows.insrti": {
@@ -133,13 +143,18 @@ export function runCellsWindowsStep(
         step.maxCardinality ?? 8,
       );
       context.spice.raw.insrti(step.item, cell);
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGeti(cell, i),
+        ),
+      };
     }
 
     case "cells-windows.scard": {
       const target = requireTarget(context, step.targetKind, step.targetId);
       context.spice.raw.scard(step.card, target);
-      return { op: step.op, value: null };
+      return { op: step.op, value: context.spice.raw.card(target) };
     }
 
     case "cells-windows.size": {

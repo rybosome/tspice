@@ -26,8 +26,8 @@
         "wninsd_c"
       ],
       "dependsOn": ["cell-capacity-prerequisite"],
-      "prs": [],
-      "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline."
+      "prs": ["https://github.com/rybosome/tspice/pull/685"],
+      "nextAction": "Current-source local and canonical CI verification recorded; await maintainer review and explicitly authorized dependency-order merges while the remaining baseline audits continue."
     },
     {
       "id": "vectors-arithmetic",

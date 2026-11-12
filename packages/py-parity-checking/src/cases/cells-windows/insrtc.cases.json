@@ -10,15 +10,25 @@
         "maxCardinality": 4,
         "length": 16
       },
-      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC", "item": "alpha" },
-      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC", "item": "beta" },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C_INSRTC",
+        "item": "alpha"
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C_INSRTC",
+        "item": "beta"
+      },
       {
         "op": "cells-windows.card",
         "targetKind": "char",
         "targetId": "C_INSRTC"
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-insrtc-capacity-overflow-error",
@@ -31,8 +41,115 @@
         "maxCardinality": 1,
         "length": 8
       },
-      { "op": "cells-windows.insrtc", "cellId": "C_INSRTC_ERR", "item": "b" }
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C_INSRTC_ERR",
+        "item": "b"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-insrtc-audit-complete-sorted-values",
+    "description": "Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "z",
+        "maxCardinality": 6,
+        "length": 16
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "  leading"
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "alpha  "
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "alpha"
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": ""
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+    "description": "Duplicate insertion into a full set succeeds without changing contents.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "z",
+        "maxCardinality": 1,
+        "length": 16
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-insrtc-audit-zero-capacity",
+    "description": "Explicit zero capacity must not become the default and insertion must fail in CSPICE.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "z",
+        "maxCardinality": 0,
+        "length": 16
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-insrtc-audit-truncation-deduplication",
+    "description": "Truncated character keys determine order and deduplication.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "prefixAB",
+        "maxCardinality": 4,
+        "length": 8
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "prefixAZ"
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "alpha"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

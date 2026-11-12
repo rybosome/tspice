@@ -36,9 +36,11 @@
         "dependsOn": [
           "cell-capacity-prerequisite"
         ],
-        "prs": [],
-        "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline.",
-        "record": null
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/685"
+        ],
+        "nextAction": "Current-source local and canonical CI verification recorded; await maintainer review and explicitly authorized dependency-order merges while the remaining baseline audits continue.",
+        "record": "data/parity-audits/cells-windows.json"
       },
       {
         "id": "vectors-arithmetic",
@@ -388,16 +390,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 131,
-        "reviewed": 0,
+        "unreviewed": 122,
+        "reviewed": 20,
         "needs-repair": 0,
-        "verified": 31
+        "verified": 20
       },
       "wasm": {
-        "unreviewed": 131,
-        "reviewed": 0,
+        "unreviewed": 122,
+        "reviewed": 20,
         "needs-repair": 0,
-        "verified": 31
+        "verified": 20
       }
     }
   },
@@ -416,7 +418,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 364,
+    "scenarios": 384,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -3953,7 +3955,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 109
+          "line": 118
         }
       },
       "mapping": {
@@ -3993,7 +3995,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -4081,6 +4083,28 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-card-audit-all-cell-types-and-zero",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/card.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.card",
+              "cells-windows.insrtc",
+              "cells-windows.insrtd",
+              "cells-windows.insrti",
+              "cells-windows.scard"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw cardinality is returned for all four cell types; window endpoint count and cardinality after clearing are compared to live SpiceyPy card. Case: Cardinality is observed for int/double/char cells before and after clearing.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-card-missing-target-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/card.cases.json",
             "expectation": "error",
@@ -4088,7 +4112,13 @@
               "cells-windows.card"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "edge"
+              ],
+              "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-card-window-cardinality-success",
@@ -4099,18 +4129,46 @@
               "cells-windows.wninsd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw cardinality is returned for all four cell types; window endpoint count and cardinality after clearing are compared to live SpiceyPy card. Case: card reports endpoint cardinality for a tracked window",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.card -> typed adapter -> native process handle registry -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.card -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -4529,15 +4587,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4547,15 +4603,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -4787,15 +4841,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4805,15 +4857,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -14793,15 +14843,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -14810,15 +14858,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -16477,15 +16523,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -16495,15 +16539,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -19093,7 +19135,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 137
+          "line": 166
         }
       },
       "mapping": {
@@ -19133,7 +19175,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -19221,6 +19263,76 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-insrtc-audit-complete-sorted-values",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrtc"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrtc"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Duplicate insertion into a full set succeeds without changing contents.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-insrtc-audit-truncation-deduplication",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrtc"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Truncated character keys determine order and deduplication.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-insrtc-audit-zero-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.insrtc"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-insrtc-capacity-overflow-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
             "expectation": "error",
@@ -19228,7 +19340,13 @@
               "cells-windows.insrtc"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Representative insrtc overflow error",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-insrtc-dedupe-success",
@@ -19239,18 +19357,48 @@
               "cells-windows.insrtc"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: insrtc inserts into char set cell with de-dupe behavior",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.insrtc -> typed adapter -> native process handle registry -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.insrtc -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -19266,7 +19414,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 134
+          "line": 157
         }
       },
       "mapping": {
@@ -19306,7 +19454,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -19394,6 +19542,58 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-insrtd-audit-complete-sorted-values",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrtd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrtd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrtd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrtd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Duplicate insertion into a full set succeeds without changing contents.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-insrtd-audit-zero-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrtd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.insrtd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-insrtd-capacity-overflow-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/insrtd.cases.json",
             "expectation": "error",
@@ -19401,7 +19601,13 @@
               "cells-windows.insrtd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Representative insrtd overflow error",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-insrtd-dedupe-success",
@@ -19412,18 +19618,48 @@
               "cells-windows.insrtd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: insrtd inserts into double set cell with de-dupe behavior",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.insrtd -> typed adapter -> native process handle registry -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.insrtd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -19439,7 +19675,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 131
+          "line": 149
         }
       },
       "mapping": {
@@ -19479,7 +19715,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -19567,6 +19803,58 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-insrti-audit-complete-sorted-values",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrti.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrti"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-insrti-audit-duplicate-at-full-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrti.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrti"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Duplicate insertion into a full set succeeds without changing contents.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-insrti-audit-zero-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/insrti.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.insrti"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-insrti-capacity-overflow-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/insrti.cases.json",
             "expectation": "error",
@@ -19574,7 +19862,13 @@
               "cells-windows.insrti"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Representative insrti overflow error",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-insrti-dedupe-success",
@@ -19585,18 +19879,48 @@
               "cells-windows.insrti"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: insrti inserts into int set cell with de-dupe behavior",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.insrti -> typed adapter -> native process handle registry -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.insrti -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -20555,15 +20879,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-684-main-373b55dd-node",
-            "ci-684-main-373b55dd-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20575,15 +20897,13 @@
             "reviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-684-main-373b55dd-wasm",
-            "ci-684-main-373b55dd-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -24997,15 +25317,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -25014,15 +25332,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -25537,7 +25853,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 103
+          "line": 109
         }
       },
       "mapping": {
@@ -25577,7 +25893,7 @@
             "scard_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -25665,6 +25981,44 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-scard-audit-above-logical-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/scard.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.insrti",
+              "cells-windows.scard"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: CSPICE rejects a cardinality exceeding the actual logical size.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-scard-audit-clear-refill-all-types",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/scard.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrtc",
+              "cells-windows.insrtd",
+              "cells-windows.insrti",
+              "cells-windows.scard"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: Zero cardinality restores an empty set that can be refilled for all element types.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-scard-negative-card-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/scard.cases.json",
             "expectation": "error",
@@ -25673,7 +26027,13 @@
               "cells-windows.scard"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Typed wrapper rejects negative cardinality; this is argument validation, not CSPICE diagnostic equivalence. A separate live above-capacity case requires INVALIDCARDINALITY.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-scard-truncates-success",
@@ -25685,18 +26045,48 @@
               "cells-windows.scard"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: scard shrinks a populated set cell cardinality",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.scard -> typed adapter -> native process handle registry -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.scard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -27099,15 +27489,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -27116,15 +27504,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -27377,15 +27763,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -27395,15 +27779,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -27620,7 +28002,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 114
+          "line": 127
         }
       },
       "mapping": {
@@ -27660,7 +28042,7 @@
             "size_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -27748,6 +28130,28 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-size-audit-independent-of-cardinality",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/size.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.insrtc",
+              "cells-windows.insrtd",
+              "cells-windows.insrti",
+              "cells-windows.scard",
+              "cells-windows.size"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw size is returned for three distinct element capacities and a window endpoint capacity before/after insertions and clearing; live SpiceyPy size observes the same state. Case: Distinct declared capacities survive insertion and cardinality clearing.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-size-missing-target-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/size.cases.json",
             "expectation": "error",
@@ -27755,7 +28159,13 @@
               "cells-windows.size"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "edge"
+              ],
+              "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-size-window-capacity-success",
@@ -27766,18 +28176,46 @@
               "cells-windows.wninsd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw size is returned for three distinct element capacities and a window endpoint capacity before/after insertions and clearing; live SpiceyPy size observes the same state. Case: size reports tracked window capacity",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.size -> typed adapter -> native process handle registry -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.size -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -31389,15 +31827,13 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-684-main-373b55dd-node",
-            "ci-684-main-373b55dd-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -31405,15 +31841,13 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-684-main-373b55dd-wasm",
-            "ci-684-main-373b55dd-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34126,7 +34560,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 124
+          "line": 137
         }
       },
       "mapping": {
@@ -34380,15 +34814,13 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-684-main-373b55dd-node",
-            "ci-684-main-373b55dd-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -34396,15 +34828,13 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-684-main-373b55dd-wasm",
-            "ci-684-main-373b55dd-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -36237,7 +36667,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 145
+          "line": 183
         }
       },
       "mapping": {
@@ -36277,7 +36707,7 @@
             "wncard_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -36338,7 +36768,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 667
+            "line": 669
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -36365,6 +36795,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-wncard-audit-three-and-empty",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wncard.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.card",
+              "cells-windows.scard",
+              "cells-windows.wncard",
+              "cells-windows.wninsd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw interval count is observed through insert/merge/clear states, alongside endpoint card to distinguish the factor of two. Three disjoint intervals and singleton bounds prevent constant-one/endpoint-count substitutes. Case: Interval cardinality differs from endpoint cardinality and returns zero after clearing.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-wncard-missing-window-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/wncard.cases.json",
             "expectation": "error",
@@ -36372,7 +36823,13 @@
               "cells-windows.wncard"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "edge"
+              ],
+              "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-wncard-window-lifecycle-success",
@@ -36385,18 +36842,46 @@
               "cells-windows.wninsd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw interval count is observed through insert/merge/clear states, alongside endpoint card to distinguish the factor of two. Three disjoint intervals and singleton bounds prevent constant-one/endpoint-count substitutes. Case: Window lifecycle: insert, inspect, clear via scard, inspect",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.wncard -> typed adapter -> native process handle registry -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.wncard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -36454,7 +36939,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 148
+          "line": 191
         }
       },
       "mapping": {
@@ -36494,7 +36979,7 @@
             "wnfetd_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -36555,7 +37040,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 671
+            "line": 673
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -36582,6 +37067,43 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-wnfetd-audit-empty-window",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wnfetd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.scard",
+              "cells-windows.wnfetd",
+              "cells-windows.wninsd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: An empty real window has no interval zero.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-wnfetd-audit-zero-based-first-last",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wnfetd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wnfetd",
+              "cells-windows.wninsd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Every interval is fetched using zero-based indices across negative and positive endpoints.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-wnfetd-out-of-range-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/wnfetd.cases.json",
             "expectation": "error",
@@ -36590,7 +37112,13 @@
               "cells-windows.wninsd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Representative wnfetd bounds error",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-wninsd-wnfetd-success",
@@ -36601,18 +37129,46 @@
               "cells-windows.wninsd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Stateful wninsd -> wnfetd workflow",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.wnfetd -> typed adapter -> native process handle registry -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.wnfetd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -36649,7 +37205,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 142
+          "line": 177
         }
       },
       "mapping": {
@@ -36689,7 +37245,7 @@
             "wninsd_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -36750,7 +37306,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 663
+            "line": 665
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -36777,6 +37333,58 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-wninsd-audit-overflow",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wninsd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: A disjoint interval beyond fixed endpoint capacity raises WINDOWEXCESS.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-wninsd-audit-touching-containing-singletons",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wninsd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wncard",
+              "cells-windows.wnfetd",
+              "cells-windows.wninsd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Closed touching intervals merge, containing intervals are idempotent, and point intervals survive.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-wninsd-audit-zero-capacity",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wninsd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Explicit zero interval capacity must reach the raw overflow path.",
+              "record": "data/parity-audits/cells-windows.json"
+            }
+          },
+          {
             "caseId": "cells-windows-wninsd-invalid-interval-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/wninsd.cases.json",
             "expectation": "error",
@@ -36784,7 +37392,13 @@
               "cells-windows.wninsd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Representative wninsd invalid interval bounds error",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           },
           {
             "caseId": "cells-windows-wninsd-merge-success",
@@ -36796,18 +37410,48 @@
               "cells-windows.wninsd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: wninsd merges overlapping intervals in a tracked window",
+              "record": "data/parity-audits/cells-windows.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "cells-windows",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.wninsd -> typed adapter -> native process handle registry -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.wninsd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/cells-windows.json"
         }
       }
     },
@@ -36851,7 +37495,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 160
+          "line": 203
         }
       },
       "mapping": {
@@ -36952,7 +37596,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 676
+            "line": 678
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -37082,15 +37726,13 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-684-main-373b55dd-node",
-            "ci-684-main-373b55dd-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -37098,15 +37740,13 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-684-main-373b55dd-wasm",
-            "ci-684-main-373b55dd-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
