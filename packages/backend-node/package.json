@@ -22,8 +22,10 @@
     "build": "tsc -p tsconfig.json",
     "build:js": "pnpm run build",
     "build:full": "pnpm -w fetch:cspice && node-gyp rebuild --directory native && tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "test": "vitest run"
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
+    "test": "vitest run",
+    "pretest": "node ../../scripts/prepare-package.mjs",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",

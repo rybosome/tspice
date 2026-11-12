@@ -16,12 +16,13 @@
     "dist"
   ],
   "scripts": {
-    "prebuild": "pnpm -C ../core build",
+    "prebuild": "node ../../scripts/prepare-package.mjs --dependencies",
     "build": "tsc -p tsconfig.json",
-    "pretypecheck": "pnpm -C ../core build",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
     "prepack": "pnpm run build",
-    "test": "vitest run"
+    "test": "vitest run",
+    "pretest": "node ../../scripts/prepare-package.mjs"
   },
   "dependencies": {
     "@rybosome/tspice-core": "workspace:*"

@@ -32,45 +32,15 @@ function run(command, args, { cwd = repoRoot } = {}) {
 }
 
 async function main() {
-  // TypeDoc builds a TypeScript program for the entrypoint package.
-  // This repo's packages import each other via package exports that point at
-  // `dist/**`, so we need declarations emitted for internal deps first.
-  await run(pnpmBin, [
-    "-C",
-    "packages/core",
-    "exec",
-    "tsc",
-    "-p",
-    "tsconfig.json",
-    "--emitDeclarationOnly",
-  ]);
-  await run(pnpmBin, [
-    "-C",
-    "packages/backend-contract",
-    "exec",
-    "tsc",
-    "-p",
-    "tsconfig.json",
-    "--emitDeclarationOnly",
-  ]);
-  await run(pnpmBin, [
-    "-C",
-    "packages/backend-wasm",
-    "exec",
-    "tsc",
-    "-p",
-    "tsconfig.json",
-    "--emitDeclarationOnly",
-  ]);
-  await run(pnpmBin, [
-    "-C",
-    "packages/tspice",
-    "exec",
-    "tsc",
-    "-p",
-    "tsconfig.json",
-    "--emitDeclarationOnly",
-  ]);
+  // Package builds own dependency declarations. Inside Turbo, the docs package's
+  // facade dependency guarantees preparation; direct commands use the same graph.
+  await run(
+    process.execPath,
+    [path.join(repoRoot, "scripts/prepare-package.mjs")],
+    {
+      cwd: path.join(repoRoot, "packages/tspice"),
+    },
+  );
 
   await run(pnpmBin, [
     "-C",

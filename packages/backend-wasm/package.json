@@ -22,9 +22,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && pnpm run stage:assets",
     "stage:assets": "node ../../scripts/copy-backend-wasm-assets.mjs",
-    "pretest": "pnpm run stage:assets",
+    "pretest": "node ../../scripts/prepare-package.mjs",
     "test": "vitest run --no-file-parallelism",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly"
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",
