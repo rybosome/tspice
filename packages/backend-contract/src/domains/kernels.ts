@@ -67,6 +67,7 @@ export interface KernelsApi {
    *
    * `frmcls = -1` selects all kernel-pool classes; class 1 yields an empty set.
    * The caller owns the integer cell; insufficient capacity or an invalid class throws.
+   * Non-integral or overflowing signed 32-bit class values are rejected before CSPICE.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kplfrm_c.html
    */
   kplfrm(frmcls: number, idset: SpiceIntCell): void;

@@ -8,6 +8,7 @@ import type {
   SpiceIntCell,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertSpiceInt32,
   kxtrctJs,
   matchesKernelKind,
   nativeKindQueryOrNull,
@@ -236,6 +237,7 @@ export function createKernelsApi(
       return kxtrctJs(keywd, terms, wordsq);
     },
     kplfrm: (frmcls: number, idset: SpiceIntCell) => {
+      assertSpiceInt32(frmcls, "kplfrm(frmcls)");
       assertWasmOwnedCellHandle(module, idset, "kplfrm(idset)");
       withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
         const result = module._tspice_kplfrm(

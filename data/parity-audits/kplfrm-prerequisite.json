@@ -16,7 +16,9 @@
     "packages/backend-wasm/src/codec/alloc.ts",
     "packages/backend-wasm/src/codec/errors.ts",
     "packages/backend-shim-c/src/errors.c",
-    "packages/backend-shim-c/src/handle_validation.c"
+    "packages/backend-shim-c/src/handle_validation.c",
+    "packages/backend-node/native/src/cell_handles.cc",
+    "packages/backend-node/native/src/cell_handles.h"
   ],
   "executions": [
     {
@@ -34,7 +36,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74."
+      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74.",
+      "historical": true
     },
     {
       "id": "local-regenerated-wasm-2026-11-12",
@@ -51,7 +54,42 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74."
+      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74.",
+      "historical": true
+    },
+    {
+      "id": "local-boundaries-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2fbd6dff45764e0358b07e91210901dae530ecd1423f5c5941940857d2fd1876",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "After the failing invalid-handle/class regressions, the repaired production native addon built and loaded. Full required native lane passed: 638 live parity tests (319 scenarios per backend), all 669 parity-package tests, no skips; Node kernels 7 tests and WASM kernels 5 tests passed. Full required JS lane, 38 ledger regressions, format/lint and generated drift validation also passed. macOS arm64, Node22.23.4, pnpm10.13.1, SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. The regenerated web/Node WASM binary is unchanged by these JS/native-only boundary repairs."
+    },
+    {
+      "id": "local-boundaries-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2fbd6dff45764e0358b07e91210901dae530ecd1423f5c5941940857d2fd1876",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "After the failing invalid-handle/class regressions, the repaired production native addon built and loaded. Full required native lane passed: 638 live parity tests (319 scenarios per backend), all 669 parity-package tests, no skips; Node kernels 7 tests and WASM kernels 5 tests passed. Full required JS lane, 38 ledger regressions, format/lint and generated drift validation also passed. macOS arm64, Node22.23.4, pnpm10.13.1, SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. The regenerated web/Node WASM binary is unchanged by these JS/native-only boundary repairs."
     }
   ],
   "routines": [
@@ -59,7 +97,7 @@
       "routine": "kplfrm_c",
       "contract": "packages/backend-contract/src/domains/kernels.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kplfrm_c.html",
-      "semantics": "Replaces a caller-owned integer set with sorted kernel-pool frame IDs for classes 2 through 6, -1 selects all pool classes, and class 1 returns an empty set (built-in inertial frames are not pool frames). Invalid classes signal BADFRAMECLASS and insufficient set capacity signals SETTOOSMALL. No ownership transfer.",
+      "semantics": "Replaces a caller-owned integer set with sorted kernel-pool frame IDs for classes 2 through 6, -1 selects all pool classes, and class 1 returns an empty set (built-in inertial frames are not pool frames). Invalid classes signal BADFRAMECLASS and insufficient set capacity signals SETTOOSMALL. No ownership transfer. Frame class input must be a signed 32-bit integer; malformed JS values are rejected instead of being truncated/wrapped.",
       "scenarios": [
         {
           "caseId": "kernels-kplfrm-class-4-success",
@@ -87,7 +125,7 @@
           "observes": "A real integer cell with zero capacity cannot hold the loaded frame set; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         }
       ],
-      "edgeAssessment": "Live coverage includes all classes (-1), inertial class 1, empty pool, repeated invocation, unloading, invalid class, and zero-capacity overflow. Direct WASM unit coverage additionally prepopulates/reuses cells, checks sorted multiple classes, stale/foreign/wrong-type handles, and post-error successful recovery. Both generated web/Node glue modules execute the compiled export and recover from BADFRAMECLASS.",
+      "edgeAssessment": "Live coverage includes all classes (-1), inertial class 1, empty pool, repeated invocation, unloading, invalid class, and zero-capacity overflow. Direct WASM unit coverage additionally prepopulates/reuses cells, checks sorted multiple classes, stale/foreign/wrong-type handles, and post-error successful recovery. Both generated web/Node glue modules execute the compiled export and recover from BADFRAMECLASS. Native direct tests also exercise set replacement, wrong-type and expired handles, capacity and post-error recovery.",
       "errorAssessment": "BADFRAMECLASS and SETTOOSMALL are asserted from both live outputs, preventing two unrelated failures from passing. Wrong-type/expired/foreign handles are wrapper ownership errors covered directly in WASM tests. Shared shim resets SPICE errors; unit test verifies failed() is false and a subsequent success works.",
       "fixtures": [
         {
@@ -111,7 +149,45 @@
             "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
             "packages/py-parity-checking/src/cases/kernels/kplfrm.cases.json",
             "packages/backend-wasm/test/kernels.test.ts",
-            "scripts/backend-wasm-assets.test.mjs"
+            "scripts/backend-wasm-assets.test.mjs",
+            "packages/backend-node/test/kernels.test.ts"
+          ],
+          "caseIds": [
+            "kernels-kplfrm-class-4-success",
+            "kernels-kplfrm-invalid-class-error",
+            "kernels-kplfrm-all-inertial-unload-success",
+            "kernels-kplfrm-empty-pool-success",
+            "kernels-kplfrm-set-too-small-error"
+          ]
+        },
+        {
+          "id": "native-handle-coercion",
+          "status": "repaired",
+          "summary": "Native kplfrm converted cell handles with Uint32Value, so a fractional value or one offset by 2^32 could alias and mutate a live cell. The new regression failed before the repair.",
+          "repair": "Use the existing ReadCellHandleArg validator before native cell lookup. Tests forge fractional/wrapped/non-finite handles and assert rejection without changing the real cell.",
+          "evidence": [
+            "packages/backend-node/native/src/domains/kernels.cc",
+            "packages/backend-node/native/src/cell_handles.cc",
+            "packages/backend-node/test/kernels.test.ts"
+          ],
+          "caseIds": [
+            "kernels-kplfrm-class-4-success",
+            "kernels-kplfrm-invalid-class-error",
+            "kernels-kplfrm-all-inertial-unload-success",
+            "kernels-kplfrm-empty-pool-success",
+            "kernels-kplfrm-set-too-small-error"
+          ]
+        },
+        {
+          "id": "frame-class-coercion",
+          "status": "repaired",
+          "summary": "Non-integral or overflowing class values could silently truncate/wrap before CSPICE; direct native regression failed for 4.5.",
+          "repair": "Both typed adapters call assertSpiceInt32 before entering CSPICE. Direct Node/WASM tests reject fractional, non-finite, and overflowing class values while valid -1 and unknown integer classes retain their existing semantics.",
+          "evidence": [
+            "packages/backend-node/src/domains/kernels.ts",
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-node/test/kernels.test.ts",
+            "packages/backend-wasm/test/kernels.test.ts"
           ],
           "caseIds": [
             "kernels-kplfrm-class-4-success",
@@ -127,16 +203,16 @@
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-regenerated-node-2026-11-12"]
+          "executions": ["local-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-regenerated-wasm-2026-11-12"]
+          "executions": ["local-boundaries-wasm-2026-11-12"]
         }
       }
     }
   ],
-  "verificationNote": "Current local required lane passed against the regenerated shared WASM binary. Current CI verification is pending; earlier source observations remain explicitly historical."
+  "verificationNote": "Current-source required local lanes passed after handle/class repairs. Earlier executions remain historical; updated CI is pending."
 }

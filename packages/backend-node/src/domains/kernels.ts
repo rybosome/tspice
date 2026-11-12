@@ -7,6 +7,7 @@ import type {
   KernelsApi,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertSpiceInt32,
   matchesKernelKind,
   nativeKindQueryOrNull,
   normalizeKindInput,
@@ -131,6 +132,7 @@ export function createKernelsApi(
     },
 
     kplfrm: (frmcls, idset) => {
+      assertSpiceInt32(frmcls, "kplfrm(frmcls)");
       native.kplfrm(frmcls, idset);
     },
 

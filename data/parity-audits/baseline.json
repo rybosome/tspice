@@ -36,7 +36,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Observe current-source CI after shared WASM regeneration and record successful backend jobs."
+      "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change."
     },
     {
       "id": "coordinates-matrices",
@@ -275,9 +275,9 @@
     {
       "id": "kplfrm-prerequisite",
       "routines": ["kplfrm_c"],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Observe current-source CI after shared WASM regeneration and record successful backend jobs."
+      "dependsOn": ["vectors-arithmetic"],
+      "prs": ["https://github.com/rybosome/tspice/pull/680"],
+      "nextAction": "Observe updated-source CI for native handle and frame-class boundary repairs; record successful backend jobs."
     },
     {
       "id": "kernels",

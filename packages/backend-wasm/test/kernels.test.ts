@@ -118,6 +118,18 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     );
   });
 
+  it("kplfrm rejects non-integral or overflowing frame classes before CSPICE", async () => {
+    const backend = await createWasmBackend();
+    const ids = backend.kit.newIntCell(4);
+    try {
+      for (const value of [4.5, NaN, Infinity, 2 ** 32 + 4])
+        expect(() => backend.raw.kplfrm(value, ids)).toThrow(
+          /safe integer|32-bit signed integer/,
+        );
+    } finally {
+      backend.kit.freeCell(ids);
+    }
+  });
   it("rejects OS/URL-looking string paths (virtual ids only)", async () => {
     const backend = await createWasmBackend();
 

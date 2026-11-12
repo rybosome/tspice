@@ -580,6 +580,8 @@ test("human route judgments must agree with traced implementations", (t) => {
 test("verified status accepts explicit source-bound local and observed CI evidence", (t) => {
   const f = fixture(t);
   const ledger = f.build();
+  const repairEvidence = path.join(f.root, "scripts/repair-assertion.test.mjs");
+  fs.writeFileSync(repairEvidence, "// maintained assertion fixture\n");
   editAudit(
     f,
     (r) => {
@@ -590,6 +592,9 @@ test("verified status accepts explicit source-bound local and observed CI eviden
     "baseline.json",
   );
   editAudit(f, (r) => {
+    r.routines[0].findings[0].evidence.push(
+      "scripts/repair-assertion.test.mjs",
+    );
     const names = new Set(r.routines.map((entry) => entry.routine));
     const sourceDigest = auditSourceDigest(
       f.root,
@@ -615,6 +620,9 @@ test("verified status accepts explicit source-bound local and observed CI eviden
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.equal(f.build().audit.counts.wasm.verified, 1);
+  fs.appendFileSync(repairEvidence, "// assertion changed\n");
+  assert.throws(f.build, /stale execution source digest/);
+  fs.writeFileSync(repairEvidence, "// maintained assertion fixture\n");
   f.edit(
     "packages/py-parity-checking/src/parity-assert.ts",
     "const ABSOLUTE_NUMERIC_TOLERANCE = 1e-12;",

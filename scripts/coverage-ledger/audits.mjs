@@ -45,8 +45,11 @@ export function auditSourceDigest(root, record, routines) {
     "packages/py-parity-checking/test/parity.test.ts",
     "packages/py-parity-checking/sidecars/spiceypy/uv.lock",
   ]);
-  for (const review of record.routines)
+  for (const review of record.routines) {
     for (const fixture of review.fixtures) files.add(fixture.path);
+    for (const finding of review.findings)
+      for (const file of finding.evidence ?? []) files.add(file);
+  }
   for (const routine of routines) {
     files.add(routine.contract.evidence.file);
     for (const backend of backends) {
