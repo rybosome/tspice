@@ -4,10 +4,19 @@
   "batches": [
     {
       "id": "cell-capacity-prerequisite",
-      "routines": ["ssize_c", "valid_c", "wnvald_c"],
-      "dependsOn": ["kplfrm-prerequisite"],
-      "prs": ["https://github.com/rybosome/tspice/pull/683"],
-      "nextAction": "Review the allocation prerequisite; integrate the separate #684 opaque-handle repair before semantic completion of the affected methods. User merges remain separate."
+      "routines": [
+        "ssize_c",
+        "valid_c",
+        "wnvald_c"
+      ],
+      "dependsOn": [
+        "kplfrm-prerequisite"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/683",
+        "https://github.com/rybosome/tspice/pull/684"
+      ],
+      "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs."
     },
     {
       "id": "cells-windows",
@@ -22,9 +31,11 @@
         "wnfetd_c",
         "wninsd_c"
       ],
-      "dependsOn": ["cell-capacity-prerequisite"],
+      "dependsOn": [
+        "cell-capacity-prerequisite"
+      ],
       "prs": [],
-      "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline."
+      "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline."
     },
     {
       "id": "vectors-arithmetic",
@@ -39,7 +50,9 @@
         "vsub_c"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/679"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/679"
+      ],
       "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
@@ -58,13 +71,22 @@
         "rotmat_c",
         "sphrec_c"
       ],
-      "dependsOn": ["kplfrm-prerequisite"],
-      "prs": ["https://github.com/rybosome/tspice/pull/681"],
+      "dependsOn": [
+        "kplfrm-prerequisite"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/681"
+      ],
       "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "dsk",
-      "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
+      "routines": [
+        "dskb02_c",
+        "dskgd_c",
+        "dskobj_c",
+        "dsksrf_c"
+      ],
       "dependsOn": [],
       "prs": [],
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
@@ -144,8 +166,12 @@
         "setmsg_c",
         "sigerr_c"
       ],
-      "dependsOn": ["kplfrm-prerequisite"],
-      "prs": ["https://github.com/rybosome/tspice/pull/682"],
+      "dependsOn": [
+        "kplfrm-prerequisite"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/682"
+      ],
       "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
@@ -240,7 +266,7 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy."
     },
     {
       "id": "ids-names",
@@ -278,10 +304,17 @@
     },
     {
       "id": "kplfrm-prerequisite",
-      "routines": ["kplfrm_c"],
-      "dependsOn": ["vectors-arithmetic"],
-      "prs": ["https://github.com/rybosome/tspice/pull/680"],
-      "nextAction": "Complete the separate WASM handle lifetime repair; successful valid-handle comparisons do not certify the open ownership boundary."
+      "routines": [
+        "kplfrm_c"
+      ],
+      "dependsOn": [
+        "vectors-arithmetic"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/680",
+        "https://github.com/rybosome/tspice/pull/684"
+      ],
+      "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs."
     },
     {
       "id": "kernels",

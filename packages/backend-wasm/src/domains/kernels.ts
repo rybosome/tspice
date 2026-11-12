@@ -18,7 +18,7 @@ import {
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { WASM_ERR_MAX_BYTES, withMalloc } from "../codec/alloc.js";
-import { assertWasmOwnedCellHandle } from "./cells-windows.js";
+import { assertWasmOwnedCellHandle, wasmCellPointer } from "./cells-windows.js";
 
 import { tspiceCall0, tspiceCall1Path } from "../codec/calls.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
@@ -242,7 +242,7 @@ export function createKernelsApi(
       withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
         const result = module._tspice_kplfrm(
           frmcls,
-          idset,
+          wasmCellPointer(module, idset, "kplfrm()"),
           errPtr,
           WASM_ERR_MAX_BYTES,
         );

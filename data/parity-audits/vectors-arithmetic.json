@@ -597,6 +597,70 @@
       "commit": "39b3a99e3ac22bf0dc7610f7bd214729c050e08a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43487831823/job/132100888690",
       "observation": "All 15 source CI jobs passed on 39b3a99e3ac22bf0dc7610f7bd214729c050e08a. The inspected Linux Node 22 native-required job 132100888690 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067, and executed all 728 live comparisons (364 scenarios per actual Node/WASM backend), all 763 parity-package tests with zero skips, 118 WASM / 62 Node / 21 core / 121 facade tests. The real C allocator regression and 16 capacity/registry integration tests passed. Node 20/22 Linux/macOS JS/native lanes, ledger regressions/drift, docs and packed-native checks all passed. Explicit REST rebaseability is true on this source head. Execution remains bound to the actual tested source/job; prior observations remain historical. Open ownership findings are not certified by passing valid-handle/allocation cases."
+    },
+    {
+      "id": "local-opaque-handles-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b154fd3c2d90987a50f7214d8cf1569aa9fa409fc1049352a6175005eb6ade51",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "local-opaque-handles-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b154fd3c2d90987a50f7214d8cf1569aa9fa409fc1049352a6175005eb6ade51",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15.",
+      "historical": true
     }
   ],
   "routines": [
@@ -608,12 +672,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vadd-happy-componentwise-sum",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "vadd adds vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vadd-audit-cancellation-and-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vadd: cancellation and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -632,7 +701,9 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vadd.cases.json"
           ],
-          "caseIds": ["coords-vectors-vadd-audit-cancellation-and-fractions"]
+          "caseIds": [
+            "coords-vectors-vadd-audit-cancellation-and-fractions"
+          ]
         }
       ],
       "backends": {
@@ -686,17 +757,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vcrss-happy-right-handed-basis",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "vcrss computes right-handed cross product of x-hat and y-hat; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vcrss-audit-mixed-and-reversed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vcrss: mixed and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vcrss-audit-parallel-and-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vcrss: parallel and zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -772,12 +851,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vdot-happy-basic-dot",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "vdot computes scalar dot product for simple integer vectors; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vdot-audit-orthogonal-and-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vdot: orthogonal and cancellation; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -796,7 +880,9 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vdot.cases.json"
           ],
-          "caseIds": ["coords-vectors-vdot-audit-orthogonal-and-cancellation"]
+          "caseIds": [
+            "coords-vectors-vdot-audit-orthogonal-and-cancellation"
+          ]
         }
       ],
       "backends": {
@@ -850,17 +936,26 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vhat-happy-zero-vector",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vhat preserves CSPICE zero-vector behavior by returning zero vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vhat-audit-mixed-normalization",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vhat: mixed normalization; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vhat-audit-wide-dynamic-range",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vhat: wide dynamic range; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -936,12 +1031,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vminus-happy-negation",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "vminus negates each component of an input vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vminus-audit-zero-and-fractions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vminus: zero and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -960,7 +1060,9 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vminus.cases.json"
           ],
-          "caseIds": ["coords-vectors-vminus-audit-zero-and-fractions"]
+          "caseIds": [
+            "coords-vectors-vminus-audit-zero-and-fractions"
+          ]
         }
       ],
       "backends": {
@@ -1014,17 +1116,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vnorm-happy-pythagorean",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "vnorm computes Euclidean magnitude for a 3-4-12 vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vnorm-audit-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vnorm: zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vnorm-audit-large-mixed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vnorm: large mixed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -1100,12 +1210,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vscl-happy-negative-scale",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "vscl scales a vector by a negative scalar; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vscl-audit-zero-and-fractional-scale",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vscl: zero and fractional scale; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -1124,7 +1239,9 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vscl.cases.json"
           ],
-          "caseIds": ["coords-vectors-vscl-audit-zero-and-fractional-scale"]
+          "caseIds": [
+            "coords-vectors-vscl-audit-zero-and-fractional-scale"
+          ]
         }
       ],
       "backends": {
@@ -1178,12 +1295,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vsub-happy-componentwise-difference",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "vsub subtracts vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vsub-audit-equal-and-reversed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "vsub: equal and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -1202,7 +1324,9 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vsub.cases.json"
           ],
-          "caseIds": ["coords-vectors-vsub-audit-equal-and-reversed"]
+          "caseIds": [
+            "coords-vectors-vsub-audit-equal-and-reversed"
+          ]
         }
       ],
       "backends": {

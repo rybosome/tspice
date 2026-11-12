@@ -4,6 +4,9 @@
  * Contract notes:
  * - Cells/windows are **opaque handles** created by the backend and mutated in-place.
  * - Capacity is fixed at creation time; overflow should throw (CSPICE-like).
+ * - Handles are opaque numbers, not C pointers or SpiceInt values. Preserve the
+ *   full number without bitwise truncation and use its owning execution context
+ *   (a native process or one WASM module). Freed handles must not be reused.
  */
 
 // Type-only brands (no runtime Symbol export).
