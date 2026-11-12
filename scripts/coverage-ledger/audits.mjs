@@ -176,7 +176,9 @@ export function applyAudits(root, routines) {
         `invalid execution ${execution.id}`,
       );
       requireValue(
-        execution.sourceDigest === digest,
+        execution.sourceDigest === digest ||
+          (execution.historical === true &&
+            /^[a-f0-9]{64}$/.test(execution.sourceDigest)),
         `stale execution source digest ${execution.id}`,
       );
       unique(execution.caseIds, `executed case identifiers in ${execution.id}`);
@@ -376,6 +378,8 @@ export function applyAudits(root, routines) {
               executions.some(
                 (e) =>
                   e.kind === kind &&
+                  e.historical !== true &&
+                  e.sourceDigest === digest &&
                   review.scenarios.every((s) => e.caseIds.includes(s.caseId)),
               ),
               `missing ${kind} live verification for ${backend}.${name}`,

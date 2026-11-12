@@ -131,7 +131,7 @@ export function createKernelsApi(
     },
 
     kplfrm: (frmcls, idset) => {
-      native.kplfrm(frmcls, idset as unknown as number);
+      native.kplfrm(frmcls, idset);
     },
 
     ktotal: (kind: KernelKindInput = "ALL") => {

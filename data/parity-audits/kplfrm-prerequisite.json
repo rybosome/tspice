@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "batch": "kplfrm-prerequisite",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/kernels.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/kernels.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-wasm/src/domains/cells-windows.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-shim-c/src/handle_validation.c"
+  ],
+  "executions": [
+    {
+      "id": "local-regenerated-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46aa63152e646d0942270f1cdd398798fc351bbc3dad617fd73f57ecf89a29ad",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74."
+    },
+    {
+      "id": "local-regenerated-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46aa63152e646d0942270f1cdd398798fc351bbc3dad617fd73f57ecf89a29ad",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "kplfrm_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kplfrm_c.html",
+      "semantics": "Replaces a caller-owned integer set with sorted kernel-pool frame IDs for classes 2 through 6, -1 selects all pool classes, and class 1 returns an empty set (built-in inertial frames are not pool frames). Invalid classes signal BADFRAMECLASS and insufficient set capacity signals SETTOOSMALL. No ownership transfer.",
+      "scenarios": [
+        {
+          "caseId": "kernels-kplfrm-class-4-success",
+          "coverage": ["success"],
+          "observes": "kplfrm returns frame IDs defined in the loaded frame kernel for class 4; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
+        },
+        {
+          "caseId": "kernels-kplfrm-invalid-class-error",
+          "coverage": ["error"],
+          "observes": "Representative kplfrm invalid frame-class error path; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
+        },
+        {
+          "caseId": "kernels-kplfrm-all-inertial-unload-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All classes (-1) includes the loaded pool frame; inertial class is empty, and unloading removes it; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
+        },
+        {
+          "caseId": "kernels-kplfrm-empty-pool-success",
+          "coverage": ["success", "edge"],
+          "observes": "No loaded frame specifications yields empty sets across repeated calls; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
+        },
+        {
+          "caseId": "kernels-kplfrm-set-too-small-error",
+          "coverage": ["error", "edge"],
+          "observes": "A real integer cell with zero capacity cannot hold the loaded frame set; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
+        }
+      ],
+      "edgeAssessment": "Live coverage includes all classes (-1), inertial class 1, empty pool, repeated invocation, unloading, invalid class, and zero-capacity overflow. Direct WASM unit coverage additionally prepopulates/reuses cells, checks sorted multiple classes, stale/foreign/wrong-type handles, and post-error successful recovery. Both generated web/Node glue modules execute the compiled export and recover from BADFRAMECLASS.",
+      "errorAssessment": "BADFRAMECLASS and SETTOOSMALL are asserted from both live outputs, preventing two unrelated failures from passing. Wrong-type/expired/foreign handles are wrapper ownership errors covered directly in WASM tests. Shared shim resets SPICE errors; unit test verifies failed() is false and a subsequent success works.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/kplfrm-minimal.tf",
+          "provenance": "Existing baseline repository-authored synthetic FK for fictional TSPICE_PARITY_TOPO relative to J2000; arbitrary frame ID and rotation angles.",
+          "distribution": "Reused unchanged project test fixture; no mission data or new copied scientific dataset. See fixtures/README.md."
+        }
+      ],
+      "fixtureRationale": "One existing minimal FK distinguishes nonempty ID retrieval from constant-empty output. Empty-pool and invalid-class cases need no kernels. No new scientific data is distributed.",
+      "cleanup": "The harness allocates a fresh real integer cell and frees it in finally on success/error. The WASM adapter verifies live per-module cell ownership and frees the error buffer in withMalloc finally. C shim validates registry/type and resets CSPICE errors after failure. Case lifecycle clears pool/error state before/after each workflow; test client disposal runs in finally. Python owns its ctypes cell memory and runs case finalizers.",
+      "tolerance": "IDs and cardinalities are integral and compared as complete sorted sets. At the fixture ID scale, the existing 1e-12 relative tolerance is much smaller than one ID unit; no tolerance change. Direct unit tests also assert exact IDs and lengths.",
+      "findings": [
+        {
+          "id": "wasm-raw-unsupported",
+          "status": "repaired",
+          "summary": "Raw WASM kplfrm threw; registered scenarios invoked a separate fallback that also rejected valid class -1.",
+          "repair": "Exported the existing shared C shim through typed/required WASM exports, regenerated both glue targets/shared binary with pinned CSPICE N0067 and Emscripten 3.1.74, added ownership checks, and removed the harness fallback/unsupported policy. Added class/capacity/state/error coverage.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-wasm/src/lowlevel/exports.ts",
+            "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
+            "packages/py-parity-checking/src/cases/kernels/kplfrm.cases.json",
+            "packages/backend-wasm/test/kernels.test.ts",
+            "scripts/backend-wasm-assets.test.mjs"
+          ],
+          "caseIds": [
+            "kernels-kplfrm-class-4-success",
+            "kernels-kplfrm-invalid-class-error",
+            "kernels-kplfrm-all-inertial-unload-success",
+            "kernels-kplfrm-empty-pool-success",
+            "kernels-kplfrm-set-too-small-error"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
+          "executions": ["local-regenerated-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
+          "executions": ["local-regenerated-wasm-2026-11-12"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current local required lane passed against the regenerated shared WASM binary. Current CI verification is pending; earlier source observations remain explicitly historical."
+}

@@ -62,7 +62,13 @@ export interface KernelsApi {
     wordsq: string,
   ): Found<{ wordsq: string; substr: string }>;
 
-  /** Return kernel-pool frame IDs for the given frame class. */
+  /**
+   * Replace `idset` with kernel-pool frame IDs of the requested class.
+   *
+   * `frmcls = -1` selects all kernel-pool classes; class 1 yields an empty set.
+   * The caller owns the integer cell; insufficient capacity or an invalid class throws.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kplfrm_c.html
+   */
   kplfrm(frmcls: number, idset: SpiceIntCell): void;
 
   /** Count loaded kernels of a given kind. */

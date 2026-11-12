@@ -39,71 +39,12 @@ function resolveKernelPathForTspice(pathValue: string): string {
   return toVirtualKernelPath(pathValue);
 }
 
-function runWasmKplfrmFallback(
+function runKplfrmStep(
   context: RunTspiceContext,
   frmcls: number,
+  capacity = KPLFRM_MAX_IDS,
 ): number[] {
-  if (frmcls < 1 || frmcls > 6) {
-    throw new Error(
-      `Frame class specifier FRMCLS was ${frmcls}; this value is not supported.`,
-    );
-  }
-
-  const classVariables = context.spice.raw.gnpool("FRAME_*_CLASS", 0, 10_000);
-  if (!classVariables.found) {
-    return [];
-  }
-
-  const ids = new Set<number>();
-
-  for (const classVariableName of classVariables.values) {
-    const classValue = context.spice.raw.gipool(classVariableName, 0, 1);
-    if (!classValue.found || classValue.values.length === 0) {
-      continue;
-    }
-
-    const frameClass = classValue.values[0];
-    if (frameClass == null || frameClass !== frmcls) {
-      continue;
-    }
-
-    const numericMatch = /^FRAME_(-?\d+)_CLASS$/.exec(classVariableName);
-    if (numericMatch != null) {
-      const frameIdText = numericMatch[1];
-      if (frameIdText != null) {
-        ids.add(Number.parseInt(frameIdText, 10));
-      }
-      continue;
-    }
-
-    const namedMatch = /^FRAME_(.+)_CLASS$/.exec(classVariableName);
-    if (namedMatch == null) {
-      continue;
-    }
-
-    const frameIdVariable = `FRAME_${namedMatch[1]}`;
-    const frameId = context.spice.raw.gipool(frameIdVariable, 0, 1);
-    if (!frameId.found || frameId.values.length === 0) {
-      continue;
-    }
-
-    const resolvedFrameId = frameId.values[0];
-    if (resolvedFrameId == null) {
-      continue;
-    }
-
-    ids.add(resolvedFrameId);
-  }
-
-  return [...ids].sort((a, b) => a - b);
-}
-
-function runKplfrmStep(context: RunTspiceContext, frmcls: number): number[] {
-  if (context.spice.raw.kind === "wasm") {
-    return runWasmKplfrmFallback(context, frmcls);
-  }
-
-  const idset = context.spice.kit.newIntCell(KPLFRM_MAX_IDS);
+  const idset = context.spice.kit.newIntCell(capacity);
   try {
     context.spice.raw.kplfrm(frmcls, idset);
 
@@ -182,7 +123,7 @@ export function runKernelsStep(
       return {
         op: step.op,
         value: {
-          ids: runKplfrmStep(context, step.frmcls),
+          ids: runKplfrmStep(context, step.frmcls, step.capacity),
         },
       };
     }

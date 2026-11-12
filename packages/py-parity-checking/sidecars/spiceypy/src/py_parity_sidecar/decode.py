@@ -846,7 +846,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepKernelsKinfo(op=op, path=_expect_string(step.get("path"), label="kernels.kinfo.path"))
 
         case "kernels.kplfrm":
-            return StepKernelsKplfrm(op=op, frmcls=_expect_int(step.get("frmcls"), label="kernels.kplfrm.frmcls"))
+            return StepKernelsKplfrm(op=op, frmcls=_expect_int(step.get("frmcls"), label="kernels.kplfrm.frmcls"), capacity=_expect_int(step.get("capacity", 1024), label="kernels.kplfrm.capacity"))
 
         case "kernels.ktotal":
             return StepKernelsKtotal(op=op, kind=_expect_string(step.get("kind"), label="kernels.ktotal.kind"))

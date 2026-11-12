@@ -55,25 +55,67 @@ describe("@rybosome/tspice-backend-wasm kernels", () => {
     expect(ktotalAll()).toBe(before);
   });
 
-  it("throws for kplfrm until the WASM export is implemented", async () => {
+  it("kplfrm replaces integer sets, handles all/inertial classes, and recovers from errors", async () => {
     const backend = await createWasmBackend();
-
     const idset = backend.kit.newIntCell(4);
-
+    const tiny = backend.kit.newIntCell(0);
+    const wrongType = backend.kit.newDoubleCell(4);
     try {
-      backend.raw.insrti(1, idset);
-      backend.raw.insrti(2, idset);
+      backend.raw.kclear();
+      backend.raw.pipool("FRAME_TSPICE_TEST", [1399001]);
+      backend.raw.pcpool("FRAME_1399001_NAME", ["TSPICE_TEST"]);
+      backend.raw.pipool("FRAME_1399001_CLASS", [4]);
+      backend.raw.pipool("FRAME_TSPICE_OTHER", [-123]);
+      backend.raw.pcpool("FRAME_-123_NAME", ["TSPICE_OTHER"]);
+      backend.raw.pipool("FRAME_-123_CLASS", [3]);
+      backend.raw.insrti(999, idset);
+      backend.raw.kplfrm(-1, idset);
       expect(backend.raw.card(idset)).toBe(2);
-
-      expect(() => backend.raw.kplfrm(1, idset)).toThrow(
-        /kplfrm.*not supported/i,
-      );
-
-      // Ensure we don't silently clear/modify the output set.
-      expect(backend.raw.card(idset)).toBe(2);
+      expect([
+        backend.kit.cellGeti(idset, 0),
+        backend.kit.cellGeti(idset, 1),
+      ]).toEqual([-123, 1399001]);
+      backend.raw.kplfrm(4, idset);
+      expect(backend.raw.card(idset)).toBe(1);
+      expect(backend.kit.cellGeti(idset, 0)).toBe(1399001);
+      backend.raw.kplfrm(1, idset);
+      expect(backend.raw.card(idset)).toBe(0);
+      expect(() => backend.raw.kplfrm(7, idset)).toThrow(/BADFRAMECLASS/);
+      expect(backend.raw.failed()).toBe(false);
+      expect(() => backend.raw.kplfrm(4, tiny)).toThrow(/SETTOOSMALL/);
+      // A contained test-only cast deliberately exercises runtime handle typing.
+      expect(() =>
+        backend.raw.kplfrm(4, wrongType as unknown as typeof idset),
+      ).toThrow(/SPICE_INT/);
+      backend.raw.kplfrm(4, idset);
+      expect(backend.raw.card(idset)).toBe(1);
+      backend.raw.kclear();
+      backend.raw.kplfrm(-1, idset);
+      expect(backend.raw.card(idset)).toBe(0);
     } finally {
+      backend.raw.kclear();
       backend.kit.freeCell(idset);
+      backend.kit.freeCell(tiny);
+      backend.kit.freeCell(wrongType);
     }
+  });
+
+  it("kplfrm rejects expired and foreign module cell handles", async () => {
+    const backend = await createWasmBackend();
+    const owner = await createWasmBackend();
+    const foreign = owner.kit.newIntCell(4);
+    try {
+      expect(() => backend.raw.kplfrm(4, foreign)).toThrow(
+        /unknown\/expired WASM cell handle/,
+      );
+    } finally {
+      owner.kit.freeCell(foreign);
+    }
+    const expired = backend.kit.newIntCell(4);
+    backend.kit.freeCell(expired);
+    expect(() => backend.raw.kplfrm(4, expired)).toThrow(
+      /unknown\/expired WASM cell handle/,
+    );
   });
 
   it("rejects OS/URL-looking string paths (virtual ids only)", async () => {

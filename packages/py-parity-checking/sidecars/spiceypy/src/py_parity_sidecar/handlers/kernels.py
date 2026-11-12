@@ -122,7 +122,7 @@ def run_kernels_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             return StepOutput(op=step.op, value={"found": False})
 
     if isinstance(step, StepKernelsKplfrm):
-        out = _normalize_kplfrm(sp.kplfrm(step.frmcls, SPICEINT_CELL(1024)))
+        out = _normalize_kplfrm(sp.kplfrm(step.frmcls, SPICEINT_CELL(step.capacity)))
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepKernelsKtotal):
