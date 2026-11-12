@@ -231,3 +231,63 @@ test(
     );
   },
 );
+
+test(
+  "warm TypeScript build caches leave newly compiled native artifacts untouched",
+  { timeout: 60_000 },
+  async (t) => {
+    const f = fixture(t, false);
+    f.write(
+      ".gitignore",
+      "dist/\n.cache/\n.turbo/\nnode_modules\npackages/*/native/build/\narmed\nreader-*\ntruncated\npretest-done\nsidecar-ready\n",
+    );
+    // Turbo's real-repository input discovery excludes ignored native artifacts.
+    // An actual HEAD is required: the fallback for non-Git fixtures hashes more
+    // files and can hide this stale-output restore by causing a build cache miss.
+    for (const args of [
+      ["init"],
+      [
+        "add",
+        ".gitignore",
+        "package.json",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "turbo.json",
+        "scripts",
+        "barrier.mjs",
+        "packages",
+      ],
+      [
+        "-c",
+        "user.name=Orchestration Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "commit",
+        "-m",
+        "fixture",
+      ],
+    ]) {
+      const result = spawnSync("git", args, { cwd: f.root, encoding: "utf8" });
+      assert.ifError(result.error);
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+    }
+    const artifact = "packages/producer/native/build/Release/production.node";
+    f.write(artifact, "old-native-build");
+    const cold = await run(f.root, ["run", "build"]);
+    assert.equal(cold.status, 0, cold.output);
+    // Model the native compilation/staging that check:native:required performs
+    // before asking Turbo for JS builds. A cached JS build must not undo it.
+    f.write(artifact, "new-native-build");
+    const warm = await run(f.root, ["run", "build"]);
+    assert.equal(warm.status, 0, warm.output);
+    assert.match(warm.output, /cache hit/);
+    assert.equal(
+      fs.readFileSync(path.join(f.root, artifact), "utf8"),
+      "new-native-build",
+    );
+  },
+);
