@@ -171,7 +171,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74."
+      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74.",
+      "historical": true
     },
     {
       "id": "local-regenerated-wasm-2026-11-12",
@@ -202,7 +203,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74."
+      "observation": "Observed production native build/load, native-required assertion, all 638 parity tests (319 scenarios on each backend), and all 669 parity-package tests passed with no skips. Full required JS lane passed 319 WASM scenarios. Regenerated web and Node glue both load the identical new binary and execute the real kplfrm export; 38 ledger regressions and 3 asset regressions passed. Host macOS arm64 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3 / CSPICE N0067 / Emscripten3.1.74.",
+      "historical": true
     },
     {
       "id": "ci-regenerated-node-43300708314",
@@ -235,7 +237,8 @@
       ],
       "commit": "fa48965b18509b085a75426fa3bbd40b2303b8d5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43300708314/job/131470816457",
-      "observation": "Observed successful Linux Node22 production native build/load and native-required assertion. All 638 live parity tests (319 scenarios per backend), all 669 parity-package tests passed with no skips. All 15 jobs in this first-attempt run passed. This unchanged vector source digest includes the regenerated WASM binary; it does not verify later kplfrm-specific input-boundary repairs."
+      "observation": "Observed successful Linux Node22 production native build/load and native-required assertion. All 638 live parity tests (319 scenarios per backend), all 669 parity-package tests passed with no skips. All 15 jobs in this first-attempt run passed. This unchanged vector source digest includes the regenerated WASM binary; it does not verify later kplfrm-specific input-boundary repairs.",
+      "historical": true
     },
     {
       "id": "ci-regenerated-wasm-43300708314",
@@ -268,7 +271,70 @@
       ],
       "commit": "fa48965b18509b085a75426fa3bbd40b2303b8d5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43300708314/job/131470816457",
-      "observation": "Observed successful Linux Node22 production native build/load and native-required assertion. All 638 live parity tests (319 scenarios per backend), all 669 parity-package tests passed with no skips. All 15 jobs in this first-attempt run passed. This unchanged vector source digest includes the regenerated WASM binary; it does not verify later kplfrm-specific input-boundary repairs."
+      "observation": "Observed successful Linux Node22 production native build/load and native-required assertion. All 638 live parity tests (319 scenarios per backend), all 669 parity-package tests passed with no skips. All 15 jobs in this first-attempt run passed. This unchanged vector source digest includes the regenerated WASM binary; it does not verify later kplfrm-specific input-boundary repairs.",
+      "historical": true
+    },
+    {
+      "id": "local-coordinate-boundaries-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4484dd75d080722bc723c567eb090cc9dc322a36c056b222f4228fee49f17673",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch."
+    },
+    {
+      "id": "local-coordinate-boundaries-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4484dd75d080722bc723c567eb090cc9dc322a36c056b222f4228fee49f17673",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch."
     }
   ],
   "routines": [
@@ -315,14 +381,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -331,14 +395,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     },
@@ -393,14 +455,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -409,14 +469,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     },
@@ -463,14 +521,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -479,14 +535,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     },
@@ -541,14 +595,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -557,14 +609,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     },
@@ -611,14 +661,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -627,14 +675,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     },
@@ -689,14 +735,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -705,14 +749,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     },
@@ -759,14 +801,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -775,14 +815,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     },
@@ -829,14 +867,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-node-2026-11-12"]
         },
         "wasm": {
           "history": [
@@ -845,17 +881,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
-          ]
+          "executions": ["local-coordinate-boundaries-wasm-2026-11-12"]
         }
       }
     }
   ],
-  "verificationNote": "The vector pilot has current-source local and observed CI evidence after shared WASM regeneration. Later kplfrm-only repairs do not change this vector source digest."
+  "verificationNote": "Current-source full required local lanes passed after shared axis guards and assertion evidence updates. CI verification is pending; earlier vector executions remain historical."
 }

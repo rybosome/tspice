@@ -11,5 +11,39 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-recsph-audit-quadrants",
+    "description": "recsph: quadrants; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.recsph",
+        "rectan": [-2, 3, -4]
+      },
+      {
+        "op": "coords-vectors.recsph",
+        "rectan": [-2, -3, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recsph-audit-origin-and-negative-pole",
+    "description": "recsph: origin and negative pole; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.recsph",
+        "rectan": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.recsph",
+        "rectan": [0, 0, -7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

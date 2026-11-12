@@ -11,5 +11,43 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-reclat-audit-quadrants",
+    "description": "reclat: quadrants; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.reclat",
+        "rectan": [-2, 3, -4]
+      },
+      {
+        "op": "coords-vectors.reclat",
+        "rectan": [-2, -3, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reclat-audit-origin-and-poles",
+    "description": "reclat: origin and poles; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.reclat",
+        "rectan": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.reclat",
+        "rectan": [0, 0, 7]
+      },
+      {
+        "op": "coords-vectors.reclat",
+        "rectan": [0, 0, -7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

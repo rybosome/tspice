@@ -50,19 +50,28 @@ export interface CoordsVectorsApi {
   /**
    * Generate a rotation matrix representing a rotation about a coordinate axis.
    *
-   * Axis is 1=x, 2=y, 3=z.
+   * Angle is in radians; this rotates the coordinate system.
+   * Axis is 1=x, 2=y, 3=z; other signed 32-bit integer axes are reduced modulo 3.
+   * Non-integral or overflowing axes throw before CSPICE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rotate_c.html
    */
   rotate(angle: number, axis: number): Mat3RowMajor;
 
   /**
    * Rotate a matrix about a coordinate axis.
    *
-   * Axis is 1=x, 2=y, 3=z.
+   * Returns the left product rotate(angle, axis) * m in row-major order.
+   * Angle is in radians; signed 32-bit integer axis indices are reduced modulo 3.
+   * Non-integral or overflowing axes throw before CSPICE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rotmat_c.html
    */
   rotmat(m: Mat3RowMajor, angle: number, axis: number): Mat3RowMajor;
 
   /**
-   * Convert an axis and angle to a rotation matrix.
+   * Rotate vectors about an arbitrary axis by an angle in radians.
+   * The axis is normalized; a zero axis produces the identity matrix.
+   * Returns a length-nine matrix in row-major order.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/axisar_c.html
    */
   axisar(axis: SpiceVector3, angle: number): Mat3RowMajor;
 

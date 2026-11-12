@@ -36,7 +36,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change."
+      "nextAction": "Rerun both backends and observe current-source CI after shared coordinate contract/adapters changed."
     },
     {
       "id": "coordinates-matrices",
@@ -54,9 +54,9 @@
         "rotmat_c",
         "sphrec_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["kplfrm-prerequisite"],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Run final required lanes after axis validation repair and observe both backend CI jobs."
     },
     {
       "id": "dsk",
