@@ -233,13 +233,13 @@ test(
 );
 
 test(
-  "warm TypeScript build caches leave newly compiled native artifacts untouched",
+  "warm TypeScript build caches leave native and publishing artifacts untouched",
   { timeout: 60_000 },
   async (t) => {
     const f = fixture(t, false);
     f.write(
       ".gitignore",
-      "dist/\n.cache/\n.turbo/\nnode_modules\npackages/*/native/build/\narmed\nreader-*\ntruncated\npretest-done\nsidecar-ready\n",
+      "dist/\n.cache/\n.turbo/\nnode_modules\npackages/*/native/build/\npackages/*/dist-publish/\narmed\nreader-*\ntruncated\npretest-done\nsidecar-ready\n",
     );
     // Turbo's real-repository input discovery excludes ignored native artifacts.
     // An actual HEAD is required: the fallback for non-Git fixtures hashes more
@@ -277,11 +277,13 @@ test(
     }
     const artifact = "packages/producer/native/build/Release/production.node";
     f.write(artifact, "old-native-build");
+    f.write("packages/producer/dist-publish/index.js", "old-publish-bundle");
     const cold = await run(f.root, ["run", "build"]);
     assert.equal(cold.status, 0, cold.output);
     // Model the native compilation/staging that check:native:required performs
     // before asking Turbo for JS builds. A cached JS build must not undo it.
     f.write(artifact, "new-native-build");
+    f.write("packages/producer/dist-publish/index.js", "new-publish-bundle");
     const warm = await run(f.root, ["run", "build"]);
     assert.equal(warm.status, 0, warm.output);
     assert.match(warm.output, /cache hit/);
@@ -289,5 +291,57 @@ test(
       fs.readFileSync(path.join(f.root, artifact), "utf8"),
       "new-native-build",
     );
+    assert.equal(
+      fs.readFileSync(
+        path.join(f.root, "packages/producer/dist-publish/index.js"),
+        "utf8",
+      ),
+      "new-publish-bundle",
+    );
   },
 );
+
+test("documentation preparation cannot emit dependency declarations inside a Turbo task", (t) => {
+  const f = fixture(t, false);
+  f.write(
+    "scripts/docs-api.mjs",
+    fs.readFileSync(path.join(repoRoot, "scripts/docs-api.mjs")),
+  );
+  f.write(
+    "packages/tspice/package.json",
+    JSON.stringify({ name: "@rybosome/tspice", private: true }),
+  );
+  f.write(
+    "bin/pnpm",
+    `#!/usr/bin/env node
+    import fs from 'node:fs';
+    const args = process.argv.slice(2);
+    if (!args.includes('typedoc')) { console.error('Unexpected artifact writer: ' + args.join(' ')); process.exit(42); }
+    fs.appendFileSync(new URL('../typedoc-calls.jsonl', import.meta.url), JSON.stringify(args) + '\\n');
+  `,
+  );
+  fs.chmodSync(path.join(f.root, "bin/pnpm"), 0o755);
+  const result = spawnSync(
+    process.execPath,
+    [path.join(f.root, "scripts/docs-api.mjs")],
+    {
+      cwd: f.root,
+      encoding: "utf8",
+      timeout: 30_000,
+      env: {
+        ...process.env,
+        TURBO_HASH: "docs-task-fixture",
+        PATH: `${path.join(f.root, "bin")}${path.delimiter}${process.env.PATH}`,
+      },
+    },
+  );
+  assert.ifError(result.error);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const calls = fs
+    .readFileSync(path.join(f.root, "typedoc-calls.jsonl"), "utf8")
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  assert.equal(calls.length, 2);
+  assert.ok(calls.every((args) => args.includes("typedoc")));
+});

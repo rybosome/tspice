@@ -4,7 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "dist-publish/**"]
+      "outputs": ["dist/**"]
     },
     "typecheck": {
       "dependsOn": ["build", "^typecheck"],
@@ -13,8 +13,16 @@
     "test": {
       "dependsOn": ["build"],
       "env": ["TSPICE_EXPECT_NATIVE"],
-      "outputs": []
+      "outputs": [],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/backend-node/native/build/Release/tspice_backend_node.node"
+      ]
     }
   },
-  "globalDependencies": ["scripts/prepare-package.mjs", "tsconfig.base.json"]
+  "globalDependencies": [
+    "scripts/prepare-package.mjs",
+    "tsconfig.base.json",
+    "scripts/docs-api.mjs"
+  ]
 }

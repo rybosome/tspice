@@ -80,6 +80,34 @@ test(
       }),
     );
 
+    writeFileSync(
+      path.join(root, ".gitignore"),
+      "node_modules\ndist\n.turbo\nresult.json\npackages/*/native/build/\n",
+    );
+    // Use real Git input discovery so ignored artifacts and reporter files
+    // cannot accidentally cause cache misses that hide a stale required pass.
+    for (const args of [
+      ["init"],
+      ["add", "."],
+      [
+        "-c",
+        "user.name=Native Guard Fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "commit",
+        "-m",
+        "fixture",
+      ],
+    ]) {
+      const result = spawnSync("git", args, { cwd: root, encoding: "utf8" });
+      assert.ifError(result.error);
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+    }
+
     function run(required) {
       rmSync(reportPath, { force: true });
       const result = spawnSync(
@@ -157,5 +185,21 @@ test(
     assert.equal(present.status, 0, present.output);
     assert.equal(present.report.numPassedTests, 1);
     assert.equal(present.report.numPendingTests, 0);
+
+    const productionPath = path.join(
+      backendRoot,
+      "native/build/Release/tspice_backend_node.node",
+    );
+    writeFileSync(productionPath, "rebuilt production artifact");
+    const rebuilt = run(true);
+    assert.equal(rebuilt.status, 0, rebuilt.output);
+    assert.equal(rebuilt.report.numPassedTests, 1);
+    assert.match(rebuilt.output, /cache miss/);
+
+    rmSync(productionPath);
+    const removedAfterPass = run(true);
+    assert.equal(removedAfterPass.status, 1, removedAfterPass.output);
+    assert.equal(removedAfterPass.report.numFailedTests, 1);
+    assert.equal(removedAfterPass.report.numPendingTests, 0);
   },
 );
