@@ -1,0 +1,882 @@
+{
+  "schemaVersion": 1,
+  "batch": "ids-names",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ids-names.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/core/src/spice-runtime/domains/ids-names-normalize.ts",
+    "packages/backend-wasm/src/codec/found.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/tspice/test/ids-names-boundaries.test.ts",
+    "packages/backend-wasm/test/ids-allocation-cleanup.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/backend-wasm-assets.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-ids-audit-2026-11-12-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6df50d43b5a6679e87853564e5da565b57d4e6aec8bdbe011701475223c91d6d",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Final full required JS/native lanes passed with regenerated N0067/Emscripten3.1.74 WASM outputs and rebuilt/loaded production native addon. Native sanity ran; all 692 live parity tests (346 scenarios per backend), all 723 parity-package tests, 123 facade tests including six new ID boundary/recovery tests, 91 WASM tests including all 24 allocation rollback positions, and 62 native tests passed without required native skips. Six failing-before live cases demonstrated hidden real oracle errors, significant leading name blanks and the 1024-value cap; direct tests exposed invalid code and normalized-item acceptance. The first full native run also caught normalization adapter pass-through compatibility; it was preserved and both final lanes passed. All 38 ledger regressions passed; doctor/format/lint and drift checks passed. Both regenerated glue targets were produced by the owning script and binary identity asserted; only the compiled binary changed. macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "local-ids-audit-2026-11-12-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6df50d43b5a6679e87853564e5da565b57d4e6aec8bdbe011701475223c91d6d",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Final full required JS/native lanes passed with regenerated N0067/Emscripten3.1.74 WASM outputs and rebuilt/loaded production native addon. Native sanity ran; all 692 live parity tests (346 scenarios per backend), all 723 parity-package tests, 123 facade tests including six new ID boundary/recovery tests, 91 WASM tests including all 24 allocation rollback positions, and 62 native tests passed without required native skips. Six failing-before live cases demonstrated hidden real oracle errors, significant leading name blanks and the 1024-value cap; direct tests exposed invalid code and normalized-item acceptance. The first full native run also caught normalization adapter pass-through compatibility; it was preserved and both final lanes passed. All 38 ledger regressions passed; doctor/format/lint and drift checks passed. Both regenerated glue targets were produced by the owning script and binary identity asserted; only the compiled binary changed. macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "ci-ids-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6df50d43b5a6679e87853564e5da565b57d4e6aec8bdbe011701475223c91d6d",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "ff2fb1e71e3e05089791ed147a52fcb7bf61fa08",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43331312691/job/131576426232",
+      "observation": "Observed canonical Linux Node22 native-required job: all 692 live parity tests (346 per actual backend), all 723 parity-package tests, 91 WASM tests, 62 Node tests and 123 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-ids-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6df50d43b5a6679e87853564e5da565b57d4e6aec8bdbe011701475223c91d6d",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "ff2fb1e71e3e05089791ed147a52fcb7bf61fa08",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43331312691/job/131576426232",
+      "observation": "Observed canonical Linux Node22 native-required job: all 692 live parity tests (346 per actual backend), all 723 parity-package tests, 91 WASM tests, 62 Node tests and 123 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
+      "historical": true
+    }
+  ],
+  "routines": [
+    {
+      "routine": "bodc2n_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodc2n_c.html",
+      "semantics": "Resolves a signed 32-bit body code to the latest preferred name, preserving defined case/leading blanks. Unknown IDs return found:false, not a numeric string. Earlier aliases still resolve forward; kernel mappings take precedence. Malformed mapping vectors must propagate BADDIMENSIONS.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-bodc2n-found-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n resolves body code 399 to EARTH"
+        },
+        {
+          "caseId": "ids-names-bodc2n-not-found-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n miss returns found=false"
+        },
+        {
+          "caseId": "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bodc2n-audit-malformed-pool-mapping",
+          "coverage": ["error"],
+          "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string."
+        }
+      ],
+      "edgeAssessment": "Resolves a signed 32-bit body code to the latest preferred name, preserving defined case/leading blanks. Unknown IDs return found:false, not a numeric string. Earlier aliases still resolve forward; kernel mappings take precedence. Malformed mapping vectors must propagate BADDIMENSIONS. Distinguishing live workflows inspect complete results/effects. Separate actual-backend tests cover integer/string input validation, empty normalized items, and recovery after empty-name/malformed-mapping errors.",
+      "errorAssessment": "Unknown names/IDs and missing constants are successful Found/fallback/contract-miss results, not generic failures. EMPTYSTRING and malformed mapping BADDIMENSIONS cases require real matching diagnostics for applicable translators/definitions. Invalid typed codes/items are rejected before native conversion and explicitly distinguished from CSPICE errors. Programmatic map-table exhaustion is not manufactured by flooding process-global state; allocation rollback is fault-injected at all 24 temporary allocation positions.",
+      "fixtures": [],
+      "fixtureRationale": "The existing small synthetic constant kernel is listed where used. New scenarios use authored in-memory numeric arrays/ASCII keys/custom unused body codes and mapping variables; no scientific data is added.",
+      "cleanup": "Case runtimes kclear/unload/reset pool/kernel/error state on success and failure. Programmatic boddef mappings persist across kclear, so distinct custom names/codes and repeatable reassignment are used rather than assuming definitions disappear or overriding built-ins. Node operations serialize shared process state; WASM modules isolate cases. Direct tests reset/clear/dispose in finally; all 24 temporary allocation failure positions, including the dimension-query transition, leave zero live temporary allocations.",
+      "tolerance": "Existing 1e-12 absolute/relative comparison remains unchanged. Signed IDs, booleans, Found shapes and complete case/leading-blank strings remain exact; numeric fixture values are binary-exact fractions and every value/array length is compared without clipping or normalization.",
+      "findings": [
+        {
+          "id": "unchecked-id-conversion",
+          "status": "repaired",
+          "summary": "Direct boundary regressions showed signed body codes could be truncated/wrapped by native/WASM conversion, selecting another body or mutating another mapping.",
+          "repair": "Validate signed SpiceInt codes/body IDs in both typed adapters before conversion; actual backend tests reject fractional/nonfinite/out-of-range values and preserve valid lookups.",
+          "evidence": [
+            "packages/backend-node/src/domains/ids-names.ts",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/tspice/test/ids-names-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ids-names-bodc2n-found-success",
+            "ids-names-bodc2n-not-found-success",
+            "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown"
+          ]
+        },
+        {
+          "id": "oracle-found-error-mask",
+          "status": "repaired",
+          "summary": "Six new live failures exposed SpiceyPy NotFoundError being normalized to an ordinary miss even while real CSPICE EMPTYSTRING/BADDIMENSIONS error state was set.",
+          "repair": "Before normalizing NotFoundError, explicitly call the locked SpiceyPy error check to preserve actual diagnostics; require the specific code in malformed mapping/empty-name workflows.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+            "packages/py-parity-checking/src/cases/ids-names/bodc2n.cases.json"
+          ],
+          "caseIds": ["ids-names-bodc2n-audit-malformed-pool-mapping"]
+        },
+        {
+          "id": "leading-name-blanks-trimmed",
+          "status": "repaired",
+          "summary": "New live custom-name comparison failed because the shared WASM Found-string reader stripped significant leading blanks from defined body names.",
+          "repair": "Trim trailing padding only in the shared string reader; compare the exact leading/case-preserving name with live SpiceyPy.",
+          "evidence": [
+            "packages/backend-wasm/src/codec/found.ts",
+            "packages/py-parity-checking/src/cases/ids-names/bodc2n.cases.json"
+          ],
+          "caseIds": [
+            "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2n -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2n -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bodc2s_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodc2s_c.html",
+      "semantics": "Resolves a signed 32-bit body code to its preferred name with significant formatting, or its decimal representation when unknown. It differs from the Found-style bodc2n miss. Malformed mappings are errors rather than a numeric fallback.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-bodc2s-known-code-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s resolves body code 399 to EARTH"
+        },
+        {
+          "caseId": "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bodc2s-audit-malformed-pool-mapping",
+          "coverage": ["error"],
+          "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string."
+        }
+      ],
+      "edgeAssessment": "Resolves a signed 32-bit body code to its preferred name with significant formatting, or its decimal representation when unknown. It differs from the Found-style bodc2n miss. Malformed mappings are errors rather than a numeric fallback. Distinguishing live workflows inspect complete results/effects. Separate actual-backend tests cover integer/string input validation, empty normalized items, and recovery after empty-name/malformed-mapping errors.",
+      "errorAssessment": "Unknown names/IDs and missing constants are successful Found/fallback/contract-miss results, not generic failures. EMPTYSTRING and malformed mapping BADDIMENSIONS cases require real matching diagnostics for applicable translators/definitions. Invalid typed codes/items are rejected before native conversion and explicitly distinguished from CSPICE errors. Programmatic map-table exhaustion is not manufactured by flooding process-global state; allocation rollback is fault-injected at all 24 temporary allocation positions.",
+      "fixtures": [],
+      "fixtureRationale": "The existing small synthetic constant kernel is listed where used. New scenarios use authored in-memory numeric arrays/ASCII keys/custom unused body codes and mapping variables; no scientific data is added.",
+      "cleanup": "Case runtimes kclear/unload/reset pool/kernel/error state on success and failure. Programmatic boddef mappings persist across kclear, so distinct custom names/codes and repeatable reassignment are used rather than assuming definitions disappear or overriding built-ins. Node operations serialize shared process state; WASM modules isolate cases. Direct tests reset/clear/dispose in finally; all 24 temporary allocation failure positions, including the dimension-query transition, leave zero live temporary allocations.",
+      "tolerance": "Existing 1e-12 absolute/relative comparison remains unchanged. Signed IDs, booleans, Found shapes and complete case/leading-blank strings remain exact; numeric fixture values are binary-exact fractions and every value/array length is compared without clipping or normalization.",
+      "findings": [
+        {
+          "id": "unchecked-id-conversion",
+          "status": "repaired",
+          "summary": "Direct boundary regressions showed signed body codes could be truncated/wrapped by native/WASM conversion, selecting another body or mutating another mapping.",
+          "repair": "Validate signed SpiceInt codes/body IDs in both typed adapters before conversion; actual backend tests reject fractional/nonfinite/out-of-range values and preserve valid lookups.",
+          "evidence": [
+            "packages/backend-node/src/domains/ids-names.ts",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/tspice/test/ids-names-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ids-names-bodc2s-known-code-success",
+            "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2s -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2s -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "boddef_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/boddef_c.html",
+      "semantics": "Defines a body name/code association. Later aliases become the preferred reverse name while older aliases still resolve forward; reassigning a name changes its previous code mapping. Names truncate at the NAIF maximum, kernel definitions take precedence, and programmatic definitions persist across kclear.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-boddef-round-trip-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef mapping can be resolved by bods2c and bodc2s in the same workflow"
+        },
+        {
+          "caseId": "ids-names-boddef-empty-name-error",
+          "coverage": ["error"],
+          "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Representative boddef validation error for empty body name"
+        },
+        {
+          "caseId": "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef: name reassignment and pool precedence, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-boddef-audit-long-name-collision",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Names that differ only beyond NAIF maximum length select the latest definition; inspect both forward and reverse mappings."
+        }
+      ],
+      "edgeAssessment": "Defines a body name/code association. Later aliases become the preferred reverse name while older aliases still resolve forward; reassigning a name changes its previous code mapping. Names truncate at the NAIF maximum, kernel definitions take precedence, and programmatic definitions persist across kclear. Distinguishing live workflows inspect complete results/effects. Separate actual-backend tests cover integer/string input validation, empty normalized items, and recovery after empty-name/malformed-mapping errors.",
+      "errorAssessment": "Unknown names/IDs and missing constants are successful Found/fallback/contract-miss results, not generic failures. EMPTYSTRING and malformed mapping BADDIMENSIONS cases require real matching diagnostics for applicable translators/definitions. Invalid typed codes/items are rejected before native conversion and explicitly distinguished from CSPICE errors. Programmatic map-table exhaustion is not manufactured by flooding process-global state; allocation rollback is fault-injected at all 24 temporary allocation positions.",
+      "fixtures": [],
+      "fixtureRationale": "The existing small synthetic constant kernel is listed where used. New scenarios use authored in-memory numeric arrays/ASCII keys/custom unused body codes and mapping variables; no scientific data is added.",
+      "cleanup": "Case runtimes kclear/unload/reset pool/kernel/error state on success and failure. Programmatic boddef mappings persist across kclear, so distinct custom names/codes and repeatable reassignment are used rather than assuming definitions disappear or overriding built-ins. Node operations serialize shared process state; WASM modules isolate cases. Direct tests reset/clear/dispose in finally; all 24 temporary allocation failure positions, including the dimension-query transition, leave zero live temporary allocations.",
+      "tolerance": "Existing 1e-12 absolute/relative comparison remains unchanged. Signed IDs, booleans, Found shapes and complete case/leading-blank strings remain exact; numeric fixture values are binary-exact fractions and every value/array length is compared without clipping or normalization.",
+      "findings": [
+        {
+          "id": "unchecked-id-conversion",
+          "status": "repaired",
+          "summary": "Direct boundary regressions showed signed body codes could be truncated/wrapped by native/WASM conversion, selecting another body or mutating another mapping.",
+          "repair": "Validate signed SpiceInt codes/body IDs in both typed adapters before conversion; actual backend tests reject fractional/nonfinite/out-of-range values and preserve valid lookups.",
+          "evidence": [
+            "packages/backend-node/src/domains/ids-names.ts",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/tspice/test/ids-names-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ids-names-boddef-round-trip-success",
+            "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+            "ids-names-boddef-audit-long-name-collision"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.boddef -> Node typed adapter -> serialized native registered handler -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.boddef -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bodfnd_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodfnd_c.html",
+      "semantics": "Returns true for any existing numeric or character body constant, false for a missing constant. Item normalization trims ASCII whitespace and uppercases ASCII only; the nonempty normalized item and signed body code reach actual bodfnd_c. NAIF constructs a 32-byte key, so item suffixes beyond that key do not affect the lookup. The existing 1024-input-character guard remains.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-bodfnd-presence-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd reports presence for numeric and character body constants"
+        },
+        {
+          "caseId": "ids-names-bodfnd-item-too-long-error",
+          "coverage": ["error"],
+          "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
+        },
+        {
+          "caseId": "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd: normalized items types and missing, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bodfnd-audit-canonical-32-byte-key",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant."
+        },
+        {
+          "caseId": "ids-names-bodfnd-audit-empty-normalized-item",
+          "coverage": ["error"],
+          "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
+        }
+      ],
+      "edgeAssessment": "Returns true for any existing numeric or character body constant, false for a missing constant. Item normalization trims ASCII whitespace and uppercases ASCII only; the nonempty normalized item and signed body code reach actual bodfnd_c. NAIF constructs a 32-byte key, so item suffixes beyond that key do not affect the lookup. The existing 1024-input-character guard remains. Distinguishing live workflows inspect complete results/effects. Separate actual-backend tests cover integer/string input validation, empty normalized items, and recovery after empty-name/malformed-mapping errors.",
+      "errorAssessment": "Unknown names/IDs and missing constants are successful Found/fallback/contract-miss results, not generic failures. EMPTYSTRING and malformed mapping BADDIMENSIONS cases require real matching diagnostics for applicable translators/definitions. Invalid typed codes/items are rejected before native conversion and explicitly distinguished from CSPICE errors. Programmatic map-table exhaustion is not manufactured by flooding process-global state; allocation rollback is fault-injected at all 24 temporary allocation positions.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/ids-names-body399-vars.tpc",
+          "provenance": "Existing minimal authored in-repository fixture: numeric BODY399_RADII=(1,2,3) and character BODY399_FOO=alpha, not measured scientific data.",
+          "distribution": "Repository-authored synthetic text kernel; no external data or new distribution restriction."
+        }
+      ],
+      "fixtureRationale": "The existing small synthetic constant kernel is listed where used. New scenarios use authored in-memory numeric arrays/ASCII keys/custom unused body codes and mapping variables; no scientific data is added.",
+      "cleanup": "Case runtimes kclear/unload/reset pool/kernel/error state on success and failure. Programmatic boddef mappings persist across kclear, so distinct custom names/codes and repeatable reassignment are used rather than assuming definitions disappear or overriding built-ins. Node operations serialize shared process state; WASM modules isolate cases. Direct tests reset/clear/dispose in finally; all 24 temporary allocation failure positions, including the dimension-query transition, leave zero live temporary allocations.",
+      "tolerance": "Existing 1e-12 absolute/relative comparison remains unchanged. Signed IDs, booleans, Found shapes and complete case/leading-blank strings remain exact; numeric fixture values are binary-exact fractions and every value/array length is compared without clipping or normalization.",
+      "findings": [
+        {
+          "id": "unchecked-id-conversion",
+          "status": "repaired",
+          "summary": "Direct boundary regressions showed signed body codes could be truncated/wrapped by native/WASM conversion, selecting another body or mutating another mapping.",
+          "repair": "Validate signed SpiceInt codes/body IDs in both typed adapters before conversion; actual backend tests reject fractional/nonfinite/out-of-range values and preserve valid lookups.",
+          "evidence": [
+            "packages/backend-node/src/domains/ids-names.ts",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/tspice/test/ids-names-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ids-names-bodfnd-presence-success",
+            "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+            "ids-names-bodfnd-audit-canonical-32-byte-key"
+          ]
+        },
+        {
+          "id": "oracle-bypasses-requested-operation",
+          "status": "repaired",
+          "summary": "The bodfnd oracle queried dtpool instead of actual SpiceyPy bodfnd, so it could repeat the implementation composition and miss key-construction differences.",
+          "repair": "Call actual sp.bodfnd on the normalized item and use the existing compiled bodfnd export directly in WASM/shared C. Compare numeric/character/missing/long-key results; no fallback remains.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json"
+          ],
+          "caseIds": [
+            "ids-names-bodfnd-presence-success",
+            "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+            "ids-names-bodfnd-audit-canonical-32-byte-key"
+          ]
+        },
+        {
+          "id": "canonical-pool-key-and-item-boundary",
+          "status": "repaired",
+          "summary": "Existing preflights constructed an unbounded or 1024-byte pool key rather than NAIF BODFND/BODVAR 32-byte key. Empty normalized items were accepted as missing values.",
+          "repair": "Use actual bodfnd_c and 32-byte numeric preflight keys, reject empty normalized items in both adapters/oracle, preserve ASCII normalization and existing length guard, and compare a valid maximum-width key with a longer item suffix.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/backend-node/native/src/domains/ids_names.cc",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/backend-node/src/domains/ids-names.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+            "packages/tspice/test/ids-names-boundaries.test.ts",
+            "packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json"
+          ],
+          "caseIds": [
+            "ids-names-bodfnd-audit-canonical-32-byte-key",
+            "ids-names-bodfnd-audit-empty-normalized-item"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodfnd -> Node typed adapter -> serialized native registered handler -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodfnd -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bodn2c_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodn2c_c.html",
+      "semantics": "Resolves case-insensitive body names with normalized/compressed blanks; numeric text is not an ID here. Unknown names return found:false. Built-in, programmatic and pool definitions follow CSPICE precedence. Empty input and malformed kernel mappings are real CSPICE errors, not ordinary misses.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-bodn2c-found-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c resolves EARTH code"
+        },
+        {
+          "caseId": "ids-names-bodn2c-not-found-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c miss returns found=false"
+        },
+        {
+          "caseId": "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: normalized names and numeric is not name, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bodn2c-audit-malformed-pool-mapping",
+          "coverage": ["error"],
+          "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: malformed pool mapping, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bodn2c-audit-empty-name",
+          "coverage": ["error"],
+          "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: empty name, compare complete live SpiceyPy results/effects"
+        }
+      ],
+      "edgeAssessment": "Resolves case-insensitive body names with normalized/compressed blanks; numeric text is not an ID here. Unknown names return found:false. Built-in, programmatic and pool definitions follow CSPICE precedence. Empty input and malformed kernel mappings are real CSPICE errors, not ordinary misses. Distinguishing live workflows inspect complete results/effects. Separate actual-backend tests cover integer/string input validation, empty normalized items, and recovery after empty-name/malformed-mapping errors.",
+      "errorAssessment": "Unknown names/IDs and missing constants are successful Found/fallback/contract-miss results, not generic failures. EMPTYSTRING and malformed mapping BADDIMENSIONS cases require real matching diagnostics for applicable translators/definitions. Invalid typed codes/items are rejected before native conversion and explicitly distinguished from CSPICE errors. Programmatic map-table exhaustion is not manufactured by flooding process-global state; allocation rollback is fault-injected at all 24 temporary allocation positions.",
+      "fixtures": [],
+      "fixtureRationale": "The existing small synthetic constant kernel is listed where used. New scenarios use authored in-memory numeric arrays/ASCII keys/custom unused body codes and mapping variables; no scientific data is added.",
+      "cleanup": "Case runtimes kclear/unload/reset pool/kernel/error state on success and failure. Programmatic boddef mappings persist across kclear, so distinct custom names/codes and repeatable reassignment are used rather than assuming definitions disappear or overriding built-ins. Node operations serialize shared process state; WASM modules isolate cases. Direct tests reset/clear/dispose in finally; all 24 temporary allocation failure positions, including the dimension-query transition, leave zero live temporary allocations.",
+      "tolerance": "Existing 1e-12 absolute/relative comparison remains unchanged. Signed IDs, booleans, Found shapes and complete case/leading-blank strings remain exact; numeric fixture values are binary-exact fractions and every value/array length is compared without clipping or normalization.",
+      "findings": [
+        {
+          "id": "oracle-found-error-mask",
+          "status": "repaired",
+          "summary": "Six new live failures exposed SpiceyPy NotFoundError being normalized to an ordinary miss even while real CSPICE EMPTYSTRING/BADDIMENSIONS error state was set.",
+          "repair": "Before normalizing NotFoundError, explicitly call the locked SpiceyPy error check to preserve actual diagnostics; require the specific code in malformed mapping/empty-name workflows.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+            "packages/py-parity-checking/src/cases/ids-names/bodn2c.cases.json"
+          ],
+          "caseIds": [
+            "ids-names-bodn2c-audit-malformed-pool-mapping",
+            "ids-names-bodn2c-audit-empty-name"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodn2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodn2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bods2c_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bods2c_c.html",
+      "semantics": "Resolves either normalized body names or decimal integer strings within signed SpiceInt range. Unknown names and out-of-range numeric strings return found:false. Fractional numeric text is not an integer code. Real empty-name/malformed-pool errors must propagate despite SpiceyPy Found wrappers.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-bods2c-name-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c resolves EARTH to code 399"
+        },
+        {
+          "caseId": "ids-names-bods2c-not-found-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c miss returns found=false"
+        },
+        {
+          "caseId": "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: numeric strings and normalized names, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bods2c-audit-malformed-pool-mapping",
+          "coverage": ["error"],
+          "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: malformed pool mapping, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bods2c-audit-empty-name",
+          "coverage": ["error"],
+          "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: empty name, compare complete live SpiceyPy results/effects"
+        }
+      ],
+      "edgeAssessment": "Resolves either normalized body names or decimal integer strings within signed SpiceInt range. Unknown names and out-of-range numeric strings return found:false. Fractional numeric text is not an integer code. Real empty-name/malformed-pool errors must propagate despite SpiceyPy Found wrappers. Distinguishing live workflows inspect complete results/effects. Separate actual-backend tests cover integer/string input validation, empty normalized items, and recovery after empty-name/malformed-mapping errors.",
+      "errorAssessment": "Unknown names/IDs and missing constants are successful Found/fallback/contract-miss results, not generic failures. EMPTYSTRING and malformed mapping BADDIMENSIONS cases require real matching diagnostics for applicable translators/definitions. Invalid typed codes/items are rejected before native conversion and explicitly distinguished from CSPICE errors. Programmatic map-table exhaustion is not manufactured by flooding process-global state; allocation rollback is fault-injected at all 24 temporary allocation positions.",
+      "fixtures": [],
+      "fixtureRationale": "The existing small synthetic constant kernel is listed where used. New scenarios use authored in-memory numeric arrays/ASCII keys/custom unused body codes and mapping variables; no scientific data is added.",
+      "cleanup": "Case runtimes kclear/unload/reset pool/kernel/error state on success and failure. Programmatic boddef mappings persist across kclear, so distinct custom names/codes and repeatable reassignment are used rather than assuming definitions disappear or overriding built-ins. Node operations serialize shared process state; WASM modules isolate cases. Direct tests reset/clear/dispose in finally; all 24 temporary allocation failure positions, including the dimension-query transition, leave zero live temporary allocations.",
+      "tolerance": "Existing 1e-12 absolute/relative comparison remains unchanged. Signed IDs, booleans, Found shapes and complete case/leading-blank strings remain exact; numeric fixture values are binary-exact fractions and every value/array length is compared without clipping or normalization.",
+      "findings": [
+        {
+          "id": "oracle-found-error-mask",
+          "status": "repaired",
+          "summary": "Six new live failures exposed SpiceyPy NotFoundError being normalized to an ordinary miss even while real CSPICE EMPTYSTRING/BADDIMENSIONS error state was set.",
+          "repair": "Before normalizing NotFoundError, explicitly call the locked SpiceyPy error check to preserve actual diagnostics; require the specific code in malformed mapping/empty-name workflows.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+            "packages/py-parity-checking/src/cases/ids-names/bods2c.cases.json"
+          ],
+          "caseIds": [
+            "ids-names-bods2c-audit-malformed-pool-mapping",
+            "ids-names-bods2c-audit-empty-name"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bods2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bods2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bodvar_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodvar_c.html",
+      "semantics": "Preserves the existing composed contract: normalized nonempty item, numeric metadata preflight, bounded bodvcd retrieval, all numeric values in stored order/caller units, and [] for missing/non-numeric constants. This intentionally differs from legacy bodvar errors on misses. Shared/native preflights use NAIF 32-byte pool keys; actual required numeric dimension sizes output without the former undocumented 1024-value limit.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-bodvar-values-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar returns numeric values and normal misses for char/missing vars"
+        },
+        {
+          "caseId": "ids-names-bodvar-item-too-long-error",
+          "coverage": ["error"],
+          "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
+        },
+        {
+          "caseId": "ids-names-bodvar-audit-normalized-items-types-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: normalized items types and missing, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bodvar-audit-all-values-beyond-old-cap",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: all values beyond old cap, compare complete live SpiceyPy results/effects"
+        },
+        {
+          "caseId": "ids-names-bodvar-audit-canonical-32-byte-key",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant."
+        },
+        {
+          "caseId": "ids-names-bodvar-audit-empty-normalized-item",
+          "coverage": ["error"],
+          "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
+        }
+      ],
+      "edgeAssessment": "Preserves the existing composed contract: normalized nonempty item, numeric metadata preflight, bounded bodvcd retrieval, all numeric values in stored order/caller units, and [] for missing/non-numeric constants. This intentionally differs from legacy bodvar errors on misses. Shared/native preflights use NAIF 32-byte pool keys; actual required numeric dimension sizes output without the former undocumented 1024-value limit. Distinguishing live workflows inspect complete results/effects. Separate actual-backend tests cover integer/string input validation, empty normalized items, and recovery after empty-name/malformed-mapping errors.",
+      "errorAssessment": "Unknown names/IDs and missing constants are successful Found/fallback/contract-miss results, not generic failures. EMPTYSTRING and malformed mapping BADDIMENSIONS cases require real matching diagnostics for applicable translators/definitions. Invalid typed codes/items are rejected before native conversion and explicitly distinguished from CSPICE errors. Programmatic map-table exhaustion is not manufactured by flooding process-global state; allocation rollback is fault-injected at all 24 temporary allocation positions.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/ids-names-body399-vars.tpc",
+          "provenance": "Existing minimal authored in-repository fixture: numeric BODY399_RADII=(1,2,3) and character BODY399_FOO=alpha, not measured scientific data.",
+          "distribution": "Repository-authored synthetic text kernel; no external data or new distribution restriction."
+        }
+      ],
+      "fixtureRationale": "The existing small synthetic constant kernel is listed where used. New scenarios use authored in-memory numeric arrays/ASCII keys/custom unused body codes and mapping variables; no scientific data is added.",
+      "cleanup": "Case runtimes kclear/unload/reset pool/kernel/error state on success and failure. Programmatic boddef mappings persist across kclear, so distinct custom names/codes and repeatable reassignment are used rather than assuming definitions disappear or overriding built-ins. Node operations serialize shared process state; WASM modules isolate cases. Direct tests reset/clear/dispose in finally; all 24 temporary allocation failure positions, including the dimension-query transition, leave zero live temporary allocations.",
+      "tolerance": "Existing 1e-12 absolute/relative comparison remains unchanged. Signed IDs, booleans, Found shapes and complete case/leading-blank strings remain exact; numeric fixture values are binary-exact fractions and every value/array length is compared without clipping or normalization.",
+      "findings": [
+        {
+          "id": "unchecked-id-conversion",
+          "status": "repaired",
+          "summary": "Direct boundary regressions showed signed body codes could be truncated/wrapped by native/WASM conversion, selecting another body or mutating another mapping.",
+          "repair": "Validate signed SpiceInt codes/body IDs in both typed adapters before conversion; actual backend tests reject fractional/nonfinite/out-of-range values and preserve valid lookups.",
+          "evidence": [
+            "packages/backend-node/src/domains/ids-names.ts",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/tspice/test/ids-names-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ids-names-bodvar-values-success",
+            "ids-names-bodvar-audit-normalized-items-types-and-missing",
+            "ids-names-bodvar-audit-all-values-beyond-old-cap",
+            "ids-names-bodvar-audit-canonical-32-byte-key"
+          ]
+        },
+        {
+          "id": "canonical-pool-key-and-item-boundary",
+          "status": "repaired",
+          "summary": "Existing preflights constructed an unbounded or 1024-byte pool key rather than NAIF BODFND/BODVAR 32-byte key. Empty normalized items were accepted as missing values.",
+          "repair": "Use actual bodfnd_c and 32-byte numeric preflight keys, reject empty normalized items in both adapters/oracle, preserve ASCII normalization and existing length guard, and compare a valid maximum-width key with a longer item suffix.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/backend-node/native/src/domains/ids_names.cc",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/backend-node/src/domains/ids-names.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+            "packages/tspice/test/ids-names-boundaries.test.ts",
+            "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json"
+          ],
+          "caseIds": [
+            "ids-names-bodvar-audit-canonical-32-byte-key",
+            "ids-names-bodvar-audit-empty-normalized-item"
+          ]
+        },
+        {
+          "id": "undocumented-fixed-array-cap",
+          "status": "repaired",
+          "summary": "The new 1025-value live constant succeeded in SpiceyPy but failed with ARRAYTOOSMALL on WASM; native independently rejected values above its fixed 1024 cap. The public contract promises the numeric values without such a limit.",
+          "repair": "Size native output from actual metadata and add query mode to the existing shared shim for exact WASM allocation. Keep bounded bodvcd retrieval and all allocation rollback, remove the arbitrary cap, regenerate both WASM targets through the owning pinned script, and compare all 1025 values.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "packages/backend-node/native/src/domains/ids_names.cc",
+            "packages/backend-wasm/src/domains/ids-names.ts",
+            "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
+            "packages/backend-wasm/test/ids-allocation-cleanup.test.ts",
+            "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json"
+          ],
+          "caseIds": ["ids-names-bodvar-audit-all-values-beyond-old-cap"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "composed",
+          "trace": "Workflow -> actual raw.bodvar -> Node typed adapter -> serialized native registered handler -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "composed",
+          "trace": "Workflow -> actual raw.bodvar -> WASM typed adapter -> owned buffers and required compiled export -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Earlier observed source/job evidence is preserved as historical. Required local and canonical CI verification of the restacked source is pending."
+}

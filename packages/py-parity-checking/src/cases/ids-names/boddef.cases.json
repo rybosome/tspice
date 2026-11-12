@@ -32,7 +32,92 @@
       }
     ],
     "expectation": {
-      "kind": "error"
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+    "description": "boddef: name reassignment and pool precedence, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "ids-names.boddef",
+        "name": "Audit Reassign",
+        "code": -123450101
+      },
+      {
+        "op": "ids-names.boddef",
+        "name": "Audit Reassign",
+        "code": -123450102
+      },
+      {
+        "op": "ids-names.bodc2n",
+        "code": -123450101
+      },
+      {
+        "op": "ids-names.bodc2n",
+        "code": -123450102
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["Audit Priority"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_BODY_CODE",
+        "values": [-123450103]
+      },
+      {
+        "op": "ids-names.boddef",
+        "name": "Audit Priority",
+        "code": -123450104
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "Audit Priority"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "Audit Priority"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-boddef-audit-long-name-collision",
+    "description": "Names that differ only beyond NAIF maximum length select the latest definition; inspect both forward and reverse mappings.",
+    "workflow": [
+      {
+        "op": "ids-names.boddef",
+        "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXA",
+        "code": -123450111
+      },
+      {
+        "op": "ids-names.boddef",
+        "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXB",
+        "code": -123450112
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXA"
+      },
+      {
+        "op": "ids-names.bodc2n",
+        "code": -123450111
+      },
+      {
+        "op": "ids-names.bodc2n",
+        "code": -123450112
+      }
+    ],
+    "expectation": {
+      "kind": "success"
     }
   }
 ]

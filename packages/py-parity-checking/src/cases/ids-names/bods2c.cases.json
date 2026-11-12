@@ -24,5 +24,80 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+    "description": "bods2c: numeric strings and normalized names, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "ids-names.bods2c",
+        "name": "  eArTh  "
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "399"
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "-123456789"
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "2147483647"
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "-2147483648"
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "2147483648"
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "399.5"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-bods2c-audit-malformed-pool-mapping",
+    "description": "bods2c: malformed pool mapping, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["AUDIT A", "AUDIT B"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_BODY_CODE",
+        "values": [-123451]
+      },
+      {
+        "op": "ids-names.bods2c",
+        "name": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDIMENSIONS"]
+    }
+  },
+  {
+    "caseId": "ids-names-bods2c-audit-empty-name",
+    "description": "bods2c: empty name, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "ids-names.bods2c",
+        "name": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
   }
 ]

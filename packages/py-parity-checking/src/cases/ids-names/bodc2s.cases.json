@@ -11,5 +11,68 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+    "description": "bodc2s: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "ids-names.boddef",
+        "name": "  MiXeD  bodc2s",
+        "code": -123450002
+      },
+      {
+        "op": "ids-names.bodc2s",
+        "code": -123450002
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "mixed bodc2s"
+      },
+      {
+        "op": "ids-names.boddef",
+        "name": "Latest bodc2s",
+        "code": -123450002
+      },
+      {
+        "op": "ids-names.bodc2s",
+        "code": -123450002
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "mixed bodc2s"
+      },
+      {
+        "op": "ids-names.bodc2s",
+        "code": -1987654321
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-bodc2s-audit-malformed-pool-mapping",
+    "description": "Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["AUDIT A", "AUDIT B"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_BODY_CODE",
+        "values": [-123451]
+      },
+      {
+        "op": "ids-names.bodc2s",
+        "code": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDIMENSIONS"]
+    }
   }
 ]

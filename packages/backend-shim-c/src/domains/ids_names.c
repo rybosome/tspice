@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define TSPICE_BODY_POOLVAR_MAX_BYTES 1024
+#define TSPICE_BODY_POOLVAR_MAX_BYTES 33
 
 static int tspice_ids_names_invalid_arg(char *err, int errMaxBytes, const char *msg) {
   // This module provides a stable C ABI surface.
@@ -43,7 +43,9 @@ static int tspice_format_body_pool_var(
     char *err,
     int errMaxBytes) {
   const int written = snprintf(outPoolVar, outPoolVarMaxBytes, "BODY%d_%s", body, item);
-  if (written < 0 || (size_t)written >= outPoolVarMaxBytes) {
+  // NAIF BODFND/BODVAR construct a 32-byte pool key. Truncation is part
+  // of that lookup, including a long item whose prefix names a valid variable.
+  if (written < 0) {
     // This is a shim-level validation failure (not a CSPICE error).
     // Avoid calling `reset_c()` here; error translation layers should decide
     // whether to attach structured SPICE fields.
@@ -244,17 +246,7 @@ int tspice_bodfnd(
     *outResult = 0;
   }
 
-  // `bodfnd_c()` is an existence check: it returns true even when the pool var
-  // exists but is character-typed ('C') vs numeric ('N').
-  char poolVar[TSPICE_BODY_POOLVAR_MAX_BYTES];
-  if (tspice_format_body_pool_var(body, item, poolVar, sizeof(poolVar), "bodfnd", err, errMaxBytes) != 0) {
-    return 1;
-  }
-
-  SpiceBoolean foundC = SPICEFALSE;
-  SpiceInt nC = 0;
-  SpiceChar typeC = 0;
-  dtpool_c(poolVar, &foundC, &nC, &typeC);
+  const SpiceBoolean foundC = bodfnd_c((SpiceInt)body, item);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -331,6 +323,8 @@ int tspice_bodvar(
   // Caller requested zero values; don't invoke CSPICE with a zero-length output.
   // NOTE: We still run the `dtpool_c()` preflight above for validation.
   if (maxn == 0) {
+    // Query mode lets adapters allocate exactly the validated numeric dimension.
+    if (outDim) *outDim = (int)nC;
     return 0;
   }
 
