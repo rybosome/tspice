@@ -56,8 +56,8 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 
 | Backend | Unreviewed | Reviewed; verification pending | Needs repair | Verified |
 | --- | ---: | ---: | ---: | ---: |
-| node | 153 | 1 | 0 | 8 |
-| wasm | 153 | 1 | 0 | 8 |
+| node | 153 | 0 | 0 | 9 |
+| wasm | 153 | 0 | 0 | 9 |
 
 | Batch | Routines | Node / WASM verified | PRs / dependencies | Next action |
 | --- | --- | --- | --- | --- |
@@ -78,7 +78,7 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 | geometry-gf | `gfdist_c`, `gfrefn_c`, `gfrepf_c`, `gfrepi_c`, `gfsep_c`, `gfsstp_c`, `gfstep_c`, `gfstol_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ids-names | `bodc2n_c`, `bodc2s_c`, `boddef_c`, `bodfnd_c`, `bodn2c_c`, `bods2c_c`, `bodvar_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | kernel-pool | `cvpool_c`, `dtpool_c`, `expool_c`, `gcpool_c`, `gdpool_c`, `gipool_c`, `gnpool_c`, `pcpool_c`, `pdpool_c`, `pipool_c`, `swpool_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| kplfrm-prerequisite | `kplfrm_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/680, vectors-arithmetic | Observe updated-source CI for native handle and frame-class boundary repairs; record successful backend jobs. |
+| kplfrm-prerequisite | `kplfrm_c` | 1 / 1 | https://github.com/rybosome/tspice/pull/680, vectors-arithmetic | Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change. |
 | kernels | `furnsh_c`, `kclear_c`, `kdata_c`, `kinfo_c`, `ktotal_c`, `kxtrct_c`, `unload_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | time-1 | `deltet_c`, `et2utc_c`, `scdecd_c`, `sce2c_c`, `sce2s_c`, `scencd_c`, `scs2e_c`, `sct2e_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | time-2 | `str2et_c`, `timdef_c`, `timout_c`, `tkvrsn_c`, `tparse_c`, `tpictr_c`, `unitim_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |

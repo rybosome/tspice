@@ -277,7 +277,7 @@
       "routines": ["kplfrm_c"],
       "dependsOn": ["vectors-arithmetic"],
       "prs": ["https://github.com/rybosome/tspice/pull/680"],
-      "nextAction": "Observe updated-source CI for native handle and frame-class boundary repairs; record successful backend jobs."
+      "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change."
     },
     {
       "id": "kernels",

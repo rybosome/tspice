@@ -308,7 +308,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/680"
         ],
-        "nextAction": "Observe updated-source CI for native handle and frame-class boundary repairs; record successful backend jobs.",
+        "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change.",
         "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
@@ -364,15 +364,15 @@
     "counts": {
       "node": {
         "unreviewed": 153,
-        "reviewed": 1,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 8
+        "verified": 9
       },
       "wasm": {
         "unreviewed": 153,
-        "reviewed": 1,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 8
+        "verified": 9
       }
     }
   },
@@ -20070,28 +20070,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-boundaries-node-2026-11-12"
+            "local-boundaries-node-2026-11-12",
+            "ci-boundaries-node-43310416805"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-boundaries-wasm-2026-11-12"
+            "local-boundaries-wasm-2026-11-12",
+            "ci-boundaries-wasm-43310416805"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
