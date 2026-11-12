@@ -1,23 +1,29 @@
 [
   {
     "caseId": "cells-windows-ssize-resizes-cell-success",
-    "description": "ssize updates max cardinality for an existing set cell",
+    "description": "ssize shrinks logical capacity within original storage and resets cardinality",
     "workflow": [
       {
         "op": "cells-windows.insrti",
         "cellId": "C_SSIZE",
         "item": 1,
-        "maxCardinality": 2
+        "maxCardinality": 6
       },
       {
         "op": "cells-windows.ssize",
-        "size": 6,
+        "size": 2,
         "targetKind": "int",
         "targetId": "C_SSIZE"
       },
-      { "op": "cells-windows.size", "targetKind": "int", "targetId": "C_SSIZE" }
+      {
+        "op": "cells-windows.size",
+        "targetKind": "int",
+        "targetId": "C_SSIZE"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-ssize-negative-size-error",
@@ -36,6 +42,61 @@
         "targetId": "C_SSIZE_ERR"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows-ssize-audit-shrink-restore-original",
+    "description": "Logical capacity shrinks/resets then returns to original allocation, including a temporary zero size.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 4,
+        "maxCardinality": 6
+      },
+      {
+        "op": "cells-windows.ssize",
+        "targetKind": "int",
+        "targetId": "C",
+        "size": 2
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "C"
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": -1
+      },
+      {
+        "op": "cells-windows.ssize",
+        "targetKind": "int",
+        "targetId": "C",
+        "size": 0
+      },
+      {
+        "op": "cells-windows.ssize",
+        "targetKind": "int",
+        "targetId": "C",
+        "size": 6
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 7
+      },
+      {
+        "op": "cells-windows.size",
+        "targetKind": "int",
+        "targetId": "C"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

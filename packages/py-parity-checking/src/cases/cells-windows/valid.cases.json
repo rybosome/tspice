@@ -9,8 +9,16 @@
         "item": 5,
         "maxCardinality": 8
       },
-      { "op": "cells-windows.insrti", "cellId": "C_VALID", "item": 1 },
-      { "op": "cells-windows.insrti", "cellId": "C_VALID", "item": 3 },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C_VALID",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C_VALID",
+        "item": 3
+      },
       {
         "op": "cells-windows.valid",
         "size": 8,
@@ -18,9 +26,15 @@
         "targetKind": "int",
         "targetId": "C_VALID"
       },
-      { "op": "cells-windows.card", "targetKind": "int", "targetId": "C_VALID" }
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "C_VALID"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-valid-negative-n-error",
@@ -40,6 +54,163 @@
         "targetId": "C_VALID_ERR"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows-valid-audit-unsorted-duplicate-int",
+    "description": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 1,
+        "maxCardinality": 8,
+        "length": 16
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 3
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 5
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "int",
+        "targetId": "C",
+        "card": 5
+      },
+      {
+        "op": "cells-windows.valid",
+        "targetKind": "int",
+        "targetId": "C",
+        "size": 8,
+        "n": 5
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "C"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-valid-audit-unsorted-duplicate-double",
+    "description": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtd",
+        "cellId": "C",
+        "item": -3,
+        "maxCardinality": 8,
+        "length": 16
+      },
+      {
+        "op": "cells-windows.insrtd",
+        "cellId": "C",
+        "item": 1.25
+      },
+      {
+        "op": "cells-windows.insrtd",
+        "cellId": "C",
+        "item": 5.5
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "double",
+        "targetId": "C",
+        "card": 5
+      },
+      {
+        "op": "cells-windows.valid",
+        "targetKind": "double",
+        "targetId": "C",
+        "size": 8,
+        "n": 5
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "double",
+        "targetId": "C"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-valid-audit-unsorted-duplicate-char",
+    "description": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "alpha",
+        "maxCardinality": 8,
+        "length": 16
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "middle"
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "C",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "char",
+        "targetId": "C",
+        "card": 5
+      },
+      {
+        "op": "cells-windows.valid",
+        "targetKind": "char",
+        "targetId": "C",
+        "size": 8,
+        "n": 5
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "char",
+        "targetId": "C"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-valid-audit-n-exceeds-size",
+    "description": "Set validation rejects too many input elements before accessing them.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 1,
+        "maxCardinality": 4
+      },
+      {
+        "op": "cells-windows.valid",
+        "targetKind": "int",
+        "targetId": "C",
+        "size": 4,
+        "n": 5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
   }
 ]

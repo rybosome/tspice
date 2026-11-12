@@ -28,7 +28,8 @@ export type SpiceWindow = number & { readonly [__spiceWindowBrand]: true };
  *
  * These are intentionally split from {@link CellsWindowsApi} so raw/kit
  * surfaces can evolve independently while backends still provide native hooks
- * for allocation and inspection.
+ * for allocation and inspection. Backing byte sizes must fit the runtime address
+ * space; impossible allocations throw before payload allocation.
  */
 export interface CellsWindowsKitApi {
   // -- Creation / destruction -------------------------------------------------
@@ -84,7 +85,12 @@ export interface CellsWindowsKitApi {
 export interface CellsWindowsApi {
   // -- Cells ------------------------------------------------------------------
 
-  /** Set the maximum cardinality of a cell. (`ssize_c`) */
+  /**
+   * Set logical capacity and clear cardinality, preserving backing allocation.
+   * The non-negative size must not exceed the capacity originally allocated.
+   * A previously reduced size may be restored within that original bound.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ssize_c.html
+   */
   ssize(
     size: number,
     cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
@@ -106,7 +112,12 @@ export interface CellsWindowsApi {
     cell: SpiceIntCell | SpiceDoubleCell | SpiceCharCell | SpiceWindow,
   ): number;
 
-  /** Validate and normalize a set cell. (`valid_c`) */
+  /**
+   * Sort/deduplicate the first `n` stored elements into a set of logical `size`.
+   * Size must fit the original allocation and n must fit size. The shim rejects
+   * sizes beyond allocated storage before CSPICE can change the descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/valid_c.html
+   */
   valid(
     size: number,
     n: number,
@@ -136,6 +147,12 @@ export interface CellsWindowsApi {
     index: number,
   ): readonly [left: number, right: number];
 
-  /** Validate and normalize a DP window. (`wnvald_c`) */
+  /**
+   * Sort and merge the first `n` endpoints into a normalized DP window. Size/n
+   * count endpoints, n must be even, and size must fit the original allocation.
+   * Invalid endpoint counts/bounds signal CSPICE errors; allocated bounds are
+   * checked before entering CSPICE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnvald_c.html
+   */
   wnvald(size: number, n: number, window: SpiceWindow): void;
 }

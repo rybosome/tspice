@@ -61,6 +61,38 @@ function requireTarget(
   }
 }
 
+function snapshotSet(
+  context: RunTspiceContext,
+  kind: CellsWindowsTargetKind,
+  id: string,
+): number[] | string[] | null {
+  const { raw, kit } = context.spice;
+  switch (kind) {
+    case "int": {
+      const cell = requireIntCell(context, id);
+      return Array.from({ length: raw.card(cell) }, (_, i) =>
+        kit.cellGeti(cell, i),
+      );
+    }
+    case "double": {
+      const cell = requireDoubleCell(context, id);
+      return Array.from({ length: raw.card(cell) }, (_, i) =>
+        kit.cellGetd(cell, i),
+      );
+    }
+    case "char": {
+      const cell = requireCharCell(context, id);
+      return Array.from({ length: raw.card(cell) }, (_, i) =>
+        kit.cellGetc(cell, i),
+      );
+    }
+    // A DP cell used as a set need not be a valid interval window. Window
+    // effects are inspected through wnvald/wnfetd instead of unsafe rebranding.
+    case "window":
+      return null;
+  }
+}
+
 /** Execute one `cells-windows.*` workflow step in tspice. */
 export function runCellsWindowsStep(
   context: RunTspiceContext,
@@ -119,13 +151,22 @@ export function runCellsWindowsStep(
     case "cells-windows.ssize": {
       const target = requireTarget(context, step.targetKind, step.targetId);
       context.spice.raw.ssize(step.size, target);
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: {
+          size: context.spice.raw.size(target),
+          card: context.spice.raw.card(target),
+        },
+      };
     }
 
     case "cells-windows.valid": {
       const target = requireTarget(context, step.targetKind, step.targetId);
       context.spice.raw.valid(step.size, step.n, target);
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: snapshotSet(context, step.targetKind, step.targetId),
+      };
     }
 
     case "cells-windows.wncard": {
@@ -153,7 +194,16 @@ export function runCellsWindowsStep(
     case "cells-windows.wnvald": {
       const window = requireWindow(context, step.windowId);
       context.spice.raw.wnvald(step.size, step.n, window);
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: Array.from(
+          { length: context.spice.raw.wncard(window) },
+          (_, i) => {
+            const [left, right] = context.spice.raw.wnfetd(window, i);
+            return { left, right };
+          },
+        ),
+      };
     }
 
     default: {
