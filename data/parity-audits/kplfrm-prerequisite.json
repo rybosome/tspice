@@ -166,6 +166,44 @@
         "kernels-kplfrm-set-too-small-error"
       ],
       "observation": "After repairing the native trace leak exposed by the first full native run (9 failing comparisons), final full required JS/native lanes passed. Production addon built/loaded; native sanity ran; all 660 live parity tests (330 scenarios per backend), all 695 parity-package tests passed with no skips. All 76 WASM tests passed, including 14 allocation rollback tests. Capture negative controls and same-instance early-error trace cleanup passed on both backends. Eleven new live cases cover complete diagnostics, trace mutations, message buffer boundaries and recovery. macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. No C or WASM binary regeneration in the error batch."
+    },
+    {
+      "id": "ci-error-node-43315317543",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a7198c4a967417441bab078001f7bf85fba1a46b29af3a1d85a22d749905d064",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "27b603b8531ed621bcd3ff76a6a1518ac5bcf796",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315317543/job/131521684722",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 660 live parity tests (330 per backend), all 695 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
+    },
+    {
+      "id": "ci-error-wasm-43315317543",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a7198c4a967417441bab078001f7bf85fba1a46b29af3a1d85a22d749905d064",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "27b603b8531ed621bcd3ff76a6a1518ac5bcf796",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315317543/job/131521684722",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 660 live parity tests (330 per backend), all 695 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
     }
   ],
   "routines": [
@@ -291,7 +329,10 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
           "history": [
@@ -303,7 +344,10 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     }

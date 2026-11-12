@@ -92,6 +92,80 @@
         "error-sigerr-signals-error-path"
       ],
       "observation": "After repairing the native trace leak exposed by the first full native run (9 failing comparisons), final full required JS/native lanes passed. Production addon built/loaded; native sanity ran; all 660 live parity tests (330 scenarios per backend), all 695 parity-package tests passed with no skips. All 76 WASM tests passed, including 14 allocation rollback tests. Capture negative controls and same-instance early-error trace cleanup passed on both backends. Eleven new live cases cover complete diagnostics, trace mutations, message buffer boundaries and recovery. macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. No C or WASM binary regeneration in the error batch."
+    },
+    {
+      "id": "ci-error-node-43315317543",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c8ee0807ab6eff6b1715241df04da03e4c57ee2ecdcc01f3c64328f512b8be1e",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "27b603b8531ed621bcd3ff76a6a1518ac5bcf796",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315317543/job/131521684722",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 660 live parity tests (330 per backend), all 695 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
+    },
+    {
+      "id": "ci-error-wasm-43315317543",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c8ee0807ab6eff6b1715241df04da03e4c57ee2ecdcc01f3c64328f512b8be1e",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "27b603b8531ed621bcd3ff76a6a1518ac5bcf796",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315317543/job/131521684722",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 660 live parity tests (330 per backend), all 695 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
     }
   ],
   "routines": [
@@ -153,16 +227,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     },
@@ -235,16 +315,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     },
@@ -279,16 +365,22 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     },
@@ -340,16 +432,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     },
@@ -379,16 +477,22 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     },
@@ -428,16 +532,22 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     },
@@ -494,19 +604,25 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-node-2026-11-12"]
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-error-recovery-wasm-2026-11-12"]
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Final required local lanes passed after leading-blank and trace-finalizer repairs. Current-source CI is pending; stale parent execution evidence is explicitly historical."
+  "verificationNote": "Current-source full local and observed CI execution verified both backends; preserve historical observations when shared source changes."
 }

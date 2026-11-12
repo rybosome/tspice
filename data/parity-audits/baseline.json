@@ -142,7 +142,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/682"],
-      "nextAction": "Observe current-source CI after diagnostic whitespace and traceback cleanup repairs; record both backend jobs."
+      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
     },
     {
       "id": "file-io-1",
