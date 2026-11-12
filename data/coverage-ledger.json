@@ -14,9 +14,10 @@
           "kplfrm-prerequisite"
         ],
         "prs": [
-          "https://github.com/rybosome/tspice/pull/683"
+          "https://github.com/rybosome/tspice/pull/683",
+          "https://github.com/rybosome/tspice/pull/684"
         ],
-        "nextAction": "Run both required lanes and observe current-source CI after the WASM token identity repair; retain earlier observations as historical.",
+        "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs.",
         "record": "data/parity-audits/cell-capacity-prerequisite.json"
       },
       {
@@ -36,7 +37,7 @@
           "cell-capacity-prerequisite"
         ],
         "prs": [],
-        "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline.",
+        "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline.",
         "record": null
       },
       {
@@ -318,9 +319,10 @@
           "vectors-arithmetic"
         ],
         "prs": [
-          "https://github.com/rybosome/tspice/pull/680"
+          "https://github.com/rybosome/tspice/pull/680",
+          "https://github.com/rybosome/tspice/pull/684"
         ],
-        "nextAction": "Run both required lanes and observe current-source CI after the WASM token identity repair; retain earlier observations as historical.",
+        "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs.",
         "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
