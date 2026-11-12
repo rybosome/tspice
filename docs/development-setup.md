@@ -82,6 +82,14 @@ node scripts/build-backend-wasm.mjs
 
 The script fetches the pinned CSPICE source into the ignored `.cache/` tree, stages a patched build copy, runs Emscripten, and writes the generated assets under `packages/backend-wasm/emscripten/`. Review and commit those generated assets with the source change. Normal JS checks consume the checked-in artifacts and do not rebuild them.
 
+## Task and artifact ownership
+
+Turbo owns preparation inside the workspace graph: builds depend on dependency builds, and tests and typechecks depend on their package build. Package lifecycle hooks use `scripts/prepare-package.mjs`; inside a Turbo task they recognize Turbo's supplied `TURBO_HASH` and do not start a second build. Direct package test/typecheck commands still prepare the same filtered build graph. Direct contract builds prepare dependency builds. Parity's sidecar setup still runs before Vitest starts.
+
+Only build tasks write `dist`. Typechecks use `--noEmit` and separate incremental metadata under each package's ignored `.cache` directory. Both the preparation helper and shared compiler configuration are global task inputs. Concurrent independent top-level commands in the same checkout still require separate worktrees if one can rebuild artifacts the other consumes.
+
+The missing-export CI investigation observed two empty reads across 127,845 reads of real Node, contract, and core exports during eight warm Turbo cache restores. The old parity hook could trigger those restores while sibling tests imported those files. `pnpm test:orchestration` holds a duplicate writer at truncation with explicit barriers: its negative control reproduces `createNodeBackend is not a function`, and the real package hooks protect imports with cold/restored build caches. It also checks direct package preparation and graph typecheck prerequisites. This regression does not depend on winning a timing race.
+
 ## Host toolchain notes
 
 If `node-gyp` compiles the C/C++ sources but linking fails with an unknown architecture in macOS SDK `.tbd` files, check that the selected Command Line Tools linker understands the selected SDK. This is an SDK/toolchain pairing issue; do not edit project sources to work around it. The local readiness audit records the SDK versions used to validate this checkout.

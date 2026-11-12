@@ -17,8 +17,10 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "test": "vitest run"
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
+    "test": "vitest run",
+    "pretest": "node ../../scripts/prepare-package.mjs",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -17,9 +17,10 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "pretest": "pnpm run build",
-    "test": "vitest run"
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
+    "pretest": "node ../../scripts/prepare-package.mjs",
+    "test": "vitest run",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",

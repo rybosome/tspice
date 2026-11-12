@@ -7,13 +7,14 @@
       "outputs": ["dist/**", "dist-publish/**", "native/build/Release/*.node"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
-      "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map", "dist/.tsbuildinfo"]
+      "dependsOn": ["build", "^typecheck"],
+      "outputs": [".cache/typecheck*.tsbuildinfo"]
     },
     "test": {
       "dependsOn": ["build"],
       "env": ["TSPICE_EXPECT_NATIVE"],
       "outputs": []
     }
-  }
+  },
+  "globalDependencies": ["scripts/prepare-package.mjs", "tsconfig.base.json"]
 }

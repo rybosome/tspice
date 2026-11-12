@@ -20,10 +20,10 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "pretypecheck": "pnpm -w turbo run build --filter=@rybosome/tspice",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly && tsc -p tsconfig.test.json --noEmit",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo && tsc -p tsconfig.test.json --noEmit --tsBuildInfoFile .cache/typecheck-test.tsbuildinfo",
     "setup:sidecar": "uv run --locked --project sidecars/spiceypy python -c \"import spiceypy\"",
-    "pretest": "pnpm -w turbo run build --filter=@rybosome/tspice && pnpm run setup:sidecar",
+    "pretest": "node ../../scripts/prepare-package.mjs && pnpm run setup:sidecar",
     "test": "vitest run"
   },
   "dependencies": {

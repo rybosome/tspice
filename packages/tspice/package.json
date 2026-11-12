@@ -25,9 +25,10 @@
     "verify:dist-publish": "node ./scripts/verify-dist-publish.mjs",
     "prepack": "pnpm -w build",
     "release": "pnpm -w build && pnpm -C packages/tspice run verify:dist-publish && pnpm dlx np --contents dist-publish",
-    "typecheck": "tsc -p tsconfig.json --emitDeclarationOnly && tsc -p tsconfig.test.json --noEmit",
-    "pretest": "pnpm run build",
-    "test": "vitest run"
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo && tsc -p tsconfig.test.json --noEmit",
+    "pretest": "node ../../scripts/prepare-package.mjs",
+    "test": "vitest run",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs"
   },
   "dependencies": {
     "@rybosome/tspice-backend-contract": "workspace:*",

@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
+    "pretypecheck": "node ../../scripts/prepare-package.mjs"
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*"
