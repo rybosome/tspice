@@ -11,5 +11,35 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-vhat-audit-mixed-normalization",
+    "description": "vhat: mixed normalization; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhat",
+        "v": [3, -4, 12]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vhat-audit-wide-dynamic-range",
+    "description": "vhat: wide dynamic range; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vhat",
+        "v": [3e200, -4e200, 1.2e201]
+      },
+      {
+        "op": "coords-vectors.vhat",
+        "v": [3e-200, -4e-200, 1.2e-199]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

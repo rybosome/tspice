@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 1,
+  "batch": "vectors-arithmetic",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/run-sidecar.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-required-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "143395f9e6e75f5e7d2f9e7fba2b42a8abaefaa1ce32f3816e108de48158833b",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Production native build and load succeeded. Full parity suite executed all 316 scenarios on both backends (632 parity tests), native-required assertion ran, and all 663 parity-package tests passed with no skips. Doctor, full JS required lane, formatting/lint, and 37 ledger tests also passed. Host: macOS arm64, Node 22.23.4, pnpm 10.13.1, locked SpiceyPy 6.0.3 / Python 3.12.15, CSPICE N0067."
+    },
+    {
+      "id": "local-required-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "143395f9e6e75f5e7d2f9e7fba2b42a8abaefaa1ce32f3816e108de48158833b",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Production native build and load succeeded. Full parity suite executed all 316 scenarios on both backends (632 parity tests), native-required assertion ran, and all 663 parity-package tests passed with no skips. Doctor, full JS required lane, formatting/lint, and 37 ledger tests also passed. Host: macOS arm64, Node 22.23.4, pnpm 10.13.1, locked SpiceyPy 6.0.3 / Python 3.12.15, CSPICE N0067."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "vadd_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vadd_c.html",
+      "semantics": "Adds corresponding Cartesian components of two length-three vectors without normalizing them.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vadd-happy-componentwise-sum",
+          "coverage": ["success"],
+          "observes": "vadd adds vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vadd-audit-cancellation-and-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "vadd: cancellation and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vadd: cancellation and fractions; compare every scalar/vector component with live SpiceyPy",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vadd-coverage-depth",
+          "status": "repaired",
+          "summary": "Only one ordinary example existed; relevant boundaries and distinguishing inputs were absent.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vadd.cases.json"
+          ],
+          "caseIds": ["coords-vectors-vadd-audit-cancellation-and-fractions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    },
+    {
+      "routine": "vcrss_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vcrss_c.html",
+      "semantics": "Returns the right-handed, unnormalized cross product, with sign reversed when operands are exchanged.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vcrss-happy-right-handed-basis",
+          "coverage": ["success"],
+          "observes": "vcrss computes right-handed cross product of x-hat and y-hat; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vcrss-audit-mixed-and-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "vcrss: mixed and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vcrss-audit-parallel-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "vcrss: parallel and zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vcrss: mixed and reversed; compare every scalar/vector component with live SpiceyPy; vcrss: parallel and zero; compare every scalar/vector component with live SpiceyPy",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vcrss-coverage-depth",
+          "status": "repaired",
+          "summary": "Only one ordinary example existed; relevant boundaries and distinguishing inputs were absent.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vcrss.cases.json"
+          ],
+          "caseIds": [
+            "coords-vectors-vcrss-audit-mixed-and-reversed",
+            "coords-vectors-vcrss-audit-parallel-and-zero"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    },
+    {
+      "routine": "vdot_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vdot_c.html",
+      "semantics": "Returns the scalar sum of three component products; orthogonality and cancellation produce zero.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vdot-happy-basic-dot",
+          "coverage": ["success"],
+          "observes": "vdot computes scalar dot product for simple integer vectors; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "vdot: orthogonal and cancellation; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vdot: orthogonal and cancellation; compare every scalar/vector component with live SpiceyPy",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vdot-coverage-depth",
+          "status": "repaired",
+          "summary": "Only one ordinary example existed; relevant boundaries and distinguishing inputs were absent.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vdot.cases.json"
+          ],
+          "caseIds": ["coords-vectors-vdot-audit-orthogonal-and-cancellation"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    },
+    {
+      "routine": "vhat_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vhat_c.html",
+      "semantics": "Returns the unit direction of a nonzero vector; zero input returns zero without an error. Shared shim special-cases zero before the CSPICE call.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vhat-happy-zero-vector",
+          "coverage": ["success", "edge"],
+          "observes": "vhat preserves CSPICE zero-vector behavior by returning zero vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vhat-audit-mixed-normalization",
+          "coverage": ["success", "edge"],
+          "observes": "vhat: mixed normalization; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vhat-audit-wide-dynamic-range",
+          "coverage": ["success", "edge"],
+          "observes": "vhat: wide dynamic range; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vhat: mixed normalization; compare every scalar/vector component with live SpiceyPy; vhat: wide dynamic range; compare every scalar/vector component with live SpiceyPy. Zero input was already present.",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vhat-coverage-depth",
+          "status": "repaired",
+          "summary": "Only the zero-vector shortcut was exercised; a constant-zero vhat could pass.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vhat.cases.json"
+          ],
+          "caseIds": [
+            "coords-vectors-vhat-audit-mixed-normalization",
+            "coords-vectors-vhat-audit-wide-dynamic-range"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    },
+    {
+      "routine": "vminus_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vminus_c.html",
+      "semantics": "Returns all three negated Cartesian components; no normalization or state change.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vminus-happy-negation",
+          "coverage": ["success"],
+          "observes": "vminus negates each component of an input vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vminus-audit-zero-and-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "vminus: zero and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vminus: zero and fractions; compare every scalar/vector component with live SpiceyPy",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vminus-coverage-depth",
+          "status": "repaired",
+          "summary": "Only one ordinary example existed; relevant boundaries and distinguishing inputs were absent.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vminus.cases.json"
+          ],
+          "caseIds": ["coords-vectors-vminus-audit-zero-and-fractions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    },
+    {
+      "routine": "vnorm_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vnorm_c.html",
+      "semantics": "Returns the Euclidean magnitude with CSPICE scaling to avoid intermediate overflow; zero input yields zero.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vnorm-happy-pythagorean",
+          "coverage": ["success"],
+          "observes": "vnorm computes Euclidean magnitude for a 3-4-12 vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vnorm-audit-zero",
+          "coverage": ["success", "edge"],
+          "observes": "vnorm: zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vnorm-audit-large-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "vnorm: large mixed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vnorm: zero; compare every scalar/vector component with live SpiceyPy; vnorm: large mixed; compare every scalar/vector component with live SpiceyPy",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vnorm-coverage-depth",
+          "status": "repaired",
+          "summary": "Only one ordinary example existed; relevant boundaries and distinguishing inputs were absent.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vnorm.cases.json"
+          ],
+          "caseIds": [
+            "coords-vectors-vnorm-audit-zero",
+            "coords-vectors-vnorm-audit-large-mixed"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    },
+    {
+      "routine": "vscl_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vscl_c.html",
+      "semantics": "Multiplies each of three components by the scalar, preserving sign and fractional scale.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vscl-happy-negative-scale",
+          "coverage": ["success"],
+          "observes": "vscl scales a vector by a negative scalar; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vscl-audit-zero-and-fractional-scale",
+          "coverage": ["success", "edge"],
+          "observes": "vscl: zero and fractional scale; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vscl: zero and fractional scale; compare every scalar/vector component with live SpiceyPy",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vscl-coverage-depth",
+          "status": "repaired",
+          "summary": "Only one ordinary example existed; relevant boundaries and distinguishing inputs were absent.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vscl.cases.json"
+          ],
+          "caseIds": ["coords-vectors-vscl-audit-zero-and-fractional-scale"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    },
+    {
+      "routine": "vsub_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vsub_c.html",
+      "semantics": "Subtracts the right operand from the left in each of three Cartesian components; operand order matters.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vsub-happy-componentwise-difference",
+          "coverage": ["success"],
+          "observes": "vsub subtracts vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        },
+        {
+          "caseId": "coords-vectors-vsub-audit-equal-and-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "vsub: equal and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
+        }
+      ],
+      "edgeAssessment": "vsub: equal and reversed; compare every scalar/vector component with live SpiceyPy",
+      "errorAssessment": "NAIF documents this routine as error-free for finite, correctly shaped inputs. No artificial CSPICE error case is warranted; invalid JS shape/type validation is wrapper behavior rather than a live numeric CSPICE parity claim. Overflow is outside this finite-output fixture set; no global tolerance relaxation.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files required. Mathematical inputs authored in this batch, with no external scientific data or redistribution dependency.",
+      "cleanup": "No kernel, handle, or file is acquired. WASM helper frees its allocated input/output/error buffers in finally; native copies stack arrays and serializes CSPICE calls. Each parity workflow clears/reset state and the test disposes the backend in finally; the Python process runs finalizers then kclear/reset.",
+      "tolerance": "Existing 1e-12 absolute-or-relative comparison is adequate for these nonzero outputs (order-one/fractional components and large finite magnitudes). Zero-vector/cancellation results are compared componentwise; signed zero is numerically equivalent. Small-magnitude vhat inputs produce order-one unit vectors, avoiding a meaningless sub-tolerance output comparison.",
+      "findings": [
+        {
+          "id": "vsub-coverage-depth",
+          "status": "repaired",
+          "summary": "Only one ordinary example existed; relevant boundaries and distinguishing inputs were absent.",
+          "repair": "Added the listed success/edge scenarios exercising every returned scalar/component with a live oracle. No implementation defect found for these finite inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/vsub.cases.json"
+          ],
+          "caseIds": ["coords-vectors-vsub-audit-equal-and-reversed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
+          "executions": ["local-required-node-2026-11-12"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
+          "executions": ["local-required-wasm-2026-11-12"]
+        }
+      }
+    }
+  ]
+}

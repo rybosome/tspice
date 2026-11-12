@@ -1,9 +1,371 @@
 {
+  "audit": {
+    "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
+    "baselineRoutines": 162,
+    "batches": [
+      {
+        "id": "cells-windows",
+        "routines": [
+          "card_c",
+          "insrtc_c",
+          "insrtd_c",
+          "insrti_c",
+          "scard_c",
+          "size_c",
+          "ssize_c",
+          "valid_c",
+          "wncard_c",
+          "wnfetd_c",
+          "wninsd_c",
+          "wnvald_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "vectors-arithmetic",
+        "routines": [
+          "vadd_c",
+          "vcrss_c",
+          "vdot_c",
+          "vhat_c",
+          "vminus_c",
+          "vnorm_c",
+          "vscl_c",
+          "vsub_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Observe pilot CI, record successful job evidence, then audit the remaining coordinate/matrix routines.",
+        "record": "data/parity-audits/vectors-arithmetic.json"
+      },
+      {
+        "id": "coordinates-matrices",
+        "routines": [
+          "axisar_c",
+          "georec_c",
+          "latrec_c",
+          "mtxv_c",
+          "mxm_c",
+          "mxv_c",
+          "recgeo_c",
+          "reclat_c",
+          "recsph_c",
+          "rotate_c",
+          "rotmat_c",
+          "sphrec_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "dsk",
+        "routines": [
+          "dskb02_c",
+          "dskgd_c",
+          "dskobj_c",
+          "dsksrf_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "ek-1",
+        "routines": [
+          "ekaclc_c",
+          "ekacld_c",
+          "ekacli_c",
+          "ekcls_c",
+          "ekffld_c",
+          "ekfind_c",
+          "ekgc_c",
+          "ekgd_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "ek-2",
+        "routines": [
+          "ekgi_c",
+          "ekifld_c",
+          "eknseg_c",
+          "ekntab_c",
+          "ekopn_c",
+          "ekopr_c",
+          "ekopw_c",
+          "ektnam_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "ephemeris-1",
+        "routines": [
+          "spkcls_c",
+          "spkcov_c",
+          "spkez_c",
+          "spkezp_c",
+          "spkezr_c",
+          "spkgeo_c",
+          "spkgps_c",
+          "spkobj_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "ephemeris-2",
+        "routines": [
+          "spkopa_c",
+          "spkopn_c",
+          "spkpds_c",
+          "spkpos_c",
+          "spksfs_c",
+          "spkssb_c",
+          "spkuds_c",
+          "spkw08_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "error",
+        "routines": [
+          "chkin_c",
+          "chkout_c",
+          "failed_c",
+          "getmsg_c",
+          "reset_c",
+          "setmsg_c",
+          "sigerr_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "file-io-1",
+        "routines": [
+          "dafbfs_c",
+          "dafcls_c",
+          "daffna_c",
+          "dafopr_c",
+          "dascls_c",
+          "dasopr_c",
+          "dlabfs_c",
+          "dlacls"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "file-io-2",
+        "routines": [
+          "dlafns_c",
+          "dlaopn_c",
+          "dskmi2_c",
+          "dskopn_c",
+          "dskw02_c",
+          "exists_c",
+          "getfat_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "frames-1",
+        "routines": [
+          "ccifrm_c",
+          "cidfrm_c",
+          "ckcov_c",
+          "ckgp_c",
+          "ckgpav_c",
+          "cklpf_c",
+          "ckobj_c",
+          "ckupf_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "frames-2",
+        "routines": [
+          "cnmfrm_c",
+          "frinfo_c",
+          "frmnam_c",
+          "namfrm_c",
+          "pxform_c",
+          "sxform_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "geometry",
+        "routines": [
+          "illumf_c",
+          "illumg_c",
+          "ilumin_c",
+          "nvc2pl_c",
+          "occult_c",
+          "pl2nvc_c",
+          "sincpt_c",
+          "subpnt_c",
+          "subslr_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "geometry-gf",
+        "routines": [
+          "gfdist_c",
+          "gfrefn_c",
+          "gfrepf_c",
+          "gfrepi_c",
+          "gfsep_c",
+          "gfsstp_c",
+          "gfstep_c",
+          "gfstol_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "ids-names",
+        "routines": [
+          "bodc2n_c",
+          "bodc2s_c",
+          "boddef_c",
+          "bodfnd_c",
+          "bodn2c_c",
+          "bods2c_c",
+          "bodvar_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "kernel-pool",
+        "routines": [
+          "cvpool_c",
+          "dtpool_c",
+          "expool_c",
+          "gcpool_c",
+          "gdpool_c",
+          "gipool_c",
+          "gnpool_c",
+          "pcpool_c",
+          "pdpool_c",
+          "pipool_c",
+          "swpool_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "kernels",
+        "routines": [
+          "furnsh_c",
+          "kclear_c",
+          "kdata_c",
+          "kinfo_c",
+          "kplfrm_c",
+          "ktotal_c",
+          "kxtrct_c",
+          "unload_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "time-1",
+        "routines": [
+          "deltet_c",
+          "et2utc_c",
+          "scdecd_c",
+          "sce2c_c",
+          "sce2s_c",
+          "scencd_c",
+          "scs2e_c",
+          "sct2e_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      },
+      {
+        "id": "time-2",
+        "routines": [
+          "str2et_c",
+          "timdef_c",
+          "timout_c",
+          "tkvrsn_c",
+          "tparse_c",
+          "tpictr_c",
+          "unitim_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "record": null
+      }
+    ],
+    "counts": {
+      "node": {
+        "unreviewed": 154,
+        "reviewed": 8,
+        "needs-repair": 0,
+        "verified": 0
+      },
+      "wasm": {
+        "unreviewed": 154,
+        "reviewed": 8,
+        "needs-repair": 0,
+        "verified": 0
+      }
+    }
+  },
   "schemaVersion": 1,
   "generator": "scripts/generate-coverage-ledger.mjs",
   "limitations": [
     "Static evidence proves source registration and binary export presence, not numerical correctness or runtime execution.",
-    "Scenario assertion quality, success/edge/error sufficiency, and wrapper semantic equivalence remain unaudited.",
+    "Semantic review and observed verification are maintained in per-batch audit inputs; unreviewed routines remain explicitly unreviewed.",
     "Inventory decisions are retained verbatim; contract presence is derived separately.",
     "Known fallback/unsupported behavior is maintained in data/coverage-ledger-policy.json."
   ],
@@ -14,7 +376,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 305,
+    "scenarios": 316,
     "wasmRawUnsupported": 1
   },
   "ciLanes": [
@@ -2117,6 +2479,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -2322,6 +2693,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ids-names",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -2475,6 +2855,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ids-names",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -2640,6 +3029,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ids-names",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -2820,6 +3218,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ids-names",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -2983,6 +3390,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ids-names",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -3146,6 +3562,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ids-names",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -3333,6 +3758,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ids-names",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -3560,6 +3994,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -3723,6 +4166,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -3924,6 +4376,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "error",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -4090,6 +4551,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "error",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -4253,6 +4723,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -4440,6 +4919,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -4641,6 +5129,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -4828,6 +5325,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -5022,6 +5528,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -5223,6 +5738,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -5404,6 +5928,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -5637,6 +6170,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -5837,6 +6379,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -6052,6 +6603,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -6231,6 +6791,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -6436,6 +7005,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -6662,6 +7240,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -6910,6 +7497,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -7136,6 +7732,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -7389,6 +7994,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -7602,6 +8216,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -7786,6 +8409,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -7974,6 +8606,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -8173,6 +8814,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -8443,6 +9093,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "dsk",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -8639,6 +9298,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "dsk",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -8826,6 +9494,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -9006,6 +9683,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "dsk",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -9199,6 +9885,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -9386,6 +10081,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "dsk",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -9599,6 +10303,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -9789,6 +10502,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -10059,6 +10781,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -10231,6 +10962,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -10403,6 +11143,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -10598,6 +11347,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -10773,6 +11531,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -10948,6 +11715,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -11125,6 +11901,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -11336,6 +12121,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -11547,6 +12341,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -11716,6 +12519,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -11904,6 +12716,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -12074,6 +12895,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -12240,6 +13070,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -12406,6 +13245,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -12579,6 +13427,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -12790,6 +13647,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ek-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -13085,6 +13951,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -13287,6 +14162,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -13452,6 +14336,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -13598,6 +14491,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "error",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -13796,6 +14698,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -13959,6 +14870,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -14180,6 +15100,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -14345,6 +15274,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -14510,6 +15448,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -14673,6 +15620,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -14861,6 +15817,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "file-io-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -15035,6 +16000,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "error",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -15231,6 +16205,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -15450,6 +16433,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -15617,6 +16609,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -15783,6 +16784,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -15982,6 +16992,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -16153,6 +17172,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -16317,6 +17345,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -16481,6 +17518,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry-gf",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -16674,6 +17720,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -16841,6 +17896,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -17088,6 +18152,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -17279,6 +18352,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -17470,6 +18552,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -17655,6 +18746,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -17819,6 +18919,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -17983,6 +19092,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -18278,6 +19396,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -18467,6 +19594,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -18657,6 +19793,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -18826,6 +19971,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -19019,6 +20173,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -19176,6 +20339,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -19343,6 +20515,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -19776,6 +20957,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -19936,6 +21126,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -20110,6 +21309,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -20280,6 +21488,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -20499,6 +21716,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -20697,6 +21923,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -20967,6 +22202,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -21132,6 +22376,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -21318,6 +22571,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -21478,6 +22740,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -21753,6 +23024,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -22000,6 +23280,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -22153,6 +23442,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -22320,6 +23618,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -22554,6 +23861,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "error",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -22714,6 +24030,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -22867,6 +24192,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -23061,6 +24395,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -23240,6 +24583,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -23419,6 +24771,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -23598,6 +24959,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -23784,6 +25154,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -23977,6 +25356,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -24156,6 +25544,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -24342,6 +25739,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "error",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -24518,6 +25924,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "error",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -24709,6 +26124,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -24873,6 +26297,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -25047,6 +26480,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "coordinates-matrices",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -25267,6 +26709,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -25443,6 +26894,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -25643,6 +27103,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -25815,6 +27284,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -25987,6 +27465,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -26159,6 +27646,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -26331,6 +27827,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -26521,6 +28026,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-1",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -26698,6 +28212,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -26876,6 +28399,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -27039,6 +28571,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -27211,6 +28752,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -27399,6 +28949,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -27571,6 +29130,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -27742,6 +29310,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -27947,6 +29524,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "ephemeris-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -28218,6 +29804,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -28408,6 +30003,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -28599,6 +30203,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -28804,6 +30417,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "geometry",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -29018,6 +30640,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernel-pool",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -29181,6 +30812,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "frames-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -29397,6 +31037,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -29566,6 +31215,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -29759,6 +31417,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -29929,6 +31596,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -30092,6 +31768,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -30373,6 +32058,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "time-2",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -30555,6 +32249,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "kernels",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -30630,7 +32333,7 @@
             "vadd_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -30718,6 +32421,23 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vadd-audit-cancellation-and-fractions",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vadd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vadd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vadd: cancellation and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vadd-happy-componentwise-sum",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vadd.cases.json",
             "expectation": "success",
@@ -30725,10 +32445,47 @@
               "coords-vectors.vadd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "vadd adds vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -30902,6 +32659,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -30956,7 +32722,7 @@
             "vcrss_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31044,6 +32810,40 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vcrss-audit-mixed-and-reversed",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vcrss.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vcrss"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vcrss: mixed and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-vcrss-audit-parallel-and-zero",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vcrss.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vcrss"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vcrss: parallel and zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vcrss-happy-right-handed-basis",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vcrss.cases.json",
             "expectation": "success",
@@ -31051,10 +32851,47 @@
               "coords-vectors.vcrss"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "vcrss computes right-handed cross product of x-hat and y-hat; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -31123,7 +32960,7 @@
             "vdot_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31211,6 +33048,23 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vdot.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vdot"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vdot: orthogonal and cancellation; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vdot-happy-basic-dot",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vdot.cases.json",
             "expectation": "success",
@@ -31218,10 +33072,47 @@
               "coords-vectors.vdot"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "vdot computes scalar dot product for simple integer vectors; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -31297,7 +33188,7 @@
             "vhat_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31385,6 +33276,40 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vhat-audit-mixed-normalization",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vhat.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vhat"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vhat: mixed normalization; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-vhat-audit-wide-dynamic-range",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vhat.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vhat"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vhat: wide dynamic range; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vhat-happy-zero-vector",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vhat.cases.json",
             "expectation": "success",
@@ -31392,10 +33317,48 @@
               "coords-vectors.vhat"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vhat preserves CSPICE zero-vector behavior by returning zero vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -31485,7 +33448,7 @@
             "vminus_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31573,6 +33536,23 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vminus-audit-zero-and-fractions",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vminus.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vminus"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vminus: zero and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vminus-happy-negation",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vminus.cases.json",
             "expectation": "success",
@@ -31580,10 +33560,47 @@
               "coords-vectors.vminus"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "vminus negates each component of an input vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -31638,7 +33655,7 @@
             "vnorm_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31726,6 +33743,40 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vnorm-audit-large-mixed",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vnorm.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vnorm"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vnorm: large mixed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-vnorm-audit-zero",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vnorm.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vnorm"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vnorm: zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vnorm-happy-pythagorean",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vnorm.cases.json",
             "expectation": "success",
@@ -31733,10 +33784,47 @@
               "coords-vectors.vnorm"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "vnorm computes Euclidean magnitude for a 3-4-12 vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -31861,7 +33949,7 @@
             "vscl_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31949,6 +34037,23 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vscl-audit-zero-and-fractional-scale",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vscl.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vscl"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vscl: zero and fractional scale; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vscl-happy-negative-scale",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vscl.cases.json",
             "expectation": "success",
@@ -31956,10 +34061,47 @@
               "coords-vectors.vscl"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "vscl scales a vector by a negative scalar; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -32035,7 +34177,7 @@
             "vsub_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -32123,6 +34265,23 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-vsub-audit-equal-and-reversed",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/vsub.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.vsub"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "vsub: equal and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-vsub-happy-componentwise-difference",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/vsub.cases.json",
             "expectation": "success",
@@ -32130,10 +34289,47 @@
               "coords-vectors.vsub"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "vsub subtracts vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute.",
+              "record": "data/parity-audits/vectors-arithmetic.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "vectors-arithmetic",
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
+          "executions": [
+            "local-required-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
+          "executions": [
+            "local-required-wasm-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/vectors-arithmetic.json"
+        }
       }
     },
     {
@@ -32342,6 +34538,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -32549,6 +34754,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -32735,6 +34949,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {
@@ -32930,6 +35153,15 @@
           }
         ],
         "meaningfulCoverage": "unaudited"
+      },
+      "audit": {
+        "batch": "cells-windows",
+        "node": {
+          "status": "unreviewed"
+        },
+        "wasm": {
+          "status": "unreviewed"
+        }
       }
     },
     {

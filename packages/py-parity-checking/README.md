@@ -31,3 +31,7 @@ The test command provisions the locked Python environment and imports SpiceyPy b
 pnpm -C packages/py-parity-checking typecheck
 pnpm -C packages/py-parity-checking test
 ```
+
+## Semantic audit progress
+
+[Step 7's maintained audit records](../../docs/parity-audit.md) distinguish source registration, reviewed assertions, repairs, and source-bound local/CI verification per backend. The generated ledger includes all baseline routine assignments; an unreviewed routine is never promoted solely because its existing scenarios pass.

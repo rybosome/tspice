@@ -12,5 +12,29 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+    "description": "vdot: orthogonal and cancellation; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vdot",
+        "a": [1, 2, 3],
+        "b": [2, -1, 0]
+      },
+      {
+        "op": "coords-vectors.vdot",
+        "a": [1, -2, 3],
+        "b": [-4, 5, -6]
+      },
+      {
+        "op": "coords-vectors.vdot",
+        "a": [0, 0, 0],
+        "b": [7, -8, 9]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

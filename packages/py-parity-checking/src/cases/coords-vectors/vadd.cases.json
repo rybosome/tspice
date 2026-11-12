@@ -12,5 +12,24 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-vadd-audit-cancellation-and-fractions",
+    "description": "vadd: cancellation and fractions; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vadd",
+        "a": [1, -2, 3],
+        "b": [-1, 2, -3]
+      },
+      {
+        "op": "coords-vectors.vadd",
+        "a": [0.25, -1.5, 2.75],
+        "b": [2.5, 3.25, -0.5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -5,6 +5,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { auditSourceDigest } from "./coverage-ledger/audits.mjs";
 import { buildLedger, generate } from "./generate-coverage-ledger.mjs";
 import {
   cTokens,
@@ -25,6 +26,14 @@ const inputs = [
   ".github/workflows/ci.yml",
   "data/cspice-functions.json",
   "data/coverage-ledger-policy.json",
+  "data/parity-audits",
+  "packages/py-parity-checking/test/parity.test.ts",
+  "packages/py-parity-checking/src/parity-assert.ts",
+  "packages/py-parity-checking/src/run-tspice/index.ts",
+  "packages/py-parity-checking/src/run-tspice/context.ts",
+  "packages/py-parity-checking/sidecars/spiceypy/src",
+  "packages/py-parity-checking/sidecars/spiceypy/uv.lock",
+  "packages/py-parity-checking/src/run-sidecar.ts",
   "scripts/build-backend-wasm.mjs",
   "packages/backend-contract/src",
   "packages/backend-node/src",
@@ -48,6 +57,21 @@ function fixture(t) {
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.cpSync(path.join(repoRoot, relative), target, { recursive: true });
   }
+  // Synthetic mutations exercise validation independently of real, source-bound
+  // execution observations. Preserve the human review but reset verification.
+  for (const file of fs.readdirSync(path.join(root, "data/parity-audits"))) {
+    if (file === "baseline.json") continue;
+    const target = path.join(root, "data/parity-audits", file);
+    const record = JSON.parse(fs.readFileSync(target, "utf8"));
+    record.executions = [];
+    for (const review of record.routines)
+      for (const judgment of Object.values(review.backends)) {
+        judgment.executions = [];
+        if (judgment.history.at(-1) === "verified")
+          judgment.history = ["unreviewed", "reviewed"];
+      }
+    fs.writeFileSync(target, JSON.stringify(record));
+  }
   fs.mkdirSync(path.join(root, "docs"));
   function edit(relative, before, after) {
     const file = path.join(root, relative);
@@ -68,7 +92,7 @@ test("baseline derives breadth and preserves fallback/non-direct evidence", (t) 
     planned: 487,
     excluded: 3,
     caseFiles: 162,
-    scenarios: 305,
+    scenarios: 316,
     wasmRawUnsupported: 1,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -407,4 +431,191 @@ test("C token analysis ignores comment/literal fake calls and literal braces", (
   );
   assert.deepEqual([...functions.keys()], ["real"]);
   assert.deepEqual(cCalls(functions.get("real").body), ["actual_c"]);
+});
+
+function editAudit(f, mutate, file = "vectors-arithmetic.json") {
+  const target = path.join(f.root, "data/parity-audits", file);
+  const record = JSON.parse(fs.readFileSync(target, "utf8"));
+  mutate(record);
+  fs.writeFileSync(target, JSON.stringify(record));
+}
+
+test("maintained audit separates reviewed findings from verified backend execution", (t) => {
+  const ledger = fixture(t).build();
+  assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
+  for (const backend of ["node", "wasm"]) {
+    assert.equal(ledger.audit.counts[backend].reviewed, 8);
+    assert.equal(ledger.audit.counts[backend].verified, 0);
+  }
+  assert.equal(
+    ledger.routines.find((r) => r.routine === "vhat_c").audit.wasm.status,
+    "reviewed",
+  );
+  assert.equal(
+    ledger.routines.find((r) => r.routine === "kplfrm_c").audit.wasm.status,
+    "unreviewed",
+  );
+});
+
+test("baseline rejects duplicate, removed, and omitted routines", (t) => {
+  for (const mutation of [
+    (r) => r.batches[0].routines.push(r.batches[0].routines[0]),
+    (r) => {
+      r.batches[0].routines[0] = "missing_c";
+    },
+    (r) => r.batches[0].routines.pop(),
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation, "baseline.json");
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from baseline/);
+  }
+});
+
+test("audit batch dependencies reject cycles and unknown targets", (t) => {
+  const f = fixture(t);
+  editAudit(
+    f,
+    (r) => {
+      r.batches[0].dependsOn = [r.batches[1].id];
+      r.batches[1].dependsOn = [r.batches[0].id];
+    },
+    "baseline.json",
+  );
+  assert.throws(f.build, /cyclic batch dependency/);
+});
+
+test("audit rejects unknown and duplicate scenario identifiers", (t) => {
+  for (const mutation of [
+    (r) => {
+      r.routines[0].scenarios[0].caseId = "removed-scenario";
+    },
+    (r) => {
+      r.routines[0].scenarios[1] = r.routines[0].scenarios[0];
+    },
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation);
+    assert.throws(f.build, /unknown\/removed\/invalid scenario|duplicate/);
+  }
+});
+
+test("audit rejects a scenario removed from its registered source", (t) => {
+  const f = fixture(t);
+  const target = path.join(
+    f.root,
+    "packages/py-parity-checking/src/cases/coords-vectors/vhat.cases.json",
+  );
+  const cases = JSON.parse(fs.readFileSync(target, "utf8"));
+  cases.pop();
+  fs.writeFileSync(target, JSON.stringify(cases));
+  assert.throws(f.build, /unreviewed registered scenarios/);
+});
+
+test("review cannot jump directly to verified or omit semantic evidence", (t) => {
+  const f = fixture(t);
+  editAudit(f, (r) => {
+    r.routines[0].backends.node.history = ["unreviewed", "verified"];
+  });
+  assert.throws(f.build, /invalid status transition/);
+  const g = fixture(t);
+  editAudit(g, (r) => {
+    r.routines[0].cleanup = "";
+  });
+  assert.throws(g.build, /missing semantic\/contract\/cleanup evidence/);
+});
+
+test("completion requires both observed local and CI verification", (t) => {
+  const f = fixture(t);
+  editAudit(f, (r) => {
+    r.routines[0].backends.node.history.push("verified");
+  });
+  editAudit(
+    f,
+    (r) => {
+      r.batches.find((b) => b.id === "vectors-arithmetic").prs = [
+        "https://github.com/rybosome/tspice/pull/1",
+      ];
+    },
+    "baseline.json",
+  );
+  assert.throws(f.build, /missing local live verification/);
+});
+
+test("repaired findings require existing repair and scenario evidence", (t) => {
+  const f = fixture(t);
+  editAudit(f, (r) => {
+    r.routines[0].findings[0].evidence = [];
+  });
+  assert.throws(f.build, /unsupported repaired finding/);
+});
+
+test("verification is invalidated by source drift", (t) => {
+  const f = fixture(t);
+  editAudit(f, (r) => {
+    r.executions.push({
+      id: "stale",
+      kind: "local",
+      backend: "wasm",
+      command: "vitest run",
+      result: "passed",
+      sourceDigest: "0".repeat(64),
+      caseIds: [],
+      observation: "negative fixture",
+    });
+  });
+  assert.throws(f.build, /stale execution source digest/);
+});
+
+test("human route judgments must agree with traced implementations", (t) => {
+  const f = fixture(t);
+  editAudit(f, (r) => {
+    r.routines[0].backends.wasm.route = "javascript";
+  });
+  assert.throws(f.build, /route judgment disagrees/);
+});
+
+test("verified status accepts explicit source-bound local and observed CI evidence", (t) => {
+  const f = fixture(t);
+  const ledger = f.build();
+  editAudit(
+    f,
+    (r) => {
+      r.batches.find((b) => b.id === "vectors-arithmetic").prs = [
+        "https://github.com/rybosome/tspice/pull/1",
+      ];
+    },
+    "baseline.json",
+  );
+  editAudit(f, (r) => {
+    const names = new Set(r.routines.map((entry) => entry.routine));
+    const sourceDigest = auditSourceDigest(
+      f.root,
+      r,
+      ledger.routines.filter((entry) => names.has(entry.routine)),
+    );
+    const caseIds = r.routines.flatMap((entry) =>
+      entry.scenarios.map((scenario) => scenario.caseId),
+    );
+    r.executions = ["local", "ci"].map((kind) => ({
+      id: kind,
+      kind,
+      backend: "wasm",
+      command: "negative-test fixture, no real execution claim",
+      result: "passed",
+      sourceDigest,
+      caseIds,
+      observation: "synthetic validator fixture",
+      url: "https://github.com/rybosome/tspice/actions/runs/1/job/1",
+      commit: "1".repeat(40),
+    }));
+    r.routines[0].backends.wasm.executions = ["local", "ci"];
+    r.routines[0].backends.wasm.history.push("verified");
+  });
+  assert.equal(f.build().audit.counts.wasm.verified, 1);
+  f.edit(
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "const ABSOLUTE_NUMERIC_TOLERANCE = 1e-12;",
+    "const ABSOLUTE_NUMERIC_TOLERANCE = 1e-11;",
+  );
+  assert.throws(f.build, /stale execution source digest/);
 });

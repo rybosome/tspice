@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
+  "batches": [
+    {
+      "id": "cells-windows",
+      "routines": [
+        "card_c",
+        "insrtc_c",
+        "insrtd_c",
+        "insrti_c",
+        "scard_c",
+        "size_c",
+        "ssize_c",
+        "valid_c",
+        "wncard_c",
+        "wnfetd_c",
+        "wninsd_c",
+        "wnvald_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "vectors-arithmetic",
+      "routines": [
+        "vadd_c",
+        "vcrss_c",
+        "vdot_c",
+        "vhat_c",
+        "vminus_c",
+        "vnorm_c",
+        "vscl_c",
+        "vsub_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Observe pilot CI, record successful job evidence, then audit the remaining coordinate/matrix routines."
+    },
+    {
+      "id": "coordinates-matrices",
+      "routines": [
+        "axisar_c",
+        "georec_c",
+        "latrec_c",
+        "mtxv_c",
+        "mxm_c",
+        "mxv_c",
+        "recgeo_c",
+        "reclat_c",
+        "recsph_c",
+        "rotate_c",
+        "rotmat_c",
+        "sphrec_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "dsk",
+      "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "ek-1",
+      "routines": [
+        "ekaclc_c",
+        "ekacld_c",
+        "ekacli_c",
+        "ekcls_c",
+        "ekffld_c",
+        "ekfind_c",
+        "ekgc_c",
+        "ekgd_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "ek-2",
+      "routines": [
+        "ekgi_c",
+        "ekifld_c",
+        "eknseg_c",
+        "ekntab_c",
+        "ekopn_c",
+        "ekopr_c",
+        "ekopw_c",
+        "ektnam_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "ephemeris-1",
+      "routines": [
+        "spkcls_c",
+        "spkcov_c",
+        "spkez_c",
+        "spkezp_c",
+        "spkezr_c",
+        "spkgeo_c",
+        "spkgps_c",
+        "spkobj_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "ephemeris-2",
+      "routines": [
+        "spkopa_c",
+        "spkopn_c",
+        "spkpds_c",
+        "spkpos_c",
+        "spksfs_c",
+        "spkssb_c",
+        "spkuds_c",
+        "spkw08_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "error",
+      "routines": [
+        "chkin_c",
+        "chkout_c",
+        "failed_c",
+        "getmsg_c",
+        "reset_c",
+        "setmsg_c",
+        "sigerr_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "file-io-1",
+      "routines": [
+        "dafbfs_c",
+        "dafcls_c",
+        "daffna_c",
+        "dafopr_c",
+        "dascls_c",
+        "dasopr_c",
+        "dlabfs_c",
+        "dlacls"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "file-io-2",
+      "routines": [
+        "dlafns_c",
+        "dlaopn_c",
+        "dskmi2_c",
+        "dskopn_c",
+        "dskw02_c",
+        "exists_c",
+        "getfat_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "frames-1",
+      "routines": [
+        "ccifrm_c",
+        "cidfrm_c",
+        "ckcov_c",
+        "ckgp_c",
+        "ckgpav_c",
+        "cklpf_c",
+        "ckobj_c",
+        "ckupf_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "frames-2",
+      "routines": [
+        "cnmfrm_c",
+        "frinfo_c",
+        "frmnam_c",
+        "namfrm_c",
+        "pxform_c",
+        "sxform_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "geometry",
+      "routines": [
+        "illumf_c",
+        "illumg_c",
+        "ilumin_c",
+        "nvc2pl_c",
+        "occult_c",
+        "pl2nvc_c",
+        "sincpt_c",
+        "subpnt_c",
+        "subslr_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "geometry-gf",
+      "routines": [
+        "gfdist_c",
+        "gfrefn_c",
+        "gfrepf_c",
+        "gfrepi_c",
+        "gfsep_c",
+        "gfsstp_c",
+        "gfstep_c",
+        "gfstol_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "ids-names",
+      "routines": [
+        "bodc2n_c",
+        "bodc2s_c",
+        "boddef_c",
+        "bodfnd_c",
+        "bodn2c_c",
+        "bods2c_c",
+        "bodvar_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "kernel-pool",
+      "routines": [
+        "cvpool_c",
+        "dtpool_c",
+        "expool_c",
+        "gcpool_c",
+        "gdpool_c",
+        "gipool_c",
+        "gnpool_c",
+        "pcpool_c",
+        "pdpool_c",
+        "pipool_c",
+        "swpool_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "kernels",
+      "routines": [
+        "furnsh_c",
+        "kclear_c",
+        "kdata_c",
+        "kinfo_c",
+        "kplfrm_c",
+        "ktotal_c",
+        "kxtrct_c",
+        "unload_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "time-1",
+      "routines": [
+        "deltet_c",
+        "et2utc_c",
+        "scdecd_c",
+        "sce2c_c",
+        "sce2s_c",
+        "scencd_c",
+        "scs2e_c",
+        "sct2e_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "time-2",
+      "routines": [
+        "str2et_c",
+        "timdef_c",
+        "timout_c",
+        "tkvrsn_c",
+        "tparse_c",
+        "tpictr_c",
+        "unitim_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    }
+  ]
+}
