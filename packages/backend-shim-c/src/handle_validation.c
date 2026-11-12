@@ -9,7 +9,12 @@
 #include <string.h>
 
 typedef struct {
-  uintptr_t *items;
+  uintptr_t handle;
+  SpiceInt capacity;
+} tspice_cell_registry_entry;
+
+typedef struct {
+  tspice_cell_registry_entry *items;
   size_t len;
   size_t cap;
 } tspice_cell_registry;
@@ -18,7 +23,8 @@ typedef struct {
 //
 // We store raw pointer values (`uintptr_t`) in a sorted array so we can do
 // O(log n) membership checks via binary search.
-// It is used only to validate handles and prevent use-after-free.
+// It validates live handles and retains original backing capacities independently
+// of mutable SpiceCell.size values.
 //
 // Concurrency: not thread-safe. Callers must ensure no concurrent access
 // (e.g. the Node addon serializes CSPICE/shim calls with a mutex; WASM is
@@ -31,7 +37,7 @@ static size_t tspice_registry_lower_bound(uintptr_t handle, int *outFound) {
 
   while (lo < hi) {
     const size_t mid = lo + ((hi - lo) / 2);
-    const uintptr_t v = tspice_cells_registry.items[mid];
+    const uintptr_t v = tspice_cells_registry.items[mid].handle;
 
     if (v < handle) {
       lo = mid + 1;
@@ -41,7 +47,7 @@ static size_t tspice_registry_lower_bound(uintptr_t handle, int *outFound) {
   }
 
   if (outFound) {
-    *outFound = (lo < tspice_cells_registry.len && tspice_cells_registry.items[lo] == handle) ? 1 : 0;
+    *outFound = (lo < tspice_cells_registry.len && tspice_cells_registry.items[lo].handle == handle) ? 1 : 0;
   }
   return lo;
 }
@@ -67,7 +73,8 @@ int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxB
 
   if (tspice_cells_registry.len == tspice_cells_registry.cap) {
     const size_t nextCap = tspice_cells_registry.cap == 0 ? 16 : tspice_cells_registry.cap * 2;
-    uintptr_t *next = (uintptr_t *)realloc(tspice_cells_registry.items, nextCap * sizeof(uintptr_t));
+    tspice_cell_registry_entry *next = (tspice_cell_registry_entry *)realloc(
+        tspice_cells_registry.items, nextCap * sizeof(tspice_cell_registry_entry));
     if (!next) {
       char buf[160];
       snprintf(buf, sizeof(buf), "%s: failed to grow cell registry", ctx);
@@ -82,9 +89,10 @@ int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxB
     memmove(
         &tspice_cells_registry.items[idx + 1],
         &tspice_cells_registry.items[idx],
-        (tspice_cells_registry.len - idx) * sizeof(uintptr_t));
+        (tspice_cells_registry.len - idx) * sizeof(tspice_cell_registry_entry));
   }
-  tspice_cells_registry.items[idx] = handle;
+  tspice_cells_registry.items[idx].handle = handle;
+  tspice_cells_registry.items[idx].capacity = cell->size;
   tspice_cells_registry.len++;
 
   return 0;
@@ -110,7 +118,8 @@ static void tspice_registry_maybe_shrink(void) {
   if (nextCap < 16) nextCap = 16;
   if (nextCap < tspice_cells_registry.len) nextCap = tspice_cells_registry.len;
 
-  uintptr_t *next = (uintptr_t *)realloc(tspice_cells_registry.items, nextCap * sizeof(uintptr_t));
+  tspice_cell_registry_entry *next = (tspice_cell_registry_entry *)realloc(
+        tspice_cells_registry.items, nextCap * sizeof(tspice_cell_registry_entry));
   if (!next) {
     // Best-effort: if shrinking fails, keep the current allocation.
     return;
@@ -134,7 +143,7 @@ int tspice_registry_remove(SpiceCell *cell) {
     memmove(
         &tspice_cells_registry.items[idx],
         &tspice_cells_registry.items[idx + 1],
-        (tspice_cells_registry.len - idx - 1) * sizeof(uintptr_t));
+        (tspice_cells_registry.len - idx - 1) * sizeof(tspice_cell_registry_entry));
   }
   tspice_cells_registry.len--;
   tspice_registry_maybe_shrink();
@@ -168,4 +177,24 @@ SpiceCell *tspice_validate_handle(
   }
 
   return (SpiceCell *)handle;
+}
+
+int tspice_validate_cell_capacity(
+    SpiceCell *cell,
+    SpiceInt size,
+    const char *ctx,
+    char *err,
+    int errMaxBytes) {
+  int found = 0;
+  const size_t idx = tspice_registry_lower_bound((uintptr_t)cell, &found);
+  if (!found) {
+    return tspice_return_error(err, errMaxBytes, "Cell capacity lookup requires a registered handle");
+  }
+  if (size > tspice_cells_registry.items[idx].capacity) {
+    char buf[220];
+    snprintf(buf, sizeof(buf), "%s: size exceeds allocated cell capacity (%" PRIdMAX ")",
+        ctx, (intmax_t)tspice_cells_registry.items[idx].capacity);
+    return tspice_return_error(err, errMaxBytes, buf);
+  }
+  return 0;
 }

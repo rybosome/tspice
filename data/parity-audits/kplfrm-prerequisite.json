@@ -72,7 +72,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "After the failing invalid-handle/class regressions, the repaired production native addon built and loaded. Full required native lane passed: 638 live parity tests (319 scenarios per backend), all 669 parity-package tests, no skips; Node kernels 7 tests and WASM kernels 5 tests passed. Full required JS lane, 38 ledger regressions, format/lint and generated drift validation also passed. macOS arm64, Node22.23.4, pnpm10.13.1, SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. The regenerated web/Node WASM binary is unchanged by these JS/native-only boundary repairs."
+      "observation": "After the failing invalid-handle/class regressions, the repaired production native addon built and loaded. Full required native lane passed: 638 live parity tests (319 scenarios per backend), all 669 parity-package tests, no skips; Node kernels 7 tests and WASM kernels 5 tests passed. Full required JS lane, 38 ledger regressions, format/lint and generated drift validation also passed. macOS arm64, Node22.23.4, pnpm10.13.1, SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. The regenerated web/Node WASM binary is unchanged by these JS/native-only boundary repairs.",
+      "historical": true
     },
     {
       "id": "local-boundaries-wasm-2026-11-12",
@@ -89,7 +90,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "After the failing invalid-handle/class regressions, the repaired production native addon built and loaded. Full required native lane passed: 638 live parity tests (319 scenarios per backend), all 669 parity-package tests, no skips; Node kernels 7 tests and WASM kernels 5 tests passed. Full required JS lane, 38 ledger regressions, format/lint and generated drift validation also passed. macOS arm64, Node22.23.4, pnpm10.13.1, SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. The regenerated web/Node WASM binary is unchanged by these JS/native-only boundary repairs."
+      "observation": "After the failing invalid-handle/class regressions, the repaired production native addon built and loaded. Full required native lane passed: 638 live parity tests (319 scenarios per backend), all 669 parity-package tests, no skips; Node kernels 7 tests and WASM kernels 5 tests passed. Full required JS lane, 38 ledger regressions, format/lint and generated drift validation also passed. macOS arm64, Node22.23.4, pnpm10.13.1, SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. The regenerated web/Node WASM binary is unchanged by these JS/native-only boundary repairs.",
+      "historical": true
     },
     {
       "id": "ci-boundaries-node-43310416805",
@@ -108,7 +110,8 @@
       ],
       "commit": "d6282dff1c5f8ea6f84b5667691c873b711e3eb0",
       "url": "https://github.com/rybosome/tspice/actions/runs/43310416805/job/131504722621",
-      "observation": "Observed Linux Node22 production native build/load and native-required sanity assertion. All 638 live parity tests (319 per backend), all 669 parity-package tests passed with no skips; direct Node kernels 7 and WASM kernels 5 tests passed after malformed-handle/class repairs. All 15 jobs in the first-attempt CI run passed. Final restacked native required lane also passed locally with all 638/669 tests."
+      "observation": "Observed Linux Node22 production native build/load and native-required sanity assertion. All 638 live parity tests (319 per backend), all 669 parity-package tests passed with no skips; direct Node kernels 7 and WASM kernels 5 tests passed after malformed-handle/class repairs. All 15 jobs in the first-attempt CI run passed. Final restacked native required lane also passed locally with all 638/669 tests.",
+      "historical": true
     },
     {
       "id": "ci-boundaries-wasm-43310416805",
@@ -127,7 +130,42 @@
       ],
       "commit": "d6282dff1c5f8ea6f84b5667691c873b711e3eb0",
       "url": "https://github.com/rybosome/tspice/actions/runs/43310416805/job/131504722621",
-      "observation": "Observed Linux Node22 production native build/load and native-required sanity assertion. All 638 live parity tests (319 per backend), all 669 parity-package tests passed with no skips; direct Node kernels 7 and WASM kernels 5 tests passed after malformed-handle/class repairs. All 15 jobs in the first-attempt CI run passed. Final restacked native required lane also passed locally with all 638/669 tests."
+      "observation": "Observed Linux Node22 production native build/load and native-required sanity assertion. All 638 live parity tests (319 per backend), all 669 parity-package tests passed with no skips; direct Node kernels 7 and WASM kernels 5 tests passed after malformed-handle/class repairs. All 15 jobs in the first-attempt CI run passed. Final restacked native required lane also passed locally with all 638/669 tests.",
+      "historical": true
+    },
+    {
+      "id": "local-allocation-safety-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5fdd8a764960d4f07f47f271f23383e3f0d2822ee3bbf2b38b48840a3f1187c4",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
+    },
+    {
+      "id": "local-allocation-safety-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5fdd8a764960d4f07f47f271f23383e3f0d2822ee3bbf2b38b48840a3f1187c4",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
     }
   ],
   "routines": [
@@ -234,29 +272,42 @@
             "kernels-kplfrm-empty-pool-success",
             "kernels-kplfrm-set-too-small-error"
           ]
+        },
+        {
+          "id": "shared-wasm-cell-handle-identity",
+          "status": "open",
+          "summary": "Later cell audit demonstrated same-address foreign handles and reused expired pointers can pass the shared WASM membership guard, including consumers such as kplfrm. A separate opaque-token lifetime repair is in progress; earlier support/class tests do not certify this misuse boundary.",
+          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-boundaries-node-2026-11-12",
-            "ci-boundaries-node-43310416805"
-          ]
+          "executions": ["local-allocation-safety-node-2026-11-12"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "needs-repair"
+          ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-boundaries-wasm-2026-11-12",
-            "ci-boundaries-wasm-43310416805"
-          ]
+          "executions": ["local-allocation-safety-wasm-2026-11-12"]
         }
       }
     }
   ],
-  "verificationNote": "Current-source local and observed CI execution passed after native handle/class repairs. Earlier compiled-repair observations remain historical. Recheck CI/rebaseability after metadata updates or restacking."
+  "verificationNote": "Final source-bound local lanes passed for allocation bounds, rollback and checked arithmetic. Current CI is pending. WASM pointer-identity defects remain explicitly open where applicable and require the separate repair before semantic completion."
 }

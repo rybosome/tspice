@@ -4,6 +4,20 @@
     "baselineRoutines": 162,
     "batches": [
       {
+        "id": "cell-capacity-prerequisite",
+        "routines": [
+          "ssize_c",
+          "valid_c",
+          "wnvald_c"
+        ],
+        "dependsOn": [
+          "kplfrm-prerequisite"
+        ],
+        "prs": [],
+        "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification.",
+        "record": "data/parity-audits/cell-capacity-prerequisite.json"
+      },
+      {
         "id": "cells-windows",
         "routines": [
           "card_c",
@@ -12,36 +26,16 @@
           "insrti_c",
           "scard_c",
           "size_c",
-          "ssize_c",
-          "valid_c",
           "wncard_c",
           "wnfetd_c",
-          "wninsd_c",
-          "wnvald_c"
+          "wninsd_c"
         ],
-        "dependsOn": [],
+        "dependsOn": [
+          "cell-capacity-prerequisite"
+        ],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline.",
         "record": null
-      },
-      {
-        "id": "vectors-arithmetic",
-        "routines": [
-          "vadd_c",
-          "vcrss_c",
-          "vdot_c",
-          "vhat_c",
-          "vminus_c",
-          "vnorm_c",
-          "vscl_c",
-          "vsub_c"
-        ],
-        "dependsOn": [],
-        "prs": [
-          "https://github.com/rybosome/tspice/pull/679"
-        ],
-        "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change.",
-        "record": "data/parity-audits/vectors-arithmetic.json"
       },
       {
         "id": "coordinates-matrices",
@@ -298,20 +292,6 @@
         "record": null
       },
       {
-        "id": "kplfrm-prerequisite",
-        "routines": [
-          "kplfrm_c"
-        ],
-        "dependsOn": [
-          "vectors-arithmetic"
-        ],
-        "prs": [
-          "https://github.com/rybosome/tspice/pull/680"
-        ],
-        "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change.",
-        "record": "data/parity-audits/kplfrm-prerequisite.json"
-      },
-      {
         "id": "kernels",
         "routines": [
           "furnsh_c",
@@ -326,6 +306,20 @@
         "prs": [],
         "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
         "record": null
+      },
+      {
+        "id": "kplfrm-prerequisite",
+        "routines": [
+          "kplfrm_c"
+        ],
+        "dependsOn": [
+          "vectors-arithmetic"
+        ],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/680"
+        ],
+        "nextAction": "Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical.",
+        "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
         "id": "time-1",
@@ -359,20 +353,39 @@
         "prs": [],
         "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
         "record": null
+      },
+      {
+        "id": "vectors-arithmetic",
+        "routines": [
+          "vadd_c",
+          "vcrss_c",
+          "vdot_c",
+          "vhat_c",
+          "vminus_c",
+          "vnorm_c",
+          "vscl_c",
+          "vsub_c"
+        ],
+        "dependsOn": [],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/679"
+        ],
+        "nextAction": "Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical.",
+        "record": "data/parity-audits/vectors-arithmetic.json"
       }
     ],
     "counts": {
       "node": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 150,
+        "reviewed": 12,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 153,
-        "reviewed": 0,
-        "needs-repair": 0,
-        "verified": 9
+        "unreviewed": 150,
+        "reviewed": 8,
+        "needs-repair": 4,
+        "verified": 0
       }
     }
   },
@@ -391,7 +404,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 319,
+    "scenarios": 327,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -3859,7 +3872,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 100
+          "line": 106
         }
       },
       "mapping": {
@@ -3910,7 +3923,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 528
+            "line": 563
           }
         }
       ],
@@ -18611,7 +18624,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 123
+          "line": 134
         }
       },
       "mapping": {
@@ -18662,7 +18675,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 659
+            "line": 695
           }
         }
       ],
@@ -18784,7 +18797,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 120
+          "line": 131
         }
       },
       "mapping": {
@@ -18835,7 +18848,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 635
+            "line": 671
           }
         }
       ],
@@ -18957,7 +18970,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 117
+          "line": 128
         }
       },
       "mapping": {
@@ -19008,7 +19021,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 606
+            "line": 642
           }
         }
       ],
@@ -20071,15 +20084,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-boundaries-node-2026-11-12",
-            "ci-boundaries-node-43310416805"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20087,15 +20100,16 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed",
+            "needs-repair"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-boundaries-wasm-2026-11-12",
-            "ci-boundaries-wasm-43310416805"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "needs-repair",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -24361,7 +24375,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 94
+          "line": 100
         }
       },
       "mapping": {
@@ -24412,7 +24426,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 504
+            "line": 539
           }
         }
       ],
@@ -26265,7 +26279,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 105
+          "line": 111
         }
       },
       "mapping": {
@@ -26316,7 +26330,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 555
+            "line": 590
           }
         }
       ],
@@ -29770,7 +29784,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 88
+          "line": 94
         }
       },
       "mapping": {
@@ -29810,7 +29824,7 @@
             "ssize_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -29821,7 +29835,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 480
+            "line": 514
           }
         }
       ],
@@ -29898,6 +29912,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-ssize-audit-shrink-restore-original",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/ssize.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.card",
+              "cells-windows.insrti",
+              "cells-windows.size",
+              "cells-windows.ssize"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Logical capacity shrinks/resets then returns to original allocation, including a temporary zero size.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
             "caseId": "cells-windows-ssize-negative-size-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/ssize.cases.json",
             "expectation": "error",
@@ -29906,7 +29941,13 @@
               "cells-windows.ssize"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative ssize argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
           },
           {
             "caseId": "cells-windows-ssize-resizes-cell-success",
@@ -29918,18 +29959,47 @@
               "cells-windows.ssize"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "ssize shrinks logical capacity within original storage and resets cardinality; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
-        "batch": "cells-windows",
+        "batch": "cell-capacity-prerequisite",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-allocation-safety-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair"
+          ],
+          "route": "direct",
+          "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-allocation-safety-wasm-2026-11-12"
+          ],
+          "status": "needs-repair",
+          "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
     },
@@ -32583,15 +32653,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -32601,15 +32671,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -32633,7 +32703,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 110
+          "line": 121
         }
       },
       "mapping": {
@@ -32673,7 +32743,7 @@
             "valid_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -32684,7 +32754,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 582
+            "line": 617
           }
         }
       ],
@@ -32761,6 +32831,86 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-valid-audit-n-exceeds-size",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/valid.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.insrti",
+              "cells-windows.valid"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Set validation rejects too many input elements before accessing them.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-valid-audit-unsorted-duplicate-char",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/valid.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.card",
+              "cells-windows.insrtc",
+              "cells-windows.scard",
+              "cells-windows.valid"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-valid-audit-unsorted-duplicate-double",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/valid.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.card",
+              "cells-windows.insrtd",
+              "cells-windows.scard",
+              "cells-windows.valid"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-valid-audit-unsorted-duplicate-int",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/valid.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.card",
+              "cells-windows.insrti",
+              "cells-windows.scard",
+              "cells-windows.valid"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
             "caseId": "cells-windows-valid-negative-n-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/valid.cases.json",
             "expectation": "error",
@@ -32769,7 +32919,13 @@
               "cells-windows.valid"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative valid argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
           },
           {
             "caseId": "cells-windows-valid-normalizes-set-success",
@@ -32781,18 +32937,47 @@
               "cells-windows.valid"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "valid runs against a populated int set cell; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
-        "batch": "cells-windows",
+        "batch": "cell-capacity-prerequisite",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-allocation-safety-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair"
+          ],
+          "route": "direct",
+          "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-allocation-safety-wasm-2026-11-12"
+          ],
+          "status": "needs-repair",
+          "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
     },
@@ -32997,15 +33182,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33015,15 +33200,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33226,15 +33411,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33244,15 +33429,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33480,15 +33665,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33498,15 +33683,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33730,15 +33915,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33748,15 +33933,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33962,15 +34147,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33980,15 +34165,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34247,15 +34432,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34265,15 +34450,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34483,15 +34668,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-allocation-safety-node-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34501,15 +34686,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-allocation-safety-wasm-2026-11-12"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34568,7 +34753,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 131
+          "line": 142
         }
       },
       "mapping": {
@@ -34619,7 +34804,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 852
+            "line": 888
           }
         }
       ],
@@ -34785,7 +34970,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 134
+          "line": 145
         }
       },
       "mapping": {
@@ -34836,7 +35021,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 887
+            "line": 923
           }
         }
       ],
@@ -34980,7 +35165,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 128
+          "line": 139
         }
       },
       "mapping": {
@@ -35031,7 +35216,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 824
+            "line": 860
           }
         }
       ],
@@ -35182,7 +35367,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 140
+          "line": 157
         }
       },
       "mapping": {
@@ -35222,7 +35407,7 @@
             "wnvald_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -35233,7 +35418,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
-            "line": 940
+            "line": 976
           }
         }
       ],
@@ -35310,6 +35495,62 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "cells-windows-wnvald-audit-n-exceeds-size",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wnvald.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "cells-windows.wnvald"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Too many endpoints are rejected before inspecting data.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-wnvald-audit-odd-endpoint-count",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wnvald.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "cells-windows.wnvald"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "An odd input count cannot form complete intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
+            "caseId": "cells-windows-wnvald-audit-unsorted-zero-pair",
+            "source": "packages/py-parity-checking/src/cases/cells-windows/wnvald.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.scard",
+              "cells-windows.wncard",
+              "cells-windows.wnfetd",
+              "cells-windows.wninsd",
+              "cells-windows.wnvald"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Growing endpoint cardinality appends zero storage; validation sorts/merges the resulting out-of-order intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
+          },
+          {
             "caseId": "cells-windows-wnvald-negative-n-error",
             "source": "packages/py-parity-checking/src/cases/cells-windows/wnvald.cases.json",
             "expectation": "error",
@@ -35318,7 +35559,13 @@
               "cells-windows.wnvald"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative wnvald argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
           },
           {
             "caseId": "cells-windows-wnvald-normalizes-window-success",
@@ -35331,18 +35578,47 @@
               "cells-windows.wnvald"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "wnvald validates a tracked window and preserves interval access; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity.",
+              "record": "data/parity-audits/cell-capacity-prerequisite.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
-        "batch": "cells-windows",
+        "batch": "cell-capacity-prerequisite",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-allocation-safety-node-2026-11-12"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair"
+          ],
+          "route": "direct",
+          "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-allocation-safety-wasm-2026-11-12"
+          ],
+          "status": "needs-repair",
+          "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
     },

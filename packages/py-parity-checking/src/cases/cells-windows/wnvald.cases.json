@@ -22,11 +22,24 @@
         "n": 4,
         "windowId": "W_WNVALD"
       },
-      { "op": "cells-windows.wncard", "windowId": "W_WNVALD" },
-      { "op": "cells-windows.wnfetd", "windowId": "W_WNVALD", "index": 0 },
-      { "op": "cells-windows.wnfetd", "windowId": "W_WNVALD", "index": 1 }
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W_WNVALD"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W_WNVALD",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W_WNVALD",
+        "index": 1
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-wnvald-negative-n-error",
@@ -46,6 +59,107 @@
         "windowId": "W_WNVALD_ERR"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnvald-audit-unsorted-zero-pair",
+    "description": "Growing endpoint cardinality appends zero storage; validation sorts/merges the resulting out-of-order intervals.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 2,
+        "right": 4,
+        "maxIntervals": 4
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 6
+      },
+      {
+        "op": "cells-windows.wnvald",
+        "windowId": "W",
+        "size": 8,
+        "n": 6
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 1
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnvald-audit-odd-endpoint-count",
+    "description": "An odd input count cannot form complete intervals.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 2
+      },
+      {
+        "op": "cells-windows.wnvald",
+        "windowId": "W",
+        "size": 4,
+        "n": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNMATCHENDPTS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wnvald-audit-n-exceeds-size",
+    "description": "Too many endpoints are rejected before inspecting data.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 2
+      },
+      {
+        "op": "cells-windows.wnvald",
+        "windowId": "W",
+        "size": 4,
+        "n": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWTOOSMALL"]
+    }
   }
 ]

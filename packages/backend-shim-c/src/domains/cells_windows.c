@@ -53,24 +53,47 @@ static int tspice_spice_int_to_int_checked(
 
 static SpiceCell *tspice_as_cell(uintptr_t handle) { return (SpiceCell *)handle; }
 
+// Creation can fail before registration. Such storage cannot be released through
+// the public free path, which deliberately rejects unregistered pointers.
+static void tspice_destroy_cell_storage(SpiceCell *cell) {
+  free(cell->base);
+  free(cell);
+}
+
+
+// Compute in size_t before adding control slots, then check multiplication on
+// both 32-bit WASM and native hosts. Signed SpiceInt addition can overflow first.
+static int tspice_cell_storage_bytes(
+    SpiceInt capacity, size_t elementBytes, size_t *outBytes, char *err, int errMaxBytes) {
+  const size_t elements = (size_t)SPICE_CELL_CTRLSZ + (size_t)capacity;
+  if (elementBytes == 0 || elements > SIZE_MAX / elementBytes) {
+    return tspice_return_error(err, errMaxBytes, "Cell backing allocation exceeds addressable memory");
+  }
+  *outBytes = elements * elementBytes;
+  return 0;
+}
+
 static int tspice_alloc_and_init_int_cell(SpiceInt size, uintptr_t *outCell, char *err, int errMaxBytes) {
   if (size < 0) {
     return tspice_return_error(err, errMaxBytes, "tspice_new_int_cell(): size must be >= 0");
   }
+
+  size_t bytes = 0;
+  if (tspice_cell_storage_bytes(size, sizeof(SpiceInt), &bytes, err, errMaxBytes) != 0) return 1;
 
   SpiceCell *cell = (SpiceCell *)malloc(sizeof(SpiceCell));
   if (!cell) {
     return tspice_return_error(err, errMaxBytes, "tspice_new_int_cell(): malloc(cell) failed");
   }
 
-  SpiceInt *base = (SpiceInt *)malloc((size_t)(SPICE_CELL_CTRLSZ + size) * sizeof(SpiceInt));
+  SpiceInt *base = (SpiceInt *)malloc(bytes);
   if (!base) {
     free(cell);
     return tspice_return_error(err, errMaxBytes, "tspice_new_int_cell(): malloc(base) failed");
   }
 
   memset(cell, 0, sizeof(*cell));
-  memset(base, 0, (size_t)(SPICE_CELL_CTRLSZ + size) * sizeof(SpiceInt));
+  memset(base, 0, bytes);
 
   cell->dtype = SPICE_INT;
   cell->length = 0;
@@ -114,20 +137,23 @@ static int tspice_alloc_and_init_double_cell(
     return tspice_return_error(err, errMaxBytes, "tspice_new_double_cell(): size must be >= 0");
   }
 
+  size_t bytes = 0;
+  if (tspice_cell_storage_bytes(size, sizeof(SpiceDouble), &bytes, err, errMaxBytes) != 0) return 1;
+
   SpiceCell *cell = (SpiceCell *)malloc(sizeof(SpiceCell));
   if (!cell) {
     return tspice_return_error(err, errMaxBytes, "tspice_new_double_cell(): malloc(cell) failed");
   }
 
   SpiceDouble *base =
-      (SpiceDouble *)malloc((size_t)(SPICE_CELL_CTRLSZ + size) * sizeof(SpiceDouble));
+      (SpiceDouble *)malloc(bytes);
   if (!base) {
     free(cell);
     return tspice_return_error(err, errMaxBytes, "tspice_new_double_cell(): malloc(base) failed");
   }
 
   memset(cell, 0, sizeof(*cell));
-  memset(base, 0, (size_t)(SPICE_CELL_CTRLSZ + size) * sizeof(SpiceDouble));
+  memset(base, 0, bytes);
 
   cell->dtype = SPICE_DP;
   cell->length = 0;
@@ -173,20 +199,23 @@ static int tspice_alloc_and_init_double_cell_uninitialized(
     return tspice_return_error(err, errMaxBytes, "tspice_new_window(): size must be >= 0");
   }
 
+  size_t bytes = 0;
+  if (tspice_cell_storage_bytes(capacity, sizeof(SpiceDouble), &bytes, err, errMaxBytes) != 0) return 1;
+
   SpiceCell *cell = (SpiceCell *)malloc(sizeof(SpiceCell));
   if (!cell) {
     return tspice_return_error(err, errMaxBytes, "tspice_new_window(): malloc(cell) failed");
   }
 
   SpiceDouble *base =
-      (SpiceDouble *)malloc((size_t)(SPICE_CELL_CTRLSZ + capacity) * sizeof(SpiceDouble));
+      (SpiceDouble *)malloc(bytes);
   if (!base) {
     free(cell);
     return tspice_return_error(err, errMaxBytes, "tspice_new_window(): malloc(base) failed");
   }
 
   memset(cell, 0, sizeof(*cell));
-  memset(base, 0, (size_t)(SPICE_CELL_CTRLSZ + capacity) * sizeof(SpiceDouble));
+  memset(base, 0, bytes);
 
   cell->dtype = SPICE_DP;
   cell->length = 0;
@@ -217,14 +246,13 @@ static int tspice_alloc_and_init_char_cell(
     return tspice_return_error(err, errMaxBytes, "tspice_new_char_cell(): length must be > 0");
   }
 
+  size_t bytes = 0;
+  if (tspice_cell_storage_bytes(size, (size_t)length, &bytes, err, errMaxBytes) != 0) return 1;
+
   SpiceCell *cell = (SpiceCell *)malloc(sizeof(SpiceCell));
   if (!cell) {
     return tspice_return_error(err, errMaxBytes, "tspice_new_char_cell(): malloc(cell) failed");
   }
-
-  // Each "element" is a fixed-length string of `length` chars.
-  const size_t totalElements = (size_t)(SPICE_CELL_CTRLSZ + size);
-  const size_t bytes = totalElements * (size_t)length * sizeof(SpiceChar);
 
   SpiceChar *base = (SpiceChar *)malloc(bytes);
   if (!base) {
@@ -271,6 +299,9 @@ int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
+  if (!outCell) return tspice_return_error(err, errMaxBytes, "tspice_new_int_cell(): outCell must be non-null");
+  *outCell = 0;
+
 
   SpiceInt sz = 0;
   if (tspice_int_to_spice_int_checked(size, &sz, "tspice_new_int_cell()", err, errMaxBytes) != 0) {
@@ -284,7 +315,7 @@ int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes
     SpiceCell *cell = (SpiceCell *)(*outCell);
     const int reg = tspice_registry_add(cell, "tspice_new_int_cell()", err, errMaxBytes);
     if (reg != 0) {
-      tspice_free_cell(*outCell, NULL, 0);
+      tspice_destroy_cell_storage(cell);
       *outCell = 0;
       return 1;
     }
@@ -297,6 +328,9 @@ int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBy
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
+  if (!outCell) return tspice_return_error(err, errMaxBytes, "tspice_new_double_cell(): outCell must be non-null");
+  *outCell = 0;
+
 
   SpiceInt sz = 0;
   if (tspice_int_to_spice_int_checked(size, &sz, "tspice_new_double_cell()", err, errMaxBytes) != 0) {
@@ -310,7 +344,7 @@ int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBy
     SpiceCell *cell = (SpiceCell *)(*outCell);
     const int reg = tspice_registry_add(cell, "tspice_new_double_cell()", err, errMaxBytes);
     if (reg != 0) {
-      tspice_free_cell(*outCell, NULL, 0);
+      tspice_destroy_cell_storage(cell);
       *outCell = 0;
       return 1;
     }
@@ -328,6 +362,9 @@ int tspice_new_char_cell(
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
+  if (!outCell) return tspice_return_error(err, errMaxBytes, "tspice_new_char_cell(): outCell must be non-null");
+  *outCell = 0;
+
 
   SpiceInt sz = 0;
   SpiceInt len = 0;
@@ -345,7 +382,7 @@ int tspice_new_char_cell(
     SpiceCell *cell = (SpiceCell *)(*outCell);
     const int reg = tspice_registry_add(cell, "tspice_new_char_cell()", err, errMaxBytes);
     if (reg != 0) {
-      tspice_free_cell(*outCell, NULL, 0);
+      tspice_destroy_cell_storage(cell);
       *outCell = 0;
       return 1;
     }
@@ -359,6 +396,9 @@ int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int err
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
+  if (!outWindow) return tspice_return_error(err, errMaxBytes, "tspice_new_window(): outWindow must be non-null");
+  *outWindow = 0;
+
 
   if (maxIntervals < 0) {
     return tspice_return_error(err, errMaxBytes, "tspice_new_window(): maxIntervals must be >= 0");
@@ -381,7 +421,7 @@ int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int err
   SpiceCell *window = (SpiceCell *)(*outWindow);
   const int reg = tspice_registry_add(window, "tspice_new_window()", err, errMaxBytes);
   if (reg != 0) {
-    tspice_free_cell(*outWindow, NULL, 0);
+    tspice_destroy_cell_storage(window);
     *outWindow = 0;
     return 1;
   }
@@ -419,10 +459,7 @@ int tspice_free_cell(uintptr_t cellHandle, char *err, int errMaxBytes) {
 
   (void)tspice_registry_remove(cell);
 
-  if (cell->base) {
-    free(cell->base);
-  }
-  free(cell);
+  tspice_destroy_cell_storage(cell);
   return 0;
 }
 
@@ -439,10 +476,7 @@ int tspice_free_window(uintptr_t windowHandle, char *err, int errMaxBytes) {
 
   (void)tspice_registry_remove(window);
 
-  if (window->base) {
-    free(window->base);
-  }
-  free(window);
+  tspice_destroy_cell_storage(window);
   return 0;
 }
 
@@ -493,6 +527,7 @@ int tspice_ssize(int size, uintptr_t cellHandle, char *err, int errMaxBytes) {
     return 1;
   }
 
+  if (tspice_validate_cell_capacity(cell, sz, "tspice_ssize()", err, errMaxBytes) != 0) return 1;
   ssize_c(sz, cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -595,6 +630,7 @@ int tspice_valid(int size, int n, uintptr_t cellHandle, char *err, int errMaxByt
   if (tspice_int_to_spice_int_checked(size, &sz, "tspice_valid()", err, errMaxBytes) != 0) return 1;
   if (tspice_int_to_spice_int_checked(n, &nn, "tspice_valid()", err, errMaxBytes) != 0) return 1;
 
+  if (tspice_validate_cell_capacity(cell, sz, "tspice_valid()", err, errMaxBytes) != 0) return 1;
   valid_c(sz, nn, cell);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -957,6 +993,7 @@ int tspice_wnvald(int size, int n, uintptr_t windowHandle, char *err, int errMax
   if (tspice_int_to_spice_int_checked(size, &sz, "tspice_wnvald()", err, errMaxBytes) != 0) return 1;
   if (tspice_int_to_spice_int_checked(n, &nn, "tspice_wnvald()", err, errMaxBytes) != 0) return 1;
 
+  if (tspice_validate_cell_capacity(window, sz, "tspice_wnvald()", err, errMaxBytes) != 0) return 1;
   window->init = SPICEFALSE;
 
   wnvald_c(sz, nn, window);

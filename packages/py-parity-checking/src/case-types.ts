@@ -1518,12 +1518,12 @@ export type StepOutput =
   | { op: "cells-windows.insrti"; value: null }
   | { op: "cells-windows.scard"; value: null }
   | { op: "cells-windows.size"; value: number }
-  | { op: "cells-windows.ssize"; value: null }
-  | { op: "cells-windows.valid"; value: null }
+  | { op: "cells-windows.ssize"; value: { size: number; card: number } }
+  | { op: "cells-windows.valid"; value: number[] | string[] | null }
   | { op: "cells-windows.wncard"; value: number }
   | { op: "cells-windows.wninsd"; value: null }
   | { op: "cells-windows.wnfetd"; value: { left: number; right: number } }
-  | { op: "cells-windows.wnvald"; value: null }
+  | { op: "cells-windows.wnvald"; value: { left: number; right: number }[] }
   | { op: "kernel-pool.gdpool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gipool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gcpool"; value: KernelPoolFoundStrings }

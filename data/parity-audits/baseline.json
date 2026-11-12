@@ -3,6 +3,13 @@
   "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
   "batches": [
     {
+      "id": "cell-capacity-prerequisite",
+      "routines": ["ssize_c", "valid_c", "wnvald_c"],
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": [],
+      "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification."
+    },
+    {
       "id": "cells-windows",
       "routines": [
         "card_c",
@@ -11,32 +18,13 @@
         "insrti_c",
         "scard_c",
         "size_c",
-        "ssize_c",
-        "valid_c",
         "wncard_c",
         "wnfetd_c",
-        "wninsd_c",
-        "wnvald_c"
+        "wninsd_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["cell-capacity-prerequisite"],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
-    },
-    {
-      "id": "vectors-arithmetic",
-      "routines": [
-        "vadd_c",
-        "vcrss_c",
-        "vdot_c",
-        "vhat_c",
-        "vminus_c",
-        "vnorm_c",
-        "vscl_c",
-        "vsub_c"
-      ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change."
+      "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline."
     },
     {
       "id": "coordinates-matrices",
@@ -273,13 +261,6 @@
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
     },
     {
-      "id": "kplfrm-prerequisite",
-      "routines": ["kplfrm_c"],
-      "dependsOn": ["vectors-arithmetic"],
-      "prs": ["https://github.com/rybosome/tspice/pull/680"],
-      "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change."
-    },
-    {
       "id": "kernels",
       "routines": [
         "furnsh_c",
@@ -293,6 +274,13 @@
       "dependsOn": [],
       "prs": [],
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "kplfrm-prerequisite",
+      "routines": ["kplfrm_c"],
+      "dependsOn": ["vectors-arithmetic"],
+      "prs": ["https://github.com/rybosome/tspice/pull/680"],
+      "nextAction": "Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical."
     },
     {
       "id": "time-1",
@@ -324,6 +312,22 @@
       "dependsOn": [],
       "prs": [],
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "vectors-arithmetic",
+      "routines": [
+        "vadd_c",
+        "vcrss_c",
+        "vdot_c",
+        "vhat_c",
+        "vminus_c",
+        "vnorm_c",
+        "vscl_c",
+        "vsub_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/679"],
+      "nextAction": "Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical."
     }
   ]
 }
