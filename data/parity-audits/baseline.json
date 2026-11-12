@@ -140,9 +140,9 @@
         "setmsg_c",
         "sigerr_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["kplfrm-prerequisite"],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Run final required lanes for observable error/trace recovery and leading-blank repair, then observe both CI backends."
     },
     {
       "id": "file-io-1",

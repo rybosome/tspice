@@ -30,6 +30,7 @@ class StepErrorSetmsg:
 class StepErrorSigerr:
     op: Literal["error.sigerr"]
     short: str
+    capture: bool = False
 
 
 @dataclass(frozen=True)

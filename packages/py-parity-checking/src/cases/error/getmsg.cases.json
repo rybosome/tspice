@@ -3,19 +3,87 @@
     "caseId": "error-getmsg-long-roundtrip-success",
     "description": "getmsg(LONG) returns value previously set via setmsg",
     "workflow": [
-      { "op": "error.reset" },
-      { "op": "error.setmsg", "message": "py parity long message" },
-      { "op": "error.getmsg", "which": "LONG" }
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "py parity long message"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "error-getmsg-invalid-selector-error",
     "description": "Representative getmsg selector validation error path",
-    "workflow": [{ "op": "error.getmsg", "which": "NOPE" }],
+    "workflow": [
+      {
+        "op": "error.getmsg",
+        "which": "NOPE"
+      }
+    ],
     "expectation": {
       "kind": "error",
       "errorMessageIncludes": ["SHORT", "LONG", "EXPLAIN"]
+    }
+  },
+  {
+    "caseId": "error-getmsg-audit-all-selectors-clean-and-reset",
+    "description": "Each selector is observed before signaling, after automatic error recovery, and after explicit reset.",
+    "workflow": [
+      {
+        "op": "error.getmsg",
+        "which": "SHORT"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "EXPLAIN"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "  prepared long message"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(BADFRAMECLASS)",
+        "capture": true
+      },
+      {
+        "op": "error.getmsg",
+        "which": "SHORT"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "EXPLAIN"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
     }
   }
 ]

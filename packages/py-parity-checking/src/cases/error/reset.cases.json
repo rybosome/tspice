@@ -3,12 +3,72 @@
     "caseId": "error-reset-clears-long-message-success",
     "description": "reset clears previously set long message and failed state",
     "workflow": [
-      { "op": "error.setmsg", "message": "message before reset" },
-      { "op": "error.getmsg", "which": "LONG" },
-      { "op": "error.reset" },
-      { "op": "error.getmsg", "which": "LONG" },
-      { "op": "error.failed" }
+      {
+        "op": "error.setmsg",
+        "message": "message before reset"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.failed"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-reset-audit-repeat-reenable-message",
+    "description": "Repeated reset clears prepared text and allows replacement before another signal.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "clear before signaling"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "replacement after reset"
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITRESET)",
+        "capture": true
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.failed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

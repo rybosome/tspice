@@ -53,7 +53,7 @@ export function createErrorApi(module: EmscriptenModule): ErrorApi {
             if (result !== 0) {
               throwWasmSpiceError(module, errPtr, errMaxBytes, result);
             }
-            return module.UTF8ToString(outPtr, outMaxBytes).trim();
+            return module.UTF8ToString(outPtr, outMaxBytes).trimEnd();
           },
         );
       } finally {

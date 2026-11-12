@@ -3,22 +3,87 @@
     "caseId": "error-chkin-trace-stack-success",
     "description": "chkin/chkout updates traceback stack without setting failure status",
     "workflow": [
-      { "op": "error.reset" },
-      { "op": "error.chkin", "name": "PARITY_TRACE_A" },
-      { "op": "error.chkin", "name": "PARITY_TRACE_B" },
-      { "op": "error.chkout", "name": "PARITY_TRACE_B" },
-      { "op": "error.chkout", "name": "PARITY_TRACE_A" },
-      { "op": "error.failed" }
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.chkin",
+        "name": "PARITY_TRACE_A"
+      },
+      {
+        "op": "error.chkin",
+        "name": "PARITY_TRACE_B"
+      },
+      {
+        "op": "error.chkout",
+        "name": "PARITY_TRACE_B"
+      },
+      {
+        "op": "error.chkout",
+        "name": "PARITY_TRACE_A"
+      },
+      {
+        "op": "error.failed"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "error-chkin-empty-name-error",
     "description": "Representative chkin error path for empty traceback name",
-    "workflow": [{ "op": "error.chkin", "name": "" }],
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": ""
+      }
+    ],
     "expectation": {
       "kind": "error",
       "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "error-chkin-audit-nested-visible-trace",
+    "description": "Nested check-ins appear in captured real traceback; explicit pops after recovery leave the next signal with no user frames.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "AUDIT_OUTER"
+      },
+      {
+        "op": "error.chkin",
+        "name": "AUDIT_INNER"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "Trace with both active modules"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITTRACE)",
+        "capture": true
+      },
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "error.chkout",
+        "name": "AUDIT_INNER"
+      },
+      {
+        "op": "error.chkout",
+        "name": "AUDIT_OUTER"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITNEXT)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
     }
   }
 ]
