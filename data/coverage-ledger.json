@@ -319,9 +319,11 @@
           "swpool_c"
         ],
         "dependsOn": [],
-        "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/686"
+        ],
+        "nextAction": "Rebased onto current main after #685 merged; run both required local lanes, then observe and record current-source canonical CI before handoff.",
+        "record": "data/parity-audits/kernel-pool.json"
       },
       {
         "id": "kplfrm-prerequisite",
@@ -390,14 +392,14 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 122,
-        "reviewed": 0,
+        "unreviewed": 111,
+        "reviewed": 11,
         "needs-repair": 0,
         "verified": 40
       },
       "wasm": {
-        "unreviewed": 122,
-        "reviewed": 0,
+        "unreviewed": 111,
+        "reviewed": 11,
         "needs-repair": 0,
         "verified": 40
       }
@@ -418,7 +420,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 384,
+    "scenarios": 399,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -6558,7 +6560,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 144
+          "line": 166
         }
       },
       "mapping": {
@@ -6598,7 +6600,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -6618,7 +6620,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 93
+            "line": 103
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -6630,7 +6632,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 675
+                "line": 676
               },
               "calls": [
                 "tspice_cvpool"
@@ -6659,7 +6661,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 623
+            "line": 626
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -6686,6 +6688,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-cvpool-audit-independent-agents-unrelated-writes-and-reregistration",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/cvpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.cvpool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool",
+              "kernel-pool.swpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Each actual returned boolean reaches comparison across registration, consumption, unrelated writes, per-agent independent notifications, additive registration and an unregistered agent. Case: cvpool: independent agents unrelated writes and reregistration, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-cvpool-empty-agent-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/cvpool.cases.json",
             "expectation": "error",
@@ -6693,7 +6716,13 @@
               "kernel-pool.cvpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-cvpool-update-detection-lifecycle",
@@ -6705,18 +6734,51 @@
               "kernel-pool.swpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Each actual returned boolean reaches comparison across registration, consumption, unrelated writes, per-agent independent notifications, additive registration and an unregistered agent. Case: cvpool reports the expected update flags before and after a tracked variable change",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -10691,7 +10753,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 91
+          "line": 103
         }
       },
       "mapping": {
@@ -10731,7 +10793,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -10751,7 +10813,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 57
+            "line": 67
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -10763,7 +10825,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 668
+                "line": 669
               },
               "calls": [
                 "tspice_dtpool"
@@ -10792,7 +10854,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 616
+            "line": 619
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -10819,6 +10881,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-dtpool-audit-type-replacement-size-and-case",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/dtpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.dtpool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pdpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found, n and C/N type reach comparison across absent, integer, character and fractional replacements, including case mismatch and empty-write preservation. Case: dtpool: type replacement size and case, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-dtpool-report-type-size-and-miss",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/dtpool.cases.json",
             "expectation": "success",
@@ -10828,18 +10911,50 @@
               "kernel-pool.pdpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found, n and C/N type reach comparison across absent, integer, character and fractional replacements, including case mismatch and empty-write preservation. Case: dtpool reports type and cardinality for numeric and character variables and misses unknown names",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -14515,7 +14630,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 155
+          "line": 178
         }
       },
       "mapping": {
@@ -14555,7 +14670,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -14575,7 +14690,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 102
+            "line": 112
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -14587,7 +14702,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 676
+                "line": 677
               },
               "calls": [
                 "tspice_expool"
@@ -14616,7 +14731,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 624
+            "line": 627
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -14643,6 +14758,28 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-expool-audit-numeric-versus-character-and-case",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/expool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.dtpool",
+              "kernel-pool.expool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pdpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual booleans reach comparison across absent/case-mismatched names, numeric and character replacement, with dtpool proving a character variable still exists even when expool is false. Case: expool: numeric versus character and case, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-expool-empty-name-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/expool.cases.json",
             "expectation": "error",
@@ -14650,7 +14787,13 @@
               "kernel-pool.expool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-expool-numeric-existence-semantics",
@@ -14662,18 +14805,50 @@
               "kernel-pool.pdpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual booleans reach comparison across absent/case-mismatched names, numeric and character replacement, with dtpool proving a character variable still exists even when expool is false. Case: expool reports existence for numeric variables only and false for character or missing names",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -15522,7 +15697,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 61
+          "line": 70
         }
       },
       "mapping": {
@@ -15562,7 +15737,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -15582,7 +15757,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 33
+            "line": 41
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -15594,7 +15769,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 666
+                "line": 667
               },
               "calls": [
                 "tspice_gcpool"
@@ -15623,7 +15798,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 613
+            "line": 616
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -15650,6 +15825,26 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-gcpool-audit-paging-rounding-and-wrong-type",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/gcpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.gcpool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual found flag and complete ordered string page reaches live comparison, including blank/empty values, significant leading blanks, padding, offsets, past-end and numeric-type replacement. Case: gcpool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-gcpool-invalid-room-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/gcpool.cases.json",
             "expectation": "error",
@@ -15658,7 +15853,13 @@
               "kernel-pool.pcpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-gcpool-read-char-values-and-miss",
@@ -15669,18 +15870,52 @@
               "kernel-pool.pcpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual found flag and complete ordered string page reaches live comparison, including blank/empty values, significant leading blanks, padding, offsets, past-end and numeric-type replacement. Case: gcpool returns inserted character values and reports missing variables",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -15696,7 +15931,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 33
+          "line": 36
         }
       },
       "mapping": {
@@ -15736,7 +15971,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -15756,7 +15991,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 9
+            "line": 15
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -15768,7 +16003,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 664
+                "line": 665
               },
               "calls": [
                 "tspice_gdpool"
@@ -15797,7 +16032,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 611
+            "line": 614
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -15824,6 +16059,26 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-gdpool-audit-paging-rounding-and-wrong-type",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/gdpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.gdpool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual returned found flag, array length and double value reaches recursive live comparison, including offsets/room, past-end pages and wrong-type lookup after type replacement. Case: gdpool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-gdpool-invalid-room-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/gdpool.cases.json",
             "expectation": "error",
@@ -15832,7 +16087,13 @@
               "kernel-pool.pdpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-gdpool-read-double-values-and-miss",
@@ -15843,18 +16104,52 @@
               "kernel-pool.pdpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual returned found flag, array length and double value reaches recursive live comparison, including offsets/room, past-end pages and wrong-type lookup after type replacement. Case: gdpool returns a numeric slice from inserted doubles and misses unknown variables",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -18148,7 +18443,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 47
+          "line": 53
         }
       },
       "mapping": {
@@ -18188,7 +18483,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -18208,7 +18503,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 21
+            "line": 28
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -18220,7 +18515,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 665
+                "line": 666
               },
               "calls": [
                 "tspice_gipool"
@@ -18249,7 +18544,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 612
+            "line": 615
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -18276,6 +18571,43 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-gipool-audit-integer-conversion-overflow",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/gipool.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.gipool",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every actual found flag, integer value and page length reaches live comparison, including negative/positive fractional rounding and halfway ties, both signed boundaries, wrong type/past end and the named INTOUTOFRANGE error. Case: gipool: integer conversion overflow, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
+            "caseId": "kernel-pool-gipool-audit-paging-rounding-and-wrong-type",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/gipool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.gipool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual found flag, integer value and page length reaches live comparison, including negative/positive fractional rounding and halfway ties, both signed boundaries, wrong type/past end and the named INTOUTOFRANGE error. Case: gipool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-gipool-invalid-room-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/gipool.cases.json",
             "expectation": "error",
@@ -18284,7 +18616,13 @@
               "kernel-pool.pipool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-gipool-read-integer-values-and-miss",
@@ -18295,18 +18633,52 @@
               "kernel-pool.pipool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual found flag, integer value and page length reaches live comparison, including negative/positive fractional rounding and halfway ties, both signed boundaries, wrong type/past end and the named INTOUTOFRANGE error. Case: gipool returns inserted integer values and misses unknown variables",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -18322,7 +18694,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 79
+          "line": 90
         }
       },
       "mapping": {
@@ -18362,7 +18734,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -18382,7 +18754,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 45
+            "line": 54
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -18394,7 +18766,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 667
+                "line": 668
               },
               "calls": [
                 "tspice_gnpool"
@@ -18423,7 +18795,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 614
+            "line": 617
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -18450,6 +18822,25 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-gnpool-audit-percent-wildcard-paging-case-and-miss",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/gnpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.gnpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "All returned names, their CSPICE order and found/page lengths reach live comparison; percent/star patterns distinguish one-character/subsequence matching, case-sensitive names, paging and no matches. Neither dispatcher sorts results. Case: gnpool: percent wildcard paging case and miss, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-gnpool-invalid-room-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/gnpool.cases.json",
             "expectation": "error",
@@ -18458,7 +18849,13 @@
               "kernel-pool.pdpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-gnpool-template-match-and-miss",
@@ -18471,18 +18868,52 @@
               "kernel-pool.pipool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "All returned names, their CSPICE order and found/page lengths reach live comparison; percent/star patterns distinguish one-character/subsequence matching, case-sensitive names, paging and no matches. Neither dispatcher sorts results. Case: gnpool matches names inserted in the kernel pool and reports template misses",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -23293,7 +23724,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 123
+          "line": 141
         }
       },
       "mapping": {
@@ -23333,7 +23764,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -23353,7 +23784,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 85
+            "line": 95
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -23365,7 +23796,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 672
+                "line": 673
               },
               "calls": [
                 "tspice_pcpool"
@@ -23394,7 +23825,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 620
+            "line": 623
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -23421,6 +23852,44 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-pcpool-audit-empty-is-noop-and-type-replacement",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/pcpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.dtpool",
+              "kernel-pool.gcpool",
+              "kernel-pool.gdpool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Mutation is observed by actual gcpool/dtpool, with type replacement, empty/blank/leading/trailing strings, unchanged contents/type after an empty write and named BADVARNAME. The zero-count oracle invokes the same CSPICE library through SpiceyPy because its Python pcpool wrapper calls max() on the empty list. Case: pcpool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
+            "caseId": "kernel-pool-pcpool-audit-long-variable-name",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/pcpool.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.pcpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Mutation is observed by actual gcpool/dtpool, with type replacement, empty/blank/leading/trailing strings, unchanged contents/type after an empty write and named BADVARNAME. The zero-count oracle invokes the same CSPICE library through SpiceyPy because its Python pcpool wrapper calls max() on the empty list. Case: pcpool: long variable name, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-pcpool-empty-name-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/pcpool.cases.json",
             "expectation": "error",
@@ -23428,7 +23897,13 @@
               "kernel-pool.pcpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-pcpool-write-and-overwrite-lifecycle",
@@ -23440,18 +23915,52 @@
               "kernel-pool.pcpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Mutation is observed by actual gcpool/dtpool, with type replacement, empty/blank/leading/trailing strings, unchanged contents/type after an empty write and named BADVARNAME. The zero-count oracle invokes the same CSPICE library through SpiceyPy because its Python pcpool wrapper calls max() on the empty list. Case: pcpool writes character values and later overwrite is visible to read/type checks",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -23467,7 +23976,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 103
+          "line": 117
         }
       },
       "mapping": {
@@ -23507,7 +24016,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -23527,7 +24036,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 77
+            "line": 87
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -23539,7 +24048,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 670
+                "line": 671
               },
               "calls": [
                 "tspice_pdpool"
@@ -23568,7 +24077,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 618
+            "line": 621
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -23595,6 +24104,43 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-pdpool-audit-empty-is-noop-and-type-replacement",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/pdpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.dtpool",
+              "kernel-pool.gdpool",
+              "kernel-pool.pdpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Mutation is observed by subsequent actual gdpool/dtpool, with replacement, signed binary-exact fractions, unchanged contents/type after an empty write and named BADVARNAME. Case: pdpool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
+            "caseId": "kernel-pool-pdpool-audit-long-variable-name",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/pdpool.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Mutation is observed by subsequent actual gdpool/dtpool, with replacement, signed binary-exact fractions, unchanged contents/type after an empty write and named BADVARNAME. Case: pdpool: long variable name, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-pdpool-empty-name-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/pdpool.cases.json",
             "expectation": "error",
@@ -23602,7 +24148,13 @@
               "kernel-pool.pdpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-pdpool-write-and-overwrite-lifecycle",
@@ -23614,18 +24166,52 @@
               "kernel-pool.pdpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Mutation is observed by subsequent actual gdpool/dtpool, with replacement, signed binary-exact fractions, unchanged contents/type after an empty write and named BADVARNAME. Case: pdpool writes numeric values and later overwrite is visible to read/type checks",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -23662,7 +24248,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 114
+          "line": 130
         }
       },
       "mapping": {
@@ -23702,7 +24288,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -23722,7 +24308,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 81
+            "line": 91
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -23734,7 +24320,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 671
+                "line": 672
               },
               "calls": [
                 "tspice_pipool"
@@ -23763,7 +24349,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 619
+            "line": 622
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -23790,6 +24376,42 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-pipool-audit-empty-is-noop-and-type-replacement",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/pipool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.dtpool",
+              "kernel-pool.gdpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Mutation is observed by actual gipool/gdpool/dtpool, with replacement, signed boundaries, unchanged contents/type after an empty write and named BADVARNAME. Case: pipool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
+            "caseId": "kernel-pool-pipool-audit-long-variable-name",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/pipool.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Mutation is observed by actual gipool/gdpool/dtpool, with replacement, signed boundaries, unchanged contents/type after an empty write and named BADVARNAME. Case: pipool: long variable name, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-pipool-empty-name-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/pipool.cases.json",
             "expectation": "error",
@@ -23797,7 +24419,13 @@
               "kernel-pool.pipool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-pipool-write-and-overwrite-lifecycle",
@@ -23809,18 +24437,52 @@
               "kernel-pool.pipool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Mutation is observed by actual gipool/gdpool/dtpool, with replacement, signed boundaries, unchanged contents/type after an empty write and named BADVARNAME. Case: pipool writes integer values and later overwrite is visible to read/type checks",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },
@@ -32646,7 +33308,7 @@
         "domain": "kernel-pool",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernel-pool.ts",
-          "line": 136
+          "line": 157
         }
       },
       "mapping": {
@@ -32686,7 +33348,7 @@
             "swpool_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -32706,7 +33368,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernel-pool.ts",
-            "line": 89
+            "line": 99
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -32718,7 +33380,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 674
+                "line": 675
               },
               "calls": [
                 "tspice_swpool"
@@ -32747,7 +33409,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernel-pool.ts",
-            "line": 622
+            "line": 625
           },
           "factory": "createKernelPoolApi",
           "delegation": null,
@@ -32774,6 +33436,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernel-pool-swpool-audit-independent-agents-unrelated-writes-and-reregistration",
+            "source": "packages/py-parity-checking/src/cases/kernel-pool/swpool.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.cvpool",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool",
+              "kernel-pool.swpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Registration effects are observed through actual cvpool booleans before/after watched/unrelated writes, two independent agents, unknown variables, empty lists and additive re-registration; the void return alone is not used as success evidence. Case: swpool: independent agents unrelated writes and reregistration, observe actual pool contents or notification flags with live SpiceyPy",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
+          },
+          {
             "caseId": "kernel-pool-swpool-empty-agent-error",
             "source": "packages/py-parity-checking/src/cases/kernel-pool/swpool.cases.json",
             "expectation": "error",
@@ -32781,7 +33464,13 @@
               "kernel-pool.swpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing invalid-name/room case exercises documented typed validation or the Python wrapper boundary; two failures alone are not claimed as CSPICE diagnostic equivalence.",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           },
           {
             "caseId": "kernel-pool-swpool-watcher-lifecycle-and-empty-watch",
@@ -32793,18 +33482,51 @@
               "kernel-pool.swpool"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Registration effects are observed through actual cvpool booleans before/after watched/unrelated writes, two independent agents, unknown variables, empty lists and additive re-registration; the void return alone is not used as success evidence. Case: swpool establishes watch agents, including empty names watchlists, with expected cvpool toggling",
+              "record": "data/parity-audits/kernel-pool.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernel-pool",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernel-pool.json"
         }
       }
     },

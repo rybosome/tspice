@@ -3,7 +3,11 @@
     "caseId": "kernel-pool-pipool-write-and-overwrite-lifecycle",
     "description": "pipool writes integer values and later overwrite is visible to read/type checks",
     "workflow": [
-      { "op": "kernel-pool.pipool", "name": "KP_PI_INT", "values": [1, -2, 3] },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "KP_PI_INT",
+        "values": [1, -2, 3]
+      },
       {
         "op": "kernel-pool.gipool",
         "name": "KP_PI_INT",
@@ -21,14 +25,101 @@
         "start": 0,
         "room": 10
       },
-      { "op": "kernel-pool.dtpool", "name": "KP_PI_INT" }
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "KP_PI_INT"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-pipool-empty-name-error",
     "description": "Representative pipool validation error for empty names",
-    "workflow": [{ "op": "kernel-pool.pipool", "name": "", "values": [1] }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "kernel-pool.pipool",
+        "name": "",
+        "values": [1]
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-pipool-audit-empty-is-noop-and-type-replacement",
+    "description": "pipool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": [17]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": []
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": [-2147483648, 2147483647]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": []
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-pipool-audit-long-variable-name",
+    "description": "pipool: long variable name, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pipool",
+        "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "values": [1]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARNAME"]
+    }
   }
 ]

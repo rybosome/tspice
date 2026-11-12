@@ -276,8 +276,8 @@
         "swpool_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/686"],
+      "nextAction": "Rebased onto current main after #685 merged; run both required local lanes, then observe and record current-source canonical CI before handoff."
     },
     {
       "id": "kplfrm-prerequisite",

@@ -21,13 +21,19 @@
         "room": 10
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-gdpool-invalid-room-error",
     "description": "Representative gdpool argument validation error (negative room)",
     "workflow": [
-      { "op": "kernel-pool.pdpool", "name": "KP_GD_DOUBLE", "values": [1.5] },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "KP_GD_DOUBLE",
+        "values": [1.5]
+      },
       {
         "op": "kernel-pool.gdpool",
         "name": "KP_GD_DOUBLE",
@@ -35,6 +41,57 @@
         "room": -1
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-gdpool-audit-paging-rounding-and-wrong-type",
+    "description": "gdpool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": [-4.25, 0, 2.5, 9.75]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 2
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 1,
+        "room": 2
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 3,
+        "room": 3
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 4,
+        "room": 1
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": ["char"]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

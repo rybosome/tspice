@@ -3,24 +3,154 @@
     "caseId": "kernel-pool-cvpool-update-detection-lifecycle",
     "description": "cvpool reports the expected update flags before and after a tracked variable change",
     "workflow": [
-      { "op": "kernel-pool.pdpool", "name": "KP_CV_TRACKED", "values": [11] },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "KP_CV_TRACKED",
+        "values": [11]
+      },
       {
         "op": "kernel-pool.swpool",
         "agent": "KP_CV_AGENT",
         "names": ["KP_CV_TRACKED"]
       },
-      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" },
-      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" },
-      { "op": "kernel-pool.pdpool", "name": "KP_CV_TRACKED", "values": [12] },
-      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" },
-      { "op": "kernel-pool.cvpool", "agent": "KP_CV_AGENT" }
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "KP_CV_AGENT"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "KP_CV_AGENT"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "KP_CV_TRACKED",
+        "values": [12]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "KP_CV_AGENT"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "KP_CV_AGENT"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-cvpool-empty-agent-error",
     "description": "Representative cvpool validation error for empty agents",
-    "workflow": [{ "op": "kernel-pool.cvpool", "agent": "" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-cvpool-audit-independent-agents-unrelated-writes-and-reregistration",
+    "description": "cvpool: independent agents unrelated writes and reregistration, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "AUDIT_CVPOOL_A",
+        "names": ["AUDIT_CVPOOL_TRACKED"]
+      },
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "AUDIT_CVPOOL_B",
+        "names": ["AUDIT_CVPOOL_TRACKED"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_B"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT_CVPOOL_UNRELATED",
+        "values": [1]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT_CVPOOL_TRACKED",
+        "values": [1]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_B"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT_CVPOOL_TRACKED",
+        "values": ["x"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_B"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "AUDIT_CVPOOL_A",
+        "names": ["AUDIT_CVPOOL_OTHER"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT_CVPOOL_TRACKED",
+        "values": [9]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT_CVPOOL_OTHER",
+        "values": [2]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_A"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "AUDIT_CVPOOL_UNREGISTERED"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

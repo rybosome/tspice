@@ -10,7 +10,7 @@
  * - "finite integer" means `Number.isFinite(value) && Number.isInteger(value)`.
  *
  * Empty arrays:
- * - `pdpool`/`pipool`/`pcpool` accept `values: []` and set the variable to an empty list (size 0).
+ * - `pdpool`/`pipool`/`pcpool` accept `values: []` as a no-op; existing values/type remain unchanged.
  * - `swpool` accepts `names: []` and watches nothing (but still arms the agent so the next
  *   `cvpool(agent)` returns `true`).
  */
@@ -23,12 +23,15 @@ export interface KernelPoolApi {
   // --- Read ---------------------------------------------------------------
 
   /**
-   * Get numeric (double) kernel pool values.
+   * Get numeric (double) kernel pool values, preserving order and caller units.
+   * Missing/wrong-type variables return `{ found: false }`; a page past the end
+   * returns a found result with an empty values array.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gdpool_c.html
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
-   * - `start` must be a finite integer >= 0 (0-based).
-   * - `room` must be a finite integer > 0.
+   * - `start` must be a signed 32-bit integer >= 0 (0-based).
+   * - `room` must be a signed 32-bit integer > 0.
    */
   gdpool(
     name: string,
@@ -37,12 +40,15 @@ export interface KernelPoolApi {
   ): Found<{ values: number[] }>;
 
   /**
-   * Get numeric (integer) kernel pool values.
+   * Get numeric values rounded to nearest integers (halfway values away from zero).
+   * Out-of-range values signal SPICE(INTOUTOFRANGE). Missing/wrong-type variables
+   * return `{ found: false }`; a page past the end is found with empty values.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gipool_c.html
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
-   * - `start` must be a finite integer >= 0 (0-based).
-   * - `room` must be a finite integer > 0.
+   * - `start` must be a signed 32-bit integer >= 0 (0-based).
+   * - `room` must be a signed 32-bit integer > 0.
    */
   gipool(
     name: string,
@@ -51,12 +57,15 @@ export interface KernelPoolApi {
   ): Found<{ values: number[] }>;
 
   /**
-   * Get character kernel pool values.
+   * Get character values in stored order, preserving leading and trimming trailing
+   * padding blanks. Empty/blank values are valid. Missing/wrong-type variables
+   * return `{ found: false }`; a page past the end is found with empty values.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gcpool_c.html
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
-   * - `start` must be a finite integer >= 0 (0-based).
-   * - `room` must be a finite integer > 0.
+   * - `start` must be a signed 32-bit integer >= 0 (0-based).
+   * - `room` must be a signed 32-bit integer > 0.
    */
   gcpool(
     name: string,
@@ -65,7 +74,9 @@ export interface KernelPoolApi {
   ): Found<{ values: string[] }>;
 
   /**
-   * Get the names of kernel pool variables matching a template.
+   * Get variable names matching a case-sensitive template in CSPICE order, which
+   * is not generally sorted. No match returns `{ found: false }`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gnpool_c.html
    *
    * Wildcards:
    * - `*` matches any substring
@@ -73,8 +84,8 @@ export interface KernelPoolApi {
    *
    * Validation semantics:
    * - `template` must not be empty or whitespace-only.
-   * - `start` must be a finite integer >= 0 (0-based).
-   * - `room` must be a finite integer > 0.
+   * - `start` must be a signed 32-bit integer >= 0 (0-based).
+   * - `room` must be a signed 32-bit integer > 0.
    */
   gnpool(
     template: string,
@@ -84,6 +95,7 @@ export interface KernelPoolApi {
 
   /**
    * Get kernel pool variable type (`C` or `N`) and size.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dtpool_c.html
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
@@ -93,32 +105,38 @@ export interface KernelPoolApi {
   // --- Write --------------------------------------------------------------
 
   /**
-   * Put numeric (double) values into the kernel pool.
+   * Put numeric (double) values into the kernel pool. A nonempty write replaces
+   * previous values and changes the type to numeric.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pdpool_c.html
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
-   * - `values` may be empty (sets an empty value list).
+   * - `values` may be empty (a no-op preserving the previous value/type).
    * - Each value must be finite (no `NaN` / `±Infinity`).
    */
   pdpool(name: string, values: readonly number[]): void;
 
   /**
-   * Put numeric (integer) values into the kernel pool.
+   * Put numeric (integer) values into the kernel pool. A nonempty write replaces
+   * previous values and changes the type to numeric.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pipool_c.html
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
-   * - `values` may be empty (sets an empty value list).
+   * - `values` may be empty (a no-op preserving the previous value/type).
    * - Each value must be a safe integer in the signed 32-bit range
    *   [-2147483648, 2147483647].
    */
   pipool(name: string, values: readonly number[]): void;
 
   /**
-   * Put character values into the kernel pool.
+   * Put character values into the kernel pool, including empty/blank strings.
+   * A nonempty write replaces previous values and changes the type to character.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pcpool_c.html
    *
    * Validation semantics:
    * - `name` must not be empty or whitespace-only.
-   * - `values` may be empty (sets an empty value list).
+   * - `values` may be empty (a no-op preserving the previous value/type).
    */
   pcpool(name: string, values: readonly string[]): void;
 
@@ -126,8 +144,11 @@ export interface KernelPoolApi {
 
   /**
    * Set up a kernel pool "watch" for `agent`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/swpool_c.html
    *
    * After calling `swpool`, the next `cvpool(agent)` call will return `true`.
+   * Re-registering adds watched names; it does not remove previous names.
+   * Agents consume notifications independently; reading clears their update flag.
    *
    * Validation semantics:
    * - `agent` must not be empty or whitespace-only.
@@ -137,6 +158,7 @@ export interface KernelPoolApi {
 
   /**
    * Check whether watched variables for `agent` have been updated since the last call.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cvpool_c.html
    *
    * Validation semantics:
    * - `agent` must not be empty or whitespace-only.
@@ -145,6 +167,7 @@ export interface KernelPoolApi {
 
   /**
    * Check existence of a *numeric* kernel pool variable.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/expool_c.html
    *
    * NOTE: This does not detect character-valued variables; use `dtpool` if you need a
    * general existence/type check.

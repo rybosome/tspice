@@ -3,9 +3,21 @@
     "caseId": "kernel-pool-gnpool-template-match-and-miss",
     "description": "gnpool matches names inserted in the kernel pool and reports template misses",
     "workflow": [
-      { "op": "kernel-pool.pdpool", "name": "KP_GN_NUM", "values": [10.5] },
-      { "op": "kernel-pool.pipool", "name": "KP_GN_INT", "values": [7] },
-      { "op": "kernel-pool.pcpool", "name": "KP_GN_CHAR", "values": ["x"] },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "KP_GN_NUM",
+        "values": [10.5]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "KP_GN_INT",
+        "values": [7]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "KP_GN_CHAR",
+        "values": ["x"]
+      },
       {
         "op": "kernel-pool.gnpool",
         "template": "KP_GN_*",
@@ -19,13 +31,19 @@
         "room": 10
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-gnpool-invalid-room-error",
     "description": "Representative gnpool argument validation error (negative room)",
     "workflow": [
-      { "op": "kernel-pool.pdpool", "name": "KP_GN_NUM", "values": [10.5] },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "KP_GN_NUM",
+        "values": [10.5]
+      },
       {
         "op": "kernel-pool.gnpool",
         "template": "KP_GN_*",
@@ -33,6 +51,73 @@
         "room": -1
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-gnpool-audit-percent-wildcard-paging-case-and-miss",
+    "description": "gnpool: percent wildcard paging case and miss, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT_A1",
+        "values": [1]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT_A2",
+        "values": [2]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT_A10",
+        "values": [10]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "audit_A1",
+        "values": [11]
+      },
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "AUDIT_A%",
+        "start": 0,
+        "room": 1
+      },
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "AUDIT_A%",
+        "start": 1,
+        "room": 1
+      },
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "AUDIT_A%",
+        "start": 2,
+        "room": 1
+      },
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "AUDIT_*",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "audit_*",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.gnpool",
+        "template": "NO_MATCH%",
+        "start": 0,
+        "room": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

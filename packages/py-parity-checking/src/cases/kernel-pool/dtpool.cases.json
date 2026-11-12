@@ -13,10 +13,65 @@
         "name": "KP_DT_NUM",
         "values": [1.5, 2.5, 3.5]
       },
-      { "op": "kernel-pool.dtpool", "name": "KP_DT_CHAR" },
-      { "op": "kernel-pool.dtpool", "name": "KP_DT_NUM" },
-      { "op": "kernel-pool.dtpool", "name": "KP_DT_MISSING" }
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "KP_DT_CHAR"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "KP_DT_NUM"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "KP_DT_MISSING"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-dtpool-audit-type-replacement-size-and-case",
+    "description": "dtpool: type replacement size and case, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": [-2, 0, 4]
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": ["a", "b"]
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": [0.5]
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "audit"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

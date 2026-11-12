@@ -14,21 +14,112 @@
         "start": 0,
         "room": 10
       },
-      { "op": "kernel-pool.pdpool", "name": "KP_PD_NUM", "values": [42.25] },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "KP_PD_NUM",
+        "values": [42.25]
+      },
       {
         "op": "kernel-pool.gdpool",
         "name": "KP_PD_NUM",
         "start": 0,
         "room": 10
       },
-      { "op": "kernel-pool.dtpool", "name": "KP_PD_NUM" }
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "KP_PD_NUM"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-pdpool-empty-name-error",
     "description": "Representative pdpool validation error for empty names",
-    "workflow": [{ "op": "kernel-pool.pdpool", "name": "", "values": [1] }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "",
+        "values": [1]
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-pdpool-audit-empty-is-noop-and-type-replacement",
+    "description": "pdpool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": [17]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": []
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": [1.25, -3.5]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": []
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-pdpool-audit-long-variable-name",
+    "description": "pdpool: long variable name, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "values": [1]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARNAME"]
+    }
   }
 ]

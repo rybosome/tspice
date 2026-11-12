@@ -3,18 +3,92 @@
     "caseId": "kernel-pool-expool-numeric-existence-semantics",
     "description": "expool reports existence for numeric variables only and false for character or missing names",
     "workflow": [
-      { "op": "kernel-pool.pdpool", "name": "KP_EX_NUM", "values": [1.25] },
-      { "op": "kernel-pool.pcpool", "name": "KP_EX_CHAR", "values": ["x"] },
-      { "op": "kernel-pool.expool", "name": "KP_EX_NUM" },
-      { "op": "kernel-pool.expool", "name": "KP_EX_CHAR" },
-      { "op": "kernel-pool.expool", "name": "KP_EX_MISSING" }
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "KP_EX_NUM",
+        "values": [1.25]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "KP_EX_CHAR",
+        "values": ["x"]
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "KP_EX_NUM"
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "KP_EX_CHAR"
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "KP_EX_MISSING"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-expool-empty-name-error",
     "description": "Representative expool validation error for empty names",
-    "workflow": [{ "op": "kernel-pool.expool", "name": "" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "kernel-pool.expool",
+        "name": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-expool-audit-numeric-versus-character-and-case",
+    "description": "expool: numeric versus character and case, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.expool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": [4]
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "audit"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": ["x"]
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": [2.25]
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "AUDIT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

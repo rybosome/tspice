@@ -14,21 +14,112 @@
         "start": 0,
         "room": 10
       },
-      { "op": "kernel-pool.pcpool", "name": "KP_PC_CHAR", "values": ["gamma"] },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "KP_PC_CHAR",
+        "values": ["gamma"]
+      },
       {
         "op": "kernel-pool.gcpool",
         "name": "KP_PC_CHAR",
         "start": 0,
         "room": 10
       },
-      { "op": "kernel-pool.dtpool", "name": "KP_PC_CHAR" }
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "KP_PC_CHAR"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-pcpool-empty-name-error",
     "description": "Representative pcpool validation error for empty names",
-    "workflow": [{ "op": "kernel-pool.pcpool", "name": "", "values": ["x"] }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "",
+        "values": ["x"]
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-pcpool-audit-empty-is-noop-and-type-replacement",
+    "description": "pcpool: empty is noop and type replacement, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": [17]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": []
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": ["  leading", "trail  ", "", "   "]
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": []
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-pcpool-audit-long-variable-name",
+    "description": "pcpool: long variable name, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "values": ["x"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARNAME"]
+    }
   }
 ]

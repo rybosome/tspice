@@ -21,13 +21,19 @@
         "room": 10
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-gipool-invalid-room-error",
     "description": "Representative gipool argument validation error (negative room)",
     "workflow": [
-      { "op": "kernel-pool.pipool", "name": "KP_GI_INT", "values": [1] },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "KP_GI_INT",
+        "values": [1]
+      },
       {
         "op": "kernel-pool.gipool",
         "name": "KP_GI_INT",
@@ -35,6 +41,78 @@
         "room": -1
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-gipool-audit-paging-rounding-and-wrong-type",
+    "description": "gipool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
+      },
+      {
+        "op": "kernel-pool.gipool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 2
+      },
+      {
+        "op": "kernel-pool.gipool",
+        "name": "AUDIT",
+        "start": 1,
+        "room": 2
+      },
+      {
+        "op": "kernel-pool.gipool",
+        "name": "AUDIT",
+        "start": 5,
+        "room": 3
+      },
+      {
+        "op": "kernel-pool.gipool",
+        "name": "AUDIT",
+        "start": 6,
+        "room": 1
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": ["char"]
+      },
+      {
+        "op": "kernel-pool.gipool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-gipool-audit-integer-conversion-overflow",
+    "description": "gipool: integer conversion overflow, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT",
+        "values": [2147483648.0]
+      },
+      {
+        "op": "kernel-pool.gipool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INTOUTOFRANGE"]
+    }
   }
 ]
