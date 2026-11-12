@@ -14,13 +14,21 @@ export interface TimeApi {
   /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *
-   * Currently, only the TOOLKIT item is exposed.
+   * Only TOOLKIT is exposed; other items are rejected by this contract. The
+   * version is immutable for a loaded toolkit: WASM obtains it from CSPICE once
+   * during module initialization and returns that cached value.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tkvrsn_c.html
    */
   tkvrsn(item: "TOOLKIT"): string;
 
   // --- core conversions ----------------------------------------------------
 
-  /** Convert a time string to ET seconds past J2000. */
+  /**
+   * Parse a time string to TDB/ET seconds past J2000 (2000 JAN 1 12:00 TDB).
+   * UTC conversion requires leap-second information; explicit labels and TIMDEF
+   * defaults determine system/calendar/zone. Invalid strings signal CSPICE errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/str2et_c.html
+   */
   str2et(time: string): number;
 
   /** Convert ET seconds past J2000 to a formatted UTC string. */
@@ -29,7 +37,11 @@ export interface TimeApi {
   /**
    * Format an ephemeris time using a NAIF time picture.
    *
-   * Wrapper around CSPICE `timout_c`.
+   * `et` is TDB seconds past J2000; nonempty `picture` selects fields, precision,
+   * system and zone directives. Default system/calendar/zone follow TIMDEF.
+   * Leap-second information is required for conversion. CSPICE applies its own
+   * internal formatting limits; the actual rendered string is returned.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/timout_c.html
    */
   timout(et: number, picture: string): string;
 
@@ -49,7 +61,10 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - Requires an LSK (leapseconds) kernel to be loaded.
    *
-   * Wrapper around CSPICE `unitim_c`.
+   * Epoch units follow the system: ET/TDB, TAI and TDT/TT use seconds past
+   * J2000, while JED/JDTDB/JDTDT use Julian days. Unsupported system names signal
+   * SPICE(BADTIMETYPE); missing conversion constants signal MISSINGTIMEINFO.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/unitim_c.html
    */
   unitim(epoch: number, insys: string, outsys: string): number;
 
@@ -68,12 +83,16 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - None.
    *
-   * Wrapper around CSPICE `tparse_c`.
+   * TPARSE diagnostic text is translated to a thrown error even when CSPICE's
+   * global failed flag is false; no epoch is returned on a parse failure.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tparse_c.html
    */
   tparse(timstr: string): number;
 
   /**
-   * Transform a NAIF time picture to match a sample time string.
+   * Derive a NAIF formatting picture from a nonempty sample time string.
+   * `pictur` is a nonempty initial output-template argument retained by this API;
+   * derivation is sample-driven and its length does not limit the output.
    *
    * Statefulness: this is affected by TIMDEF defaults (SYSTEM/CALENDAR/ZONE),
    * since `sample` is interpreted under the current TIMDEF state.
@@ -81,7 +100,9 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - None.
    *
-   * Wrapper around CSPICE `tpictr_c`.
+   * An unrecognized sample produces a thrown diagnostic from CSPICE ok/errmsg,
+   * even when no global SPICE failure is signaled.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tpictr_c.html
    */
   tpictr(sample: string, pictur: string): string;
 
@@ -91,7 +112,10 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - None.
    *
-   * Wrapper around CSPICE `timdef_c`.
+   * Items include SYSTEM, CALENDAR and ZONE. SYSTEM/ZONE are mutually exclusive;
+   * setting one clears the other. Defaults persist across kclear/reset until set
+   * explicitly again; callers own restoration after temporary changes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/timdef_c.html
    */
   timdef(action: "GET", item: string): string;
   /** Set a time conversion default (see `timdef_c`). */

@@ -410,8 +410,6 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "time.timdef":
             action = _expect_string(step.get("action"), label="time.timdef.action")
             item = _expect_string(step.get("item"), label="time.timdef.item")
-            if item not in {"SYSTEM", "CALENDAR", "ZONE"}:
-                raise ValueError("time.timdef.item must be SYSTEM|CALENDAR|ZONE")
             if action == "GET":
                 return StepTimeTimdefGet(op=op, action="GET", item=item)
             if action == "SET":

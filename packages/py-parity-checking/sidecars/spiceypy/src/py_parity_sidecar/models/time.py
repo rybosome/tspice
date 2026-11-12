@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, TypeAlias
 
-TimdefItem: TypeAlias = Literal["SYSTEM", "CALENDAR", "ZONE"]
+TimdefItem: TypeAlias = str
 TkvrsnItem: TypeAlias = str
 DeltetEptype: TypeAlias = Literal["ET", "UTC"]
 

@@ -26,6 +26,8 @@ function withUtf8CString<T>(
   value: string,
   fn: (ptr: number) => T,
 ): T {
+  if (typeof value !== "string")
+    throw new TypeError("Expected a string argument");
   const ptr = writeUtf8CString(module, value);
   try {
     return fn(ptr);

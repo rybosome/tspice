@@ -357,22 +357,22 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "nextAction": "Run required local backend lanes, record source-bound evidence, open the seven-routine time parsing/formatting PR and observe canonical CI.",
+        "record": "data/parity-audits/time-2.json"
       }
     ],
     "counts": {
       "node": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 146,
+        "reviewed": 16,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 146,
+        "reviewed": 16,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 0
       }
     }
   },
@@ -391,7 +391,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 319,
+    "scenarios": 334,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -7854,7 +7854,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 44
+          "line": 56
         }
       },
       "mapping": {
@@ -7955,7 +7955,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 499
+            "line": 501
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -13811,7 +13811,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 27
+          "line": 35
         }
       },
       "mapping": {
@@ -13912,7 +13912,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 496
+            "line": 498
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -20071,7 +20071,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
@@ -20079,7 +20080,7 @@
             "local-boundaries-node-2026-11-12",
             "ci-boundaries-node-43310416805"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20087,7 +20088,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
@@ -20095,7 +20097,7 @@
             "local-boundaries-wasm-2026-11-12",
             "ci-boundaries-wasm-43310416805"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -24536,7 +24538,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 126
+          "line": 150
         }
       },
       "mapping": {
@@ -24637,7 +24639,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 523
+            "line": 525
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -24724,7 +24726,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 148
+          "line": 172
         }
       },
       "mapping": {
@@ -24825,7 +24827,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 525
+            "line": 527
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -24912,7 +24914,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 106
+          "line": 130
         }
       },
       "mapping": {
@@ -25013,7 +25015,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 520
+            "line": 522
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25107,7 +25109,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 116
+          "line": 140
         }
       },
       "mapping": {
@@ -25208,7 +25210,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 522
+            "line": 524
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25309,7 +25311,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 103
+          "line": 127
         }
       },
       "mapping": {
@@ -25410,7 +25412,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 519
+            "line": 521
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25497,7 +25499,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 137
+          "line": 161
         }
       },
       "mapping": {
@@ -25598,7 +25600,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 524
+            "line": 526
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -29966,7 +29968,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 24
+          "line": 32
         }
       },
       "mapping": {
@@ -30006,7 +30008,7 @@
             "str2et_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -30067,7 +30069,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 495
+            "line": 497
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -30094,6 +30096,68 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-str2et-audit-invalid-day",
+            "source": "packages/py-parity-checking/src/cases/time/str2et.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.str2et"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: invalid day, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-str2et-audit-missing-leap-information",
+            "source": "packages/py-parity-checking/src/cases/time/str2et.cases.json",
+            "expectation": "error",
+            "operations": [
+              "time.str2et"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: missing leap information, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-str2et-audit-utc-leap-boundary-and-formats",
+            "source": "packages/py-parity-checking/src/cases/time/str2et.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.str2et"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: utc leap boundary and formats, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
             "caseId": "time-str2et-happy-j2000",
             "source": "packages/py-parity-checking/src/cases/time/str2et.cases.json",
             "expectation": "success",
@@ -30107,7 +30171,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: Parses canonical J2000 TDB literal to ET",
+              "record": "data/parity-audits/time-2.json"
+            }
           },
           {
             "caseId": "time-str2et-invalid-time-error",
@@ -30117,18 +30189,46 @@
               "time.str2et"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: Representative parse failure for invalid time literal",
+              "record": "data/parity-audits/time-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         }
       }
     },
@@ -30981,7 +31081,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 96
+          "line": 120
         }
       },
       "mapping": {
@@ -31021,7 +31121,7 @@
             "timdef_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31106,7 +31206,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 457
+            "line": 459
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31134,6 +31234,47 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-timdef-audit-calendar-zone-system-effects",
+            "source": "packages/py-parity-checking/src/cases/time/timdef.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.str2et",
+              "time.timdef"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: timdef: calendar zone system effects, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-timdef-audit-early-error-after-mutation",
+            "source": "packages/py-parity-checking/src/cases/time/timdef.cases.json",
+            "expectation": "error",
+            "operations": [
+              "time.timdef"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: timdef: early error after mutation, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
             "caseId": "time-timdef-invalid-system-value-error",
             "source": "packages/py-parity-checking/src/cases/time/timdef.cases.json",
             "expectation": "error",
@@ -31141,7 +31282,13 @@
               "time.timdef"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: Representative timdef error for unsupported SYSTEM value",
+              "record": "data/parity-audits/time-2.json"
+            }
           },
           {
             "caseId": "time-timdef-stateful-get-set",
@@ -31151,18 +31298,48 @@
               "time.timdef"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: Exercises timdef state transitions for SYSTEM and CALENDAR",
+              "record": "data/parity-audits/time-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         }
       }
     },
@@ -31178,7 +31355,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 34
+          "line": 46
         }
       },
       "mapping": {
@@ -31218,7 +31395,7 @@
             "timout_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31279,7 +31456,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 497
+            "line": 499
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31306,6 +31483,70 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-timout-audit-internal-picture-boundary",
+            "source": "packages/py-parity-checking/src/cases/time/timout.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.timout"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: internal picture boundary, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-timout-audit-missing-leap-information",
+            "source": "packages/py-parity-checking/src/cases/time/timout.cases.json",
+            "expectation": "error",
+            "operations": [
+              "time.timout"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: missing leap information, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-timout-audit-signed-epochs-systems-and-precision",
+            "source": "packages/py-parity-checking/src/cases/time/timout.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.timout"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: signed epochs systems and precision, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
             "caseId": "time-timout-empty-picture-error",
             "source": "packages/py-parity-checking/src/cases/time/timout.cases.json",
             "expectation": "error",
@@ -31313,7 +31554,13 @@
               "time.timout"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: Representative timout argument validation error for empty picture",
+              "record": "data/parity-audits/time-2.json"
+            }
           },
           {
             "caseId": "time-timout-happy-tdb-picture",
@@ -31329,18 +31576,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: Formats J2000 ET with a TDB time picture",
+              "record": "data/parity-audits/time-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         }
       }
     },
@@ -31377,7 +31652,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 19
+          "line": 22
         }
       },
       "mapping": {
@@ -31417,7 +31692,7 @@
             "tkvrsn_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31478,12 +31753,12 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 450
+            "line": 452
           },
           "factory": "createTimeApi",
           "delegation": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 421
+            "line": 423
           },
           "routePolicy": {
             "classification": "cached-shim-result",
@@ -31514,6 +31789,31 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-tkvrsn-audit-stable-through-kernel-pool-state",
+            "source": "packages/py-parity-checking/src/cases/time/tkvrsn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.kclear",
+              "time.tkvrsn"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: tkvrsn: stable through kernel pool state, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
             "caseId": "time-tkvrsn-happy-toolkit",
             "source": "packages/py-parity-checking/src/cases/time/tkvrsn.cases.json",
             "expectation": "success",
@@ -31521,7 +31821,15 @@
               "time.tkvrsn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: Returns toolkit version string for TOOLKIT item",
+              "record": "data/parity-audits/time-2.json"
+            }
           },
           {
             "caseId": "time-tkvrsn-unsupported-item-error",
@@ -31531,18 +31839,44 @@
               "time.tkvrsn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: Representative tkvrsn error for unsupported item",
+              "record": "data/parity-audits/time-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "cached",
+          "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
+          "executions": [
+            "local-time-formats-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         }
       }
     },
@@ -31565,7 +31899,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 73
+          "line": 90
         }
       },
       "mapping": {
@@ -31605,7 +31939,7 @@
             "tparse_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31666,7 +32000,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 503
+            "line": 505
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31693,6 +32027,40 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-tparse-audit-formal-days-and-fractions",
+            "source": "packages/py-parity-checking/src/cases/time/tparse.cases.json",
+            "expectation": "success",
+            "operations": [
+              "time.tparse"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: tparse: formal days and fractions, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-tparse-audit-time-system-not-supported",
+            "source": "packages/py-parity-checking/src/cases/time/tparse.cases.json",
+            "expectation": "error",
+            "operations": [
+              "time.tparse"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: tparse: time system not supported, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
             "caseId": "time-tparse-happy-utc-iso",
             "source": "packages/py-parity-checking/src/cases/time/tparse.cases.json",
             "expectation": "success",
@@ -31700,7 +32068,15 @@
               "time.tparse"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: Parses UTC ISO timestamp to UTC seconds past J2000",
+              "record": "data/parity-audits/time-2.json"
+            }
           },
           {
             "caseId": "time-tparse-invalid-string-error",
@@ -31710,18 +32086,46 @@
               "time.tparse"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: Representative parse error for invalid UTC time string",
+              "record": "data/parity-audits/time-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         }
       }
     },
@@ -31737,7 +32141,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 86
+          "line": 107
         }
       },
       "mapping": {
@@ -31777,7 +32181,7 @@
             "tpictr_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -31838,7 +32242,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 509
+            "line": 511
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31865,6 +32269,40 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-tpictr-audit-sample-driven-independent-of-template",
+            "source": "packages/py-parity-checking/src/cases/time/tpictr.cases.json",
+            "expectation": "success",
+            "operations": [
+              "time.tpictr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: tpictr: sample driven independent of template, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-tpictr-audit-unrecognized-sample",
+            "source": "packages/py-parity-checking/src/cases/time/tpictr.cases.json",
+            "expectation": "error",
+            "operations": [
+              "time.tpictr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: tpictr: unrecognized sample, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
             "caseId": "time-tpictr-empty-sample-error",
             "source": "packages/py-parity-checking/src/cases/time/tpictr.cases.json",
             "expectation": "error",
@@ -31872,7 +32310,13 @@
               "time.tpictr"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: Representative argument-validation error for empty sample",
+              "record": "data/parity-audits/time-2.json"
+            }
           },
           {
             "caseId": "time-tpictr-happy-sample-derived-picture",
@@ -31882,18 +32326,46 @@
               "time.tpictr"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: Derives a time picture from a representative UTC sample",
+              "record": "data/parity-audits/time-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         }
       }
     },
@@ -32021,7 +32493,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 54
+          "line": 69
         }
       },
       "mapping": {
@@ -32061,7 +32533,7 @@
             "unitim_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -32122,7 +32594,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 500
+            "line": 502
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -32149,6 +32621,52 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-unitim-audit-bad-system",
+            "source": "packages/py-parity-checking/src/cases/time/unitim.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.unitim"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: unitim: bad system, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
+            "caseId": "time-unitim-audit-systems-julian-days-and-fractions",
+            "source": "packages/py-parity-checking/src/cases/time/unitim.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.unitim"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: unitim: systems julian days and fractions, compare complete actual live SpiceyPy outputs/effects",
+              "record": "data/parity-audits/time-2.json"
+            }
+          },
+          {
             "caseId": "time-unitim-happy-et-to-tai",
             "source": "packages/py-parity-checking/src/cases/time/unitim.cases.json",
             "expectation": "success",
@@ -32162,7 +32680,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: Converts ET to TAI with leap-seconds kernel loaded",
+              "record": "data/parity-audits/time-2.json"
+            }
           },
           {
             "caseId": "time-unitim-missing-lsk-error",
@@ -32172,18 +32698,46 @@
               "time.unitim"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: Representative unitim error when leap-seconds kernel is missing",
+              "record": "data/parity-audits/time-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": [
+            "local-time-formats-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-2.json"
         }
       }
     },
@@ -32583,7 +33137,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
@@ -32591,7 +33146,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -32601,7 +33156,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
@@ -32609,7 +33165,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -32997,7 +33553,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
@@ -33005,7 +33562,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33015,7 +33572,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
@@ -33023,7 +33581,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33226,7 +33784,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
@@ -33234,7 +33793,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33244,7 +33803,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
@@ -33252,7 +33812,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33480,7 +34040,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
@@ -33488,7 +34049,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33498,7 +34059,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
@@ -33506,7 +34068,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33730,7 +34292,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
@@ -33738,7 +34301,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33748,7 +34311,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
@@ -33756,7 +34320,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33962,7 +34526,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
@@ -33970,7 +34535,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33980,7 +34545,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
@@ -33988,7 +34554,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34247,7 +34813,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
@@ -34255,7 +34822,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34265,7 +34832,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
@@ -34273,7 +34841,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34483,7 +35051,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
@@ -34491,7 +35060,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34501,7 +35070,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
@@ -34509,7 +35079,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
