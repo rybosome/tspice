@@ -6,7 +6,7 @@
       "id": "cell-capacity-prerequisite",
       "routines": ["ssize_c", "valid_c", "wnvald_c"],
       "dependsOn": ["kplfrm-prerequisite"],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/683"],
       "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification."
     },
     {

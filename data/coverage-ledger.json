@@ -13,7 +13,9 @@
         "dependsOn": [
           "kplfrm-prerequisite"
         ],
-        "prs": [],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/683"
+        ],
         "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification.",
         "record": "data/parity-audits/cell-capacity-prerequisite.json"
       },

@@ -61,7 +61,7 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 
 | Batch | Routines | Node / WASM verified | PRs / dependencies | Next action |
 | --- | --- | --- | --- | --- |
-| cell-capacity-prerequisite | `ssize_c`, `valid_c`, `wnvald_c` | 0 / 0 | kplfrm-prerequisite | Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification. |
+| cell-capacity-prerequisite | `ssize_c`, `valid_c`, `wnvald_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/683, kplfrm-prerequisite | Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification. |
 | cells-windows | `card_c`, `insrtc_c`, `insrtd_c`, `insrti_c`, `scard_c`, `size_c`, `wncard_c`, `wnfetd_c`, `wninsd_c` | 0 / 0 | cell-capacity-prerequisite | Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline. |
 | coordinates-matrices | `axisar_c`, `georec_c`, `latrec_c`, `mtxv_c`, `mxm_c`, `mxv_c`, `recgeo_c`, `reclat_c`, `recsph_c`, `rotate_c`, `rotmat_c`, `sphrec_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | dsk | `dskb02_c`, `dskgd_c`, `dskobj_c`, `dsksrf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
