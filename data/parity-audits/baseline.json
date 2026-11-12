@@ -55,8 +55,8 @@
         "sphrec_c"
       ],
       "dependsOn": ["kplfrm-prerequisite"],
-      "prs": [],
-      "nextAction": "Run final required lanes after axis validation repair and observe both backend CI jobs."
+      "prs": ["https://github.com/rybosome/tspice/pull/681"],
+      "nextAction": "Observe current-source CI and record both backend jobs after coordinate axis/coverage repairs."
     },
     {
       "id": "dsk",
