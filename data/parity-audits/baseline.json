@@ -141,8 +141,8 @@
         "sigerr_c"
       ],
       "dependsOn": ["kplfrm-prerequisite"],
-      "prs": [],
-      "nextAction": "Run final required lanes for observable error/trace recovery and leading-blank repair, then observe both CI backends."
+      "prs": ["https://github.com/rybosome/tspice/pull/682"],
+      "nextAction": "Observe current-source CI after diagnostic whitespace and traceback cleanup repairs; record both backend jobs."
     },
     {
       "id": "file-io-1",
