@@ -35,8 +35,8 @@
         "vsub_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Observe pilot CI, record successful job evidence, then audit the remaining coordinate/matrix routines."
+      "prs": ["https://github.com/rybosome/tspice/pull/679"],
+      "nextAction": "Pilot verified on both backends; review/merge #678 then #679. Continue remaining coordinate/matrix audit."
     },
     {
       "id": "coordinates-matrices",
