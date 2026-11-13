@@ -382,7 +382,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending."
+      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "local-writers-audit-2026-11-13-wasm",
@@ -399,7 +400,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending."
+      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "ci-writers-source-ci-2026-11-13-node",
@@ -418,7 +420,8 @@
       ],
       "commit": "94e65bde270296d3eab24bc4d81ad260aec8fa97",
       "url": "https://github.com/rybosome/tspice/actions/runs/43372863697/job/131712466087",
-      "observation": "Observed canonical Linux Node22 production-native required job: 714 live comparisons (357 per actual backend), 773 parity-package tests, 114 WASM tests, 63 native tests including actual compiled C bounds fixture, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 smoke passed. All fifteen current-source jobs are green and explicit REST rebaseable/mergeable true. Current shared C/WASM, full-index assertion, runtime-type and resource-cleanup source is verified; no tolerance widening."
+      "observation": "Observed canonical Linux Node22 production-native required job: 714 live comparisons (357 per actual backend), 773 parity-package tests, 114 WASM tests, 63 native tests including actual compiled C bounds fixture, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 smoke passed. All fifteen current-source jobs are green and explicit REST rebaseable/mergeable true. Current shared C/WASM, full-index assertion, runtime-type and resource-cleanup source is verified; no tolerance widening.",
+      "historical": true
     },
     {
       "id": "ci-writers-source-ci-2026-11-13-wasm",
@@ -437,7 +440,42 @@
       ],
       "commit": "94e65bde270296d3eab24bc4d81ad260aec8fa97",
       "url": "https://github.com/rybosome/tspice/actions/runs/43372863697/job/131712466087",
-      "observation": "Observed canonical Linux Node22 production-native required job: 714 live comparisons (357 per actual backend), 773 parity-package tests, 114 WASM tests, 63 native tests including actual compiled C bounds fixture, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 smoke passed. All fifteen current-source jobs are green and explicit REST rebaseable/mergeable true. Current shared C/WASM, full-index assertion, runtime-type and resource-cleanup source is verified; no tolerance widening."
+      "observation": "Observed canonical Linux Node22 production-native required job: 714 live comparisons (357 per actual backend), 773 parity-package tests, 114 WASM tests, 63 native tests including actual compiled C bounds fixture, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 smoke passed. All fifteen current-source jobs are green and explicit REST rebaseable/mergeable true. Current shared C/WASM, full-index assertion, runtime-type and resource-cleanup source is verified; no tolerance widening.",
+      "historical": true
+    },
+    {
+      "id": "local-dsk-audit-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c585460f289e0a1de511c003eb9c0e1f49b1f6ffefc654f20fa53457af7f9e0b",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both full required local lanes passed on the reviewed DSK query source, preserved byte-identically across the #679 squash restack. Production-native required executed all 752 live comparisons (376 per actual backend), all 815 parity-package tests including actual query union/capacity, literal descriptor/layout, same-instance recovery and oracle close/error checks, 126 WASM tests including twelve actual-heap query allocation failures, 63 native tests, 26 core tests and 121 facade tests without skips. Full JS passed with one expected optional parity guard skip. Nineteen new scenarios; no tolerance widening. No C or generated WASM changes beyond verified writer prerequisite #694. Thirty-eight ledger regressions and drift passed; current-source canonical CI is pending."
+    },
+    {
+      "id": "local-dsk-audit-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c585460f289e0a1de511c003eb9c0e1f49b1f6ffefc654f20fa53457af7f9e0b",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both full required local lanes passed on the reviewed DSK query source, preserved byte-identically across the #679 squash restack. Production-native required executed all 752 live comparisons (376 per actual backend), all 815 parity-package tests including actual query union/capacity, literal descriptor/layout, same-instance recovery and oracle close/error checks, 126 WASM tests including twelve actual-heap query allocation failures, 63 native tests, 26 core tests and 121 facade tests without skips. Full JS passed with one expected optional parity guard skip. Nineteen new scenarios; no tolerance widening. No C or generated WASM changes beyond verified writer prerequisite #694. Thirty-eight ledger regressions and drift passed; current-source canonical CI is pending."
     }
   ],
   "routines": [
@@ -576,14 +614,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-writers-audit-2026-11-13-node",
-            "ci-writers-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-dsk-audit-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -596,17 +632,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-writers-audit-2026-11-13-wasm",
-            "ci-writers-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-dsk-audit-2026-11-13-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

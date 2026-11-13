@@ -43,8 +43,21 @@ def _close_file_io_handles_best_effort(context: SidecarRuntimeContext) -> None:
             pass
 
 
+def _close_dsk_handles_best_effort(context: SidecarRuntimeContext) -> None:
+    for entry in context.state.dsk.handles.values():
+        if not entry.get("isOpen", False):
+            continue
+        try:
+            sp.dascls(int(entry["handle"]))
+            entry["isOpen"] = False
+        except BaseException:
+            # Retain the marker for the registered finalizer's retry.
+            pass
+
+
 def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
     _close_file_io_handles_best_effort(context)
+    _close_dsk_handles_best_effort(context)
     register_default_finalizers(context)
     context.run_finalizers_best_effort()
     _kclear_best_effort()

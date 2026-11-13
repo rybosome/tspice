@@ -42,3 +42,15 @@ including workflow failures. Backend-owned staged inputs are cleared/disposed
 by the existing case lifecycle. The unchanged existing DSK fixture supplies a
 real eight-field DLA descriptor for comparison; no new scientific dataset is
 added.
+
+### Step7 authored DSK query fixtures
+
+`kernels/audit-empty-dsk.bds` (3072 bytes) and
+`kernels/audit-multi-dsk.bds` (11264 bytes) are project-authored synthetic data
+under this repository's MIT license. The checked-in `generate-audit-dsk.py` uses
+locked SpiceyPy6.0.3/CSPICE N0067 to create and read back an empty DSK and four
+invented tetrahedron segments with body/surface pairs (399,71), (399,72),
+(499,73), (399,71). Vertices, plates, bounds and epochs are invented constants;
+these contain no observations and use no external scientific data. Duplicate
+segments distinguish set unions and temporary capacity before deduplication.
+Regenerate from this package using the command in the script docstring.

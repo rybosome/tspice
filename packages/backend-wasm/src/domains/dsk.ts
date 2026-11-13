@@ -6,11 +6,11 @@ import type {
   SpiceHandle,
   SpiceIntCell,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { invariant, assertSpiceInt32 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
+import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
@@ -55,6 +55,8 @@ function assertDlaDescriptor(
         v <= I32_MAX,
       `${context}: expected ${key} to be a 32-bit signed integer`,
     );
+    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
+    invariant(v >= min, `${context}: expected ${key} >= ${min}`);
   }
 }
 
@@ -104,29 +106,22 @@ function tspiceCallDskobj(
   dsk: string,
   bodids: SpiceIntCell,
 ): void {
-  const errPtr = module._malloc(WASM_ERR_MAX_BYTES);
-  const dskPathPtr = writeUtf8CString(module, resolveKernelPath(dsk));
-
-  if (!errPtr || !dskPathPtr) {
-    if (dskPathPtr) module._free(dskPathPtr);
-    if (errPtr) module._free(errPtr);
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    const code = module._tspice_dskobj(
-      dskPathPtr,
-      wasmCellPointer(module, bodids, "dskobj()"),
-      errPtr,
-      WASM_ERR_MAX_BYTES,
-    );
-    if (code !== 0) {
-      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+  return withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
+    const dskPathPtr = writeUtf8CString(module, resolveKernelPath(dsk));
+    try {
+      const code = module._tspice_dskobj(
+        dskPathPtr,
+        wasmCellPointer(module, bodids, "dskobj()"),
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+    } finally {
+      module._free(dskPathPtr);
     }
-  } finally {
-    module._free(dskPathPtr);
-    module._free(errPtr);
-  }
+  });
 }
 
 function tspiceCallDsksrf(
@@ -135,30 +130,23 @@ function tspiceCallDsksrf(
   bodyid: number,
   srfids: SpiceIntCell,
 ): void {
-  const errPtr = module._malloc(WASM_ERR_MAX_BYTES);
-  const dskPathPtr = writeUtf8CString(module, resolveKernelPath(dsk));
-
-  if (!errPtr || !dskPathPtr) {
-    if (dskPathPtr) module._free(dskPathPtr);
-    if (errPtr) module._free(errPtr);
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    const code = module._tspice_dsksrf(
-      dskPathPtr,
-      bodyid,
-      wasmCellPointer(module, srfids, "dsksrf()"),
-      errPtr,
-      WASM_ERR_MAX_BYTES,
-    );
-    if (code !== 0) {
-      throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+  return withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
+    const dskPathPtr = writeUtf8CString(module, resolveKernelPath(dsk));
+    try {
+      const code = module._tspice_dsksrf(
+        dskPathPtr,
+        bodyid,
+        wasmCellPointer(module, srfids, "dsksrf()"),
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (code !== 0) {
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      }
+    } finally {
+      module._free(dskPathPtr);
     }
-  } finally {
-    module._free(dskPathPtr);
-    module._free(errPtr);
-  }
+  });
 }
 
 function tspiceCallDskgd(
@@ -281,6 +269,7 @@ export function createDskApi(
     },
 
     dsksrf: (dsk: string, bodyid: number, srfids: SpiceIntCell) => {
+      assertSpiceInt32(bodyid, "dsksrf(bodyid)");
       assertWasmOwnedCellHandle(module, srfids, "dsksrf(srfids)");
       tspiceCallDsksrf(module, dsk, bodyid, srfids);
     },

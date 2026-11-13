@@ -52,9 +52,9 @@
     {
       "id": "dsk",
       "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
-      "dependsOn": [],
+      "dependsOn": ["file-io-2"],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "All four DSK queries reviewed/repaired; both full required local lanes passed with 752 live comparisons and 815 parity-package tests, plus twelve actual-WASM-heap allocation failures and literal public layout/recovery checks. Open the dependent PR on #694 and record observed current-source canonical CI and explicit rebaseability. No expansion beyond the 162 baseline routines."
     },
     {
       "id": "ek-1",
