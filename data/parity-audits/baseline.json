@@ -85,8 +85,8 @@
         "ektnam_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Eight coherent lifecycle routines reviewed and focused repairs implemented on shared handle prerequisite #691, with offline fixture CI prerequisite #693. Finish full local required lanes, source-bound observations and the lifecycle PR; column/query semantics remain ek-1. The ekcls/ekgi assignment swap preserves all162 routines exactly once."
+      "prs": ["https://github.com/rybosome/tspice/pull/696"],
+      "nextAction": "Observed all15 exact-source CI jobs green with actual production native/live both-backend execution. Wait for verification-metadata CI and explicit REST rebaseability; continue independent baseline audits."
     },
     {
       "id": "ephemeris-1",

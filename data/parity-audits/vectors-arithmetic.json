@@ -595,6 +595,72 @@
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
       "observation": "Both final required JS and production-native lanes passed on the current reviewed source. All 692 live comparisons (346 scenarios per backend), all 741 parity-package tests and required native sanity passed without native skips; 90 WASM, 62 Node, 26 core and 121 facade tests passed. Eight lifecycle routines have 35 registered cases, including 19 new, full segno/record-pointer outputs and named actual errors. Independent locked SpiceyPy readback compared complete DAS headers, all segment/column attributes and all persisted rows for actual Node/WASM writers; actual 100-column write/read and 101-column-before-element rejection passed. All 23 actual WASM heap fault positions passed after priming lazy malloc/free wrappers; failing-before controls established the ekopn second-allocation leak and 3 accepted shape gaps. Actual pending-error cleanup closes before scratch deletion; failed close retains claims for retry. Initial full-lane lint and empty-EK extra-reset regressions were repaired before final passes. Node 22.23.4/pnpm 10.13.1/CSPICE N0067/locked SpiceyPy 6.0.3/Python 3.12.15/macOS arm64. No C shim or WASM binary change. The 256 MiB packed-buffer limit was reviewed arithmetically rather than stress allocated. Rebase onto merged #680 / current #691 preserves byte-identical reviewed source."
+    },
+    {
+      "id": "ci-ek-lifecycle-43385411734-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "89afd078db928f51316eb12b2e28f7d6d9dbc964ef6c50b230ce16ea326552ab",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "ff835e68bd3c7714bd877afb5413c2c67fdbfad1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385411734/job/131752596794",
+      "observation": "Observed exact-source canonical Linux22 job: all692live parity tests (346scenarios on each actual backend), all741parity-package tests, actual native-required guard, all90WASM/62Node/26core/121facade tests and production CSPICE_N0067 sanity passed without native skips. All15source CI jobs passed."
+    },
+    {
+      "id": "ci-ek-lifecycle-43385411734-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "89afd078db928f51316eb12b2e28f7d6d9dbc964ef6c50b230ce16ea326552ab",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "ff835e68bd3c7714bd877afb5413c2c67fdbfad1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385411734/job/131752596794",
+      "observation": "Observed exact-source canonical Linux22 job: all692live parity tests (346scenarios on each actual backend), all741parity-package tests, actual native-required guard, all90WASM/62Node/26core/121facade tests and production CSPICE_N0067 sanity passed without native skips. All15source CI jobs passed."
     }
   ],
   "routines": [
@@ -644,11 +710,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -660,11 +730,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -722,11 +796,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -738,11 +816,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -792,11 +874,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -808,11 +894,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -870,11 +960,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -886,11 +980,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -940,11 +1038,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -956,11 +1058,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -1018,11 +1124,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1034,11 +1144,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -1088,11 +1202,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1104,11 +1222,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -1158,11 +1280,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1174,14 +1300,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

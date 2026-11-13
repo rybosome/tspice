@@ -304,6 +304,62 @@
         "cells-windows-wnvald-normalizes-window-success"
       ],
       "observation": "Both final required JS and production-native lanes passed on the current reviewed source. All 692 live comparisons (346 scenarios per backend), all 741 parity-package tests and required native sanity passed without native skips; 90 WASM, 62 Node, 26 core and 121 facade tests passed. Eight lifecycle routines have 35 registered cases, including 19 new, full segno/record-pointer outputs and named actual errors. Independent locked SpiceyPy readback compared complete DAS headers, all segment/column attributes and all persisted rows for actual Node/WASM writers; actual 100-column write/read and 101-column-before-element rejection passed. All 23 actual WASM heap fault positions passed after priming lazy malloc/free wrappers; failing-before controls established the ekopn second-allocation leak and 3 accepted shape gaps. Actual pending-error cleanup closes before scratch deletion; failed close retains claims for retry. Initial full-lane lint and empty-EK extra-reset regressions were repaired before final passes. Node 22.23.4/pnpm 10.13.1/CSPICE N0067/locked SpiceyPy 6.0.3/Python 3.12.15/macOS arm64. No C shim or WASM binary change. The 256 MiB packed-buffer limit was reviewed arithmetically rather than stress allocated. Rebase onto merged #680 / current #691 preserves byte-identical reviewed source."
+    },
+    {
+      "id": "ci-ek-lifecycle-43385411734-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06353e886da39ea12ac37d9c95b82faa54dce6825a9c0d43c48df1a805847c25",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "ff835e68bd3c7714bd877afb5413c2c67fdbfad1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385411734/job/131752596794",
+      "observation": "Observed exact-source canonical Linux22 job: all692live parity tests (346scenarios on each actual backend), all741parity-package tests, actual native-required guard, all90WASM/62Node/26core/121facade tests and production CSPICE_N0067 sanity passed without native skips. All15source CI jobs passed."
+    },
+    {
+      "id": "ci-ek-lifecycle-43385411734-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06353e886da39ea12ac37d9c95b82faa54dce6825a9c0d43c48df1a805847c25",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "ff835e68bd3c7714bd877afb5413c2c67fdbfad1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385411734/job/131752596794",
+      "observation": "Observed exact-source canonical Linux22 job: all692live parity tests (346scenarios on each actual backend), all741parity-package tests, actual native-required guard, all90WASM/62Node/26core/121facade tests and production CSPICE_N0067 sanity passed without native skips. All15source CI jobs passed."
     }
   ],
   "routines": [
@@ -407,11 +463,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -419,11 +479,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -574,11 +638,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -586,11 +654,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     },
@@ -730,11 +802,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-ek-lifecycle-2026-11-13-node"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node",
+            "ci-ek-lifecycle-43385411734-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -742,14 +818,18 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm",
+            "ci-ek-lifecycle-43385411734-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }
