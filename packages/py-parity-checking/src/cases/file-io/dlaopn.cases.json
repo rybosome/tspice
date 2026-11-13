@@ -5,17 +5,35 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dlaopn-create.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlaopn-create.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer"
       },
-      { "op": "file-io.dlabfs", "handleId": "writer", "descrId": "seg0" },
-      { "op": "file-io.dlacls", "handleId": "writer" },
-      { "op": "file-io.exists", "path": "kernels/generated/dlaopn-create.dla" }
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "writer",
+        "descrId": "seg0"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "writer"
+      },
+      {
+        "op": "file-io.exists",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlaopn-create.dla"
+        }
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dlaopn-negative-ncomch-error",
@@ -23,14 +41,19 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dlaopn-invalid.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlaopn-invalid.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": -1,
         "handleId": "writer"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
   },
   {
     "caseId": "file-io-dlaopn-existing-file-error",
@@ -38,22 +61,129 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dlaopn-existing-file.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlaopn-existing-file.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer0"
       },
-      { "op": "file-io.dlacls", "handleId": "writer0" },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "writer0"
+      },
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dlaopn-existing-file.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlaopn-existing-file.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer1"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENFAIL"]
+    }
+  },
+  {
+    "caseId": "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+    "description": "Four-character type truncation and case-aware header semantics, comment reservation and reopened valid empty DLA. Independent DAS header readback checks original type/name/comment records.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "mixed.dla"
+        },
+        "ftype": "mIxDextra",
+        "ifname": "AUTHORED_DLA_HEADER",
+        "ncomch": 1025
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "w",
+        "descrId": "none"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "w"
+      },
+      {
+        "op": "file-io.getfat",
+        "path": {
+          "kind": "scratch",
+          "rel": "mixed.dla"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "mixed.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "r",
+        "descrId": "none"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlaopn-audit-blank-type",
+    "description": "Actual CSPICE rejects invalid file type with BLANKFILETYPE.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "blank-type.dla"
+        },
+        "ftype": " ",
+        "ifname": "AUTHORED",
+        "ncomch": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BLANKFILETYPE"]
+    }
+  },
+  {
+    "caseId": "file-io-dlaopn-audit-control-type",
+    "description": "Actual CSPICE rejects invalid file type with ILLEGALCHARACTER.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "control-type.dla"
+        },
+        "ftype": "X\u0001",
+        "ifname": "AUTHORED",
+        "ncomch": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ILLEGALCHARACTER"]
+    }
   }
 ]

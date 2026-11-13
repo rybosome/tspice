@@ -288,5 +288,38 @@ All descriptor fields reach live assertions, including linked-list pointers,
 integer/double/character bases and sizes. File counts, handle IDs and integer
 fields need no relaxed tolerance. Two authored tiny SPK/DAF fixtures distinguish
 nonempty/end/restart/interleaved searches; case-scoped DLA scratch files exercise
-close aliases and empty search. The remaining file writers, spatial-index helpers
-and `dlafns` retain their separate semantic audit assignments.
+close aliases and empty search. Writer and spatial-index evidence is maintained
+separately in the following batch.
+
+## Domain: `file-io` writers and spatial index (`FileIoApi`)
+
+| Raw method | Actual CSPICE route | Semantic observations                                                                                        |
+| ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `exists`   | `exists_c`          | Missing/present and before-create/while-open/after-close booleans.                                           |
+| `getfat`   | `getfat_c`          | Actual DAS/DSK, DAS/MIXD, DAF/SPK and KPL/LSK pairs; missing-file error.                                     |
+| `dlaopn`   | `dlaopn_c`          | Empty DLA, four-character type truncation, internal name and comment reservation; actual header readback.    |
+| `dlafns`   | `dlafns_c`          | Nonempty second segment, all eight descriptor fields, end and restart.                                       |
+| `dskopn`   | `dskopn_c`          | Real empty and populated DSK headers, close/reopen and existing-file rejection.                              |
+| `dskmi2`   | `dskmi2_c`          | All ten doubles and every returned integer, distinct 3D meshes/scales and optional vertex lists.             |
+| `dskw02`   | `dskw02_c`          | Two segments with distinct geometry, body/surface IDs, bounds and epochs; independent full content readback. |
+
+The index comparator retains the existing 1e-12 numeric policy. Integer arrays
+compare exactly at their int32 scale; no tolerance is widened. Mutation checks
+prove the voxel-size double (index 9) and active integer data beyond the fixed
+100007-element header reach assertions. The shared C shim rejects negative index
+component counts and insufficient active storage before `dskw02_c`, using a wide
+sum including the nv vertex-pointer span even when optional lists are absent.
+The actual C guard has a compiled downstream-observer regression; public Node and
+WASM tests reject malformed indexes and then write exactly one valid segment on
+the same handle. Node validates flattened lengths before allocating large native
+buffers. WASM validates input types before coercion and releases earlier strings
+when later opener allocations fail.
+
+Supplemental live SpiceyPy readback compares every stored vertex/plate and all
+DSK descriptor fields, DAS internal names and comment record reservation against
+an independent reference writer and authored literal inputs. The WASM component
+binding is used only to expose actual filesystem bytes for this reader; registered
+workflows use actual public raw exports on both backends. Meshes and DLA headers
+are project-authored synthetic scratch data under MIT; existing fixture provenance
+is unchanged. Malformed/closed handle, shape and negative-reservation cases are
+explicit contract preconditions, not claims of executing CSPICE error paths.

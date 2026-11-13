@@ -152,7 +152,7 @@
         "https://github.com/rybosome/tspice/pull/691",
         "https://github.com/rybosome/tspice/pull/692"
       ],
-      "nextAction": "Both required local lanes passed for all eight readers; record observed current-source canonical CI and finish refreshed platform checks. Shared issuer prerequisite is #691; writer/spatial-index assignments remain separate."
+      "nextAction": "Reader PR #692 passed all fifteen canonical jobs and explicit rebaseability. This dependent writer branch changes shared inputs; refresh retained reader execution proof on its current source before claiming verification."
     },
     {
       "id": "file-io-2",
@@ -165,9 +165,9 @@
         "exists_c",
         "getfat_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["file-io-1"],
       "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "nextAction": "Seven routines reviewed/repaired and both full required local lanes passed: 714 live comparisons, 773 parity-package tests, 32 writer allocation positions and actual compiled C bounds guard. Open the writer PR based on #692, then record observed current-source canonical CI and explicit rebaseability; all 162 assignments remain."
     },
     {
       "id": "frames-1",

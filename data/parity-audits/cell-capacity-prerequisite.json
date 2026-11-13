@@ -219,7 +219,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both full required lanes passed on the reviewed eight-reader source: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including real oracle error/cleanup and Node/WASM same-instance recovery, 82 WASM tests including fifteen allocation failure positions, 62 Node tests, 26 core tests and 121 facade tests. Required native execution had no skips and built/loaded the production N0067 addon; checked-in actual WASM is unchanged. Full JS passed with its one expected optional guard skip. Thirty-eight ledger regressions and drift passed. Eleven new cases and complete eight-field descriptor observations distinguish real effects; no global numeric tolerance change."
+      "observation": "Both full required lanes passed on the reviewed eight-reader source: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including real oracle error/cleanup and Node/WASM same-instance recovery, 82 WASM tests including fifteen allocation failure positions, 62 Node tests, 26 core tests and 121 facade tests. Required native execution had no skips and built/loaded the production N0067 addon; checked-in actual WASM is unchanged. Full JS passed with its one expected optional guard skip. Thirty-eight ledger regressions and drift passed. Eleven new cases and complete eight-field descriptor observations distinguish real effects; no global numeric tolerance change.",
+      "historical": true
     },
     {
       "id": "local-readers-audit-2026-11-13-wasm",
@@ -245,7 +246,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both full required lanes passed on the reviewed eight-reader source: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including real oracle error/cleanup and Node/WASM same-instance recovery, 82 WASM tests including fifteen allocation failure positions, 62 Node tests, 26 core tests and 121 facade tests. Required native execution had no skips and built/loaded the production N0067 addon; checked-in actual WASM is unchanged. Full JS passed with its one expected optional guard skip. Thirty-eight ledger regressions and drift passed. Eleven new cases and complete eight-field descriptor observations distinguish real effects; no global numeric tolerance change."
+      "observation": "Both full required lanes passed on the reviewed eight-reader source: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including real oracle error/cleanup and Node/WASM same-instance recovery, 82 WASM tests including fifteen allocation failure positions, 62 Node tests, 26 core tests and 121 facade tests. Required native execution had no skips and built/loaded the production N0067 addon; checked-in actual WASM is unchanged. Full JS passed with its one expected optional guard skip. Thirty-eight ledger regressions and drift passed. Eleven new cases and complete eight-field descriptor observations distinguish real effects; no global numeric tolerance change.",
+      "historical": true
     },
     {
       "id": "ci-file-handles-source-ci-2026-11-13-node",
@@ -331,7 +333,8 @@
       ],
       "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
-      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source."
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source.",
+      "historical": true
     },
     {
       "id": "ci-readers-source-ci-2026-11-13-wasm",
@@ -359,7 +362,60 @@
       ],
       "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
-      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source."
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source.",
+      "historical": true
+    },
+    {
+      "id": "local-writers-audit-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f1b7116ca073df1769c1d7ad53bbdf49186eaa9340b9976ff490d175912e10d0",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending."
+    },
+    {
+      "id": "local-writers-audit-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f1b7116ca073df1769c1d7ad53bbdf49186eaa9340b9976ff490d175912e10d0",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending."
     }
   ],
   "routines": [
@@ -458,22 +514,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-writers-audit-2026-11-13-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-writers-audit-2026-11-13-wasm"]
         }
       }
     },
@@ -619,22 +681,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-writers-audit-2026-11-13-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-writers-audit-2026-11-13-wasm"]
         }
       }
     },
@@ -769,25 +837,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-writers-audit-2026-11-13-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-writers-audit-2026-11-13-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

@@ -1,7 +1,7 @@
 [
   {
     "caseId": "file-io-dskmi2-minimal-mesh-success",
-    "description": "dskmi2 builds a deterministic type-2 spatial index summary",
+    "description": "dskmi2 builds a complete deterministic type-2 spatial index",
     "workflow": [
       {
         "op": "file-io.dskmi2",
@@ -19,7 +19,9 @@
         "spaixId": "idx0"
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dskmi2-invalid-nv-error",
@@ -40,7 +42,9 @@
         "spxisz": 200000
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
   },
   {
     "caseId": "file-io-dskmi2-non-integer-corscl-error",
@@ -61,6 +65,181 @@
         "spxisz": 200000
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io-dskmi2-audit-vertex-mapping-disabled",
+    "description": "Full 10-double/120000-int outputs distinguish absent optional vertex-plate lists and preserve all active voxel pointers.",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": false,
+        "spxisz": 120000,
+        "spaixId": "index"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dskmi2-audit-coarser-grid",
+    "description": "A different fine/coarse scale on noncoplanar geometry distinguishes voxel size/origin and full integer index contents.",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 1.25,
+        "corscl": 3,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000,
+        "spaixId": "index"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dskmi2-audit-two-vertices",
+    "description": "Valid array shapes reach actual CSPICE BADVERTEXCOUNT.",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 2,
+        "vrtces": [0, 0, 0, 1, 0, 0],
+        "np": 1,
+        "plates": [1, 2, 1],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000,
+        "spaixId": "index"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVERTEXCOUNT"]
+    }
+  },
+  {
+    "caseId": "file-io-dskmi2-audit-zero-fine-scale",
+    "description": "Require named actual CSPICE BADFINEVOXELSCALE rather than matching incidental failures.",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 0,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000,
+        "spaixId": "index"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADFINEVOXELSCALE"]
+    }
+  },
+  {
+    "caseId": "file-io-dskmi2-audit-zero-coarse-scale",
+    "description": "Require named actual CSPICE BADCOARSEVOXSCALE rather than matching incidental failures.",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 0.5,
+        "corscl": 0,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000,
+        "spaixId": "index"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADCOARSEVOXSCALE"]
+    }
+  },
+  {
+    "caseId": "file-io-dskmi2-audit-small-index",
+    "description": "Require named actual CSPICE INTINDEXTOOSMALL rather than matching incidental failures.",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 100,
+        "spaixId": "index"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INTINDEXTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "file-io-dskmi2-audit-small-workspace",
+    "description": "Require named actual CSPICE WORKSPACETOOSMALL rather than matching incidental failures.",
+    "workflow": [
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 1,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000,
+        "spaixId": "index"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WORKSPACETOOSMALL"]
+    }
   }
 ]

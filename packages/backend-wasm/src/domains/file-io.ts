@@ -175,6 +175,26 @@ function callVoidHandle(
   });
 }
 
+function assertNumberArray(value: unknown, label: string): void {
+  if (!Array.isArray(value))
+    throw new TypeError(`${label} must be a number array`);
+  for (let i = 0; i < value.length; i++) {
+    const item: unknown = value[i];
+    if (typeof item !== "number")
+      throw new TypeError(`${label}[${i}] must be a number`);
+  }
+}
+
+function assertNumber(value: unknown, label: string): void {
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+}
+
+function assertString(value: unknown, label: string): void {
+  if (typeof value !== "string")
+    throw new TypeError(`${label} must be a string`);
+}
+
 /** Create a {@link FileIoApi} implementation backed by a WASM Emscripten module. */
 export function createFileIoApi(
   module: EmscriptenModule,
@@ -367,6 +387,8 @@ export function createFileIoApi(
     dascls: (handle: SpiceHandle) => closeDasBacked(handle, "dascls"),
 
     dlaopn: (path: string, ftype: string, ifname: string, ncomch: number) => {
+      assertString(ftype, "dlaopn(ftype)");
+      assertString(ifname, "dlaopn(ifname)");
       assertSpiceInt32NonNegative(ncomch, "dlaopn(ncomch)");
 
       const resolved = resolveKernelPath(path);
@@ -379,10 +401,11 @@ export function createFileIoApi(
       }
 
       const pathPtr = writeUtf8CString(module, resolved);
-      const ftypePtr = writeUtf8CString(module, ftype);
-      const ifnamePtr = writeUtf8CString(module, ifname);
-
+      let ftypePtr = 0;
+      let ifnamePtr = 0;
       try {
+        ftypePtr = writeUtf8CString(module, ftype);
+        ifnamePtr = writeUtf8CString(module, ifname);
         const nativeHandle = withAllocs(
           module,
           [4, WASM_ERR_MAX_BYTES],
@@ -410,8 +433,8 @@ export function createFileIoApi(
 
         return handles.register("DLA", nativeHandle);
       } finally {
-        module._free(ifnamePtr);
-        module._free(ftypePtr);
+        if (ifnamePtr) module._free(ifnamePtr);
+        if (ftypePtr) module._free(ftypePtr);
         module._free(pathPtr);
       }
     },
@@ -494,6 +517,7 @@ export function createFileIoApi(
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
 
     dskopn: (path: string, ifname: string, ncomch: number) => {
+      assertString(ifname, "dskopn(ifname)");
       assertSpiceInt32NonNegative(ncomch, "dskopn(ncomch)");
 
       const resolved = resolveKernelPath(path);
@@ -506,9 +530,9 @@ export function createFileIoApi(
       }
 
       const pathPtr = writeUtf8CString(module, resolved);
-      const ifnamePtr = writeUtf8CString(module, ifname);
-
+      let ifnamePtr = 0;
       try {
+        ifnamePtr = writeUtf8CString(module, ifname);
         const nativeHandle = withAllocs(
           module,
           [4, WASM_ERR_MAX_BYTES],
@@ -536,7 +560,7 @@ export function createFileIoApi(
         // DSKs are DAS-backed; register as DAS so `dascls` can close it.
         return handles.register("DAS", nativeHandle);
       } finally {
-        module._free(ifnamePtr);
+        if (ifnamePtr) module._free(ifnamePtr);
         module._free(pathPtr);
       }
     },
@@ -554,6 +578,12 @@ export function createFileIoApi(
       makvtl: boolean,
       spxisz: number,
     ) => {
+      // Match native argument types before heap writes/FFI can coerce JS values.
+      assertNumberArray(vrtces, "dskmi2(vrtces)");
+      assertNumberArray(plates, "dskmi2(plates)");
+      assertNumber(finscl, "dskmi2(finscl)");
+      if (typeof makvtl !== "boolean")
+        throw new TypeError("dskmi2(makvtl) must be a boolean");
       assertSpiceInt32NonNegative(nv, "dskmi2(nv)");
       assertSpiceInt32NonNegative(np, "dskmi2(np)");
       assertSpiceInt32(corscl, "dskmi2(corscl)");
@@ -708,6 +738,26 @@ export function createFileIoApi(
       spaixd: readonly number[],
       spaixi: readonly number[],
     ): void => {
+      assertString(frame, "dskw02(frame)");
+      for (const [label, values] of [
+        ["corpar", corpar],
+        ["vrtces", vrtces],
+        ["plates", plates],
+        ["spaixd", spaixd],
+        ["spaixi", spaixi],
+      ] as const)
+        assertNumberArray(values, `dskw02(${label})`);
+      for (const [label, value] of [
+        ["mncor1", mncor1],
+        ["mxcor1", mxcor1],
+        ["mncor2", mncor2],
+        ["mxcor2", mxcor2],
+        ["mncor3", mncor3],
+        ["mxcor3", mxcor3],
+        ["first", first],
+        ["last", last],
+      ] as const)
+        assertNumber(value, `dskw02(${label})`);
       assertSpiceInt32(center, "dskw02(center)");
       assertSpiceInt32(surfid, "dskw02(surfid)");
       assertSpiceInt32(dclass, "dskw02(dclass)");

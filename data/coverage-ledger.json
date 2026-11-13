@@ -175,7 +175,7 @@
           "https://github.com/rybosome/tspice/pull/691",
           "https://github.com/rybosome/tspice/pull/692"
         ],
-        "nextAction": "Both required local lanes passed for all eight readers; record observed current-source canonical CI and finish refreshed platform checks. Shared issuer prerequisite is #691; writer/spatial-index assignments remain separate.",
+        "nextAction": "Reader PR #692 passed all fifteen canonical jobs and explicit rebaseability. This dependent writer branch changes shared inputs; refresh retained reader execution proof on its current source before claiming verification.",
         "record": "data/parity-audits/file-io-1.json"
       },
       {
@@ -189,10 +189,12 @@
           "exists_c",
           "getfat_c"
         ],
-        "dependsOn": [],
+        "dependsOn": [
+          "file-io-1"
+        ],
         "prs": [],
-        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
-        "record": null
+        "nextAction": "Seven routines reviewed/repaired and both full required local lanes passed: 714 live comparisons, 773 parity-package tests, 32 writer allocation positions and actual compiled C bounds guard. Open the writer PR based on #692, then record observed current-source canonical CI and explicit rebaseability; all 162 assignments remain.",
+        "record": "data/parity-audits/file-io-2.json"
       },
       {
         "id": "frames-1",
@@ -383,16 +385,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 142,
-        "reviewed": 0,
+        "unreviewed": 135,
+        "reviewed": 27,
         "needs-repair": 0,
-        "verified": 20
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 142,
-        "reviewed": 0,
+        "unreviewed": 135,
+        "reviewed": 27,
         "needs-repair": 0,
-        "verified": 20
+        "verified": 0
       }
     }
   },
@@ -411,7 +413,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 338,
+    "scenarios": 357,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -6472,7 +6474,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 87
+          "line": 96
         }
       },
       "mapping": {
@@ -6573,7 +6575,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 302
+            "line": 322
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -6687,15 +6689,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafbfs -> tspice_dafbfs -> dafbfs_c.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -6703,15 +6705,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafbfs -> shared C shim -> dafbfs_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -6728,7 +6730,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 80
+          "line": 89
         }
       },
       "mapping": {
@@ -6829,7 +6831,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 293
+            "line": 313
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -6942,15 +6944,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafcls -> tspice_dafcls -> dafcls_c.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -6958,15 +6960,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafcls -> shared C shim -> dafcls_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7004,7 +7006,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 98
+          "line": 107
         }
       },
       "mapping": {
@@ -7109,7 +7111,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 309
+            "line": 329
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -7227,15 +7229,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.daffna -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native daffna -> tspice_daffna -> daffna_c. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7243,15 +7245,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.daffna -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_daffna -> shared C shim -> daffna_c; withAllocs/withMalloc releases buffers. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7317,7 +7319,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 72
+          "line": 81
         }
       },
       "mapping": {
@@ -7418,7 +7420,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 262
+            "line": 282
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -7579,15 +7581,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dafopr -> tspice_dafopr -> dafopr_c.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7595,15 +7597,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dafopr -> shared C shim -> dafopr_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7690,7 +7692,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 121
+          "line": 130
         }
       },
       "mapping": {
@@ -7791,7 +7793,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 367
+            "line": 387
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -7879,15 +7881,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dascls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7895,15 +7897,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dascls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7969,7 +7971,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 108
+          "line": 117
         }
       },
       "mapping": {
@@ -8070,7 +8072,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 336
+            "line": 356
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -8204,15 +8206,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dasopr -> tspice_dasopr -> dasopr_c.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -8220,15 +8222,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dasopr -> shared C shim -> dasopr_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -8542,7 +8544,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 143
+          "line": 160
         }
       },
       "mapping": {
@@ -8643,7 +8645,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 419
+            "line": 442
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -8781,15 +8783,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dlabfs -> tspice_dlabfs -> dlabfs_c. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -8797,15 +8799,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dlabfs -> shared C shim -> dlabfs_c; withAllocs/withMalloc releases buffers. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -8829,7 +8831,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 160
+          "line": 182
         }
       },
       "mapping": {
@@ -8930,7 +8932,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 494
+            "line": 517
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -9043,15 +9045,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -9059,15 +9061,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -9091,7 +9093,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 151
+          "line": 173
         }
       },
       "mapping": {
@@ -9131,7 +9133,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -9192,7 +9194,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 453
+            "line": 476
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -9219,6 +9221,36 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "file-io-dlafns-audit-positive-second-segment-and-end",
+            "source": "packages/py-parity-checking/src/cases/file-io/dlafns.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.dascls",
+              "file-io.dasopr",
+              "file-io.dlabfs",
+              "file-io.dlafns",
+              "file-io.dskmi2",
+              "file-io.dskopn",
+              "file-io.dskw02",
+              "file-io.getfat"
+            ],
+            "paths": [
+              {
+                "path": "next-two.bds",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Advance through a real second segment and end, restart, and compare every linked descriptor field. Supplemental content parity reads all geometry/metadata. Compare all eight linked descriptor fields only when found, plus end/restart flags.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
             "caseId": "file-io-dlafns-closed-handle-error",
             "source": "packages/py-parity-checking/src/cases/file-io/dlafns.cases.json",
             "expectation": "error",
@@ -9235,7 +9267,13 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dlafns error when handle is closed before traversal Contract/workflow precondition; not claimed as a CSPICE error path.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dlafns-next-segment-search-success",
@@ -9254,18 +9292,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "dlafns advances from first DSK segment and reports end of traversal Compare all eight linked descriptor fields only when found, plus end/restart flags.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "file-io-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlafns -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlafns -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlafns -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlafns -> shared C shim -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         }
       }
     },
@@ -9288,7 +9356,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 126
+          "line": 143
         }
       },
       "mapping": {
@@ -9328,7 +9396,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -9389,7 +9457,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 369
+            "line": 389
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -9416,6 +9484,76 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "file-io-dlaopn-audit-blank-type",
+            "source": "packages/py-parity-checking/src/cases/file-io/dlaopn.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dlaopn"
+            ],
+            "paths": [
+              {
+                "path": "blank-type.dla",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual CSPICE rejects invalid file type with BLANKFILETYPE. Actual CSPICE error required: BLANKFILETYPE.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dlaopn-audit-control-type",
+            "source": "packages/py-parity-checking/src/cases/file-io/dlaopn.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dlaopn"
+            ],
+            "paths": [
+              {
+                "path": "control-type.dla",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual CSPICE rejects invalid file type with ILLEGALCHARACTER. Actual CSPICE error required: ILLEGALCHARACTER.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+            "source": "packages/py-parity-checking/src/cases/file-io/dlaopn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.dascls",
+              "file-io.dasopr",
+              "file-io.dlabfs",
+              "file-io.dlacls",
+              "file-io.dlaopn",
+              "file-io.getfat"
+            ],
+            "paths": [
+              {
+                "path": "mixed.dla",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Four-character type truncation and case-aware header semantics, comment reservation and reopened valid empty DLA. Independent DAS header readback checks original type/name/comment records.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
             "caseId": "file-io-dlaopn-create-empty-file-success",
             "source": "packages/py-parity-checking/src/cases/file-io/dlaopn.cases.json",
             "expectation": "success",
@@ -9427,11 +9565,19 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dlaopn-create.dla",
-                "kind": "generated-output"
+                "path": "dlaopn-create.dla",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "dlaopn creates an empty DLA file and dlabfs reports no segments",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dlaopn-existing-file-error",
@@ -9443,11 +9589,17 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dlaopn-existing-file.dla",
-                "kind": "generated-output"
+                "path": "dlaopn-existing-file.dla",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dlaopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dlaopn-negative-ncomch-error",
@@ -9458,22 +9610,50 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dlaopn-invalid.dla",
-                "kind": "generated-output"
+                "path": "dlaopn-invalid.dla",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dlaopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "file-io-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlaopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlaopn -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlaopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlaopn -> shared C shim -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         }
       }
     },
@@ -9987,7 +10167,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 168
+          "line": 206
         }
       },
       "mapping": {
@@ -10027,7 +10207,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -10088,7 +10268,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 544
+            "line": 568
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -10115,6 +10295,120 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "file-io-dskmi2-audit-coarser-grid",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.dskmi2"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "A different fine/coarse scale on noncoplanar geometry distinguishes voxel size/origin and full integer index contents. Every returned double/integer reaches the live comparator; no summary truncation.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskmi2-audit-small-index",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require named actual CSPICE INTINDEXTOOSMALL rather than matching incidental failures. Actual CSPICE error required: INTINDEXTOOSMALL.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskmi2-audit-small-workspace",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require named actual CSPICE WORKSPACETOOSMALL rather than matching incidental failures. Actual CSPICE error required: WORKSPACETOOSMALL.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskmi2-audit-two-vertices",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Valid array shapes reach actual CSPICE BADVERTEXCOUNT. Actual CSPICE error required: BADVERTEXCOUNT.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskmi2-audit-vertex-mapping-disabled",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.dskmi2"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Full 10-double/120000-int outputs distinguish absent optional vertex-plate lists and preserve all active voxel pointers. Every returned double/integer reaches the live comparator; no summary truncation.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskmi2-audit-zero-coarse-scale",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require named actual CSPICE BADCOARSEVOXSCALE rather than matching incidental failures. Actual CSPICE error required: BADCOARSEVOXSCALE.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskmi2-audit-zero-fine-scale",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require named actual CSPICE BADFINEVOXELSCALE rather than matching incidental failures. Actual CSPICE error required: BADFINEVOXELSCALE.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
             "caseId": "file-io-dskmi2-invalid-nv-error",
             "source": "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
             "expectation": "error",
@@ -10122,7 +10416,13 @@
               "file-io.dskmi2"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dskmi2 error for invalid nv Contract/workflow precondition; not claimed as a CSPICE error path.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dskmi2-minimal-mesh-success",
@@ -10132,7 +10432,14 @@
               "file-io.dskmi2"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "dskmi2 builds a complete deterministic type-2 spatial index Every returned double/integer reaches the live comparator; no summary truncation.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dskmi2-non-integer-corscl-error",
@@ -10142,18 +10449,46 @@
               "file-io.dskmi2"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dskmi2 error for non-integer corscl Contract/workflow precondition; not claimed as a CSPICE error path.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "file-io-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskmi2 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskmi2 -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskmi2 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskmi2 -> shared C shim -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         }
       }
     },
@@ -10358,7 +10693,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 165
+          "line": 194
         }
       },
       "mapping": {
@@ -10398,7 +10733,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -10459,7 +10794,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 496
+            "line": 519
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -10486,6 +10821,34 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "file-io-dskopn-audit-empty-file-header",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskopn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.dascls",
+              "file-io.dasopr",
+              "file-io.dlabfs",
+              "file-io.dlacls",
+              "file-io.dskopn",
+              "file-io.getfat"
+            ],
+            "paths": [
+              {
+                "path": "empty.bds",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "An empty DSK is still a valid DAS/DSK after close; read its actual type and genuine empty DLA miss.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
             "caseId": "file-io-dskopn-existing-file-error",
             "source": "packages/py-parity-checking/src/cases/file-io/dskopn.cases.json",
             "expectation": "error",
@@ -10495,11 +10858,17 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dskopn-existing-file.bds",
-                "kind": "generated-output"
+                "path": "dskopn-existing-file.bds",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dskopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dskopn-negative-ncomch-error",
@@ -10510,11 +10879,17 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dskopn-invalid.bds",
-                "kind": "generated-output"
+                "path": "dskopn-invalid.bds",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dskopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dskopn-write-and-identify-success",
@@ -10529,22 +10904,52 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dskopn-write.bds",
-                "kind": "generated-output"
+                "path": "dskopn-write.bds",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "dskopn creates a writable DSK later identified by getfat",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "file-io-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskopn -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskopn -> shared C shim -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         }
       }
     },
@@ -10770,7 +11175,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 183
+          "line": 230
         }
       },
       "mapping": {
@@ -10810,7 +11215,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -10871,7 +11276,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 688
+            "line": 718
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -10898,6 +11303,128 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "file-io-dskw02-audit-backward-times",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskw02.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2",
+              "file-io.dskopn",
+              "file-io.dskw02"
+            ],
+            "paths": [
+              {
+                "path": "backward-times.bds",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Valid compiled index reaches actual writer TIMESOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: TIMESOUTOFORDER.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskw02-audit-two-meshes-and-metadata",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskw02.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.dascls",
+              "file-io.dasopr",
+              "file-io.dlabfs",
+              "file-io.dlafns",
+              "file-io.dskmi2",
+              "file-io.dskopn",
+              "file-io.dskw02",
+              "file-io.getfat"
+            ],
+            "paths": [
+              {
+                "path": "writer-two.bds",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Write distinct 3D meshes, bodies/surfaces, coordinate bounds and ET intervals; compare full spatial indices and both DLA descriptors plus independent content readback. Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskw02-audit-unknown-frame",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskw02.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2",
+              "file-io.dskopn",
+              "file-io.dskw02"
+            ],
+            "paths": [
+              {
+                "path": "unknown-frame.bds",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Valid compiled index reaches actual writer FRAMEIDNOTFOUND; failure cleanup closes the outstanding writer. Actual CSPICE error required: FRAMEIDNOTFOUND.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskw02-audit-unsupported-class",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskw02.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2",
+              "file-io.dskopn",
+              "file-io.dskw02"
+            ],
+            "paths": [
+              {
+                "path": "unsupported-class.bds",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Valid compiled index reaches actual writer NOTSUPPORTED; failure cleanup closes the outstanding writer. Actual CSPICE error required: NOTSUPPORTED.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
+            "caseId": "file-io-dskw02-audit-zero-rectangle-extent",
+            "source": "packages/py-parity-checking/src/cases/file-io/dskw02.cases.json",
+            "expectation": "error",
+            "operations": [
+              "file-io.dskmi2",
+              "file-io.dskopn",
+              "file-io.dskw02"
+            ],
+            "paths": [
+              {
+                "path": "zero-rectangle-extent.bds",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Valid compiled index reaches actual writer BOUNDSOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: BOUNDSOUTOFORDER.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
             "caseId": "file-io-dskw02-closed-handle-error",
             "source": "packages/py-parity-checking/src/cases/file-io/dskw02.cases.json",
             "expectation": "error",
@@ -10909,11 +11436,17 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dskw02-closed-handle.bds",
-                "kind": "generated-output"
+                "path": "dskw02-closed-handle.bds",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dskw02 error when writing with a closed handle Contract/workflow precondition; not claimed as a CSPICE error path.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dskw02-dlaopn-handle-kind-error",
@@ -10926,11 +11459,17 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dskw02-dlaopn-kind-error.dla",
-                "kind": "generated-output"
+                "path": "dskw02-dlaopn-kind-error.dla",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative dskw02 error when called with a handle opened by dlaopn Contract/workflow precondition; not claimed as a CSPICE error path.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-dskw02-write-and-traverse-success",
@@ -10947,22 +11486,52 @@
             ],
             "paths": [
               {
-                "path": "kernels/generated/dskw02-roundtrip.bds",
-                "kind": "generated-output"
+                "path": "dskw02-roundtrip.bds",
+                "kind": "scratch"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "dskw02 writes a segment that can be traversed via dlabfs/dlafns Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "file-io-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskw02 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskw02 -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskw02 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskw02 -> shared C shim -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         }
       }
     },
@@ -14654,7 +15223,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 59
+          "line": 63
         }
       },
       "mapping": {
@@ -14694,7 +15263,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -14755,7 +15324,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 197
+            "line": 217
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -14782,6 +15351,31 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "file-io-exists-audit-create-open-close-lifecycle",
+            "source": "packages/py-parity-checking/src/cases/file-io/exists.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.dascls",
+              "file-io.dlaopn",
+              "file-io.exists"
+            ],
+            "paths": [
+              {
+                "path": "created.dla",
+                "kind": "scratch"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe false before creation and true both while open and after actual close; scratch is removed after finalization.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
             "caseId": "file-io-exists-fixture-present-success",
             "source": "packages/py-parity-checking/src/cases/file-io/exists.cases.json",
             "expectation": "success",
@@ -14795,7 +15389,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "exists reports true for fixture path after furnsh staging",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-exists-missing-file-success",
@@ -14810,18 +15412,48 @@
                 "kind": "missing-or-negative-test-reference"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "exists reports false for a missing fixture-relative file",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "file-io-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.exists -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_exists -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.exists -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_exists -> shared C shim -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         }
       }
     },
@@ -16309,7 +16941,7 @@
         "domain": "file-io",
         "evidence": {
           "file": "packages/backend-contract/src/domains/file-io.ts",
-          "line": 62
+          "line": 71
         }
       },
       "mapping": {
@@ -16349,7 +16981,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -16410,7 +17042,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/file-io.ts",
-            "line": 226
+            "line": 246
           },
           "factory": "createFileIoApi",
           "delegation": null,
@@ -16437,6 +17069,35 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "file-io-getfat-audit-text-and-daf-types",
+            "source": "packages/py-parity-checking/src/cases/file-io/getfat.cases.json",
+            "expectation": "success",
+            "operations": [
+              "file-io.getfat",
+              "kernels.furnsh",
+              "kernels.unload"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-empty-daf.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe distinct KPL/LSK and DAF/SPK type pairs on actual closed files, including a valid empty DAF.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
+          },
+          {
             "caseId": "file-io-getfat-dsk-success",
             "source": "packages/py-parity-checking/src/cases/file-io/getfat.cases.json",
             "expectation": "success",
@@ -16450,7 +17111,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "getfat identifies a deterministic DSK fixture",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           },
           {
             "caseId": "file-io-getfat-missing-file-error",
@@ -16465,18 +17134,46 @@
                 "kind": "missing-or-negative-test-reference"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative getfat missing-file error Actual CSPICE error required: FILENOTFOUND.",
+              "record": "data/parity-audits/file-io-2.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "file-io-2",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.getfat -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_getfat -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.getfat -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_getfat -> shared C shim -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
+          "executions": [
+            "local-writers-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/file-io-2.json"
         }
       }
     },
@@ -20710,15 +21407,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20730,15 +21427,15 @@
             "reviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -30608,15 +31305,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -30624,15 +31321,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -33289,15 +33986,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33309,15 +34006,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33595,15 +34292,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -33611,15 +34308,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -33827,15 +34524,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33847,15 +34544,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34060,15 +34757,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34080,15 +34777,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34318,15 +35015,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34338,15 +35035,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34572,15 +35269,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34592,15 +35289,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34808,15 +35505,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34828,15 +35525,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35097,15 +35794,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35117,15 +35814,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35337,15 +36034,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35357,15 +36054,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36269,15 +36966,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-readers-audit-2026-11-13-node",
-            "ci-readers-source-ci-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -36285,15 +36982,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-readers-audit-2026-11-13-wasm",
-            "ci-readers-source-ci-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
