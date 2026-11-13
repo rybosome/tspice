@@ -195,6 +195,88 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43333289457/job/131583052603",
       "observation": "Observed canonical Linux Node22 native-required job: all 662 live parity tests (331 per actual backend), all 704 parity-package tests, 86 WASM tests, 57 Node tests and 101 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
       "historical": true
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5ce2227f32df544803311bd293d52e954557ce43e688ea4cc5ed8e6b8d9153c1",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 668 live parity comparisons (334 scenarios per backend), all 710 parity-package tests, 88 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64."
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5ce2227f32df544803311bd293d52e954557ce43e688ea4cc5ed8e6b8d9153c1",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 668 live parity comparisons (334 scenarios per backend), all 710 parity-package tests, 88 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64."
     }
   ],
   "routines": [
@@ -268,10 +350,7 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-node",
-            "ci-time-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -283,10 +362,7 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-wasm",
-            "ci-time-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     },
@@ -371,10 +447,7 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-node",
-            "ci-time-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -386,10 +459,7 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-wasm",
-            "ci-time-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     },
@@ -443,19 +513,13 @@
           "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-node",
-            "ci-time-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-wasm",
-            "ci-time-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     },
@@ -499,19 +563,13 @@
           "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-node",
-            "ci-time-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "cached",
           "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
-          "executions": [
-            "local-time-formats-2026-11-12-wasm",
-            "ci-time-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     },
@@ -574,10 +632,7 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-node",
-            "ci-time-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -589,10 +644,7 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-wasm",
-            "ci-time-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     },
@@ -635,19 +687,13 @@
           "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-node",
-            "ci-time-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-wasm",
-            "ci-time-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     },
@@ -718,10 +764,7 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-node",
-            "ci-time-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -733,13 +776,10 @@
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-time-formats-2026-11-12-wasm",
-            "ci-time-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Prior observations retained as historical after integrating merged kplfrm source. Semantic judgments retained; full required local lanes and canonical current-source CI are pending."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }
