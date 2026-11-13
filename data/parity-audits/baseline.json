@@ -307,8 +307,8 @@
         "sct2e_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Run both required local lanes on the eight-routine UTC/SCLK audit, record evidence, open the bounded PR and observe CI."
+      "prs": ["https://github.com/rybosome/tspice/pull/689"],
+      "nextAction": "Reviewed routines have both required local lanes and observed current-source canonical Linux native CI. Complete remaining platform CI and metadata refresh before merge handoff; continue other baseline batches."
     },
     {
       "id": "time-2",
