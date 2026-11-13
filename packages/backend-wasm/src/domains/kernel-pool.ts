@@ -3,6 +3,7 @@ import type {
   KernelPoolApi,
   KernelPoolVarType,
 } from "@rybosome/tspice-backend-contract";
+import { assertSpiceInt32NonNegative } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -29,6 +30,8 @@ function assertStringArrayNoEmptyStrings(
   field: string,
   values: readonly string[],
 ): void {
+  if (!Array.isArray(values))
+    throw new TypeError(`${fn}(): ${field} must be an array`);
   for (const v of values) {
     if (v.trim().length === 0) {
       throw new RangeError(`${fn}(): ${field} must not contain empty strings`);
@@ -65,12 +68,9 @@ function assertAllInt32(
 }
 
 function assertPoolRange(fn: string, start: number, room: number): void {
-  if (!Number.isFinite(start) || !Number.isInteger(start) || start < 0) {
-    throw new RangeError(`${fn}(): start must be an integer >= 0`);
-  }
-  if (!Number.isFinite(room) || !Number.isInteger(room) || room <= 0) {
-    throw new RangeError(`${fn}(): room must be an integer > 0`);
-  }
+  assertSpiceInt32NonNegative(start, `${fn}(start)`);
+  assertSpiceInt32NonNegative(room, `${fn}(room)`);
+  if (room === 0) throw new RangeError(`${fn}(room): expected an integer > 0`);
 }
 
 function writeFixedWidthUtf8CStringArray(
@@ -482,9 +482,12 @@ function tspiceCallPcpool(
   values: readonly string[],
 ): void {
   assertNonEmptyString("pcpool", "name", name);
-  // NAIF's `pcpool_c` allows `n=0` (set an empty value list). We still reject
-  // blank strings.
-  assertStringArrayNoEmptyStrings("pcpool", "values", values);
+  if (!Array.isArray(values))
+    throw new TypeError("pcpool(): values must be an array");
+  for (const value of values) {
+    if (typeof value !== "string")
+      throw new TypeError("pcpool(): values must contain only strings");
+  }
 
   const namePtr = writeUtf8CString(module, name);
 

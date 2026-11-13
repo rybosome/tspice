@@ -527,7 +527,8 @@ static void Pcpool(const Napi::CallbackInfo& info) {
   }
 
   // Fixed-width 2D buffer: n x kPoolStringMaxBytes.
-  std::vector<std::array<char, kPoolStringMaxBytes>> cvals(values.values.size());
+  // CSPICE requires a non-null buffer even for a zero-count no-op write.
+  std::vector<std::array<char, kPoolStringMaxBytes>> cvals(std::max<size_t>(1, values.values.size()));
   for (size_t i = 0; i < values.values.size(); i++) {
     CopyToFixedWidth(cvals[i], values.values[i]);
   }
@@ -536,7 +537,7 @@ static void Pcpool(const Napi::CallbackInfo& info) {
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_pcpool(
       name.c_str(),
-      (int)cvals.size(),
+      (int)values.values.size(),
       (int)kPoolStringMaxBytes,
       cvals.data(),
       err,

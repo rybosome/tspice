@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Callable
+import ctypes
 
 import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError
@@ -118,7 +119,19 @@ def run_kernel_pool_step(step: WorkflowStep, _context: SidecarRuntimeContext) ->
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepKernelPoolPcpool):
-        sp.pcpool(step.name, step.values)
+        if step.values:
+            sp.pcpool(step.name, step.values)
+        else:
+            # SpiceyPy 6.0.3 computes max(cvals) before its CSPICE call. Use the
+            # same library entrypoint with n=0 and a required non-null dummy row;
+            # this observes CSPICE's no-op, rather than inventing an empty value.
+            sp.libspice.pcpool_c(
+                ctypes.c_char_p(step.name.encode("utf-8")),
+                ctypes.c_int(0),
+                ctypes.c_int(2),
+                ctypes.create_string_buffer(2),
+            )
+            sp.check_for_spice_error(None)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepKernelPoolSwpool):
