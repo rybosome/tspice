@@ -69,8 +69,8 @@
         "ekgi_c"
       ],
       "dependsOn": ["ek-2"],
-      "prs": [],
-      "nextAction": "Eight column/query routines reviewed; run full required JS/native lanes, record source-bound observations and open the dependent PR after focused storage, NULL, byte-width and oracle repairs."
+      "prs": ["https://github.com/rybosome/tspice/pull/697"],
+      "nextAction": "All15 exact-source CI jobs passed. Child restacked onto parent #696 CI-proof metadata; reviewed implementation/test/fixture bytes are identical. Await new metadata CI and explicit REST rebaseability."
     },
     {
       "id": "ek-2",

@@ -400,6 +400,44 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43385411734/job/131752596794",
       "observation": "Observed exact-source canonical Linux22 job: all692live parity tests (346scenarios on each actual backend), all741parity-package tests, actual native-required guard, all90WASM/62Node/26core/121facade tests and production CSPICE_N0067 sanity passed without native skips. All15source CI jobs passed.",
       "historical": true
+    },
+    {
+      "id": "ci-ek-query-43389829653-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2e05d462f2f1097f0c59ab0fd50e3b09c67e59a21521897fe7b5a75428216610",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "f53f7cbfbc70c3821fde6cb29900f051ee186b80",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43389829653/job/131766822953",
+      "observation": "Observed exact-source canonical Linux22 job: all756live comparisons (378scenarios per actual backend), all846parity-package tests, all127WASM/63Node/26core/121facade tests and actual production N0067 native-required guard/sanity passed without skips. All15source CI jobs passed. Reviewed implementation/test/fixture tree is byte-identical after restacking onto parent CI-proof metadata; prior parent source executions remain historical."
+    },
+    {
+      "id": "ci-ek-query-43389829653-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2e05d462f2f1097f0c59ab0fd50e3b09c67e59a21521897fe7b5a75428216610",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "f53f7cbfbc70c3821fde6cb29900f051ee186b80",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43389829653/job/131766822953",
+      "observation": "Observed exact-source canonical Linux22 job: all756live comparisons (378scenarios per actual backend), all846parity-package tests, all127WASM/63Node/26core/121facade tests and actual production N0067 native-required guard/sanity passed without skips. All15source CI jobs passed. Reviewed implementation/test/fixture tree is byte-identical after restacking onto parent CI-proof metadata; prior parent source executions remain historical."
     }
   ],
   "routines": [
@@ -537,11 +575,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-ek-columns-queries-2026-11-13-node"]
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node",
+            "ci-ek-query-43389829653-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -553,14 +595,18 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-ek-columns-queries-2026-11-13-wasm"]
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm",
+            "ci-ek-query-43389829653-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }
