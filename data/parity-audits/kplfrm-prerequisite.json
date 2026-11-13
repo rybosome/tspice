@@ -366,6 +366,40 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43402810112/job/131809630407",
       "observation": "Observed exact-source Linux22: all 684 live comparisons, 721 parity-package tests, 80 WASM, 62 Node, 28 core and 125 facade tests passed with production N0067 native-required execution and zero skips. All 15 source jobs passed.",
       "historical": true
+    },
+    {
+      "id": "local-spk-writers-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "817fb253d8002fcc478fb9dfb73ea6c13a80627efa22c64881a0d1b96c5da6c8",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed after parent restacking and the offline fixture prerequisite: all 772 live comparisons (386 scenarios per actual backend), all 824 parity-package tests with native required and zero skips, production N0067 sanity, all 96 WASM/63 Node/28 core/126 facade tests. Forty-four new workflows plus persisted complete state/metadata, cleanup and all 16 actual WASM fault positions passed. The first full run exposed seven generated Node EK path regressions; host existence versus virtual-path routing was corrected, all 30 targeted comparisons and both complete lanes then passed. No retry concealed that failure."
+    },
+    {
+      "id": "local-spk-writers-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "817fb253d8002fcc478fb9dfb73ea6c13a80627efa22c64881a0d1b96c5da6c8",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed after parent restacking and the offline fixture prerequisite: all 772 live comparisons (386 scenarios per actual backend), all 824 parity-package tests with native required and zero skips, production N0067 sanity, all 96 WASM/63 Node/28 core/126 facade tests. Forty-four new workflows plus persisted complete state/metadata, cleanup and all 16 actual WASM fault positions passed. The first full run exposed seven generated Node EK path regressions; host existence versus virtual-path routing was corrected, all 30 targeted comparisons and both complete lanes then passed. No retry concealed that failure."
     }
   ],
   "routines": [
@@ -509,10 +543,7 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-spk-descriptors-2026-11-13-node",
-            "ci-pr700-43402810112-node"
-          ]
+          "executions": ["local-spk-writers-final-node"]
         },
         "wasm": {
           "history": [
@@ -530,13 +561,10 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-spk-descriptors-2026-11-13-wasm",
-            "ci-pr700-43402810112-wasm"
-          ]
+          "executions": ["local-spk-writers-final-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }
