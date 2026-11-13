@@ -1,0 +1,984 @@
+{
+  "schemaVersion": 1,
+  "batch": "cells-windows",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-shim-c/src/handle_validation.c",
+    "packages/backend-node/native/src/cell_handles.cc",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/tspice/test/cells-lifecycle-recovery.test.ts",
+    "packages/backend-wasm/test/cell-handle-ownership.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-cells-audit-2026-11-12-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c9d348587822193c17131125d2dcc951a40f8840703658fab6c7b3aaccd2362c",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "observation": "Both required JS/native lanes passed; the native addon rebuilt and loaded, sanity assertion ran, and all 694 live parity tests (347 scenarios per backend), all 725 parity-package tests, 67 WASM tests, 62 native tests and 125 facade tests passed with no native-required skips. Eight new lifecycle tests cover all nine raw consumers, wrong types, expired handles, content preservation/post-error recovery and non-string insrtc input; a failing-before WASM coercion regression passed after the narrow guard. The shared N0067/Emscripten3.1.74 binary is inherited unchanged from allocation prerequisites. Doctor/format/lint and all 38 ledger regressions passed. macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "local-cells-audit-2026-11-12-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c9d348587822193c17131125d2dcc951a40f8840703658fab6c7b3aaccd2362c",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "observation": "Both required JS/native lanes passed; the native addon rebuilt and loaded, sanity assertion ran, and all 694 live parity tests (347 scenarios per backend), all 725 parity-package tests, 67 WASM tests, 62 native tests and 125 facade tests passed with no native-required skips. Eight new lifecycle tests cover all nine raw consumers, wrong types, expired handles, content preservation/post-error recovery and non-string insrtc input; a failing-before WASM coercion regression passed after the narrow guard. The shared N0067/Emscripten3.1.74 binary is inherited unchanged from allocation prerequisites. Doctor/format/lint and all 38 ledger regressions passed. macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "ci-cells-audit-43327007050-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c9d348587822193c17131125d2dcc951a40f8840703658fab6c7b3aaccd2362c",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "commit": "0c32cee9adf63eef55e214d7b65648613bea89d5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43327007050/job/131561889176",
+      "observation": "Observed all 15 jobs green on their first attempt for source 0c32cee9adf63eef55e214d7b65648613bea89d5. Linux Node22 native-required job explicitly rebuilt/loaded production N0067 and executed all 694 live parity tests, all 725 parity-package tests, 125 facade tests including all eight new lifecycle tests, 67 WASM tests including all four ownership regressions, 62 native tests including the real-C allocator fixture and all 16 capacity regressions; no required native skips. Full JS/WASM, other native matrix jobs, docs and packaged-install checks also passed. REST explicitly reported rebaseable:true and mergeable:true on this head/base.",
+      "historical": true
+    },
+    {
+      "id": "ci-cells-audit-43327007050-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c9d348587822193c17131125d2dcc951a40f8840703658fab6c7b3aaccd2362c",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "commit": "0c32cee9adf63eef55e214d7b65648613bea89d5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43327007050/job/131561889176",
+      "observation": "Observed all 15 jobs green on their first attempt for source 0c32cee9adf63eef55e214d7b65648613bea89d5. Linux Node22 native-required job explicitly rebuilt/loaded production N0067 and executed all 694 live parity tests, all 725 parity-package tests, 125 facade tests including all eight new lifecycle tests, 67 WASM tests including all four ownership regressions, 62 native tests including the real-C allocator fixture and all 16 capacity regressions; no required native skips. Full JS/WASM, other native matrix jobs, docs and packaged-install checks also passed. REST explicitly reported rebaseable:true and mergeable:true on this head/base.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f4e2ed19b6492bcc3c4ceafc63dcc0c91329d63ac2c6a55025ef0fb02571b866",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f4e2ed19b6492bcc3c4ceafc63dcc0c91329d63ac2c6a55025ef0fb02571b866",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "card_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/card_c.html",
+      "semantics": "Returns descriptor cardinality across integer, double, character and window cells. Window cardinality counts endpoints, including two per singleton interval; clearing sets cardinality to zero without changing logical capacity.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-card-window-cardinality-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw cardinality is returned for all four cell types; window endpoint count and cardinality after clearing are compared to live SpiceyPy card. Case: card reports endpoint cardinality for a tracked window"
+        },
+        {
+          "caseId": "cells-windows-card-missing-target-error",
+          "coverage": ["edge"],
+          "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity."
+        },
+        {
+          "caseId": "cells-windows-card-audit-all-cell-types-and-zero",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw cardinality is returned for all four cell types; window endpoint count and cardinality after clearing are compared to live SpiceyPy card. Case: Cardinality is observed for int/double/char cells before and after clearing."
+        }
+      ],
+      "edgeAssessment": "Returns descriptor cardinality across integer, double, character and window cells. Window cardinality counts endpoints, including two per singleton interval; clearing sets cardinality to zero without changing logical capacity. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "For valid live descriptors this is a read-only accessor with no CSPICE error condition to manufacture. Missing-target cases are harness preflight, not raw error coverage. Actual-backend tests reject expired/invalid handles; reviewed allocation/ownership prerequisites prevent unsafe descriptor corruption.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.card -> typed adapter -> native process handle registry -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.card -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "insrtc_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/insrtc_c.html",
+      "semantics": "Inserts a character key into a sorted character set. CSPICE truncates to cell length minus terminating NUL and ignores trailing blanks for comparison while preserving leading blanks. Empty keys and keys identical after truncation are valid; SETEXCESS occurs only for a new key beyond capacity. Runtime input must be a string.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-insrtc-dedupe-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: insrtc inserts into char set cell with de-dupe behavior"
+        },
+        {
+          "caseId": "cells-windows-insrtc-capacity-overflow-error",
+          "coverage": ["error"],
+          "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Representative insrtc overflow error"
+        },
+        {
+          "caseId": "cells-windows-insrtc-audit-complete-sorted-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks."
+        },
+        {
+          "caseId": "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Duplicate insertion into a full set succeeds without changing contents."
+        },
+        {
+          "caseId": "cells-windows-insrtc-audit-zero-capacity",
+          "coverage": ["error"],
+          "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE."
+        },
+        {
+          "caseId": "cells-windows-insrtc-audit-truncation-deduplication",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns the complete ordered string set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, significant leading blanks, trailing-blank equivalence, empty keys and truncation collisions. Case: Truncated character keys determine order and deduplication."
+        }
+      ],
+      "edgeAssessment": "Inserts a character key into a sorted character set. CSPICE truncates to cell length minus terminating NUL and ignores trailing blanks for comparison while preserving leading blanks. Empty keys and keys identical after truncation are valid; SETEXCESS occurs only for a new key beyond capacity. Runtime input must be a string. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "Live non-happy paths require the relevant named CSPICE diagnostic rather than two arbitrary failures. Actual-backend integration tests cover wrong element types, numeric/expired handles, post-error recovery and preservation of existing contents.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [
+        {
+          "id": "mutation-result-not-observed",
+          "status": "repaired",
+          "summary": "Existing insertion/scard steps returned null; cardinality-only observations could miss wrong values, order or unchanged cardinality effects.",
+          "repair": "Return complete inserted set contents or actual post-scard cardinality from both real raw and live SpiceyPy handlers. Add distinguishing state sequences and specific error requirements.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
+            "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": [
+            "cells-windows-insrtc-dedupe-success",
+            "cells-windows-insrtc-capacity-overflow-error",
+            "cells-windows-insrtc-audit-complete-sorted-values",
+            "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+            "cells-windows-insrtc-audit-zero-capacity",
+            "cells-windows-insrtc-audit-truncation-deduplication"
+          ]
+        },
+        {
+          "id": "oracle-zero-capacity-default",
+          "status": "repaired",
+          "summary": "The Python oracle used truthiness defaults and rejected explicit zero capacities, so it could not compare legal zero-storage boundary behavior with the raw implementations.",
+          "repair": "Default only absent values, allow zero-cell/window capacity, and compare actual SETEXCESS/WINDOWEXCESS insertion errors with live SpiceyPy.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/insrtc.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": ["cells-windows-insrtc-audit-zero-capacity"]
+        },
+        {
+          "id": "wasm-string-input-coercion",
+          "status": "repaired",
+          "summary": "A new actual-backend regression failed because WASM TextEncoder coerced numeric/null/object inputs into inserted strings while Node rejects non-string inputs.",
+          "repair": "Validate the WASM insrtc argument before encoding/allocation. Both backend tests reject five non-string values and verify the cell remains empty; full valid-string live parity remains unchanged.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/cells-windows.ts",
+            "packages/tspice/test/cells-lifecycle-recovery.test.ts"
+          ],
+          "caseIds": [
+            "cells-windows-insrtc-dedupe-success",
+            "cells-windows-insrtc-audit-complete-sorted-values",
+            "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+            "cells-windows-insrtc-audit-truncation-deduplication"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.insrtc -> typed adapter -> native process handle registry -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.insrtc -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "insrtd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/insrtd_c.html",
+      "semantics": "Inserts a double into a double set in ascending order with exact duplicate elimination, without numeric tolerance or units. An existing value succeeds at full capacity; a new value beyond capacity signals SETEXCESS.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-insrtd-dedupe-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: insrtd inserts into double set cell with de-dupe behavior"
+        },
+        {
+          "caseId": "cells-windows-insrtd-capacity-overflow-error",
+          "coverage": ["error"],
+          "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Representative insrtd overflow error"
+        },
+        {
+          "caseId": "cells-windows-insrtd-audit-complete-sorted-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks."
+        },
+        {
+          "caseId": "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Duplicate insertion into a full set succeeds without changing contents."
+        },
+        {
+          "caseId": "cells-windows-insrtd-audit-zero-capacity",
+          "coverage": ["error"],
+          "observes": "Every insertion returns a copied complete ordered double set through kit getters and card, compared to list(SpiceyPy cell), distinguishing ordering, exact duplicates and binary-exact signed fractions. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE."
+        }
+      ],
+      "edgeAssessment": "Inserts a double into a double set in ascending order with exact duplicate elimination, without numeric tolerance or units. An existing value succeeds at full capacity; a new value beyond capacity signals SETEXCESS. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "Live non-happy paths require the relevant named CSPICE diagnostic rather than two arbitrary failures. Actual-backend integration tests cover wrong element types, numeric/expired handles, post-error recovery and preservation of existing contents.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [
+        {
+          "id": "mutation-result-not-observed",
+          "status": "repaired",
+          "summary": "Existing insertion/scard steps returned null; cardinality-only observations could miss wrong values, order or unchanged cardinality effects.",
+          "repair": "Return complete inserted set contents or actual post-scard cardinality from both real raw and live SpiceyPy handlers. Add distinguishing state sequences and specific error requirements.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/insrtd.cases.json",
+            "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": [
+            "cells-windows-insrtd-dedupe-success",
+            "cells-windows-insrtd-capacity-overflow-error",
+            "cells-windows-insrtd-audit-complete-sorted-values",
+            "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+            "cells-windows-insrtd-audit-zero-capacity"
+          ]
+        },
+        {
+          "id": "oracle-zero-capacity-default",
+          "status": "repaired",
+          "summary": "The Python oracle used truthiness defaults and rejected explicit zero capacities, so it could not compare legal zero-storage boundary behavior with the raw implementations.",
+          "repair": "Default only absent values, allow zero-cell/window capacity, and compare actual SETEXCESS/WINDOWEXCESS insertion errors with live SpiceyPy.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/insrtd.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": ["cells-windows-insrtd-audit-zero-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.insrtd -> typed adapter -> native process handle registry -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.insrtd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "insrti_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/insrti_c.html",
+      "semantics": "Inserts a signed 32-bit integer into an integer set in ascending order with duplicate elimination. An existing value succeeds at full capacity; a new value beyond capacity (including zero capacity) signals SETEXCESS.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-insrti-dedupe-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: insrti inserts into int set cell with de-dupe behavior"
+        },
+        {
+          "caseId": "cells-windows-insrti-capacity-overflow-error",
+          "coverage": ["error"],
+          "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Representative insrti overflow error"
+        },
+        {
+          "caseId": "cells-windows-insrti-audit-complete-sorted-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Observe every ordered unique value, including signed/fractional inputs or significant leading/insignificant trailing blanks."
+        },
+        {
+          "caseId": "cells-windows-insrti-audit-duplicate-at-full-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Duplicate insertion into a full set succeeds without changing contents."
+        },
+        {
+          "caseId": "cells-windows-insrti-audit-zero-capacity",
+          "coverage": ["error"],
+          "observes": "Every insertion returns a copied complete ordered integer set through kit getters and card, compared to list(SpiceyPy cell), distinguishing insertion, sorting and duplicate elimination including signed extrema. Case: Explicit zero capacity must not become the default and insertion must fail in CSPICE."
+        }
+      ],
+      "edgeAssessment": "Inserts a signed 32-bit integer into an integer set in ascending order with duplicate elimination. An existing value succeeds at full capacity; a new value beyond capacity (including zero capacity) signals SETEXCESS. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "Live non-happy paths require the relevant named CSPICE diagnostic rather than two arbitrary failures. Actual-backend integration tests cover wrong element types, numeric/expired handles, post-error recovery and preservation of existing contents.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [
+        {
+          "id": "mutation-result-not-observed",
+          "status": "repaired",
+          "summary": "Existing insertion/scard steps returned null; cardinality-only observations could miss wrong values, order or unchanged cardinality effects.",
+          "repair": "Return complete inserted set contents or actual post-scard cardinality from both real raw and live SpiceyPy handlers. Add distinguishing state sequences and specific error requirements.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/insrti.cases.json",
+            "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": [
+            "cells-windows-insrti-dedupe-success",
+            "cells-windows-insrti-capacity-overflow-error",
+            "cells-windows-insrti-audit-complete-sorted-values",
+            "cells-windows-insrti-audit-duplicate-at-full-capacity",
+            "cells-windows-insrti-audit-zero-capacity"
+          ]
+        },
+        {
+          "id": "oracle-zero-capacity-default",
+          "status": "repaired",
+          "summary": "The Python oracle used truthiness defaults and rejected explicit zero capacities, so it could not compare legal zero-storage boundary behavior with the raw implementations.",
+          "repair": "Default only absent values, allow zero-cell/window capacity, and compare actual SETEXCESS/WINDOWEXCESS insertion errors with live SpiceyPy.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/insrti.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": ["cells-windows-insrti-audit-zero-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.insrti -> typed adapter -> native process handle registry -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.insrti -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "scard_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scard_c.html",
+      "semantics": "Sets cardinality without sorting or initializing elements. Zero empties the logical set/window while retaining capacity and stored bytes. Nonnegative integer cardinality beyond logical size signals INVALIDCARDINALITY; growing cardinality is safe only for initialized backing elements.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-scard-truncates-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: scard shrinks a populated set cell cardinality"
+        },
+        {
+          "caseId": "cells-windows-scard-negative-card-error",
+          "coverage": ["error"],
+          "observes": "Typed wrapper rejects negative cardinality; this is argument validation, not CSPICE diagnostic equivalence. A separate live above-capacity case requires INVALIDCARDINALITY."
+        },
+        {
+          "caseId": "cells-windows-scard-audit-clear-refill-all-types",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: Zero cardinality restores an empty set that can be refilled for all element types."
+        },
+        {
+          "caseId": "cells-windows-scard-audit-above-logical-capacity",
+          "coverage": ["error"],
+          "observes": "Actual raw scard mutation is followed by card and further operations; truncation, clearing/refilling every element type and windows, retained size, and above-capacity diagnostic reach live comparison. Case: CSPICE rejects a cardinality exceeding the actual logical size."
+        }
+      ],
+      "edgeAssessment": "Sets cardinality without sorting or initializing elements. Zero empties the logical set/window while retaining capacity and stored bytes. Nonnegative integer cardinality beyond logical size signals INVALIDCARDINALITY; growing cardinality is safe only for initialized backing elements. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "Live non-happy paths require the relevant named CSPICE diagnostic rather than two arbitrary failures. Actual-backend integration tests cover wrong element types, numeric/expired handles, post-error recovery and preservation of existing contents.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [
+        {
+          "id": "mutation-result-not-observed",
+          "status": "repaired",
+          "summary": "Existing insertion/scard steps returned null; cardinality-only observations could miss wrong values, order or unchanged cardinality effects.",
+          "repair": "Return complete inserted set contents or actual post-scard cardinality from both real raw and live SpiceyPy handlers. Add distinguishing state sequences and specific error requirements.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/scard.cases.json",
+            "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": [
+            "cells-windows-scard-truncates-success",
+            "cells-windows-scard-negative-card-error",
+            "cells-windows-scard-audit-clear-refill-all-types",
+            "cells-windows-scard-audit-above-logical-capacity"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.scard -> typed adapter -> native process handle registry -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.scard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "size_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/size_c.html",
+      "semantics": "Returns logical element capacity independently of cardinality for all cell types; window capacity counts endpoints rather than intervals. Stored data and cardinality changes do not resize backing storage.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-size-window-capacity-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw size is returned for three distinct element capacities and a window endpoint capacity before/after insertions and clearing; live SpiceyPy size observes the same state. Case: size reports tracked window capacity"
+        },
+        {
+          "caseId": "cells-windows-size-missing-target-error",
+          "coverage": ["edge"],
+          "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity."
+        },
+        {
+          "caseId": "cells-windows-size-audit-independent-of-cardinality",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw size is returned for three distinct element capacities and a window endpoint capacity before/after insertions and clearing; live SpiceyPy size observes the same state. Case: Distinct declared capacities survive insertion and cardinality clearing."
+        }
+      ],
+      "edgeAssessment": "Returns logical element capacity independently of cardinality for all cell types; window capacity counts endpoints rather than intervals. Stored data and cardinality changes do not resize backing storage. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "For valid live descriptors this is a read-only accessor with no CSPICE error condition to manufacture. Missing-target cases are harness preflight, not raw error coverage. Actual-backend tests reject expired/invalid handles; reviewed allocation/ownership prerequisites prevent unsafe descriptor corruption.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.size -> typed adapter -> native process handle registry -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.size -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "wncard_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wncard_c.html",
+      "semantics": "Returns half the endpoint cardinality of a valid DP window, i.e. the number of disjoint closed intervals; singleton intervals count once. Empty and cleared windows return zero.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wncard-window-lifecycle-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw interval count is observed through insert/merge/clear states, alongside endpoint card to distinguish the factor of two. Three disjoint intervals and singleton bounds prevent constant-one/endpoint-count substitutes. Case: Window lifecycle: insert, inspect, clear via scard, inspect"
+        },
+        {
+          "caseId": "cells-windows-wncard-missing-window-error",
+          "coverage": ["edge"],
+          "observes": "Existing missing-target case is harness preflight only: neither actual raw operation is reached; it does not establish raw CSPICE diagnostic parity."
+        },
+        {
+          "caseId": "cells-windows-wncard-audit-three-and-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual raw interval count is observed through insert/merge/clear states, alongside endpoint card to distinguish the factor of two. Three disjoint intervals and singleton bounds prevent constant-one/endpoint-count substitutes. Case: Interval cardinality differs from endpoint cardinality and returns zero after clearing."
+        }
+      ],
+      "edgeAssessment": "Returns half the endpoint cardinality of a valid DP window, i.e. the number of disjoint closed intervals; singleton intervals count once. Empty and cleared windows return zero. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "For valid live descriptors this is a read-only accessor with no CSPICE error condition to manufacture. Missing-target cases are harness preflight, not raw error coverage. Actual-backend tests reject expired/invalid handles; reviewed allocation/ownership prerequisites prevent unsafe descriptor corruption.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.wncard -> typed adapter -> native process handle registry -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.wncard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "wnfetd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnfetd_c.html",
+      "semantics": "Fetches a copy of a closed interval endpoint pair by zero-based interval index, preserving caller units and singleton values. Index beyond interval count, including an empty window, signals NOINTERVAL; the typed wrapper rejects negative/nonintegral SpiceInt indices.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wninsd-wnfetd-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Stateful wninsd -> wnfetd workflow"
+        },
+        {
+          "caseId": "cells-windows-wnfetd-out-of-range-error",
+          "coverage": ["error"],
+          "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Representative wnfetd bounds error"
+        },
+        {
+          "caseId": "cells-windows-wnfetd-audit-zero-based-first-last",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: Every interval is fetched using zero-based indices across negative and positive endpoints."
+        },
+        {
+          "caseId": "cells-windows-wnfetd-audit-empty-window",
+          "coverage": ["error"],
+          "observes": "Every selected raw [left,right] pair reaches live comparison: all zero-based indices of a three-interval window, signed endpoints and singleton, plus named NOINTERVAL on out-of-range and empty windows. Case: An empty real window has no interval zero."
+        }
+      ],
+      "edgeAssessment": "Fetches a copy of a closed interval endpoint pair by zero-based interval index, preserving caller units and singleton values. Index beyond interval count, including an empty window, signals NOINTERVAL; the typed wrapper rejects negative/nonintegral SpiceInt indices. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "Live non-happy paths require the relevant named CSPICE diagnostic rather than two arbitrary failures. Actual-backend integration tests cover wrong element types, numeric/expired handles, post-error recovery and preservation of existing contents.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.wnfetd -> typed adapter -> native process handle registry -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.wnfetd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "wninsd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wninsd_c.html",
+      "semantics": "Inserts a closed interval in caller endpoint units into a DP window, merging overlaps, contained intervals and touching endpoints while sorting disjoint intervals. Equal endpoints are valid singleton intervals; reversed bounds signal BADENDPOINTS and insufficient storage signals WINDOWEXCESS.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wninsd-merge-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: wninsd merges overlapping intervals in a tracked window"
+        },
+        {
+          "caseId": "cells-windows-wninsd-invalid-interval-error",
+          "coverage": ["error"],
+          "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Representative wninsd invalid interval bounds error"
+        },
+        {
+          "caseId": "cells-windows-wninsd-audit-touching-containing-singletons",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Closed touching intervals merge, containing intervals are idempotent, and point intervals survive."
+        },
+        {
+          "caseId": "cells-windows-wninsd-audit-overflow",
+          "coverage": ["error"],
+          "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: A disjoint interval beyond fixed endpoint capacity raises WINDOWEXCESS."
+        },
+        {
+          "caseId": "cells-windows-wninsd-audit-zero-capacity",
+          "coverage": ["error"],
+          "observes": "Insertion effects reach assertions through raw interval count and fetched endpoint pairs. Touching/contained/bridging/singleton intervals and full-window insertion distinguish merge/sort semantics; actual reversed/overflow errors require named CSPICE codes. Case: Explicit zero interval capacity must reach the raw overflow path."
+        }
+      ],
+      "edgeAssessment": "Inserts a closed interval in caller endpoint units into a DP window, merging overlaps, contained intervals and touching endpoints while sorting disjoint intervals. Equal endpoints are valid singleton intervals; reversed bounds signal BADENDPOINTS and insufficient storage signals WINDOWEXCESS. Separate real-backend lifecycle regressions exercise every raw consumer after free, type mismatch, preservation after failure and successful reuse of the owning backend.",
+      "errorAssessment": "Live non-happy paths require the relevant named CSPICE diagnostic rather than two arbitrary failures. Actual-backend integration tests cover wrong element types, numeric/expired handles, post-error recovery and preservation of existing contents.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external files. Authored integers, binary-exact fractions, ASCII string keys and interval endpoints; backing storage is always allocated before use. Unsafe arbitrary/corrupt CSPICE descriptors are not passed to the oracle.",
+      "cleanup": "Each workflow uses registered once-only cell/window finalizers on success/error and resets runtime state. Same-instance integration tests free all surviving handles, reset error state and dispose clients in finally; opaque tokens reject foreign/expired identities and registry prerequisites preserve original storage bounds. No handles or kernel state escape a case.",
+      "tolerance": "Existing recursive comparator preserves complete lengths/keys/order. Integers, ASCII strings and binary-exact fractions/endpoints use unchanged 1e-12 absolute/relative threshold; no rounding, normalization, tolerance relaxation or fixture-derived expected constants.",
+      "findings": [
+        {
+          "id": "oracle-zero-capacity-default",
+          "status": "repaired",
+          "summary": "The Python oracle used truthiness defaults and rejected explicit zero capacities, so it could not compare legal zero-storage boundary behavior with the raw implementations.",
+          "repair": "Default only absent values, allow zero-cell/window capacity, and compare actual SETEXCESS/WINDOWEXCESS insertion errors with live SpiceyPy.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wninsd.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py"
+          ],
+          "caseIds": ["cells-windows-wninsd-audit-zero-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> node dispatcher raw.wninsd -> typed adapter -> native process handle registry -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Registered workflow -> wasm dispatcher raw.wninsd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

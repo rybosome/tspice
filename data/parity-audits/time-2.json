@@ -1,0 +1,1015 @@
+{
+  "schemaVersion": 1,
+  "batch": "time-2",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-node/native/src/domains/kernels.cc",
+    "packages/backend-wasm/test/time-allocation-cleanup.test.ts",
+    "packages/py-parity-checking/test/time-defaults-cleanup.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-time-formats-2026-11-12-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "244f94d22a4860322f29e7d813f9391b54f10085007bef7642e109a02ab369a2",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both required local JS/native lanes passed on the seven-routine time parsing/formatting source. Production N0067 native addon rebuilt/loaded and native sanity ran; all 662 live parity tests (331 scenarios per backend), all 704 parity-package tests, 86 WASM tests, 57 native tests and 101 facade tests passed without required native skips. Eleven new parity-package tests cover both SYSTEM/ZONE caller baselines after success/failure on both backends, non-string arguments and a 0.1-second Julian assertion corruption. Twenty-five temporary allocation failure positions and a two-module toolkit-version cache test passed. Failing-before cleanup tests demonstrated TIMDEF state leakage, and the first BADTIMEITEM case revealed oracle decoder preflight; both repairs passed the full lanes. All 37 ledger tests, doctor/format/lint passed. No C or WASM artifacts changed. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15. Source tree remained unchanged when foundation was restacked after the CI-fix squash merge.",
+      "historical": true
+    },
+    {
+      "id": "local-time-formats-2026-11-12-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "244f94d22a4860322f29e7d813f9391b54f10085007bef7642e109a02ab369a2",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both required local JS/native lanes passed on the seven-routine time parsing/formatting source. Production N0067 native addon rebuilt/loaded and native sanity ran; all 662 live parity tests (331 scenarios per backend), all 704 parity-package tests, 86 WASM tests, 57 native tests and 101 facade tests passed without required native skips. Eleven new parity-package tests cover both SYSTEM/ZONE caller baselines after success/failure on both backends, non-string arguments and a 0.1-second Julian assertion corruption. Twenty-five temporary allocation failure positions and a two-module toolkit-version cache test passed. Failing-before cleanup tests demonstrated TIMDEF state leakage, and the first BADTIMEITEM case revealed oracle decoder preflight; both repairs passed the full lanes. All 37 ledger tests, doctor/format/lint passed. No C or WASM artifacts changed. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15. Source tree remained unchanged when foundation was restacked after the CI-fix squash merge.",
+      "historical": true
+    },
+    {
+      "id": "ci-time-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "244f94d22a4860322f29e7d813f9391b54f10085007bef7642e109a02ab369a2",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "1fc8d7531eb23c09a15058f0127dd98b3cfcd108",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43333289457/job/131583052603",
+      "observation": "Observed canonical Linux Node22 native-required job: all 662 live parity tests (331 per actual backend), all 704 parity-package tests, 86 WASM tests, 57 Node tests and 101 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-time-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "244f94d22a4860322f29e7d813f9391b54f10085007bef7642e109a02ab369a2",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "1fc8d7531eb23c09a15058f0127dd98b3cfcd108",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43333289457/job/131583052603",
+      "observation": "Observed canonical Linux Node22 native-required job: all 662 live parity tests (331 per actual backend), all 704 parity-package tests, 86 WASM tests, 57 Node tests and 101 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
+      "historical": true
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5ce2227f32df544803311bd293d52e954557ce43e688ea4cc5ed8e6b8d9153c1",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 668 live parity comparisons (334 scenarios per backend), all 710 parity-package tests, 88 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64.",
+      "historical": true
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5ce2227f32df544803311bd293d52e954557ce43e688ea4cc5ed8e6b8d9153c1",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 668 live parity comparisons (334 scenarios per backend), all 710 parity-package tests, 88 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64.",
+      "historical": true
+    },
+    {
+      "id": "ci-pr688-43385842916-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5ce2227f32df544803311bd293d52e954557ce43e688ea4cc5ed8e6b8d9153c1",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "80bb5acb423c911b381a563d8839e2d48c66d29c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385842916/job/131753989676",
+      "observation": "Observed exact-source canonical Linux22 job. All668live comparisons, all710parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed; KPL WASM ownership remains needs-repair pending #684.",
+      "historical": true
+    },
+    {
+      "id": "ci-pr688-43385842916-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5ce2227f32df544803311bd293d52e954557ce43e688ea4cc5ed8e6b8d9153c1",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "80bb5acb423c911b381a563d8839e2d48c66d29c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385842916/job/131753989676",
+      "observation": "Observed exact-source canonical Linux22 job. All668live comparisons, all710parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed; KPL WASM ownership remains needs-repair pending #684.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8a49b0dbb5ad45acc5b9728e634ef7be8a23d45ad88c76cd8a59fc237b48daa7",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8a49b0dbb5ad45acc5b9728e634ef7be8a23d45ad88c76cd8a59fc237b48daa7",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "str2et_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/str2et_c.html",
+      "semantics": "Parses a time string to TDB/ET seconds past J2000, including UTC leap seconds, explicit labels, calendar forms and TIMDEF defaults. UTC conversion needs LSK data. Invalid text/day and missing leap information are named CSPICE errors. Nonzero signed/fractional epochs distinguish the old zero-only case.",
+      "scenarios": [
+        {
+          "caseId": "time-str2et-happy-j2000",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: Parses canonical J2000 TDB literal to ET"
+        },
+        {
+          "caseId": "time-str2et-invalid-time-error",
+          "coverage": ["error"],
+          "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: Representative parse failure for invalid time literal"
+        },
+        {
+          "caseId": "time-str2et-audit-utc-leap-boundary-and-formats",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: utc leap boundary and formats, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-str2et-audit-missing-leap-information",
+          "coverage": ["error"],
+          "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: missing leap information, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-str2et-audit-invalid-day",
+          "coverage": ["error"],
+          "observes": "Every returned ET scalar reaches live comparison, including one-second UTC leap boundaries, day-of-year and signed/fractional explicit TDB inputs; actual named parse/day/kernel failures remain distinct. Case: str2et: invalid day, compare complete actual live SpiceyPy outputs/effects"
+        }
+      ],
+      "edgeAssessment": "Parses a time string to TDB/ET seconds past J2000, including UTC leap seconds, explicit labels, calendar forms and TIMDEF defaults. UTC conversion needs LSK data. Invalid text/day and missing leap information are named CSPICE errors. Nonzero signed/fractional epochs distinguish the old zero-only case. Separate tests cover non-string JavaScript arguments, temporary allocation failures and same-instance state/recovery; no new routines or global tolerance changes.",
+      "errorAssessment": "Named CSPICE errors are required for applicable invalid parsing/day/time-system/default/missing-kernel paths. TPARSE/TPICTr non-CSPICE diagnostic returns are explicitly translated and compared by meaningful diagnostic fragments. Empty strings/unsupported TOOLKIT selectors are documented typed-wrapper constraints, not claimed as equivalent CSPICE errors. Cached immutable version has no reachable successful-input error state to manufacture; its initialization allocation/error paths are separately reviewed.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing NAIF generic naif0012 leapseconds kernel, copied from the facade test fixtures as documented in fixtures/README.md; its header identifies 2016-07-14 update for the 2016 leap second. Upstream: https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+          "distribution": "Existing checked-in fixture reused under repository CSPICE/data policy; no new kernel or redistribution payload is added."
+        }
+      ],
+      "fixtureRationale": "Only existing listed LSK data and authored epoch/string/picture inputs. Formal-calendar parsing/picture derivation do not require LSK. All external fixture bytes stay unchanged; no scientific data is generated or downloaded into tracked source.",
+      "cleanup": "Workflow finalizers restore pre-case CALENDAR and the nonempty SYSTEM/ZONE before common kclear/reset, on both success and failure. Kernel lifecycle unloads/clears fixture state. Direct tests retain caller defaults in finally and dispose clients. All 25 temporary allocation-failure positions, including toolkit-version initialization, verify earlier buffers released. Node serializes process state; WASM owns module state.",
+      "tolerance": "Existing absolute/relative 1e-12 comparison is unchanged. Complete strings and shapes compare exactly. Signed/fractional near-J2000 seconds and full UTC leap-boundary effects are distinguished. Julian outputs also carry a seconds-scale offset from the actual output, preventing large epoch scale from hiding subsecond defects; inherent double Julian-day quantization remains about 40 microseconds near J2000, not a claim of finer physical precision.",
+      "findings": [
+        {
+          "id": "zero-only-success-evidence",
+          "status": "repaired",
+          "summary": "The original success scenario used a J2000 value of zero, so a constant-zero implementation could pass.",
+          "repair": "Add distinguishing positive/negative/fractional and calendar/leap-boundary values and preserve all actual returned scalars.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/str2et.cases.json"
+          ],
+          "caseIds": [
+            "time-str2et-happy-j2000",
+            "time-str2et-audit-utc-leap-boundary-and-formats"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "timdef_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/timdef_c.html",
+      "semantics": "Gets/sets SYSTEM, CALENDAR or ZONE defaults. Setting SYSTEM and ZONE is mutually exclusive and clears the other; zone GET returns canonical UTC offset. Defaults persist across kclear/reset, so temporary workflow changes must be restored on success/error. Unknown item/value errors come from actual CSPICE, not decoder preflight.",
+      "scenarios": [
+        {
+          "caseId": "time-timdef-stateful-get-set",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: Exercises timdef state transitions for SYSTEM and CALENDAR"
+        },
+        {
+          "caseId": "time-timdef-invalid-system-value-error",
+          "coverage": ["error"],
+          "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: Representative timdef error for unsupported SYSTEM value"
+        },
+        {
+          "caseId": "time-timdef-audit-calendar-zone-system-effects",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: timdef: calendar zone system effects, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-timdef-audit-early-error-after-mutation",
+          "coverage": ["error"],
+          "observes": "Actual GET strings and downstream str2et effects compare calendar, system and zone transitions, including canonical zone and cleared system. Mutation followed by BADTIMEITEM exercises an early failure. Separate real-backend tests prove all caller defaults restored after both successful and failed workflows. Case: timdef: early error after mutation, compare complete actual live SpiceyPy outputs/effects"
+        }
+      ],
+      "edgeAssessment": "Gets/sets SYSTEM, CALENDAR or ZONE defaults. Setting SYSTEM and ZONE is mutually exclusive and clears the other; zone GET returns canonical UTC offset. Defaults persist across kclear/reset, so temporary workflow changes must be restored on success/error. Unknown item/value errors come from actual CSPICE, not decoder preflight. Separate tests cover non-string JavaScript arguments, temporary allocation failures and same-instance state/recovery; no new routines or global tolerance changes.",
+      "errorAssessment": "Named CSPICE errors are required for applicable invalid parsing/day/time-system/default/missing-kernel paths. TPARSE/TPICTr non-CSPICE diagnostic returns are explicitly translated and compared by meaningful diagnostic fragments. Empty strings/unsupported TOOLKIT selectors are documented typed-wrapper constraints, not claimed as equivalent CSPICE errors. Cached immutable version has no reachable successful-input error state to manufacture; its initialization allocation/error paths are separately reviewed.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing NAIF generic naif0012 leapseconds kernel, copied from the facade test fixtures as documented in fixtures/README.md; its header identifies 2016-07-14 update for the 2016 leap second. Upstream: https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+          "distribution": "Existing checked-in fixture reused under repository CSPICE/data policy; no new kernel or redistribution payload is added."
+        }
+      ],
+      "fixtureRationale": "Only existing listed LSK data and authored epoch/string/picture inputs. Formal-calendar parsing/picture derivation do not require LSK. All external fixture bytes stay unchanged; no scientific data is generated or downloaded into tracked source.",
+      "cleanup": "Workflow finalizers restore pre-case CALENDAR and the nonempty SYSTEM/ZONE before common kclear/reset, on both success and failure. Kernel lifecycle unloads/clears fixture state. Direct tests retain caller defaults in finally and dispose clients. All 25 temporary allocation-failure positions, including toolkit-version initialization, verify earlier buffers released. Node serializes process state; WASM owns module state.",
+      "tolerance": "Existing absolute/relative 1e-12 comparison is unchanged. Complete strings and shapes compare exactly. Signed/fractional near-J2000 seconds and full UTC leap-boundary effects are distinguished. Julian outputs also carry a seconds-scale offset from the actual output, preventing large epoch scale from hiding subsecond defects; inherent double Julian-day quantization remains about 40 microseconds near J2000, not a claim of finer physical precision.",
+      "findings": [
+        {
+          "id": "persistent-defaults-not-restored",
+          "status": "repaired",
+          "summary": "Actual-backend success/error cleanup regressions failed because kclear/reset do not reset TIMDEF defaults. A workflow could contaminate later native cases or its caller.",
+          "repair": "Capture baseline defaults before the first SET and register one restoration finalizer in both dispatchers. Restore CALENDAR and the nonempty mutually exclusive SYSTEM/ZONE. Tests cover success/error and subsequent parsing on the same backend.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+            "packages/py-parity-checking/test/time-defaults-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "time-timdef-stateful-get-set",
+            "time-timdef-audit-calendar-zone-system-effects",
+            "time-timdef-audit-early-error-after-mutation"
+          ]
+        },
+        {
+          "id": "oracle-item-preflight-bypasses-cspice",
+          "status": "repaired",
+          "summary": "The new BADTIMEITEM comparison initially failed because the Python decoder rejected the public string item before any raw operation.",
+          "repair": "Allow the public raw string item in both workflow types/decoder, retaining actual CSPICE item validation and the named error assertion.",
+          "evidence": [
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/time.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+            "packages/py-parity-checking/src/cases/time/timdef.cases.json"
+          ],
+          "caseIds": ["time-timdef-audit-early-error-after-mutation"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "timout_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/timout_c.html",
+      "semantics": "Formats actual ET/TDB seconds with picture markers and precision/system/zone directives. Defaults follow TIMDEF. Numeric precision beyond 12 places is rendered according to CSPICE rules. CSPICE N0067 internally limits its rendered picture/output even with larger wrapper buffers; the actual complete returned string is compared without inventing longer output.",
+      "scenarios": [
+        {
+          "caseId": "time-timout-happy-tdb-picture",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: Formats J2000 ET with a TDB time picture"
+        },
+        {
+          "caseId": "time-timout-empty-picture-error",
+          "coverage": ["error"],
+          "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: Representative timout argument validation error for empty picture"
+        },
+        {
+          "caseId": "time-timout-audit-signed-epochs-systems-and-precision",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: signed epochs systems and precision, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-timout-audit-internal-picture-boundary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: internal picture boundary, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-timout-audit-missing-leap-information",
+          "coverage": ["error"],
+          "observes": "Complete returned strings reach live comparison across signed/fractional epochs, UTC/TDB/TDT, calendar/ordinal markers, precision beyond 12 places and an overlong literal picture at the toolkit internal cap. Empty picture is documented wrapper validation, not a fabricated raw numeric output. Case: timout: missing leap information, compare complete actual live SpiceyPy outputs/effects"
+        }
+      ],
+      "edgeAssessment": "Formats actual ET/TDB seconds with picture markers and precision/system/zone directives. Defaults follow TIMDEF. Numeric precision beyond 12 places is rendered according to CSPICE rules. CSPICE N0067 internally limits its rendered picture/output even with larger wrapper buffers; the actual complete returned string is compared without inventing longer output. Separate tests cover non-string JavaScript arguments, temporary allocation failures and same-instance state/recovery; no new routines or global tolerance changes.",
+      "errorAssessment": "Named CSPICE errors are required for applicable invalid parsing/day/time-system/default/missing-kernel paths. TPARSE/TPICTr non-CSPICE diagnostic returns are explicitly translated and compared by meaningful diagnostic fragments. Empty strings/unsupported TOOLKIT selectors are documented typed-wrapper constraints, not claimed as equivalent CSPICE errors. Cached immutable version has no reachable successful-input error state to manufacture; its initialization allocation/error paths are separately reviewed.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing NAIF generic naif0012 leapseconds kernel, copied from the facade test fixtures as documented in fixtures/README.md; its header identifies 2016-07-14 update for the 2016 leap second. Upstream: https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+          "distribution": "Existing checked-in fixture reused under repository CSPICE/data policy; no new kernel or redistribution payload is added."
+        }
+      ],
+      "fixtureRationale": "Only existing listed LSK data and authored epoch/string/picture inputs. Formal-calendar parsing/picture derivation do not require LSK. All external fixture bytes stay unchanged; no scientific data is generated or downloaded into tracked source.",
+      "cleanup": "Workflow finalizers restore pre-case CALENDAR and the nonempty SYSTEM/ZONE before common kclear/reset, on both success and failure. Kernel lifecycle unloads/clears fixture state. Direct tests retain caller defaults in finally and dispose clients. All 25 temporary allocation-failure positions, including toolkit-version initialization, verify earlier buffers released. Node serializes process state; WASM owns module state.",
+      "tolerance": "Existing absolute/relative 1e-12 comparison is unchanged. Complete strings and shapes compare exactly. Signed/fractional near-J2000 seconds and full UTC leap-boundary effects are distinguished. Julian outputs also carry a seconds-scale offset from the actual output, preventing large epoch scale from hiding subsecond defects; inherent double Julian-day quantization remains about 40 microseconds near J2000, not a claim of finer physical precision.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tkvrsn_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tkvrsn_c.html",
+      "semantics": "The public contract exposes TOOLKIT only, rejecting other selectors. The immutable toolkit version is read through actual CSPICE; native calls its spiceVersion addon route, while WASM calls the compiled getter during initialization and caches its result per module. Caching this immutable value preserves the supported contract.",
+      "scenarios": [
+        {
+          "caseId": "time-tkvrsn-happy-toolkit",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: Returns toolkit version string for TOOLKIT item"
+        },
+        {
+          "caseId": "time-tkvrsn-unsupported-item-error",
+          "coverage": ["error"],
+          "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: Representative tkvrsn error for unsupported item"
+        },
+        {
+          "caseId": "time-tkvrsn-audit-stable-through-kernel-pool-state",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual version strings reach comparison before/after kernel pool changes. Direct allocation/cache tests feed two distinct module-returned versions through the getter/API and require one getter call per module; full live cases compare the real N0067 toolkit with SpiceyPy. Unsupported item is the existing contract restriction, not CSPICE diagnostic equivalence. Case: tkvrsn: stable through kernel pool state, compare complete actual live SpiceyPy outputs/effects"
+        }
+      ],
+      "edgeAssessment": "The public contract exposes TOOLKIT only, rejecting other selectors. The immutable toolkit version is read through actual CSPICE; native calls its spiceVersion addon route, while WASM calls the compiled getter during initialization and caches its result per module. Caching this immutable value preserves the supported contract. Separate tests cover non-string JavaScript arguments, temporary allocation failures and same-instance state/recovery; no new routines or global tolerance changes.",
+      "errorAssessment": "Named CSPICE errors are required for applicable invalid parsing/day/time-system/default/missing-kernel paths. TPARSE/TPICTr non-CSPICE diagnostic returns are explicitly translated and compared by meaningful diagnostic fragments. Empty strings/unsupported TOOLKIT selectors are documented typed-wrapper constraints, not claimed as equivalent CSPICE errors. Cached immutable version has no reachable successful-input error state to manufacture; its initialization allocation/error paths are separately reviewed.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing NAIF generic naif0012 leapseconds kernel, copied from the facade test fixtures as documented in fixtures/README.md; its header identifies 2016-07-14 update for the 2016 leap second. Upstream: https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+          "distribution": "Existing checked-in fixture reused under repository CSPICE/data policy; no new kernel or redistribution payload is added."
+        }
+      ],
+      "fixtureRationale": "Only existing listed LSK data and authored epoch/string/picture inputs. Formal-calendar parsing/picture derivation do not require LSK. All external fixture bytes stay unchanged; no scientific data is generated or downloaded into tracked source.",
+      "cleanup": "Workflow finalizers restore pre-case CALENDAR and the nonempty SYSTEM/ZONE before common kclear/reset, on both success and failure. Kernel lifecycle unloads/clears fixture state. Direct tests retain caller defaults in finally and dispose clients. All 25 temporary allocation-failure positions, including toolkit-version initialization, verify earlier buffers released. Node serializes process state; WASM owns module state.",
+      "tolerance": "Existing absolute/relative 1e-12 comparison is unchanged. Complete strings and shapes compare exactly. Signed/fractional near-J2000 seconds and full UTC leap-boundary effects are distinguished. Julian outputs also carry a seconds-scale offset from the actual output, preventing large epoch scale from hiding subsecond defects; inherent double Julian-day quantization remains about 40 microseconds near J2000, not a claim of finer physical precision.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "cached",
+          "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tparse_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tparse_c.html",
+      "semantics": "Parses formal-calendar UTC seconds past J2000 with fixed 86400-second days and no leap-second correction or LSK requirement. Nonzero/signed/fractional dates, leap-day/second notation and day-of-year forms distinguish the old constant-zero weakness. Diagnostics are returned through errmsg by CSPICE and translated to thrown errors even when global failed remains false.",
+      "scenarios": [
+        {
+          "caseId": "time-tparse-happy-utc-iso",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: Parses UTC ISO timestamp to UTC seconds past J2000"
+        },
+        {
+          "caseId": "time-tparse-invalid-string-error",
+          "coverage": ["error"],
+          "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: Representative parse error for invalid UTC time string"
+        },
+        {
+          "caseId": "time-tparse-audit-formal-days-and-fractions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: tparse: formal days and fractions, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-tparse-audit-time-system-not-supported",
+          "coverage": ["error"],
+          "observes": "Actual formal-calendar scalar reaches comparison for positive/negative day offsets, binary fractions, leap-day/second and ordinal inputs. Parse/system-label diagnostic fragments distinguish success from non-CSPICE errmsg failure rather than merely two unrelated exceptions. Case: tparse: time system not supported, compare complete actual live SpiceyPy outputs/effects"
+        }
+      ],
+      "edgeAssessment": "Parses formal-calendar UTC seconds past J2000 with fixed 86400-second days and no leap-second correction or LSK requirement. Nonzero/signed/fractional dates, leap-day/second notation and day-of-year forms distinguish the old constant-zero weakness. Diagnostics are returned through errmsg by CSPICE and translated to thrown errors even when global failed remains false. Separate tests cover non-string JavaScript arguments, temporary allocation failures and same-instance state/recovery; no new routines or global tolerance changes.",
+      "errorAssessment": "Named CSPICE errors are required for applicable invalid parsing/day/time-system/default/missing-kernel paths. TPARSE/TPICTr non-CSPICE diagnostic returns are explicitly translated and compared by meaningful diagnostic fragments. Empty strings/unsupported TOOLKIT selectors are documented typed-wrapper constraints, not claimed as equivalent CSPICE errors. Cached immutable version has no reachable successful-input error state to manufacture; its initialization allocation/error paths are separately reviewed.",
+      "fixtures": [],
+      "fixtureRationale": "Only existing listed LSK data and authored epoch/string/picture inputs. Formal-calendar parsing/picture derivation do not require LSK. All external fixture bytes stay unchanged; no scientific data is generated or downloaded into tracked source.",
+      "cleanup": "Workflow finalizers restore pre-case CALENDAR and the nonempty SYSTEM/ZONE before common kclear/reset, on both success and failure. Kernel lifecycle unloads/clears fixture state. Direct tests retain caller defaults in finally and dispose clients. All 25 temporary allocation-failure positions, including toolkit-version initialization, verify earlier buffers released. Node serializes process state; WASM owns module state.",
+      "tolerance": "Existing absolute/relative 1e-12 comparison is unchanged. Complete strings and shapes compare exactly. Signed/fractional near-J2000 seconds and full UTC leap-boundary effects are distinguished. Julian outputs also carry a seconds-scale offset from the actual output, preventing large epoch scale from hiding subsecond defects; inherent double Julian-day quantization remains about 40 microseconds near J2000, not a claim of finer physical precision.",
+      "findings": [
+        {
+          "id": "zero-only-success-evidence",
+          "status": "repaired",
+          "summary": "The original success scenario used a J2000 value of zero, so a constant-zero implementation could pass.",
+          "repair": "Add distinguishing positive/negative/fractional and calendar/leap-boundary values and preserve all actual returned scalars.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/tparse.cases.json"
+          ],
+          "caseIds": [
+            "time-tparse-happy-utc-iso",
+            "time-tparse-audit-formal-days-and-fractions"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tpictr_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tpictr_c.html",
+      "semantics": "Derives a formatting picture from the sample, preserving layout/whitespace and time defaults. The nonempty pictur argument is retained for API compatibility as an initial output buffer template; its contents/length do not drive derivation or cap the buffer. Failure is reported through ok/errmsg and translated to a thrown diagnostic. NAIF N0067 HTML Detailed_Output repeats FALSE in success prose; actual compiled routine and SpiceyPy success use ok=true, which the shim checks.",
+      "scenarios": [
+        {
+          "caseId": "time-tpictr-happy-sample-derived-picture",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: Derives a time picture from a representative UTC sample"
+        },
+        {
+          "caseId": "time-tpictr-empty-sample-error",
+          "coverage": ["error"],
+          "observes": "Existing contract/input boundary rejection; not claimed as same CSPICE diagnostic equivalence. The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: Representative argument-validation error for empty sample"
+        },
+        {
+          "caseId": "time-tpictr-audit-sample-driven-independent-of-template",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: tpictr: sample driven independent of template, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-tpictr-audit-unrecognized-sample",
+          "coverage": ["error"],
+          "observes": "The complete derived picture reaches live comparison for different sample formats and near-cap whitespace, with short/4096-character templates on the same sample yielding the same picture. Actual unrecognized-sample diagnostics reach the error assertion; template validation is recorded separately. Case: tpictr: unrecognized sample, compare complete actual live SpiceyPy outputs/effects"
+        }
+      ],
+      "edgeAssessment": "Derives a formatting picture from the sample, preserving layout/whitespace and time defaults. The nonempty pictur argument is retained for API compatibility as an initial output buffer template; its contents/length do not drive derivation or cap the buffer. Failure is reported through ok/errmsg and translated to a thrown diagnostic. NAIF N0067 HTML Detailed_Output repeats FALSE in success prose; actual compiled routine and SpiceyPy success use ok=true, which the shim checks. Separate tests cover non-string JavaScript arguments, temporary allocation failures and same-instance state/recovery; no new routines or global tolerance changes.",
+      "errorAssessment": "Named CSPICE errors are required for applicable invalid parsing/day/time-system/default/missing-kernel paths. TPARSE/TPICTr non-CSPICE diagnostic returns are explicitly translated and compared by meaningful diagnostic fragments. Empty strings/unsupported TOOLKIT selectors are documented typed-wrapper constraints, not claimed as equivalent CSPICE errors. Cached immutable version has no reachable successful-input error state to manufacture; its initialization allocation/error paths are separately reviewed.",
+      "fixtures": [],
+      "fixtureRationale": "Only existing listed LSK data and authored epoch/string/picture inputs. Formal-calendar parsing/picture derivation do not require LSK. All external fixture bytes stay unchanged; no scientific data is generated or downloaded into tracked source.",
+      "cleanup": "Workflow finalizers restore pre-case CALENDAR and the nonempty SYSTEM/ZONE before common kclear/reset, on both success and failure. Kernel lifecycle unloads/clears fixture state. Direct tests retain caller defaults in finally and dispose clients. All 25 temporary allocation-failure positions, including toolkit-version initialization, verify earlier buffers released. Node serializes process state; WASM owns module state.",
+      "tolerance": "Existing absolute/relative 1e-12 comparison is unchanged. Complete strings and shapes compare exactly. Signed/fractional near-J2000 seconds and full UTC leap-boundary effects are distinguished. Julian outputs also carry a seconds-scale offset from the actual output, preventing large epoch scale from hiding subsecond defects; inherent double Julian-day quantization remains about 40 microseconds near J2000, not a claim of finer physical precision.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "unitim_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/unitim_c.html",
+      "semantics": "Converts epochs between uniform time systems using LSK conversion constants: seconds past J2000 for ET/TDB, TAI and TT/TDT; Julian days for JED/JDTDB/JDTDT. Missing constants and bad system names are distinct named CSPICE errors. Signed/fractional input and nonzero output observe conversion rather than identity/zero substitutes.",
+      "scenarios": [
+        {
+          "caseId": "time-unitim-happy-et-to-tai",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: Converts ET to TAI with leap-seconds kernel loaded"
+        },
+        {
+          "caseId": "time-unitim-missing-lsk-error",
+          "coverage": ["error"],
+          "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: Representative unitim error when leap-seconds kernel is missing"
+        },
+        {
+          "caseId": "time-unitim-audit-systems-julian-days-and-fractions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: unitim: systems julian days and fractions, compare complete actual live SpiceyPy outputs/effects"
+        },
+        {
+          "caseId": "time-unitim-audit-bad-system",
+          "coverage": ["error"],
+          "observes": "The actual raw epoch is retained along with a seconds-scale offset derived from it for Julian output. This prevents large-baseline relative tolerance hiding about 0.2 seconds near J2000. All returned fields reach live comparison across seconds/Julian aliases, signed fractions, identity, missing metadata and BADTIMETYPE. Case: unitim: bad system, compare complete actual live SpiceyPy outputs/effects"
+        }
+      ],
+      "edgeAssessment": "Converts epochs between uniform time systems using LSK conversion constants: seconds past J2000 for ET/TDB, TAI and TT/TDT; Julian days for JED/JDTDB/JDTDT. Missing constants and bad system names are distinct named CSPICE errors. Signed/fractional input and nonzero output observe conversion rather than identity/zero substitutes. Separate tests cover non-string JavaScript arguments, temporary allocation failures and same-instance state/recovery; no new routines or global tolerance changes.",
+      "errorAssessment": "Named CSPICE errors are required for applicable invalid parsing/day/time-system/default/missing-kernel paths. TPARSE/TPICTr non-CSPICE diagnostic returns are explicitly translated and compared by meaningful diagnostic fragments. Empty strings/unsupported TOOLKIT selectors are documented typed-wrapper constraints, not claimed as equivalent CSPICE errors. Cached immutable version has no reachable successful-input error state to manufacture; its initialization allocation/error paths are separately reviewed.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing NAIF generic naif0012 leapseconds kernel, copied from the facade test fixtures as documented in fixtures/README.md; its header identifies 2016-07-14 update for the 2016 leap second. Upstream: https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
+          "distribution": "Existing checked-in fixture reused under repository CSPICE/data policy; no new kernel or redistribution payload is added."
+        }
+      ],
+      "fixtureRationale": "Only existing listed LSK data and authored epoch/string/picture inputs. Formal-calendar parsing/picture derivation do not require LSK. All external fixture bytes stay unchanged; no scientific data is generated or downloaded into tracked source.",
+      "cleanup": "Workflow finalizers restore pre-case CALENDAR and the nonempty SYSTEM/ZONE before common kclear/reset, on both success and failure. Kernel lifecycle unloads/clears fixture state. Direct tests retain caller defaults in finally and dispose clients. All 25 temporary allocation-failure positions, including toolkit-version initialization, verify earlier buffers released. Node serializes process state; WASM owns module state.",
+      "tolerance": "Existing absolute/relative 1e-12 comparison is unchanged. Complete strings and shapes compare exactly. Signed/fractional near-J2000 seconds and full UTC leap-boundary effects are distinguished. Julian outputs also carry a seconds-scale offset from the actual output, preventing large epoch scale from hiding subsecond defects; inherent double Julian-day quantization remains about 40 microseconds near J2000, not a claim of finer physical precision.",
+      "findings": [
+        {
+          "id": "julian-output-relative-scale",
+          "status": "repaired",
+          "summary": "The unchanged comparator permits roughly 0.2 seconds at a 2.45-million-day epoch, so raw Julian output alone weakens near-J2000 precision evidence.",
+          "repair": "Retain the raw epoch and additionally compare secondsPastJ2000 derived from that actual output on both sides; a 0.1-second corruption regression must fail. Tolerance is unchanged.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+            "packages/py-parity-checking/test/time-defaults-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "time-unitim-happy-et-to-tai",
+            "time-unitim-audit-systems-julian-days-and-fractions"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

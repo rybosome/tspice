@@ -1,0 +1,1242 @@
+{
+  "schemaVersion": 1,
+  "batch": "coordinates-matrices",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/utils/matrix.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-coordinate-boundaries-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8eb73563949c3910e4029d6bed51675d194cb82bb997d54866b79b2c68881fde",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch.",
+      "historical": true
+    },
+    {
+      "id": "local-coordinate-boundaries-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8eb73563949c3910e4029d6bed51675d194cb82bb997d54866b79b2c68881fde",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch.",
+      "historical": true
+    },
+    {
+      "id": "ci-coordinates-node-43315118711",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8eb73563949c3910e4029d6bed51675d194cb82bb997d54866b79b2c68881fde",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "c508603d5073b63cfd2992ead708e0cc4393d887",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315118711/job/131520983016",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 690 live parity tests (345 per backend), all 721 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence.",
+      "historical": true
+    },
+    {
+      "id": "ci-coordinates-wasm-43315118711",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8eb73563949c3910e4029d6bed51675d194cb82bb997d54866b79b2c68881fde",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "c508603d5073b63cfd2992ead708e0cc4393d887",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315118711/job/131520983016",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 690 live parity tests (345 per backend), all 721 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9666a1165add04ed19d3d385d6b97475a1c0f3c91c314a636091566e9e4f2961",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9666a1165add04ed19d3d385d6b97475a1c0f3c91c314a636091566e9e4f2961",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "axisar_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/axisar_c.html",
+      "semantics": "Returns an active vector rotation about an arbitrary normalized axis by angle radians. Nonunit/scaled axes are accepted; a zero axis or zero angle yields identity. Output is row-major.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-axisar-happy-z-axis-quarter-turn",
+          "coverage": ["success"],
+          "observes": "axisar converts axis-angle form to rotation matrix; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-axisar-audit-nonunit-general-axis",
+          "coverage": ["success"],
+          "observes": "axisar: nonunit general axis; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-axisar-audit-zero-axis-and-angle",
+          "coverage": ["success", "edge"],
+          "observes": "axisar: zero axis and angle; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "axisar: nonunit general axis; observe every returned field/component with live SpiceyPy; axisar: zero axis and angle; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "axisar-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/axisar.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-axisar-audit-nonunit-general-axis",
+            "coords-vectors-axisar-audit-zero-axis-and-angle"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "georec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/georec_c.html",
+      "semantics": "Geodetic longitude/latitude in radians and altitude -> rectangular coordinates in the units of equatorial radius re. Oblate and prolate (negative flattening) reference spheroids are allowed; requires re>0 and f<1.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-georec-happy-spherical-equator",
+          "coverage": ["success"],
+          "observes": "georec converts geodetic lon/lat/alt to rectangular coordinates; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-georec-invalid-flattening-error",
+          "coverage": ["error"],
+          "observes": "Representative georec invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-georec-audit-oblate-and-prolate",
+          "coverage": ["success"],
+          "observes": "georec: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-georec-audit-pole-and-negative-altitude",
+          "coverage": ["success", "edge"],
+          "observes": "georec: pole and negative altitude; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-georec-audit-flattening-boundary-error",
+          "coverage": ["error", "edge"],
+          "observes": "georec: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-georec-audit-zero-radius-error",
+          "coverage": ["error", "edge"],
+          "observes": "georec: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "Representative georec invalid flattening error; georec: oblate and prolate; observe every returned field/component with live SpiceyPy; georec: pole and negative altitude; observe every returned field/component with live SpiceyPy; georec: reject flattening boundary with the specific SPICE diagnostic; georec: reject zero radius with the specific SPICE diagnostic. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "Live invalid flattening (including f=1 boundary) and nonpositive-radius cases require VALUEOUTOFRANGE in both outputs. Both backends also have direct same-instance georec/recgeo error-reset and subsequent-success tests.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "georec-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/georec.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts",
+            "packages/tspice/test/coords-error-recovery.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-georec-audit-oblate-and-prolate",
+            "coords-vectors-georec-audit-pole-and-negative-altitude",
+            "coords-vectors-georec-audit-flattening-boundary-error",
+            "coords-vectors-georec-audit-zero-radius-error"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "latrec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/latrec_c.html",
+      "semantics": "Radius and longitude/latitude in radians -> three Cartesian components in the radius units. Zero and negative radii are allowed; no coordinate normalization or physical-body assumptions are added.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-latrec-happy-equatorial-quarter-turn",
+          "coverage": ["success"],
+          "observes": "latrec latitudinal-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-latrec-audit-general-and-negative-radius",
+          "coverage": ["success"],
+          "observes": "latrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-latrec-audit-zero-and-pole",
+          "coverage": ["success", "edge"],
+          "observes": "latrec: zero and pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "latrec: general and negative radius; observe every returned field/component with live SpiceyPy; latrec: zero and pole; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "latrec-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/latrec.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-latrec-audit-general-and-negative-radius",
+            "coords-vectors-latrec-audit-zero-and-pole"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "mtxv_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mtxv_c.html",
+      "semantics": "Returns transpose(m)*v. Basis-vector outputs select original matrix rows and distinguish this operation from mxv.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+          "coverage": ["success"],
+          "observes": "mtxv multiplies transpose(matrix) by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-mtxv-audit-basis-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "mtxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "mtxv: basis and zero; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "mtxv-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/mtxv.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mtxv-audit-basis-and-zero"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "mxm_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxm_c.html",
+      "semantics": "Returns the ordered product m1*m2 of two general 3x3 matrices; public arrays and C marshalling are row-major and no orthonormalization is applied.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mxm-happy-fixed-matrix-product",
+          "coverage": ["success"],
+          "observes": "mxm matrix multiplication fixed case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-mxm-audit-order-and-fractions",
+          "coverage": ["success"],
+          "observes": "mxm: order and fractions; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-mxm-audit-identity-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "mxm: identity and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "mxm: order and fractions; observe every returned field/component with live SpiceyPy; mxm: identity and zero; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "mxm-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/mxm.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-mxm-audit-order-and-fractions",
+            "coords-vectors-mxm-audit-identity-and-zero"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "mxv_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxv_c.html",
+      "semantics": "Returns m*v for a general 3x3 row-major matrix. Basis-vector outputs select matrix columns; the zero vector stays zero.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+          "coverage": ["success"],
+          "observes": "mxv multiplies row-major matrix by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-mxv-audit-basis-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "mxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "mxv: basis and zero; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "mxv-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/mxv.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mxv-audit-basis-and-zero"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "recgeo_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recgeo_c.html",
+      "semantics": "Rectangular point -> geodetic longitude/latitude in radians and altitude relative to the closest point on the reference spheroid, in the radius units. Requires re>0 and f<1; interior points can have ambiguous nearest-point latitude, so tests use unambiguous exterior/pole inputs.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-recgeo-happy-axis-aligned",
+          "coverage": ["success"],
+          "observes": "recgeo deterministic axis-aligned case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-recgeo-invalid-flattening-error",
+          "coverage": ["error"],
+          "observes": "Representative recgeo invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-recgeo-audit-oblate-and-prolate",
+          "coverage": ["success"],
+          "observes": "recgeo: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+          "coverage": ["success", "edge"],
+          "observes": "recgeo: negative pole and spherical; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-recgeo-audit-flattening-boundary-error",
+          "coverage": ["error", "edge"],
+          "observes": "recgeo: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-recgeo-audit-zero-radius-error",
+          "coverage": ["error", "edge"],
+          "observes": "recgeo: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "Representative recgeo invalid flattening error; recgeo: oblate and prolate; observe every returned field/component with live SpiceyPy; recgeo: negative pole and spherical; observe every returned field/component with live SpiceyPy; recgeo: reject flattening boundary with the specific SPICE diagnostic; recgeo: reject zero radius with the specific SPICE diagnostic. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "Live invalid flattening (including f=1 boundary) and nonpositive-radius cases require VALUEOUTOFRANGE in both outputs. Both backends also have direct same-instance georec/recgeo error-reset and subsequent-success tests.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "recgeo-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/recgeo.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts",
+            "packages/tspice/test/coords-error-recovery.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-recgeo-audit-oblate-and-prolate",
+            "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+            "coords-vectors-recgeo-audit-flattening-boundary-error",
+            "coords-vectors-recgeo-audit-zero-radius-error"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "reclat_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/reclat_c.html",
+      "semantics": "Rectangular vector -> radius, longitude and latitude in radians. Longitude increases +X toward +Y and lies in [-pi,pi]; latitude lies in [-pi/2,pi/2]. On the Z axis longitude is zero; the origin also has zero latitude.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-reclat-happy-axis-y",
+          "coverage": ["success"],
+          "observes": "reclat rectangular-to-latitudinal conversion for +Y unit axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-reclat-audit-quadrants",
+          "coverage": ["success"],
+          "observes": "reclat: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-reclat-audit-origin-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "reclat: origin and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "reclat: quadrants; observe every returned field/component with live SpiceyPy; reclat: origin and poles; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "reclat-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/reclat.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-reclat-audit-quadrants",
+            "coords-vectors-reclat-audit-origin-and-poles"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "recsph_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recsph_c.html",
+      "semantics": "Rectangular vector -> nonnegative radius, colatitude [0,pi] measured from +Z, and longitude [-pi,pi] in radians. All three named fields retain their CSPICE roles, including origin/pole conventions.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-recsph-happy-positive-z",
+          "coverage": ["success"],
+          "observes": "recsph rectangular-to-spherical conversion for +Z axis point; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-recsph-audit-quadrants",
+          "coverage": ["success"],
+          "observes": "recsph: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-recsph-audit-origin-and-negative-pole",
+          "coverage": ["success", "edge"],
+          "observes": "recsph: origin and negative pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "recsph: quadrants; observe every returned field/component with live SpiceyPy; recsph: origin and negative pole; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "recsph-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/recsph.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-recsph-audit-quadrants",
+            "coords-vectors-recsph-audit-origin-and-negative-pole"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "rotate_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rotate_c.html",
+      "semantics": "Returns a row-major passive coordinate-system rotation by angle radians. Integer axis indices are congruent modulo 3 to axes 1=x,2=y,3=z, including zero and negative indices. Zero angle is identity.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-rotate-happy-z-axis-quarter-turn",
+          "coverage": ["success"],
+          "observes": "rotate builds a +90 degree rotation matrix about the Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-rotate-audit-all-axes-radians",
+          "coverage": ["success"],
+          "observes": "rotate: all axes radians; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-rotate-audit-zero-and-modulo-axes",
+          "coverage": ["success", "edge"],
+          "observes": "rotate: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "rotate: all axes radians; observe every returned field/component with live SpiceyPy; rotate: zero and modulo axes; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "CSPICE is error-free for signed 32-bit integer axes, including modulo-three indices outside 1..3. Direct Node/WASM tests now reject fractional, non-finite and overflowing JS axes before CSPICE; these wrapper errors are distinct from live numeric parity. Valid zero/negative modulo indices remain successful.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "rotate-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/rotate.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-rotate-audit-all-axes-radians",
+            "coords-vectors-rotate-audit-zero-and-modulo-axes"
+          ]
+        },
+        {
+          "id": "axis-coercion",
+          "status": "repaired",
+          "summary": "Fractional, non-finite or overflowing JS axes silently truncated/wrapped at the backend binding. New direct tests failed on both Node and WASM before repair.",
+          "repair": "Use the existing assertSpiceInt32 helper in both typed adapters before entering CSPICE, while preserving valid modulo-three integer axes. Added direct tests for each invalid category and successful zero/negative modulo indices.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/tspice/test/coords-axis-validation.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-rotate-happy-z-axis-quarter-turn",
+            "coords-vectors-rotate-audit-all-axes-radians",
+            "coords-vectors-rotate-audit-zero-and-modulo-axes"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "rotmat_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rotmat_c.html",
+      "semantics": "Returns the left product rotate(angle,axis)*m, with angle in radians and integer axes reduced modulo 3. A general nonidentity input must affect the result; zero angle preserves it.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+          "coverage": ["success"],
+          "observes": "rotmat rotates identity matrix by +90 degrees about Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-rotmat-audit-nonidentity-left-product",
+          "coverage": ["success", "edge"],
+          "observes": "rotmat: nonidentity left product; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+          "coverage": ["success", "edge"],
+          "observes": "rotmat: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "rotmat: nonidentity left product; observe every returned field/component with live SpiceyPy; rotmat: zero and modulo axes; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "CSPICE is error-free for signed 32-bit integer axes, including modulo-three indices outside 1..3. Direct Node/WASM tests now reject fractional, non-finite and overflowing JS axes before CSPICE; these wrapper errors are distinct from live numeric parity. Valid zero/negative modulo indices remain successful.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "rotmat-assertion-depth",
+          "status": "repaired",
+          "summary": "An identity-only rotmat scenario could pass even if the input matrix were ignored.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/rotmat.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-rotmat-audit-nonidentity-left-product",
+            "coords-vectors-rotmat-audit-zero-and-modulo-axes"
+          ]
+        },
+        {
+          "id": "axis-coercion",
+          "status": "repaired",
+          "summary": "Fractional, non-finite or overflowing JS axes silently truncated/wrapped at the backend binding. New direct tests failed on both Node and WASM before repair.",
+          "repair": "Use the existing assertSpiceInt32 helper in both typed adapters before entering CSPICE, while preserving valid modulo-three integer axes. Added direct tests for each invalid category and successful zero/negative modulo indices.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/tspice/test/coords-axis-validation.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+            "coords-vectors-rotmat-audit-nonidentity-left-product",
+            "coords-vectors-rotmat-audit-zero-and-modulo-axes"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sphrec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sphrec_c.html",
+      "semantics": "Radius, colatitude from +Z and longitude in radians -> three Cartesian components. Zero/negative radii and both poles retain CSPICE trigonometric behavior.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-sphrec-happy-equatorial-quarter-turn",
+          "coverage": ["success"],
+          "observes": "sphrec spherical-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-sphrec-audit-general-and-negative-radius",
+          "coverage": ["success"],
+          "observes": "sphrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        },
+        {
+          "caseId": "coords-vectors-sphrec-audit-zero-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "sphrec: zero and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
+        }
+      ],
+      "edgeAssessment": "sphrec: general and negative radius; observe every returned field/component with live SpiceyPy; sphrec: zero and poles; observe every returned field/component with live SpiceyPy. Every allocation-failure position for this WASM helper is covered by direct rollback tests.",
+      "errorAssessment": "NAIF documents the routine as error-free for correctly shaped finite inputs; no manufactured CSPICE error scenario. Axis modulo behavior and zero-axis behavior are successes, not errors, where applicable. Wrapper allocation failures are tested directly and kept distinct from live numeric CSPICE parity.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels/files or external scientific data. New numeric vectors, angles, matrices, and spheroid examples are authored mathematical test inputs.",
+      "cleanup": "No persistent kernel state or handles acquired. Native inputs/results use stack arrays with the CSPICE mutex. WASM mallocChecked rolls back all prior pointers if allocation returns zero, and successful allocation groups free in reverse order in finally, including SPICE errors. Direct failure-injection tests cover every allocation position; geodetic errors recover in the same backend instance. The parity test disposes clients in finally and case runners clear/reset state.",
+      "tolerance": "Retains 1e-12 absolute-or-relative comparison. All fields/entries and dimensions are compared; nonsymmetric matrices distinguish transpose/layout/order. General angles produce order-one trigonometric values; near-zero polar components use the existing absolute tolerance. No tolerance relaxation or direction/orthonormality normalization hides results.",
+      "findings": [
+        {
+          "id": "sphrec-assertion-depth",
+          "status": "repaired",
+          "summary": "Existing examples did not cover the relevant general inputs and documented boundaries listed in this audit.",
+          "repair": "Added distinguishing live success/edge cases, specific geodetic error diagnostics where applicable, allocation-rollback coverage, and same-instance geodetic recovery checks. No implementation defect found for the reviewed inputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/coords-vectors/sphrec.cases.json",
+            "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-sphrec-audit-general-and-negative-radius",
+            "coords-vectors-sphrec-audit-zero-and-poles"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

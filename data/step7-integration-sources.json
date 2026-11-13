@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
+  "mainAtAssembly": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+  "purpose": "Isolated linear validation assembly of reviewed PR implementations; no PR/main merge. Historical per-batch observations are retained and full combined local evidence is recorded separately; canonical combined CI is pending.",
+  "batches": [
+    {
+      "batch": "vectors-arithmetic",
+      "pr": "https://github.com/rybosome/tspice/pull/679",
+      "routines": [
+        "vadd_c",
+        "vcrss_c",
+        "vdot_c",
+        "vhat_c",
+        "vminus_c",
+        "vnorm_c",
+        "vscl_c",
+        "vsub_c"
+      ],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3"
+    },
+    {
+      "batch": "kplfrm-prerequisite",
+      "pr": "https://github.com/rybosome/tspice/pull/680",
+      "routines": ["kplfrm_c"],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3"
+    },
+    {
+      "batch": "cell-capacity-prerequisite",
+      "pr": "https://github.com/rybosome/tspice/pull/684",
+      "routines": ["ssize_c", "valid_c", "wnvald_c"],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3"
+    },
+    {
+      "batch": "coordinates-matrices",
+      "pr": "https://github.com/rybosome/tspice/pull/681",
+      "routines": [
+        "axisar_c",
+        "georec_c",
+        "latrec_c",
+        "mtxv_c",
+        "mxm_c",
+        "mxv_c",
+        "recgeo_c",
+        "reclat_c",
+        "recsph_c",
+        "rotate_c",
+        "rotmat_c",
+        "sphrec_c"
+      ],
+      "auditRecordSourceCommit": "8d79ab430bcd94d25e1ef39fa0ab04d15e7c5245"
+    },
+    {
+      "batch": "error",
+      "pr": "https://github.com/rybosome/tspice/pull/682",
+      "routines": [
+        "chkin_c",
+        "chkout_c",
+        "failed_c",
+        "getmsg_c",
+        "reset_c",
+        "setmsg_c",
+        "sigerr_c"
+      ],
+      "auditRecordSourceCommit": "f87df8b4f3fc219d8279e271e5f3e536e478bbae"
+    },
+    {
+      "batch": "cells-windows",
+      "pr": "https://github.com/rybosome/tspice/pull/685",
+      "routines": [
+        "card_c",
+        "insrtc_c",
+        "insrtd_c",
+        "insrti_c",
+        "scard_c",
+        "size_c",
+        "wncard_c",
+        "wnfetd_c",
+        "wninsd_c"
+      ],
+      "auditRecordSourceCommit": "497313aad0c4c80765a70ac323b332f897d897b5"
+    },
+    {
+      "batch": "kernel-pool",
+      "pr": "https://github.com/rybosome/tspice/pull/686",
+      "routines": [
+        "cvpool_c",
+        "dtpool_c",
+        "expool_c",
+        "gcpool_c",
+        "gdpool_c",
+        "gipool_c",
+        "gnpool_c",
+        "pcpool_c",
+        "pdpool_c",
+        "pipool_c",
+        "swpool_c"
+      ],
+      "auditRecordSourceCommit": "e27adddbfe768471780a4bc1683141182452f2bc"
+    },
+    {
+      "batch": "ids-names",
+      "pr": "https://github.com/rybosome/tspice/pull/687",
+      "routines": [
+        "bodc2n_c",
+        "bodc2s_c",
+        "boddef_c",
+        "bodfnd_c",
+        "bodn2c_c",
+        "bods2c_c",
+        "bodvar_c"
+      ],
+      "auditRecordSourceCommit": "62393108d1af9bdfc3f3f7189af39b2dce532489"
+    },
+    {
+      "batch": "time-2",
+      "pr": "https://github.com/rybosome/tspice/pull/688",
+      "routines": [
+        "str2et_c",
+        "timdef_c",
+        "timout_c",
+        "tkvrsn_c",
+        "tparse_c",
+        "tpictr_c",
+        "unitim_c"
+      ],
+      "auditRecordSourceCommit": "196dcf627c2f6799e3fcd137e918e98c99c4ef22"
+    },
+    {
+      "batch": "time-1",
+      "pr": "https://github.com/rybosome/tspice/pull/689",
+      "routines": [
+        "deltet_c",
+        "et2utc_c",
+        "scdecd_c",
+        "sce2c_c",
+        "sce2s_c",
+        "scencd_c",
+        "scs2e_c",
+        "sct2e_c"
+      ],
+      "auditRecordSourceCommit": "3478956494cc1f22ebb7f2348a676b2e9a72463b"
+    },
+    {
+      "batch": "kernels",
+      "pr": "https://github.com/rybosome/tspice/pull/690",
+      "routines": [
+        "furnsh_c",
+        "kclear_c",
+        "kdata_c",
+        "kinfo_c",
+        "ktotal_c",
+        "kxtrct_c",
+        "unload_c"
+      ],
+      "auditRecordSourceCommit": "0db2edf37b46adff2fc33d8c605f93995b771679"
+    },
+    {
+      "batch": "file-io-1",
+      "pr": "https://github.com/rybosome/tspice/pull/692",
+      "routines": [
+        "dafbfs_c",
+        "dafcls_c",
+        "daffna_c",
+        "dafopr_c",
+        "dascls_c",
+        "dasopr_c",
+        "dlabfs_c",
+        "dlacls"
+      ],
+      "auditRecordSourceCommit": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460"
+    },
+    {
+      "batch": "file-io-2",
+      "pr": "https://github.com/rybosome/tspice/pull/694",
+      "routines": [
+        "dlafns_c",
+        "dlaopn_c",
+        "dskmi2_c",
+        "dskopn_c",
+        "dskw02_c",
+        "exists_c",
+        "getfat_c"
+      ],
+      "auditRecordSourceCommit": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816"
+    },
+    {
+      "batch": "dsk",
+      "pr": "https://github.com/rybosome/tspice/pull/695",
+      "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
+      "auditRecordSourceCommit": "8aca7d6be85d48fec0dde9cefb243e2b5496caf6"
+    },
+    {
+      "batch": "ek-2",
+      "pr": "https://github.com/rybosome/tspice/pull/696",
+      "routines": [
+        "ekcls_c",
+        "ekifld_c",
+        "eknseg_c",
+        "ekntab_c",
+        "ekopn_c",
+        "ekopr_c",
+        "ekopw_c",
+        "ektnam_c"
+      ],
+      "auditRecordSourceCommit": "b843316b78b8e36a2a69206cec9a880f394cfb16"
+    },
+    {
+      "batch": "ek-1",
+      "pr": "https://github.com/rybosome/tspice/pull/697",
+      "routines": [
+        "ekaclc_c",
+        "ekacld_c",
+        "ekacli_c",
+        "ekffld_c",
+        "ekfind_c",
+        "ekgc_c",
+        "ekgd_c",
+        "ekgi_c"
+      ],
+      "auditRecordSourceCommit": "902e5ba12e7e1b3c746a9acdeac1b7a1e478192d"
+    },
+    {
+      "batch": "frames-2",
+      "pr": "https://github.com/rybosome/tspice/pull/698",
+      "routines": [
+        "ccifrm_c",
+        "cidfrm_c",
+        "cnmfrm_c",
+        "frinfo_c",
+        "frmnam_c",
+        "namfrm_c",
+        "pxform_c",
+        "sxform_c"
+      ],
+      "auditRecordSourceCommit": "33a6ee7f1c8a9bea9a07a41e8d3b84e0513970c7"
+    },
+    {
+      "batch": "frames-1",
+      "pr": "https://github.com/rybosome/tspice/pull/699",
+      "routines": [
+        "ckcov_c",
+        "ckgp_c",
+        "ckgpav_c",
+        "cklpf_c",
+        "ckobj_c",
+        "ckupf_c"
+      ],
+      "auditRecordSourceCommit": "ec98cd0b9d7508da23564f77876aa8f99d828544"
+    },
+    {
+      "batch": "ephemeris-descriptors",
+      "pr": "https://github.com/rybosome/tspice/pull/700",
+      "routines": ["spkpds_c", "spkuds_c"],
+      "auditRecordSourceCommit": "0d4655d28d25a38ec1099af534d295711a3947c6"
+    },
+    {
+      "batch": "ephemeris-1",
+      "pr": "https://github.com/rybosome/tspice/pull/702",
+      "routines": [
+        "spkcls_c",
+        "spkcov_c",
+        "spkobj_c",
+        "spkopa_c",
+        "spkopn_c",
+        "spkw08_c"
+      ],
+      "auditRecordSourceCommit": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c"
+    },
+    {
+      "batch": "ephemeris-2",
+      "pr": "https://github.com/rybosome/tspice/pull/703",
+      "routines": [
+        "spkez_c",
+        "spkezp_c",
+        "spkezr_c",
+        "spkgeo_c",
+        "spkgps_c",
+        "spkpos_c",
+        "spksfs_c",
+        "spkssb_c"
+      ],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3"
+    },
+    {
+      "batch": "geometry",
+      "pr": "https://github.com/rybosome/tspice/pull/704",
+      "routines": [
+        "illumf_c",
+        "illumg_c",
+        "ilumin_c",
+        "nvc2pl_c",
+        "occult_c",
+        "pl2nvc_c",
+        "sincpt_c",
+        "subpnt_c",
+        "subslr_c"
+      ],
+      "auditRecordSourceCommit": "70dd1e29ed57cb8c27356890f6fd4d9c601b951e"
+    },
+    {
+      "batch": "geometry-gf",
+      "pr": "https://github.com/rybosome/tspice/pull/705",
+      "routines": [
+        "gfdist_c",
+        "gfrefn_c",
+        "gfrepf_c",
+        "gfrepi_c",
+        "gfsep_c",
+        "gfsstp_c",
+        "gfstep_c",
+        "gfstol_c"
+      ],
+      "auditRecordSourceCommit": "71e30af5504b95af6307d839b5bee41ec6629099"
+    }
+  ],
+  "combinedWasmSha256": "31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911",
+  "resolutions": [
+    "Preserve both frame utility and CK helpers/imports.",
+    "Combine SPK/EK/CK/DAF/DAS/DSK early-close paths and retain failed claims before Scratch deletion.",
+    "Combine KernelKindInput/FoundDlaDescriptor imports, permissive TIMDEF error inputs and complete GF window payload types.",
+    "Retain disjoint audit/provenance documentation; remove known kernel README conflict text.",
+    "Carry ID audit direct BODFND and fail-closed composed BODVAR ledger expectations.",
+    "Regenerate combined WASM through its pinned owning script."
+  ]
+}

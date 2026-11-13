@@ -296,8 +296,8 @@ separate wrapper error. The live1e-12 comparator is unchanged.
 The focused two-routine `ephemeris-descriptors` batch is a prerequisite split for
 this cross-boundary repair. Six SPK file/writer/coverage routines remain in
 `ephemeris-1`; eight state/position/search routines remain in `ephemeris-2`. The
-SPKSFS packed producer uses the same preservation repair but its semantic audit
-is still pending. No planned routine or new external fixture is introduced.
+SPKSFS packed producer uses the same preservation repair and is audited with
+the eight state/position/search routines below. No planned routine or new external fixture is introduced.
 
 ### SPK file, writer and coverage audit
 

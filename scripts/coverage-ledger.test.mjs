@@ -98,7 +98,7 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
     planned: 487,
     excluded: 3,
     caseFiles: 162,
-    scenarios: 524,
+    scenarios: 1109,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -113,7 +113,7 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.equal(
     ledger.routines.find((r) => r.routine === "bodfnd_c").mapping.node
       .classification,
-    "alias-or-composed",
+    "same-named-cspice-entrypoint",
   );
   const dskAlias = ledger.operationRoutes.find(
     (route) => route.operation === "dsk.dascls",
@@ -309,9 +309,9 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "data/coverage-ledger-policy.json");
   const policy = JSON.parse(fs.readFileSync(file, "utf8"));
-  delete policy.mappingNotes.bodfnd;
+  delete policy.mappingNotes.bodvar;
   fs.writeFileSync(file, JSON.stringify(policy));
-  assert.throws(f.build, /Unexplained non-direct node mapping for bodfnd/);
+  assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
 });
 
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {

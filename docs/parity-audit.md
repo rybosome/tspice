@@ -41,8 +41,8 @@ issuer with WASM cells/windows and keep owner-local token maps. IDs are never
 reused in that realm, exceed uint32, and are resolved to original signed CSPICE
 handles at every compiled boundary. The old global symbol key is retained so
 separately loaded package copies share the sequence. This change claims no new
-semantically completed routines; file/EK/ephemeris batches still require their
-individual live audits. It does not change worker transport or make tokens
+semantically completed routines by itself; the file/EK/ephemeris batches have
+separate individual semantic records and live evidence in the generated ledger. It does not change worker transport or make tokens
 portable between realms.
 
 `file-handle-ownership.test.ts` exercises real public Node/WASM backends for DAF

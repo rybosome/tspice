@@ -40,7 +40,6 @@ def _close_ek_handles_best_effort(context: SidecarRuntimeContext) -> None:
             context.state.ek.segments.pop(key, None)
 
 
-
 def _close_file_io_handles_best_effort(context: SidecarRuntimeContext) -> None:
     # The response/error has already been captured. Clear any pending toolkit
     # failure so it cannot prevent the actual close calls from running.
@@ -75,10 +74,10 @@ def _close_dsk_handles_best_effort(context: SidecarRuntimeContext) -> None:
 def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
     if context.state.ephemeris.spkHandles:
         _reset_best_effort()
-        for handle_id,handle in list(context.state.ephemeris.spkHandles.items()):
+        for handle_id, handle in list(context.state.ephemeris.spkHandles.items()):
             try:
                 sp.spkcls(handle)
-                context.state.ephemeris.spkHandles.pop(handle_id,None)
+                context.state.ephemeris.spkHandles.pop(handle_id, None)
             except BaseException:
                 # Preserve the claim for its registered retry before Scratch.
                 pass

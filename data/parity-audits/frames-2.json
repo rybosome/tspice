@@ -1,0 +1,1246 @@
+{
+  "schemaVersion": 1,
+  "batch": "frames-2",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-wasm/src/codec/found.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/core/src/spice-runtime/shared/spice-int.ts",
+    "packages/core/src/spice-runtime/shared/mat6.ts",
+    "packages/backend-wasm/test/frame-utility-allocations.test.ts",
+    "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+    "packages/py-parity-checking/test/frame-utility-observables.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-frame-utilities-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1355faf4dea12196dc558401eb756b51a47baa3127fdaef3a8e623c22f7d9173",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both final full required JS and production-native lanes passed. Actual native addon rebuilt/loaded, required sanity ran, all 688 live comparisons (344 scenarios per backend) and all 725 parity-package tests passed without required native skips. All 82 frame-utility live comparisons, four actual Node/WASM literal metadata and complete derivative/inverse tests, two public type/preflight recovery tests and all 34 actual WASM allocation failure positions with real post-failure lookup passed. Five leaking positions and both silent integer-coercion failures were observed before repairs. Ten new comparisons exposed real malformed-frame errors masked by the oracle; scoped actual found handling repaired them. Live tolerance stays 1e-12; separate central-difference h=.01s uses a justified5e-11 truncation/roundoff bound for nonzero dynamic derivatives. The first full JS lane caught an unescaped JSDoc literal placeholder parsed as HTML by Vue; code formatting repaired it before both final full passes. No shared C/WASM binary changes. Node22.23.4/pnpm10.13.1/CSPICE N0067/locked SpiceyPy6.0.3/Python3.12.15/macOS arm64. The inherited known WASM KPL cell identity finding remains needs-repair until separate #684; these utility passes do not certify it.",
+      "historical": true
+    },
+    {
+      "id": "local-frame-utilities-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1355faf4dea12196dc558401eb756b51a47baa3127fdaef3a8e623c22f7d9173",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both final full required JS and production-native lanes passed. Actual native addon rebuilt/loaded, required sanity ran, all 688 live comparisons (344 scenarios per backend) and all 725 parity-package tests passed without required native skips. All 82 frame-utility live comparisons, four actual Node/WASM literal metadata and complete derivative/inverse tests, two public type/preflight recovery tests and all 34 actual WASM allocation failure positions with real post-failure lookup passed. Five leaking positions and both silent integer-coercion failures were observed before repairs. Ten new comparisons exposed real malformed-frame errors masked by the oracle; scoped actual found handling repaired them. Live tolerance stays 1e-12; separate central-difference h=.01s uses a justified5e-11 truncation/roundoff bound for nonzero dynamic derivatives. The first full JS lane caught an unescaped JSDoc literal placeholder parsed as HTML by Vue; code formatting repaired it before both final full passes. No shared C/WASM binary changes. Node22.23.4/pnpm10.13.1/CSPICE N0067/locked SpiceyPy6.0.3/Python3.12.15/macOS arm64. The inherited known WASM KPL cell identity finding remains needs-repair until separate #684; these utility passes do not certify it.",
+      "historical": true
+    },
+    {
+      "id": "ci-pr698-43394580581-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1355faf4dea12196dc558401eb756b51a47baa3127fdaef3a8e623c22f7d9173",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "68c7aadf818b4671a8eb07817303de3864f25368",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43394580581/job/131782299441",
+      "observation": "Observed exact-source canonical Linux22 job. All688live comparisons, all725parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed; KPL WASM ownership remains needs-repair pending #684.",
+      "historical": true
+    },
+    {
+      "id": "ci-pr698-43394580581-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1355faf4dea12196dc558401eb756b51a47baa3127fdaef3a8e623c22f7d9173",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "68c7aadf818b4671a8eb07817303de3864f25368",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43394580581/job/131782299441",
+      "observation": "Observed exact-source canonical Linux22 job. All688live comparisons, all725parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed; KPL WASM ownership remains needs-repair pending #684.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "046e972b2fea48c1392879db817483f4da65cdfc9c898b610186439c14344279",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "046e972b2fea48c1392879db817483f4da65cdfc9c898b610186439c14344279",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "namfrm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/namfrm_c.html",
+      "semantics": "Resolve a frame name to a signed frame code, ignoring case and outer blanks. CSPICE code0 unknown is deliberately mapped to public found:false. Empty input is actual EMPTYSTRING. Builtins work without kernels; authored pool frame definitions follow load/unload.",
+      "scenarios": [
+        {
+          "caseId": "frames-namfrm-found-success",
+          "coverage": ["success"],
+          "observes": "namfrm resolves J2000 -> frame code. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-namfrm-not-found-success",
+          "coverage": ["success"],
+          "observes": "namfrm miss returns found=false via code=0 sentinel. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-namfrm-audit-builtins-case-and-blanks",
+          "coverage": ["success", "edge"],
+          "observes": "Case/outer blanks are insignificant for known names, while a real miss yields found:false; every actual code reaches comparison.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe unknown/negative static ID/dynamic ID/unknown transitions across actual frame load/unload without confusing loaded state and cached builtins.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-namfrm-audit-empty-name",
+          "coverage": ["error", "edge"],
+          "observes": "Actual empty C string signals EMPTYSTRING rather than a normal unknown-name miss.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "Builtins with mixed case/outer blanks, genuine miss, empty name and load/negative-frame/dynamic-frame/unload transitions. Signed code output and actual post-OOM builtin lookup are observed.",
+      "errorAssessment": "Unknown frame names are valid found:false results; empty input requires actual EMPTYSTRING.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "namfrm-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/namfrm.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-namfrm-audit-builtins-case-and-blanks",
+            "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+            "frames-namfrm-audit-empty-name"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.namfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.namfrm -> WASM typed helper -> configured actual compiled _tspice_namfrm export -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "frmnam_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frmnam_c.html",
+      "semantics": "Resolve signed frame code to its left-justified full frame name; empty/blank unknown-name sentinel maps to found:false. Legitimate output names up to32characters are fully retained. Zero and int32 extrema are valid identifier inputs that may miss.",
+      "scenarios": [
+        {
+          "caseId": "frames-frmnam-found-success",
+          "coverage": ["success"],
+          "observes": "frmnam resolves frame code 1 -> J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frmnam-not-found-success",
+          "coverage": ["success"],
+          "observes": "frmnam miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frmnam-audit-builtins-zero-and-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Observe real names and empty-name misses at zero and both signed int32 limits; these are valid identifiers, not fabricated numeric errors.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frmnam-audit-full32-byte-name",
+          "coverage": ["success", "edge"],
+          "observes": "All32 actual frame-name characters reach raw result and exact comparison; no truncation to shorter buffers.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Negative frame code resolves its complete26-character authored name only while its frame definition is loaded.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "Codes1/17/10013/0 and both int32 limits, full32-character actual NAME, negative authored frame and unload disappearance. No fabricated CSPICE error for a valid unknown ID; fractional/nonfinite/overflow JS numbers fail separate preflight.",
+      "errorAssessment": "Valid unknown signed IDs yield found:false with no intrinsic toolkit error; output buffer is fixed wide enough for all32characters. Separate typed invalid-number and allocation guards are exercised.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "frmnam-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/frmnam.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-frmnam-audit-builtins-zero-and-limits",
+            "frames-frmnam-audit-full32-byte-name",
+            "frames-frmnam-audit-loaded-negative-frame-lifecycle"
+          ]
+        },
+        {
+          "id": "frmnam-typed-input-and-state-matrix",
+          "status": "repaired",
+          "summary": "Both raw adapters silently accepted fractional/overflow frame identifiers; nonfinite epochs lacked consistent preflight. sxform used unchecked tuple casts.",
+          "repair": "Validate signed SpiceInt inputs and finite transform ET; validate all36 state components with the existing matrix validator and construct an explicit mutable36-element tuple without a cast. Actual public tests reject bad inputs and still resolve valid builtins.",
+          "evidence": [
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
+          ],
+          "caseIds": ["frames-frmnam-found-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.frmnam -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.frmnam -> WASM typed helper -> configured actual compiled _tspice_frmnam export -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "cidfrm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cidfrm_c.html",
+      "semantics": "Resolve a body center ID to its preferred frame code/name pair, not to its own body ID. Custom OBJECT_<id>_FRAME preference is visible only while loaded. No artificial intrinsic scientific error is manufactured for unknown centers; they return found:false.",
+      "scenarios": [
+        {
+          "caseId": "frames-cidfrm-found-success",
+          "coverage": ["success"],
+          "observes": "cidfrm resolves EARTH center -> frame mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-cidfrm-not-found-success",
+          "coverage": ["success"],
+          "observes": "cidfrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-cidfrm-audit-builtin-preferred-and-missing",
+          "coverage": ["success", "edge"],
+          "observes": "Compare each preferred frame code/name pair, plus genuine unknown centers with found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-cidfrm-audit-authored-preference-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "OBJECT_1234567_FRAME selects the actual negative-code fixed frame while loaded, then disappears; frame center and class ID are deliberately distinct.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "Preferred frames for Earth/Mars/Jupiter, negative/unknown centers and custom preference load/unload. Literal tests require different frame code/center/class ID fields; strict JS int32 and all4 allocation positions separately covered.",
+      "errorAssessment": "Unknown body centers yield found:false. NAIF has no intrinsic scientific input error for valid center IDs; bad JS integer/type and allocation failures are separate wrapper tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "cidfrm-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/cidfrm.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-cidfrm-audit-builtin-preferred-and-missing",
+            "frames-cidfrm-audit-authored-preference-lifecycle"
+          ]
+        },
+        {
+          "id": "cidfrm-typed-input-and-state-matrix",
+          "status": "repaired",
+          "summary": "Both raw adapters silently accepted fractional/overflow frame identifiers; nonfinite epochs lacked consistent preflight. sxform used unchecked tuple casts.",
+          "repair": "Validate signed SpiceInt inputs and finite transform ET; validate all36 state components with the existing matrix validator and construct an explicit mutable36-element tuple without a cast. Actual public tests reject bad inputs and still resolve valid builtins.",
+          "evidence": [
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
+          ],
+          "caseIds": ["frames-cidfrm-found-success"]
+        },
+        {
+          "id": "cidfrm-oracle-found-before-error",
+          "status": "repaired",
+          "summary": "SpiceyPy found decorators ran before its outer toolkit error checker. Catching NotFoundError masked five real malformed/empty-input paths; ten new Node/WASM comparisons failed while the oracle returned success/miss.",
+          "repair": "Scope no_found_check only around actual utility calls so the outer real toolkit checker raises first; normalize the actual found tuple afterward. Legitimate misses remain found:false and named errors now reach assertions. CK handling stays assigned to its separate batch.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/src/cases/frames/cidfrm.cases.json"
+          ],
+          "caseIds": [
+            "frames-cidfrm-audit-builtin-preferred-and-missing",
+            "frames-cidfrm-audit-authored-preference-lifecycle"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.cidfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.cidfrm -> WASM typed helper -> configured actual compiled _tspice_cidfrm export -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "cnmfrm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cnmfrm_c.html",
+      "semantics": "Resolve a center body name/alias through CSPICE to its preferred frame code and full name, honoring loaded NAIF body mappings and OBJECT frame preference. Case/blanks are insignificant; unknown names are misses and empty strings are actual errors.",
+      "scenarios": [
+        {
+          "caseId": "frames-cnmfrm-found-success",
+          "coverage": ["success"],
+          "observes": "cnmfrm resolves EARTH center name -> frame mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-cnmfrm-not-found-success",
+          "coverage": ["success"],
+          "observes": "cnmfrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-cnmfrm-audit-case-blanks-and-misses",
+          "coverage": ["success", "edge"],
+          "observes": "Resolve body-name case/blanks into full preferred frame pair; unknown names return found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-cnmfrm-audit-authored-preference-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Authored NAIF body-name mapping and preferred frame load/unload produce real not-found/found/not-found states.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-cnmfrm-audit-empty-name",
+          "coverage": ["error", "edge"],
+          "observes": "Actual EMPTYSTRING must remain a toolkit error; default SpiceyPy found exceptions must not mask it.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "Case/outer blanks, genuine unknown body, custom named body/preference lifecycle, EMPTYSTRING and all5 allocation failure positions with actual valid lookup afterward.",
+      "errorAssessment": "Actual EMPTYSTRING differs from an unknown body miss. The oracle must execute its real error checker before interpreting found.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "cnmfrm-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/cnmfrm.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-cnmfrm-audit-case-blanks-and-misses",
+            "frames-cnmfrm-audit-authored-preference-lifecycle",
+            "frames-cnmfrm-audit-empty-name"
+          ]
+        },
+        {
+          "id": "cnmfrm-pretry-string-allocation-leak",
+          "status": "repaired",
+          "summary": "Actual WASM heap faulting exposed five leak positions in these three methods when UTF-8 allocation threw before the surrounding cleanup block (cnmfrm2,pxform2/3,sxform2/3).",
+          "repair": "Allocate strings inside protected scopes and group output/error buffers with withAllocs; free only allocated pointers. All34 positions across eight routines now release temporaries and permit an actual J2000 lookup afterward.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": ["frames-cnmfrm-found-success"]
+        },
+        {
+          "id": "cnmfrm-oracle-found-before-error",
+          "status": "repaired",
+          "summary": "SpiceyPy found decorators ran before its outer toolkit error checker. Catching NotFoundError masked five real malformed/empty-input paths; ten new Node/WASM comparisons failed while the oracle returned success/miss.",
+          "repair": "Scope no_found_check only around actual utility calls so the outer real toolkit checker raises first; normalize the actual found tuple afterward. Legitimate misses remain found:false and named errors now reach assertions. CK handling stays assigned to its separate batch.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/src/cases/frames/cnmfrm.cases.json"
+          ],
+          "caseIds": [
+            "frames-cnmfrm-audit-case-blanks-and-misses",
+            "frames-cnmfrm-audit-authored-preference-lifecycle",
+            "frames-cnmfrm-audit-empty-name"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.cnmfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.cnmfrm -> WASM typed helper -> configured actual compiled _tspice_cnmfrm export -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "frinfo_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frinfo_c.html",
+      "semantics": "Return center, frameClass and classId for a signed frame code. Frame code, center ID and class ID are distinct fields. Unknown IDs return found:false; incomplete/malformed loaded definitions signal actual toolkit errors.",
+      "scenarios": [
+        {
+          "caseId": "frames-frinfo-found-success",
+          "coverage": ["success"],
+          "observes": "frinfo resolves built-in J2000 frame metadata. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frinfo-not-found-success",
+          "coverage": ["success"],
+          "observes": "frinfo miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frinfo-audit-builtins-and-missing",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all center/class/class-ID fields for inertial and body-fixed frames, with a true unknown frame miss.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frinfo-audit-distinct-frame-class-ids",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The negative static frame has center1234567/class4/classID-1800999, distinct from framecode-1800102; dynamic class5 and unload state distinguish every field.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frinfo-audit-invalid-name-dimension",
+          "coverage": ["error", "edge"],
+          "observes": "Actual malformed NAME dimension signals INVALIDDIMENSION, not found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-frinfo-audit-missing-center",
+          "coverage": ["error", "edge"],
+          "observes": "Valid name/class/class-ID with missing center reaches actual KERNELVARNOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "All three fields for builtin inertial/body-fixed and authored negative/static/dynamic frames; unload disappearance; real INVALIDDIMENSION for multi-valued NAME and KERNELVARNOTFOUND for missing center.",
+      "errorAssessment": "Actual INVALIDDIMENSION and KERNELVARNOTFOUND are asserted using valid-shaped malformed pool definitions; unknown frames remain misses.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "frinfo-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/frinfo.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-frinfo-audit-builtins-and-missing",
+            "frames-frinfo-audit-distinct-frame-class-ids",
+            "frames-frinfo-audit-invalid-name-dimension",
+            "frames-frinfo-audit-missing-center"
+          ]
+        },
+        {
+          "id": "frinfo-typed-input-and-state-matrix",
+          "status": "repaired",
+          "summary": "Both raw adapters silently accepted fractional/overflow frame identifiers; nonfinite epochs lacked consistent preflight. sxform used unchecked tuple casts.",
+          "repair": "Validate signed SpiceInt inputs and finite transform ET; validate all36 state components with the existing matrix validator and construct an explicit mutable36-element tuple without a cast. Actual public tests reject bad inputs and still resolve valid builtins.",
+          "evidence": [
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
+          ],
+          "caseIds": ["frames-frinfo-found-success"]
+        },
+        {
+          "id": "frinfo-oracle-found-before-error",
+          "status": "repaired",
+          "summary": "SpiceyPy found decorators ran before its outer toolkit error checker. Catching NotFoundError masked five real malformed/empty-input paths; ten new Node/WASM comparisons failed while the oracle returned success/miss.",
+          "repair": "Scope no_found_check only around actual utility calls so the outer real toolkit checker raises first; normalize the actual found tuple afterward. Legitimate misses remain found:false and named errors now reach assertions. CK handling stays assigned to its separate batch.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/src/cases/frames/frinfo.cases.json"
+          ],
+          "caseIds": [
+            "frames-frinfo-audit-builtins-and-missing",
+            "frames-frinfo-audit-distinct-frame-class-ids",
+            "frames-frinfo-audit-invalid-name-dimension",
+            "frames-frinfo-audit-missing-center"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.frinfo -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.frinfo -> WASM typed helper -> configured actual compiled _tspice_frinfo export -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ccifrm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ccifrm_c.html",
+      "semantics": "Resolve signed frame class/class ID pair into frame code/name/center. The selected first matching loaded definition is used, so fixtures deliberately avoid conflicting class assignments. Malformed matching CLASS/CLASS_ID metadata throws; valid unmatched pairs return found:false.",
+      "scenarios": [
+        {
+          "caseId": "frames-ccifrm-found-success",
+          "coverage": ["success"],
+          "observes": "ccifrm resolves built-in frame class/class-id mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-ccifrm-not-found-success",
+          "coverage": ["success"],
+          "observes": "ccifrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-ccifrm-audit-builtin-class-pairs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete frame code/name/center triples for class/class-ID lookup and a real missing pair.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-ccifrm-audit-authored-distinct-class-id",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual class ID maps to a different negative frame code and authored center; all fields and unload disappearance reach assertions.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-ccifrm-audit-invalid-class-type",
+          "coverage": ["error", "edge"],
+          "observes": "String-valued CLASS reaches actual INVALIDFRAMEDEF; it must not be coerced into missing.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-ccifrm-audit-missing-class-id",
+          "coverage": ["error", "edge"],
+          "observes": "A matching frame CLASS without CLASS_ID reaches actual INVALIDFRAMEDEF.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "Builtin inertial and body-fixed classes; authored distinct class ID/negative frame code/center; miss/unload; actual INVALIDFRAMEDEF for string CLASS and missing CLASS_ID. Conflicting duplicate matching definitions are intentionally excluded because NAIF says caller must avoid them.",
+      "errorAssessment": "Actual INVALIDFRAMEDEF for wrong-typed CLASS and missing CLASS_ID; no intentional duplicate valid definitions since primary documentation assigns their avoidance to caller.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "ccifrm-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/ccifrm.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-ccifrm-audit-builtin-class-pairs",
+            "frames-ccifrm-audit-authored-distinct-class-id",
+            "frames-ccifrm-audit-invalid-class-type",
+            "frames-ccifrm-audit-missing-class-id"
+          ]
+        },
+        {
+          "id": "ccifrm-typed-input-and-state-matrix",
+          "status": "repaired",
+          "summary": "Both raw adapters silently accepted fractional/overflow frame identifiers; nonfinite epochs lacked consistent preflight. sxform used unchecked tuple casts.",
+          "repair": "Validate signed SpiceInt inputs and finite transform ET; validate all36 state components with the existing matrix validator and construct an explicit mutable36-element tuple without a cast. Actual public tests reject bad inputs and still resolve valid builtins.",
+          "evidence": [
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
+          ],
+          "caseIds": ["frames-ccifrm-found-success"]
+        },
+        {
+          "id": "ccifrm-oracle-found-before-error",
+          "status": "repaired",
+          "summary": "SpiceyPy found decorators ran before its outer toolkit error checker. Catching NotFoundError masked five real malformed/empty-input paths; ten new Node/WASM comparisons failed while the oracle returned success/miss.",
+          "repair": "Scope no_found_check only around actual utility calls so the outer real toolkit checker raises first; normalize the actual found tuple afterward. Legitimate misses remain found:false and named errors now reach assertions. CK handling stays assigned to its separate batch.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/src/cases/frames/ccifrm.cases.json"
+          ],
+          "caseIds": [
+            "frames-ccifrm-audit-builtin-class-pairs",
+            "frames-ccifrm-audit-authored-distinct-class-id",
+            "frames-ccifrm-audit-invalid-class-type",
+            "frames-ccifrm-audit-missing-class-id"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ccifrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ccifrm -> WASM typed helper -> configured actual compiled _tspice_ccifrm export -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pxform_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pxform_c.html",
+      "semantics": "Return all9 row-major rotation entries mapping column position vectors from the from-frame into the to-frame at finite ET, TDB ephemeris seconds past J2000. Static, inverse, dynamic Euler and composite transforms are compared, including negative epochs and actual missing-data/unknown-frame errors.",
+      "scenarios": [
+        {
+          "caseId": "frames-pxform-identity-success",
+          "coverage": ["success"],
+          "observes": "pxform identity transform for J2000->J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-pxform-unknown-frame-error",
+          "coverage": ["error"],
+          "observes": "Representative pxform UNKNOWNFRAME error. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-pxform-audit-static-dynamic-and-composite",
+          "coverage": ["success", "edge"],
+          "observes": "All 9 rotation components compare in row-major order for nontrivial static, inverse, three dynamic epochs and composed frames. Dynamic velocity derivatives are nonzero and independently finite-difference checked.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-pxform-audit-missing-orientation-data",
+          "coverage": ["error", "edge"],
+          "observes": "Known frames without required orientation kernels signal actual FRAMEDATANOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-pxform-audit-unload-removes-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A successful transform before unload does not allow cached use of an unloaded custom frame; actual UNKNOWNFRAME follows.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "All9 entries for static/inverse, three dynamic epochs and composed frames; actual UNKNOWNFRAME after unload and FRAMEDATANOTFOUND with missing orientation kernels. Nonfinite epoch/wrong JS string type rejected before FFI.",
+      "errorAssessment": "Actual UNKNOWNFRAME after unload/unknown name and FRAMEDATANOTFOUND for known frames missing orientation kernels; wrong JS types/nonfinite ET are explicit preflight, not fabricated CSPICE comparisons.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "pxform-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/pxform.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-pxform-audit-static-dynamic-and-composite",
+            "frames-pxform-audit-missing-orientation-data",
+            "frames-pxform-audit-unload-removes-frame"
+          ]
+        },
+        {
+          "id": "pxform-pretry-string-allocation-leak",
+          "status": "repaired",
+          "summary": "Actual WASM heap faulting exposed five leak positions in these three methods when UTF-8 allocation threw before the surrounding cleanup block (cnmfrm2,pxform2/3,sxform2/3).",
+          "repair": "Allocate strings inside protected scopes and group output/error buffers with withAllocs; free only allocated pointers. All34 positions across eight routines now release temporaries and permit an actual J2000 lookup afterward.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": ["frames-pxform-identity-success"]
+        },
+        {
+          "id": "pxform-typed-input-and-state-matrix",
+          "status": "repaired",
+          "summary": "Both raw adapters silently accepted fractional/overflow frame identifiers; nonfinite epochs lacked consistent preflight. sxform used unchecked tuple casts.",
+          "repair": "Validate signed SpiceInt inputs and finite transform ET; validate all36 state components with the existing matrix validator and construct an explicit mutable36-element tuple without a cast. Actual public tests reject bad inputs and still resolve valid builtins.",
+          "evidence": [
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
+          ],
+          "caseIds": ["frames-pxform-identity-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.pxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.pxform -> WASM typed helper -> configured actual compiled _tspice_pxform export -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sxform_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sxform_c.html",
+      "semantics": "Return a mutable36-element row-major state tuple mapping position/velocity from-frame to to-frame at finite TDB ET. Blocks are [R,0;dR/dt,R]; derivative rates are per second. Full matrix and finite components are validated without unsafe casts; dynamic lower-left entries are observed, not replaced by identity/zero.",
+      "scenarios": [
+        {
+          "caseId": "frames-sxform-identity-success",
+          "coverage": ["success"],
+          "observes": "sxform identity transform for J2000->J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-sxform-unknown-frame-error",
+          "coverage": ["error"],
+          "observes": "Representative sxform UNKNOWNFRAME error. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-sxform-audit-static-dynamic-and-composite",
+          "coverage": ["success", "edge"],
+          "observes": "All 36 state-transform components compare in row-major order for nontrivial static, inverse, three dynamic epochs and composed frames. Dynamic velocity derivatives are nonzero and independently finite-difference checked.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-sxform-audit-missing-orientation-data",
+          "coverage": ["error", "edge"],
+          "observes": "Known frames without required orientation kernels signal actual FRAMEDATANOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        },
+        {
+          "caseId": "frames-sxform-audit-unload-removes-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A successful transform before unload does not allow cached use of an unloaded custom frame; actual UNKNOWNFRAME follows.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
+        }
+      ],
+      "edgeAssessment": "All36 entries and block layout for static/inverse/dynamic/composed frames; nonzero derivative block independently finite-difference checked, complete inverse composition, errors and mutable validated result shape. No global tolerance change.",
+      "errorAssessment": "Actual UNKNOWNFRAME after unload/unknown name and FRAMEDATANOTFOUND for known frames missing orientation kernels; wrong JS types/nonfinite ET are explicit preflight, not fabricated CSPICE comparisons.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Project-authored text FK with arbitrary class4 static rotation, signed framecode-1800102 distinct from classID-1800999 and center1234567, body alias/preference and class5 Euler frame with authored polynomial angles/rates. No mission/scientific observations; syntax follows primary NAIF frame rules. The class-ID name supports the actual TK transform engine. FRAME_name binding length respects32-byte pool variable names.",
+          "distribution": "Repository-authored synthetic text under MIT; provenance documented for maintainer fixture review."
+        }
+      ],
+      "fixtureRationale": "One small handwritten FK produces nontrivial all-axis rotations and angular derivatives without external kernels/data. Other cases write authored pool metadata in isolated workflows. Full32-character NAME is injected directly because FRAME_ prefix plus a long binding key is subject to the32-byte pool variable limit.",
+      "cleanup": "Each workflow clears/reset kernel state and disposes backend in finally; explicit load/unload observes name/metadata cache invalidation. No cell/file claim is acquired by these eight utilities. Protected WASM string/output buffers free after success/error and all34 injected failures. Scoped oracle found setting restores in finally even on toolkit failure. CK pointing/coverage/handle ownership and remaining allocation gaps stay in frames-1.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for every rotation/state component. Nonzero derivative values are order1e-3, so accidental zeroing fails. Independent central-difference derivative check uses h=.01s and a separate5e-11 bound for truncation/roundoff at authored rates~1e-3; complete inverse product and repeated rotation blocks use1e-12. Literal IDs/names/metadata compare exactly; no source field is discarded.",
+      "findings": [
+        {
+          "id": "sxform-semantic-depth",
+          "status": "repaired",
+          "summary": "Prior ordinary lookup/identity examples did not establish loaded-state, full metadata/matrix layout or relevant real error paths.",
+          "repair": "Add exact registered distinguishing cases, actual literal metadata and nonzero dynamic derivative/inverse tests, explicit typed input guards and allocation rollback/recovery. No harness fallback or numeric tolerance relaxation.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/sxform.cases.json",
+            "packages/py-parity-checking/test/frame-utility-observables.test.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": [
+            "frames-sxform-audit-static-dynamic-and-composite",
+            "frames-sxform-audit-missing-orientation-data",
+            "frames-sxform-audit-unload-removes-frame"
+          ]
+        },
+        {
+          "id": "sxform-pretry-string-allocation-leak",
+          "status": "repaired",
+          "summary": "Actual WASM heap faulting exposed five leak positions in these three methods when UTF-8 allocation threw before the surrounding cleanup block (cnmfrm2,pxform2/3,sxform2/3).",
+          "repair": "Allocate strings inside protected scopes and group output/error buffers with withAllocs; free only allocated pointers. All34 positions across eight routines now release temporaries and permit an actual J2000 lookup afterward.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/backend-wasm/test/frame-utility-allocations.test.ts"
+          ],
+          "caseIds": ["frames-sxform-identity-success"]
+        },
+        {
+          "id": "sxform-typed-input-and-state-matrix",
+          "status": "repaired",
+          "summary": "Both raw adapters silently accepted fractional/overflow frame identifiers; nonfinite epochs lacked consistent preflight. sxform used unchecked tuple casts.",
+          "repair": "Validate signed SpiceInt inputs and finite transform ET; validate all36 state components with the existing matrix validator and construct an explicit mutable36-element tuple without a cast. Actual public tests reject bad inputs and still resolve valid builtins.",
+          "evidence": [
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts",
+            "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
+          ],
+          "caseIds": ["frames-sxform-identity-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.sxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.sxform -> WASM typed helper -> configured actual compiled _tspice_sxform export -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

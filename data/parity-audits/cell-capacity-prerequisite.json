@@ -443,7 +443,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator."
+      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator.",
+      "historical": true
     },
     {
       "id": "local-spk-states-final-wasm",
@@ -469,7 +470,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator."
+      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator.",
+      "historical": true
     },
     {
       "id": "ci-pr702-43412142905-node",
@@ -555,7 +557,8 @@
       ],
       "commit": "bb940440561ced2031d79ef8a3b9130b1bbee6c3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43413954878/job/131847058765",
-      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source."
+      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source.",
+      "historical": true
     },
     {
       "id": "ci-pr703-43413954878-wasm",
@@ -583,7 +586,60 @@
       ],
       "commit": "bb940440561ced2031d79ef8a3b9130b1bbee6c3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43413954878/job/131847058765",
-      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source."
+      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3e60462a7ad135e4925436b66ce675dc621e31396a9365c4e387d008f64c673b",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3e60462a7ad135e4925436b66ce675dc621e31396a9365c4e387d008f64c673b",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
     }
   ],
   "routines": [
@@ -690,14 +746,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
           "history": [
@@ -708,14 +762,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -869,14 +921,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
           "history": [
@@ -887,14 +937,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -1037,14 +1085,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
           "history": [
@@ -1055,17 +1101,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

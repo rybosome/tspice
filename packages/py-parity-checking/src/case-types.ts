@@ -1,4 +1,7 @@
-import type { FoundDlaDescriptor, KernelKindInput } from "@rybosome/tspice-backend-contract";
+import type {
+  FoundDlaDescriptor,
+  KernelKindInput,
+} from "@rybosome/tspice-backend-contract";
 
 export type TimdefItem = string;
 

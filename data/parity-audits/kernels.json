@@ -1,0 +1,1395 @@
+{
+  "schemaVersion": 1,
+  "batch": "kernels",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/kernels.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/core/src/spice-runtime/domains/kernels-utils.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+    "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+    "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+    "packages/backend-node/test/kernel-staging.test.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+  ],
+  "executions": [
+    {
+      "id": "local-kernels-audit-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eb3261a80cc9689984d4eb12ecb77229327334bac79b288e57f9b2a68f0c8a2b",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both full required local lanes passed. Production native required: all 692 live comparisons (346 per actual backend), all 729 parity-package tests including six new boundary/meta tests, 70 WASM tests including ten allocation failures, 58 Node tests and 101 facade tests passed with no skips. JS required lane passed; its optional-native guard negative fixture was the only expected skip. 37 ledger tests, formatting/lint and drift passed. Actual CSPICE_N0067 native addon was built/loaded; existing checked-in WASM binary is unchanged.",
+      "historical": true
+    },
+    {
+      "id": "local-kernels-audit-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eb3261a80cc9689984d4eb12ecb77229327334bac79b288e57f9b2a68f0c8a2b",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both full required local lanes passed. Production native required: all 692 live comparisons (346 per actual backend), all 729 parity-package tests including six new boundary/meta tests, 70 WASM tests including ten allocation failures, 58 Node tests and 101 facade tests passed with no skips. JS required lane passed; its optional-native guard negative fixture was the only expected skip. 37 ledger tests, formatting/lint and drift passed. Actual CSPICE_N0067 native addon was built/loaded; existing checked-in WASM binary is unchanged.",
+      "historical": true
+    },
+    {
+      "id": "ci-kernels-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eb3261a80cc9689984d4eb12ecb77229327334bac79b288e57f9b2a68f0c8a2b",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "cabf3aacf00e35a33acc7809d58b6693a705b35b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43339972043/job/131605539044",
+      "observation": "Observed canonical Linux Node22 production-native-required job: all 692 live comparisons (346 per backend), all 729 parity-package tests including live meta and partial-load recovery, 70 WASM tests, 58 native tests and 101 facade tests passed without skips; production addon guard and CSPICE_N0067 passed. A separate ledger job caught two new fixtures classified before git staging; regenerated tracked-fixture classification does not change these reviewed implementation/assertion sources. Whole-run/current-head readiness remains separate.",
+      "historical": true
+    },
+    {
+      "id": "ci-kernels-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eb3261a80cc9689984d4eb12ecb77229327334bac79b288e57f9b2a68f0c8a2b",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "cabf3aacf00e35a33acc7809d58b6693a705b35b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43339972043/job/131605539044",
+      "observation": "Observed canonical Linux Node22 production-native-required job: all 692 live comparisons (346 per backend), all 729 parity-package tests including live meta and partial-load recovery, 70 WASM tests, 58 native tests and 101 facade tests passed without skips; production addon guard and CSPICE_N0067 passed. A separate ledger job caught two new fixtures classified before git staging; regenerated tracked-fixture classification does not change these reviewed implementation/assertion sources. Whole-run/current-head readiness remains separate.",
+      "historical": true
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0461d3545cebcd2ffa8de32317626982ad49e47a48c180ae72cb28bc20190ad",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 on main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 698 live comparisons (349 scenarios per backend), all 735 parity-package tests, 72 WASM, 62 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained, both fixture provenance paragraphs retained and batch assignments merged by stable ID. Reports recomputed from all cases; prior source-bound CI retained as historical. Formatting of the merged fixture README was corrected before final full passes. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64.",
+      "historical": true
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0461d3545cebcd2ffa8de32317626982ad49e47a48c180ae72cb28bc20190ad",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 on main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 698 live comparisons (349 scenarios per backend), all 735 parity-package tests, 72 WASM, 62 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained, both fixture provenance paragraphs retained and batch assignments merged by stable ID. Reports recomputed from all cases; prior source-bound CI retained as historical. Formatting of the merged fixture README was corrected before final full passes. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64.",
+      "historical": true
+    },
+    {
+      "id": "ci-pr690-43385897955-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0461d3545cebcd2ffa8de32317626982ad49e47a48c180ae72cb28bc20190ad",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "5e8ea98a67c2db3d856bf64f666f0af5c6059694",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385897955/job/131754171534",
+      "observation": "Observed exact-source canonical Linux22 job. All698live comparisons, all735parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed; KPL WASM ownership remains needs-repair pending #684.",
+      "historical": true
+    },
+    {
+      "id": "ci-pr690-43385897955-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b0461d3545cebcd2ffa8de32317626982ad49e47a48c180ae72cb28bc20190ad",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "5e8ea98a67c2db3d856bf64f666f0af5c6059694",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385897955/job/131754171534",
+      "observation": "Observed exact-source canonical Linux22 job. All698live comparisons, all735parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed; KPL WASM ownership remains needs-repair pending #684.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b4e2199987ce30bcef5e4c6e5624e309bc7aace781c808f804e5670fc064901",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b4e2199987ce30bcef5e4c6e5624e309bc7aace781c808f804e5670fc064901",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "furnsh_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/furnsh_c.html",
+      "semantics": "Load kernels in order; each call, including a duplicate filename, contributes a loaded-table registration. Errors may retain preceding assignments or loads. Byte sources write backend-owned files before the actual CSPICE call.",
+      "scenarios": [
+        {
+          "caseId": "kernels-furnsh-loads-text-kernel-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "furnsh loads a text kernel that is visible through ktotal/kdata The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
+        },
+        {
+          "caseId": "kernels-furnsh-missing-file-error",
+          "coverage": ["error"],
+          "observes": "Representative furnsh missing-file error path The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
+        },
+        {
+          "caseId": "kernels-furnsh-audit-duplicate-byte-loads",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Repeated identical loads remain separate CSPICE database entries; one unload removes one reference. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
+        },
+        {
+          "caseId": "kernels-furnsh-audit-binary-and-text",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Binary and text registrations preserve order, paths and zero/nonzero metadata handles. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
+        },
+        {
+          "caseId": "kernels-furnsh-audit-empty-meta",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An authored empty meta-kernel is registered as TEXT, with its actual filtyp/handle. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
+        },
+        {
+          "caseId": "kernels-furnsh-audit-malformed-text",
+          "coverage": ["error"],
+          "observes": "A malformed kernel reaches CSPICE after assigning an earlier variable; supplemental tests inspect retained partial pool state. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
+        },
+        {
+          "caseId": "kernels-furnsh-audit-observable-pool-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Loading the corrected authored text fixture must populate actual numeric, integer and character pool values. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts."
+        }
+      ],
+      "edgeAssessment": "Counts/order/types/paths and actual numeric, integer and character pool values distinguish a real load from a no-op. Duplicate byte loads must remain two registrations, then one after unload. Empty meta registration and real binary/text handles are observed. Supplemental live meta tests compare child sources, duplicate lookups and unload against SpiceyPy.",
+      "errorAssessment": "Missing paths must report actual NOSUCHFILE, not a host readFile failure. Malformed numeric data reports NUMBEREXPECTED; a supplemental live oracle reads retained partial values and loaded count after the error, then verifies recovery and kclear.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/kernel-pool-parity.tpc",
+          "provenance": "Project-authored synthetic numeric/text values. Corrected actual data-section delimiters in the existing pool fixture.",
+          "distribution": "Project MIT-licensed synthetic test content; no mission observations."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty.tm",
+          "provenance": "Project-authored synthetic numeric/text values. Corrected actual data-section delimiters in the existing pool fixture.",
+          "distribution": "Project MIT-licensed synthetic test content; no mission observations."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-partial-error.tpc",
+          "provenance": "Project-authored synthetic numeric/text values. Corrected actual data-section delimiters in the existing pool fixture.",
+          "distribution": "Project MIT-licensed synthetic test content; no mission observations."
+        }
+      ],
+      "fixtureRationale": "Existing LSK/SPK provenance and authored text fixtures are documented in fixtures/README.md. Meta templates and filesystem/boundary inputs are authored in tests and always removed in finally. No new scientific datasets.",
+      "cleanup": "Each registered workflow runs kclear/reset before the case, finalizers then kclear/reset after success/error, and disposes the actual backend. Node retains staged bytes through unload/partial failures, then removes files and the owned root on kclear. WASM virtual files remain backend-owned; query withAllocs cleanup is fault-injected at every allocation. Supplemental native/WASM tests use try/finally for raw kclear, backend dispose and scratch removal. kxtrct owns only bounded temporary native/JS buffers.",
+      "tolerance": "No floating-output tolerance change: kernel counts/indices/booleans/types/strings are exact; relative path hierarchy is preserved. Opaque absolute handles differ by process and are observed through text/meta zero versus binary nonzero and within-runtime metadata correspondence. Authored small pool values and 32-bit endpoints are exactly representable; existing 1e-12 comparator is adequate. kxtrct strings are byte-content-equivalent Unicode strings including significant whitespace.",
+      "findings": [
+        {
+          "id": "furnsh-semantic-observations",
+          "status": "repaired",
+          "summary": "Old registration-only/smoke evidence did not establish these state, metadata or exact string boundaries.",
+          "repair": "Counts/order/types/paths and actual numeric, integer and character pool values distinguish a real load from a no-op. Duplicate byte loads must remain two registrations, then one after unload. Empty meta registration and real binary/text handles are observed. Supplemental live meta tests compare child sources, duplicate lookups and unload against SpiceyPy. Missing paths must report actual NOSUCHFILE, not a host readFile failure. Malformed numeric data reports NUMBEREXPECTED; a supplemental live oracle reads retained partial values and loaded count after the error, then verifies recovery and kclear.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json",
+            "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+            "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+          ],
+          "caseIds": [
+            "kernels-furnsh-loads-text-kernel-success",
+            "kernels-furnsh-missing-file-error",
+            "kernels-furnsh-audit-duplicate-byte-loads",
+            "kernels-furnsh-audit-binary-and-text",
+            "kernels-furnsh-audit-empty-meta",
+            "kernels-furnsh-audit-malformed-text",
+            "kernels-furnsh-audit-observable-pool-values"
+          ]
+        },
+        {
+          "id": "furnsh-node-staging-lifecycle",
+          "status": "repaired",
+          "summary": "Node preemptively unloaded repeated byte sources, lost duplicate registration counts, and deleted files needed by retained registrations or partial failed loads.",
+          "repair": "Every load/unload reaches CSPICE; retain staged bytes/mappings after unload/error and reclaim all owned staging files/directories on successful kclear. Real live duplicate-load regression failed before the fix; filesystem tests cover non-parity IDs and failure cleanup.",
+          "evidence": [
+            "packages/backend-node/src/runtime/kernel-staging.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json"
+          ],
+          "caseIds": ["kernels-furnsh-loads-text-kernel-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.furnsh -> Node typed adapter/stager -> native registered furnsh -> tspice_furnsh shared C shim -> furnsh_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.furnsh -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_furnsh -> shared C shim -> furnsh_c; outputs read before finally frees allocations.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "unload_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/unload_c.html",
+      "semantics": "Unload one matching registration; unknown nonempty paths are harmless. Unloading a meta-kernel also unloads its children, and text-kernel changes can reread remaining files.",
+      "scenarios": [
+        {
+          "caseId": "kernels-unload-removes-loaded-kernel-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "unload removes a previously loaded kernel from lookup results Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
+        },
+        {
+          "caseId": "kernels-unload-empty-path-error",
+          "coverage": ["error"],
+          "observes": "Representative unload invalid empty-path error Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
+        },
+        {
+          "caseId": "kernels-unload-audit-unknown-and-repeat",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Unknown and repeated non-empty unloads are harmless actual CSPICE operations. Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
+        },
+        {
+          "caseId": "kernels-unload-audit-text-pool-reload",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Unloading one text kernel rereads the retained staged kernel without deleting its backing file. Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING."
+        }
+      ],
+      "edgeAssessment": "Repeated/unknown unloads, duplicate registration counts and lookup hits/misses reach assertions. The remaining text file must still supply all three numeric values after another text kernel unload. Supplemental real meta tests compare removal of children and survival of a separately loaded duplicate.",
+      "errorAssessment": "Empty filename must reach actual unload_c and report EMPTYSTRING. Same-instance tests verify state and successful operations after errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/kernel-pool-parity.tpc",
+          "provenance": "Project-authored synthetic numeric/text values. Corrected actual data-section delimiters in the existing pool fixture.",
+          "distribution": "Project MIT-licensed synthetic test content; no mission observations."
+        }
+      ],
+      "fixtureRationale": "Existing LSK/SPK provenance and authored text fixtures are documented in fixtures/README.md. Meta templates and filesystem/boundary inputs are authored in tests and always removed in finally. No new scientific datasets.",
+      "cleanup": "Each registered workflow runs kclear/reset before the case, finalizers then kclear/reset after success/error, and disposes the actual backend. Node retains staged bytes through unload/partial failures, then removes files and the owned root on kclear. WASM virtual files remain backend-owned; query withAllocs cleanup is fault-injected at every allocation. Supplemental native/WASM tests use try/finally for raw kclear, backend dispose and scratch removal. kxtrct owns only bounded temporary native/JS buffers.",
+      "tolerance": "No floating-output tolerance change: kernel counts/indices/booleans/types/strings are exact; relative path hierarchy is preserved. Opaque absolute handles differ by process and are observed through text/meta zero versus binary nonzero and within-runtime metadata correspondence. Authored small pool values and 32-bit endpoints are exactly representable; existing 1e-12 comparator is adequate. kxtrct strings are byte-content-equivalent Unicode strings including significant whitespace.",
+      "findings": [
+        {
+          "id": "unload-semantic-observations",
+          "status": "repaired",
+          "summary": "Old registration-only/smoke evidence did not establish these state, metadata or exact string boundaries.",
+          "repair": "Repeated/unknown unloads, duplicate registration counts and lookup hits/misses reach assertions. The remaining text file must still supply all three numeric values after another text kernel unload. Supplemental real meta tests compare removal of children and survival of a separately loaded duplicate. Empty filename must reach actual unload_c and report EMPTYSTRING. Same-instance tests verify state and successful operations after errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/kernels/unload.cases.json",
+            "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+            "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+          ],
+          "caseIds": [
+            "kernels-unload-removes-loaded-kernel-success",
+            "kernels-unload-empty-path-error",
+            "kernels-unload-audit-unknown-and-repeat",
+            "kernels-unload-audit-text-pool-reload"
+          ]
+        },
+        {
+          "id": "unload-node-staging-lifecycle",
+          "status": "repaired",
+          "summary": "Node preemptively unloaded repeated byte sources, lost duplicate registration counts, and deleted files needed by retained registrations or partial failed loads.",
+          "repair": "Every load/unload reaches CSPICE; retain staged bytes/mappings after unload/error and reclaim all owned staging files/directories on successful kclear. Real live duplicate-load regression failed before the fix; filesystem tests cover non-parity IDs and failure cleanup.",
+          "evidence": [
+            "packages/backend-node/src/runtime/kernel-staging.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json"
+          ],
+          "caseIds": ["kernels-unload-removes-loaded-kernel-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.unload -> Node typed adapter/stager -> native registered unload -> tspice_unload shared C shim -> unload_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.unload -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_unload -> shared C shim -> unload_c; outputs read before finally frees allocations.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "kclear_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kclear_c.html",
+      "semantics": "Clear the loaded kernel table and kernel-pool variables; repeated calls are harmless. This operation does not erase every CSPICE subsystem setting (for example time defaults/watch registrations).",
+      "scenarios": [
+        {
+          "caseId": "kernels-kclear-clears-loaded-kernels-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "kclear clears previously loaded kernels from the kernel database Counts, metadata misses and pool absence after actual raw clear reach the assertions; later load shows usable state."
+        },
+        {
+          "caseId": "kernels-kclear-audit-pool-and-repeat",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Clear removes both registrations and user pool values and supports repeated clear/reload. Counts, metadata misses and pool absence after actual raw clear reach the assertions; later load shows usable state."
+        }
+      ],
+      "edgeAssessment": "Observe nonempty counts and actual fixture/user pool values before clear, zero counts, missing loaded metadata and absent variables after clear, followed by another clear and successful reload.",
+      "errorAssessment": "NAIF documents no normal error for this zero-argument operation. Meaningful resource errors are allocation rollback at other query boundaries, not a manufactured kclear failure. Case finalizers always clear/reset/dispose.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/kernel-pool-parity.tpc",
+          "provenance": "Project-authored synthetic numeric/text values. Corrected actual data-section delimiters in the existing pool fixture.",
+          "distribution": "Project MIT-licensed synthetic test content; no mission observations."
+        }
+      ],
+      "fixtureRationale": "Existing LSK/SPK provenance and authored text fixtures are documented in fixtures/README.md. Meta templates and filesystem/boundary inputs are authored in tests and always removed in finally. No new scientific datasets.",
+      "cleanup": "Each registered workflow runs kclear/reset before the case, finalizers then kclear/reset after success/error, and disposes the actual backend. Node retains staged bytes through unload/partial failures, then removes files and the owned root on kclear. WASM virtual files remain backend-owned; query withAllocs cleanup is fault-injected at every allocation. Supplemental native/WASM tests use try/finally for raw kclear, backend dispose and scratch removal. kxtrct owns only bounded temporary native/JS buffers.",
+      "tolerance": "No floating-output tolerance change: kernel counts/indices/booleans/types/strings are exact; relative path hierarchy is preserved. Opaque absolute handles differ by process and are observed through text/meta zero versus binary nonzero and within-runtime metadata correspondence. Authored small pool values and 32-bit endpoints are exactly representable; existing 1e-12 comparator is adequate. kxtrct strings are byte-content-equivalent Unicode strings including significant whitespace.",
+      "findings": [
+        {
+          "id": "kclear-semantic-observations",
+          "status": "repaired",
+          "summary": "Old registration-only/smoke evidence did not establish these state, metadata or exact string boundaries.",
+          "repair": "Observe nonempty counts and actual fixture/user pool values before clear, zero counts, missing loaded metadata and absent variables after clear, followed by another clear and successful reload. NAIF documents no normal error for this zero-argument operation. Meaningful resource errors are allocation rollback at other query boundaries, not a manufactured kclear failure. Case finalizers always clear/reset/dispose.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/kernels/kclear.cases.json",
+            "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+            "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+          ],
+          "caseIds": [
+            "kernels-kclear-clears-loaded-kernels-success",
+            "kernels-kclear-audit-pool-and-repeat"
+          ]
+        },
+        {
+          "id": "kclear-node-staging-lifecycle",
+          "status": "repaired",
+          "summary": "Node preemptively unloaded repeated byte sources, lost duplicate registration counts, and deleted files needed by retained registrations or partial failed loads.",
+          "repair": "Every load/unload reaches CSPICE; retain staged bytes/mappings after unload/error and reclaim all owned staging files/directories on successful kclear. Real live duplicate-load regression failed before the fix; filesystem tests cover non-parity IDs and failure cleanup.",
+          "evidence": [
+            "packages/backend-node/src/runtime/kernel-staging.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json"
+          ],
+          "caseIds": ["kernels-kclear-clears-loaded-kernels-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kclear -> Node typed adapter/stager -> native registered kclear -> tspice_kclear shared C shim -> kclear_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kclear -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kclear -> shared C shim -> kclear_c; outputs read before finally frees allocations.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "kdata_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kdata_c.html",
+      "semantics": "Return a zero-based position in the selected loaded-kernel table, preserving loaded order, filename, type, source and backend-local metadata handle. Negative or out-of-range signed integer indices miss. Contract selectors add filename-inferred text subtypes and OR arrays.",
+      "scenarios": [
+        {
+          "caseId": "kernels-kdata-found-and-miss-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "kdata returns metadata for loaded kernels and found=false when out of range The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved."
+        },
+        {
+          "caseId": "kernels-kdata-audit-index-and-filters",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Zero-based filtered indexing, negative/end misses, subtype composition and default ALL. The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved."
+        },
+        {
+          "caseId": "kernels-kdata-audit-invalid-kind",
+          "coverage": ["error"],
+          "observes": "Unknown public contract selector is rejected by both adapters. The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved."
+        }
+      ],
+      "edgeAssessment": "Compare every metadata field with fixture-relative path hierarchy, text/binary handle-zero distinctions and selected ordering. Negative/end misses and scalar/union/subtype/default filters have distinct counts and entries. Meta source attribution is independently compared in supplemental live tests.",
+      "errorAssessment": "Unknown kinds are explicit public-contract errors (independent oracle validates the same declared selector set, then calls real CSPICE for ordinary kinds). Fractional/nonfinite/wrapped indices are rejected before FFI conversion. Every one of seven WASM allocation failure positions is checked for rollback.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/kernel-pool-parity.tpc",
+          "provenance": "Project-authored synthetic numeric/text values. Corrected actual data-section delimiters in the existing pool fixture.",
+          "distribution": "Project MIT-licensed synthetic test content; no mission observations."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        }
+      ],
+      "fixtureRationale": "Existing LSK/SPK provenance and authored text fixtures are documented in fixtures/README.md. Meta templates and filesystem/boundary inputs are authored in tests and always removed in finally. No new scientific datasets.",
+      "cleanup": "Each registered workflow runs kclear/reset before the case, finalizers then kclear/reset after success/error, and disposes the actual backend. Node retains staged bytes through unload/partial failures, then removes files and the owned root on kclear. WASM virtual files remain backend-owned; query withAllocs cleanup is fault-injected at every allocation. Supplemental native/WASM tests use try/finally for raw kclear, backend dispose and scratch removal. kxtrct owns only bounded temporary native/JS buffers.",
+      "tolerance": "No floating-output tolerance change: kernel counts/indices/booleans/types/strings are exact; relative path hierarchy is preserved. Opaque absolute handles differ by process and are observed through text/meta zero versus binary nonzero and within-runtime metadata correspondence. Authored small pool values and 32-bit endpoints are exactly representable; existing 1e-12 comparator is adequate. kxtrct strings are byte-content-equivalent Unicode strings including significant whitespace.",
+      "findings": [
+        {
+          "id": "kdata-semantic-observations",
+          "status": "repaired",
+          "summary": "Old registration-only/smoke evidence did not establish these state, metadata or exact string boundaries.",
+          "repair": "Compare every metadata field with fixture-relative path hierarchy, text/binary handle-zero distinctions and selected ordering. Negative/end misses and scalar/union/subtype/default filters have distinct counts and entries. Meta source attribution is independently compared in supplemental live tests. Unknown kinds are explicit public-contract errors (independent oracle validates the same declared selector set, then calls real CSPICE for ordinary kinds). Fractional/nonfinite/wrapped indices are rejected before FFI conversion. Every one of seven WASM allocation failure positions is checked for rollback.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/kernels/kdata.cases.json",
+            "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+            "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+          ],
+          "caseIds": [
+            "kernels-kdata-found-and-miss-success",
+            "kernels-kdata-audit-index-and-filters",
+            "kernels-kdata-audit-invalid-kind"
+          ]
+        },
+        {
+          "id": "kdata-allocation-rollback",
+          "status": "repaired",
+          "summary": "A failure allocating the kind string leaked the already allocated WASM error buffer.",
+          "repair": "Allocate all buffers within withAllocs; deterministic failure tests originally failed at allocation two and now free every previously allocated pointer at every position.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts"
+          ],
+          "caseIds": ["kernels-kdata-found-and-miss-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kdata -> Node typed adapter/stager -> native registered kdata -> tspice_kdata shared C shim -> kdata_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kdata -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kdata -> shared C shim -> kdata_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "kinfo_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kinfo_c.html",
+      "semantics": "Return metadata for a loaded filename, or an ordinary miss for unknown/empty names. WASM legitimately composes a cached ktotal/kdata table; mutations invalidate it. Numeric binary handles are backend-local and zero for text/meta.",
+      "scenarios": [
+        {
+          "caseId": "kernels-kinfo-found-and-miss-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "kinfo returns metadata for loaded kernels and found=false for unknown kernels The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed."
+        },
+        {
+          "caseId": "kernels-kinfo-audit-cache-invalidation",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Cached misses/hits are invalidated by load, unload, clear and reloading on the same backend. The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed."
+        },
+        {
+          "caseId": "kernels-kinfo-audit-empty-path",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty lookup follows the actual raw contract. The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed."
+        }
+      ],
+      "edgeAssessment": "Observe type/source, handle zero/nonzero, and correspondence with an actual kdata entry rather than deleting the handle assertion. Query a miss before load, hits after load, misses after unload/clear and hits after reloading. Supplemental live meta tests cover child source attribution and duplicate registrations.",
+      "errorAssessment": "Empty/blank lookups are CSPICE misses; both adapters previously rejected the empty string and now return the correct miss. Unknown paths do not throw. The cached route has ktotal/kdata allocation rollback tests and same-instance recovery.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        }
+      ],
+      "fixtureRationale": "Existing LSK/SPK provenance and authored text fixtures are documented in fixtures/README.md. Meta templates and filesystem/boundary inputs are authored in tests and always removed in finally. No new scientific datasets.",
+      "cleanup": "Each registered workflow runs kclear/reset before the case, finalizers then kclear/reset after success/error, and disposes the actual backend. Node retains staged bytes through unload/partial failures, then removes files and the owned root on kclear. WASM virtual files remain backend-owned; query withAllocs cleanup is fault-injected at every allocation. Supplemental native/WASM tests use try/finally for raw kclear, backend dispose and scratch removal. kxtrct owns only bounded temporary native/JS buffers.",
+      "tolerance": "No floating-output tolerance change: kernel counts/indices/booleans/types/strings are exact; relative path hierarchy is preserved. Opaque absolute handles differ by process and are observed through text/meta zero versus binary nonzero and within-runtime metadata correspondence. Authored small pool values and 32-bit endpoints are exactly representable; existing 1e-12 comparator is adequate. kxtrct strings are byte-content-equivalent Unicode strings including significant whitespace.",
+      "findings": [
+        {
+          "id": "kinfo-semantic-observations",
+          "status": "repaired",
+          "summary": "Old registration-only/smoke evidence did not establish these state, metadata or exact string boundaries.",
+          "repair": "Observe type/source, handle zero/nonzero, and correspondence with an actual kdata entry rather than deleting the handle assertion. Query a miss before load, hits after load, misses after unload/clear and hits after reloading. Supplemental live meta tests cover child source attribution and duplicate registrations. Empty/blank lookups are CSPICE misses; both adapters previously rejected the empty string and now return the correct miss. Unknown paths do not throw. The cached route has ktotal/kdata allocation rollback tests and same-instance recovery.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/kernels/kinfo.cases.json",
+            "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+            "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+          ],
+          "caseIds": [
+            "kernels-kinfo-found-and-miss-success",
+            "kernels-kinfo-audit-cache-invalidation",
+            "kernels-kinfo-audit-empty-path"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kinfo -> Node typed adapter/stager -> native registered kinfo -> tspice_kinfo shared C shim -> kinfo_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "composed",
+          "trace": "raw.kinfo -> filename-keyed cache built from actual _tspice_ktotal/_tspice_kdata -> shared shim/CSPICE. Clear cache before furnsh/unload/kclear; live meta child-source/duplicate and mutation tests validate composed semantics.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ktotal_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ktotal_c.html",
+      "semantics": "Count loaded registrations selected by kind, defaulting to ALL. Ordinary kinds call actual ktotal; public text subtypes compose real kdata filtering by filename. Arrays, case/whitespace normalization and unions are explicit contract extensions.",
+      "scenarios": [
+        {
+          "caseId": "kernels-ktotal-counts-loaded-kernels-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "ktotal reports loaded kernels across ALL and TEXT selectors The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata."
+        },
+        {
+          "caseId": "kernels-ktotal-audit-subtypes-and-unions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Distinct files make OR/deduplication/subtype/default selector errors visible. The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata."
+        },
+        {
+          "caseId": "kernels-ktotal-audit-invalid-kind",
+          "coverage": ["error"],
+          "observes": "Unknown public contract selector is rejected by both adapters. The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata."
+        }
+      ],
+      "edgeAssessment": "Distinct binary, LSK and ordinary text files distinguish ALL/TEXT/SPK/subtype counts, OR/deduplication, TEXT subsuming LSK and ALL override. Counts change after duplicate loads/unloads/clear and follow actual CSPICE ordering where used for indexing.",
+      "errorAssessment": "Unknown/empty selectors are public-contract errors rather than silently accepting CSPICE unknown-kind zero. Every one of three WASM query allocations is fault-injected; second-allocation failure originally leaked the error buffer and is repaired.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/kernel-pool-parity.tpc",
+          "provenance": "Project-authored synthetic numeric/text values. Corrected actual data-section delimiters in the existing pool fixture.",
+          "distribution": "Project MIT-licensed synthetic test content; no mission observations."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Unchanged existing NAIF fixture copied from the facade kernel fixtures; file-io-minimal.bsp is earthstns_itrf93_201023.bsp. See fixtures/README.md and the checked-in NAIF kernel catalog.",
+          "distribution": "Existing repository fixture reused unchanged under its established NAIF provenance; no newly downloaded or redistributed dataset in this PR."
+        }
+      ],
+      "fixtureRationale": "Existing LSK/SPK provenance and authored text fixtures are documented in fixtures/README.md. Meta templates and filesystem/boundary inputs are authored in tests and always removed in finally. No new scientific datasets.",
+      "cleanup": "Each registered workflow runs kclear/reset before the case, finalizers then kclear/reset after success/error, and disposes the actual backend. Node retains staged bytes through unload/partial failures, then removes files and the owned root on kclear. WASM virtual files remain backend-owned; query withAllocs cleanup is fault-injected at every allocation. Supplemental native/WASM tests use try/finally for raw kclear, backend dispose and scratch removal. kxtrct owns only bounded temporary native/JS buffers.",
+      "tolerance": "No floating-output tolerance change: kernel counts/indices/booleans/types/strings are exact; relative path hierarchy is preserved. Opaque absolute handles differ by process and are observed through text/meta zero versus binary nonzero and within-runtime metadata correspondence. Authored small pool values and 32-bit endpoints are exactly representable; existing 1e-12 comparator is adequate. kxtrct strings are byte-content-equivalent Unicode strings including significant whitespace.",
+      "findings": [
+        {
+          "id": "ktotal-semantic-observations",
+          "status": "repaired",
+          "summary": "Old registration-only/smoke evidence did not establish these state, metadata or exact string boundaries.",
+          "repair": "Distinct binary, LSK and ordinary text files distinguish ALL/TEXT/SPK/subtype counts, OR/deduplication, TEXT subsuming LSK and ALL override. Counts change after duplicate loads/unloads/clear and follow actual CSPICE ordering where used for indexing. Unknown/empty selectors are public-contract errors rather than silently accepting CSPICE unknown-kind zero. Every one of three WASM query allocations is fault-injected; second-allocation failure originally leaked the error buffer and is repaired.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/kernels/ktotal.cases.json",
+            "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+            "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+          ],
+          "caseIds": [
+            "kernels-ktotal-counts-loaded-kernels-success",
+            "kernels-ktotal-audit-subtypes-and-unions",
+            "kernels-ktotal-audit-invalid-kind"
+          ]
+        },
+        {
+          "id": "ktotal-allocation-rollback",
+          "status": "repaired",
+          "summary": "A failure allocating the kind string leaked the already allocated WASM error buffer.",
+          "repair": "Allocate all buffers within withAllocs; deterministic failure tests originally failed at allocation two and now free every previously allocated pointer at every position.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts"
+          ],
+          "caseIds": ["kernels-ktotal-counts-loaded-kernels-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ktotal -> Node typed adapter/stager -> native registered ktotal -> tspice_ktotal shared C shim -> ktotal_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ktotal -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_ktotal -> shared C shim -> ktotal_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "kxtrct_c",
+      "contract": "packages/backend-contract/src/domains/kernels.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kxtrct_c.html",
+      "semantics": "Case-sensitive whole-word keyword extraction returns both remaining wordsq and substring. Only ASCII spaces delimit words. Returned strings right-trim ASCII spaces only; tabs/newlines/Unicode whitespace remain significant. Adapter key/term normalization is ASCII-only, empty terms are removed, NUL prefixes are C strings, and UTF-8 wordsq is bounded below 1 MiB.",
+      "scenarios": [
+        {
+          "caseId": "kernels-kxtrct-found-success",
+          "coverage": ["success", "edge"],
+          "observes": "kxtrct extracts a matching substring Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-not-found-success",
+          "coverage": ["success", "edge"],
+          "observes": "kxtrct miss returns found=false Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-terminator-last",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: terminator-last Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-key-last",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: key-last Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-immediate-terminator",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: immediate-terminator Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-tabs-are-not-blanks",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: tabs-are-not-blanks Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-tab-within-value",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: tab-within-value Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-newline-within-value",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: newline-within-value Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-multiple-and-case",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: multiple-and-case Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-no-terminators",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: no-terminators Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-repeated-keyword",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both mutated wordsq and substr: repeated-keyword Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-trailing-tab",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual CSPICE mutated wordsq and substring for trailing-tab Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-trailing-newline",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual CSPICE mutated wordsq and substring for trailing-newline Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-non-ascii-space",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual CSPICE mutated wordsq and substring for non-ascii-space Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-unicode-words",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual CSPICE mutated wordsq and substring for unicode-words Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-nul-sequence",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual CSPICE mutated wordsq and substring for nul-sequence Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-nul-key-term",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual CSPICE mutated wordsq and substring for nul-key-term Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        },
+        {
+          "caseId": "kernels-kxtrct-audit-blank-key",
+          "coverage": ["error"],
+          "observes": "Compare actual CSPICE mutated wordsq and substring for blank-key Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct."
+        }
+      ],
+      "edgeAssessment": "Both exact strings are compared: keyword/terminator at the end, immediate/multiple/absent terminators, repeats, tabs within words, trailing tab/newline/non-ASCII space, Japanese UTF-8 and embedded NUL prefixes. A missing keyword returns only found:false. Live oracle reads actual kxtrct_c buffers because the convenience wrapper strips whitespace and oversized NUL padding changes Fortran length semantics.",
+      "errorAssessment": "Blank normalized keyword is the documented adapter precondition error. Runtime tests reject nonstring keys/words, invalid term arrays/elements and ASCII/multibyte byte-limit overflow, then prove a valid exact-whitespace extraction succeeds on the same instance.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or scientific data are needed; parsing strings are authored in the listed cases.",
+      "cleanup": "Each registered workflow runs kclear/reset before the case, finalizers then kclear/reset after success/error, and disposes the actual backend. Node retains staged bytes through unload/partial failures, then removes files and the owned root on kclear. WASM virtual files remain backend-owned; query withAllocs cleanup is fault-injected at every allocation. Supplemental native/WASM tests use try/finally for raw kclear, backend dispose and scratch removal. kxtrct owns only bounded temporary native/JS buffers.",
+      "tolerance": "No floating-output tolerance change: kernel counts/indices/booleans/types/strings are exact; relative path hierarchy is preserved. Opaque absolute handles differ by process and are observed through text/meta zero versus binary nonzero and within-runtime metadata correspondence. Authored small pool values and 32-bit endpoints are exactly representable; existing 1e-12 comparator is adequate. kxtrct strings are byte-content-equivalent Unicode strings including significant whitespace.",
+      "findings": [
+        {
+          "id": "kxtrct-semantic-observations",
+          "status": "repaired",
+          "summary": "Old registration-only/smoke evidence did not establish these state, metadata or exact string boundaries.",
+          "repair": "Both exact strings are compared: keyword/terminator at the end, immediate/multiple/absent terminators, repeats, tabs within words, trailing tab/newline/non-ASCII space, Japanese UTF-8 and embedded NUL prefixes. A missing keyword returns only found:false. Live oracle reads actual kxtrct_c buffers because the convenience wrapper strips whitespace and oversized NUL padding changes Fortran length semantics. Blank normalized keyword is the documented adapter precondition error. Runtime tests reject nonstring keys/words, invalid term arrays/elements and ASCII/multibyte byte-limit overflow, then prove a valid exact-whitespace extraction succeeds on the same instance.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "packages/py-parity-checking/test/kernel-meta-parity.test.ts",
+            "packages/py-parity-checking/test/kernel-boundaries.test.ts",
+            "packages/backend-wasm/test/kernel-allocation-cleanup.test.ts",
+            "packages/backend-node/test/kernel-staging.test.ts",
+            "packages/py-parity-checking/src/case-types.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py"
+          ],
+          "caseIds": [
+            "kernels-kxtrct-found-success",
+            "kernels-kxtrct-not-found-success",
+            "kernels-kxtrct-audit-terminator-last",
+            "kernels-kxtrct-audit-key-last",
+            "kernels-kxtrct-audit-immediate-terminator",
+            "kernels-kxtrct-audit-tabs-are-not-blanks",
+            "kernels-kxtrct-audit-tab-within-value",
+            "kernels-kxtrct-audit-newline-within-value",
+            "kernels-kxtrct-audit-multiple-and-case",
+            "kernels-kxtrct-audit-no-terminators",
+            "kernels-kxtrct-audit-repeated-keyword",
+            "kernels-kxtrct-audit-trailing-tab",
+            "kernels-kxtrct-audit-trailing-newline",
+            "kernels-kxtrct-audit-non-ascii-space",
+            "kernels-kxtrct-audit-unicode-words",
+            "kernels-kxtrct-audit-nul-sequence",
+            "kernels-kxtrct-audit-nul-key-term",
+            "kernels-kxtrct-audit-blank-key"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kxtrct -> Node typed adapter/stager -> native registered kxtrct -> tspice_kxtrct shared C shim -> kxtrct_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "javascript",
+          "trace": "raw.kxtrct -> shared kxtrctJs; no WASM substitute in the parity handler. Independent oracle calls actual locked SpiceyPy libspice.kxtrct_c and reads exact buffers; supported adapter normalization/UTF-8 size limits are explicit.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

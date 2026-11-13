@@ -1,0 +1,1364 @@
+{
+  "schemaVersion": 1,
+  "batch": "ek-1",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ek.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ek.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-node/native/src/domains/ek.cc",
+    "packages/backend-shim-c/src/domains/ek.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/backend-wasm/test/ek-lifecycle-allocations.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-column-bounds.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-oracle.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-shapes.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/py-parity-checking/fixtures/generate-audit-ek.py",
+    "packages/py-parity-checking/test/ek-column-literals.test.ts",
+    "packages/py-parity-checking/test/ek-column-recovery.test.ts",
+    "packages/backend-node/test/ek-column-bounds.test.ts",
+    "packages/backend-node/test/fixtures/ek-column-bounds.c",
+    "packages/backend-node/test/fixtures/ek-column-shim.c",
+    "packages/backend-wasm/test/ek-column-query-allocations.test.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-ek-query.py"
+  ],
+  "executions": [
+    {
+      "id": "local-ek-columns-queries-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ff70c090d25e8d0729ed4769691b457188a0bbaa4e1c3ae5207832544f372a9f",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "observation": "Both final required JS and production-native lanes passed. Actual production addon rebuilt/loaded and required sanity ran; all 756 live comparisons (378 scenarios per backend), all 846 parity-package tests, 127 WASM, 63 Node, 26 core and 121 facade tests passed without required native skips. All 38 ledger regressions and drift passed before full lanes. The eight column/query routines have 52 registered cases with 32 new distinguishing cases. All 174 EK comparisons, 39 exact literal Node/WASM/actual SpiceyPy readbacks and two same-instance storage/type/query recovery tests passed. All 37 actual WASM heap failure positions passed; actual C fixture proved rejection before unsafe consumers, finalization row lengths and zero net leakage/recovery at both NULL-padding allocation failures. Failing-before controls observed three unsafe row descriptors, 26 query-oracle failures and six single letters read as blanks with two-byte slots. Pinned actual probes established NULL element9 behavior, complete 273-character diagnostics versus default255 truncation, and numeric missing-column SPICE(BUG). Owning build regenerated both WASM targets using CSPICE N0067/Emscripten3.1.74 with shared binary SHA256 bc0b154734a085106e639db317901614cac343f3dcf2102881ff5db1011ea6cd. Native and WASM preserve public raw API; private finalization ABI now carries actual pointer-array length. Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15/macOS arm64. No planned routine expansion or global tolerance change.",
+      "historical": true
+    },
+    {
+      "id": "local-ek-columns-queries-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ff70c090d25e8d0729ed4769691b457188a0bbaa4e1c3ae5207832544f372a9f",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "observation": "Both final required JS and production-native lanes passed. Actual production addon rebuilt/loaded and required sanity ran; all 756 live comparisons (378 scenarios per backend), all 846 parity-package tests, 127 WASM, 63 Node, 26 core and 121 facade tests passed without required native skips. All 38 ledger regressions and drift passed before full lanes. The eight column/query routines have 52 registered cases with 32 new distinguishing cases. All 174 EK comparisons, 39 exact literal Node/WASM/actual SpiceyPy readbacks and two same-instance storage/type/query recovery tests passed. All 37 actual WASM heap failure positions passed; actual C fixture proved rejection before unsafe consumers, finalization row lengths and zero net leakage/recovery at both NULL-padding allocation failures. Failing-before controls observed three unsafe row descriptors, 26 query-oracle failures and six single letters read as blanks with two-byte slots. Pinned actual probes established NULL element9 behavior, complete 273-character diagnostics versus default255 truncation, and numeric missing-column SPICE(BUG). Owning build regenerated both WASM targets using CSPICE N0067/Emscripten3.1.74 with shared binary SHA256 bc0b154734a085106e639db317901614cac343f3dcf2102881ff5db1011ea6cd. Native and WASM preserve public raw API; private finalization ABI now carries actual pointer-array length. Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15/macOS arm64. No planned routine expansion or global tolerance change.",
+      "historical": true
+    },
+    {
+      "id": "ci-ek-query-43389829653-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ff70c090d25e8d0729ed4769691b457188a0bbaa4e1c3ae5207832544f372a9f",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "commit": "f53f7cbfbc70c3821fde6cb29900f051ee186b80",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43389829653/job/131766822953",
+      "observation": "Observed exact-source canonical Linux22 job: all756live comparisons (378scenarios per actual backend), all846parity-package tests, all127WASM/63Node/26core/121facade tests and actual production N0067 native-required guard/sanity passed without skips. All15source CI jobs passed. Reviewed implementation/test/fixture tree is byte-identical after restacking onto parent CI-proof metadata; prior parent source executions remain historical.",
+      "historical": true
+    },
+    {
+      "id": "ci-ek-query-43389829653-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ff70c090d25e8d0729ed4769691b457188a0bbaa4e1c3ae5207832544f372a9f",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "commit": "f53f7cbfbc70c3821fde6cb29900f051ee186b80",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43389829653/job/131766822953",
+      "observation": "Observed exact-source canonical Linux22 job: all756live comparisons (378scenarios per actual backend), all846parity-package tests, all127WASM/63Node/26core/121facade tests and actual production N0067 native-required guard/sanity passed without skips. All15source CI jobs passed. Reviewed implementation/test/fixture tree is byte-identical after restacking onto parent CI-proof metadata; prior parent source executions remain historical.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eb50af1849a9d612626a57a5b232f6531e21a11d13b39629c5fa93157136737f",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eb50af1849a9d612626a57a5b232f6531e21a11d13b39629c5fa93157136737f",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "ekacli_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekacli_c.html",
+      "semantics": "Add an entire integer column in row order during the one active fast-write. Values are signed int32. Per-row entszs/null flags/record pointers have actual segment row count. Variable NULL rows have zero logical values; fixed SIZE=N rows reserve N values even when NULL. Values count must equal both contract sum(entszs) and actual fixed-size schema backing.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekacli-happy-integer-column-visible-via-ekgi",
+          "coverage": ["success", "state"],
+          "observes": "ekacli-written integers are observable through ekfind and ekgi. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacli-missing-column-error",
+          "coverage": ["error"],
+          "observes": "ekacli errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacli-audit-fixed-vectors-and-null",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete INTEGER column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacli-audit-variable-vectors-and-null",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete INTEGER column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacli-audit-all-null-variable",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete INTEGER column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacli-audit-wrong-column-type",
+          "coverage": ["error", "edge"],
+          "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        }
+      ],
+      "edgeAssessment": "Fixed and variable vectors, center NULL row, all-NULL variable column, int32 limits in independent fixture, indexed scalar KEY helper, real wrong-type/missing-column failures, shape and actual storage rejection with valid recovery.",
+      "errorAssessment": "Actual NOCOLUMN for character missing columns; numeric missing columns report actual pinned SPICE(BUG), explicitly required rather than guessed. WRONGDATATYPE uses safe actual-shaped backing. Typed storage/type errors remain separate.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekacli-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekacli.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekacli-audit-fixed-vectors-and-null",
+            "ek-ekacli-audit-variable-vectors-and-null",
+            "ek-ekacli-audit-all-null-variable",
+            "ek-ekacli-audit-wrong-column-type"
+          ]
+        },
+        {
+          "id": "ekacli-actual-schema-storage",
+          "status": "repaired",
+          "summary": "Matching caller array lengths did not establish actual segment storage. A controlled compiled C consumer observed all three writers forwarding row1 for an actual row3 segment; CSPICE derives counts from the actual segment and fixed-size schema. Finalization lacked a length argument.",
+          "repair": "Validate actual segment metadata using ekssum_c, also used by CSPICE writers themselves, before any downstream array access. Check real fixed entry sizes and per-row sizes; add nrows to the private finalization ABI and reject truncated pointer backing. Public ABI unchanged. Actual full-write recovery proves rejected input does not prevent later valid data. Regenerate both WASM outputs through owning N0067/Emscripten3.1.74 build.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ek.c",
+            "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "packages/backend-node/test/ek-column-bounds.test.ts",
+            "packages/backend-node/test/fixtures/ek-column-bounds.c",
+            "packages/backend-node/test/fixtures/ek-column-shim.c",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": ["ek-ekacli-happy-integer-column-visible-via-ekgi"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacli -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacli -> typed WASM helper -> configured/generated/binary _tspice_ekacli -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekacld_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekacld_c.html",
+      "semantics": "Add an entire double-precision column in row order during an active fast-write. Require finite values and per-row sizes/null flags/unchanged record pointers matching actual segment rows. Fixed NULL entries retain full placeholder backing; variable NULL entries have no logical values.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekacld-happy-double-column-visible-via-ekgd",
+          "coverage": ["success", "state"],
+          "observes": "ekacld-written doubles are observable through ekfind and ekgd. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacld-missing-column-error",
+          "coverage": ["error"],
+          "observes": "ekacld errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacld-audit-fixed-vectors-and-null",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacld-audit-variable-vectors-and-null",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacld-audit-all-null-variable",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekacld-audit-wrong-column-type",
+          "coverage": ["error", "edge"],
+          "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        }
+      ],
+      "edgeAssessment": "Negative/binary fractional/large finite values, fixed and variable vectors, middle/all NULL, wrong-type/missing-column errors and same-file valid recovery after storage rejection.",
+      "errorAssessment": "Actual NOCOLUMN for character missing columns; numeric missing columns report actual pinned SPICE(BUG), explicitly required rather than guessed. WRONGDATATYPE uses safe actual-shaped backing. Typed storage/type errors remain separate.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekacld-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekacld.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekacld-audit-fixed-vectors-and-null",
+            "ek-ekacld-audit-variable-vectors-and-null",
+            "ek-ekacld-audit-all-null-variable",
+            "ek-ekacld-audit-wrong-column-type"
+          ]
+        },
+        {
+          "id": "ekacld-actual-schema-storage",
+          "status": "repaired",
+          "summary": "Matching caller array lengths did not establish actual segment storage. A controlled compiled C consumer observed all three writers forwarding row1 for an actual row3 segment; CSPICE derives counts from the actual segment and fixed-size schema. Finalization lacked a length argument.",
+          "repair": "Validate actual segment metadata using ekssum_c, also used by CSPICE writers themselves, before any downstream array access. Check real fixed entry sizes and per-row sizes; add nrows to the private finalization ABI and reject truncated pointer backing. Public ABI unchanged. Actual full-write recovery proves rejected input does not prevent later valid data. Regenerate both WASM outputs through owning N0067/Emscripten3.1.74 build.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ek.c",
+            "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "packages/backend-node/test/ek-column-bounds.test.ts",
+            "packages/backend-node/test/fixtures/ek-column-bounds.c",
+            "packages/backend-node/test/fixtures/ek-column-shim.c",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": ["ek-ekacld-happy-double-column-visible-via-ekgd"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacld -> typed WASM helper -> configured/generated/binary _tspice_ekacld -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekaclc_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekaclc_c.html",
+      "semantics": "Add an entire character column during active fast-write, preserving packed row/element order, leading blanks and UTF-8 bytes. Slot widths include NUL and use a minimum3-byte stride around N0067 ZZEKAC06 single-character padding. NULL variable rows receive internal ignored placeholders around N0067 C-wrapper short flag allocation; their public logical sizes remain zero.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekaclc-happy-char-column-visible-via-ekgc",
+          "coverage": ["success", "state"],
+          "observes": "ekaclc-written strings are observable through ekfind and ekgc. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekaclc-missing-column-error",
+          "coverage": ["error"],
+          "observes": "ekaclc errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekaclc-audit-fixed-vectors-and-null",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekaclc-audit-variable-vectors-and-null",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekaclc-audit-all-null-variable",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekaclc-audit-wrong-column-type",
+          "coverage": ["error", "edge"],
+          "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekaclc-audit-blank-strings",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All three actual empty strings are concrete non-NULL values; two-byte minimum slots avoid STRINGTOOSHORT without changing observable data.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekaclc-audit-single-character-slots",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Six literal single-character values survive fixed-width padding; a minimal two-byte C slot previously read every value back as blank in N0067 ZZEKAC06.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        }
+      ],
+      "edgeAssessment": "Full UTF-8 multi-byte values, leading blanks, empty concrete strings, all-NULL and NULL-heavy variable storage, fixed NULL placeholders and six single-letter fixed entries. Explicit actual buffers avoid SpiceyPy len(str)/byte-stride mismatch. Both NULL temporary allocation failures and valid retry tested in actual shared C.",
+      "errorAssessment": "Actual NOCOLUMN for character missing columns; numeric missing columns report actual pinned SPICE(BUG), explicitly required rather than guessed. WRONGDATATYPE uses safe actual-shaped backing. Typed storage/type errors remain separate.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekaclc-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekaclc-audit-fixed-vectors-and-null",
+            "ek-ekaclc-audit-variable-vectors-and-null",
+            "ek-ekaclc-audit-all-null-variable",
+            "ek-ekaclc-audit-wrong-column-type",
+            "ek-ekaclc-audit-blank-strings",
+            "ek-ekaclc-audit-single-character-slots"
+          ]
+        },
+        {
+          "id": "ekaclc-actual-schema-storage",
+          "status": "repaired",
+          "summary": "Matching caller array lengths did not establish actual segment storage. A controlled compiled C consumer observed all three writers forwarding row1 for an actual row3 segment; CSPICE derives counts from the actual segment and fixed-size schema. Finalization lacked a length argument.",
+          "repair": "Validate actual segment metadata using ekssum_c, also used by CSPICE writers themselves, before any downstream array access. Check real fixed entry sizes and per-row sizes; add nrows to the private finalization ABI and reject truncated pointer backing. Public ABI unchanged. Actual full-write recovery proves rejected input does not prevent later valid data. Regenerate both WASM outputs through owning N0067/Emscripten3.1.74 build.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ek.c",
+            "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "packages/backend-node/test/ek-column-bounds.test.ts",
+            "packages/backend-node/test/fixtures/ek-column-bounds.c",
+            "packages/backend-node/test/fixtures/ek-column-shim.c",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": ["ek-ekaclc-happy-char-column-visible-via-ekgc"]
+        },
+        {
+          "id": "ekaclc-cspice-character-boundaries",
+          "status": "repaired",
+          "summary": "Empty/all-NULL data could fail or hit N0067 character-wrapper flag storage shorter than nrows. Minimal two-byte slots read six single letters back as blanks in an independent actual CSPICE probe. SpiceyPy6.0.3 independently sizes packed backing by len(str), unsuitable for UTF-8 byte widths/empty arrays.",
+          "repair": "Require a minimum3-byte internal stride and pad zero-size variable NULL rows with one ignored blank per row, preserving literal NULL results. Fault both C temporary allocations with no net leaked storage and actual retry; all37 WASM wrapper positions pass. Oracle invokes the same actual CSPICE entrypoint through SpiceyPy ctypes with explicit byte packing and its actual error checker; no synthetic result substitutes the operation.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ek.c",
+            "packages/backend-wasm/src/domains/ek.ts",
+            "packages/backend-node/native/src/domains/ek.cc",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/backend-node/test/fixtures/ek-column-bounds.c"
+          ],
+          "caseIds": [
+            "ek-ekaclc-audit-all-null-variable",
+            "ek-ekaclc-audit-blank-strings",
+            "ek-ekaclc-audit-single-character-slots"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekaclc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekaclc -> typed WASM helper -> configured/generated/binary _tspice_ekaclc -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekffld_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekffld_c.html",
+      "semantics": "Complete the active fast-write segment, building final indexes so every written typed value persists through close/reload/query. All record pointers come unchanged from ekifld and must have actual segment row count. A different existing segment yields actual WRONGSEGMENT. No query or unrelated EK operation may interrupt a fast-write.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekffld-happy-finalize-and-count-segments",
+          "coverage": ["success", "state"],
+          "observes": "ekffld finalizes fast-write data so segment count becomes observable. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekffld-missing-segment-id-error",
+          "coverage": ["error"],
+          "observes": "ekffld errors when segmentId does not resolve in workflow state. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. This case stops in workflow label lookup; actual raw error evidence is supplied separately by WRONGSEGMENT and public storage/recovery tests."
+        },
+        {
+          "caseId": "ek-ekffld-audit-persisted-multitype-columns",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual finalized indexed integer, double and UTF-8 character columns persist through close/reload; all rows and selected column ordering reach assertions.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        },
+        {
+          "caseId": "ek-ekffld-audit-wrong-active-segment",
+          "coverage": ["error", "edge"],
+          "observes": "Valid row-length backing for another existing segment reaches actual WRONGSEGMENT; a missing harness label alone cannot establish a raw error path.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. "
+        }
+      ],
+      "edgeAssessment": "Multi-type indexed finalized data close/reload, exact actual pointer-array length, existing wrong active segment and valid finalization after rejected truncated storage. The old missing-segment-label case is only harness validation and is not counted as raw error evidence.",
+      "errorAssessment": "Actual WRONGSEGMENT for an existing non-active segment, plus typed actual-row-length rejection/recovery. Old missing harness-label error is identified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekffld-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekffld.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekffld-audit-persisted-multitype-columns",
+            "ek-ekffld-audit-wrong-active-segment"
+          ]
+        },
+        {
+          "id": "ekffld-actual-schema-storage",
+          "status": "repaired",
+          "summary": "Matching caller array lengths did not establish actual segment storage. A controlled compiled C consumer observed all three writers forwarding row1 for an actual row3 segment; CSPICE derives counts from the actual segment and fixed-size schema. Finalization lacked a length argument.",
+          "repair": "Validate actual segment metadata using ekssum_c, also used by CSPICE writers themselves, before any downstream array access. Check real fixed entry sizes and per-row sizes; add nrows to the private finalization ABI and reject truncated pointer backing. Public ABI unchanged. Actual full-write recovery proves rejected input does not prevent later valid data. Regenerate both WASM outputs through owning N0067/Emscripten3.1.74 build.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ek.c",
+            "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "packages/backend-node/test/ek-column-bounds.test.ts",
+            "packages/backend-node/test/fixtures/ek-column-bounds.c",
+            "packages/backend-node/test/fixtures/ek-column-shim.c",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": ["ek-ekffld-happy-finalize-and-count-segments"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekffld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekffld -> typed WASM helper -> configured/generated/binary _tspice_ekffld -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekfind_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekfind_c.html",
+      "semantics": "Run a case-insensitive SQL-like SELECT/FROM with optional WHERE/ORDER BY. Query parse/name/semantic failures return ok:false with actual errmsg, while toolkit failures throw. Successful zero rows are distinct from errors. A subsequent query replaces selection state; SELECT order defines zero-based getter indices.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekfind-happy-query-loaded-fixture",
+          "coverage": ["success", "state"],
+          "observes": "ekfind returns nmrows for a valid query over the fixed EK fixture. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekfind-query-error-shape-success",
+          "coverage": ["success", "state"],
+          "observes": "ekfind parse errors are returned in-value instead of throwing. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekfind-audit-zero-rows-and-replacement",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Distinguish successful zero rows from errors, then replace selection and observe exact first/last descending keys30/10.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekfind-audit-full-parse-diagnostic",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual273-character name-resolution diagnostic is returned as ok:false, not thrown/truncated; then a new valid query and concrete data prove recovery.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekfind-audit-syntax-and-column-order",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Syntax failure stays an ok:false result, followed by reordered SELECT columns, vector element1 and leading blanks in character data.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        }
+      ],
+      "edgeAssessment": "Successful zero rows, descending keyed order, reordered SELECT columns, syntax/name errors as returned values, full273-character diagnostic and valid query/data recovery. The default SpiceyPy buffer truncated that diagnostic to255; explicit2048 buffer now matches actual backend output.",
+      "errorAssessment": "Parse/name/syntax errors return ok:false with full diagnostic; real no-loaded-file errors throw. Zero rows is a success and subsequent valid query replaces state.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekfind-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekfind.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekfind-audit-zero-rows-and-replacement",
+            "ek-ekfind-audit-full-parse-diagnostic",
+            "ek-ekfind-audit-syntax-and-column-order"
+          ]
+        },
+        {
+          "id": "ekfind-oracle-error-buffer-fidelity",
+          "status": "repaired",
+          "summary": "Default oracle buffers truncate long character results/parse messages; found-result exceptions can precede SpiceyPy outer error checking. Character tuple fallback had reversed data/null fields and no legitimate-miss handling.",
+          "repair": "Use scoped no_found_check so the actual outer error checker still raises INVALIDINDEX/INVALIDTYPE before normalizing the real three-tuple in data/null/found order. Remove row-based exception coercion. Explicit2048-byte buffers preserve full raw strings and diagnostics; failed-before new query checks exposed26 failures and all32 passed after repair.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+            "packages/py-parity-checking/src/cases/ek/ekfind.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekfind-audit-zero-rows-and-replacement",
+            "ek-ekfind-audit-full-parse-diagnostic",
+            "ek-ekfind-audit-syntax-and-column-order"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekfind -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekfind -> typed WASM helper -> configured/generated/binary _tspice_ekfind -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekgc_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekgc_c.html",
+      "semantics": "Fetch character data using zero-based SELECT item, result row and element. Return concrete string, SQL NULL or found:false for a missing non-NULL element. Preserve leading blanks and full1024-byte values. Actual N0067 returns NULL before checking the upper element bound, so NULL element9 still returns NULL despite the header size1 statement.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekgc-happy-read-two-rows",
+          "coverage": ["success", "state"],
+          "observes": "ekgc reads string query results from the loaded EK fixture. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgc-invalid-row-error",
+          "coverage": ["error"],
+          "observes": "ekgc reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgc-audit-vectors-nulls-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgc-audit-wrong-selected-type",
+          "coverage": ["error", "edge"],
+          "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgc-audit-invalid-selected-index",
+          "coverage": ["error", "edge"],
+          "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgc-audit-empty-result-row",
+          "coverage": ["error", "edge"],
+          "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgc-audit-full-1024-character-value",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare all1024 characters through real raw return and an explicitly sized actual SpiceyPy buffer.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        }
+      ],
+      "edgeAssessment": "Every element of two-element rows, true missing then valid recovery, first/last result rows, NULL at element0/9, leading blanks, UTF-8 writes, full1024-character value and actual selection/row/type errors.",
+      "errorAssessment": "Actual INVALIDINDEX for selection/row (including a zero-row result) and INVALIDTYPE for wrong selected data type. Legitimate missing elements remain returned results; negative/fractional indices are typed preflight, not synthetic CSPICE parity.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekgc-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekgc-audit-vectors-nulls-and-missing",
+            "ek-ekgc-audit-wrong-selected-type",
+            "ek-ekgc-audit-invalid-selected-index",
+            "ek-ekgc-audit-empty-result-row",
+            "ek-ekgc-audit-full-1024-character-value"
+          ]
+        },
+        {
+          "id": "ekgc-oracle-error-buffer-fidelity",
+          "status": "repaired",
+          "summary": "Default oracle buffers truncate long character results/parse messages; found-result exceptions can precede SpiceyPy outer error checking. Character tuple fallback had reversed data/null fields and no legitimate-miss handling.",
+          "repair": "Use scoped no_found_check so the actual outer error checker still raises INVALIDINDEX/INVALIDTYPE before normalizing the real three-tuple in data/null/found order. Remove row-based exception coercion. Explicit2048-byte buffers preserve full raw strings and diagnostics; failed-before new query checks exposed26 failures and all32 passed after repair.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+            "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekgc-audit-vectors-nulls-and-missing",
+            "ek-ekgc-audit-wrong-selected-type",
+            "ek-ekgc-audit-invalid-selected-index",
+            "ek-ekgc-audit-empty-result-row",
+            "ek-ekgc-audit-full-1024-character-value"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgc -> typed WASM helper -> configured/generated/binary _tspice_ekgc -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekgd_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekgd_c.html",
+      "semantics": "Fetch a double with zero-based SELECT/row/element indices, preserving concrete/NULL/missing distinction and actual INVALIDINDEX/INVALIDTYPE failures. An element past a non-NULL vector yields found:false without error; NULL entries return NULL even for large nonnegative elements in actual pinned N0067.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekgd-happy-read-double-results",
+          "coverage": ["success", "state"],
+          "observes": "ekgd reads double-precision query results from a workflow-created table. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgd-valid-row-out-of-range-element-found-false",
+          "coverage": ["success", "state"],
+          "observes": "ekgd returns found=false when elment is out-of-range for a valid query row. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgd-invalid-selidx-error",
+          "coverage": ["error"],
+          "observes": "ekgd reports invalid-select-index errors for out-of-range selidx values. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgd-invalid-row-error",
+          "coverage": ["error"],
+          "observes": "ekgd reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgd-audit-vectors-nulls-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgd-audit-wrong-selected-type",
+          "coverage": ["error", "edge"],
+          "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgd-audit-invalid-selected-index",
+          "coverage": ["error", "edge"],
+          "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgd-audit-empty-result-row",
+          "coverage": ["error", "edge"],
+          "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        }
+      ],
+      "edgeAssessment": "Every vector element, mixed signs/scales, NULL at element0/9, legitimate missing element followed by valid fetch, zero-row selection and actual INVALIDTYPE/INVALIDINDEX.",
+      "errorAssessment": "Actual INVALIDINDEX for selection/row (including a zero-row result) and INVALIDTYPE for wrong selected data type. Legitimate missing elements remain returned results; negative/fractional indices are typed preflight, not synthetic CSPICE parity.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekgd-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekgd.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekgd-audit-vectors-nulls-and-missing",
+            "ek-ekgd-audit-wrong-selected-type",
+            "ek-ekgd-audit-invalid-selected-index",
+            "ek-ekgd-audit-empty-result-row"
+          ]
+        },
+        {
+          "id": "ekgd-oracle-error-buffer-fidelity",
+          "status": "repaired",
+          "summary": "Default oracle buffers truncate long character results/parse messages; found-result exceptions can precede SpiceyPy outer error checking. Character tuple fallback had reversed data/null fields and no legitimate-miss handling.",
+          "repair": "Use scoped no_found_check so the actual outer error checker still raises INVALIDINDEX/INVALIDTYPE before normalizing the real three-tuple in data/null/found order. Remove row-based exception coercion. Explicit2048-byte buffers preserve full raw strings and diagnostics; failed-before new query checks exposed26 failures and all32 passed after repair.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+            "packages/py-parity-checking/src/cases/ek/ekgd.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekgd-audit-vectors-nulls-and-missing",
+            "ek-ekgd-audit-wrong-selected-type",
+            "ek-ekgd-audit-invalid-selected-index",
+            "ek-ekgd-audit-empty-result-row"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgd -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgd -> typed WASM helper -> configured/generated/binary _tspice_ekgd -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekgi_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekgi_c.html",
+      "semantics": "Fetch an int32 value with zero-based SELECT/row/element indices, preserving signed extrema and concrete/NULL/missing distinction. Invalid row/selection/type are actual toolkit errors; a valid non-NULL element miss is a returned found:false and permits subsequent valid fetches.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekgi-happy-read-integer-results",
+          "coverage": ["success", "state"],
+          "observes": "ekgi reads integer query results from a workflow-created table. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgi-valid-row-out-of-range-element-found-false",
+          "coverage": ["success", "state"],
+          "observes": "ekgi returns found=false when elment is out-of-range for a valid query row. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgi-invalid-selidx-error",
+          "coverage": ["error"],
+          "observes": "ekgi reports invalid-select-index errors for out-of-range selidx values. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgi-invalid-row-error",
+          "coverage": ["error"],
+          "observes": "ekgi reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgi-audit-vectors-nulls-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgi-audit-wrong-selected-type",
+          "coverage": ["error", "edge"],
+          "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgi-audit-invalid-selected-index",
+          "coverage": ["error", "edge"],
+          "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        },
+        {
+          "caseId": "ek-ekgi-audit-empty-result-row",
+          "coverage": ["error", "edge"],
+          "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. "
+        }
+      ],
+      "edgeAssessment": "Int32 minimum/maximum, first/last row and element positions, NULL at0/9, legitimate vector miss then valid fetch, zero-row selection and actual INVALIDTYPE/INVALIDINDEX.",
+      "errorAssessment": "Actual INVALIDINDEX for selection/row (including a zero-row result) and INVALIDTYPE for wrong selected data type. Legitimate missing elements remain returned results; negative/fractional indices are typed preflight, not synthetic CSPICE parity.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Authored deterministic seven-column, three-row EK generated by fixtures/generate-audit-ek-query.py with locked SpiceyPy6.0.3/CSPICE N0067. Keys30/10/20, fixed/variable numeric/character vectors, SQL NULLs, int32 extremes and1024-character literal; no external observations. Generator independently validates full long string, integer limits and pinned NULL behavior.",
+          "distribution": "Project-authored synthetic data under repository MIT license; provenance documented for maintainer review."
+        }
+      ],
+      "fixtureRationale": "Small MIT-authored EK separates fixed/variable/null/byte-width/index behavior. Creation cases write scratch outputs on each actual backend and independently through SpiceyPy/CSPICE. Literal readbacks cover every authored element; inherited minimal EK remains project-authored. No downloaded scientific data.",
+      "cleanup": "One active fast-write at a time, all columns added before actual finalization and close/reload. Actual EK claims close before scratch removal after captured status reset; failures retain claims for retry. WASM temporary buffers free in finally; C NULL-padding allocations free on both failures/success. Internal wkindx cache is intentionally retained for reuse and bounded by typed1million-row guard; fixture clears its private cache to verify allocator accounting. Both harnesses reset/kclear and dispose per case.",
+      "tolerance": "Existing1e-12 absolute-or-relative comparison retained. Authored doubles include exact binary fractions, large finite values and1e-7 (well above absolute tolerance); independent literal assertions use exact stored values. Int32 extrema and all counts/flags/indices/strings/diagnostics compare exactly in literal tests. No bytes or metadata fields are dropped to hide differences.",
+      "findings": [
+        {
+          "id": "ekgi-semantic-depth",
+          "status": "repaired",
+          "summary": "Original cases did not distinguish the per-routine vector/NULL/error/state boundaries; ekffld error coverage included only a workflow-label failure.",
+          "repair": "Add exact registered cases with real raw data effects and specific toolkit codes, full literal Node/WASM/SpiceyPy readback, actual recovery and allocation failure checks. No global tolerance change.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekgi.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts",
+            "packages/py-parity-checking/test/ek-column-recovery.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekgi-audit-vectors-nulls-and-missing",
+            "ek-ekgi-audit-wrong-selected-type",
+            "ek-ekgi-audit-invalid-selected-index",
+            "ek-ekgi-audit-empty-result-row"
+          ]
+        },
+        {
+          "id": "ekgi-oracle-error-buffer-fidelity",
+          "status": "repaired",
+          "summary": "Default oracle buffers truncate long character results/parse messages; found-result exceptions can precede SpiceyPy outer error checking. Character tuple fallback had reversed data/null fields and no legitimate-miss handling.",
+          "repair": "Use scoped no_found_check so the actual outer error checker still raises INVALIDINDEX/INVALIDTYPE before normalizing the real three-tuple in data/null/found order. Remove row-based exception coercion. Explicit2048-byte buffers preserve full raw strings and diagnostics; failed-before new query checks exposed26 failures and all32 passed after repair.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+            "packages/py-parity-checking/src/cases/ek/ekgi.cases.json",
+            "packages/py-parity-checking/test/ek-column-literals.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekgi-audit-vectors-nulls-and-missing",
+            "ek-ekgi-audit-wrong-selected-type",
+            "ek-ekgi-audit-invalid-selected-index",
+            "ek-ekgi-audit-empty-result-row"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgi -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgi -> typed WASM helper -> configured/generated/binary _tspice_ekgi -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": ["local-step7-combined-final-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

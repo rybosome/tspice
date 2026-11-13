@@ -183,7 +183,8 @@
         "ephemeris-spkssb-generated-segment-success",
         "ephemeris-spkssb-invalid-frame-error"
       ],
-      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator."
+      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator.",
+      "historical": true
     },
     {
       "id": "local-spk-states-final-wasm",
@@ -349,7 +350,8 @@
         "ephemeris-spkssb-generated-segment-success",
         "ephemeris-spkssb-invalid-frame-error"
       ],
-      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator."
+      "observation": "Both complete required local lanes passed: all 1048 live comparisons (524 scenarios per actual backend), all 1106 parity-package tests with native required and zero skips, production N0067 native sanity, all 136 WASM/63 Node/28 core/126 facade tests. All 40 actual query/search fault positions pass; eight failed before repair. Four actual negative tests demonstrated oracle NOLOADEDFILES masking and nonfinite epoch acceptance. Four independent full polynomial/light-time/derivative/file-handle tests pass. The first full run caught two obsolete imports; corrected before both full lanes passed. Degenerate shared-axis observer inputs produced 64 cancellation residual mismatches around4e-12km; distinct authored three-axis observer motion gives stronger signals and all72 correction comparisons pass without changing the comparator.",
+      "historical": true
     },
     {
       "id": "ci-pr703-43413954878-node",
@@ -517,7 +519,8 @@
       ],
       "commit": "bb940440561ced2031d79ef8a3b9130b1bbee6c3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43413954878/job/131847058765",
-      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source."
+      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source.",
+      "historical": true
     },
     {
       "id": "ci-pr703-43413954878-wasm",
@@ -685,7 +688,340 @@
       ],
       "commit": "bb940440561ced2031d79ef8a3b9130b1bbee6c3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43413954878/job/131847058765",
-      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source."
+      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "791574a7d99bbd7fde3d50d929aa2c6fd1428e576d9c8e7af2faef7371dced4a",
+      "caseIds": [
+        "ephemeris-spkez-audit-bad-correction",
+        "ephemeris-spkez-audit-correction-cn",
+        "ephemeris-spkez-audit-correction-cn-s",
+        "ephemeris-spkez-audit-correction-lt",
+        "ephemeris-spkez-audit-correction-lt-s",
+        "ephemeris-spkez-audit-correction-none",
+        "ephemeris-spkez-audit-correction-xcn",
+        "ephemeris-spkez-audit-correction-xcn-s",
+        "ephemeris-spkez-audit-correction-xlt",
+        "ephemeris-spkez-audit-correction-xlt-s",
+        "ephemeris-spkez-audit-coverage-gap",
+        "ephemeris-spkez-audit-empty-correction",
+        "ephemeris-spkez-audit-empty-frame",
+        "ephemeris-spkez-audit-first-endpoint",
+        "ephemeris-spkez-audit-last-endpoint",
+        "ephemeris-spkez-audit-no-files",
+        "ephemeris-spkez-audit-priority-restored",
+        "ephemeris-spkez-audit-reverse-vector",
+        "ephemeris-spkez-audit-rotated-frame",
+        "ephemeris-spkez-audit-same-body",
+        "ephemeris-spkez-audit-signed-chain",
+        "ephemeris-spkez-audit-unknown-frame",
+        "ephemeris-spkez-generated-segment-success",
+        "ephemeris-spkez-invalid-frame-error",
+        "ephemeris-spkezp-audit-bad-correction",
+        "ephemeris-spkezp-audit-correction-cn",
+        "ephemeris-spkezp-audit-correction-cn-s",
+        "ephemeris-spkezp-audit-correction-lt",
+        "ephemeris-spkezp-audit-correction-lt-s",
+        "ephemeris-spkezp-audit-correction-none",
+        "ephemeris-spkezp-audit-correction-xcn",
+        "ephemeris-spkezp-audit-correction-xcn-s",
+        "ephemeris-spkezp-audit-correction-xlt",
+        "ephemeris-spkezp-audit-correction-xlt-s",
+        "ephemeris-spkezp-audit-coverage-gap",
+        "ephemeris-spkezp-audit-empty-correction",
+        "ephemeris-spkezp-audit-empty-frame",
+        "ephemeris-spkezp-audit-first-endpoint",
+        "ephemeris-spkezp-audit-last-endpoint",
+        "ephemeris-spkezp-audit-no-files",
+        "ephemeris-spkezp-audit-priority-restored",
+        "ephemeris-spkezp-audit-reverse-vector",
+        "ephemeris-spkezp-audit-rotated-frame",
+        "ephemeris-spkezp-audit-same-body",
+        "ephemeris-spkezp-audit-signed-chain",
+        "ephemeris-spkezp-audit-unknown-frame",
+        "ephemeris-spkezp-generated-segment-success",
+        "ephemeris-spkezp-invalid-frame-error",
+        "ephemeris-spkezr-audit-bad-correction",
+        "ephemeris-spkezr-audit-case-insensitive-names",
+        "ephemeris-spkezr-audit-correction-cn",
+        "ephemeris-spkezr-audit-correction-cn-s",
+        "ephemeris-spkezr-audit-correction-lt",
+        "ephemeris-spkezr-audit-correction-lt-s",
+        "ephemeris-spkezr-audit-correction-none",
+        "ephemeris-spkezr-audit-correction-xcn",
+        "ephemeris-spkezr-audit-correction-xcn-s",
+        "ephemeris-spkezr-audit-correction-xlt",
+        "ephemeris-spkezr-audit-correction-xlt-s",
+        "ephemeris-spkezr-audit-coverage-gap",
+        "ephemeris-spkezr-audit-empty-correction",
+        "ephemeris-spkezr-audit-empty-frame",
+        "ephemeris-spkezr-audit-empty-target",
+        "ephemeris-spkezr-audit-first-endpoint",
+        "ephemeris-spkezr-audit-last-endpoint",
+        "ephemeris-spkezr-audit-no-files",
+        "ephemeris-spkezr-audit-noninertial-frame",
+        "ephemeris-spkezr-audit-priority-restored",
+        "ephemeris-spkezr-audit-rotated-frame",
+        "ephemeris-spkezr-audit-same-body",
+        "ephemeris-spkezr-audit-signed-chain",
+        "ephemeris-spkezr-audit-unknown-frame",
+        "ephemeris-spkezr-audit-unknown-name",
+        "ephemeris-spkezr-generated-segment-success",
+        "ephemeris-spkezr-invalid-observer-error",
+        "ephemeris-spkgeo-audit-coverage-gap",
+        "ephemeris-spkgeo-audit-empty-frame",
+        "ephemeris-spkgeo-audit-first-endpoint",
+        "ephemeris-spkgeo-audit-last-endpoint",
+        "ephemeris-spkgeo-audit-no-files",
+        "ephemeris-spkgeo-audit-polynomial",
+        "ephemeris-spkgeo-audit-priority-restored",
+        "ephemeris-spkgeo-audit-reverse-vector",
+        "ephemeris-spkgeo-audit-rotated-frame",
+        "ephemeris-spkgeo-audit-same-body",
+        "ephemeris-spkgeo-audit-signed-chain",
+        "ephemeris-spkgeo-audit-unknown-frame",
+        "ephemeris-spkgeo-generated-segment-success",
+        "ephemeris-spkgeo-invalid-frame-error",
+        "ephemeris-spkgps-audit-coverage-gap",
+        "ephemeris-spkgps-audit-empty-frame",
+        "ephemeris-spkgps-audit-first-endpoint",
+        "ephemeris-spkgps-audit-last-endpoint",
+        "ephemeris-spkgps-audit-no-files",
+        "ephemeris-spkgps-audit-polynomial",
+        "ephemeris-spkgps-audit-priority-restored",
+        "ephemeris-spkgps-audit-reverse-vector",
+        "ephemeris-spkgps-audit-rotated-frame",
+        "ephemeris-spkgps-audit-same-body",
+        "ephemeris-spkgps-audit-signed-chain",
+        "ephemeris-spkgps-audit-unknown-frame",
+        "ephemeris-spkgps-generated-segment-success",
+        "ephemeris-spkgps-invalid-frame-error",
+        "ephemeris-spkpos-audit-bad-correction",
+        "ephemeris-spkpos-audit-case-insensitive-names",
+        "ephemeris-spkpos-audit-correction-cn",
+        "ephemeris-spkpos-audit-correction-cn-s",
+        "ephemeris-spkpos-audit-correction-lt",
+        "ephemeris-spkpos-audit-correction-lt-s",
+        "ephemeris-spkpos-audit-correction-none",
+        "ephemeris-spkpos-audit-correction-xcn",
+        "ephemeris-spkpos-audit-correction-xcn-s",
+        "ephemeris-spkpos-audit-correction-xlt",
+        "ephemeris-spkpos-audit-correction-xlt-s",
+        "ephemeris-spkpos-audit-coverage-gap",
+        "ephemeris-spkpos-audit-empty-correction",
+        "ephemeris-spkpos-audit-empty-frame",
+        "ephemeris-spkpos-audit-empty-target",
+        "ephemeris-spkpos-audit-first-endpoint",
+        "ephemeris-spkpos-audit-last-endpoint",
+        "ephemeris-spkpos-audit-no-files",
+        "ephemeris-spkpos-audit-noninertial-frame",
+        "ephemeris-spkpos-audit-priority-restored",
+        "ephemeris-spkpos-audit-rotated-frame",
+        "ephemeris-spkpos-audit-same-body",
+        "ephemeris-spkpos-audit-signed-chain",
+        "ephemeris-spkpos-audit-unknown-frame",
+        "ephemeris-spkpos-audit-unknown-name",
+        "ephemeris-spkpos-generated-segment-success",
+        "ephemeris-spkpos-invalid-abcorr-error",
+        "ephemeris-spksfs-audit-coverage-gap",
+        "ephemeris-spksfs-audit-first-endpoint",
+        "ephemeris-spksfs-audit-last-endpoint",
+        "ephemeris-spksfs-audit-loaded-empty",
+        "ephemeris-spksfs-audit-negative-center",
+        "ephemeris-spksfs-audit-no-files-error",
+        "ephemeris-spksfs-audit-outside",
+        "ephemeris-spksfs-audit-priority-unload-reload",
+        "ephemeris-spksfs-audit-unknown-object",
+        "ephemeris-spksfs-found-success",
+        "ephemeris-spksfs-not-found-success",
+        "ephemeris-spkssb-audit-barycenter-zero",
+        "ephemeris-spkssb-audit-coverage-gap",
+        "ephemeris-spkssb-audit-empty-frame",
+        "ephemeris-spkssb-audit-first-endpoint",
+        "ephemeris-spkssb-audit-last-endpoint",
+        "ephemeris-spkssb-audit-no-files",
+        "ephemeris-spkssb-audit-polynomial",
+        "ephemeris-spkssb-audit-priority-restored",
+        "ephemeris-spkssb-audit-rotated-frame",
+        "ephemeris-spkssb-audit-signed-chain",
+        "ephemeris-spkssb-audit-unknown-frame",
+        "ephemeris-spkssb-generated-segment-success",
+        "ephemeris-spkssb-invalid-frame-error"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "791574a7d99bbd7fde3d50d929aa2c6fd1428e576d9c8e7af2faef7371dced4a",
+      "caseIds": [
+        "ephemeris-spkez-audit-bad-correction",
+        "ephemeris-spkez-audit-correction-cn",
+        "ephemeris-spkez-audit-correction-cn-s",
+        "ephemeris-spkez-audit-correction-lt",
+        "ephemeris-spkez-audit-correction-lt-s",
+        "ephemeris-spkez-audit-correction-none",
+        "ephemeris-spkez-audit-correction-xcn",
+        "ephemeris-spkez-audit-correction-xcn-s",
+        "ephemeris-spkez-audit-correction-xlt",
+        "ephemeris-spkez-audit-correction-xlt-s",
+        "ephemeris-spkez-audit-coverage-gap",
+        "ephemeris-spkez-audit-empty-correction",
+        "ephemeris-spkez-audit-empty-frame",
+        "ephemeris-spkez-audit-first-endpoint",
+        "ephemeris-spkez-audit-last-endpoint",
+        "ephemeris-spkez-audit-no-files",
+        "ephemeris-spkez-audit-priority-restored",
+        "ephemeris-spkez-audit-reverse-vector",
+        "ephemeris-spkez-audit-rotated-frame",
+        "ephemeris-spkez-audit-same-body",
+        "ephemeris-spkez-audit-signed-chain",
+        "ephemeris-spkez-audit-unknown-frame",
+        "ephemeris-spkez-generated-segment-success",
+        "ephemeris-spkez-invalid-frame-error",
+        "ephemeris-spkezp-audit-bad-correction",
+        "ephemeris-spkezp-audit-correction-cn",
+        "ephemeris-spkezp-audit-correction-cn-s",
+        "ephemeris-spkezp-audit-correction-lt",
+        "ephemeris-spkezp-audit-correction-lt-s",
+        "ephemeris-spkezp-audit-correction-none",
+        "ephemeris-spkezp-audit-correction-xcn",
+        "ephemeris-spkezp-audit-correction-xcn-s",
+        "ephemeris-spkezp-audit-correction-xlt",
+        "ephemeris-spkezp-audit-correction-xlt-s",
+        "ephemeris-spkezp-audit-coverage-gap",
+        "ephemeris-spkezp-audit-empty-correction",
+        "ephemeris-spkezp-audit-empty-frame",
+        "ephemeris-spkezp-audit-first-endpoint",
+        "ephemeris-spkezp-audit-last-endpoint",
+        "ephemeris-spkezp-audit-no-files",
+        "ephemeris-spkezp-audit-priority-restored",
+        "ephemeris-spkezp-audit-reverse-vector",
+        "ephemeris-spkezp-audit-rotated-frame",
+        "ephemeris-spkezp-audit-same-body",
+        "ephemeris-spkezp-audit-signed-chain",
+        "ephemeris-spkezp-audit-unknown-frame",
+        "ephemeris-spkezp-generated-segment-success",
+        "ephemeris-spkezp-invalid-frame-error",
+        "ephemeris-spkezr-audit-bad-correction",
+        "ephemeris-spkezr-audit-case-insensitive-names",
+        "ephemeris-spkezr-audit-correction-cn",
+        "ephemeris-spkezr-audit-correction-cn-s",
+        "ephemeris-spkezr-audit-correction-lt",
+        "ephemeris-spkezr-audit-correction-lt-s",
+        "ephemeris-spkezr-audit-correction-none",
+        "ephemeris-spkezr-audit-correction-xcn",
+        "ephemeris-spkezr-audit-correction-xcn-s",
+        "ephemeris-spkezr-audit-correction-xlt",
+        "ephemeris-spkezr-audit-correction-xlt-s",
+        "ephemeris-spkezr-audit-coverage-gap",
+        "ephemeris-spkezr-audit-empty-correction",
+        "ephemeris-spkezr-audit-empty-frame",
+        "ephemeris-spkezr-audit-empty-target",
+        "ephemeris-spkezr-audit-first-endpoint",
+        "ephemeris-spkezr-audit-last-endpoint",
+        "ephemeris-spkezr-audit-no-files",
+        "ephemeris-spkezr-audit-noninertial-frame",
+        "ephemeris-spkezr-audit-priority-restored",
+        "ephemeris-spkezr-audit-rotated-frame",
+        "ephemeris-spkezr-audit-same-body",
+        "ephemeris-spkezr-audit-signed-chain",
+        "ephemeris-spkezr-audit-unknown-frame",
+        "ephemeris-spkezr-audit-unknown-name",
+        "ephemeris-spkezr-generated-segment-success",
+        "ephemeris-spkezr-invalid-observer-error",
+        "ephemeris-spkgeo-audit-coverage-gap",
+        "ephemeris-spkgeo-audit-empty-frame",
+        "ephemeris-spkgeo-audit-first-endpoint",
+        "ephemeris-spkgeo-audit-last-endpoint",
+        "ephemeris-spkgeo-audit-no-files",
+        "ephemeris-spkgeo-audit-polynomial",
+        "ephemeris-spkgeo-audit-priority-restored",
+        "ephemeris-spkgeo-audit-reverse-vector",
+        "ephemeris-spkgeo-audit-rotated-frame",
+        "ephemeris-spkgeo-audit-same-body",
+        "ephemeris-spkgeo-audit-signed-chain",
+        "ephemeris-spkgeo-audit-unknown-frame",
+        "ephemeris-spkgeo-generated-segment-success",
+        "ephemeris-spkgeo-invalid-frame-error",
+        "ephemeris-spkgps-audit-coverage-gap",
+        "ephemeris-spkgps-audit-empty-frame",
+        "ephemeris-spkgps-audit-first-endpoint",
+        "ephemeris-spkgps-audit-last-endpoint",
+        "ephemeris-spkgps-audit-no-files",
+        "ephemeris-spkgps-audit-polynomial",
+        "ephemeris-spkgps-audit-priority-restored",
+        "ephemeris-spkgps-audit-reverse-vector",
+        "ephemeris-spkgps-audit-rotated-frame",
+        "ephemeris-spkgps-audit-same-body",
+        "ephemeris-spkgps-audit-signed-chain",
+        "ephemeris-spkgps-audit-unknown-frame",
+        "ephemeris-spkgps-generated-segment-success",
+        "ephemeris-spkgps-invalid-frame-error",
+        "ephemeris-spkpos-audit-bad-correction",
+        "ephemeris-spkpos-audit-case-insensitive-names",
+        "ephemeris-spkpos-audit-correction-cn",
+        "ephemeris-spkpos-audit-correction-cn-s",
+        "ephemeris-spkpos-audit-correction-lt",
+        "ephemeris-spkpos-audit-correction-lt-s",
+        "ephemeris-spkpos-audit-correction-none",
+        "ephemeris-spkpos-audit-correction-xcn",
+        "ephemeris-spkpos-audit-correction-xcn-s",
+        "ephemeris-spkpos-audit-correction-xlt",
+        "ephemeris-spkpos-audit-correction-xlt-s",
+        "ephemeris-spkpos-audit-coverage-gap",
+        "ephemeris-spkpos-audit-empty-correction",
+        "ephemeris-spkpos-audit-empty-frame",
+        "ephemeris-spkpos-audit-empty-target",
+        "ephemeris-spkpos-audit-first-endpoint",
+        "ephemeris-spkpos-audit-last-endpoint",
+        "ephemeris-spkpos-audit-no-files",
+        "ephemeris-spkpos-audit-noninertial-frame",
+        "ephemeris-spkpos-audit-priority-restored",
+        "ephemeris-spkpos-audit-rotated-frame",
+        "ephemeris-spkpos-audit-same-body",
+        "ephemeris-spkpos-audit-signed-chain",
+        "ephemeris-spkpos-audit-unknown-frame",
+        "ephemeris-spkpos-audit-unknown-name",
+        "ephemeris-spkpos-generated-segment-success",
+        "ephemeris-spkpos-invalid-abcorr-error",
+        "ephemeris-spksfs-audit-coverage-gap",
+        "ephemeris-spksfs-audit-first-endpoint",
+        "ephemeris-spksfs-audit-last-endpoint",
+        "ephemeris-spksfs-audit-loaded-empty",
+        "ephemeris-spksfs-audit-negative-center",
+        "ephemeris-spksfs-audit-no-files-error",
+        "ephemeris-spksfs-audit-outside",
+        "ephemeris-spksfs-audit-priority-unload-reload",
+        "ephemeris-spksfs-audit-unknown-object",
+        "ephemeris-spksfs-found-success",
+        "ephemeris-spksfs-not-found-success",
+        "ephemeris-spkssb-audit-barycenter-zero",
+        "ephemeris-spkssb-audit-coverage-gap",
+        "ephemeris-spkssb-audit-empty-frame",
+        "ephemeris-spkssb-audit-first-endpoint",
+        "ephemeris-spkssb-audit-last-endpoint",
+        "ephemeris-spkssb-audit-no-files",
+        "ephemeris-spkssb-audit-polynomial",
+        "ephemeris-spkssb-audit-priority-restored",
+        "ephemeris-spkssb-audit-rotated-frame",
+        "ephemeris-spkssb-audit-signed-chain",
+        "ephemeris-spkssb-audit-unknown-frame",
+        "ephemeris-spkssb-generated-segment-success",
+        "ephemeris-spkssb-invalid-frame-error"
+      ],
+      "observation": "Both complete required lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 addon and executed all2218live comparisons(1109scenarios per actual backend),all2431parity-package tests with zero skips,600WASM/66Node/28core/150facade tests. The JS lane executed all2218live comparisons and2430package tests with its one native-required-only sanity assertion intentionally skipped outside native-required mode; native-required executed that assertion. All38ledger regressions passed after retaining the reviewed BODFND direct-route/BODVAR fail-closed expectations. Final documentation-only temporal clarifications were included before the native-required execution and separately format/lint/drift-validated; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Full combined owning-script Node/web WASM regeneration SHA25631f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911, Emscripten3.1.74/CSPICE N0067, Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64. Original per-batch observations remain historical; no canonical combined-source CI claim yet."
     }
   ],
   "routines": [
@@ -899,22 +1235,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkez -> typed node adapter -> actual N-API registered spkez binding -> shared tspice_spkez -> spkez_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkez. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkez -> typed wasm adapter -> actual compiled _tspice_spkez export -> shared tspice_spkez -> spkez_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkez. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -1128,22 +1470,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkezp -> typed node adapter -> actual N-API registered spkezp binding -> shared tspice_spkezp -> spkezp_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezp. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkezp -> typed wasm adapter -> actual compiled _tspice_spkezp export -> shared tspice_spkezp -> spkezp_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezp. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -1385,22 +1733,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkezr -> typed node adapter -> actual N-API registered spkezr binding -> shared tspice_spkezr -> spkezr_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezr. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkezr -> typed wasm adapter -> actual compiled _tspice_spkezr export -> shared tspice_spkezr -> spkezr_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezr. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -1642,22 +1996,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkpos -> typed node adapter -> actual N-API registered spkpos binding -> shared tspice_spkpos -> spkpos_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkpos. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkpos -> typed wasm adapter -> actual compiled _tspice_spkpos export -> shared tspice_spkpos -> spkpos_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkpos. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -1795,22 +2155,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkgeo -> typed node adapter -> actual N-API registered spkgeo binding -> shared tspice_spkgeo -> spkgeo_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgeo. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkgeo -> typed wasm adapter -> actual compiled _tspice_spkgeo export -> shared tspice_spkgeo -> spkgeo_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgeo. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -1948,22 +2314,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkgps -> typed node adapter -> actual N-API registered spkgps binding -> shared tspice_spkgps -> spkgps_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgps. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkgps -> typed wasm adapter -> actual compiled _tspice_spkgps export -> shared tspice_spkgps -> spkgps_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgps. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -2095,22 +2467,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkssb -> typed node adapter -> actual N-API registered spkssb binding -> shared tspice_spkssb -> spkssb_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkssb. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spkssb -> typed wasm adapter -> actual compiled _tspice_spkssb export -> shared tspice_spkssb -> spkssb_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkssb. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     },
@@ -2249,25 +2627,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spksfs -> typed node adapter -> actual N-API registered spksfs binding -> shared tspice_spksfs -> spksfs_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spksfs. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-node",
-            "ci-pr703-43413954878-node"
-          ]
+          "executions": ["local-step7-combined-final-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.spksfs -> typed wasm adapter -> actual compiled _tspice_spksfs export -> shared tspice_spksfs -> spksfs_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spksfs. No substitute/composed numerical query.",
-          "executions": [
-            "local-spk-states-final-wasm",
-            "ci-pr703-43413954878-wasm"
-          ]
+          "executions": ["local-step7-combined-final-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

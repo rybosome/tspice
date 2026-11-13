@@ -77,7 +77,6 @@ export function finalizeCaseLifecycle(context: RunTspiceContext): void {
     context.lifecycle.scratchCleanupRegistered = true;
   }
 
-
   closeEkHandlesBestEffort(context);
   runFinalizersBestEffort(context);
   kclearBestEffort(context);

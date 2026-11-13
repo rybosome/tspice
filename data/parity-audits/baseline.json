@@ -10,7 +10,7 @@
         "https://github.com/rybosome/tspice/pull/683",
         "https://github.com/rybosome/tspice/pull/684"
       ],
-      "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs."
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "cells-windows",
@@ -26,8 +26,8 @@
         "wninsd_c"
       ],
       "dependsOn": ["cell-capacity-prerequisite"],
-      "prs": [],
-      "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline."
+      "prs": ["https://github.com/rybosome/tspice/pull/685"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "coordinates-matrices",
@@ -45,16 +45,16 @@
         "rotmat_c",
         "sphrec_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/681"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "dsk",
       "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "dependsOn": ["file-io-2"],
+      "prs": ["https://github.com/rybosome/tspice/pull/695"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "ek-1",
@@ -62,20 +62,20 @@
         "ekaclc_c",
         "ekacld_c",
         "ekacli_c",
-        "ekcls_c",
         "ekffld_c",
         "ekfind_c",
         "ekgc_c",
-        "ekgd_c"
+        "ekgd_c",
+        "ekgi_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "dependsOn": ["ek-2"],
+      "prs": ["https://github.com/rybosome/tspice/pull/697"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "ek-2",
       "routines": [
-        "ekgi_c",
+        "ekcls_c",
         "ekifld_c",
         "eknseg_c",
         "ekntab_c",
@@ -85,8 +85,8 @@
         "ektnam_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "prs": ["https://github.com/rybosome/tspice/pull/696"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "ephemeris-1",
@@ -100,7 +100,7 @@
       ],
       "dependsOn": ["ephemeris-descriptors"],
       "prs": ["https://github.com/rybosome/tspice/pull/702"],
-      "nextAction": "Six SPK file/writer/coverage routines have handwritten semantic review and focused actual/live evidence. Complete full required local lanes, publish the audit PR, then observe canonical CI and explicit rebaseability."
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "ephemeris-2",
@@ -116,14 +116,14 @@
       ],
       "dependsOn": ["ephemeris-1"],
       "prs": ["https://github.com/rybosome/tspice/pull/703"],
-      "nextAction": "All 15 exact-source CI jobs passed. Implementation/test/fixture bytes are preserved after parent-proof restacking; wait for current metadata CI and explicit REST rebaseability."
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "ephemeris-descriptors",
       "routines": ["spkpds_c", "spkuds_c"],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/700"],
-      "nextAction": "All 15 source CI jobs passed with actual native-required/live parity. Wait for metadata CI and explicit REST rebaseability; proceed with dependent SPK audits."
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "error",
@@ -136,9 +136,9 @@
         "setmsg_c",
         "sigerr_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/682"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "file-io-1",
@@ -153,8 +153,11 @@
         "dlacls"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/691"],
-      "nextAction": "The shared file-token prerequisite has both required full local lanes and observed canonical Linux native CI in #691. Reader semantic audit continues in #692; all remaining routine assignments are retained."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/691",
+        "https://github.com/rybosome/tspice/pull/692"
+      ],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "file-io-2",
@@ -167,9 +170,9 @@
         "exists_c",
         "getfat_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "dependsOn": ["file-io-1"],
+      "prs": ["https://github.com/rybosome/tspice/pull/694"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "frames-1",
@@ -182,8 +185,8 @@
         "ckupf_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/699"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "frames-2",
@@ -198,8 +201,8 @@
         "sxform_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/698"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "geometry",
@@ -215,8 +218,8 @@
         "subslr_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/704"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "geometry-gf",
@@ -230,9 +233,13 @@
         "gfstep_c",
         "gfstol_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy."
+      "dependsOn": ["cell-capacity-prerequisite"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/684",
+        "https://github.com/rybosome/tspice/pull/704",
+        "https://github.com/rybosome/tspice/pull/705"
+      ],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "ids-names",
@@ -245,9 +252,9 @@
         "bods2c_c",
         "bodvar_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "dependsOn": ["cell-capacity-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/687"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "kernel-pool",
@@ -265,8 +272,8 @@
         "swpool_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/686"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "kernels",
@@ -280,8 +287,8 @@
         "unload_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/690"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "kplfrm-prerequisite",
@@ -291,7 +298,7 @@
         "https://github.com/rybosome/tspice/pull/680",
         "https://github.com/rybosome/tspice/pull/684"
       ],
-      "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs."
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "time-1",
@@ -306,8 +313,8 @@
         "sct2e_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/689"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "time-2",
@@ -321,8 +328,8 @@
         "unitim_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/688"],
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     },
     {
       "id": "vectors-arithmetic",
@@ -338,7 +345,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical."
+      "nextAction": "Complete combined-source local and canonical CI validation, then retain the observed source/job evidence. Merge the linked reviewed PRs only with user authorization."
     }
   ]
 }

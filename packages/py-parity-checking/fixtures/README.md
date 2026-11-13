@@ -61,7 +61,6 @@ Supplemental meta-kernel tests generate bounded path-symbol templates in scratch
 storage, reusing the unchanged LSK and 25 KiB SPK fixtures, and remove them in
 `finally`. There are no new scientific observations or downloaded datasets.
 
-
 The Step 7 file-reader fixtures `audit-two-segment.bsp` (4096 bytes) and
 `audit-empty-daf.bsp` (3048 bytes) are project-authored synthetic DAF/SPK data,
 MIT-licensed with the repository. `generate-audit-daf.py` generates and validates
