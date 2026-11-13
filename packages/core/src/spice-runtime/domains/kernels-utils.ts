@@ -269,36 +269,51 @@ export function matchesKernelKind(
   return requested.has(filtyp);
 }
 
+function kxtrctCString(value: string): string {
+  if (typeof value !== "string") throw new TypeError("kxtrct expects strings");
+  const nul = value.indexOf("\0");
+  return nul < 0 ? value : value.slice(0, nul);
+}
+
+function kxtrctTrimInput(value: string): string {
+  // Match the native adapter's ASCII-only argument normalization.
+  return kxtrctCString(value).replace(/^[ \t\n\r\f\v]+|[ \t\n\r\f\v]+$/g, "");
+}
+
 /**
- * JS implementation of CSPICE `kxtrct`.
+ * JS implementation of the supported CSPICE `kxtrct` contract.
  *
- * Notes on return values:
- * - `substr` is right-trimmed (`trimEnd()`).
- * - `wordsq` has the extracted words removed, but otherwise preserves whitespace
- *   from the original input (so it may start with blanks).
+ * C strings end at NUL, only ASCII spaces delimit words, and only trailing
+ * ASCII spaces are removed from returned strings. Keyword/terminator arguments
+ * use the native adapter's ASCII trimming; non-ASCII whitespace is significant.
  */
 export function kxtrctJs(
   keywd: string,
   terms: readonly string[],
   wordsq: string,
 ): Found<{ wordsq: string; substr: string }> {
-  const key = keywd.trim();
-  if (key.length === 0) {
+  const key = kxtrctTrimInput(keywd);
+  if (key.length === 0)
     throw new RangeError("kxtrct keywd must be a non-empty string");
-  }
-
-  const termSet = new Set(terms.map((t) => t.trim()).filter(Boolean));
-  const words = [...wordsq.matchAll(/\S+/g)].map((m) => {
-    const text = m[0];
-    const start = m.index ?? 0;
-    return { text, start, end: start + text.length - 1 };
-  });
-
+  if (!Array.isArray(terms))
+    throw new TypeError("kxtrct terms must be an array");
+  const sequence = kxtrctCString(wordsq);
+  // Mirror the existing native output-storage bound without allocating an
+  // unbounded UTF-8 copy just to check the byte count.
+  const maxBytes = 1 << 20;
+  if (
+    sequence.length >= maxBytes ||
+    new TextEncoder().encode(sequence).length >= maxBytes
+  )
+    throw new RangeError("kxtrct(): wordsq is too large");
+  const termSet = new Set(terms.map(kxtrctTrimInput).filter(Boolean));
+  const words = [...sequence.matchAll(/[^ ]+/g)].map((m) => ({
+    text: m[0],
+    start: m.index,
+    end: m.index + m[0].length - 1,
+  }));
   const keyIndex = words.findIndex((w) => w.text === key);
-  if (keyIndex < 0) {
-    return { found: false };
-  }
-
+  if (keyIndex < 0) return { found: false };
   let termIndex = -1;
   for (let i = keyIndex + 1; i < words.length; i++) {
     if (termSet.has(words[i]!.text)) {
@@ -306,16 +321,15 @@ export function kxtrctJs(
       break;
     }
   }
-
   const startSub = words[keyIndex + 1]?.start;
-  const endSub = termIndex >= 0 ? words[termIndex]!.start : wordsq.length;
+  const endSub = termIndex >= 0 ? words[termIndex]!.start : sequence.length;
   const substr =
-    startSub == null ? "" : wordsq.slice(startSub, endSub).trimEnd();
-
+    startSub == null ? "" : sequence.slice(startSub, endSub).replace(/ +$/, "");
   const removalStart = words[keyIndex]!.start;
+  // A terminator follows the keyword, so its preceding word always exists.
   const removalEnd =
-    termIndex >= 0 ? words[(termIndex - 1) as number]!.end + 1 : wordsq.length;
-  const newWordsq = wordsq.slice(0, removalStart) + wordsq.slice(removalEnd);
-
-  return { found: true, wordsq: newWordsq, substr };
+    termIndex >= 0 ? words[termIndex - 1]!.end + 1 : sequence.length;
+  const remaining =
+    sequence.slice(0, removalStart) + sequence.slice(removalEnd);
+  return { found: true, wordsq: remaining.replace(/ +$/, ""), substr };
 }

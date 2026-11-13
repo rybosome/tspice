@@ -49,3 +49,15 @@ MIT-authored input makes light-time and stellar corrections distinguishable in
 every returned component. It avoids subtracting identical Y/Z polynomials into
 near-zero roundoff residuals; no numeric comparator tolerance is changed. It
 contains no mission observations or external scientific dataset.
+
+Step 7 kernel audit fixtures `audit-empty.tm` and `audit-partial-error.tpc` are
+project-authored synthetic text, distributed under this repository's MIT license.
+The empty meta-kernel has no child files; the malformed PCK deliberately assigns
+a valid variable before a numeric parse error. It tests CSPICE's partial-load
+semantics rather than assuming rollback. `kernel-pool-parity.tpc` now has actual
+single-backslash data/text directives; the former doubled directives left its
+claimed values outside the data section. Live cases read all three variables.
+Supplemental meta-kernel tests generate bounded path-symbol templates in scratch
+storage, reusing the unchanged LSK and 25 KiB SPK fixtures, and remove them in
+`finally`. There are no new scientific observations or downloaded datasets.
+

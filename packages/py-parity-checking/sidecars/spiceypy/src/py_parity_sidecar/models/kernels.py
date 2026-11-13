@@ -33,14 +33,14 @@ class StepKernelsKplfrm:
 @dataclass(frozen=True)
 class StepKernelsKtotal:
     op: Literal["kernels.ktotal"]
-    kind: str
+    kind: str | list[str] | None
 
 
 @dataclass(frozen=True)
 class StepKernelsKdata:
     op: Literal["kernels.kdata"]
     which: int
-    kind: str
+    kind: str | list[str] | None
 
 
 @dataclass(frozen=True)

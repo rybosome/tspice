@@ -36,7 +36,6 @@ export type KernelStager = {
 export function createKernelStager(): KernelStager {
   const tempByVirtualPath = new Map<string, string>();
   const virtualByTempPath = new Map<string, string>();
-  const loadedVirtualPaths = new Set<string>();
   let tempKernelRootDir: string | undefined;
 
   const VIRTUAL_KERNEL_ROOT = "/kernels/";
@@ -184,11 +183,6 @@ export function createKernelStager(): KernelStager {
         const resolved = resolvePathForSpice(kernel);
         native.furnsh(resolved);
 
-        const canonical = tryCanonicalVirtualKernelPath(kernel);
-        if (canonical && tempByVirtualPath.get(canonical) === resolved) {
-          loadedVirtualPaths.add(canonical);
-        }
-
         return;
       }
 
@@ -197,46 +191,21 @@ export function createKernelStager(): KernelStager {
       // For byte-backed kernels, we write to a temp file and load via CSPICE.
       // We then remember the resolved temp path so `unload(kernel.path)` unloads
       // the correct file.
-      const existingTemp = tempByVirtualPath.get(virtualPath);
-      if (existingTemp && loadedVirtualPaths.has(virtualPath)) {
-        native.unload(existingTemp);
-        loadedVirtualPaths.delete(virtualPath);
-      }
-
-      const tempPath =
-        existingTemp ?? createTempPathForVirtualPath(virtualPath);
+      const tempPath = createTempPathForVirtualPath(virtualPath);
       fs.writeFileSync(tempPath, kernel.bytes);
-
-      try {
-        native.furnsh(tempPath);
-      } catch (error) {
-        safeUnlink(tempPath);
-        loadedVirtualPaths.delete(virtualPath);
-        tempByVirtualPath.delete(virtualPath);
-        virtualByTempPath.delete(tempPath);
-        throw error;
-      }
-
-      tempByVirtualPath.set(virtualPath, tempPath);
-      virtualByTempPath.set(tempPath, virtualPath);
-      loadedVirtualPaths.add(virtualPath);
+      // Each call must reach furnsh: CSPICE retains duplicate registrations.
+      // Keep the bytes even after errors: a failed load can leave partial state,
+      // and earlier registrations may still need this file during unload.
+      native.furnsh(tempPath);
     },
 
     unload: (_path, native) => {
       const canonical = tryCanonicalVirtualKernelPath(_path);
       const resolved = canonical ? tempByVirtualPath.get(canonical) : undefined;
       if (canonical && resolved) {
-        if (loadedVirtualPaths.has(canonical)) {
-          native.unload(resolved);
-          loadedVirtualPaths.delete(canonical);
-        }
-
-        if (!isPyParityCanonicalPath(canonical)) {
-          safeUnlink(resolved);
-          tempByVirtualPath.delete(canonical);
-          virtualByTempPath.delete(resolved);
-        }
-
+        native.unload(resolved);
+        // CSPICE can retain other registrations or reread this text kernel.
+        // Retain staging until kclear, consistently with the WASM filesystem.
         return;
       }
 
@@ -250,9 +219,12 @@ export function createKernelStager(): KernelStager {
       for (const tempPath of tempByVirtualPath.values()) {
         safeUnlink(tempPath);
       }
-      loadedVirtualPaths.clear();
       tempByVirtualPath.clear();
       virtualByTempPath.clear();
+      if (tempKernelRootDir) {
+        fs.rmSync(tempKernelRootDir, { recursive: true, force: true });
+        tempKernelRootDir = undefined;
+      }
     },
 
     resolvePath: resolvePathForSpice,

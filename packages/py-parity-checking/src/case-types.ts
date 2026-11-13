@@ -1,3 +1,5 @@
+import type { KernelKindInput } from "@rybosome/tspice-backend-contract";
+
 export type TimdefItem = string;
 
 export type ErrorGetmsgWhich = "SHORT" | "LONG" | "EXPLAIN";
@@ -512,13 +514,13 @@ export type StepKernelsKplfrm = {
 
 export type StepKernelsKtotal = {
   op: "kernels.ktotal";
-  kind: string;
+  kind?: KernelKindInput;
 };
 
 export type StepKernelsKdata = {
   op: "kernels.kdata";
   which: number;
-  kind: string;
+  kind?: KernelKindInput;
 };
 
 export type StepKernelsKxtrct = {
@@ -1549,7 +1551,15 @@ export type StepOutput =
   | { op: "kernels.kclear"; value: null }
   | {
       op: "kernels.kinfo";
-      value: { found: false } | { found: true; filtyp: string; source: string };
+      value:
+        | { found: false }
+        | {
+            found: true;
+            filtyp: string;
+            source: string;
+            handleIsZero: boolean;
+            handleMatchesEntry: boolean;
+          };
     }
   | { op: "kernels.kplfrm"; value: { ids: number[] } }
   | { op: "kernels.ktotal"; value: number }
@@ -1557,7 +1567,13 @@ export type StepOutput =
       op: "kernels.kdata";
       value:
         | { found: false }
-        | { found: true; file: string; filtyp: string; source: string };
+        | {
+            found: true;
+            file: string;
+            filtyp: string;
+            source: string;
+            handleIsZero: boolean;
+          };
     }
   | {
       op: "kernels.kxtrct";
