@@ -430,6 +430,88 @@
         "file-io-dlacls-double-close-error"
       ],
       "observation": "Both full required local lanes passed on the reviewed DSK query source, preserved byte-identically across the #679 squash restack. Production-native required executed all 752 live comparisons (376 per actual backend), all 815 parity-package tests including actual query union/capacity, literal descriptor/layout, same-instance recovery and oracle close/error checks, 126 WASM tests including twelve actual-heap query allocation failures, 63 native tests, 26 core tests and 121 facade tests without skips. Full JS passed with one expected optional parity guard skip. Nineteen new scenarios; no tolerance widening. No C or generated WASM changes beyond verified writer prerequisite #694. Thirty-eight ledger regressions and drift passed; current-source canonical CI is pending."
+    },
+    {
+      "id": "ci-dsk-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3b3aeb37eb8f8d7731680e573304adc6257996845cbf10340c7bea9ef29ca677",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "58127e7358725e31caf7e9135ad58dc4e5e47a8d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43384149761/job/131748572416",
+      "observation": "All 15 required CI jobs for exact source head 58127e7358725e31caf7e9135ad58dc4e5e47a8d passed on their first attempt after the user-merge restack. Actual Linux Node22 native job log shows pinned CSPICE N0067, the production-addon build/load and native sanity, all 752 live Node/WASM comparisons and all 815 parity-package tests without required native skips. All 126 WASM, 63 Node, 26 core and 121 facade tests passed. Source tree was verified byte-identical across the restack; this observed source run is distinct from configured lanes and older historical jobs. Exact DSK descriptor fields, full type2 statistics, segment/body/surface unions, actual authored fixtures and public error/lifecycle/OOM recovery remain the maintained per-routine evidence. No CI retry or merge."
+    },
+    {
+      "id": "ci-dsk-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3b3aeb37eb8f8d7731680e573304adc6257996845cbf10340c7bea9ef29ca677",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "58127e7358725e31caf7e9135ad58dc4e5e47a8d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43384149761/job/131748572416",
+      "observation": "All 15 required CI jobs for exact source head 58127e7358725e31caf7e9135ad58dc4e5e47a8d passed on their first attempt after the user-merge restack. Actual Linux Node22 native job log shows pinned CSPICE N0067, the production-addon build/load and native sanity, all 752 live Node/WASM comparisons and all 815 parity-package tests without required native skips. All 126 WASM, 63 Node, 26 core and 121 facade tests passed. Source tree was verified byte-identical across the restack; this observed source run is distinct from configured lanes and older historical jobs. Exact DSK descriptor fields, full type2 statistics, segment/body/surface unions, actual authored fixtures and public error/lifecycle/OOM recovery remain the maintained per-routine evidence. No CI retry or merge."
     }
   ],
   "routines": [
@@ -530,11 +612,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dafopr -> tspice_dafopr -> dafopr_c.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -544,11 +630,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dafopr -> shared C shim -> dafopr_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -638,11 +728,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafcls -> tspice_dafcls -> dafcls_c.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -652,11 +746,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafcls -> shared C shim -> dafcls_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -735,11 +833,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafbfs -> tspice_dafbfs -> dafbfs_c.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -749,11 +851,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafbfs -> shared C shim -> dafbfs_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -837,11 +943,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native daffna -> tspice_daffna -> daffna_c. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -851,11 +961,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_daffna -> shared C shim -> daffna_c; withAllocs/withMalloc releases buffers. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -940,11 +1054,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dasopr -> tspice_dasopr -> dasopr_c.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -954,11 +1072,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dasopr -> shared C shim -> dasopr_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1037,11 +1159,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1051,11 +1177,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1146,11 +1276,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dlabfs -> tspice_dlabfs -> dlabfs_c. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1160,11 +1294,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dlabfs -> shared C shim -> dlabfs_c; withAllocs/withMalloc releases buffers. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1252,11 +1390,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1266,14 +1408,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

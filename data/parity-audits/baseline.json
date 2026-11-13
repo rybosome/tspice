@@ -53,8 +53,8 @@
       "id": "dsk",
       "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
       "dependsOn": ["file-io-2"],
-      "prs": [],
-      "nextAction": "All four DSK queries reviewed/repaired; both full required local lanes passed with 752 live comparisons and 815 parity-package tests, plus twelve actual-WASM-heap allocation failures and literal public layout/recovery checks. Open the dependent PR on #694 and record observed current-source canonical CI and explicit rebaseability. No expansion beyond the 162 baseline routines."
+      "prs": ["https://github.com/rybosome/tspice/pull/695"],
+      "nextAction": "Source-bound local and canonical CI comparisons passed for four DSK query routines; preserve fingerprints and observe fresh metadata-head CI before merge readiness."
     },
     {
       "id": "ek-1",

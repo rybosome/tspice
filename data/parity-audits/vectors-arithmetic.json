@@ -859,6 +859,72 @@
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
       "observation": "Both full required local lanes passed on the reviewed DSK query source, preserved byte-identically across the #679 squash restack. Production-native required executed all 752 live comparisons (376 per actual backend), all 815 parity-package tests including actual query union/capacity, literal descriptor/layout, same-instance recovery and oracle close/error checks, 126 WASM tests including twelve actual-heap query allocation failures, 63 native tests, 26 core tests and 121 facade tests without skips. Full JS passed with one expected optional parity guard skip. Nineteen new scenarios; no tolerance widening. No C or generated WASM changes beyond verified writer prerequisite #694. Thirty-eight ledger regressions and drift passed; current-source canonical CI is pending."
+    },
+    {
+      "id": "ci-dsk-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4aee2ae91e08f7b62a478a272ab8e64ed88e6bad7b9a1b23f872792174a374c4",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "58127e7358725e31caf7e9135ad58dc4e5e47a8d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43384149761/job/131748572416",
+      "observation": "All 15 required CI jobs for exact source head 58127e7358725e31caf7e9135ad58dc4e5e47a8d passed on their first attempt after the user-merge restack. Actual Linux Node22 native job log shows pinned CSPICE N0067, the production-addon build/load and native sanity, all 752 live Node/WASM comparisons and all 815 parity-package tests without required native skips. All 126 WASM, 63 Node, 26 core and 121 facade tests passed. Source tree was verified byte-identical across the restack; this observed source run is distinct from configured lanes and older historical jobs. Exact DSK descriptor fields, full type2 statistics, segment/body/surface unions, actual authored fixtures and public error/lifecycle/OOM recovery remain the maintained per-routine evidence. No CI retry or merge."
+    },
+    {
+      "id": "ci-dsk-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4aee2ae91e08f7b62a478a272ab8e64ed88e6bad7b9a1b23f872792174a374c4",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "58127e7358725e31caf7e9135ad58dc4e5e47a8d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43384149761/job/131748572416",
+      "observation": "All 15 required CI jobs for exact source head 58127e7358725e31caf7e9135ad58dc4e5e47a8d passed on their first attempt after the user-merge restack. Actual Linux Node22 native job log shows pinned CSPICE N0067, the production-addon build/load and native sanity, all 752 live Node/WASM comparisons and all 815 parity-package tests without required native skips. All 126 WASM, 63 Node, 26 core and 121 facade tests passed. Source tree was verified byte-identical across the restack; this observed source run is distinct from configured lanes and older historical jobs. Exact DSK descriptor fields, full type2 statistics, segment/body/surface unions, actual authored fixtures and public error/lifecycle/OOM recovery remain the maintained per-routine evidence. No CI retry or merge."
     }
   ],
   "routines": [
@@ -910,11 +976,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -928,11 +998,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -992,11 +1066,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1010,11 +1088,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1066,11 +1148,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1084,11 +1170,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1148,11 +1238,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1166,11 +1260,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1222,11 +1320,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1240,11 +1342,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1304,11 +1410,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1322,11 +1432,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1378,11 +1492,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1396,11 +1514,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -1452,11 +1574,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-dsk-audit-2026-11-13-node"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1470,14 +1596,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-dsk-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

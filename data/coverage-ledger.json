@@ -72,8 +72,10 @@
         "dependsOn": [
           "file-io-2"
         ],
-        "prs": [],
-        "nextAction": "All four DSK queries reviewed/repaired; both full required local lanes passed with 752 live comparisons and 815 parity-package tests, plus twelve actual-WASM-heap allocation failures and literal public layout/recovery checks. Open the dependent PR on #694 and record observed current-source canonical CI and explicit rebaseability. No expansion beyond the 162 baseline routines.",
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/695"
+        ],
+        "nextAction": "Source-bound local and canonical CI comparisons passed for four DSK query routines; preserve fingerprints and observe fresh metadata-head CI before merge readiness.",
         "record": "data/parity-audits/dsk.json"
       },
       {
@@ -390,15 +392,15 @@
     "counts": {
       "node": {
         "unreviewed": 131,
-        "reviewed": 31,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 31
       },
       "wasm": {
         "unreviewed": 131,
-        "reviewed": 31,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 31
       }
     }
   },
@@ -6696,14 +6698,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafbfs -> tspice_dafbfs -> dafbfs_c.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -6714,14 +6718,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafbfs -> shared C shim -> dafbfs_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -6955,14 +6961,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafcls -> tspice_dafcls -> dafcls_c.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -6973,14 +6981,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafcls -> shared C shim -> dafcls_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7244,14 +7254,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native daffna -> tspice_daffna -> daffna_c. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7262,14 +7274,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_daffna -> shared C shim -> daffna_c; withAllocs/withMalloc releases buffers. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7600,14 +7614,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dafopr -> tspice_dafopr -> dafopr_c.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7618,14 +7634,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dafopr -> shared C shim -> dafopr_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7904,14 +7922,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7922,14 +7942,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -8233,14 +8255,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dasopr -> tspice_dasopr -> dasopr_c.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -8251,14 +8275,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dasopr -> shared C shim -> dasopr_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -8814,14 +8840,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dlabfs -> tspice_dlabfs -> dlabfs_c. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -8832,14 +8860,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dlabfs -> shared C shim -> dlabfs_c; withAllocs/withMalloc releases buffers. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -9080,14 +9110,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -9098,14 +9130,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -9349,14 +9383,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlafns -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
@@ -9365,14 +9401,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlafns -> shared C shim -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -9673,14 +9711,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlaopn -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
@@ -9689,14 +9729,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlaopn -> shared C shim -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -10048,28 +10090,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskb02 -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskb02 -> dskb02_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskb02 and full descriptor/bookkeeping normalization.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskb02 -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskb02 -> shared tspice_dskb02 -> dskb02_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskb02 and full descriptor/bookkeeping normalization.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         }
       }
@@ -10347,28 +10393,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskgd -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskgd -> dskgd_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskgd and full descriptor/bookkeeping normalization.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskgd -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskgd -> shared tspice_dskgd -> dskgd_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskgd and full descriptor/bookkeeping normalization.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         }
       }
@@ -10700,14 +10750,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskmi2 -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
@@ -10716,14 +10768,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskmi2 -> shared C shim -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -11059,28 +11113,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskobj -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskobj -> dskobj_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dskobj_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskobj -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskobj -> shared tspice_dskobj -> dskobj_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dskobj_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         }
       }
@@ -11333,14 +11391,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskopn -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
@@ -11349,14 +11409,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskopn -> shared C shim -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -11764,28 +11826,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dsksrf -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dsksrf -> dsksrf_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dsksrf_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dsksrf -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dsksrf -> shared tspice_dsksrf -> dsksrf_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dsksrf_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/dsk.json"
         }
       }
@@ -12152,14 +12218,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskw02 -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
@@ -12168,14 +12236,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskw02 -> shared C shim -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -16078,14 +16148,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.exists -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_exists -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
@@ -16094,14 +16166,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.exists -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_exists -> shared C shim -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -17802,14 +17876,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getfat -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_getfat -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
@@ -17818,14 +17894,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getfat -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_getfat -> shared C shim -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -22063,14 +22141,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -22085,14 +22165,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -31965,14 +32047,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -31983,14 +32067,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34650,14 +34736,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34672,14 +34760,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34960,14 +35050,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -34978,14 +35070,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -35196,14 +35290,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35218,14 +35314,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35433,14 +35531,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35455,14 +35555,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35695,14 +35797,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35717,14 +35821,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35953,14 +36059,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35975,14 +36083,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36193,14 +36303,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36215,14 +36327,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36486,14 +36600,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36508,14 +36624,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36730,14 +36848,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36752,14 +36872,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -37666,14 +37788,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-dsk-audit-2026-11-13-node"
+            "local-dsk-audit-2026-11-13-node",
+            "ci-dsk-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -37684,14 +37808,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-dsk-audit-2026-11-13-wasm"
+            "local-dsk-audit-2026-11-13-wasm",
+            "ci-dsk-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
