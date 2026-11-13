@@ -1,11 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { createWasmBackend } from "@rybosome/tspice-backend-wasm";
 import type {
   DlaDescriptor,
   SpiceHandle,
 } from "@rybosome/tspice-backend-contract";
-import { loadTestKernels } from "../../tspice/test/test-kernels.js";
+import { loadTestDsk } from "../../tspice/test/test-kernels.js";
 
 describe("@rybosome/tspice-backend-wasm file-io", () => {
   it("can create and close a DLA file in the emscripten FS", async () => {
@@ -83,33 +83,42 @@ describe("@rybosome/tspice-backend-wasm file-io", () => {
 
   it("can traverse DLA segments in a DSK via dlafns", async () => {
     const backend = await createWasmBackend();
-
-    const { dsk } = await loadTestKernels();
-    const dskKernel = {
-      path: "apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
-      bytes: dsk,
-    };
-
-    // Ensure the bytes exist on the emscripten FS.
-    backend.raw.furnsh(dskKernel);
-
-    const handle = backend.raw.dasopr(dskKernel.path);
+    // This traversal needs only a checked-in DSK, even with a cold kernel cache.
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockRejectedValue(
+        new Error("The local DSK traversal fixture must not use network fetch"),
+      );
     try {
-      let next = backend.raw.dlabfs(handle);
-      let count = 0;
-      while (next.found) {
-        count++;
-        if (count > 10_000) {
-          throw new Error("DLA segment traversal did not terminate");
-        }
-        next = backend.raw.dlafns(handle, next.descr);
-      }
+      const dsk = loadTestDsk();
+      const dskKernel = {
+        path: "apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+        bytes: dsk,
+      };
 
-      expect(count).toBeGreaterThanOrEqual(1);
+      // Ensure the bytes exist on the emscripten FS.
+      backend.raw.furnsh(dskKernel);
+
+      const handle = backend.raw.dasopr(dskKernel.path);
+      try {
+        let next = backend.raw.dlabfs(handle);
+        let count = 0;
+        while (next.found) {
+          count++;
+          if (count > 10_000) {
+            throw new Error("DLA segment traversal did not terminate");
+          }
+          next = backend.raw.dlafns(handle, next.descr);
+        }
+
+        expect(count).toBeGreaterThanOrEqual(1);
+      } finally {
+        // Close via the DAS-backed close path (DSKs are DLA files).
+        backend.raw.dascls(handle);
+        backend.raw.unload(dskKernel.path);
+      }
     } finally {
-      // Close via the DAS-backed close path (DSKs are DLA files).
-      backend.raw.dascls(handle);
-      backend.raw.unload(dskKernel.path);
+      fetchSpy.mockRestore();
     }
   });
 
