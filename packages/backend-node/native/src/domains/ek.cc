@@ -1007,7 +1007,9 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
 
   const size_t nvals = cvals.values.size();
 
-  size_t vallen = 1;
+  // N0067 ZZEKAC06 blanks one-character input slots when padding fixed fields.
+  // A Fortran width of at least two (C stride three) preserves single letters.
+  size_t vallen = 3;
   for (const std::string& s : cvals.values) {
     const size_t bytes = s.size() + 1;
     if (bytes > kMaxEkVallenBytes) {
@@ -1102,7 +1104,7 @@ static void Ekffld(const Napi::CallbackInfo& info) {
 
   std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
-  const int code = tspice_ekffld(handle, segno, rcptrs.data(), err, (int)sizeof(err));
+  const int code = tspice_ekffld(handle, segno, (int)rcptrs.size(), rcptrs.data(), err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling ekffld()", err, "ekffld");
   }

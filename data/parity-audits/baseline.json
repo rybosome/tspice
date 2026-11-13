@@ -70,7 +70,7 @@
       ],
       "dependsOn": ["ek-2"],
       "prs": [],
-      "nextAction": "Audit column writing/finalization and query tri-state results after the separate eight-routine EK file/segment lifecycle batch; actual helpers alone do not certify these routines."
+      "nextAction": "Eight column/query routines reviewed; run full required JS/native lanes, record source-bound observations and open the dependent PR after focused storage, NULL, byte-width and oracle repairs."
     },
     {
       "id": "ek-2",
@@ -86,7 +86,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/696"],
-      "nextAction": "Observed all15 exact-source CI jobs green with actual production native/live both-backend execution. Wait for verification-metadata CI and explicit REST rebaseability; continue independent baseline audits."
+      "nextAction": "Lifecycle reviewed/local lanes passed in #696; preserve judgments and refresh source-bound observations after dependent shared-C fixes."
     },
     {
       "id": "ephemeris-1",

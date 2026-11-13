@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import ctypes
 from pathlib import Path
-from typing import Any
 
 import spiceypy as sp
-from spiceypy.utils.exceptions import NotFoundError
+from spiceypy.utils import support_types as stypes
+from spiceypy.utils.libspicehelper import libspice
 
 from ..models import (
     PathRef,
@@ -94,52 +95,34 @@ def _require_segment(context: SidecarRuntimeContext, segment_id: str) -> EkSegme
     return segment
 
 
-def _normalize_ekgc(value: Any) -> dict[str, Any]:
-    if isinstance(value, tuple):
-        if len(value) == 2:
-            text, is_null_raw = value
-            is_null = bool(is_null_raw)
-            if is_null:
-                return {"found": True, "isNull": True}
-            return {"found": True, "isNull": False, "value": str(text)}
-
-        if len(value) == 3 and isinstance(value[2], (bool, int)):
-            is_null_raw, text, found_raw = value
-            found = bool(found_raw)
-            if not found:
-                return {"found": False}
-            is_null = bool(is_null_raw)
-            if is_null:
-                return {"found": True, "isNull": True}
-            return {"found": True, "isNull": False, "value": str(text)}
-
-    raise ValueError(f"Unexpected ekgc return shape: {value!r}")
+def _normalize_ekgc(value: object) -> dict[str, object]:
+    if not isinstance(value, tuple) or len(value) != 3:
+        raise ValueError(f"Unexpected ekgc return shape: {value!r}")
+    text, is_null, found = value
+    if found not in (False, True) or is_null not in (0, 1):
+        raise ValueError(f"Unexpected ekgc flags: {value!r}")
+    if not found:
+        return {"found": False}
+    if is_null:
+        return {"found": True, "isNull": True}
+    if not isinstance(text, str):
+        raise ValueError(f"Unexpected ekgc text: {text!r}")
+    return {"found": True, "isNull": False, "value": text}
 
 
-def _normalize_numeric_get(value: Any, *, fn_name: str) -> dict[str, Any]:
-    if isinstance(value, tuple):
-        if len(value) == 2:
-            number, is_null_raw = value
-            is_null = bool(is_null_raw)
-            if is_null:
-                return {"found": True, "isNull": True}
-            if isinstance(number, bool) or not isinstance(number, (int, float)):
-                raise ValueError(f"Unexpected {fn_name} numeric value: {number!r}")
-            return {"found": True, "isNull": False, "value": number}
-
-        if len(value) == 3 and isinstance(value[2], (bool, int)):
-            number, is_null_raw, found_raw = value
-            found = bool(found_raw)
-            if not found:
-                return {"found": False}
-            is_null = bool(is_null_raw)
-            if is_null:
-                return {"found": True, "isNull": True}
-            if isinstance(number, bool) or not isinstance(number, (int, float)):
-                raise ValueError(f"Unexpected {fn_name} numeric value: {number!r}")
-            return {"found": True, "isNull": False, "value": number}
-
-    raise ValueError(f"Unexpected {fn_name} return shape: {value!r}")
+def _normalize_numeric_get(value: object, *, fn_name: str) -> dict[str, object]:
+    if not isinstance(value, tuple) or len(value) != 3:
+        raise ValueError(f"Unexpected {fn_name} return shape: {value!r}")
+    number, is_null, found = value
+    if found not in (False, True) or is_null not in (0, 1):
+        raise ValueError(f"Unexpected {fn_name} flags: {value!r}")
+    if not found:
+        return {"found": False}
+    if is_null:
+        return {"found": True, "isNull": True}
+    if isinstance(number, bool) or not isinstance(number, (int, float)):
+        raise ValueError(f"Unexpected {fn_name} value: {number!r}")
+    return {"found": True, "isNull": False, "value": number}
 
 
 def _cnamelen(values: list[str]) -> int:
@@ -154,12 +137,6 @@ def _declen(values: list[str]) -> int:
     return max(len(value) for value in values) + 1
 
 
-def _char_vallen(values: list[str]) -> int:
-    if len(values) == 0:
-        return 1
-    return max(max(len(value), 1) for value in values) + 1
-
-
 def _resolve_ek_path(context: SidecarRuntimeContext, raw_path: PathRef | str) -> str:
     if not isinstance(raw_path, str):
         return resolve_path_ref(context.paths, raw_path)
@@ -170,33 +147,6 @@ def _resolve_ek_path(context: SidecarRuntimeContext, raw_path: PathRef | str) ->
         context.paths,
         PathRef(kind="scratch", rel=raw_path),
     )
-
-
-def _is_valid_last_find_row(context: SidecarRuntimeContext, row: int) -> bool:
-    nmrows = context.state.ek.lastSuccessfulFindNmrows
-    if nmrows is None:
-        return False
-    return 0 <= row < nmrows
-
-
-_SPICE_SHORT_NOT_FOUND = "SPICE(NOTFOUND)"
-_SPICE_SHORT_INVALID_INDEX = "SPICE(INVALIDINDEX)"
-
-
-def _should_coerce_ek_not_found(context: SidecarRuntimeContext, row: int) -> bool:
-    if not _is_valid_last_find_row(context, row):
-        return False
-
-    if not bool(sp.failed()):
-        return True
-
-    short = str(sp.getmsg("SHORT")).strip()
-    if short == _SPICE_SHORT_NOT_FOUND:
-        return True
-    if short == _SPICE_SHORT_INVALID_INDEX:
-        return False
-
-    return False
 
 
 def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
@@ -233,7 +183,7 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
 
     if isinstance(step, StepEkEkfind):
         context.state.ek.lastQuery = step.query
-        nmrows, error_flag, errmsg = sp.ekfind(step.query)
+        nmrows, error_flag, errmsg = sp.ekfind(step.query, 2048)
         if int(error_flag) == 0:
             nmrows_int = int(nmrows)
             context.state.ek.lastSuccessfulFindNmrows = nmrows_int
@@ -241,28 +191,22 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         context.state.ek.lastSuccessfulFindNmrows = None
         return StepOutput(op=step.op, value={"ok": False, "errmsg": str(errmsg)})
 
+    # Disable only the found-result decorator so the outer SpiceyPy error
+    # checker still raises actual INVALIDINDEX/INVALIDTYPE. A legitimate
+    # missing element remains a returned found=False tuple, without stale status.
     if isinstance(step, StepEkEkgc):
-        out = _normalize_ekgc(sp.ekgc(step.selidx, step.row, step.elment))
+        with sp.no_found_check():
+            out = _normalize_ekgc(sp.ekgc(step.selidx, step.row, step.elment, 2048))
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepEkEkgd):
-        try:
+        with sp.no_found_check():
             out = _normalize_numeric_get(sp.ekgd(step.selidx, step.row, step.elment), fn_name="ekgd")
-        except NotFoundError:
-            if _should_coerce_ek_not_found(context, step.row):
-                out = {"found": False}
-            else:
-                raise
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepEkEkgi):
-        try:
+        with sp.no_found_check():
             out = _normalize_numeric_get(sp.ekgi(step.selidx, step.row, step.elment), fn_name="ekgi")
-        except NotFoundError:
-            if _should_coerce_ek_not_found(context, step.row):
-                out = {"found": False}
-            else:
-                raise
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepEkEkifld):
@@ -324,17 +268,43 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         segment = _require_segment(context, step.segmentId)
         handle = _require_handle(context, segment.handleId)
         nrows = len(segment.rcptrs)
-        sp.ekaclc(
-            handle,
-            segment.segno,
-            step.column,
-            _char_vallen(step.cvals),
-            step.cvals,
-            step.entszs,
-            step.nlflgs,
-            segment.rcptrs,
-            [0] * nrows,
+        sizes = list(step.entszs)
+        values = list(step.cvals)
+        summary = sp.ekssum(handle, segment.segno)
+        for name, descriptor in zip(summary.cnames, summary.cdescrs):
+            if name.strip().casefold() != step.column.strip().casefold():
+                continue
+            # N0067's C character writer allocates flags by total value count
+            # then copies nrows flags. Ignored NULL placeholders keep that
+            # storage safe, including all-NULL columns; literal readback verifies
+            # the actual NULLs. Its own implementation also calls ekssum_c.
+            if descriptor.size == -1 and descriptor.nullok:
+                packed: list[str] = []
+                offset = 0
+                for i, size in enumerate(sizes):
+                    if step.nlflgs[i] and size == 0:
+                        sizes[i] = 1
+                        packed.append("")
+                    else:
+                        packed.extend(values[offset:offset + size])
+                        offset += size
+                values = packed
+            break
+        # SpiceyPy6.0.3 computes its backing width separately with len(str),
+        # which differs from UTF-8 byte width and cannot encode empty inputs.
+        # Call that same actual CSPICE entrypoint through SpiceyPy's ctypes
+        # library with an explicitly packed buffer, then its real error checker.
+        encoded = [value.encode("utf-8") for value in values]
+        vallen = max(3, max((len(value) + 1 for value in encoded), default=3))
+        buffer = ctypes.create_string_buffer(
+            b"".join(value.ljust(vallen, b"\0") for value in encoded),
+            max(1, len(encoded) * vallen),
         )
+        libspice.ekaclc_c(handle, segment.segno, stypes.string_to_char_p(step.column),
+            vallen, buffer, stypes.to_int_vector(sizes),
+            stypes.to_int_vector(step.nlflgs), stypes.to_int_vector(segment.rcptrs),
+            stypes.to_int_vector([0] * nrows))
+        sp.check_for_spice_error(sp.ekaclc)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEkEkffld):

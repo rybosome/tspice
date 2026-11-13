@@ -3,21 +3,213 @@
     "caseId": "ek-ekgc-happy-read-two-rows",
     "description": "ekgc reads string query results from the loaded EK fixture",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
-      { "op": "ek.ekfind", "query": "SELECT NAME FROM PY_PARITY_DATA" },
-      { "op": "ek.ekgc", "selidx": 0, "row": 0, "elment": 0 },
-      { "op": "ek.ekgc", "selidx": 0, "row": 1, "elment": 0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/py-parity-minimal.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT NAME FROM PY_PARITY_DATA"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekgc-invalid-row-error",
     "description": "ekgc reports row-index errors for out-of-range query rows",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
-      { "op": "ek.ekfind", "query": "SELECT NAME FROM PY_PARITY_DATA" },
-      { "op": "ek.ekgc", "selidx": 0, "row": 99, "elment": 0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/py-parity-minimal.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT NAME FROM PY_PARITY_DATA"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 99,
+        "elment": 0
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ekgc-audit-vectors-nulls-and-missing",
+    "description": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 9
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekgc-audit-wrong-selected-type",
+    "description": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT IV FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTYPE"]
+    }
+  },
+  {
+    "caseId": "ek-ekgc-audit-invalid-selected-index",
+    "description": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 1,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ekgc-audit-empty-result-row",
+    "description": "Zero selected rows make row0 invalid, distinct from a missing vector element.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV FROM AUDIT_QUERY WHERE KEY < 0"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ekgc-audit-full-1024-character-value",
+    "description": "Compare all1024 characters through real raw return and an explicitly sized actual SpiceyPy buffer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV FROM AUDIT_QUERY WHERE KEY = 20"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

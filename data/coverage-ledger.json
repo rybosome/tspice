@@ -90,8 +90,8 @@
           "ek-2"
         ],
         "prs": [],
-        "nextAction": "Audit column writing/finalization and query tri-state results after the separate eight-routine EK file/segment lifecycle batch; actual helpers alone do not certify these routines.",
-        "record": null
+        "nextAction": "Eight column/query routines reviewed; run full required JS/native lanes, record source-bound observations and open the dependent PR after focused storage, NULL, byte-width and oracle repairs.",
+        "record": "data/parity-audits/ek-1.json"
       },
       {
         "id": "ek-2",
@@ -109,7 +109,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/696"
         ],
-        "nextAction": "Observed all15 exact-source CI jobs green with actual production native/live both-backend execution. Wait for verification-metadata CI and explicit REST rebaseability; continue independent baseline audits.",
+        "nextAction": "Lifecycle reviewed/local lanes passed in #696; preserve judgments and refresh source-bound observations after dependent shared-C fixes.",
         "record": "data/parity-audits/ek-2.json"
       },
       {
@@ -386,16 +386,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 142,
-        "reviewed": 0,
+        "unreviewed": 134,
+        "reviewed": 28,
         "needs-repair": 0,
-        "verified": 20
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 142,
-        "reviewed": 0,
+        "unreviewed": 134,
+        "reviewed": 28,
         "needs-repair": 0,
-        "verified": 20
+        "verified": 0
       }
     }
   },
@@ -414,7 +414,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 346,
+    "scenarios": 378,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -10661,13 +10661,15 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 252
+          "line": 298
         }
       },
       "mapping": {
         "classification": "same-named-cspice-entrypoint",
         "cspiceEntrypoints": [
           "ekaclc_c",
+          "ekssum_c",
+          "eqstr_c",
           "erract_c",
           "errprt_c",
           "failed_c",
@@ -10680,6 +10682,8 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekaclc_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10693,6 +10697,8 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekaclc_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10701,7 +10707,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -10712,7 +10718,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
-            "line": 817
+            "line": 876
           }
         }
       ],
@@ -10733,7 +10739,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1128
+                "line": 1130
               },
               "calls": [
                 "tspice_ekaclc"
@@ -10745,6 +10751,8 @@
           ],
           "cspiceEntrypoints": [
             "ekaclc_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10762,7 +10770,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 854
+            "line": 869
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -10772,6 +10780,8 @@
           ],
           "cspiceEntrypoints": [
             "ekaclc_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10789,6 +10799,156 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekaclc-audit-all-null-variable",
+            "source": "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekaclc",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgc",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekaclc-audit-blank-strings",
+            "source": "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekaclc",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgc",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "All three actual empty strings are concrete non-NULL values; two-byte minimum slots avoid STRINGTOOSHORT without changing observable data.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekaclc-audit-fixed-vectors-and-null",
+            "source": "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekaclc",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgc",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekaclc-audit-single-character-slots",
+            "source": "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekaclc",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgc",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Six literal single-character values survive fixed-width padding; a minimal two-byte C slot previously read every value back as blank in N0067 ZZEKAC06.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekaclc-audit-variable-vectors-and-null",
+            "source": "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekaclc",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgc",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekaclc-audit-wrong-column-type",
+            "source": "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekaclc",
+              "ek.ekacli",
+              "ek.ekifld",
+              "ek.ekopn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekaclc-happy-char-column-visible-via-ekgc",
             "source": "packages/py-parity-checking/src/cases/ek/ekaclc.cases.json",
             "expectation": "success",
@@ -10803,7 +10963,14 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekaclc-written strings are observable through ekfind and ekgc. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekaclc-missing-column-error",
@@ -10815,18 +10982,46 @@
               "ek.ekopn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekaclc errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekaclc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekaclc -> typed WASM helper -> configured/generated/binary _tspice_ekaclc -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -10842,13 +11037,15 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 229
+          "line": 264
         }
       },
       "mapping": {
         "classification": "same-named-cspice-entrypoint",
         "cspiceEntrypoints": [
           "ekacld_c",
+          "ekssum_c",
+          "eqstr_c",
           "erract_c",
           "errprt_c",
           "failed_c",
@@ -10861,6 +11058,8 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekacld_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10874,6 +11073,8 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekacld_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10882,7 +11083,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -10893,7 +11094,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
-            "line": 737
+            "line": 792
           }
         }
       ],
@@ -10914,7 +11115,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1127
+                "line": 1129
               },
               "calls": [
                 "tspice_ekacld"
@@ -10926,6 +11127,8 @@
           ],
           "cspiceEntrypoints": [
             "ekacld_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10943,7 +11146,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 768
+            "line": 778
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -10953,6 +11156,8 @@
           ],
           "cspiceEntrypoints": [
             "ekacld_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -10970,6 +11175,104 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekacld-audit-all-null-variable",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacld.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekacld",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgd",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekacld-audit-fixed-vectors-and-null",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacld.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekacld",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgd",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekacld-audit-variable-vectors-and-null",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacld.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekacld",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgd",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete DOUBLE PRECISION column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekacld-audit-wrong-column-type",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacld.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekacld",
+              "ek.ekacli",
+              "ek.ekifld",
+              "ek.ekopn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekacld-happy-double-column-visible-via-ekgd",
             "source": "packages/py-parity-checking/src/cases/ek/ekacld.cases.json",
             "expectation": "success",
@@ -10984,7 +11287,14 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekacld-written doubles are observable through ekfind and ekgd. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekacld-missing-column-error",
@@ -10996,18 +11306,46 @@
               "ek.ekopn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekacld errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacld -> typed WASM helper -> configured/generated/binary _tspice_ekacld -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -11023,13 +11361,15 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 206
+          "line": 233
         }
       },
       "mapping": {
         "classification": "same-named-cspice-entrypoint",
         "cspiceEntrypoints": [
           "ekacli_c",
+          "ekssum_c",
+          "eqstr_c",
           "erract_c",
           "errprt_c",
           "failed_c",
@@ -11042,6 +11382,8 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekacli_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11055,6 +11397,8 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekacli_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11063,7 +11407,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -11074,7 +11418,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
-            "line": 657
+            "line": 708
           }
         }
       ],
@@ -11095,7 +11439,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1126
+                "line": 1128
               },
               "calls": [
                 "tspice_ekacli"
@@ -11107,6 +11451,8 @@
           ],
           "cspiceEntrypoints": [
             "ekacli_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11124,7 +11470,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 684
+            "line": 689
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -11134,6 +11480,8 @@
           ],
           "cspiceEntrypoints": [
             "ekacli_c",
+            "ekssum_c",
+            "eqstr_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11151,6 +11499,100 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekacli-audit-all-null-variable",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacli.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgi",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete INTEGER column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekacli-audit-fixed-vectors-and-null",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacli.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgi",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete INTEGER column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekacli-audit-variable-vectors-and-null",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacli.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgi",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual complete INTEGER column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekacli-audit-wrong-column-type",
+            "source": "packages/py-parity-checking/src/cases/ek/ekacli.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekacli",
+              "ek.ekifld",
+              "ek.ekopn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekacli-happy-integer-column-visible-via-ekgi",
             "source": "packages/py-parity-checking/src/cases/ek/ekacli.cases.json",
             "expectation": "success",
@@ -11165,7 +11607,14 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekacli-written integers are observable through ekfind and ekgi. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekacli-missing-column-error",
@@ -11177,18 +11626,46 @@
               "ek.ekopn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekacli errors when writing to a column not declared in the segment. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacli -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekacli -> typed WASM helper -> configured/generated/binary _tspice_ekacli -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -11304,7 +11781,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1115
+                "line": 1117
               },
               "calls": [
                 "tspice_ekcls"
@@ -11333,7 +11810,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 317
+            "line": 321
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -11465,32 +11942,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> Node typed adapter -> registered N-API handler -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> WASM typed helper -> configured compiled _tspice_ekcls export -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -11514,13 +11987,14 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 263
+          "line": 316
         }
       },
       "mapping": {
         "classification": "same-named-cspice-entrypoint",
         "cspiceEntrypoints": [
           "ekffld_c",
+          "ekssum_c",
           "erract_c",
           "errprt_c",
           "failed_c",
@@ -11533,6 +12007,7 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekffld_c",
+            "ekssum_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11546,6 +12021,7 @@
           "reason": null,
           "cspiceEntrypoints": [
             "ekffld_c",
+            "ekssum_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11554,7 +12030,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -11565,7 +12041,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
-            "line": 916
+            "line": 1028
           }
         }
       ],
@@ -11586,7 +12062,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1129
+                "line": 1131
               },
               "calls": [
                 "tspice_ekffld"
@@ -11598,6 +12074,7 @@
           ],
           "cspiceEntrypoints": [
             "ekffld_c",
+            "ekssum_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11615,7 +12092,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 964
+            "line": 986
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -11625,6 +12102,7 @@
           ],
           "cspiceEntrypoints": [
             "ekffld_c",
+            "ekssum_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -11642,6 +12120,55 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekffld-audit-persisted-multitype-columns",
+            "source": "packages/py-parity-checking/src/cases/ek/ekffld.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekaclc",
+              "ek.ekacld",
+              "ek.ekacli",
+              "ek.ekcls",
+              "ek.ekffld",
+              "ek.ekfind",
+              "ek.ekgc",
+              "ek.ekgd",
+              "ek.ekgi",
+              "ek.ekifld",
+              "ek.ekopn",
+              "kernels.furnsh"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual finalized indexed integer, double and UTF-8 character columns persist through close/reload; all rows and selected column ordering reach assertions.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekffld-audit-wrong-active-segment",
+            "source": "packages/py-parity-checking/src/cases/ek/ekffld.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekacli",
+              "ek.ekffld",
+              "ek.ekifld",
+              "ek.ekopn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Valid row-length backing for another existing segment reaches actual WRONGSEGMENT; a missing harness label alone cannot establish a raw error path.. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekffld-happy-finalize-and-count-segments",
             "source": "packages/py-parity-checking/src/cases/ek/ekffld.cases.json",
             "expectation": "success",
@@ -11654,7 +12181,14 @@
               "ek.ekopn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekffld finalizes fast-write data so segment count becomes observable. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekffld-missing-segment-id-error",
@@ -11664,18 +12198,46 @@
               "ek.ekffld"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekffld errors when segmentId does not resolve in workflow state. The actual raw operation writes/finalizes real files. Its void result alone is not success evidence: complete typed getter values after close/reload reach recursive parity and independent authored literal assertions. This case stops in workflow label lookup; actual raw error evidence is supplied separately by WRONGSEGMENT and public storage/recovery tests.",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekffld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekffld -> typed WASM helper -> configured/generated/binary _tspice_ekffld -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -11691,7 +12253,7 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 134
+          "line": 138
         }
       },
       "mapping": {
@@ -11731,7 +12293,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -11763,7 +12325,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1120
+                "line": 1122
               },
               "calls": [
                 "tspice_ekfind"
@@ -11792,7 +12354,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 396
+            "line": 400
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -11819,6 +12381,83 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekfind-audit-full-parse-diagnostic",
+            "source": "packages/py-parity-checking/src/cases/ek/ekfind.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgi",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual273-character name-resolution diagnostic is returned as ok:false, not thrown/truncated; then a new valid query and concrete data prove recovery.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekfind-audit-syntax-and-column-order",
+            "source": "packages/py-parity-checking/src/cases/ek/ekfind.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgc",
+              "ek.ekgd",
+              "ek.ekgi",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Syntax failure stays an ok:false result, followed by reordered SELECT columns, vector element1 and leading blanks in character data.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekfind-audit-zero-rows-and-replacement",
+            "source": "packages/py-parity-checking/src/cases/ek/ekfind.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgi",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Distinguish successful zero rows from errors, then replace selection and observe exact first/last descending keys30/10.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekfind-happy-query-loaded-fixture",
             "source": "packages/py-parity-checking/src/cases/ek/ekfind.cases.json",
             "expectation": "success",
@@ -11832,7 +12471,14 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekfind returns nmrows for a valid query over the fixed EK fixture. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekfind-query-error-shape-success",
@@ -11848,18 +12494,47 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekfind parse errors are returned in-value instead of throwing. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekfind -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekfind -> typed WASM helper -> configured/generated/binary _tspice_ekfind -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -11875,7 +12550,7 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 144
+          "line": 153
         }
       },
       "mapping": {
@@ -11915,7 +12590,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -11947,7 +12622,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1121
+                "line": 1123
               },
               "calls": [
                 "tspice_ekgc"
@@ -11976,7 +12651,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 448
+            "line": 453
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -12003,6 +12678,128 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekgc-audit-empty-result-row",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgc",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgc-audit-full-1024-character-value",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgc",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare all1024 characters through real raw return and an explicitly sized actual SpiceyPy buffer.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgc-audit-invalid-selected-index",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgc",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgc-audit-vectors-nulls-and-missing",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgc",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgc-audit-wrong-selected-type",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgc",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekgc-happy-read-two-rows",
             "source": "packages/py-parity-checking/src/cases/ek/ekgc.cases.json",
             "expectation": "success",
@@ -12017,7 +12814,14 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekgc reads string query results from the loaded EK fixture. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekgc-invalid-row-error",
@@ -12034,18 +12838,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekgc reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgc -> typed WASM helper -> configured/generated/binary _tspice_ekgc -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -12061,7 +12893,7 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 154
+          "line": 168
         }
       },
       "mapping": {
@@ -12101,7 +12933,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -12133,7 +12965,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1122
+                "line": 1124
               },
               "calls": [
                 "tspice_ekgd"
@@ -12162,7 +12994,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 500
+            "line": 505
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -12189,6 +13021,103 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekgd-audit-empty-result-row",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgd",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgd-audit-invalid-selected-index",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgd",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgd-audit-vectors-nulls-and-missing",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgd",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgd-audit-wrong-selected-type",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgd",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekgd-happy-read-double-results",
             "source": "packages/py-parity-checking/src/cases/ek/ekgd.cases.json",
             "expectation": "success",
@@ -12203,7 +13132,14 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekgd reads double-precision query results from a workflow-created table. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekgd-invalid-row-error",
@@ -12220,7 +13156,13 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekgd reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekgd-invalid-selidx-error",
@@ -12237,7 +13179,13 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekgd reports invalid-select-index errors for out-of-range selidx values. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekgd-valid-row-out-of-range-element-found-false",
@@ -12254,18 +13202,47 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekgd returns found=false when elment is out-of-range for a valid query row. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgd -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgd -> typed WASM helper -> configured/generated/binary _tspice_ekgd -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -12281,7 +13258,7 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 164
+          "line": 183
         }
       },
       "mapping": {
@@ -12321,7 +13298,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -12353,7 +13330,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1123
+                "line": 1125
               },
               "calls": [
                 "tspice_ekgi"
@@ -12382,7 +13359,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 545
+            "line": 550
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -12409,6 +13386,103 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ek-ekgi-audit-empty-result-row",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgi",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Zero selected rows make row0 invalid, distinct from a missing vector element.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgi-audit-invalid-selected-index",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgi",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgi-audit-vectors-nulls-and-missing",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgi.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgi",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
+            "caseId": "ek-ekgi-audit-wrong-selected-type",
+            "source": "packages/py-parity-checking/src/cases/ek/ekgi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ek.ekfind",
+              "ek.ekgi",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-query.ek",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
+          },
+          {
             "caseId": "ek-ekgi-happy-read-integer-results",
             "source": "packages/py-parity-checking/src/cases/ek/ekgi.cases.json",
             "expectation": "success",
@@ -12423,7 +13497,14 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekgi reads integer query results from a workflow-created table. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekgi-invalid-row-error",
@@ -12440,7 +13521,13 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekgi reports row-index errors for out-of-range query rows. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekgi-invalid-selidx-error",
@@ -12457,7 +13544,13 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "ekgi reports invalid-select-index errors for out-of-range selidx values. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           },
           {
             "caseId": "ek-ekgi-valid-row-out-of-range-element-found-false",
@@ -12474,18 +13567,47 @@
               "kernels.furnsh"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ekgi returns found=false when elment is out-of-range for a valid query row. Actual raw query/getter return reaches StepOutput.value with complete discriminant, value/string or diagnostic; recursive comparison and authored literal tests distinguish concrete, NULL, missing and actual errors. ",
+              "record": "data/parity-audits/ek-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ek-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgi -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ekgi -> typed WASM helper -> configured/generated/binary _tspice_ekgi -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
+          "executions": [
+            "local-ek-columns-queries-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ek-1.json"
         }
       }
     },
@@ -12501,7 +13623,7 @@
         "domain": "ek",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ek.ts",
-          "line": 185
+          "line": 204
         }
       },
       "mapping": {
@@ -12573,7 +13695,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1125
+                "line": 1127
               },
               "calls": [
                 "tspice_ekifld"
@@ -12602,7 +13724,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 594
+            "line": 599
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -12852,32 +13974,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> Node typed adapter -> registered N-API handler -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> WASM typed helper -> configured compiled _tspice_ekifld export -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -12987,7 +14105,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1118
+                "line": 1120
               },
               "calls": [
                 "tspice_eknseg"
@@ -13016,7 +14134,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 365
+            "line": 369
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -13115,32 +14233,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> Node typed adapter -> registered N-API handler -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> WASM typed helper -> configured compiled _tspice_eknseg export -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -13229,7 +14343,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1116
+                "line": 1118
               },
               "calls": [
                 "tspice_ekntab"
@@ -13258,7 +14372,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 326
+            "line": 330
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -13393,32 +14507,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> Node typed adapter -> registered N-API handler -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> WASM typed helper -> configured compiled _tspice_ekntab export -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -13507,7 +14617,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1114
+                "line": 1116
               },
               "calls": [
                 "tspice_ekopn"
@@ -13536,7 +14646,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 269
+            "line": 273
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -13656,32 +14766,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> Node typed adapter -> registered N-API handler -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> WASM typed helper -> configured compiled _tspice_ekopn export -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -13770,7 +14876,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1112
+                "line": 1114
               },
               "calls": [
                 "tspice_ekopr"
@@ -13799,7 +14905,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 207
+            "line": 211
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -13896,32 +15002,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> Node typed adapter -> registered N-API handler -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> WASM typed helper -> configured compiled _tspice_ekopr export -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -14017,7 +15119,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1113
+                "line": 1115
               },
               "calls": [
                 "tspice_ekopw"
@@ -14046,7 +15148,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 238
+            "line": 242
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -14172,32 +15274,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> Node typed adapter -> registered N-API handler -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> WASM typed helper -> configured compiled _tspice_ekopw export -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -14321,7 +15419,7 @@
               "registration": "RegisterEk",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ek.cc",
-                "line": 1117
+                "line": 1119
               },
               "calls": [
                 "tspice_ektnam"
@@ -14350,7 +15448,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ek.ts",
-            "line": 338
+            "line": 342
           },
           "factory": "createEkApi",
           "delegation": null,
@@ -14476,32 +15574,28 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> Node typed adapter -> registered N-API handler -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> WASM typed helper -> configured compiled _tspice_ektnam export -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
       }
@@ -20907,16 +22001,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20929,16 +22021,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -30809,16 +31899,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -30827,16 +31915,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -33494,16 +34580,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33516,16 +34600,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33804,16 +34886,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -33822,16 +34902,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34040,16 +35118,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34062,16 +35138,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34277,16 +35351,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34299,16 +35371,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34539,16 +35609,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34561,16 +35629,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34797,16 +35863,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34819,16 +35883,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35037,16 +36099,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35059,16 +36119,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35330,16 +36388,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35352,16 +36408,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35574,16 +36628,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35596,16 +36648,14 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36510,16 +37560,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-node",
-            "ci-ek-lifecycle-43385411734-node"
+            "local-ek-columns-queries-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -36528,16 +37576,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ek-lifecycle-2026-11-13-wasm",
-            "ci-ek-lifecycle-43385411734-wasm"
+            "local-ek-columns-queries-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
