@@ -1,6 +1,6 @@
 KPL/PCK
 
-\\begindata
+\begindata
 
   TSPICE_PARITY_DOUBLE_VAR = ( 1.5 2.25 -3.75 )
 
@@ -8,7 +8,7 @@ KPL/PCK
 
   TSPICE_PARITY_CHAR_VAR = ( 'alpha' 'beta' )
 
-\\begintext
+\begintext
 
 This is a tiny text kernel fixture used by parity-checking scenarios.
 

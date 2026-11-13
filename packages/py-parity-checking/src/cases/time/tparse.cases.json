@@ -2,13 +2,71 @@
   {
     "caseId": "time-tparse-happy-utc-iso",
     "description": "Parses UTC ISO timestamp to UTC seconds past J2000",
-    "workflow": [{ "op": "time.tparse", "timstr": "2000-01-01T12:00:00" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "time.tparse",
+        "timstr": "2000-01-01T12:00:00"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-tparse-invalid-string-error",
     "description": "Representative parse error for invalid UTC time string",
-    "workflow": [{ "op": "time.tparse", "timstr": "NOT_PARSEABLE_UTC_STRING" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "time.tparse",
+        "timstr": "NOT_PARSEABLE_UTC_STRING"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["unrecognizable"]
+    }
+  },
+  {
+    "caseId": "time-tparse-audit-formal-days-and-fractions",
+    "description": "tparse: formal days and fractions, compare complete actual live SpiceyPy outputs/effects",
+    "workflow": [
+      {
+        "op": "time.tparse",
+        "timstr": "2000-01-02T12:00:00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "1999-12-31T11:59:59.125"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "2016-12-31T23:59:60"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "2000 FEB 29 00:00:00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "2000-002T12:00:01.25"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tparse-audit-time-system-not-supported",
+    "description": "tparse: time system not supported, compare complete actual live SpiceyPy outputs/effects",
+    "workflow": [
+      {
+        "op": "time.tparse",
+        "timstr": "2000 JAN 1 12:00 TDB"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["does not support"]
+    }
   }
 ]

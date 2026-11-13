@@ -3,12 +3,86 @@
     "caseId": "kernels-kclear-clears-loaded-kernels-success",
     "description": "kclear clears previously loaded kernels from the kernel database",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.furnsh", "file": "kernels/kernel-pool-parity.tpc" },
-      { "op": "kernels.ktotal", "kind": "ALL" },
-      { "op": "kernels.kclear" },
-      { "op": "kernels.ktotal", "kind": "ALL" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/kernel-pool-parity.tpc"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kclear-audit-pool-and-repeat",
+    "description": "Clear removes both registrations and user pool values and supports repeated clear/reload.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/kernel-pool-parity.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "TSPICE_PARITY_DOUBLE_VAR",
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "AUDIT_CLEAR",
+        "values": [2, 4, 8]
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "TSPICE_PARITY_DOUBLE_VAR"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "AUDIT_CLEAR"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

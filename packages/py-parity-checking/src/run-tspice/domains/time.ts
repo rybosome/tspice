@@ -17,7 +17,22 @@ import type {
   StepTimeTimdefSet,
   StepTimeUnitim,
 } from "../../case-types.js";
-import type { RunTspiceContext } from "../context.js";
+import { registerFinalizer, type RunTspiceContext } from "../context.js";
+
+function preserveTimeDefaults(context: RunTspiceContext): void {
+  const label = "time.defaults.restore";
+  if (context.lifecycle.finalizers.some((f) => f.label === label)) return;
+  const calendar = context.spice.raw.timdef("GET", "CALENDAR");
+  const system = context.spice.raw.timdef("GET", "SYSTEM");
+  const zone = context.spice.raw.timdef("GET", "ZONE");
+  registerFinalizer(context, label, () => {
+    context.spice.raw.timdef("SET", "CALENDAR", calendar);
+    // SYSTEM and ZONE are mutually exclusive. Restoring the nonempty setting
+    // also clears the other; passing an empty SET value is invalid.
+    if (system) context.spice.raw.timdef("SET", "SYSTEM", system);
+    else if (zone) context.spice.raw.timdef("SET", "ZONE", zone);
+  });
+}
 
 type TimeStep =
   | StepTimeStr2Et
@@ -70,11 +85,25 @@ export function runTimeStep(
         value: context.spice.raw.deltet(step.epoch, step.eptype),
       };
 
-    case "time.unitim":
+    case "time.unitim": {
+      const epoch = context.spice.raw.unitim(
+        step.epoch,
+        step.insys,
+        step.outsys,
+      );
+      const julian = ["JED", "JDTDB", "JDTDT"].includes(
+        step.outsys.trim().toUpperCase(),
+      );
       return {
         op: step.op,
-        value: context.spice.raw.unitim(step.epoch, step.insys, step.outsys),
+        // Retain the raw output and observe its offset at second scale. Relative
+        // tolerance on a 2.45-million-day Julian epoch otherwise hides ~0.2 s.
+        value: {
+          epoch,
+          secondsPastJ2000: julian ? (epoch - 2451545) * 86400 : epoch,
+        },
       };
+    }
 
     case "time.tparse":
       return {
@@ -96,6 +125,7 @@ export function runTimeStep(
         };
       }
 
+      preserveTimeDefaults(context);
       context.spice.raw.timdef("SET", step.item, step.value);
       return { op: step.op, value: null };
 

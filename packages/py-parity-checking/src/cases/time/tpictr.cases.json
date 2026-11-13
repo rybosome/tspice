@@ -9,12 +9,66 @@
         "pictur": "X"
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-tpictr-empty-sample-error",
     "description": "Representative argument-validation error for empty sample",
-    "workflow": [{ "op": "time.tpictr", "sample": "", "pictur": "X" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "time.tpictr",
+        "sample": "",
+        "pictur": "X"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "time-tpictr-audit-sample-driven-independent-of-template",
+    "description": "tpictr: sample driven independent of template, compare complete actual live SpiceyPy outputs/effects",
+    "workflow": [
+      {
+        "op": "time.tpictr",
+        "sample": "Thu Oct 01 11:11:11 PDT 1111",
+        "pictur": "X"
+      },
+      {
+        "op": "time.tpictr",
+        "sample": "24 Mar 2018  16:23:00 UTC",
+        "pictur": "X"
+      },
+      {
+        "op": "time.tpictr",
+        "sample": "24 Mar 2018  16:23:00 UTC",
+        "pictur": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "
+      },
+      {
+        "op": "time.tpictr",
+        "sample": "24 Mar 2018                                                                                                                                                                                                                                                                                                  16:23:00 UTC",
+        "pictur": "X"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tpictr-audit-unrecognized-sample",
+    "description": "tpictr: unrecognized sample, compare complete actual live SpiceyPy outputs/effects",
+    "workflow": [
+      {
+        "op": "time.tpictr",
+        "sample": "NOT_AN_EPOCH",
+        "pictur": "X"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["recogniz"]
+    }
   }
 ]

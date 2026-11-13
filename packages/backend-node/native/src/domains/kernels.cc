@@ -264,13 +264,16 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
   }
 
   const std::string keywdRaw = info[0].As<Napi::String>().Utf8Value();
-  const std::string keywd = tspice_napi::TrimAsciiWhitespace(keywdRaw);
+  const std::string keywd = tspice_napi::TrimAsciiWhitespace(keywdRaw.substr(0, keywdRaw.find('\0')));
   if (keywd.empty()) {
     ThrowSpiceError(Napi::RangeError::New(env, "kxtrct keywd must be a non-empty string"));
     return Napi::Object::New(env);
   }
 
-  const std::string wordsq = info[2].As<Napi::String>().Utf8Value();
+  const std::string wordsqRaw = info[2].As<Napi::String>().Utf8Value();
+  // The CSPICE C entrypoint sees only the C-string prefix; its Fortran length
+  // must describe that prefix, not include a NUL-filled suffix.
+  const std::string wordsq = wordsqRaw.substr(0, wordsqRaw.find('\0'));
 
   // Conservative guard against huge native allocations (wordsqOut + substr are
   // each allocated at ~wordsq.size() bytes).
@@ -288,7 +291,7 @@ static Napi::Object Kxtrct(const Napi::CallbackInfo& info) {
   std::vector<std::string> terms;
   terms.reserve(termsArg.values.size());
   for (const std::string& raw : termsArg.values) {
-    std::string t = tspice_napi::TrimAsciiWhitespace(raw);
+    std::string t = tspice_napi::TrimAsciiWhitespace(raw.substr(0, raw.find('\0')));
     if (!t.empty()) {
       terms.push_back(std::move(t));
     }

@@ -3,19 +3,164 @@
     "caseId": "time-sct2e-happy-with-cook-sclk",
     "description": "Converts cookbook encoded SCLK ticks to ET",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
-      { "op": "time.sct2e", "sc": -77, "sclkdp": 4319435080.0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/cook_01.tsc"
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -77,
+        "sclkdp": 4319435080.0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-sct2e-missing-sclk-error",
     "description": "Representative sct2e error when SCLK kernel is not loaded",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.sct2e", "sc": -77, "sclkdp": 4319435080.0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -77,
+        "sclkdp": 4319435080.0
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+    "description": "sct2e: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 0
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 0.5
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 1.25
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 320
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 1022.5
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 1023
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 1023.5
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 4094
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sct2e-audit-negative-clock-range",
+    "description": "sct2e: negative clock range, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+    "description": "sct2e: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGTIMEINFO"]
+    }
+  },
+  {
+    "caseId": "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+    "description": "Loading LSK makes non-TDB clock mapping perform the actual time-system conversion.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.sct2e",
+        "sc": -12345,
+        "sclkdp": 320.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

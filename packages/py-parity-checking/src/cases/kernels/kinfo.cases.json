@@ -3,10 +3,86 @@
     "caseId": "kernels-kinfo-found-and-miss-success",
     "description": "kinfo returns metadata for loaded kernels and found=false for unknown kernels",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.kinfo", "path": "kernels/naif0012.tls" },
-      { "op": "kernels.kinfo", "path": "kernels/does-not-exist.tls" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/does-not-exist.tls"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kinfo-audit-cache-invalidation",
+    "description": "Cached misses/hits are invalidated by load, unload, clear and reloading on the same backend.",
+    "workflow": [
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/file-io-minimal.bsp"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/file-io-minimal.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kinfo-audit-empty-path",
+    "description": "Empty lookup follows the actual raw contract.",
+    "workflow": [
+      {
+        "op": "kernels.kinfo",
+        "path": ""
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

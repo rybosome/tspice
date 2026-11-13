@@ -12,7 +12,6 @@ import type {
   StepOutput,
 } from "../../case-types.js";
 import {
-  normalizeKernelPathForParity,
   resolvePathRef,
   toPathRef,
   toVirtualKernelPath,
@@ -28,6 +27,18 @@ type KernelsStep =
   | StepKernelsKdata
   | StepKernelsKxtrct
   | StepKernelsUnload;
+
+function metadataPath(context: RunTspiceContext, value: string): string {
+  if (value === "") return "";
+  const normalized = value.replace(/\\/g, "/");
+  const fixtureRoot = context.paths.fixturesRoot.replace(/\\/g, "/") + "/";
+  const scratchRoot = context.paths.scratchRoot.replace(/\\/g, "/") + "/";
+  if (normalized.startsWith(fixtureRoot))
+    return normalized.slice(fixtureRoot.length);
+  if (normalized.startsWith(scratchRoot))
+    return "scratch/" + normalized.slice(scratchRoot.length);
+  return normalized.replace(/^\/?kernels\/py-parity\/|^py-parity\//, "");
+}
 
 const KPLFRM_MAX_IDS = 1_024;
 
@@ -75,7 +86,14 @@ export function runKernelsStep(
 
         // Scratch refs may point to files created directly inside the backend
         // (e.g. EK writers in WASM), in which case no host file exists.
-        if (fs.existsSync(resolvedScratchPath)) {
+        if (
+          context.spice.raw.kind === "node" &&
+          fs.existsSync(resolvedScratchPath)
+        ) {
+          // Preserve physical identity when a writer created this host file:
+          // staging a copy can hide CSPICE read/write-open conflicts.
+          context.spice.raw.furnsh(resolvedScratchPath);
+        } else if (fs.existsSync(resolvedScratchPath)) {
           const bytes = fs.readFileSync(resolvedScratchPath);
           context.spice.raw.furnsh({
             path: virtualPath,
@@ -86,11 +104,13 @@ export function runKernelsStep(
         }
       } else {
         const resolvedPath = resolvePathRef(context.paths, pathRef);
-        const bytes = fs.readFileSync(resolvedPath);
-        context.spice.raw.furnsh({
-          path: virtualPath,
-          bytes,
-        });
+        if (fs.existsSync(resolvedPath)) {
+          const bytes = fs.readFileSync(resolvedPath);
+          context.spice.raw.furnsh({ path: virtualPath, bytes });
+        } else {
+          // A missing fixture must exercise raw furnsh's actual SPICE error.
+          context.spice.raw.furnsh(virtualPath);
+        }
       }
 
       context.state.kernels.loadedVirtualKernelPaths.push(virtualPath);
@@ -109,12 +129,26 @@ export function runKernelsStep(
         return { op: step.op, value: { found: false } };
       }
 
+      let handleMatchesEntry = false;
+      for (let i = 0; i < context.spice.raw.ktotal("ALL"); i++) {
+        const entry = context.spice.raw.kdata(i, "ALL");
+        if (
+          entry.found &&
+          metadataPath(context, entry.file) ===
+            metadataPath(context, resolveKernelPathForTspice(step.path)) &&
+          entry.handle === out.handle
+        ) {
+          handleMatchesEntry = true;
+        }
+      }
       return {
         op: step.op,
         value: {
           found: true,
           filtyp: out.filtyp,
-          source: normalizeKernelPathForParity(out.source),
+          source: metadataPath(context, out.source),
+          handleIsZero: out.handle === 0,
+          handleMatchesEntry,
         },
       };
     }
@@ -141,9 +175,10 @@ export function runKernelsStep(
         op: step.op,
         value: {
           found: true,
-          file: normalizeKernelPathForParity(out.file),
+          file: metadataPath(context, out.file),
           filtyp: out.filtyp,
-          source: normalizeKernelPathForParity(out.source),
+          source: metadataPath(context, out.source),
+          handleIsZero: out.handle === 0,
         },
       };
     }

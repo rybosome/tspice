@@ -3,19 +3,113 @@
     "caseId": "time-scdecd-happy-with-cook-sclk",
     "description": "Decodes cookbook SCLK ticks to partitioned clock string",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
-      { "op": "time.scdecd", "sc": -77, "sclkdp": 4319435080.0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/cook_01.tsc"
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -77,
+        "sclkdp": 4319435080.0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-scdecd-missing-sclk-error",
     "description": "Representative scdecd error when SCLK kernel is not loaded",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.scdecd", "sc": -77, "sclkdp": 4319435080.0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -77,
+        "sclkdp": 4319435080.0
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+    "description": "scdecd: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 0
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 0.5
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 1.25
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 320
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 1022.5
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 1023
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 1023.5
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": 4094
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scdecd-audit-negative-clock-range",
+    "description": "scdecd: negative clock range, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scdecd",
+        "sc": -12345,
+        "sclkdp": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
   }
 ]

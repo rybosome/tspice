@@ -85,6 +85,10 @@ export function createKernelsApi(
     },
 
     kinfo: (path: string) => {
+      // CSPICE kinfo treats an empty/blank filename as an ordinary miss.
+      if (typeof path !== "string")
+        throw new TypeError("kinfo path must be a string");
+      if (/^ *$/.test(path)) return { found: false };
       const resolved = stager.resolvePathForSpice(path);
 
       const result = native.kinfo(resolved);
@@ -173,6 +177,8 @@ export function createKernelsApi(
     },
 
     kdata: (which: number, kind: KernelKindInput = "ALL") => {
+      if (!Number.isInteger(which) || which < -2147483648 || which > 2147483647)
+        throw new RangeError("kdata which must be a signed 32-bit integer");
       if (which < 0) {
         return { found: false };
       }
