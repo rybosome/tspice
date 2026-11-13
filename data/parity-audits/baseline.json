@@ -225,9 +225,12 @@
         "gfstep_c",
         "gfstol_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy."
+      "dependsOn": ["cell-capacity-prerequisite"],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/684",
+        "https://github.com/rybosome/tspice/pull/704"
+      ],
+      "nextAction": "Eight semantic reviews and focused actual Node/WASM/locked-SpiceyPy comparisons exist. Finish both required lanes and canonical CI before completion. Reuses exact authored geometry fixtures from #704; base #684 supplies opaque windows."
     },
     {
       "id": "ids-names",

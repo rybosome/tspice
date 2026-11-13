@@ -253,10 +253,15 @@
           "gfstep_c",
           "gfstol_c"
         ],
-        "dependsOn": [],
-        "prs": [],
-        "nextAction": "Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy.",
-        "record": null
+        "dependsOn": [
+          "cell-capacity-prerequisite"
+        ],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/684",
+          "https://github.com/rybosome/tspice/pull/704"
+        ],
+        "nextAction": "Eight semantic reviews and focused actual Node/WASM/locked-SpiceyPy comparisons exist. Finish both required lanes and canonical CI before completion. Reuses exact authored geometry fixtures from #704; base #684 supplies opaque windows.",
+        "record": "data/parity-audits/geometry-gf.json"
       },
       {
         "id": "ids-names",
@@ -380,14 +385,14 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 150,
-        "reviewed": 12,
+        "unreviewed": 142,
+        "reviewed": 20,
         "needs-repair": 0,
         "verified": 0
       },
       "wasm": {
-        "unreviewed": 150,
-        "reviewed": 12,
+        "unreviewed": 142,
+        "reviewed": 20,
         "needs-repair": 0,
         "verified": 0
       }
@@ -408,7 +413,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 327,
+    "scenarios": 420,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -16069,7 +16074,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 69
+          "line": 101
         }
       },
       "mapping": {
@@ -16109,7 +16114,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -16120,7 +16125,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 270
+            "line": 299
           }
         }
       ],
@@ -16129,7 +16134,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 131
+            "line": 148
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16170,7 +16175,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 338
+            "line": 332
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16197,6 +16202,914 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfdist-audit-absmax-adjust",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-absmin-adjust",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-bad-correction",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for bad-correction; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-bad-relation",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for bad-relation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-cn",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for CN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-cn-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for CN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-lt",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for LT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-lt-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for LT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-xcn",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XCN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-xcn-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XCN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-xlt",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XLT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-correction-xlt-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XLT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-empty-result",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "A valid condition with no events produces an empty complete output; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-insufficient-result",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for insufficient-result; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-insufficient-workspace",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Internal workspace is separate from ample output capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-negative-adjust",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for negative-adjust; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-negative-step",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for negative-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-negative-workspace",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for negative-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-relation-absmax",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for ABSMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-relation-absmin",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for ABSMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-relation-equal",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for =; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-relation-greater",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for >; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-relation-less",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for <; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-relation-locmax",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for LOCMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-relation-locmin",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for LOCMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-result-replacement",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Search discards existing result intervals rather than unioning them; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-split-confinement",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every interval respects disjoint confinement gaps; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-unknown-observer",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for unknown-observer; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-zero-result-capacity",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for zero-result-capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-zero-step",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for zero-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfdist-audit-zero-workspace",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for zero-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfdist-invalid-nintvls-error",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfdist.cases.json",
             "expectation": "error",
@@ -16211,7 +17124,13 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative gfdist nintvls range validation error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfdist-success",
@@ -16233,18 +17152,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Runs gfdist over a confined interval and inspects the first result interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfdist -> typed node adapter -> actual registered N-API gfdist binding -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfdist -> typed wasm adapter -> actual compiled _tspice_gfdist export -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -16316,7 +17265,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 33
+          "line": 49
         }
       },
       "mapping": {
@@ -16356,7 +17305,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -16367,7 +17316,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 135
+            "line": 155
           }
         }
       ],
@@ -16376,7 +17325,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 68
+            "line": 78
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16417,7 +17366,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 287
+            "line": 270
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16444,6 +17393,150 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfrefn-audit-equal",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrefn-audit-flags-False-False",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrefn-audit-flags-False-True",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrefn-audit-flags-True-False",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrefn-audit-flags-True-True",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrefn-audit-fractional",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrefn-audit-large",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrefn-audit-reversed",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfrefn"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfrefn-invalid-flags-error",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrefn.cases.json",
             "expectation": "error",
@@ -16451,7 +17544,13 @@
               "geometry-gf.gfrefn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative gfrefn error when refinement flags are not booleans; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfrefn-success",
@@ -16461,18 +17560,48 @@
               "geometry-gf.gfrefn"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "gfrefn midpoint-style refinement estimate for a simple interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfrefn -> typed node adapter -> actual registered N-API gfrefn binding -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfrefn -> typed wasm adapter -> actual compiled _tspice_gfrefn export -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -16488,7 +17617,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 39
+          "line": 62
         }
       },
       "mapping": {
@@ -16528,7 +17657,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -16539,7 +17668,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 194
+            "line": 221
           }
         }
       ],
@@ -16548,7 +17677,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 84
+            "line": 97
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16589,7 +17718,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 293
+            "line": 283
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16616,6 +17745,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfrepf-audit-reinitialize",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepf.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wnfetd",
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepf",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Reinitialize/finalize twice without changing the actual window; supplementary live stdout comparison observes finalization; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfrepf-success",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepf.cases.json",
             "expectation": "success",
@@ -16627,7 +17777,15 @@
               "geometry-gf.gfstep"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "gfrepf finalizes progress reporting without perturbing previously configured gfstep behavior; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfrepf-without-init-success",
@@ -16637,18 +17795,48 @@
               "geometry-gf.gfrepf"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "gfrepf is currently a no-op when called without prior gfrepi setup; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfrepf -> typed node adapter -> actual registered N-API gfrepf binding -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfrepf -> typed wasm adapter -> actual compiled _tspice_gfrepf export -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -16664,7 +17852,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 36
+          "line": 56
         }
       },
       "mapping": {
@@ -16704,7 +17892,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -16715,7 +17903,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 169
+            "line": 189
           }
         }
       ],
@@ -16724,7 +17912,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 79
+            "line": 91
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16765,7 +17953,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 289
+            "line": 278
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16792,6 +17980,148 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfrepi-audit-empty-prefix",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrepi-audit-empty-suffix",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrepi-audit-init-only",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wnfetd",
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Initialize through the actual raw routine without finalization; supplementary child tests compare the complete observable stdout; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrepi-audit-long-prefix",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrepi-audit-long-suffix",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrepi-audit-nonprinting-prefix",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrepi-audit-nonprinting-suffix",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfrepi-audit-singleton",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfrepf",
+              "geometry-gf.gfrepi"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Initialize/finalize a genuine zero-duration singleton window; real stdout is separately compared in isolated child probes; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfrepi-missing-window-error",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json",
             "expectation": "error",
@@ -16799,7 +18129,13 @@
               "geometry-gf.gfrepi"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative gfrepi missing-window error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfrepi-success",
@@ -16812,18 +18148,48 @@
               "geometry-gf.gfrepi"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "gfrepi initializes progress reporting for an existing window without mutating interval contents; registered null/window effects supplement real stdout tests; null alone is not reporter evidence.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfrepi -> typed node adapter -> actual registered N-API gfrepi binding -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfrepi -> typed wasm adapter -> actual compiled _tspice_gfrepi export -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -16860,7 +18226,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 46
+          "line": 74
         }
       },
       "mapping": {
@@ -16900,7 +18266,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -16911,7 +18277,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 209
+            "line": 236
           }
         }
       ],
@@ -16920,7 +18286,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 88
+            "line": 101
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16961,7 +18327,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 295
+            "line": 285
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16988,6 +18354,1062 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfsep-audit-absmax-adjust",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-absmin-adjust",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-bad-correction",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for bad-correction; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-bad-relation",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for bad-relation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-bad-shape",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Reject an unsupported shape through actual GFSEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-cn",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for CN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-cn-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for CN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-lt",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for LT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-lt-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for LT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-xcn",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XCN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-xcn-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XCN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-xlt",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XLT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-correction-xlt-s",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe complete nontrivial event windows with moving target/observer for XLT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-empty-result",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "A valid condition with no events produces an empty complete output; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-ignored-point-frames",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Current point shape has no orientation dependence; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-insufficient-result",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for insufficient-result; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-insufficient-workspace",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Internal workspace is separate from ample output capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-negative-adjust",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for negative-adjust; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-negative-step",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for negative-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-negative-workspace",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for negative-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-relation-absmax",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for ABSMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-relation-absmin",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for ABSMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-relation-equal",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for =; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-relation-greater",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for >; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-relation-less",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for <; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-relation-locmax",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for LOCMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-relation-locmin",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Compare every result endpoint and unchanged confinement for LOCMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-result-replacement",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Search discards existing result intervals rather than unioning them; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-sphere-point",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Sphere limb separation differs from point-center separation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-split-confinement",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every interval respects disjoint confinement gaps; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-two-spheres",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Both authored radii affect the returned limb-separation event window; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-unknown-observer",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for unknown-observer; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-zero-equality-limitation",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "NAIF documents equality-to-zero cannot detect point alignment; extrema cases cover it; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-zero-result-capacity",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for zero-result-capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-zero-step",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for zero-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsep-audit-zero-workspace",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
+            "expectation": "error",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfsep",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require a specific actual toolkit error for zero-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfsep-invalid-relate-error",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsep.cases.json",
             "expectation": "error",
@@ -17002,7 +19424,13 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative gfsep invalid relation operator error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfsep-success",
@@ -17020,18 +19448,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Runs gfsep and verifies the first returned separation interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfsep -> typed node adapter -> actual registered N-API gfsep binding -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfsep -> typed wasm adapter -> actual compiled _tspice_gfsep export -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -17054,7 +19512,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 24
+          "line": 28
         }
       },
       "mapping": {
@@ -17094,7 +19552,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -17105,7 +19563,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 83
+            "line": 103
           }
         }
       ],
@@ -17114,7 +19572,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 48
+            "line": 58
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17155,7 +19613,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 284
+            "line": 267
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17182,6 +19640,79 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfsstp-audit-0",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsstp.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfsstp",
+              "geometry-gf.gfstep"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsstp-audit-1",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsstp.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfsstp",
+              "geometry-gf.gfstep"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsstp-audit-2",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsstp.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfsstp",
+              "geometry-gf.gfstep"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfsstp-audit-zero",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsstp.cases.json",
+            "expectation": "error",
+            "operations": [
+              "geometry-gf.gfsstp"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require actual INVALIDSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfsstp-invalid-step-error",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfsstp.cases.json",
             "expectation": "error",
@@ -17189,7 +19720,13 @@
               "geometry-gf.gfsstp"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative gfsstp invalid step size error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfsstp-success",
@@ -17200,18 +19737,48 @@
               "geometry-gf.gfstep"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "gfsstp updates the constant step size used by gfstep; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfsstp -> typed node adapter -> actual registered N-API gfsstp binding -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfsstp -> typed wasm adapter -> actual compiled _tspice_gfsstp export -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -17227,7 +19794,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 27
+          "line": 35
         }
       },
       "mapping": {
@@ -17267,7 +19834,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -17278,7 +19845,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 98
+            "line": 118
           }
         }
       ],
@@ -17287,7 +19854,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 53
+            "line": 63
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17328,7 +19895,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 285
+            "line": 268
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17355,6 +19922,66 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfstep-audit-0",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfsstp",
+              "geometry-gf.gfstep",
+              "kernels.kclear"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfstep-audit-1",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfsstp",
+              "geometry-gf.gfstep",
+              "kernels.kclear"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfstep-audit-2",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstep.cases.json",
+            "expectation": "success",
+            "operations": [
+              "geometry-gf.gfsstp",
+              "geometry-gf.gfstep",
+              "kernels.kclear"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfstep-success",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstep.cases.json",
             "expectation": "success",
@@ -17363,7 +19990,15 @@
               "geometry-gf.gfstep"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "gfstep returns the current constant step size; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfstep-uninitialized-error",
@@ -17373,18 +20008,46 @@
               "geometry-gf.gfstep"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative gfstep error when no constant step has been configured; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfstep -> typed node adapter -> actual registered N-API gfstep binding -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfstep -> typed wasm adapter -> actual compiled _tspice_gfstep export -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -17400,7 +20063,7 @@
         "domain": "geometry-gf",
         "evidence": {
           "file": "packages/backend-contract/src/domains/geometry-gf.ts",
-          "line": 30
+          "line": 42
         }
       },
       "mapping": {
@@ -17440,7 +20103,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -17451,7 +20114,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
-            "line": 120
+            "line": 140
           }
         }
       ],
@@ -17460,7 +20123,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/geometry-gf.ts",
-            "line": 63
+            "line": 73
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17501,7 +20164,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 286
+            "line": 269
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17528,6 +20191,53 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "geometry-gf-gfstol-audit-kernel-clear-persistence",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstol.cases.json",
+            "expectation": "success",
+            "operations": [
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh",
+              "kernels.kclear"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual coarse endpoints persist across kernel clear; harness finalization restores the documented default; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
+            "caseId": "geometry-gf-gfstol-audit-zero",
+            "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstol.cases.json",
+            "expectation": "error",
+            "operations": [
+              "geometry-gf.gfstol"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Require actual INVALIDTOLERANCE; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
+          },
+          {
             "caseId": "geometry-gf-gfstol-invalid-value-error",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstol.cases.json",
             "expectation": "error",
@@ -17535,29 +20245,76 @@
               "geometry-gf.gfstol"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative gfstol invalid tolerance error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           },
           {
             "caseId": "geometry-gf-gfstol-success",
             "source": "packages/py-parity-checking/src/cases/geometry-gf/gfstol.cases.json",
             "expectation": "success",
             "operations": [
-              "geometry-gf.gfrefn",
-              "geometry-gf.gfstol"
+              "cells-windows.wninsd",
+              "geometry-gf.gfdist",
+              "geometry-gf.gfstol",
+              "kernels.furnsh"
             ],
-            "paths": [],
-            "assertionQuality": "unaudited"
+            "paths": [
+              {
+                "path": "kernels/audit-geometry.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-geometry.tf",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Observe actual coarse/fine search endpoints; GFREFN alone cannot establish tolerance effects; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison.",
+              "record": "data/parity-audits/geometry-gf.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "geometry-gf",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfstol -> typed node adapter -> actual registered N-API gfstol binding -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.gfstol -> typed wasm adapter -> actual compiled _tspice_gfstol export -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
+          "executions": [
+            "local-gf-final-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/geometry-gf.json"
         }
       }
     },
@@ -20094,7 +22851,7 @@
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -20112,7 +22869,7 @@
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -29988,7 +32745,7 @@
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -30002,7 +32759,7 @@
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -32665,8 +35422,7 @@
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -32684,8 +35440,7 @@
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -32969,7 +35724,7 @@
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -32983,7 +35738,7 @@
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -33197,8 +35952,7 @@
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33216,8 +35970,7 @@
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33428,8 +36181,7 @@
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33447,8 +36199,7 @@
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33684,8 +36435,7 @@
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33703,8 +36453,7 @@
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33936,8 +36685,7 @@
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33955,8 +36703,7 @@
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34170,8 +36917,7 @@
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34189,8 +36935,7 @@
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34457,8 +37202,7 @@
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34476,8 +37220,7 @@
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34695,8 +37438,7 @@
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34714,8 +37456,7 @@
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35625,7 +38366,7 @@
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-gf-final-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -35639,7 +38380,7 @@
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-gf-final-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"

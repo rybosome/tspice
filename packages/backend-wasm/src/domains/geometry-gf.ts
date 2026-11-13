@@ -15,6 +15,16 @@ import {
   wasmWindowPointer,
 } from "./cells-windows.js";
 
+function assertGfStrings(values: readonly unknown[], context: string): void {
+  for (const value of values)
+    if (typeof value !== "string")
+      throw new TypeError(`${context}: expected strings`);
+}
+function assertGfBoolean(value: unknown, context: string): void {
+  if (typeof value !== "boolean")
+    throw new TypeError(`${context}: expected boolean`);
+}
+
 function assertFiniteNumber(
   value: unknown,
   context: string,
@@ -98,14 +108,10 @@ function tspiceCallGfrepi(
   const pointer = wasmWindowPointer(module, window, "gfrepi()");
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const begmssPtr = writeUtf8CString(module, begmss);
-    const endmssPtr = writeUtf8CString(module, endmss);
-    if (!begmssPtr || !endmssPtr) {
-      if (endmssPtr) module._free(endmssPtr);
-      if (begmssPtr) module._free(begmssPtr);
-      throw new Error("WASM malloc failed");
-    }
-
+    let endmssPtr = 0;
     try {
+      endmssPtr = writeUtf8CString(module, endmss);
+
       const result = module._tspice_gfrepi(
         pointer,
         begmssPtr,
@@ -117,7 +123,7 @@ function tspiceCallGfrepi(
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
     } finally {
-      module._free(endmssPtr);
+      if (endmssPtr) module._free(endmssPtr);
       module._free(begmssPtr);
     }
   });
@@ -152,43 +158,24 @@ function tspiceCallGfsep(
 ): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const targ1Ptr = writeUtf8CString(module, targ1);
-    const shape1Ptr = writeUtf8CString(module, shape1);
-    const frame1Ptr = writeUtf8CString(module, frame1);
-    const targ2Ptr = writeUtf8CString(module, targ2);
-    const shape2Ptr = writeUtf8CString(module, shape2);
-    const frame2Ptr = writeUtf8CString(module, frame2);
-    const abcorrPtr = writeUtf8CString(module, abcorr);
-    const obsrvrPtr = writeUtf8CString(module, obsrvr);
-    const relatePtr = writeUtf8CString(module, relate);
-
-    if (
-      !targ1Ptr ||
-      !shape1Ptr ||
-      !frame1Ptr ||
-      !targ2Ptr ||
-      !shape2Ptr ||
-      !frame2Ptr ||
-      !abcorrPtr ||
-      !obsrvrPtr ||
-      !relatePtr
-    ) {
-      for (const ptr of [
-        relatePtr,
-        obsrvrPtr,
-        abcorrPtr,
-        frame2Ptr,
-        shape2Ptr,
-        targ2Ptr,
-        frame1Ptr,
-        shape1Ptr,
-        targ1Ptr,
-      ]) {
-        if (ptr) module._free(ptr);
-      }
-      throw new Error("WASM malloc failed");
-    }
-
+    let shape1Ptr = 0,
+      frame1Ptr = 0,
+      targ2Ptr = 0,
+      shape2Ptr = 0,
+      frame2Ptr = 0,
+      abcorrPtr = 0,
+      obsrvrPtr = 0,
+      relatePtr = 0;
     try {
+      shape1Ptr = writeUtf8CString(module, shape1);
+      frame1Ptr = writeUtf8CString(module, frame1);
+      targ2Ptr = writeUtf8CString(module, targ2);
+      shape2Ptr = writeUtf8CString(module, shape2);
+      frame2Ptr = writeUtf8CString(module, frame2);
+      abcorrPtr = writeUtf8CString(module, abcorr);
+      obsrvrPtr = writeUtf8CString(module, obsrvr);
+      relatePtr = writeUtf8CString(module, relate);
+
       const out = module._tspice_gfsep(
         targ1Ptr,
         shape1Ptr,
@@ -212,14 +199,14 @@ function tspiceCallGfsep(
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, out);
       }
     } finally {
-      module._free(relatePtr);
-      module._free(obsrvrPtr);
-      module._free(abcorrPtr);
-      module._free(frame2Ptr);
-      module._free(shape2Ptr);
-      module._free(targ2Ptr);
-      module._free(frame1Ptr);
-      module._free(shape1Ptr);
+      if (relatePtr) module._free(relatePtr);
+      if (obsrvrPtr) module._free(obsrvrPtr);
+      if (abcorrPtr) module._free(abcorrPtr);
+      if (frame2Ptr) module._free(frame2Ptr);
+      if (shape2Ptr) module._free(shape2Ptr);
+      if (targ2Ptr) module._free(targ2Ptr);
+      if (frame1Ptr) module._free(frame1Ptr);
+      if (shape1Ptr) module._free(shape1Ptr);
       module._free(targ1Ptr);
     }
   });
@@ -240,18 +227,14 @@ function tspiceCallGfdist(
 ): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const targetPtr = writeUtf8CString(module, target);
-    const abcorrPtr = writeUtf8CString(module, abcorr);
-    const obsrvrPtr = writeUtf8CString(module, obsrvr);
-    const relatePtr = writeUtf8CString(module, relate);
-
-    if (!targetPtr || !abcorrPtr || !obsrvrPtr || !relatePtr) {
-      for (const ptr of [relatePtr, obsrvrPtr, abcorrPtr, targetPtr]) {
-        if (ptr) module._free(ptr);
-      }
-      throw new Error("WASM malloc failed");
-    }
-
+    let abcorrPtr = 0,
+      obsrvrPtr = 0,
+      relatePtr = 0;
     try {
+      abcorrPtr = writeUtf8CString(module, abcorr);
+      obsrvrPtr = writeUtf8CString(module, obsrvr);
+      relatePtr = writeUtf8CString(module, relate);
+
       const out = module._tspice_gfdist(
         targetPtr,
         abcorrPtr,
@@ -270,9 +253,9 @@ function tspiceCallGfdist(
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, out);
       }
     } finally {
-      module._free(relatePtr);
-      module._free(obsrvrPtr);
-      module._free(abcorrPtr);
+      if (relatePtr) module._free(relatePtr);
+      if (obsrvrPtr) module._free(obsrvrPtr);
+      if (abcorrPtr) module._free(abcorrPtr);
       module._free(targetPtr);
     }
   });
@@ -284,9 +267,16 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
     gfsstp: (step) => tspiceCallGfsstp(module, step),
     gfstep: (time) => tspiceCallGfstep(module, time),
     gfstol: (value) => tspiceCallGfstol(module, value),
-    gfrefn: (t1, t2, s1, s2) => tspiceCallGfrefn(module, t1, t2, s1, s2),
+    gfrefn: (t1, t2, s1, s2) => {
+      assertFiniteNumber(t1, "gfrefn(t1)");
+      assertFiniteNumber(t2, "gfrefn(t2)");
+      assertGfBoolean(s1, "gfrefn(s1)");
+      assertGfBoolean(s2, "gfrefn(s2)");
+      return tspiceCallGfrefn(module, t1, t2, s1, s2);
+    },
 
     gfrepi: (window, begmss, endmss) => {
+      assertGfStrings([begmss, endmss], "gfrepi");
       assertWasmOwnedWindowHandle(module, window, "gfrepi(window)");
       tspiceCallGfrepi(module, window, begmss, endmss);
     },
@@ -309,7 +299,11 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       cnfine,
       result,
     ) => {
-      assertSpiceInt32(nintvls, "gfsep(nintvls)", { min: 1 });
+      assertGfStrings(
+        [targ1, shape1, frame1, targ2, shape2, frame2, abcorr, obsrvr, relate],
+        "gfsep",
+      );
+      assertSpiceInt32(nintvls, "gfsep(nintvls)");
       assertFiniteNumber(refval, "gfsep(refval)");
       assertFiniteNumber(adjust, "gfsep(adjust)");
       assertFiniteNumber(step, "gfsep(step)");
@@ -347,7 +341,8 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       cnfine,
       result,
     ) => {
-      assertSpiceInt32(nintvls, "gfdist(nintvls)", { min: 1 });
+      assertGfStrings([target, abcorr, obsrvr, relate], "gfdist");
+      assertSpiceInt32(nintvls, "gfdist(nintvls)");
       assertFiniteNumber(refval, "gfdist(refval)");
       assertFiniteNumber(adjust, "gfdist(adjust)");
       assertFiniteNumber(step, "gfdist(step)");

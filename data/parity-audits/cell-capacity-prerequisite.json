@@ -107,7 +107,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15.",
+      "historical": true
     },
     {
       "id": "local-opaque-handles-wasm-2026-11-12",
@@ -133,7 +134,60 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "local-gf-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "31ee74f9a6254fa2cbb014280b0bba109eb93eea889ce3425620ec76805fa631",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both full required lanes passed on final reviewed source with production N0067 native guard/sanity and owning-script regenerated Node/web WASM SHA2560823f272b8388efd279cf8ee8b7cc348714bd2f93e73fc0c9fe1da177c824f79. All840live comparisons(420scenarios/backend),883parity-package tests,92WASM/62Node/21core/118facade passed without native-required skips. All25actual allocation failures, two boundary groups, two fresh-process knob/root comparisons and eight actual reporter stdout comparisons passed. Twelve leaked allocation positions, one missing WASM init stdout comparison and two sidecar JSON corruptions failed before and passed after repairs. Independent fine-tolerance quadratic roots meet1e-9s; coarse/fine differences and KCLEAR persistence are observed; live1e-12comparator unchanged. Toolchain Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64/Emscripten3.1.74. All38ledger regressions passed separately."
+    },
+    {
+      "id": "local-gf-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "31ee74f9a6254fa2cbb014280b0bba109eb93eea889ce3425620ec76805fa631",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both full required lanes passed on final reviewed source with production N0067 native guard/sanity and owning-script regenerated Node/web WASM SHA2560823f272b8388efd279cf8ee8b7cc348714bd2f93e73fc0c9fe1da177c824f79. All840live comparisons(420scenarios/backend),883parity-package tests,92WASM/62Node/21core/118facade passed without native-required skips. All25actual allocation failures, two boundary groups, two fresh-process knob/root comparisons and eight actual reporter stdout comparisons passed. Twelve leaked allocation positions, one missing WASM init stdout comparison and two sidecar JSON corruptions failed before and passed after repairs. Independent fine-tolerance quadratic roots meet1e-9s; coarse/fine differences and KCLEAR persistence are observed; live1e-12comparator unchanged. Toolchain Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64/Emscripten3.1.74. All38ledger regressions passed separately."
     }
   ],
   "routines": [
@@ -235,13 +289,13 @@
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-opaque-handles-node-2026-11-12"]
+          "executions": ["local-gf-final-node"]
         },
         "wasm": {
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-opaque-handles-wasm-2026-11-12"]
+          "executions": ["local-gf-final-wasm"]
         }
       }
     },
@@ -390,13 +444,13 @@
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-opaque-handles-node-2026-11-12"]
+          "executions": ["local-gf-final-node"]
         },
         "wasm": {
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-opaque-handles-wasm-2026-11-12"]
+          "executions": ["local-gf-final-wasm"]
         }
       }
     },
@@ -534,16 +588,16 @@
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-opaque-handles-node-2026-11-12"]
+          "executions": ["local-gf-final-node"]
         },
         "wasm": {
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-opaque-handles-wasm-2026-11-12"]
+          "executions": ["local-gf-final-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "The known pointer-identity repair and all current-source local required lanes passed. CI observations for this new source digest remain pending; no static registration or parent execution alone establishes completion."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

@@ -190,7 +190,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15.",
+      "historical": true
     },
     {
       "id": "local-opaque-handles-wasm-2026-11-12",
@@ -207,7 +208,42 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15."
+      "observation": "Final required JS and production-native lanes passed after resolving every cell/window consumer, including GF progress initialization. Native addon rebuilt/loaded and sanity ran; all 654 live parity tests (327 per backend), all 685 parity-package tests passed without skips. All 67 WASM tests, 62 Node tests and 117 facade tests passed. Four actual-backend ownership tests cover same-address foreign cells, expired/reallocated cells/windows, invalid frees and all ten other raw consumers. An initial full JS run exposed a missed gfrepi conversion; it was repaired and final full lanes passed. The inherited 16 allocation-bound/registry tests and deterministic real-C allocator fixture also passed. The JS-only identity repair inherits the parent N0067/Emscripten3.1.74 binary unchanged. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "local-gf-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e98157513d6c5005cb0bc9581968bf0551469d62481e64bbaed3aa41d39ca296",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both full required lanes passed on final reviewed source with production N0067 native guard/sanity and owning-script regenerated Node/web WASM SHA2560823f272b8388efd279cf8ee8b7cc348714bd2f93e73fc0c9fe1da177c824f79. All840live comparisons(420scenarios/backend),883parity-package tests,92WASM/62Node/21core/118facade passed without native-required skips. All25actual allocation failures, two boundary groups, two fresh-process knob/root comparisons and eight actual reporter stdout comparisons passed. Twelve leaked allocation positions, one missing WASM init stdout comparison and two sidecar JSON corruptions failed before and passed after repairs. Independent fine-tolerance quadratic roots meet1e-9s; coarse/fine differences and KCLEAR persistence are observed; live1e-12comparator unchanged. Toolchain Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64/Emscripten3.1.74. All38ledger regressions passed separately."
+    },
+    {
+      "id": "local-gf-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e98157513d6c5005cb0bc9581968bf0551469d62481e64bbaed3aa41d39ca296",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both full required lanes passed on final reviewed source with production N0067 native guard/sanity and owning-script regenerated Node/web WASM SHA2560823f272b8388efd279cf8ee8b7cc348714bd2f93e73fc0c9fe1da177c824f79. All840live comparisons(420scenarios/backend),883parity-package tests,92WASM/62Node/21core/118facade passed without native-required skips. All25actual allocation failures, two boundary groups, two fresh-process knob/root comparisons and eight actual reporter stdout comparisons passed. Twelve leaked allocation positions, one missing WASM init stdout comparison and two sidecar JSON corruptions failed before and passed after repairs. Independent fine-tolerance quadratic roots meet1e-9s; coarse/fine differences and KCLEAR persistence are observed; live1e-12comparator unchanged. Toolchain Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3-Python3.12.15/macOS arm64/Emscripten3.1.74. All38ledger regressions passed separately."
     }
   ],
   "routines": [
@@ -347,7 +383,7 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-opaque-handles-node-2026-11-12"]
+          "executions": ["local-gf-final-node"]
         },
         "wasm": {
           "history": [
@@ -361,10 +397,10 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-opaque-handles-wasm-2026-11-12"]
+          "executions": ["local-gf-final-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "The known pointer-identity repair and all current-source local required lanes passed. CI observations for this new source digest remain pending; no static registration or parent execution alone establishes completion."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

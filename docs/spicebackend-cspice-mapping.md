@@ -251,3 +251,27 @@ Most routines in this domain are **pure math** and require no kernels.
 ### Opaque cell identity
 
 WASM cells/windows use host-issued opaque integer tokens above the uint32 range, with private token-to-pointer maps scoped to each module. Tokens are never reused within that host realm. Pointer reuse therefore cannot revive a freed handle or alias another live WASM instance. All raw cell/window consumers resolve tokens at the compiled boundary, including kplfrm, SPK/CK coverage/object queries, DSK object/surface queries, GF searches and progress-reporter initialization. Preserve the complete numeric handle and keep it with its owning process/module; handles are not portable across isolated workers or processes.
+
+## Geometry Finder semantic audit
+
+The eight GF raw routines call actual CSPICE on both backends. Search epochs,
+step and convergence tolerance are TDB seconds; GFDIST reference/adjustment are
+km and GFSEP reference/adjustment are radians. Searches replace result contents
+and preserve confinement. Output capacity (at least one interval) is independent
+of internal `nintvls`. The shared shim bounds the complete five-cell N0067
+workspace to256MiB (at most3,355,440 intervals) before unchecked signed arithmetic;
+nonpositive counts retain actual CSPICE VALUEOUTOFRANGE.
+
+GFSSTP/GFSTEP and GFSTOL are process/module global and survive KCLEAR. GFSTEP
+requires prior initialization and ignores its finite time input. GFSTOL defaults
+to1e-6seconds; raw calls persist, while parity-case cleanup restores that default.
+GFREFN is an error-free midpoint estimator independent of tolerance and boolean
+state flags; wrapper arguments still require actual booleans and finite numbers.
+
+GFREPI/GFREPF console effects are compared in real fresh-process Node/WASM and
+locked SpiceyPy probes. Emscripten initialization explicitly drains libc and TTY
+buffers. Registered void-return workflows alone do not certify reporter output.
+Callback-free GFDIST/GFSEP do not automatically drive a separate reporter.
+GFSEP preserves NAIF's documented POINT alignment limitation for equality to zero;
+LOCMIN/ABSMIN tests establish the corresponding nonempty extrema. POINT frame
+orientation is ignored, with nonempty C strings still required.

@@ -10,17 +10,29 @@
         "right": 1,
         "maxIntervals": 8
       },
-      { "op": "cells-windows.wnfetd", "windowId": "GFREPI_WIN", "index": 0 },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "GFREPI_WIN",
+        "index": 0
+      },
       {
         "op": "geometry-gf.gfrepi",
         "windowId": "GFREPI_WIN",
         "begmss": "GF start",
         "endmss": "GF done"
       },
-      { "op": "geometry-gf.gfrepf" },
-      { "op": "cells-windows.wnfetd", "windowId": "GFREPI_WIN", "index": 0 }
+      {
+        "op": "geometry-gf.gfrepf"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "GFREPI_WIN",
+        "index": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "geometry-gf-gfrepi-missing-window-error",
@@ -36,6 +48,201 @@
     "expectation": {
       "kind": "error",
       "errorMessageIncludes": ["window does not exist"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-init-only",
+    "description": "Initialize through the actual raw routine without finalization; supplementary child tests compare the complete observable stdout",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "GFREPI_WIN",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "GFREPI_WIN",
+        "index": 0
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "GFREPI_WIN",
+        "begmss": "GF start",
+        "endmss": "GF done"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "GFREPI_WIN",
+        "index": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-empty-prefix",
+    "description": "Require the named actual CSPICE message validation error",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "",
+        "endmss": "AUDIT END"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-empty-suffix",
+    "description": "Require the named actual CSPICE message validation error",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "AUDIT BEGIN",
+        "endmss": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-long-prefix",
+    "description": "Require the named actual CSPICE message validation error",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "endmss": "AUDIT END"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MESSAGETOOLONG"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-long-suffix",
+    "description": "Require the named actual CSPICE message validation error",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "AUDIT BEGIN",
+        "endmss": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MESSAGETOOLONG"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-nonprinting-prefix",
+    "description": "Require the named actual CSPICE message validation error",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "bad\tmessage",
+        "endmss": "AUDIT END"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONPRINTABLECHARS"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-nonprinting-suffix",
+    "description": "Require the named actual CSPICE message validation error",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "AUDIT BEGIN",
+        "endmss": "bad\nmessage"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONPRINTABLECHARS"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepi-audit-singleton",
+    "description": "Initialize/finalize a genuine zero-duration singleton window; real stdout is separately compared in isolated child probes",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "AUDIT BEGIN",
+        "endmss": "AUDIT END"
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
     }
   }
 ]

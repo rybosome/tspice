@@ -1667,6 +1667,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                     step.get("cnfineWindowId"),
                     label="geometry-gf.gfsep.cnfineWindowId",
                 ),
+                resultMaxIntervals=(_expect_int(step.get("resultMaxIntervals"),label="geometry-gf.gfsep.resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
                 resultWindowId=_expect_string(
                     step.get("resultWindowId"),
                     label="geometry-gf.gfsep.resultWindowId",
@@ -1688,6 +1689,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                     step.get("cnfineWindowId"),
                     label="geometry-gf.gfdist.cnfineWindowId",
                 ),
+                resultMaxIntervals=(_expect_int(step.get("resultMaxIntervals"),label="geometry-gf.gfdist.resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
                 resultWindowId=_expect_string(
                     step.get("resultWindowId"),
                     label="geometry-gf.gfdist.resultWindowId",
