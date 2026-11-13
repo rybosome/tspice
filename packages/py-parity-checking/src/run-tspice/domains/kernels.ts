@@ -75,7 +75,14 @@ export function runKernelsStep(
 
         // Scratch refs may point to files created directly inside the backend
         // (e.g. EK writers in WASM), in which case no host file exists.
-        if (fs.existsSync(resolvedScratchPath)) {
+        if (
+          context.spice.raw.kind === "node" &&
+          fs.existsSync(resolvedScratchPath)
+        ) {
+          // Preserve physical identity when a writer created this host file:
+          // staging a copy can hide CSPICE read/write-open conflicts.
+          context.spice.raw.furnsh(resolvedScratchPath);
+        } else if (fs.existsSync(resolvedScratchPath)) {
           const bytes = fs.readFileSync(resolvedScratchPath);
           context.spice.raw.furnsh({
             path: virtualPath,

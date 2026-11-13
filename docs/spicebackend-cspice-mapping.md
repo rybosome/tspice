@@ -288,3 +288,34 @@ this cross-boundary repair. Six SPK file/writer/coverage routines remain in
 `ephemeris-1`; eight state/position/search routines remain in `ephemeris-2`. The
 SPKSFS packed producer uses the same preservation repair but its semantic audit
 is still pending. No planned routine or new external fixture is introduced.
+
+### SPK file, writer and coverage audit
+
+`ephemeris-1` covers `spkopn`, `spkopa`, `spkcls`, `spkw08`, `spkobj` and
+`spkcov` through the compiled operation on both backends and actual SpiceyPy.
+Negative comment reservations follow CSPICE's zero default; empty internal names,
+frames and segment IDs reach CSPICE's structured EMPTYSTRING errors. Type8 states
+retain complete six-component sample layout, kilometer/second units and explicit
+ET spacing. Both adapters reject fractional/out-of-range IDs, nonfinite values
+and state buffers above the existing 256 MiB allocation budget before reading
+caller elements. No extra body/center restrictions from SPKPDS are imposed on
+SPKW08. The shared C change is present in regenerated pinned WASM artifacts.
+
+An empty writer's SPKCLS error retains the claim for a subsequent write and close.
+Native internal disposal can release the empty underlying DAF after the specific
+NOSEGMENTSFOUND error without weakening the raw error behavior. Harness cleanup
+resets pending errors and attempts writer close before deleting scratch files;
+failed claims remain available for retry. Allocation fault tests exercise every
+SPK writer/metadata temporary allocation and verify zero net leaks.
+
+Scratch SPKs are furnished using the actual host path on Node, preserving file
+identity and CSPICE's read/write conflict. Copying bytes into an unrelated staging
+file had incorrectly hidden that conflict. WASM uses its actual virtual file.
+New comparisons observe complete sorted object sets, every interval endpoint,
+union accumulation, absent objects, zero-capacity empty outputs and real capacity
+errors. Generated writer outputs are read back and evaluated; independent tests
+inspect all 24 persisted state words, header/internal name, degree/count and full
+40-character segment identifier. Synthetic fixtures and their generator are
+documented in the parity fixture README. The unchanged numeric comparator uses
+1e-12 absolute-or-relative tolerance; independent polynomial interpolation checks
+use 1e-9 km position and 1e-12 km/s velocity bounds.

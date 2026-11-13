@@ -24,7 +24,10 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H1"
+      },
       {
         "op": "ephemeris.spkcov",
         "spk": "kernels/ephemeris-spkw08-happy.bsp",
@@ -33,7 +36,9 @@
         "maxIntervals": 8
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkw08-invalid-states-length-error",
@@ -45,6 +50,24 @@
         "ifname": "PARITY",
         "ncomch": 0,
         "handleId": "H_ERR"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H_ERR",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
       },
       {
         "op": "ephemeris.spkw08",
@@ -61,6 +84,1371 @@
         "step": 120
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-quadratic-all-components",
+    "description": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100001",
+        "observer": "0",
+        "et": 25.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-minimum-degree-linear",
+    "description": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 1,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100001",
+        "observer": "0",
+        "et": 25.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-maximum-degree",
+    "description": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0.0,
+        "last": 27.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 27,
+        "states": [
+          10000.0, -20000.0, 30000.0, 1.25, -0.75, 0.5, 10001.252, -20000.749,
+          30000.4995, 1.254, -0.748, 0.499, 10002.508, -20001.496, 30000.998,
+          1.258, -0.746, 0.498, 10003.768, -20002.241, 30001.4955, 1.262,
+          -0.744, 0.497, 10005.032, -20002.984, 30001.992, 1.266, -0.742, 0.496,
+          10006.3, -20003.725, 30002.4875, 1.27, -0.74, 0.495, 10007.572,
+          -20004.464, 30002.982, 1.274, -0.738, 0.494, 10008.848, -20005.201,
+          30003.4755, 1.278, -0.736, 0.493, 10010.128, -20005.936, 30003.968,
+          1.282, -0.734, 0.492, 10011.412, -20006.669, 30004.4595, 1.286,
+          -0.732, 0.491, 10012.7, -20007.4, 30004.95, 1.29, -0.73, 0.49,
+          10013.992, -20008.129, 30005.4395, 1.294, -0.728, 0.489, 10015.288,
+          -20008.856, 30005.928, 1.298, -0.726, 0.488, 10016.588, -20009.581,
+          30006.4155, 1.302, -0.724, 0.487, 10017.892, -20010.304, 30006.902,
+          1.306, -0.722, 0.486, 10019.2, -20011.025, 30007.3875, 1.31, -0.72,
+          0.485, 10020.512, -20011.744, 30007.872, 1.314, -0.718, 0.484,
+          10021.828, -20012.461, 30008.3555, 1.318, -0.716, 0.483, 10023.148,
+          -20013.176, 30008.838, 1.322, -0.714, 0.482, 10024.472, -20013.889,
+          30009.3195, 1.326, -0.712, 0.481, 10025.8, -20014.6, 30009.8, 1.33,
+          -0.71, 0.48, 10027.132, -20015.309, 30010.2795, 1.334, -0.708, 0.479,
+          10028.468, -20016.016, 30010.758, 1.338, -0.706, 0.478, 10029.808,
+          -20016.721, 30011.2355, 1.342, -0.704, 0.477, 10031.152, -20017.424,
+          30011.712, 1.346, -0.702, 0.476, 10032.5, -20018.125, 30012.1875,
+          1.35, -0.7, 0.475, 10033.852, -20018.824, 30012.662, 1.354, -0.698,
+          0.474, 10035.208, -20019.521, 30013.1355, 1.358, -0.696, 0.473
+        ],
+        "epoch1": 0.0,
+        "step": 1.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100001",
+        "observer": "0",
+        "et": 13.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-forty-character-id",
+    "description": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100001",
+        "observer": "0",
+        "et": 25.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-forty-id-trailing-blank",
+    "description": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100001",
+        "observer": "0",
+        "et": 25.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-zero-body",
+    "description": "N0067 SPKW08 accepts this metadata even though SPKPDS has stricter constructor checks; observe actual stored object/descriptor and preserve writer semantics.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 0,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 0,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-equal-body-center",
+    "description": "N0067 SPKW08 accepts this metadata even though SPKPDS has stricter constructor checks; observe actual stored object/descriptor and preserve writer semantics.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 100001,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-empty-frame",
+    "description": "Require actual EMPTYSTRING from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-empty-segment-id",
+    "description": "Require actual EMPTYSTRING from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-long-segment-id",
+    "description": "Require actual SEGIDTOOLONG from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SEGIDTOOLONG"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-nonprintable-segment-id",
+    "description": "Require actual NONPRINTABLECHARS from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "BAD\u0001ID",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONPRINTABLECHARS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-unknown-frame",
+    "description": "Require actual INVALIDREFFRAME from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "NOT_A_FRAME",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDREFFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-zero-degree",
+    "description": "Require actual INVALIDDEGREE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 0,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDDEGREE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-large-degree",
+    "description": "Require actual INVALIDDEGREE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 28,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDDEGREE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-too-few-states",
+    "description": "Require actual TOOFEWSTATES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 4,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["TOOFEWSTATES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-equal-epochs",
+    "description": "Require actual BADDESCRTIMES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": 150.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDESCRTIMES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-reversed-epochs",
+    "description": "Require actual BADDESCRTIMES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": 151.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDESCRTIMES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-zero-step",
+    "description": "Require actual INVALIDSTEPSIZE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 0.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEPSIZE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-negative-step",
+    "description": "Require actual INVALIDSTEPSIZE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": -100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEPSIZE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-first-coverage-gap",
+    "description": "Require actual COVERAGEGAP from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -101.0,
+        "last": 150.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["COVERAGEGAP"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw08-audit-last-coverage-gap",
+    "description": "Require actual COVERAGEGAP from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 201.0,
+        "segid": "REJECTED",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["COVERAGEGAP"]
+    }
   }
 ]

@@ -873,6 +873,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepEphemerisSpkcls(
                 op=op,
                 handleId=_expect_string(step.get("handleId"), label="ephemeris.spkcls.handleId"),
+                captureError=_expect_bool(step.get("captureError",False),label="ephemeris.spkcls.captureError"),
             )
 
         case "ephemeris.spkcov":
@@ -990,6 +991,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepEphemerisSpksfs(
                 op=op,
                 body=_expect_int(step.get("body"), label="ephemeris.spksfs.body"),
+                descrId=None if step.get("descrId") is None else _expect_string(step["descrId"],label="ephemeris.spksfs.descrId"),
                 et=_expect_number(step.get("et"), label="ephemeris.spksfs.et"),
             )
 

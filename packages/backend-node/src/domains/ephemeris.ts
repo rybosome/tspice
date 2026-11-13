@@ -11,6 +11,7 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertSpiceInt32,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
   invariant,
@@ -20,6 +21,30 @@ import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 import type { SpiceHandleRegistry } from "../runtime/spice-handles.js";
 import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
+
+function validateSpkWriterNumbers(
+  body: number,
+  center: number,
+  degree: number,
+  first: number,
+  last: number,
+  epoch1: number,
+  step: number,
+  states: readonly number[] | Float64Array,
+): void {
+  assertSpiceInt32(body, "spkw08(body)");
+  assertSpiceInt32(center, "spkw08(center)");
+  assertSpiceInt32(degree, "spkw08(degree)");
+  if (![first, last, epoch1, step].every(Number.isFinite))
+    throw new RangeError("spkw08 epochs and step must be finite");
+  // Bound work/allocation before reading any caller state element, including
+  // sparse/proxied arrays. Match the existing WASM codec's 256 MiB guard.
+  if (states.length * 8 + 7 > 256 * 1024 * 1024)
+    throw new RangeError("spkw08 state buffer exceeds 256 MiB");
+  for (let i = 0; i < states.length; i++)
+    if (!Number.isFinite(states[i]))
+      throw new RangeError("spkw08 states must contain only finite numbers");
+}
 
 const I32_MAX = 2147483647;
 
@@ -269,6 +294,9 @@ export function createEphemerisApi(
 
     spkopn: (file: string | VirtualOutput, ifname: string, ncomch: number) => {
       const path = resolveSpkPath(outputs, file, "spkopn(file)");
+      assertSpiceInt32(ncomch, "spkopn(ncomch)");
+      if (typeof ifname !== "string")
+        throw new TypeError("spkopn ifname must be a string");
       const nativeHandle = native.spkopn(path, ifname, ncomch);
 
       const handle = handles.register("SPK", nativeHandle);
@@ -350,6 +378,18 @@ export function createEphemerisApi(
         `spkw08(): expected states.length/6 to be a 32-bit signed integer (got n=${n})`,
       );
 
+      if (typeof frame !== "string" || typeof segid !== "string")
+        throw new TypeError("spkw08 frame and segid must be strings");
+      validateSpkWriterNumbers(
+        body,
+        center,
+        degree,
+        first,
+        last,
+        epoch1,
+        step,
+        states,
+      );
       const nativeHandle = handles.lookup(
         handle,
         ["SPK"],

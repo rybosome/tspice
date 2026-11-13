@@ -537,6 +537,8 @@ export type StepKernelsUnload = {
 export type StepEphemerisSpkcls = {
   op: "ephemeris.spkcls";
   handleId: string;
+  /** Require/capture a real structured toolkit error without discarding the handle. */
+  captureError?: boolean;
 };
 
 export type StepEphemerisSpkcov = {
@@ -634,6 +636,7 @@ export type StepEphemerisSpkpos = {
 
 export type StepEphemerisSpksfs = {
   op: "ephemeris.spksfs";
+  descrId?: string;
   body: number;
   et: number;
 };
@@ -1559,7 +1562,7 @@ export type StepOutput =
       value: { found: false } | { found: true; wordsq: string; substr: string };
     }
   | { op: "kernels.unload"; value: null }
-  | { op: "ephemeris.spkcls"; value: null }
+  | { op: "ephemeris.spkcls"; value: null | { short: string } }
   | {
       op: "ephemeris.spkcov";
       value: { intervals: [number, number][] };
@@ -1608,7 +1611,11 @@ export type StepOutput =
       op: "ephemeris.spksfs";
       value:
         | { found: false }
-        | { found: true; descr: SpkPackedDescriptor; ident: string };
+        | {
+            found: true;
+            descr: { first: number; last: number; packedIntegers: number[] };
+            ident: string;
+          };
     }
   | {
       op: "ephemeris.spkssb";

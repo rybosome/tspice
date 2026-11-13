@@ -117,5 +117,4 @@ def register_default_finalizers(context: SidecarRuntimeContext) -> None:
 def create_runtime_context(paths: RuntimePaths) -> SidecarRuntimeContext:
     ensure_scratch_root(paths)
     context = SidecarRuntimeContext(paths=paths)
-    register_default_finalizers(context)
     return context

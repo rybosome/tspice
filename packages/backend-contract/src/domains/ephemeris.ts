@@ -131,7 +131,9 @@ export interface EphemerisApi {
    * **Window semantics:** `cover` is updated in place. Like CSPICE `spkcov_c`,
    * coverage is **merged** with any intervals already present in `cover`.
    * Clear the window first (e.g. `scard(0, cover)`) if you want to avoid
-   * accumulation.
+   * accumulation. An absent object produces no added intervals; an empty SPK
+   * permits a zero-capacity window. Endpoints are TDB seconds past J2000.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcov_c.html
    */
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
 
@@ -156,7 +158,8 @@ export interface EphemerisApi {
    * output is the **union** of the IDs already present in `ids` and the IDs
    * found in `spk`.
    * Clear the cell first (e.g. `scard(0, ids)`) if you want to
-   * avoid accumulation.
+   * avoid accumulation. Empty SPKs permit zero-capacity cells.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkobj_c.html
    */
   spkobj(spk: string, ids: SpiceIntCell): void;
 
@@ -224,6 +227,12 @@ export interface EphemerisApi {
    *
    * Callers should retain the `VirtualOutput` they passed to `spkopn`/`spkopa`.
    * It is the identifier used to read bytes back later.
+   *
+   * `ifname` must be nonempty; CSPICE stores at most 60 ASCII characters.
+   * `ncomch` is a signed 32-bit comment reservation; negative values mean zero.
+   * The returned writer token belongs to this backend instance. Write at least
+   * one segment before closing with `spkcls`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkopn_c.html
    */
   spkopn(
     file: string | VirtualOutput,
@@ -231,17 +240,35 @@ export interface EphemerisApi {
     ncomch: number,
   ): SpiceHandle;
 
-  /** Open an existing SPK for append (see `spkopa_c`). Same `file` semantics as `spkopn`. */
+  /**
+   * Open an existing SPK for append, with the same `file` semantics as `spkopn`.
+   * A file already loaded for reading raises CSPICE FILEOPENCONFLICT; unload
+   * it before opening for append. The returned writer token is backend-owned.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkopa_c.html
+   */
   spkopa(file: string | VirtualOutput): SpiceHandle;
 
-  /** Close an SPK file previously opened by `spkopn`/`spkopa` (see `spkcls_c`). */
+  /**
+   * Close an SPK writer and invalidate its backend-owned token after success.
+   * Closing an empty SPK raises NOSEGMENTSFOUND and retains the open writer;
+   * write a valid segment and retry. A failed close does not invalidate the token.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcls_c.html
+   */
   spkcls(handle: SpiceHandle): void;
 
   /**
    * Write a type 8 SPK segment (see `spkw08_c`).
    *
    * `states` is a flat array with layout `[x,y,z, dx,dy,dz]` for each record.
-   * The number of records `n` is derived as `states.length / 6`.
+   * The number of records `n` is derived as `states.length / 6`. Positions are
+   * kilometers and velocities kilometers/second, relative to `center` in `frame`.
+   * Samples are spaced by positive `step` seconds from `epoch1`; `first < last`
+   * bounds the segment in TDB seconds past J2000 and must lie within the samples.
+   * `degree` is 1..27 and requires at least `degree + 1` samples. `segid` contains
+   * at most 40 printable ASCII characters, excluding trailing blanks. CSPICE
+   * validates these scientific preconditions. The wrapper requires signed 32-bit
+   * IDs/degree, finite numeric inputs and a state buffer of at most 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw08_c.html
    */
   spkw08(
     handle: SpiceHandle,

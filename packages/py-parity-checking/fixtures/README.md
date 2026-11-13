@@ -21,3 +21,18 @@
 The EK fixture is generated once via SpiceyPy tooling and checked in. Tests that exercise file-creation routines may generate scratch DLA/DSK outputs under `fixtures/kernels/generated/`; these are ignored and are not input fixtures.
 
 `kplfrm-minimal.tf` is an existing project-authored synthetic frame definition for `TSPICE_PARITY_TOPO` relative to J2000. It contains an arbitrary test frame ID and fixed rotation angles, with no mission observations or external scientific dataset. The kplfrm audit reuses this unchanged fixture; it introduces no new kernel data.
+
+### Synthetic SPK audit fixtures
+
+`generate-audit-spk.py`, executed with the locked SpiceyPy sidecar, creates
+`audit-ephemeris.bsp` (5120 bytes), `audit-ephemeris-priority.bsp` (4096 bytes),
+and `audit-ephemeris-empty.bsp` (3048 bytes). These contain only project-authored
+polynomial states, arbitrary signed object/center IDs, explicit TDB-second bounds,
+coverage gaps and a competing segment. They contain no mission observations or
+external scientific dataset and are distributed under the repository's MIT
+license. The generator independently checks complete IDs, intervals, state values,
+segment metadata and load-order priority. The empty file is a valid DAF/SPK with
+no arrays, closed through SpiceyPy's DAF close solely during fixture generation.
+Writer parity cases independently create their own scratch files through the
+actual raw writer and actual SpiceyPy writer; the checked-in inputs are not
+substitutes for observing those newly written files.

@@ -32,6 +32,30 @@ import type {
 } from "../runtime/spice-handles.js";
 import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
 
+function validateSpkWriterNumbers(
+  body: number,
+  center: number,
+  degree: number,
+  first: number,
+  last: number,
+  epoch1: number,
+  step: number,
+  states: readonly number[] | Float64Array,
+): void {
+  assertSpiceInt32(body, "spkw08(body)");
+  assertSpiceInt32(center, "spkw08(center)");
+  assertSpiceInt32(degree, "spkw08(degree)");
+  if (![first, last, epoch1, step].every(Number.isFinite))
+    throw new RangeError("spkw08 epochs and step must be finite");
+  // Bound work/allocation before reading any caller state element, including
+  // sparse/proxied arrays. Match the existing WASM codec's 256 MiB guard.
+  if (states.length * 8 + 7 > 256 * 1024 * 1024)
+    throw new RangeError("spkw08 state buffer exceeds 256 MiB");
+  for (let i = 0; i < states.length; i++)
+    if (!Number.isFinite(states[i]))
+      throw new RangeError("spkw08 states must contain only finite numbers");
+}
+
 const I32_MAX = 2147483647;
 
 function isVirtualOutput(value: unknown): value is VirtualOutput {
@@ -96,9 +120,10 @@ function tspiceCallSpkopn(
   ncomch: number,
 ): number {
   const pathPtr = writeUtf8CString(module, path);
-  const ifnamePtr = writeUtf8CString(module, ifname);
+  let ifnamePtr = 0;
 
   try {
+    ifnamePtr = writeUtf8CString(module, ifname);
     return withAllocs(
       module,
       [4, WASM_ERR_MAX_BYTES],
@@ -119,7 +144,7 @@ function tspiceCallSpkopn(
       },
     );
   } finally {
-    module._free(ifnamePtr);
+    if (ifnamePtr) module._free(ifnamePtr);
     module._free(pathPtr);
   }
 }
@@ -165,9 +190,10 @@ function tspiceCallSpkw08(
   step: number,
 ): void {
   const framePtr = writeUtf8CString(module, frame);
-  const segidPtr = writeUtf8CString(module, segid);
+  let segidPtr = 0;
 
   try {
+    segidPtr = writeUtf8CString(module, segid);
     const n = states.length / 6;
     if (!Number.isSafeInteger(n) || n <= 0 || n * 6 !== states.length) {
       throw new Error(
@@ -221,7 +247,7 @@ function tspiceCallSpkw08(
       },
     );
   } finally {
-    module._free(segidPtr);
+    if (segidPtr) module._free(segidPtr);
     module._free(framePtr);
   }
 }
@@ -856,6 +882,9 @@ export function createEphemerisApi(
     spkopn: (file: string | VirtualOutput, ifname: string, ncomch: number) => {
       const resolved = resolveSpkPath(file, "spkopn(file)");
       ensureParentDir(module, resolved);
+      assertSpiceInt32(ncomch, "spkopn(ncomch)");
+      if (typeof ifname !== "string")
+        throw new TypeError("spkopn ifname must be a string");
       const nativeHandle = tspiceCallSpkopn(module, resolved, ifname, ncomch);
 
       const handle = handles.register("SPK", nativeHandle);
@@ -941,6 +970,18 @@ export function createEphemerisApi(
         );
       }
 
+      if (typeof frame !== "string" || typeof segid !== "string")
+        throw new TypeError("spkw08 frame and segid must be strings");
+      validateSpkWriterNumbers(
+        body,
+        center,
+        degree,
+        first,
+        last,
+        epoch1,
+        step,
+        states,
+      );
       const nativeHandle = handles.lookup(
         handle,
         ["SPK"],

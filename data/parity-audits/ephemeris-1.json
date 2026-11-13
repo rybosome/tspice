@@ -1,0 +1,829 @@
+{
+  "schemaVersion": 1,
+  "batch": "ephemeris-1",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/tests/test_spk_cleanup.py",
+    "packages/py-parity-checking/test/spk-writer-boundaries.test.ts",
+    "packages/py-parity-checking/test/spk-writer-cleanup.test.ts",
+    "packages/py-parity-checking/test/spk-written-output.test.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-spk.py",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/test/spk-dispose.test.ts",
+    "packages/backend-wasm/test/spk-file-allocations.test.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "spkopn_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkopn_c.html",
+      "semantics": "Create a new writable SPK, with an internal name stored in60ASCII characters and reserved comment space. Negative ncomch is treated as zero by CSPICE; empty internal name is actual EMPTYSTRING, while blanks are permitted and long names truncate to60. Returns a backend-owned opaque writer token; VirtualOutput has backend-local namespace/readability bookkeeping.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkopn-create-file-success",
+          "coverage": ["success"],
+          "observes": "spkopn creates a writable SPK and registers its logical handle Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopn-existing-file-error",
+          "coverage": ["error"],
+          "observes": "spkopn fails when attempting to create an SPK that already exists Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopn-audit-negative-comments",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopn-audit-reserved-comments",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopn-audit-blank-internal-name",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopn-audit-full-internal-name",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual created type8 state and complete descriptor after close; negative comment counts follow CSPICE zero-default, positive reservations and blank/full internal names remain meaningful file inputs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopn-audit-empty-internal-name",
+          "coverage": ["error", "edge"],
+          "observes": "Actual empty internal-name error must reach CSPICE EMPTYSTRING, not a generic shim preflight error. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        }
+      ],
+      "edgeAssessment": "Actual written state and descriptor, reserved2050comments, negative comment reservation, blank/full internal names, complete persisted header and all24typed-view state words.",
+      "errorAssessment": "Actual empty-name EMPTYSTRING and existing-file creation error. JS signed-integer ncomch validation precedes FFI. Four actual WASM allocation failure positions free everything; second-string failure formerly leaked the path.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing unchanged MGS-minimal CK fixture, reused solely to require actual wrong-DAF-type errors; fixture provenance was already documented.",
+          "distribution": "Existing tracked fixture reused unchanged; no new external data."
+        }
+      ],
+      "fixtureRationale": "Three tiny synthetic SPKs cover complete polynomial states, signed IDs/negative center, gaps, overlapping file priority and empty outputs. Writer workflows independently generate their own Scratch files through the target raw method and actual SpiceyPy. Existing CK only establishes wrong-file-type errors. Persisted output assertions inspect every state word and metadata, not just a length/prefix.",
+      "cleanup": "Workflow writer labels are unique before acquisition. Explicit successful close removes the claim only after real close; captured empty-close failure retains it for actual recovery. Pending populated SPKs reset captured error, close before Scratch and retain failed claims for a registered retry. Actual Python starts with failed:true and observes reset before close. Both backends verify close attempts while Scratch exists. Native internal disposal closes an otherwise-empty underlying DAF after structured NOSEGMENTSFOUND without changing raw close behavior. Fatal close I/O remains best-effort and failed claims are not falsely reported as closed. All16actual WASM allocation failure positions have zero net leaked temporaries and permit genuine post-failure calls.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparison applies to every state/light-time/time endpoint; IDs and all six packed integer fields are meaningfully distinguished. Independent persisted24state-word/header/degree/count comparisons are exact; polynomial evaluation checks position with1e-9km and velocity1e-12km/s for interpolation versus direct formula roundoff, stronger than the live relative position bound. No global tolerance change.",
+      "findings": [
+        {
+          "id": "spkopn-meaningful-file-evidence",
+          "status": "repaired",
+          "summary": "Existing void or minimal open/query/close smoke examples did not establish full persisted values, physical file identity, state/error recovery or relevant capacity/metadata boundaries.",
+          "repair": "Actual written state and descriptor, reserved2050comments, negative comment reservation, blank/full internal names, complete persisted header and all24typed-view state words. Forty-four new registered workflows plus independent actual output/cleanup/ownership tests establish the observed raw effects. Shared SPKSFS descriptor output now exposes all six packed integers and can feed actual SPKUDS; full search semantics remain the separate eight-routine batch.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ephemeris/spkopn.cases.json",
+            "packages/py-parity-checking/test/spk-written-output.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkopn-audit-negative-comments",
+            "ephemeris-spkopn-audit-reserved-comments",
+            "ephemeris-spkopn-audit-blank-internal-name",
+            "ephemeris-spkopn-audit-full-internal-name",
+            "ephemeris-spkopn-audit-empty-internal-name"
+          ]
+        },
+        {
+          "id": "spkopn-real-c-semantics-and-rollback",
+          "status": "repaired",
+          "summary": "Shared C rejected CSPICE negative comment defaults and intercepted empty strings with generic errors; WASM leaked its first string when the second encoder allocation failed. Writer numbers/states could be coerced or unbounded before native reserve.",
+          "repair": "Let actual CSPICE handle negative comment default/empty strings while retaining pointer safety. Protect every earlier string allocation. Signed integer/finite state/time guards and the existing256MiB budget reject oversized arrays before element reads/FFI. All16actual file/writer allocation positions pass, including two observed leaking positions; owning pinned WASM regeneration carries C changes to both targets.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/backend-node/src/domains/ephemeris.ts",
+            "packages/backend-wasm/test/spk-file-allocations.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkopn-audit-negative-comments",
+            "ephemeris-spkopn-audit-reserved-comments"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkopn -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkopn -> spkopn_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkopn -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkopn export -> shared tspice_spkopn -> spkopn_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkopa_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkopa_c.html",
+      "semantics": "Open an existing SPK for append and return an owned writer token. Preserve prior segments and append additional data. Non-SPK DAF is FILEISNOTSPK, missing file FILENOTFOUND, and a file currently loaded/read-open cannot be opened for writing: FILEOPENCONFLICT. File identity must not be replaced with a harness copy.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkopa-append-segment-success",
+          "coverage": ["success", "state"],
+          "observes": "spkopa reopens an SPK for append and writes an additional segment Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopa-missing-file-error",
+          "coverage": ["error"],
+          "observes": "spkopa fails when the target file does not exist Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopa-audit-append-complete-second-segment",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual append preserves the first segment and adds the full second object, metadata, coverage and all state components. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopa-audit-missing-file",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual missing-file FILENOTFOUND from append. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopa-audit-wrong-daf-type",
+          "coverage": ["error", "edge"],
+          "observes": "An actual CK DAF is not an SPK append target; require FILEISNOTSPK. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkopa-audit-loaded-file-conflict",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The same physical generated SPK is loaded for read, so append must signal actual FILEOPENCONFLICT. A harness copy must not hide file identity. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        }
+      ],
+      "edgeAssessment": "Close/reopen/append/reclose observes all original plus second-object IDs, complete second state/metadata/coverage. Generated Scratch load now uses the same actual Node file, exposing a real read/write conflict.",
+      "errorAssessment": "Require named FILENOTFOUND, FILEISNOTSPK and FILEOPENCONFLICT from actual raw operations. Missing workflow labels are separate preflight. Three actual WASM allocation failure positions have no leaks.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing unchanged MGS-minimal CK fixture, reused solely to require actual wrong-DAF-type errors; fixture provenance was already documented.",
+          "distribution": "Existing tracked fixture reused unchanged; no new external data."
+        }
+      ],
+      "fixtureRationale": "Three tiny synthetic SPKs cover complete polynomial states, signed IDs/negative center, gaps, overlapping file priority and empty outputs. Writer workflows independently generate their own Scratch files through the target raw method and actual SpiceyPy. Existing CK only establishes wrong-file-type errors. Persisted output assertions inspect every state word and metadata, not just a length/prefix.",
+      "cleanup": "Workflow writer labels are unique before acquisition. Explicit successful close removes the claim only after real close; captured empty-close failure retains it for actual recovery. Pending populated SPKs reset captured error, close before Scratch and retain failed claims for a registered retry. Actual Python starts with failed:true and observes reset before close. Both backends verify close attempts while Scratch exists. Native internal disposal closes an otherwise-empty underlying DAF after structured NOSEGMENTSFOUND without changing raw close behavior. Fatal close I/O remains best-effort and failed claims are not falsely reported as closed. All16actual WASM allocation failure positions have zero net leaked temporaries and permit genuine post-failure calls.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparison applies to every state/light-time/time endpoint; IDs and all six packed integer fields are meaningfully distinguished. Independent persisted24state-word/header/degree/count comparisons are exact; polynomial evaluation checks position with1e-9km and velocity1e-12km/s for interpolation versus direct formula roundoff, stronger than the live relative position bound. No global tolerance change.",
+      "findings": [
+        {
+          "id": "spkopa-meaningful-file-evidence",
+          "status": "repaired",
+          "summary": "Existing void or minimal open/query/close smoke examples did not establish full persisted values, physical file identity, state/error recovery or relevant capacity/metadata boundaries.",
+          "repair": "Close/reopen/append/reclose observes all original plus second-object IDs, complete second state/metadata/coverage. Generated Scratch load now uses the same actual Node file, exposing a real read/write conflict. Forty-four new registered workflows plus independent actual output/cleanup/ownership tests establish the observed raw effects. Shared SPKSFS descriptor output now exposes all six packed integers and can feed actual SPKUDS; full search semantics remain the separate eight-routine batch.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ephemeris/spkopa.cases.json",
+            "packages/py-parity-checking/test/spk-written-output.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkopa-audit-append-complete-second-segment",
+            "ephemeris-spkopa-audit-missing-file",
+            "ephemeris-spkopa-audit-wrong-daf-type",
+            "ephemeris-spkopa-audit-loaded-file-conflict"
+          ]
+        },
+        {
+          "id": "spkopa-physical-file-identity",
+          "status": "repaired",
+          "summary": "Node FURNSH loaded a staged copy of generated Scratch files, hiding the real read/write-open conflict that SpiceyPy and WASM reported.",
+          "repair": "Load the actual Node Scratch path without cloning it. The registered FILEOPENCONFLICT case failed on Node before this repair and now passes on both actual backends. Existing fixture-byte loading and public raw APIs are unchanged. The first complete required run exposed seven existing Node EK success regressions when no host Scratch file exists. Preserve backend virtual-path loading in that branch; use the host path only for an actual host file. Existing seven EK workflows and the new SPK conflict workflow verify both routes.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+            "packages/py-parity-checking/src/cases/ephemeris/spkopa.cases.json"
+          ],
+          "caseIds": ["ephemeris-spkopa-audit-loaded-file-conflict"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkopa -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkopa -> spkopa_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkopa -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkopa export -> shared tspice_spkopa -> spkopa_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkcls_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcls_c.html",
+      "semantics": "Close a populated SPK writer. CSPICE NOSEGMENTSFOUND on an empty writer leaves it open for recovery by writing data and retrying close. Public owned opaque token policy rejects expired/foreign handles; this differs intentionally from raw numeric CK unknown-unload behavior. Disposal may close an empty underlying DAF without changing raw SPKCLS semantics.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkcls-close-writer-success",
+          "coverage": ["success", "state"],
+          "observes": "spkcls closes a writer handle so the output can be queried by path Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcls-missing-handle-error",
+          "coverage": ["error"],
+          "observes": "spkcls errors when the logical handle ID is unknown Harness-local unknown label preflight; does not establish a CSPICE error. Actual owned token/empty-close recovery and physical-disposal tests provide the relevant raw evidence."
+        },
+        {
+          "caseId": "ephemeris-spkcls-audit-empty-error-and-recovery",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Capture only a real structured empty-file NOSEGMENTSFOUND, retain the actual handle, then write/close/reopen/query successfully; a no-op or unrelated error cannot satisfy this success workflow. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcls-audit-close-reopen-append",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Successful physical close permits actual append/reclose and complete second-object state/descriptor inspection, rather than comparing a void return. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        }
+      ],
+      "edgeAssessment": "Successful close enables real append/query. A structured empty-close error is captured, its actual handle retained, valid data written and close retried, then complete state/descriptor read back. Public readable-output gate stays closed after failed close.",
+      "errorAssessment": "The old unknown workflow handle case is harness preflight, not CSPICE evidence. Actual empty-file NOSEGMENTSFOUND, expired/foreign token rejection, same-handle recovery and actual native physical DAF closure during disposal are independently required.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing unchanged MGS-minimal CK fixture, reused solely to require actual wrong-DAF-type errors; fixture provenance was already documented.",
+          "distribution": "Existing tracked fixture reused unchanged; no new external data."
+        }
+      ],
+      "fixtureRationale": "Three tiny synthetic SPKs cover complete polynomial states, signed IDs/negative center, gaps, overlapping file priority and empty outputs. Writer workflows independently generate their own Scratch files through the target raw method and actual SpiceyPy. Existing CK only establishes wrong-file-type errors. Persisted output assertions inspect every state word and metadata, not just a length/prefix.",
+      "cleanup": "Workflow writer labels are unique before acquisition. Explicit successful close removes the claim only after real close; captured empty-close failure retains it for actual recovery. Pending populated SPKs reset captured error, close before Scratch and retain failed claims for a registered retry. Actual Python starts with failed:true and observes reset before close. Both backends verify close attempts while Scratch exists. Native internal disposal closes an otherwise-empty underlying DAF after structured NOSEGMENTSFOUND without changing raw close behavior. Fatal close I/O remains best-effort and failed claims are not falsely reported as closed. All16actual WASM allocation failure positions have zero net leaked temporaries and permit genuine post-failure calls.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparison applies to every state/light-time/time endpoint; IDs and all six packed integer fields are meaningfully distinguished. Independent persisted24state-word/header/degree/count comparisons are exact; polynomial evaluation checks position with1e-9km and velocity1e-12km/s for interpolation versus direct formula roundoff, stronger than the live relative position bound. No global tolerance change.",
+      "findings": [
+        {
+          "id": "spkcls-meaningful-file-evidence",
+          "status": "repaired",
+          "summary": "Existing void or minimal open/query/close smoke examples did not establish full persisted values, physical file identity, state/error recovery or relevant capacity/metadata boundaries.",
+          "repair": "Successful close enables real append/query. A structured empty-close error is captured, its actual handle retained, valid data written and close retried, then complete state/descriptor read back. Public readable-output gate stays closed after failed close. Forty-four new registered workflows plus independent actual output/cleanup/ownership tests establish the observed raw effects. Shared SPKSFS descriptor output now exposes all six packed integers and can feed actual SPKUDS; full search semantics remain the separate eight-routine batch.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ephemeris/spkcls.cases.json",
+            "packages/py-parity-checking/test/spk-written-output.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkcls-audit-empty-error-and-recovery",
+            "ephemeris-spkcls-audit-close-reopen-append"
+          ]
+        },
+        {
+          "id": "spkcls-pending-cleanup-and-empty-disposal",
+          "status": "repaired",
+          "summary": "Scratch was removed before pending writer finalizers, close failures were forgotten, and Native disposeAll failed to release an empty SPK DAF handle after NOSEGMENTSFOUND.",
+          "repair": "Reset captured error, close pending claims before Scratch, retain failed claims for registered retry and reject duplicate workflow labels before acquisition. Actual Node/WASM/locked Python cleanup tests failed before and pass after repair. Native disposal handles only structured NOSEGMENTSFOUND with DAF close; raw SPKCLS still errors/retains the handle. A test captures the actual native handle and proves DAFBFS rejects it after disposal.",
+          "evidence": [
+            "packages/py-parity-checking/src/runtime/context.ts",
+            "packages/py-parity-checking/src/runtime/lifecycle.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/tests/test_spk_cleanup.py",
+            "packages/py-parity-checking/test/spk-writer-cleanup.test.ts",
+            "packages/backend-node/src/index.ts",
+            "packages/backend-node/test/spk-dispose.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkcls-audit-empty-error-and-recovery",
+            "ephemeris-spkcls-audit-close-reopen-append"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkcls -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkcls -> spkcls_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkcls -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkcls export -> shared tspice_spkcls -> spkcls_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkw08_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw08_c.html",
+      "semantics": "Write a type8 segment from flat record-major [x,y,z,dx,dy,dz] states in km and km/s, regular ET-second sampling epoch1/step, valid descriptor bounds and degree1..27. Derive n=length/6 and require n>=degree+1. Frame and segment ID follow CSPICE; all40 ID bytes are retained and trailing blank beyond40 is allowed. N0067 permits body0 and equal body/center here, unlike SPKPDS; do not invent stricter constructor semantics.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw08-write-segment-success",
+          "coverage": ["success"],
+          "observes": "spkw08 writes a type-8 segment that can be queried for coverage Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-invalid-states-length-error",
+          "coverage": ["error"],
+          "observes": "spkw08 errors when states is not a non-empty multiple of six Explicit flat-array preflight on both dispatchers, not intrinsic CSPICE error coverage. A preceding valid segment permits proper file cleanup; separate named real writer errors provide raw evidence."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-quadratic-all-components",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-minimum-degree-linear",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-maximum-degree",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-forty-character-id",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-forty-id-trailing-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate every authored position/velocity component, light time, exact written IDs, coverage and complete descriptor/identifier after actual write/close; distinguish degree and full segment ID boundaries. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-zero-body",
+          "coverage": ["success", "edge"],
+          "observes": "N0067 SPKW08 accepts this metadata even though SPKPDS has stricter constructor checks; observe actual stored object/descriptor and preserve writer semantics. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-equal-body-center",
+          "coverage": ["success", "edge"],
+          "observes": "N0067 SPKW08 accepts this metadata even though SPKPDS has stricter constructor checks; observe actual stored object/descriptor and preserve writer semantics. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-empty-frame",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual EMPTYSTRING from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-empty-segment-id",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual EMPTYSTRING from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-long-segment-id",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual SEGIDTOOLONG from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-nonprintable-segment-id",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual NONPRINTABLECHARS from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-unknown-frame",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual INVALIDREFFRAME from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-zero-degree",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual INVALIDDEGREE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-large-degree",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual INVALIDDEGREE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-too-few-states",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual TOOFEWSTATES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-equal-epochs",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual BADDESCRTIMES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-reversed-epochs",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual BADDESCRTIMES from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-zero-step",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual INVALIDSTEPSIZE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-negative-step",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual INVALIDSTEPSIZE from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-first-coverage-gap",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual COVERAGEGAP from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkw08-audit-last-coverage-gap",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual COVERAGEGAP from a writer with an existing valid segment, so error cleanup can close meaningful data rather than orphaning an empty file. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        }
+      ],
+      "edgeAssessment": "All six quadratic components, degrees1/2/27, nonzero typed-view byte offset, full40-byte/trailing-blank IDs, actual body0/equal-center metadata and complete persisted states/degree/sample metadata. Oversized proxied arrays are rejected before element reads/native reserve; all states must be finite.",
+      "errorAssessment": "Actual EMPTYSTRING, SEGIDTOOLONG, NONPRINTABLECHARS, INVALIDREFFRAME, INVALIDDEGREE, TOOFEWSTATES, BADDESCRTIMES, INVALIDSTEPSIZE and COVERAGEGAP. Signed integer/finiteness/flat-length and256MiB limits are JS boundary checks. Error workflows seed real valid data so their finalizer can close a real SPK; valid operation follows input failures.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing unchanged MGS-minimal CK fixture, reused solely to require actual wrong-DAF-type errors; fixture provenance was already documented.",
+          "distribution": "Existing tracked fixture reused unchanged; no new external data."
+        }
+      ],
+      "fixtureRationale": "Three tiny synthetic SPKs cover complete polynomial states, signed IDs/negative center, gaps, overlapping file priority and empty outputs. Writer workflows independently generate their own Scratch files through the target raw method and actual SpiceyPy. Existing CK only establishes wrong-file-type errors. Persisted output assertions inspect every state word and metadata, not just a length/prefix.",
+      "cleanup": "Workflow writer labels are unique before acquisition. Explicit successful close removes the claim only after real close; captured empty-close failure retains it for actual recovery. Pending populated SPKs reset captured error, close before Scratch and retain failed claims for a registered retry. Actual Python starts with failed:true and observes reset before close. Both backends verify close attempts while Scratch exists. Native internal disposal closes an otherwise-empty underlying DAF after structured NOSEGMENTSFOUND without changing raw close behavior. Fatal close I/O remains best-effort and failed claims are not falsely reported as closed. All16actual WASM allocation failure positions have zero net leaked temporaries and permit genuine post-failure calls.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparison applies to every state/light-time/time endpoint; IDs and all six packed integer fields are meaningfully distinguished. Independent persisted24state-word/header/degree/count comparisons are exact; polynomial evaluation checks position with1e-9km and velocity1e-12km/s for interpolation versus direct formula roundoff, stronger than the live relative position bound. No global tolerance change.",
+      "findings": [
+        {
+          "id": "spkw08-meaningful-file-evidence",
+          "status": "repaired",
+          "summary": "Existing void or minimal open/query/close smoke examples did not establish full persisted values, physical file identity, state/error recovery or relevant capacity/metadata boundaries.",
+          "repair": "All six quadratic components, degrees1/2/27, nonzero typed-view byte offset, full40-byte/trailing-blank IDs, actual body0/equal-center metadata and complete persisted states/degree/sample metadata. Oversized proxied arrays are rejected before element reads/native reserve; all states must be finite. Forty-four new registered workflows plus independent actual output/cleanup/ownership tests establish the observed raw effects. Shared SPKSFS descriptor output now exposes all six packed integers and can feed actual SPKUDS; full search semantics remain the separate eight-routine batch.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ephemeris/spkw08.cases.json",
+            "packages/py-parity-checking/test/spk-written-output.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkw08-audit-quadratic-all-components",
+            "ephemeris-spkw08-audit-minimum-degree-linear",
+            "ephemeris-spkw08-audit-maximum-degree",
+            "ephemeris-spkw08-audit-forty-character-id",
+            "ephemeris-spkw08-audit-forty-id-trailing-blank",
+            "ephemeris-spkw08-audit-zero-body",
+            "ephemeris-spkw08-audit-equal-body-center",
+            "ephemeris-spkw08-audit-empty-frame",
+            "ephemeris-spkw08-audit-empty-segment-id",
+            "ephemeris-spkw08-audit-long-segment-id",
+            "ephemeris-spkw08-audit-nonprintable-segment-id",
+            "ephemeris-spkw08-audit-unknown-frame",
+            "ephemeris-spkw08-audit-zero-degree",
+            "ephemeris-spkw08-audit-large-degree",
+            "ephemeris-spkw08-audit-too-few-states",
+            "ephemeris-spkw08-audit-equal-epochs",
+            "ephemeris-spkw08-audit-reversed-epochs",
+            "ephemeris-spkw08-audit-zero-step",
+            "ephemeris-spkw08-audit-negative-step",
+            "ephemeris-spkw08-audit-first-coverage-gap",
+            "ephemeris-spkw08-audit-last-coverage-gap"
+          ]
+        },
+        {
+          "id": "spkw08-real-c-semantics-and-rollback",
+          "status": "repaired",
+          "summary": "Shared C rejected CSPICE negative comment defaults and intercepted empty strings with generic errors; WASM leaked its first string when the second encoder allocation failed. Writer numbers/states could be coerced or unbounded before native reserve.",
+          "repair": "Let actual CSPICE handle negative comment default/empty strings while retaining pointer safety. Protect every earlier string allocation. Signed integer/finite state/time guards and the existing256MiB budget reject oversized arrays before element reads/FFI. All16actual file/writer allocation positions pass, including two observed leaking positions; owning pinned WASM regeneration carries C changes to both targets.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/backend-node/src/domains/ephemeris.ts",
+            "packages/backend-wasm/test/spk-file-allocations.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkw08-audit-quadratic-all-components",
+            "ephemeris-spkw08-audit-minimum-degree-linear"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw08 -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkw08 _v2 -> spkw08_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw08 -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkw08 _v2 export -> shared tspice_spkw08 _v2 -> spkw08_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkobj_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkobj_c.html",
+      "semantics": "Append every object ID present in a specified SPK into an initialized integer set. IDs are sorted/deduplicated and existing contents are preserved. File inspection is independent of pointing/state selection and does not require a query for each body. Zero capacity is valid for an empty SPK.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkobj-generated-file-success",
+          "coverage": ["success"],
+          "observes": "spkobj returns object IDs present in a generated SPK Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkobj-missing-file-error",
+          "coverage": ["error"],
+          "observes": "spkobj fails for a missing SPK path Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkobj-audit-all-objects-and-deduplication",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every sorted signed object ID from repeated/negative-center segments. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkobj-audit-union-across-files",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Repeated raw queries append/deduplicate into the same actual set; observe all intermediate and final IDs. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkobj-audit-empty-zero-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "An empty SPK has no IDs and permits a genuine zero-capacity output cell. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkobj-audit-populated-zero-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve zero capacity and require actual SETEXCESS. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkobj-audit-insufficient-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "One slot cannot contain five distinct IDs; require SETEXCESS. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkobj-audit-wrong-daf-type",
+          "coverage": ["error", "edge"],
+          "observes": "A CK DAF must fail actual SPK object inspection with INVALIDFILETYPE. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        }
+      ],
+      "edgeAssessment": "Five signed IDs, repeated segments, negative-center metadata, repeated/multi-file union, empty file and genuine zero capacity, every returned ID.",
+      "errorAssessment": "Actual populated zero/insufficient cells signal SETEXCESS; CK DAF inspection is INVALIDFILETYPE; missing file remains an actual raw error. Live/typed cell ownership and lifetime are validated at C/adapter boundaries. Failed outputs are not assumed unchanged.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing unchanged MGS-minimal CK fixture, reused solely to require actual wrong-DAF-type errors; fixture provenance was already documented.",
+          "distribution": "Existing tracked fixture reused unchanged; no new external data."
+        }
+      ],
+      "fixtureRationale": "Three tiny synthetic SPKs cover complete polynomial states, signed IDs/negative center, gaps, overlapping file priority and empty outputs. Writer workflows independently generate their own Scratch files through the target raw method and actual SpiceyPy. Existing CK only establishes wrong-file-type errors. Persisted output assertions inspect every state word and metadata, not just a length/prefix.",
+      "cleanup": "Workflow writer labels are unique before acquisition. Explicit successful close removes the claim only after real close; captured empty-close failure retains it for actual recovery. Pending populated SPKs reset captured error, close before Scratch and retain failed claims for a registered retry. Actual Python starts with failed:true and observes reset before close. Both backends verify close attempts while Scratch exists. Native internal disposal closes an otherwise-empty underlying DAF after structured NOSEGMENTSFOUND without changing raw close behavior. Fatal close I/O remains best-effort and failed claims are not falsely reported as closed. All16actual WASM allocation failure positions have zero net leaked temporaries and permit genuine post-failure calls.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparison applies to every state/light-time/time endpoint; IDs and all six packed integer fields are meaningfully distinguished. Independent persisted24state-word/header/degree/count comparisons are exact; polynomial evaluation checks position with1e-9km and velocity1e-12km/s for interpolation versus direct formula roundoff, stronger than the live relative position bound. No global tolerance change.",
+      "findings": [
+        {
+          "id": "spkobj-meaningful-file-evidence",
+          "status": "repaired",
+          "summary": "Existing void or minimal open/query/close smoke examples did not establish full persisted values, physical file identity, state/error recovery or relevant capacity/metadata boundaries.",
+          "repair": "Five signed IDs, repeated segments, negative-center metadata, repeated/multi-file union, empty file and genuine zero capacity, every returned ID. Forty-four new registered workflows plus independent actual output/cleanup/ownership tests establish the observed raw effects. Shared SPKSFS descriptor output now exposes all six packed integers and can feed actual SPKUDS; full search semantics remain the separate eight-routine batch.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ephemeris/spkobj.cases.json",
+            "packages/py-parity-checking/test/spk-written-output.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkobj-audit-all-objects-and-deduplication",
+            "ephemeris-spkobj-audit-union-across-files",
+            "ephemeris-spkobj-audit-empty-zero-capacity",
+            "ephemeris-spkobj-audit-populated-zero-capacity",
+            "ephemeris-spkobj-audit-insufficient-capacity",
+            "ephemeris-spkobj-audit-wrong-daf-type"
+          ]
+        },
+        {
+          "id": "spkobj-zero-capacity-oracle",
+          "status": "repaired",
+          "summary": "The oracle preflight rejected valid zero-capacity integer cells/double windows, so empty SPK success coverage could not exercise actual CSPICE.",
+          "repair": "Permit genuine zero outputs and retain explicit None-based defaults. Four actual empty-file comparisons failed before this repair. Compare complete sorted sets and all interval endpoints/union effects; insufficient populated outputs require named actual CSPICE errors.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+            "packages/py-parity-checking/src/cases/ephemeris/spkobj.cases.json"
+          ],
+          "caseIds": [
+            "ephemeris-spkobj-audit-empty-zero-capacity",
+            "ephemeris-spkobj-audit-populated-zero-capacity"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkobj -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkobj -> spkobj_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkobj -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkobj export -> shared tspice_spkobj -> spkobj_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkcov_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcov_c.html",
+      "semantics": "Append ET-second coverage for one object into an initialized double window. Union all segment bounds with prior intervals, retaining disjoint gaps and merging overlaps/touches. An absent object adds no intervals. Zero capacity is valid when there is no coverage.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkcov-generated-file-success",
+          "coverage": ["success"],
+          "observes": "spkcov returns coverage intervals for a generated SPK Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcov-missing-file-error",
+          "coverage": ["error"],
+          "observes": "spkcov fails for a missing SPK path Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcov-audit-disjoint-intervals",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all ET-second endpoints of two real segments and the intervening coverage gap. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcov-audit-union-merges-gap",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A competing file covers the gap; existing coverage must be unioned into [-1000,1000], not reset before inspection. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcov-audit-absent-object",
+          "coverage": ["success", "edge"],
+          "observes": "An absent object yields no intervals without a manufactured error. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcov-audit-empty-zero-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Empty SPK coverage fits a genuine zero-capacity window. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcov-audit-insufficient-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "A single interval slot cannot hold two disjoint intervals; require actual WINDOWEXCESS. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        },
+        {
+          "caseId": "ephemeris-spkcov-audit-wrong-daf-type",
+          "coverage": ["error", "edge"],
+          "observes": "Require INVALIDFILETYPE when inspecting a real CK DAF for SPK coverage. Actual raw operation/effect reaches comparison: all IDs, intervals, complete states/light time or all packed/unpacked descriptor fields; named toolkit errors remain errors."
+        }
+      ],
+      "edgeAssessment": "Two actual disjoint intervals, absent object, empty zero window, and multi-file union bridging the gap into[-1000,1000]. All endpoints are observed, not only cardinality.",
+      "errorAssessment": "Actual insufficient capacity WINDOWEXCESS and wrong DAF INVALIDFILETYPE. Wrapper validates signed IDs and live/owned output windows. CSPICE may leave failed coverage undefined; free/recreate rather than asserting content preservation.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing unchanged MGS-minimal CK fixture, reused solely to require actual wrong-DAF-type errors; fixture provenance was already documented.",
+          "distribution": "Existing tracked fixture reused unchanged; no new external data."
+        }
+      ],
+      "fixtureRationale": "Three tiny synthetic SPKs cover complete polynomial states, signed IDs/negative center, gaps, overlapping file priority and empty outputs. Writer workflows independently generate their own Scratch files through the target raw method and actual SpiceyPy. Existing CK only establishes wrong-file-type errors. Persisted output assertions inspect every state word and metadata, not just a length/prefix.",
+      "cleanup": "Workflow writer labels are unique before acquisition. Explicit successful close removes the claim only after real close; captured empty-close failure retains it for actual recovery. Pending populated SPKs reset captured error, close before Scratch and retain failed claims for a registered retry. Actual Python starts with failed:true and observes reset before close. Both backends verify close attempts while Scratch exists. Native internal disposal closes an otherwise-empty underlying DAF after structured NOSEGMENTSFOUND without changing raw close behavior. Fatal close I/O remains best-effort and failed claims are not falsely reported as closed. All16actual WASM allocation failure positions have zero net leaked temporaries and permit genuine post-failure calls.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparison applies to every state/light-time/time endpoint; IDs and all six packed integer fields are meaningfully distinguished. Independent persisted24state-word/header/degree/count comparisons are exact; polynomial evaluation checks position with1e-9km and velocity1e-12km/s for interpolation versus direct formula roundoff, stronger than the live relative position bound. No global tolerance change.",
+      "findings": [
+        {
+          "id": "spkcov-meaningful-file-evidence",
+          "status": "repaired",
+          "summary": "Existing void or minimal open/query/close smoke examples did not establish full persisted values, physical file identity, state/error recovery or relevant capacity/metadata boundaries.",
+          "repair": "Two actual disjoint intervals, absent object, empty zero window, and multi-file union bridging the gap into[-1000,1000]. All endpoints are observed, not only cardinality. Forty-four new registered workflows plus independent actual output/cleanup/ownership tests establish the observed raw effects. Shared SPKSFS descriptor output now exposes all six packed integers and can feed actual SPKUDS; full search semantics remain the separate eight-routine batch.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ephemeris/spkcov.cases.json",
+            "packages/py-parity-checking/test/spk-written-output.test.ts",
+            "packages/py-parity-checking/test/spk-writer-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-spkcov-audit-disjoint-intervals",
+            "ephemeris-spkcov-audit-union-merges-gap",
+            "ephemeris-spkcov-audit-absent-object",
+            "ephemeris-spkcov-audit-empty-zero-capacity",
+            "ephemeris-spkcov-audit-insufficient-capacity",
+            "ephemeris-spkcov-audit-wrong-daf-type"
+          ]
+        },
+        {
+          "id": "spkcov-zero-capacity-oracle",
+          "status": "repaired",
+          "summary": "The oracle preflight rejected valid zero-capacity integer cells/double windows, so empty SPK success coverage could not exercise actual CSPICE.",
+          "repair": "Permit genuine zero outputs and retain explicit None-based defaults. Four actual empty-file comparisons failed before this repair. Compare complete sorted sets and all interval endpoints/union effects; insufficient populated outputs require named actual CSPICE errors.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+            "packages/py-parity-checking/src/cases/ephemeris/spkcov.cases.json"
+          ],
+          "caseIds": ["ephemeris-spkcov-audit-empty-zero-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkcov -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkcov -> spkcov_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkcov -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkcov export -> shared tspice_spkcov -> spkcov_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused actual/live comparisons and explicit negative/positive regressions observed. Both full required local lanes, canonical CI and rebaseability still pending; no completion is inferred from registration."
+}

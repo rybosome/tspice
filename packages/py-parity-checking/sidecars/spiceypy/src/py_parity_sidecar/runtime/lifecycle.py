@@ -25,6 +25,15 @@ def _reset_best_effort() -> None:
 
 
 def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
+    if context.state.ephemeris.spkHandles:
+        _reset_best_effort()
+        for handle_id,handle in list(context.state.ephemeris.spkHandles.items()):
+            try:
+                sp.spkcls(handle)
+                context.state.ephemeris.spkHandles.pop(handle_id,None)
+            except BaseException:
+                # Preserve the claim for its registered retry before Scratch.
+                pass
     register_default_finalizers(context)
     context.run_finalizers_best_effort()
     _kclear_best_effort()

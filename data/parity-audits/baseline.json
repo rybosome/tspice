@@ -98,9 +98,9 @@
         "spkopn_c",
         "spkw08_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["ephemeris-descriptors"],
       "prs": [],
-      "nextAction": "Audit six SPK file/writer/coverage routines. Verify real written segment contents, append/close/errors, zero-capacity unions and pending resource cleanup. Fix shared C negative ncomch semantic mismatch and regenerate pinned WASM when needed."
+      "nextAction": "Six SPK file/writer/coverage routines have handwritten semantic review and focused actual/live evidence. Complete full required local lanes, publish the audit PR, then observe canonical CI and explicit rebaseability."
     },
     {
       "id": "ephemeris-2",

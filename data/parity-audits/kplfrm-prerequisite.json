@@ -306,7 +306,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64."
+      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64.",
+      "historical": true
     },
     {
       "id": "local-spk-descriptors-2026-11-13-wasm",
@@ -323,7 +324,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64."
+      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64.",
+      "historical": true
     },
     {
       "id": "ci-pr700-43402810112-node",
@@ -342,7 +344,8 @@
       ],
       "commit": "6a5170382db975931044d7534d91e594c19e76c5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43402810112/job/131809630407",
-      "observation": "Observed exact-source Linux22: all 684 live comparisons, 721 parity-package tests, 80 WASM, 62 Node, 28 core and 125 facade tests passed with production N0067 native-required execution and zero skips. All 15 source jobs passed."
+      "observation": "Observed exact-source Linux22: all 684 live comparisons, 721 parity-package tests, 80 WASM, 62 Node, 28 core and 125 facade tests passed with production N0067 native-required execution and zero skips. All 15 source jobs passed.",
+      "historical": true
     },
     {
       "id": "ci-pr700-43402810112-wasm",
@@ -361,7 +364,8 @@
       ],
       "commit": "6a5170382db975931044d7534d91e594c19e76c5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43402810112/job/131809630407",
-      "observation": "Observed exact-source Linux22: all 684 live comparisons, 721 parity-package tests, 80 WASM, 62 Node, 28 core and 125 facade tests passed with production N0067 native-required execution and zero skips. All 15 source jobs passed."
+      "observation": "Observed exact-source Linux22: all 684 live comparisons, 721 parity-package tests, 80 WASM, 62 Node, 28 core and 125 facade tests passed with production N0067 native-required execution and zero skips. All 15 source jobs passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -500,7 +504,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
@@ -520,7 +525,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",

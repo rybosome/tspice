@@ -72,16 +72,6 @@ function toVec6(
   return [vec[0]!, vec[1]!, vec[2]!, vec[3]!, vec[4]!, vec[5]!];
 }
 
-function toPackedDescriptor(descr: readonly number[]): SpkPackedDescriptor {
-  if (descr.length !== 5) {
-    throw new Error(
-      `Expected a length-5 packed descriptor, got length=${descr.length}`,
-    );
-  }
-
-  return [descr[0]!, descr[1]!, descr[2]!, descr[3]!, descr[4]!];
-}
-
 function resolveEphemerisPath(
   context: RunTspiceContext,
   pathRefLike:
@@ -124,7 +114,23 @@ export function runEphemerisStep(
   switch (step.op) {
     case "ephemeris.spkcls": {
       const handle = requireSpkHandle(context, step.handleId);
-      context.spice.raw.spkcls(handle);
+      try {
+        context.spice.raw.spkcls(handle);
+      } catch (error) {
+        if (!step.captureError) throw error;
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "spiceShort" in error &&
+          typeof error.spiceShort === "string"
+        )
+          return { op: step.op, value: { short: error.spiceShort } };
+        throw error;
+      }
+      if (step.captureError)
+        throw new Error(
+          "raw.spkcls did not throw the required structured SPICE error",
+        );
       deleteSpkHandle(context, step.handleId);
       return { op: step.op, value: null };
     }
@@ -253,6 +259,8 @@ export function runEphemerisStep(
     }
 
     case "ephemeris.spkopa": {
+      if (context.state.ephemeris.spkHandles.has(step.handleId))
+        throw new Error(`SPK handle already exists: ${step.handleId}`);
       const handle = context.spice.raw.spkopa(
         resolveEphemerisPath(context, step.file, {
           ensureParentDirectory: true,
@@ -268,6 +276,8 @@ export function runEphemerisStep(
     }
 
     case "ephemeris.spkopn": {
+      if (context.state.ephemeris.spkHandles.has(step.handleId))
+        throw new Error(`SPK handle already exists: ${step.handleId}`);
       const handle = context.spice.raw.spkopn(
         resolveEphemerisPath(context, step.file, {
           ensureParentDirectory: true,
@@ -329,11 +339,13 @@ export function runEphemerisStep(
         };
       }
 
+      if (step.descrId !== undefined)
+        context.state.ephemeris.descriptors.set(step.descrId, out.descr);
       return {
         op: step.op,
         value: {
           found: true,
-          descr: toPackedDescriptor(out.descr),
+          descr: descriptorOutput(out.descr),
           ident: out.ident,
         },
       };
