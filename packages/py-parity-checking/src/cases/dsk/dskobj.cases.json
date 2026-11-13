@@ -28,7 +28,131 @@
       }
     ],
     "expectation": {
-      "kind": "error"
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARCHTYPE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskobj-audit-union-duplicates-and-repeat",
+    "description": "Actual caller-owned cell union preserves initial IDs, adds missing IDs, sorts/deduplicates repeated segment IDs and remains idempotent on a second call; every snapshot is compared.",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "cellSize": 10,
+        "initial": [399, -100],
+        "repetitions": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskobj-audit-empty-zero-capacity",
+    "description": "A valid empty DSK and an actual zero-capacity output cell return an empty set; Python must not substitute a default large cell.",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-empty-dsk.bds"
+        },
+        "cellSize": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskobj-audit-small-capacity",
+    "description": "A real two-ID result overflows capacity1 and must signal actual CELLTOOSMALL; contents after toolkit failure are not assumed unchanged.",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "cellSize": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "dsk-dskobj-audit-missing-file",
+    "description": "Missing scratch path reaches the actual CSPICE query and requires FILENOTFOUND, not a fixture read failure.",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "scratch",
+          "rel": "missing.bds"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "dsk-dskobj-audit-wrong-das-file-type",
+    "description": "An actual closed DAS/DLA file has the right architecture but wrong type; query must reach INVALIDFILETYPE.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "non-dsk",
+        "path": {
+          "kind": "scratch",
+          "rel": "dskobj-wrong-type.dla"
+        },
+        "ftype": "DLA",
+        "ifname": "AUTHORED_NON_DSK",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "non-dsk"
+      },
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "scratch",
+          "rel": "dskobj-wrong-type.dla"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFILETYPE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskobj-audit-transient-capacity-before-deduplication",
+    "description": "CSPICE temporarily appends segment IDs before deduplicating: capacity3 can fail even though the final unique union would have only three IDs. Preserve this raw behavior.",
+    "workflow": [
+      {
+        "op": "dsk.dskobj",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "cellSize": 3,
+        "initial": [399, -100],
+        "repetitions": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
     }
   }
 ]

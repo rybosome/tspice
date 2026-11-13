@@ -1191,12 +1191,18 @@ export type StepGeometryPl2nvc = {
 export type StepDskDskobj = {
   op: "dsk.dskobj";
   path: PathRefLike;
+  cellSize?: number;
+  initial?: number[];
+  repetitions?: number;
 };
 
 export type StepDskDsksrf = {
   op: "dsk.dsksrf";
   path: PathRefLike;
   bodyid: number;
+  cellSize?: number;
+  initial?: number[];
+  repetitions?: number;
 };
 
 export type StepDskDskopn = {
@@ -1870,11 +1876,11 @@ export type StepOutput =
   | { op: "geometry-gf.gfdist"; value: null }
   | {
       op: "dsk.dskobj";
-      value: { bodyIds: number[] };
+      value: { bodyIds: number[]; snapshots: number[][] };
     }
   | {
       op: "dsk.dsksrf";
-      value: { surfaceIds: number[] };
+      value: { surfaceIds: number[]; snapshots: number[][] };
     }
   | { op: "dsk.dskopn"; value: null }
   | { op: "dsk.dskmi2"; value: null }

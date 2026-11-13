@@ -1420,13 +1420,19 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             )
 
         case "dsk.dskobj":
-            return StepDskDskobj(op=op, path=_decode_path_ref(step.get("path"), label="dsk.dskobj.path"))
+            return StepDskDskobj(op=op, path=_decode_path_ref(step.get("path"), label="dsk.dskobj.path"),
+                cellSize=_expect_int(step.get("cellSize",10000),label="dsk.dskobj.cellSize"),
+                initial=_expect_int_list(step.get("initial",[]),label="dsk.dskobj.initial"),
+                repetitions=_expect_int(step.get("repetitions",1),label="dsk.dskobj.repetitions"))
 
         case "dsk.dsksrf":
             return StepDskDsksrf(
                 op=op,
                 path=_decode_path_ref(step.get("path"), label="dsk.dsksrf.path"),
                 bodyid=_expect_int(step.get("bodyid"), label="dsk.dsksrf.bodyid"),
+                cellSize=_expect_int(step.get("cellSize",10000),label="dsk.dsksrf.cellSize"),
+                initial=_expect_int_list(step.get("initial",[]),label="dsk.dsksrf.initial"),
+                repetitions=_expect_int(step.get("repetitions",1),label="dsk.dsksrf.repetitions"),
             )
 
         case "dsk.dskopn":

@@ -444,3 +444,38 @@ workflows use actual public raw exports on both backends. Meshes and DLA headers
 are project-authored synthetic scratch data under MIT; existing fixture provenance
 is unchanged. Malformed/closed handle, shape and negative-reservation cases are
 explicit contract preconditions, not claims of executing CSPICE error paths.
+
+## Domain: `dsk` queries (`DskApi`)
+
+| Raw method | Actual CSPICE route | Observations                                                                                                                |
+| ---------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `dskobj`   | `dskobj_c`          | Full body-ID union, retained initial IDs, repeated segment IDs, repeated calls and all intermediate snapshots.              |
+| `dsksrf`   | `dsksrf_c`          | Body-filtered surface union, absent body, zero capacity, strict int32 body IDs and actual capacity errors.                  |
+| `dskgd`    | `dskgd_c`           | Six integer fields, ten coordinate parameters, all bounds and epochs; rectangular and planetodetic descriptors.             |
+| `dskb02`   | `dskb02_c`          | Every bookkeeping field, nonzero asymmetric 3x2 vertex bounds, tetrahedron/pyramid counts, voxel scales and optional lists. |
+
+Both set queries append IDs for each qualifying segment before deduplicating.
+Their temporary storage requirement can therefore exceed the final unique set
+size; tests preserve actual N0067 behavior instead of redefining raw semantics.
+After CELLTOOSMALL, contents may be partially changed. Public tests explicitly
+reinitialize cardinality/size before a successful query on the same cell.
+Missing and wrong-architecture/type cases require actual FILENOTFOUND,
+INVALIDARCHTYPE and INVALIDFILETYPE. The locked SpiceyPy6.0.3 convenience wrappers
+hard-code new size10000 cells, so these oracle handlers call the same loaded
+N0067 `libspice` bindings with actual caller-initialized cells and check toolkit
+status. This exposes union/capacity semantics independently of tspice.
+
+The shared descriptor layout already matches CSPICE. New distinct 3D bounds
+verify both the shim's row-major 3x2 layout and the existing SpiceyPy 2x3 memory
+normalization; literal authored bounds are also asserted through public raw APIs.
+Node parses unknown output fields into explicit typed objects without double
+casts. Both adapters reject negative descriptor bases/sizes before FFI; plausible
+arbitrary descriptors remain a caller precondition because NAIF documents
+undefined effects. A caller must establish type2 before `dskb02`.
+
+Actual WASM-heap fault injection reproduced two path-allocation leaks and now
+covers all twelve query allocation positions. WASM body-ID preflight prevents
+fractional/overflow coercion (the old adapter accepted 399.5 as body399). DSK
+oracle traversal now distinguishes a genuine empty miss from a toolkit failure,
+and pending actual DSK claims close before scratch deletion. No C shim or checked-in
+WASM artifacts change in this batch; its writer/bounds prerequisite is #694.
