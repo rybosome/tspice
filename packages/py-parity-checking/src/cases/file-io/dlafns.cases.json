@@ -3,32 +3,207 @@
     "caseId": "file-io-dlafns-next-segment-search-success",
     "description": "dlafns advances from first DSK segment and reports end of traversal",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bds" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bds"
+      },
       {
         "op": "file-io.dasopr",
         "path": "kernels/file-io-minimal.bds",
         "handleId": "reader"
       },
-      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
-      { "op": "file-io.dlafns", "handleId": "reader", "descrId": "seg0" },
-      { "op": "file-io.dascls", "handleId": "reader" }
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "reader",
+        "descrId": "seg0"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "reader",
+        "descrId": "seg0"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "reader"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dlafns-closed-handle-error",
     "description": "Representative dlafns error when handle is closed before traversal",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bds" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bds"
+      },
       {
         "op": "file-io.dasopr",
         "path": "kernels/file-io-minimal.bds",
         "handleId": "reader"
       },
-      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
-      { "op": "file-io.dascls", "handleId": "reader" },
-      { "op": "file-io.dlafns", "handleId": "reader", "descrId": "seg0" }
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "reader",
+        "descrId": "seg0"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "reader"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "reader",
+        "descrId": "seg0"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "file-io-dlafns-audit-positive-second-segment-and-end",
+    "description": "Advance through a real second segment and end, restart, and compare every linked descriptor field. Supplemental content parity reads all geometry/metadata.",
+    "workflow": [
+      {
+        "op": "file-io.dskopn",
+        "handleId": "writer",
+        "path": {
+          "kind": "scratch",
+          "rel": "next-two.bds"
+        },
+        "ifname": "AUTHORED_TWO_SEGMENTS",
+        "ncomch": 37
+      },
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000,
+        "spaixId": "index"
+      },
+      {
+        "op": "file-io.dskw02",
+        "handleId": "writer",
+        "center": 399,
+        "surfid": 71,
+        "dclass": 2,
+        "frame": "J2000",
+        "corsys": 3,
+        "corpar": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": 1,
+        "mxcor1": 4,
+        "mncor2": 2,
+        "mxcor2": 6,
+        "mncor3": 3,
+        "mxcor3": 8,
+        "first": -25,
+        "last": 75,
+        "nv": 4,
+        "vrtces": [1, 2, 3, 4, 2, 3, 1, 6, 3, 1, 2, 8],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "spaixId": "index"
+      },
+      {
+        "op": "file-io.dskmi2",
+        "nv": 4,
+        "vrtces": [-3, 7, -0.5, 3, 7, -0.5, -3, 19, -0.5, -3, 7, 2.0],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000,
+        "spaixId": "second"
+      },
+      {
+        "op": "file-io.dskw02",
+        "handleId": "writer",
+        "center": 499,
+        "surfid": 72,
+        "dclass": 2,
+        "frame": "J2000",
+        "corsys": 3,
+        "corpar": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": -3,
+        "mxcor1": 3,
+        "mncor2": 7,
+        "mxcor2": 19,
+        "mncor3": -0.5,
+        "mxcor3": 2,
+        "first": 100,
+        "last": 200,
+        "nv": 4,
+        "vrtces": [-3, 7, -0.5, 3, 7, -0.5, -3, 19, -0.5, -3, 7, 2.0],
+        "np": 4,
+        "plates": [1, 3, 2, 1, 2, 4, 2, 3, 4, 3, 1, 4],
+        "spaixId": "second"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "writer"
+      },
+      {
+        "op": "file-io.getfat",
+        "path": {
+          "kind": "scratch",
+          "rel": "next-two.bds"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "reader",
+        "path": {
+          "kind": "scratch",
+          "rel": "next-two.bds"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "reader",
+        "descrId": "segment"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "reader",
+        "descrId": "segment"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "reader",
+        "descrId": "segment"
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "reader",
+        "descrId": "restart"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "reader",
+        "descrId": "restart"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "reader"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

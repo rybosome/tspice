@@ -431,7 +431,6 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
   const uint32_t expectedPlatesLen = (uint32_t)expectedPlatesLen64;
 
   std::vector<double> vrtces;
-  vrtces.resize(expectedVrtcesLen);
   {
     Napi::Array arr = info[1].As<Napi::Array>();
     if (arr.Length() != expectedVrtcesLen) {
@@ -440,6 +439,7 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
           std::string("vrtces must have length ") + std::to_string(expectedVrtcesLen)));
       return Napi::Object::New(env);
     }
+    vrtces.resize(expectedVrtcesLen);
     for (uint32_t i = 0; i < expectedVrtcesLen; i++) {
       const Napi::Value v = arr.Get(i);
       if (!v.IsNumber()) {
@@ -451,7 +451,6 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
   }
 
   std::vector<int32_t> plates;
-  plates.resize(expectedPlatesLen);
   {
     Napi::Array arr = info[3].As<Napi::Array>();
     if (arr.Length() != expectedPlatesLen) {
@@ -460,6 +459,7 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
           std::string("plates must have length ") + std::to_string(expectedPlatesLen)));
       return Napi::Object::New(env);
     }
+    plates.resize(expectedPlatesLen);
     for (uint32_t i = 0; i < expectedPlatesLen; i++) {
       int32_t v = 0;
       if (!ReadInt32Checked(env, arr.Get(i), "plates[]", &v)) {
@@ -663,7 +663,6 @@ static void Dskw02(const Napi::CallbackInfo& info) {
   const uint32_t expectedPlatesLen = (uint32_t)expectedPlatesLen64;
 
   std::vector<double> vrtces;
-  vrtces.resize(expectedVrtcesLen);
   {
     if (!info[16].IsArray()) {
       ThrowSpiceError(Napi::TypeError::New(env, "vrtces must be an array"));
@@ -676,6 +675,7 @@ static void Dskw02(const Napi::CallbackInfo& info) {
           std::string("vrtces must have length ") + std::to_string(expectedVrtcesLen)));
       return;
     }
+    vrtces.resize(expectedVrtcesLen);
     for (uint32_t i = 0; i < expectedVrtcesLen; i++) {
       const Napi::Value v = arr.Get(i);
       if (!v.IsNumber()) {
@@ -687,7 +687,6 @@ static void Dskw02(const Napi::CallbackInfo& info) {
   }
 
   std::vector<int32_t> plates;
-  plates.resize(expectedPlatesLen);
   {
     if (!info[18].IsArray()) {
       ThrowSpiceError(Napi::TypeError::New(env, "plates must be an array"));
@@ -700,6 +699,7 @@ static void Dskw02(const Napi::CallbackInfo& info) {
           std::string("plates must have length ") + std::to_string(expectedPlatesLen)));
       return;
     }
+    plates.resize(expectedPlatesLen);
     for (uint32_t i = 0; i < expectedPlatesLen; i++) {
       int32_t v = 0;
       if (!ReadInt32Checked(env, arr.Get(i), "plates[]", &v)) {

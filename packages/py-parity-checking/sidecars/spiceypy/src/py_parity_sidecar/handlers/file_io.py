@@ -28,8 +28,6 @@ from ..models import (
 )
 from ..runtime import FileIoHandleState, FileIoState, SidecarRuntimeContext, resolve_path_ref
 
-SPAIX_HEAD_LIMIT = 8
-
 def _resolve_file_io_path(context: SidecarRuntimeContext, path_value: str) -> str:
     return resolve_path_ref(context.paths, path_value)
 
@@ -139,15 +137,6 @@ def _reshape_plates(flat_plates: list[int], *, np_count: int, label: str) -> np.
         raise ValueError(f"{label}.plates length must be {expected_len}")
 
     return np.asarray(flat_plates, dtype=np.int32).reshape((np_count, 3))
-
-
-def _summarize_spatial_index(spaixd: np.ndarray, spaixi: np.ndarray) -> dict[str, Any]:
-    return {
-        "spaixdLength": int(spaixd.size),
-        "spaixiLength": int(spaixi.size),
-        "spaixdHead": spaixd[:SPAIX_HEAD_LIMIT].astype(float).tolist(),
-        "spaixiHead": spaixi[:SPAIX_HEAD_LIMIT].astype(int).tolist(),
-    }
 
 
 def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
@@ -304,7 +293,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         if step.spaixId is not None:
             state.spatialIndexes[step.spaixId] = (spaixd_arr.copy(), spaixi_arr.copy())
 
-        return StepOutput(op=step.op, value=_summarize_spatial_index(spaixd_arr, spaixi_arr))
+        return StepOutput(op=step.op, value={"spaixd": spaixd_arr.astype(float).tolist(), "spaixi": spaixi_arr.astype(int).tolist()})
 
     if isinstance(step, StepFileIoDskw02):
         handle_state = _require_handle(

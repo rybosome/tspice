@@ -1669,10 +1669,8 @@ export type StepOutput =
   | {
       op: "file-io.dskmi2";
       value: {
-        spaixdLength: number;
-        spaixiLength: number;
-        spaixdHead: number[];
-        spaixiHead: number[];
+        spaixd: number[];
+        spaixi: number[];
       };
     }
   | { op: "file-io.dskw02"; value: null }
