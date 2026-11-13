@@ -59,7 +59,9 @@ def run_time_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOu
 
     if isinstance(step, StepTimeUnitim):
         value = float(sp.unitim(step.epoch, step.insys, step.outsys))
-        return StepOutput(op=step.op, value=value)
+        julian = step.outsys.strip().upper() in {"JED", "JDTDB", "JDTDT"}
+        seconds = (value - 2451545) * 86400 if julian else value
+        return StepOutput(op=step.op, value={"epoch": value, "secondsPastJ2000": seconds})
 
     if isinstance(step, StepTimeTparse):
         timstr = _expect_non_empty(step.timstr, label="time.tparse.timstr")
@@ -87,6 +89,20 @@ def run_time_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOu
         return StepOutput(op=step.op, value=str(value))
 
     if isinstance(step, StepTimeTimdefSet):
+        label = "time.defaults.restore"
+        if not any(name == label for name, _ in _context.finalizers):
+            calendar = str(sp.timdef("GET", "CALENDAR", SPICE_OUTPUT_LEN))
+            system = str(sp.timdef("GET", "SYSTEM", SPICE_OUTPUT_LEN))
+            zone = str(sp.timdef("GET", "ZONE", SPICE_OUTPUT_LEN))
+
+            def restore_defaults() -> None:
+                sp.timdef("SET", "CALENDAR", SPICE_OUTPUT_LEN, calendar)
+                if system:
+                    sp.timdef("SET", "SYSTEM", SPICE_OUTPUT_LEN, system)
+                elif zone:
+                    sp.timdef("SET", "ZONE", SPICE_OUTPUT_LEN, zone)
+
+            _context.register_finalizer(label, restore_defaults)
         sp.timdef("SET", step.item, SPICE_OUTPUT_LEN, step.value)
         return StepOutput(op=step.op, value=None)
 

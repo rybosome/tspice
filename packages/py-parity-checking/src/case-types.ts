@@ -1,4 +1,4 @@
-export type TimdefItem = "SYSTEM" | "CALENDAR" | "ZONE";
+export type TimdefItem = string;
 
 export type ErrorGetmsgWhich = "SHORT" | "LONG" | "EXPLAIN";
 
@@ -1464,7 +1464,7 @@ export type StepOutput =
   | { op: "time.tkvrsn"; value: string }
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
-  | { op: "time.unitim"; value: number }
+  | { op: "time.unitim"; value: { epoch: number; secondsPastJ2000: number } }
   | { op: "time.tparse"; value: number }
   | { op: "time.tpictr"; value: string }
   | { op: "time.timdef"; value: string | null }
