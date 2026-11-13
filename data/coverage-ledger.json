@@ -39,7 +39,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/685"
         ],
-        "nextAction": "Both required local lanes passed after restacking onto merged #684; observe canonical CI on the current source and record its actual source/job evidence before handoff.",
+        "nextAction": "Restacked directly onto main 1bc826b0 after #684 merged; both required local lanes passed. Observe canonical CI after retargeting to main and record its actual source/job evidence before handoff.",
         "record": "data/parity-audits/cells-windows.json"
       },
       {
