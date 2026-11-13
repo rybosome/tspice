@@ -522,3 +522,53 @@ The pinned N0067 `ektnam_c` header spells one exception INVALDINDEX; actual tool
 execution reports INVALIDINDEX and the tests require that observed code. Typed
 preflight errors are explicitly separate from toolkit error-path comparisons.
 Column-value and query-result semantics retain their separate `ek-1` assignment.
+
+### Step 7 EK column writing and query results
+
+The separate `ek-1` batch reviews exactly `ekacli_c`, `ekacld_c`, `ekaclc_c`,
+`ekffld_c`, `ekfind_c`, `ekgc_c`, `ekgd_c` and `ekgi_c`. All execute their actual
+shared-C/CSPICE routes. `ekssum_c` is used internally for safe metadata validation,
+just as CSPICE's own column writers use it; no new public raw routine is added.
+
+Writers now check caller storage against actual segment rows and fixed entry
+sizes before any downstream access. The private `tspice_ekffld` ABI carries the
+pointer-array length; the public API is unchanged. A controlled fixture compiling
+the actual shim proved the old writers forwarded a one-row array descriptor to
+an actual three-row segment without invoking an unsafe consumer. Tests reject
+truncated rows/fixed backing/finalization and then finish a valid file on the
+same instance. Actual WRONGSEGMENT, WRONGDATATYPE and INVALIDINDEX paths remain
+separate from typed preflight. Pinned numeric missing-column calls report BUG;
+character missing-column calls report NOCOLUMN, both required explicitly.
+
+N0067's `ekaclc_c` allocates a logical-flag array by total character count, then
+copies one flag per row. Zero-size variable NULL rows now get internal ignored
+blank placeholders so the storage covers every row; logical NULL values and
+public packing remain unchanged. Both temporary allocation failures are injected
+in the actual C shim and recover with no leaked storage. Character C slots have
+a minimum three-byte stride: an independent pinned CSPICE probe showed a
+two-byte stride reads all six single-letter fixed-field values as blanks through
+ZZEKAC06. Literal tests require all six authored letters to survive. Blank
+concrete strings, UTF-8 values and all-NULL columns also have actual readback.
+
+The query oracle uses scoped `no_found_check` so SpiceyPy's outer real error
+checker executes before interpreting data/null/found tuples. Row-based exception
+coercion is removed. Legitimate misses, NULLs and INVALIDINDEX/INVALIDTYPE remain
+distinct. Explicit 2,048-byte buffers retain full 1,024-character values and a
+273-character parse diagnostic that SpiceyPy's default buffer cut to 255.
+Actual N0067 returns NULL before upper element-bound checking; element 9 of a
+NULL entry still returns NULL, despite the primary header's size-one statement.
+The audit records this observed behavior and preserves raw CSPICE semantics.
+
+SpiceyPy 6.0.3 independently computes character-array backing width using Python
+string lengths. The oracle calls the same actual `ekaclc_c` through SpiceyPy's
+ctypes library with explicit UTF-8 byte packing and its actual error checker for
+correct byte widths/empty storage. No expected result substitutes this operation.
+Every finalized typed value and complete tri-state/string/diagnostic reaches the
+parity assertion; independent literal tests on Node, WASM and SpiceyPy check the
+authored values as well. The old missing workflow-segment-label case is explicitly
+harness-only; the new WRONGSEGMENT case reaches the actual raw finalizer.
+
+The owning pinned WASM build regenerates both outputs after the shared-C/ABI
+changes. Current source-bound verification and exact case IDs live in maintained
+`ek-1.json`; registered case counts alone do not certify completion. No global
+numeric tolerance changes or remaining planned routines are introduced.

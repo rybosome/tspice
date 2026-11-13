@@ -178,6 +178,10 @@ function callVoidHandle(
   });
 }
 
+function assertArray(value: unknown, label: string): void {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+}
+
 function assertString(value: unknown, label: string): void {
   if (typeof value !== "string")
     throw new TypeError(`${label} must be a string`);
@@ -394,6 +398,7 @@ export function createEkApi(
     },
 
     ekfind: (query: string) => {
+      assertString(query, "ekfind(query)");
       const queryPtr = writeUtf8CString(module, query);
       const outErrmsgMaxBytes = WASM_ERR_MAX_BYTES;
       try {
@@ -690,6 +695,11 @@ export function createEkApi(
       nlflgs: readonly boolean[],
       rcptrs: readonly number[],
     ) => {
+      assertString(column, "ekacli(column)");
+      assertArray(ivals, "ekacli(ivals)");
+      assertArray(entszs, "ekacli(entszs)");
+      assertArray(nlflgs, "ekacli(nlflgs)");
+      assertArray(rcptrs, "ekacli(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekacli(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
@@ -774,6 +784,11 @@ export function createEkApi(
       nlflgs: readonly boolean[],
       rcptrs: readonly number[],
     ) => {
+      assertString(column, "ekacld(column)");
+      assertArray(dvals, "ekacld(dvals)");
+      assertArray(entszs, "ekacld(entszs)");
+      assertArray(nlflgs, "ekacld(nlflgs)");
+      assertArray(rcptrs, "ekacld(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekacld(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
@@ -860,6 +875,11 @@ export function createEkApi(
       nlflgs: readonly boolean[],
       rcptrs: readonly number[],
     ) => {
+      assertString(column, "ekaclc(column)");
+      assertArray(cvals, "ekaclc(cvals)");
+      assertArray(entszs, "ekaclc(entszs)");
+      assertArray(nlflgs, "ekaclc(nlflgs)");
+      assertArray(rcptrs, "ekaclc(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekaclc(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
@@ -880,9 +900,11 @@ export function createEkApi(
         throw new RangeError("ekaclc(): expected cvals.length === sum(entszs)");
       }
 
+      for (const value of cvals) assertString(value, "ekaclc(cvals)");
       const nvals = cvals.length;
 
-      let vallen = 1;
+      // N0067 ZZEKAC06 needs Fortran width >=2 to preserve single letters.
+      let vallen = 3;
       for (const s of cvals) {
         const bytes = UTF8_ENCODER.encode(s).length + 1;
         if (bytes > kMaxEkVallenBytes) {
@@ -962,6 +984,7 @@ export function createEkApi(
     },
 
     ekffld: (handle: SpiceHandle, segno: number, rcptrs: readonly number[]) => {
+      assertArray(rcptrs, "ekffld(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekffld(segno)");
       const nrows = rcptrs.length;
       if (nrows === 0) {
@@ -991,6 +1014,7 @@ export function createEkApi(
           const code = module._tspice_ekffld(
             nativeHandle,
             segno,
+            nrows,
             rcptrsPtr,
             errPtr,
             WASM_ERR_MAX_BYTES,
