@@ -262,3 +262,28 @@ compiled operation; a successful close invalidates the token, and a failed
 native close retains it for cleanup retry. The alias `dlacls` retains the same
 DAS/DLA ownership checks as `dascls`. File/EK/ephemeris semantic audit status is
 tracked separately from this shared ownership prerequisite.
+
+### CK pointing, coverage and physical handle audit
+
+`ckgp` and `ckgpav` invoke their actual Node ephemeris N-API handlers or compiled
+WASM exports and shared C shim. All nine row-major components, actual encoded
+clock and (for `ckgpav`) all three reference-frame AV components reach live parity.
+Scoped oracle found handling preserves real toolkit errors. Clock tolerance is
+encoded ticks; negative pointing tolerance is a miss, while negative coverage
+tolerance is a CSPICE error. AV output is radians/second.
+
+`cklpf`/`ckupf` intentionally retain numeric CSPICE global-state handles: duplicate
+file loads share a handle and change priority; one unload removes all aliases and
+unknown physical unload is a no-op. They do not register FURNSH entries. Native
+backend instances in a process share toolkit state. Handle portability requires
+shared state; use worker/process isolation for independence. Pending workflow CKs
+close before Scratch files are deleted, including captured-error recovery/retry.
+
+`ckobj` and `ckcov` append to caller-owned output rather than clearing it. The
+registered workflow keeps its old reset-by-default behavior with an explicit
+`reset:false` accumulation option; both dispatchers preserve genuine zero capacity.
+Integer sets and complete interval arrays are compared, with independent literal
+union assertions. SEGMENT/INTERVAL gaps, needav, tolerance merging and SCLK/TDB
+conversion are distinguished by authored Type3 fixtures. `frames-1.json` records
+all six routine judgments and the exact evidence; the eight frame lookup/transform
+routines remain the separate `frames-2` audit in #698. No new raw methods are added.

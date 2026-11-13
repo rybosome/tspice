@@ -10,7 +10,9 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertSpiceInt32,
   assertSpiceInt32NonNegative,
+  brandVec3,
   brandMat3RowMajor,
 } from "@rybosome/tspice-core";
 
@@ -251,54 +253,57 @@ function tspiceCallCkgp(
   tol: number,
   ref: string,
 ): Found<{ cmat: Mat3RowMajor; clkout: number }> {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
   const refPtr = writeUtf8CString(module, ref);
-  const outCmatPtr = module._malloc(9 * 8);
-  const outClkoutPtr = module._malloc(8);
-  const foundPtr = module._malloc(4);
-  if (!errPtr || !refPtr || !outCmatPtr || !outClkoutPtr || !foundPtr) {
-    for (const ptr of [foundPtr, outClkoutPtr, outCmatPtr, refPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
   try {
-    module.HEAPF64[outClkoutPtr >> 3] = 0;
-    module.HEAP32[foundPtr >> 2] = 0;
-    const result = module._tspice_ckgp(
-      inst,
-      sclkdp,
-      tol,
-      refPtr,
-      outCmatPtr,
-      outClkoutPtr,
-      foundPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    const errMaxBytes = 2048;
+    const errPtr = module._malloc(errMaxBytes);
+    const outCmatPtr = module._malloc(9 * 8);
+    const outClkoutPtr = module._malloc(8);
+    const foundPtr = module._malloc(4);
+    if (!errPtr || !refPtr || !outCmatPtr || !outClkoutPtr || !foundPtr) {
+      for (const ptr of [foundPtr, outClkoutPtr, outCmatPtr, refPtr, errPtr]) {
+        if (ptr && ptr !== refPtr) module._free(ptr);
+      }
+      throw new Error("WASM malloc failed");
     }
-    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-    if (!found) {
-      return { found: false };
+
+    try {
+      module.HEAPF64[outClkoutPtr >> 3] = 0;
+      module.HEAP32[foundPtr >> 2] = 0;
+      const result = module._tspice_ckgp(
+        inst,
+        sclkdp,
+        tol,
+        refPtr,
+        outCmatPtr,
+        outClkoutPtr,
+        foundPtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
+      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      if (!found) {
+        return { found: false };
+      }
+      const cmat = brandMat3RowMajor(
+        Array.from(
+          module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
+        ),
+        { label: "ckgp().cmat" },
+      );
+      const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
+      return { found: true, cmat, clkout };
+    } finally {
+      module._free(foundPtr);
+      module._free(outClkoutPtr);
+      module._free(outCmatPtr);
+      module._free(errPtr);
     }
-    const cmat = brandMat3RowMajor(
-      Array.from(
-        module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
-      ),
-      { label: "ckgp().cmat" },
-    );
-    const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
-    return { found: true, cmat, clkout };
   } finally {
-    module._free(foundPtr);
-    module._free(outClkoutPtr);
-    module._free(outCmatPtr);
     module._free(refPtr);
-    module._free(errPtr);
   }
 }
 
@@ -309,74 +314,79 @@ function tspiceCallCkgpav(
   tol: number,
   ref: string,
 ): Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }> {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
   const refPtr = writeUtf8CString(module, ref);
-  const outCmatPtr = module._malloc(9 * 8);
-  const outAvPtr = module._malloc(3 * 8);
-  const outClkoutPtr = module._malloc(8);
-  const foundPtr = module._malloc(4);
-  if (
-    !errPtr ||
-    !refPtr ||
-    !outCmatPtr ||
-    !outAvPtr ||
-    !outClkoutPtr ||
-    !foundPtr
-  ) {
-    for (const ptr of [
-      foundPtr,
-      outClkoutPtr,
-      outAvPtr,
-      outCmatPtr,
-      refPtr,
-      errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
   try {
-    module.HEAPF64[outClkoutPtr >> 3] = 0;
-    module.HEAP32[foundPtr >> 2] = 0;
-    const result = module._tspice_ckgpav(
-      inst,
-      sclkdp,
-      tol,
-      refPtr,
-      outCmatPtr,
-      outAvPtr,
-      outClkoutPtr,
-      foundPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+    const errMaxBytes = 2048;
+    const errPtr = module._malloc(errMaxBytes);
+    const outCmatPtr = module._malloc(9 * 8);
+    const outAvPtr = module._malloc(3 * 8);
+    const outClkoutPtr = module._malloc(8);
+    const foundPtr = module._malloc(4);
+    if (
+      !errPtr ||
+      !refPtr ||
+      !outCmatPtr ||
+      !outAvPtr ||
+      !outClkoutPtr ||
+      !foundPtr
+    ) {
+      for (const ptr of [
+        foundPtr,
+        outClkoutPtr,
+        outAvPtr,
+        outCmatPtr,
+        refPtr,
+        errPtr,
+      ]) {
+        if (ptr && ptr !== refPtr) module._free(ptr);
+      }
+      throw new Error("WASM malloc failed");
     }
-    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-    if (!found) {
-      return { found: false };
+
+    try {
+      module.HEAPF64[outClkoutPtr >> 3] = 0;
+      module.HEAP32[foundPtr >> 2] = 0;
+      const result = module._tspice_ckgpav(
+        inst,
+        sclkdp,
+        tol,
+        refPtr,
+        outCmatPtr,
+        outAvPtr,
+        outClkoutPtr,
+        foundPtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
+      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      if (!found) {
+        return { found: false };
+      }
+      const cmat = brandMat3RowMajor(
+        Array.from(
+          module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
+        ),
+        { label: "ckgpav().cmat" },
+      );
+      const values = brandVec3(
+        module.HEAPF64.subarray(outAvPtr >> 3, (outAvPtr >> 3) + 3),
+        { label: "ckgpav().av" },
+      );
+      const av: SpiceVector3 = [values[0], values[1], values[2]];
+      const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
+      return { found: true, cmat, av, clkout };
+    } finally {
+      module._free(foundPtr);
+      module._free(outClkoutPtr);
+      module._free(outAvPtr);
+      module._free(outCmatPtr);
+      module._free(errPtr);
     }
-    const cmat = brandMat3RowMajor(
-      Array.from(
-        module.HEAPF64.subarray(outCmatPtr >> 3, (outCmatPtr >> 3) + 9),
-      ),
-      { label: "ckgpav().cmat" },
-    );
-    const av = Array.from(
-      module.HEAPF64.subarray(outAvPtr >> 3, (outAvPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const clkout = module.HEAPF64[outClkoutPtr >> 3] ?? 0;
-    return { found: true, cmat, av, clkout };
   } finally {
-    module._free(foundPtr);
-    module._free(outClkoutPtr);
-    module._free(outAvPtr);
-    module._free(outCmatPtr);
     module._free(refPtr);
-    module._free(errPtr);
   }
 }
 
@@ -456,16 +466,11 @@ function tspiceCallCkcov(
 ): void {
   return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
     const ckPathPtr = writeUtf8CString(module, resolveKernelPath(ck));
-    const levelPtr = writeUtf8CString(module, level);
-    const timsysPtr = writeUtf8CString(module, timsys);
-    if (!ckPathPtr || !levelPtr || !timsysPtr) {
-      for (const ptr of [timsysPtr, levelPtr, ckPathPtr]) {
-        if (ptr) module._free(ptr);
-      }
-      throw new Error("WASM malloc failed");
-    }
-
+    let levelPtr = 0;
+    let timsysPtr = 0;
     try {
+      levelPtr = writeUtf8CString(module, level);
+      timsysPtr = writeUtf8CString(module, timsys);
       const code = module._tspice_ckcov(
         ckPathPtr,
         idcode,
@@ -481,8 +486,8 @@ function tspiceCallCkcov(
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
       }
     } finally {
-      module._free(timsysPtr);
-      module._free(levelPtr);
+      if (timsysPtr) module._free(timsysPtr);
+      if (levelPtr) module._free(levelPtr);
       module._free(ckPathPtr);
     }
   });
@@ -574,6 +579,19 @@ function tspiceCallSxform(
   }
 }
 
+function validateCkPointing(
+  inst: number,
+  sclkdp: number,
+  tol: number,
+  ref: string,
+): void {
+  assertSpiceInt32(inst, "CK instrument");
+  if (!Number.isFinite(sclkdp) || !Number.isFinite(tol))
+    throw new RangeError("CK clock and tolerance must be finite");
+  if (typeof ref !== "string")
+    throw new TypeError("CK reference must be a string");
+}
+
 /** Create a {@link FramesApi} implementation backed by a WASM Emscripten module. */
 export function createFramesApi(module: EmscriptenModule): FramesApi {
   return {
@@ -596,10 +614,14 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
     ccifrm: (frameClass: number, classId: number) =>
       tspiceCallCcifrm(module, frameClass, classId),
 
-    ckgp: (inst: number, sclkdp: number, tol: number, ref: string) =>
-      tspiceCallCkgp(module, inst, sclkdp, tol, ref),
-    ckgpav: (inst: number, sclkdp: number, tol: number, ref: string) =>
-      tspiceCallCkgpav(module, inst, sclkdp, tol, ref),
+    ckgp: (inst: number, sclkdp: number, tol: number, ref: string) => {
+      validateCkPointing(inst, sclkdp, tol, ref);
+      return tspiceCallCkgp(module, inst, sclkdp, tol, ref);
+    },
+    ckgpav: (inst: number, sclkdp: number, tol: number, ref: string) => {
+      validateCkPointing(inst, sclkdp, tol, ref);
+      return tspiceCallCkgpav(module, inst, sclkdp, tol, ref);
+    },
 
     cklpf: (ck: string) => tspiceCallCklpf(module, ck),
     ckupf: (handle: number) => tspiceCallCkupf(module, handle),
@@ -616,6 +638,11 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
       timsys: CkCoverageTimeSystem,
       cover: SpiceWindow,
     ) => {
+      assertSpiceInt32(idcode, "ckcov(idcode)");
+      if (!Number.isFinite(tol))
+        throw new RangeError("ckcov tolerance must be finite");
+      if (typeof needav !== "boolean")
+        throw new TypeError("ckcov needav must be boolean");
       assertWasmOwnedWindowHandle(module, cover, "ckcov(cover)");
       tspiceCallCkcov(module, ck, idcode, needav, level, tol, timsys, cover);
     },

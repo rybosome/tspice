@@ -196,8 +196,6 @@
       {
         "id": "frames-1",
         "routines": [
-          "ccifrm_c",
-          "cidfrm_c",
           "ckcov_c",
           "ckgp_c",
           "ckgpav_c",
@@ -207,12 +205,14 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "nextAction": "Record both full required local lanes, open the CK audit PR, then observe all canonical required CI jobs and explicit rebaseability. CK remains distinct from the eight frame lookup/transform routines in #698.",
+        "record": "data/parity-audits/frames-1.json"
       },
       {
         "id": "frames-2",
         "routines": [
+          "ccifrm_c",
+          "cidfrm_c",
           "cnmfrm_c",
           "frinfo_c",
           "frmnam_c",
@@ -382,16 +382,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 150,
-        "reviewed": 0,
+        "unreviewed": 144,
+        "reviewed": 18,
         "needs-repair": 0,
-        "verified": 12
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 150,
-        "reviewed": 0,
+        "unreviewed": 144,
+        "reviewed": 18,
         "needs-repair": 0,
-        "verified": 12
+        "verified": 0
       }
     }
   },
@@ -410,7 +410,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 327,
+    "scenarios": 361,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -4111,7 +4111,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 130
+            "line": 147
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -4152,7 +4152,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 596
+            "line": 614
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -4202,7 +4202,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "frames-1",
+        "batch": "frames-2",
         "node": {
           "status": "unreviewed"
         },
@@ -4668,7 +4668,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 73
+            "line": 90
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -4709,7 +4709,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 591
+            "line": 609
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -4759,7 +4759,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "frames-1",
+        "batch": "frames-2",
         "node": {
           "status": "unreviewed"
         },
@@ -4787,7 +4787,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 77
+          "line": 121
         }
       },
       "mapping": {
@@ -4827,7 +4827,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -4847,7 +4847,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 208
+            "line": 228
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -4888,7 +4888,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 610
+            "line": 632
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -4915,6 +4915,302 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "frames-ckcov-audit-absent-instrument",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe every actual coverage endpoint for absent-instrument; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-accumulate-across-files",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing-priority.bc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Reuse the actual output window: B fills one gap while the later A segment remains in the union; no implicit reset before the second raw call. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-capacity-excess",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Three interpolation intervals exceed an actual one-interval window; require WINDOWEXCESS. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-clock-converted-tdb",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-ck-clock.tsc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Authored clock maps ticks1000 to TDB0; compare every converted interval endpoint in seconds, distinct from encoded ticks. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-empty-zero-window",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing-empty.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe every actual coverage endpoint for empty-zero-window; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-interval",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe every actual coverage endpoint for interval; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-missing-clock-for-tdb",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "TDB conversion without the required SCLK variables signals actual KERNELVARNOTFOUND. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-negative-tolerance",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Coverage negative tolerance is actual VALUEOUTOFRANGE, distinct from the pointing routines negative-tolerance miss. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-no-av-filtered",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe every actual coverage endpoint for no-av-filtered; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-no-av-included",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe every actual coverage endpoint for no-av-included; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-segment",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe every actual coverage endpoint for segment; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-tolerance-merges",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe every actual coverage endpoint for tolerance-merges; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckcov-audit-wrong-daf-type",
+            "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckcov"
+            ],
+            "paths": [
+              {
+                "path": "kernels/file-io-minimal.bsp",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual CK coverage inspection rejects a valid SPK DAF as INVALIDFILETYPE. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
             "caseId": "frames-ckcov-missing-file-error",
             "source": "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
             "expectation": "error",
@@ -4927,7 +5223,13 @@
                 "kind": "missing-or-negative-test-reference"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           },
           {
             "caseId": "frames-ckcov-open-query-close-success",
@@ -4949,18 +5251,47 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ckcov CK coverage query with explicit cklpf/ckupf lifecycle Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "frames-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckcov -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckcov -> WASM adapter -> actual configured compiled _tspice_ckcov export -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         }
       }
     },
@@ -4990,7 +5321,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 46
+          "line": 57
         }
       },
       "mapping": {
@@ -5030,7 +5361,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -5050,7 +5381,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 155
+            "line": 172
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5091,7 +5422,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 599
+            "line": 617
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5118,6 +5449,117 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "frames-ckgp-audit-empty-reference",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckgp",
+              "frames.cklpf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual empty reference string signals EMPTYSTRING; pending CK cleanup must still precede scratch deletion. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckgp",
+              "frames.cklpf",
+              "frames.ckupf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare every real matrix component, exact returned clock, interpolation, gap misses, tolerance-adjusted time1010, later segment and negative-tolerance miss followed by valid recovery. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgp-audit-no-loaded-files",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckgp"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Without a loaded CK, actual NOLOADEDFILES remains an error rather than a found:false substitute. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgp-audit-reference-and-no-av",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckgp",
+              "frames.cklpf",
+              "frames.ckupf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Actual inertial reference conversion changes full matrix; pointing-only instrument is found by ckgp and skipped by ckgpav. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgp-audit-unknown-reference",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckgp",
+              "frames.cklpf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual invalid reference signals KERNELVARNOTFOUND in pinned N0067; do not coerce the error into a miss. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
             "caseId": "frames-ckgp-open-query-close-success",
             "source": "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
             "expectation": "success",
@@ -5137,7 +5579,14 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ckgp pointing query with explicit CK open/close lifecycle Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           },
           {
             "caseId": "frames-ckgp-out-of-coverage-found-false-success",
@@ -5159,18 +5608,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "ckgp miss outside CK coverage returns found=false Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "frames-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckgp -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckgp -> WASM adapter -> actual configured compiled _tspice_ckgp export -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         }
       }
     },
@@ -5186,7 +5663,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 54
+          "line": 73
         }
       },
       "mapping": {
@@ -5226,7 +5703,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -5246,7 +5723,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 168
+            "line": 186
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5287,7 +5764,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 601
+            "line": 621
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5314,6 +5791,117 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "frames-ckgpav-audit-empty-reference",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual empty reference string signals EMPTYSTRING; pending CK cleanup must still precede scratch deletion. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf",
+              "frames.ckupf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare every real matrix/AV component, exact returned clock, interpolation, gap misses, tolerance-adjusted time1010, later segment and negative-tolerance miss followed by valid recovery. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgpav-audit-no-loaded-files",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckgpav"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Without a loaded CK, actual NOLOADEDFILES remains an error rather than a found:false substitute. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgpav-audit-reference-and-no-av",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf",
+              "frames.ckupf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Actual inertial reference conversion changes full matrix/AV; pointing-only instrument is found by ckgp and skipped by ckgpav. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckgpav-audit-unknown-reference",
+            "source": "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual invalid reference signals KERNELVARNOTFOUND in pinned N0067; do not coerce the error into a miss. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
             "caseId": "frames-ckgpav-open-query-close-success",
             "source": "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
             "expectation": "success",
@@ -5333,7 +5921,14 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ckgpav pointing+AV query with explicit CK open/close lifecycle Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           },
           {
             "caseId": "frames-ckgpav-out-of-coverage-found-false-success",
@@ -5355,18 +5950,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "ckgpav miss outside CK coverage returns found=false Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "frames-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckgpav -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckgpav -> WASM adapter -> actual configured compiled _tspice_ckgpav export -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         }
       }
     },
@@ -5396,7 +6019,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 68
+          "line": 92
         }
       },
       "mapping": {
@@ -5436,7 +6059,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -5456,7 +6079,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 190
+            "line": 210
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5497,7 +6120,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 604
+            "line": 626
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5524,6 +6147,61 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "frames-cklpf-audit-does-not-register-furnsh-table",
+            "source": "packages/py-parity-checking/src/cases/frames/cklpf.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf",
+              "frames.ckupf",
+              "kernels.ktotal"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Manual CK loading makes actual pointing available but does not create a FURNSH table entry; ktotal(CK)=0 and full pointing are both observed. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-cklpf-audit-observable-search-priority",
+            "source": "packages/py-parity-checking/src/cases/frames/cklpf.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf",
+              "frames.ckupf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing-priority.bc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual A/B/reloaded-A file search order changes the full pointing/AV result; duplicate loads share a native handle and one unload removes that file while B remains searchable. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
             "caseId": "frames-cklpf-missing-file-error",
             "source": "packages/py-parity-checking/src/cases/frames/cklpf.cases.json",
             "expectation": "error",
@@ -5536,7 +6214,13 @@
                 "kind": "missing-or-negative-test-reference"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           },
           {
             "caseId": "frames-cklpf-open-query-close-success",
@@ -5558,18 +6242,47 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "cklpf opens CK for subsequent query and closes via ckupf Baseline object inspection alone does not establish CKLPF search-list effects; authored priority and KTOTal cases provide that evidence.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "frames-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.cklpf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.cklpf -> WASM adapter -> actual configured compiled _tspice_cklpf export -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         }
       }
     },
@@ -5606,7 +6319,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 74
+          "line": 109
         }
       },
       "mapping": {
@@ -5646,7 +6359,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -5666,7 +6379,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 203
+            "line": 223
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5707,7 +6420,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 606
+            "line": 628
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5734,6 +6447,143 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "frames-ckobj-audit-accumulate-across-files",
+            "source": "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckobj"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing-priority.bc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Reuse the actual named output cell across files: A contributes two instruments and B repeats one, so both IDs remain in the union. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckobj-audit-all-distinct-instruments",
+            "source": "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckobj"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "All signed instrument IDs from multiple segments are sorted/deduplicated; a repeated instrument appears once. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckobj-audit-empty-zero-capacity",
+            "source": "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckobj"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing-empty.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "An actual empty CK returns an empty initialized set with zero allocated capacity. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckobj-audit-insufficient-capacity",
+            "source": "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckobj"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "A real one-element cell cannot hold two distinct instruments; require actual SETEXCESS. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckobj-audit-populated-zero-capacity",
+            "source": "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckobj"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Zero capacity is preserved rather than defaulted to32; actual populated CK must signal SETEXCESS. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckobj-audit-wrong-daf-type",
+            "source": "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckobj"
+            ],
+            "paths": [
+              {
+                "path": "kernels/file-io-minimal.bsp",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Actual CK object inspection rejects a valid SPK DAF as INVALIDFILETYPE. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
             "caseId": "frames-ckobj-missing-file-error",
             "source": "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
             "expectation": "error",
@@ -5746,7 +6596,13 @@
                 "kind": "missing-or-negative-test-reference"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           },
           {
             "caseId": "frames-ckobj-open-query-close-success",
@@ -5768,18 +6624,47 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ckobj object-id query with explicit CK open/close lifecycle Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "frames-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckobj -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckobj -> WASM adapter -> actual configured compiled _tspice_ckobj export -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         }
       }
     },
@@ -5802,7 +6687,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 71
+          "line": 100
         }
       },
       "mapping": {
@@ -5842,7 +6727,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -5862,7 +6747,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 199
+            "line": 219
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5903,7 +6788,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 605
+            "line": 627
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5930,6 +6815,85 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "frames-ckupf-audit-kclear-makes-handle-unloaded",
+            "source": "packages/py-parity-checking/src/cases/frames/ckupf.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.cklpf",
+              "frames.ckupf",
+              "kernels.kclear"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Kernel clearing unloads the actual CK manager; later ckupf on that native handle is a no-op. No artificial error is required for an unloaded handle. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckupf-audit-no-loaded-files-after-close",
+            "source": "packages/py-parity-checking/src/cases/frames/ckupf.cases.json",
+            "expectation": "error",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf",
+              "frames.ckupf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge",
+                "state"
+              ],
+              "observes": "After the last CK unload, actual pointing raises NOLOADEDFILES; a missing workflow label is not raw unload error evidence. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
+            "caseId": "frames-ckupf-audit-unload-effects-and-alias-noop",
+            "source": "packages/py-parity-checking/src/cases/frames/ckupf.cases.json",
+            "expectation": "success",
+            "operations": [
+              "frames.ckgpav",
+              "frames.cklpf",
+              "frames.ckupf"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-pointing-priority.bc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/audit-pointing.bc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual unload changes which full pointing/AV solution is returned; unloading a now-unknown alias is a no-op and leaves B searchable, rather than merely matching void outputs. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
+          },
+          {
             "caseId": "frames-ckupf-open-close-success",
             "source": "packages/py-parity-checking/src/cases/frames/ckupf.cases.json",
             "expectation": "success",
@@ -5948,7 +6912,14 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "state"
+              ],
+              "observes": "ckupf unloads a CK handle previously opened by cklpf Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           },
           {
             "caseId": "frames-ckupf-unknown-handle-error",
@@ -5958,18 +6929,46 @@
               "frames.ckupf"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative ckupf error for unknown handle ID Harness-only unknown label preflight; does not establish a CSPICE error. Separate actual numeric unknown-handle no-op and search-effect tests provide raw evidence.",
+              "record": "data/parity-audits/frames-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "frames-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckupf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ckupf -> WASM adapter -> actual configured compiled _tspice_ckupf export -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": [
+            "local-ck-pointing-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/frames-1.json"
         }
       }
     },
@@ -6115,7 +7114,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 89
+            "line": 106
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -6156,7 +7155,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 593
+            "line": 611
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -14643,7 +15642,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 105
+            "line": 122
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -14684,7 +15683,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 595
+            "line": 613
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -14815,7 +15814,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 61
+            "line": 78
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -14856,7 +15855,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 585
+            "line": 603
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -20092,15 +21091,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20112,15 +21111,15 @@
             "reviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -21542,7 +22541,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 49
+            "line": 66
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -21583,7 +22582,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 580
+            "line": 598
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -23018,7 +24017,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 88
+          "line": 132
         }
       },
       "mapping": {
@@ -23078,7 +24077,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 213
+            "line": 238
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -23119,7 +24118,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 623
+            "line": 650
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -29990,15 +30989,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -30006,15 +31005,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -30867,7 +31866,7 @@
         "domain": "frames",
         "evidence": {
           "file": "packages/backend-contract/src/domains/frames.ts",
-          "line": 91
+          "line": 135
         }
       },
       "mapping": {
@@ -30927,7 +31926,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/frames.ts",
-            "line": 218
+            "line": 243
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -30968,7 +31967,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 625
+            "line": 652
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -32671,15 +33670,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -32691,15 +33690,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -32977,15 +33976,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -32993,15 +33992,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -33209,15 +34208,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33229,15 +34228,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33442,15 +34441,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33462,15 +34461,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33700,15 +34699,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33720,15 +34719,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33954,15 +34953,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33974,15 +34973,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34190,15 +35189,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34210,15 +35209,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34479,15 +35478,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34499,15 +35498,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34719,15 +35718,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34739,15 +35738,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35651,15 +36650,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -35667,15 +36666,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }

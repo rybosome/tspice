@@ -1,0 +1,981 @@
+{
+  "schemaVersion": 1,
+  "batch": "frames-1",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/ck-allocations.test.ts",
+    "packages/py-parity-checking/test/ck-observables.test.ts",
+    "packages/py-parity-checking/test/ck-inputs-pointing.test.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/tests/test_ck_cleanup.py",
+    "packages/py-parity-checking/fixtures/generate-audit-ck.py"
+  ],
+  "executions": [
+    {
+      "id": "local-ck-pointing-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ff437981acf5dcf9b117d929a9381f79301f7af61ac1701b2d8fef46cc581123",
+      "caseIds": [
+        "frames-ckcov-audit-absent-instrument",
+        "frames-ckcov-audit-accumulate-across-files",
+        "frames-ckcov-audit-capacity-excess",
+        "frames-ckcov-audit-clock-converted-tdb",
+        "frames-ckcov-audit-empty-zero-window",
+        "frames-ckcov-audit-interval",
+        "frames-ckcov-audit-missing-clock-for-tdb",
+        "frames-ckcov-audit-negative-tolerance",
+        "frames-ckcov-audit-no-av-filtered",
+        "frames-ckcov-audit-no-av-included",
+        "frames-ckcov-audit-segment",
+        "frames-ckcov-audit-tolerance-merges",
+        "frames-ckcov-audit-wrong-daf-type",
+        "frames-ckcov-missing-file-error",
+        "frames-ckcov-open-query-close-success",
+        "frames-ckgp-audit-empty-reference",
+        "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgp-audit-no-loaded-files",
+        "frames-ckgp-audit-reference-and-no-av",
+        "frames-ckgp-audit-unknown-reference",
+        "frames-ckgp-open-query-close-success",
+        "frames-ckgp-out-of-coverage-found-false-success",
+        "frames-ckgpav-audit-empty-reference",
+        "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgpav-audit-no-loaded-files",
+        "frames-ckgpav-audit-reference-and-no-av",
+        "frames-ckgpav-audit-unknown-reference",
+        "frames-ckgpav-open-query-close-success",
+        "frames-ckgpav-out-of-coverage-found-false-success",
+        "frames-cklpf-audit-does-not-register-furnsh-table",
+        "frames-cklpf-audit-observable-search-priority",
+        "frames-cklpf-missing-file-error",
+        "frames-cklpf-open-query-close-success",
+        "frames-ckobj-audit-accumulate-across-files",
+        "frames-ckobj-audit-all-distinct-instruments",
+        "frames-ckobj-audit-empty-zero-capacity",
+        "frames-ckobj-audit-insufficient-capacity",
+        "frames-ckobj-audit-populated-zero-capacity",
+        "frames-ckobj-audit-wrong-daf-type",
+        "frames-ckobj-missing-file-error",
+        "frames-ckobj-open-query-close-success",
+        "frames-ckupf-audit-kclear-makes-handle-unloaded",
+        "frames-ckupf-audit-no-loaded-files-after-close",
+        "frames-ckupf-audit-unload-effects-and-alias-noop",
+        "frames-ckupf-open-close-success",
+        "frames-ckupf-unknown-handle-error"
+      ],
+      "observation": "Both complete required local lanes passed. Production native N0067 loaded, all722 live comparisons (361scenarios per actual backend), all764 parity-package tests including native-required guard, all88WASM/62Node/26core/121facade tests passed. All92registered CK comparisons,21actual WASM allocation failures, complete independent matrix/AV/clock literals, both-harness accumulation/priority assertions and actual close-before-Scratch retry tests passed. Locked Python begins cleanup with a real pending toolkit error and verifies reset before close. Four leaking allocation positions and16new oracle/zero-capacity comparisons failed before repairs; controlled initial close failures remain explicit tests. The first independent priority assertion was corrected to compare numerical zero rather than Object.is signed zero; no tolerance changed and no retry hides a flake. JS-only lane skipped its dedicated native-required guard as designed; native-required lane ran every package test with zero skips. No C or WASM binary change. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64. The separate ledger regression initially retained the pre-batch327scenario expectation; its owning expected structural count was corrected to361 before the final38regression pass."
+    },
+    {
+      "id": "local-ck-pointing-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ff437981acf5dcf9b117d929a9381f79301f7af61ac1701b2d8fef46cc581123",
+      "caseIds": [
+        "frames-ckcov-audit-absent-instrument",
+        "frames-ckcov-audit-accumulate-across-files",
+        "frames-ckcov-audit-capacity-excess",
+        "frames-ckcov-audit-clock-converted-tdb",
+        "frames-ckcov-audit-empty-zero-window",
+        "frames-ckcov-audit-interval",
+        "frames-ckcov-audit-missing-clock-for-tdb",
+        "frames-ckcov-audit-negative-tolerance",
+        "frames-ckcov-audit-no-av-filtered",
+        "frames-ckcov-audit-no-av-included",
+        "frames-ckcov-audit-segment",
+        "frames-ckcov-audit-tolerance-merges",
+        "frames-ckcov-audit-wrong-daf-type",
+        "frames-ckcov-missing-file-error",
+        "frames-ckcov-open-query-close-success",
+        "frames-ckgp-audit-empty-reference",
+        "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgp-audit-no-loaded-files",
+        "frames-ckgp-audit-reference-and-no-av",
+        "frames-ckgp-audit-unknown-reference",
+        "frames-ckgp-open-query-close-success",
+        "frames-ckgp-out-of-coverage-found-false-success",
+        "frames-ckgpav-audit-empty-reference",
+        "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgpav-audit-no-loaded-files",
+        "frames-ckgpav-audit-reference-and-no-av",
+        "frames-ckgpav-audit-unknown-reference",
+        "frames-ckgpav-open-query-close-success",
+        "frames-ckgpav-out-of-coverage-found-false-success",
+        "frames-cklpf-audit-does-not-register-furnsh-table",
+        "frames-cklpf-audit-observable-search-priority",
+        "frames-cklpf-missing-file-error",
+        "frames-cklpf-open-query-close-success",
+        "frames-ckobj-audit-accumulate-across-files",
+        "frames-ckobj-audit-all-distinct-instruments",
+        "frames-ckobj-audit-empty-zero-capacity",
+        "frames-ckobj-audit-insufficient-capacity",
+        "frames-ckobj-audit-populated-zero-capacity",
+        "frames-ckobj-audit-wrong-daf-type",
+        "frames-ckobj-missing-file-error",
+        "frames-ckobj-open-query-close-success",
+        "frames-ckupf-audit-kclear-makes-handle-unloaded",
+        "frames-ckupf-audit-no-loaded-files-after-close",
+        "frames-ckupf-audit-unload-effects-and-alias-noop",
+        "frames-ckupf-open-close-success",
+        "frames-ckupf-unknown-handle-error"
+      ],
+      "observation": "Both complete required local lanes passed. Production native N0067 loaded, all722 live comparisons (361scenarios per actual backend), all764 parity-package tests including native-required guard, all88WASM/62Node/26core/121facade tests passed. All92registered CK comparisons,21actual WASM allocation failures, complete independent matrix/AV/clock literals, both-harness accumulation/priority assertions and actual close-before-Scratch retry tests passed. Locked Python begins cleanup with a real pending toolkit error and verifies reset before close. Four leaking allocation positions and16new oracle/zero-capacity comparisons failed before repairs; controlled initial close failures remain explicit tests. The first independent priority assertion was corrected to compare numerical zero rather than Object.is signed zero; no tolerance changed and no retry hides a flake. JS-only lane skipped its dedicated native-required guard as designed; native-required lane ran every package test with zero skips. No C or WASM binary change. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64. The separate ledger regression initially retained the pre-batch327scenario expectation; its owning expected structural count was corrected to361 before the final38regression pass."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "cklpf_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cklpf_c.html",
+      "semantics": "Load a CK into the process/module CK search list and return the actual CSPICE numeric handle. Most recently loaded file is searched first; reloading an already loaded file moves it to highest priority and returns the same physical handle. CKLPF does not register the kernel in the FURNSH table. Handles share native CSPICE state; they are not portable to an isolated worker/WASM module.",
+      "scenarios": [
+        {
+          "caseId": "frames-cklpf-open-query-close-success",
+          "coverage": ["success", "state"],
+          "observes": "cklpf opens CK for subsequent query and closes via ckupf Baseline object inspection alone does not establish CKLPF search-list effects; authored priority and KTOTal cases provide that evidence."
+        },
+        {
+          "caseId": "frames-cklpf-missing-file-error",
+          "coverage": ["error"],
+          "observes": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-cklpf-audit-observable-search-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual A/B/reloaded-A file search order changes the full pointing/AV result; duplicate loads share a native handle and one unload removes that file while B remains searchable. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-cklpf-audit-does-not-register-furnsh-table",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Manual CK loading makes actual pointing available but does not create a FURNSH table entry; ktotal(CK)=0 and full pointing are both observed. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        }
+      ],
+      "edgeAssessment": "A/B/reloaded-A search priority is observed through actual complete CKGPAV results. Literal AV sequences distinguish A,B,A,B,B; KTOTal CK stays zero for manual loads.",
+      "errorAssessment": "Missing file is actual FILENOTFOUND, not an fs.readFileSync error. Duplicate workflow labels fail before acquiring an untracked raw load. Actual CSPICE duplicate-file aliases are permitted.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-empty.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_sclkscet_00061.tsc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        }
+      ],
+      "fixtureRationale": "Four small authored deterministic fixtures distinguish actual pointing, AV signs/units, gaps, file priority, zero capacity and interval unions without external observation data. Existing MGS baseline examples are retained with their limitations explicit. Wrong-DAF tests reuse the existing file-io-minimal.bsp unchanged.",
+      "cleanup": "Per-case kclear/reset and backend dispose run in finally. Pending CK handles close explicitly before Scratch deletion; an initial failed close retains the claim for retry before file deletion. Actual Python pending error is cleared before close. Cells/windows are registered once and freed after use; duplicate physical CK handles retain CSPICE global-state alias semantics. WASM allocation fault injection covers21positions with zero net leaks and subsequent actual lookup. Scoped Python found-check setting restores on all paths.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparator applies to all9matrix/3AV/clock/coverage outputs; IDs, found flags and states exact. Authored rotation angles and AV rates give nonzero components above tolerance. Independent Rodrigues uses1e-12; generator derivative h=.001uses separate1e-10 bound for central-difference roundoff, not relaxed live comparison.",
+      "findings": [
+        {
+          "id": "cklpf-semantic-evidence",
+          "status": "repaired",
+          "summary": "Previous open/query/close or void/error smoke cases did not establish CK search-list effects, positive all-component pointing, accumulation and actual scientific boundaries.",
+          "repair": "A/B/reloaded-A search priority is observed through actual complete CKGPAV results. Literal AV sequences distinguish A,B,A,B,B; KTOTal CK stays zero for manual loads. Registered reset defaults preserve prior workflows while reset:false exercises actual caller accumulation. Meaningful live named errors and independent literal outputs distinguish matching harness mistakes.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/cklpf.cases.json",
+            "packages/py-parity-checking/test/ck-observables.test.ts",
+            "packages/py-parity-checking/test/ck-inputs-pointing.test.ts"
+          ],
+          "caseIds": [
+            "frames-cklpf-audit-observable-search-priority",
+            "frames-cklpf-audit-does-not-register-furnsh-table"
+          ]
+        },
+        {
+          "id": "cklpf-pending-file-cleanup",
+          "status": "repaired",
+          "summary": "Pending CK claims had no explicit close finalizer; Scratch removal preceded file cleanup, and failed closes could not be retried while their files existed.",
+          "repair": "Track each real load, reset captured error before explicit pending close, preserve failed claims for registered retry, append Scratch cleanup last. Actual Node/WASM and locked Python tests observe existing files for both attempts and empty claims after close; Python starts with real pending CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/src/runtime/lifecycle.ts",
+            "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/tests/test_ck_cleanup.py",
+            "packages/py-parity-checking/test/ck-observables.test.ts"
+          ],
+          "caseIds": ["frames-cklpf-audit-observable-search-priority"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cklpf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cklpf -> WASM adapter -> actual configured compiled _tspice_cklpf export -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckupf_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckupf_c.html",
+      "semantics": "Unload the CK associated with a physical CKLPF handle, removing it from search priority and closing the file. Loading the same file twice is not reference counting: either alias removes the one loaded file. An unknown actual numeric handle is a no-op; an unknown workflow label is only harness preflight. KCLEAR unloads CKs too.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckupf-open-close-success",
+          "coverage": ["success", "state"],
+          "observes": "ckupf unloads a CK handle previously opened by cklpf Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckupf-unknown-handle-error",
+          "coverage": ["error"],
+          "observes": "Representative ckupf error for unknown handle ID Harness-only unknown label preflight; does not establish a CSPICE error. Separate actual numeric unknown-handle no-op and search-effect tests provide raw evidence."
+        },
+        {
+          "caseId": "frames-ckupf-audit-unload-effects-and-alias-noop",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual unload changes which full pointing/AV solution is returned; unloading a now-unknown alias is a no-op and leaves B searchable, rather than merely matching void outputs. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckupf-audit-kclear-makes-handle-unloaded",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Kernel clearing unloads the actual CK manager; later ckupf on that native handle is a no-op. No artificial error is required for an unloaded handle. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckupf-audit-no-loaded-files-after-close",
+          "coverage": ["error", "edge", "state"],
+          "observes": "After the last CK unload, actual pointing raises NOLOADEDFILES; a missing workflow label is not raw unload error evidence. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        }
+      ],
+      "edgeAssessment": "Explicit A/B/A alias unload makes B observable, repeat unknown physical unload leaves B, final close produces actual NOLOADEDFILES. KCLEAR state and pending cleanup/retry are exercised.",
+      "errorAssessment": "No manufactured CSPICE error for unknown valid handle. The old CKH_UNKNOWN case is explicitly a harness label error; actual unknown positive numeric handles and repeated raw unload are separately tested. Existing public nonnegative signed-int32 handle validation is preserved.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-empty.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_sclkscet_00061.tsc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        }
+      ],
+      "fixtureRationale": "Four small authored deterministic fixtures distinguish actual pointing, AV signs/units, gaps, file priority, zero capacity and interval unions without external observation data. Existing MGS baseline examples are retained with their limitations explicit. Wrong-DAF tests reuse the existing file-io-minimal.bsp unchanged.",
+      "cleanup": "Per-case kclear/reset and backend dispose run in finally. Pending CK handles close explicitly before Scratch deletion; an initial failed close retains the claim for retry before file deletion. Actual Python pending error is cleared before close. Cells/windows are registered once and freed after use; duplicate physical CK handles retain CSPICE global-state alias semantics. WASM allocation fault injection covers21positions with zero net leaks and subsequent actual lookup. Scoped Python found-check setting restores on all paths.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparator applies to all9matrix/3AV/clock/coverage outputs; IDs, found flags and states exact. Authored rotation angles and AV rates give nonzero components above tolerance. Independent Rodrigues uses1e-12; generator derivative h=.001uses separate1e-10 bound for central-difference roundoff, not relaxed live comparison.",
+      "findings": [
+        {
+          "id": "ckupf-semantic-evidence",
+          "status": "repaired",
+          "summary": "Previous open/query/close or void/error smoke cases did not establish CK search-list effects, positive all-component pointing, accumulation and actual scientific boundaries.",
+          "repair": "Explicit A/B/A alias unload makes B observable, repeat unknown physical unload leaves B, final close produces actual NOLOADEDFILES. KCLEAR state and pending cleanup/retry are exercised. Registered reset defaults preserve prior workflows while reset:false exercises actual caller accumulation. Meaningful live named errors and independent literal outputs distinguish matching harness mistakes.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/ckupf.cases.json",
+            "packages/py-parity-checking/test/ck-observables.test.ts",
+            "packages/py-parity-checking/test/ck-inputs-pointing.test.ts"
+          ],
+          "caseIds": [
+            "frames-ckupf-audit-unload-effects-and-alias-noop",
+            "frames-ckupf-audit-kclear-makes-handle-unloaded",
+            "frames-ckupf-audit-no-loaded-files-after-close"
+          ]
+        },
+        {
+          "id": "ckupf-pending-file-cleanup",
+          "status": "repaired",
+          "summary": "Pending CK claims had no explicit close finalizer; Scratch removal preceded file cleanup, and failed closes could not be retried while their files existed.",
+          "repair": "Track each real load, reset captured error before explicit pending close, preserve failed claims for registered retry, append Scratch cleanup last. Actual Node/WASM and locked Python tests observe existing files for both attempts and empty claims after close; Python starts with real pending CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/src/runtime/lifecycle.ts",
+            "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/tests/test_ck_cleanup.py",
+            "packages/py-parity-checking/test/ck-observables.test.ts"
+          ],
+          "caseIds": ["frames-ckupf-audit-unload-effects-and-alias-noop"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckupf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckupf -> WASM adapter -> actual configured compiled _tspice_ckupf export -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckobj_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckobj_c.html",
+      "semantics": "Inspect a CK file by path independently of the loaded pointing search list. Append all signed instrument/object IDs into the supplied integer set, sorted and deduplicated across segments and existing content; do not silently clear caller output.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckobj-open-query-close-success",
+          "coverage": ["success", "state"],
+          "observes": "ckobj object-id query with explicit CK open/close lifecycle Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckobj-missing-file-error",
+          "coverage": ["error"],
+          "observes": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckobj-audit-all-distinct-instruments",
+          "coverage": ["success", "edge"],
+          "observes": "All signed instrument IDs from multiple segments are sorted/deduplicated; a repeated instrument appears once. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckobj-audit-accumulate-across-files",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Reuse the actual named output cell across files: A contributes two instruments and B repeats one, so both IDs remain in the union. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckobj-audit-empty-zero-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "An actual empty CK returns an empty initialized set with zero allocated capacity. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckobj-audit-populated-zero-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Zero capacity is preserved rather than defaulted to32; actual populated CK must signal SETEXCESS. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckobj-audit-insufficient-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "A real one-element cell cannot hold two distinct instruments; require actual SETEXCESS. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckobj-audit-wrong-daf-type",
+          "coverage": ["error", "edge"],
+          "observes": "Actual CK object inspection rejects a valid SPK DAF as INVALIDFILETYPE. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        }
+      ],
+      "edgeAssessment": "Two instruments with repeated segments, existing set union across two files, duplicate append, empty CK and genuine zero capacity. Literal final sorted set [-123001,-123000] on both dispatchers proves union is not matching resets.",
+      "errorAssessment": "Zero populated cell and insufficient capacity require actual SETEXCESS. Wrong valid SPK DAF requires INVALIDFILETYPE and missing file FILENOTFOUND. Wrong/expired output cell and WASM module ownership have separate actual-backend guards.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-empty.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_sclkscet_00061.tsc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        }
+      ],
+      "fixtureRationale": "Four small authored deterministic fixtures distinguish actual pointing, AV signs/units, gaps, file priority, zero capacity and interval unions without external observation data. Existing MGS baseline examples are retained with their limitations explicit. Wrong-DAF tests reuse the existing file-io-minimal.bsp unchanged.",
+      "cleanup": "Per-case kclear/reset and backend dispose run in finally. Pending CK handles close explicitly before Scratch deletion; an initial failed close retains the claim for retry before file deletion. Actual Python pending error is cleared before close. Cells/windows are registered once and freed after use; duplicate physical CK handles retain CSPICE global-state alias semantics. WASM allocation fault injection covers21positions with zero net leaks and subsequent actual lookup. Scoped Python found-check setting restores on all paths.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparator applies to all9matrix/3AV/clock/coverage outputs; IDs, found flags and states exact. Authored rotation angles and AV rates give nonzero components above tolerance. Independent Rodrigues uses1e-12; generator derivative h=.001uses separate1e-10 bound for central-difference roundoff, not relaxed live comparison.",
+      "findings": [
+        {
+          "id": "ckobj-semantic-evidence",
+          "status": "repaired",
+          "summary": "Previous open/query/close or void/error smoke cases did not establish CK search-list effects, positive all-component pointing, accumulation and actual scientific boundaries.",
+          "repair": "Two instruments with repeated segments, existing set union across two files, duplicate append, empty CK and genuine zero capacity. Literal final sorted set [-123001,-123000] on both dispatchers proves union is not matching resets. Registered reset defaults preserve prior workflows while reset:false exercises actual caller accumulation. Meaningful live named errors and independent literal outputs distinguish matching harness mistakes.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/ckobj.cases.json",
+            "packages/py-parity-checking/test/ck-observables.test.ts",
+            "packages/py-parity-checking/test/ck-inputs-pointing.test.ts"
+          ],
+          "caseIds": [
+            "frames-ckobj-audit-all-distinct-instruments",
+            "frames-ckobj-audit-accumulate-across-files",
+            "frames-ckobj-audit-empty-zero-capacity",
+            "frames-ckobj-audit-populated-zero-capacity",
+            "frames-ckobj-audit-insufficient-capacity",
+            "frames-ckobj-audit-wrong-daf-type"
+          ]
+        },
+        {
+          "id": "ckobj-caller-output-and-zero",
+          "status": "repaired",
+          "summary": "Both dispatchers cleared caller output before every query, hiding union semantics. Python falsey defaults also replaced zero-capacity output with nonzero defaults.",
+          "repair": "Reuse workflow cells/windows and make reset:false explicit, preserving old default reset:true. Python distinguishes None from0 and permits empty zero windows. Literal union assertions on both harnesses prevent two matching resets from passing.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/test/ck-observables.test.ts"
+          ],
+          "caseIds": [
+            "frames-ckobj-audit-accumulate-across-files",
+            "frames-ckobj-audit-empty-zero-capacity",
+            "frames-ckobj-audit-populated-zero-capacity"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckobj -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckobj -> WASM adapter -> actual configured compiled _tspice_ckobj export -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckcov_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckcov_c.html",
+      "semantics": "Append coverage for an instrument into a supplied double window. SEGMENT gives segment bounds; INTERVAL respects Type3 interpolation gaps. needav excludes segments without AV. Tolerance expands encoded-clock intervals and merges touching intervals. Tolerance is in encoded ticks even when timsys TDB requests ephemeris-second endpoints, requiring SCLK data.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckcov-open-query-close-success",
+          "coverage": ["success", "state"],
+          "observes": "ckcov CK coverage query with explicit cklpf/ckupf lifecycle Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-missing-file-error",
+          "coverage": ["error"],
+          "observes": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every actual coverage endpoint for segment; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-interval",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every actual coverage endpoint for interval; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-tolerance-merges",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every actual coverage endpoint for tolerance-merges; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-no-av-included",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every actual coverage endpoint for no-av-included; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-no-av-filtered",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every actual coverage endpoint for no-av-filtered; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-absent-instrument",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every actual coverage endpoint for absent-instrument; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-empty-zero-window",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every actual coverage endpoint for empty-zero-window; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-clock-converted-tdb",
+          "coverage": ["success", "edge"],
+          "observes": "Authored clock maps ticks1000 to TDB0; compare every converted interval endpoint in seconds, distinct from encoded ticks. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-accumulate-across-files",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Reuse the actual output window: B fills one gap while the later A segment remains in the union; no implicit reset before the second raw call. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-negative-tolerance",
+          "coverage": ["error", "edge"],
+          "observes": "Coverage negative tolerance is actual VALUEOUTOFRANGE, distinct from the pointing routines negative-tolerance miss. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-capacity-excess",
+          "coverage": ["error", "edge"],
+          "observes": "Three interpolation intervals exceed an actual one-interval window; require WINDOWEXCESS. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-missing-clock-for-tdb",
+          "coverage": ["error", "edge"],
+          "observes": "TDB conversion without the required SCLK variables signals actual KERNELVARNOTFOUND. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckcov-audit-wrong-daf-type",
+          "coverage": ["error", "edge"],
+          "observes": "Actual CK coverage inspection rejects a valid SPK DAF as INVALIDFILETYPE. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        }
+      ],
+      "edgeAssessment": "Segment versus interval endpoints, tolerance-merging, needav both ways, absent instrument, empty CK with zero window, complete SCLK-to-TDB conversion and multi-file union. Literal final merged intervals [1000,1040],[1060,1070] distinguish accumulation from clearing.",
+      "errorAssessment": "Negative tolerance VALUEOUTOFRANGE, insufficient window WINDOWEXCESS, absent clock KERNELVARNOTFOUND, wrong DAF INVALIDFILETYPE and missing file FILENOTFOUND must reach actual CSPICE. Output after failed coverage is not assumed unchanged; free/recreate for recovery.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-empty.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_sclkscet_00061.tsc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        }
+      ],
+      "fixtureRationale": "Four small authored deterministic fixtures distinguish actual pointing, AV signs/units, gaps, file priority, zero capacity and interval unions without external observation data. Existing MGS baseline examples are retained with their limitations explicit. Wrong-DAF tests reuse the existing file-io-minimal.bsp unchanged.",
+      "cleanup": "Per-case kclear/reset and backend dispose run in finally. Pending CK handles close explicitly before Scratch deletion; an initial failed close retains the claim for retry before file deletion. Actual Python pending error is cleared before close. Cells/windows are registered once and freed after use; duplicate physical CK handles retain CSPICE global-state alias semantics. WASM allocation fault injection covers21positions with zero net leaks and subsequent actual lookup. Scoped Python found-check setting restores on all paths.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparator applies to all9matrix/3AV/clock/coverage outputs; IDs, found flags and states exact. Authored rotation angles and AV rates give nonzero components above tolerance. Independent Rodrigues uses1e-12; generator derivative h=.001uses separate1e-10 bound for central-difference roundoff, not relaxed live comparison.",
+      "findings": [
+        {
+          "id": "ckcov-semantic-evidence",
+          "status": "repaired",
+          "summary": "Previous open/query/close or void/error smoke cases did not establish CK search-list effects, positive all-component pointing, accumulation and actual scientific boundaries.",
+          "repair": "Segment versus interval endpoints, tolerance-merging, needav both ways, absent instrument, empty CK with zero window, complete SCLK-to-TDB conversion and multi-file union. Literal final merged intervals [1000,1040],[1060,1070] distinguish accumulation from clearing. Registered reset defaults preserve prior workflows while reset:false exercises actual caller accumulation. Meaningful live named errors and independent literal outputs distinguish matching harness mistakes.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/ckcov.cases.json",
+            "packages/py-parity-checking/test/ck-observables.test.ts",
+            "packages/py-parity-checking/test/ck-inputs-pointing.test.ts"
+          ],
+          "caseIds": [
+            "frames-ckcov-audit-segment",
+            "frames-ckcov-audit-interval",
+            "frames-ckcov-audit-tolerance-merges",
+            "frames-ckcov-audit-no-av-included",
+            "frames-ckcov-audit-no-av-filtered",
+            "frames-ckcov-audit-absent-instrument",
+            "frames-ckcov-audit-empty-zero-window",
+            "frames-ckcov-audit-clock-converted-tdb",
+            "frames-ckcov-audit-accumulate-across-files",
+            "frames-ckcov-audit-negative-tolerance",
+            "frames-ckcov-audit-capacity-excess",
+            "frames-ckcov-audit-missing-clock-for-tdb",
+            "frames-ckcov-audit-wrong-daf-type"
+          ]
+        },
+        {
+          "id": "ckcov-allocation-rollback",
+          "status": "repaired",
+          "summary": "Actual heap failure exposed leaked CK string/error buffers when a subsequent string encoder threw before the old cleanup scope.",
+          "repair": "Protect reference string separately for pointing and enter coverage cleanup before encoding later strings. All21 CK allocation positions release all allocations and allow actual J2000 lookup afterward. Four positions failed before repair.",
+          "evidence": [
+            "packages/backend-wasm/test/ck-allocations.test.ts",
+            "packages/backend-wasm/src/domains/frames.ts"
+          ],
+          "caseIds": ["frames-ckcov-audit-segment"]
+        },
+        {
+          "id": "ckcov-caller-output-and-zero",
+          "status": "repaired",
+          "summary": "Both dispatchers cleared caller output before every query, hiding union semantics. Python falsey defaults also replaced zero-capacity output with nonzero defaults.",
+          "repair": "Reuse workflow cells/windows and make reset:false explicit, preserving old default reset:true. Python distinguishes None from0 and permits empty zero windows. Literal union assertions on both harnesses prevent two matching resets from passing.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/test/ck-observables.test.ts"
+          ],
+          "caseIds": [
+            "frames-ckcov-audit-empty-zero-window",
+            "frames-ckcov-audit-accumulate-across-files"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckcov -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckcov -> WASM adapter -> actual configured compiled _tspice_ckcov export -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckgp_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgp_c.html",
+      "semantics": "Find a pointing matrix mapping reference-frame coordinates into instrument coordinates at an encoded SCLK time. Return all nine row-major elements and actual selected clkout only when found; interpolation gaps and misses are found:false. Tolerance is encoded ticks, not seconds. Negative tolerance is a legitimate miss, not an invented RangeError. Segments without AV remain eligible.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckgp-open-query-close-success",
+          "coverage": ["success", "state"],
+          "observes": "ckgp pointing query with explicit CK open/close lifecycle Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results."
+        },
+        {
+          "caseId": "frames-ckgp-out-of-coverage-found-false-success",
+          "coverage": ["success"],
+          "observes": "ckgp miss outside CK coverage returns found=false Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results."
+        },
+        {
+          "caseId": "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every real matrix component, exact returned clock, interpolation, gap misses, tolerance-adjusted time1010, later segment and negative-tolerance miss followed by valid recovery. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgp-audit-reference-and-no-av",
+          "coverage": ["success", "edge"],
+          "observes": "Actual inertial reference conversion changes full matrix; pointing-only instrument is found by ckgp and skipped by ckgpav. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgp-audit-no-loaded-files",
+          "coverage": ["error", "edge"],
+          "observes": "Without a loaded CK, actual NOLOADEDFILES remains an error rather than a found:false substitute. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgp-audit-unknown-reference",
+          "coverage": ["error", "edge"],
+          "observes": "Actual invalid reference signals KERNELVARNOTFOUND in pinned N0067; do not coerce the error into a miss. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgp-audit-empty-reference",
+          "coverage": ["error", "edge"],
+          "observes": "Actual empty reference string signals EMPTYSTRING; pending CK cleanup must still precede scratch deletion. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        }
+      ],
+      "edgeAssessment": "Nonidentity all-axis interpolation, endpoint snapping at tol3, exact gaps/second segment, negative tolerance, alternate reference and no-AV segment. Independent Rodrigues evaluation checks all nine components and actual clock.",
+      "errorAssessment": "Actual NOLOADEDFILES, KERNELVARNOTFOUND for missing reference and EMPTYSTRING remain failures, not found:false. Scoped SpiceyPy no_found_check preserves actual toolkit error checking. JS fractional/overflow inst and nonfinite clocks/tolerances are rejected before conversion.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-empty.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_sclkscet_00061.tsc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        }
+      ],
+      "fixtureRationale": "Four small authored deterministic fixtures distinguish actual pointing, AV signs/units, gaps, file priority, zero capacity and interval unions without external observation data. Existing MGS baseline examples are retained with their limitations explicit. Wrong-DAF tests reuse the existing file-io-minimal.bsp unchanged.",
+      "cleanup": "Per-case kclear/reset and backend dispose run in finally. Pending CK handles close explicitly before Scratch deletion; an initial failed close retains the claim for retry before file deletion. Actual Python pending error is cleared before close. Cells/windows are registered once and freed after use; duplicate physical CK handles retain CSPICE global-state alias semantics. WASM allocation fault injection covers21positions with zero net leaks and subsequent actual lookup. Scoped Python found-check setting restores on all paths.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparator applies to all9matrix/3AV/clock/coverage outputs; IDs, found flags and states exact. Authored rotation angles and AV rates give nonzero components above tolerance. Independent Rodrigues uses1e-12; generator derivative h=.001uses separate1e-10 bound for central-difference roundoff, not relaxed live comparison.",
+      "findings": [
+        {
+          "id": "ckgp-semantic-evidence",
+          "status": "repaired",
+          "summary": "Previous open/query/close or void/error smoke cases did not establish CK search-list effects, positive all-component pointing, accumulation and actual scientific boundaries.",
+          "repair": "Nonidentity all-axis interpolation, endpoint snapping at tol3, exact gaps/second segment, negative tolerance, alternate reference and no-AV segment. Independent Rodrigues evaluation checks all nine components and actual clock. Registered reset defaults preserve prior workflows while reset:false exercises actual caller accumulation. Meaningful live named errors and independent literal outputs distinguish matching harness mistakes.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
+            "packages/py-parity-checking/test/ck-observables.test.ts",
+            "packages/py-parity-checking/test/ck-inputs-pointing.test.ts"
+          ],
+          "caseIds": [
+            "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+            "frames-ckgp-audit-reference-and-no-av",
+            "frames-ckgp-audit-no-loaded-files",
+            "frames-ckgp-audit-unknown-reference",
+            "frames-ckgp-audit-empty-reference"
+          ]
+        },
+        {
+          "id": "ckgp-allocation-rollback",
+          "status": "repaired",
+          "summary": "Actual heap failure exposed leaked CK string/error buffers when a subsequent string encoder threw before the old cleanup scope.",
+          "repair": "Protect reference string separately for pointing and enter coverage cleanup before encoding later strings. All21 CK allocation positions release all allocations and allow actual J2000 lookup afterward. Four positions failed before repair.",
+          "evidence": [
+            "packages/backend-wasm/test/ck-allocations.test.ts",
+            "packages/backend-wasm/src/domains/frames.ts"
+          ],
+          "caseIds": ["frames-ckgp-audit-interpolation-gaps-clock-tolerance"]
+        },
+        {
+          "id": "ckgp-masked-toolkit-error",
+          "status": "repaired",
+          "summary": "SpiceyPy found exceptions intercepted actual pending toolkit failures, turning no-loaded-file/reference errors into successful misses.",
+          "repair": "Scoped no_found_check retains native found flags while allowing actual SpiceyPy error decorator to raise the real named toolkit error. Twelve pointing error comparisons plus unloaded recovery failed before the oracle repair. Integer/finite preflight rejects FFI truncation and AV uses validated explicit tuple.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/src/cases/frames/ckgp.cases.json",
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts"
+          ],
+          "caseIds": [
+            "frames-ckgp-audit-no-loaded-files",
+            "frames-ckgp-audit-unknown-reference",
+            "frames-ckgp-audit-empty-reference"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckgp -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckgp -> WASM adapter -> actual configured compiled _tspice_ckgp export -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckgpav_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgpav_c.html",
+      "semantics": "Find a pointing matrix plus instrument angular velocity relative to the reference frame, expressed in that reference frame, in radians/second; return actual encoded clkout. Search only AV-bearing segments. All nine row-major elements, three AV components and clock reach comparison; not-found omits data.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckgpav-open-query-close-success",
+          "coverage": ["success", "state"],
+          "observes": "ckgpav pointing+AV query with explicit CK open/close lifecycle Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results."
+        },
+        {
+          "caseId": "frames-ckgpav-out-of-coverage-found-false-success",
+          "coverage": ["success"],
+          "observes": "ckgpav miss outside CK coverage returns found=false Retained baseline may miss in its unknown MGS_SPACECRAFT reference; it is not the success evidence. Authored J2000 interpolation and independent literal assertions establish real found:true results."
+        },
+        {
+          "caseId": "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every real matrix/AV component, exact returned clock, interpolation, gap misses, tolerance-adjusted time1010, later segment and negative-tolerance miss followed by valid recovery. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgpav-audit-reference-and-no-av",
+          "coverage": ["success", "edge"],
+          "observes": "Actual inertial reference conversion changes full matrix/AV; pointing-only instrument is found by ckgp and skipped by ckgpav. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgpav-audit-no-loaded-files",
+          "coverage": ["error", "edge"],
+          "observes": "Without a loaded CK, actual NOLOADEDFILES remains an error rather than a found:false substitute. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgpav-audit-unknown-reference",
+          "coverage": ["error", "edge"],
+          "observes": "Actual invalid reference signals KERNELVARNOTFOUND in pinned N0067; do not coerce the error into a miss. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        },
+        {
+          "caseId": "frames-ckgpav-audit-empty-reference",
+          "coverage": ["error", "edge"],
+          "observes": "Actual empty reference string signals EMPTYSTRING; pending CK cleanup must still precede scratch deletion. Actual target raw operation reaches the recursively compared result: complete IDs/intervals/matrix/AV/clock, or named toolkit failure."
+        }
+      ],
+      "edgeAssessment": "Nonzero all-axis angular velocity with correct sign and units, same gap/tolerance/priority searches as CKGP, no-AV segment is an actual miss. Generator finite-difference state derivative and independent public Rodrigues/AV literals prevent shared shape/sign mistakes.",
+      "errorAssessment": "Actual NOLOADEDFILES, KERNELVARNOTFOUND and EMPTYSTRING are preserved by scoped oracle found handling, distinct from genuine miss. JS integer/nonfinite/reference-type guards and actual allocation rollback allow valid post-error lookup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-empty.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_sclkscet_00061.tsc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Unchanged existing repository MGS-minimal fixtures retained only for baseline scenarios; copied provenance is already documented in fixtures/README.md. Authored cases now establish meaningful successful CK results without depending on a preexisting miss.",
+          "distribution": "Existing tracked fixtures reused unchanged; this batch adds no external mission data."
+        }
+      ],
+      "fixtureRationale": "Four small authored deterministic fixtures distinguish actual pointing, AV signs/units, gaps, file priority, zero capacity and interval unions without external observation data. Existing MGS baseline examples are retained with their limitations explicit. Wrong-DAF tests reuse the existing file-io-minimal.bsp unchanged.",
+      "cleanup": "Per-case kclear/reset and backend dispose run in finally. Pending CK handles close explicitly before Scratch deletion; an initial failed close retains the claim for retry before file deletion. Actual Python pending error is cleared before close. Cells/windows are registered once and freed after use; duplicate physical CK handles retain CSPICE global-state alias semantics. WASM allocation fault injection covers21positions with zero net leaks and subsequent actual lookup. Scoped Python found-check setting restores on all paths.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative comparator applies to all9matrix/3AV/clock/coverage outputs; IDs, found flags and states exact. Authored rotation angles and AV rates give nonzero components above tolerance. Independent Rodrigues uses1e-12; generator derivative h=.001uses separate1e-10 bound for central-difference roundoff, not relaxed live comparison.",
+      "findings": [
+        {
+          "id": "ckgpav-semantic-evidence",
+          "status": "repaired",
+          "summary": "Previous open/query/close or void/error smoke cases did not establish CK search-list effects, positive all-component pointing, accumulation and actual scientific boundaries.",
+          "repair": "Nonzero all-axis angular velocity with correct sign and units, same gap/tolerance/priority searches as CKGP, no-AV segment is an actual miss. Generator finite-difference state derivative and independent public Rodrigues/AV literals prevent shared shape/sign mistakes. Registered reset defaults preserve prior workflows while reset:false exercises actual caller accumulation. Meaningful live named errors and independent literal outputs distinguish matching harness mistakes.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
+            "packages/py-parity-checking/test/ck-observables.test.ts",
+            "packages/py-parity-checking/test/ck-inputs-pointing.test.ts"
+          ],
+          "caseIds": [
+            "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+            "frames-ckgpav-audit-reference-and-no-av",
+            "frames-ckgpav-audit-no-loaded-files",
+            "frames-ckgpav-audit-unknown-reference",
+            "frames-ckgpav-audit-empty-reference"
+          ]
+        },
+        {
+          "id": "ckgpav-allocation-rollback",
+          "status": "repaired",
+          "summary": "Actual heap failure exposed leaked CK string/error buffers when a subsequent string encoder threw before the old cleanup scope.",
+          "repair": "Protect reference string separately for pointing and enter coverage cleanup before encoding later strings. All21 CK allocation positions release all allocations and allow actual J2000 lookup afterward. Four positions failed before repair.",
+          "evidence": [
+            "packages/backend-wasm/test/ck-allocations.test.ts",
+            "packages/backend-wasm/src/domains/frames.ts"
+          ],
+          "caseIds": ["frames-ckgpav-audit-interpolation-gaps-clock-tolerance"]
+        },
+        {
+          "id": "ckgpav-masked-toolkit-error",
+          "status": "repaired",
+          "summary": "SpiceyPy found exceptions intercepted actual pending toolkit failures, turning no-loaded-file/reference errors into successful misses.",
+          "repair": "Scoped no_found_check retains native found flags while allowing actual SpiceyPy error decorator to raise the real named toolkit error. Twelve pointing error comparisons plus unloaded recovery failed before the oracle repair. Integer/finite preflight rejects FFI truncation and AV uses validated explicit tuple.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+            "packages/py-parity-checking/src/cases/frames/ckgpav.cases.json",
+            "packages/backend-node/src/domains/frames.ts",
+            "packages/backend-wasm/src/domains/frames.ts"
+          ],
+          "caseIds": [
+            "frames-ckgpav-audit-no-loaded-files",
+            "frames-ckgpav-audit-unknown-reference",
+            "frames-ckgpav-audit-empty-reference"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckgpav -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ckgpav -> WASM adapter -> actual configured compiled _tspice_ckgpav export -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
+          "executions": ["local-ck-pointing-2026-11-13-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

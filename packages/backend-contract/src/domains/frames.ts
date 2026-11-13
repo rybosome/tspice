@@ -42,7 +42,18 @@ export interface FramesApi {
     classId: number,
   ): Found<{ frcode: number; frname: string; center: number }>;
 
-  /** Get pointing (attitude) for a CK instrument at a given encoded spacecraft clock time. */
+  /**
+   * Get CK pointing (`ckgp_c`) from reference coordinates to instrument coordinates.
+   *
+   * @param inst Signed instrument ID.
+   * @param sclkdp Encoded spacecraft clock ticks, not ET seconds.
+   * @param tol Search tolerance in encoded ticks; negative tolerance returns a miss.
+   * @param ref Reference frame name.
+   * @returns Found row-major 3x3 matrix and actual selected encoded `clkout`, or a miss.
+   * Interpolation gaps and segment/file priority follow CSPICE. Real toolkit errors
+   * (including no loaded CK files) remain errors, distinct from `found:false`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgp_c.html
+   */
   ckgp(
     inst: number,
     sclkdp: number,
@@ -50,7 +61,15 @@ export interface FramesApi {
     ref: string,
   ): Found<{ cmat: Mat3RowMajor; clkout: number }>;
 
-  /** Get pointing + angular velocity for a CK instrument at a given encoded spacecraft clock time. */
+  /**
+   * Get CK pointing and angular velocity (`ckgpav_c`).
+   *
+   * Inputs and the row-major matrix/encoded clock follow {@link FramesApi.ckgp}.
+   * AV is instrument-relative-to-reference angular velocity, expressed in `ref`,
+   * in radians/second. Only AV-bearing segments are eligible; no such segment is
+   * a miss. All three AV components are returned only when `found:true`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgpav_c.html
+   */
   ckgpav(
     inst: number,
     sclkdp: number,
@@ -63,17 +82,42 @@ export interface FramesApi {
   /**
    * Load a CK file for access by pointing routines (`cklpf_c`).
    *
-   * Returns a CK file handle suitable for {@link FramesApi.ckupf}.
+   * @returns Actual numeric CK handle suitable for {@link FramesApi.ckupf}.
+   * Reloading the same file returns its existing handle and raises its search
+   * priority; this is not reference counting. CKLPF does not add a FURNSH table
+   * entry. Native backends share process SPICE state; use process/worker isolation
+   * for independent state. Handles are not portable between isolated states.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cklpf_c.html
    */
   cklpf(ck: string): number;
 
-  /** Unload a CK file previously loaded by {@link FramesApi.cklpf} (`ckupf_c`). */
+  /**
+   * Unload/close the physical CK loaded by {@link FramesApi.cklpf} (`ckupf_c`).
+   * One unload removes a duplicate-load alias too; an unknown valid numeric
+   * handle is a no-op. This public API accepts nonnegative signed-int32 handles.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckupf_c.html
+   */
   ckupf(handle: number): void;
 
-  /** Return the set of instrument/object IDs for which the specified CK has segments (`ckobj_c`). */
+  /**
+   * Append every instrument ID present in `ck` to the supplied integer set (`ckobj_c`).
+   * Existing IDs are preserved, sorted and deduplicated. No pointing load is needed.
+   * Insufficient capacity signals SETEXCESS; zero capacity is valid for an empty CK.
+   * The cell must be live and owned by the backend that allocated it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckobj_c.html
+   */
   ckobj(ck: string, ids: SpiceIntCell): void;
 
-  /** Return coverage for an instrument/object in a CK file (`ckcov_c`). */
+  /**
+   * Append CK coverage for `idcode` to a supplied live double window (`ckcov_c`).
+   * SEGMENT returns segment bounds; INTERVAL respects interpolation gaps.
+   * `needav` filters out segments without angular velocity. `tol` is nonnegative
+   * encoded ticks for both time systems, expands coverage, and may merge intervals.
+   * TDB output converts to ET seconds and requires spacecraft-clock coefficients.
+   * Existing window intervals are unioned; missing objects yield no new intervals.
+   * Capacity errors signal WINDOWEXCESS; output after a toolkit error is unspecified.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckcov_c.html
+   */
   ckcov(
     ck: string,
     idcode: number,

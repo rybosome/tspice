@@ -1255,6 +1255,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 ck=_decode_path_ref(step.get("ck"), label="frames.ckobj.ck"),
                 idsId=_expect_string(step.get("idsId"), label="frames.ckobj.idsId"),
                 maxCard=max_card,
+                reset=_expect_bool(step.get("reset", True), label="frames.ckobj.reset"),
             )
 
         case "frames.ckcov":
@@ -1281,6 +1282,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 timsys=timsys,
                 coverId=_expect_string(step.get("coverId"), label="frames.ckcov.coverId"),
                 maxIntervals=max_intervals,
+                reset=_expect_bool(step.get("reset", True), label="frames.ckcov.reset"),
             )
 
         case "frames.pxform":
