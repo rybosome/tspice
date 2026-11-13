@@ -702,6 +702,78 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43331312691/job/131576426232",
       "observation": "Observed canonical Linux Node22 native-required job: all 692 live parity tests (346 per actual backend), all 723 parity-package tests, 91 WASM tests, 62 Node tests and 123 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
       "historical": true
+    },
+    {
+      "id": "local-687-main-748e3836-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2df9317335fc7956396a4a8122a4668073e7e4db1d24e24aa1723d97a148dc9c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required local lanes passed after restacking #687 directly onto merged #686/main748e3836. The production N0067 native addon was rebuilt before either test lane, loaded successfully and executed its native-required sanity assertion. All 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero native-required skips, 189 WASM / 62 Node / 21 core / 142 facade tests passed. All six ID boundary/recovery tests, 24 ID allocation rollback positions, inherited 43 pool allocation positions, 16 capacity tests and real C allocator regression passed. Both doctors, all 38 ledger regressions, generated drift, formatting, lint and typecheck passed. All 18 reviewed package implementation/test/binary files and all 71 other merged-main package files are byte-identical to their respective reviewed sources. The shared C shim, pinned acquisition/build scripts, manifest and generated web/Node assets match the reviewed original #687 owning N0067/Emscripten3.1.74 build exactly; the binary SHA256 remains d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The restack introduces no new WASM compile input changes. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. All eight maintained audit fingerprints are refreshed for this binary; earlier observations retain their actual source/job references as historical evidence. Current-source canonical CI is pending."
+    },
+    {
+      "id": "local-687-main-748e3836-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2df9317335fc7956396a4a8122a4668073e7e4db1d24e24aa1723d97a148dc9c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required local lanes passed after restacking #687 directly onto merged #686/main748e3836. The production N0067 native addon was rebuilt before either test lane, loaded successfully and executed its native-required sanity assertion. All 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero native-required skips, 189 WASM / 62 Node / 21 core / 142 facade tests passed. All six ID boundary/recovery tests, 24 ID allocation rollback positions, inherited 43 pool allocation positions, 16 capacity tests and real C allocator regression passed. Both doctors, all 38 ledger regressions, generated drift, formatting, lint and typecheck passed. All 18 reviewed package implementation/test/binary files and all 71 other merged-main package files are byte-identical to their respective reviewed sources. The shared C shim, pinned acquisition/build scripts, manifest and generated web/Node assets match the reviewed original #687 owning N0067/Emscripten3.1.74 build exactly; the binary SHA256 remains d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The restack introduces no new WASM compile input changes. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. All eight maintained audit fingerprints are refreshed for this binary; earlier observations retain their actual source/job references as historical evidence. Current-source canonical CI is pending."
+    },
+    {
+      "id": "ci-687-main-748e3836-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2df9317335fc7956396a4a8122a4668073e7e4db1d24e24aa1723d97a148dc9c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "893744b9d27bb82ae5a5dfbfe2f4d68491813acc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43515867491/job/132197541428",
+      "observation": "All 15 source CI jobs passed on 893744b9d27bb82ae5a5dfbfe2f4d68491813acc without retries. The inspected Linux Node22 native-required job 132197541428 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero skips, 189 WASM / 62 Node / 21 core / 142 facade tests. Six ID boundary/recovery tests, all 24 ID allocation rollback positions, all 43 inherited pool allocation positions, all 16 capacity tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed. REST explicitly confirmed mergeable:true and rebaseable:true against unchanged main748e3836. All eight audit fingerprints are verified against the preserved reviewed #687 owning-script binary d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The shared C shim, pinned build/acquisition inputs and generated web/Node assets match its original N0067/Emscripten3.1.74 build exactly; no new compiled input changes arise from the restack. Execution remains bound to this actual tested source/job; earlier observations stay historical."
+    },
+    {
+      "id": "ci-687-main-748e3836-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2df9317335fc7956396a4a8122a4668073e7e4db1d24e24aa1723d97a148dc9c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "893744b9d27bb82ae5a5dfbfe2f4d68491813acc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43515867491/job/132197541428",
+      "observation": "All 15 source CI jobs passed on 893744b9d27bb82ae5a5dfbfe2f4d68491813acc without retries. The inspected Linux Node22 native-required job 132197541428 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero skips, 189 WASM / 62 Node / 21 core / 142 facade tests. Six ID boundary/recovery tests, all 24 ID allocation rollback positions, all 43 inherited pool allocation positions, all 16 capacity tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed. REST explicitly confirmed mergeable:true and rebaseable:true against unchanged main748e3836. All eight audit fingerprints are verified against the preserved reviewed #687 owning-script binary d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The shared C shim, pinned build/acquisition inputs and generated web/Node assets match its original N0067/Emscripten3.1.74 build exactly; no new compiled input changes arise from the restack. Execution remains bound to this actual tested source/job; earlier observations stay historical."
     }
   ],
   "routines": [
@@ -841,11 +913,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": []
+          "executions": [
+            "local-687-main-748e3836-node",
+            "ci-687-main-748e3836-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -859,14 +935,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": []
+          "executions": [
+            "local-687-main-748e3836-wasm",
+            "ci-687-main-748e3836-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Earlier observed source/job evidence is preserved as historical. Required local and canonical CI verification of the restacked source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

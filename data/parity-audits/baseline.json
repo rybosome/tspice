@@ -10,7 +10,7 @@
         "https://github.com/rybosome/tspice/pull/683",
         "https://github.com/rybosome/tspice/pull/684"
       ],
-      "nextAction": "Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence."
+      "nextAction": "Verified on both backends with refreshed local and observed canonical CI after restacking #687 with its reviewed WASM binary. Preserve semantic assessments and actual source/job references when inputs change."
     },
     {
       "id": "cells-windows",
@@ -27,7 +27,7 @@
       ],
       "dependsOn": ["cell-capacity-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/685"],
-      "nextAction": "Restacked directly onto main after #684 merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. Await maintainer review and explicitly authorized merge."
+      "nextAction": "Verified on both backends with refreshed local and observed canonical CI after restacking #687 with its reviewed WASM binary. Preserve semantic assessments and actual source/job references when inputs change."
     },
     {
       "id": "vectors-arithmetic",
@@ -43,7 +43,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
+      "nextAction": "Verified on both backends with refreshed local and observed canonical CI after restacking #687 with its reviewed WASM binary. Preserve semantic assessments and actual source/job references when inputs change."
     },
     {
       "id": "coordinates-matrices",
@@ -63,7 +63,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/681"],
-      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
+      "nextAction": "Verified on both backends with refreshed local and observed canonical CI after restacking #687 with its reviewed WASM binary. Preserve semantic assessments and actual source/job references when inputs change."
     },
     {
       "id": "dsk",
@@ -149,7 +149,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/682"],
-      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
+      "nextAction": "Verified on both backends with refreshed local and observed canonical CI after restacking #687 with its reviewed WASM binary. Preserve semantic assessments and actual source/job references when inputs change."
     },
     {
       "id": "file-io-1",
@@ -258,7 +258,7 @@
       ],
       "dependsOn": ["cell-capacity-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/687"],
-      "nextAction": "Restacked onto current main after the prerequisites merged; run both required local lanes and observe source-bound canonical CI before handoff."
+      "nextAction": "Restacked directly onto main after the prerequisites merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. Await maintainer review and explicitly authorized merge."
     },
     {
       "id": "kernel-pool",
@@ -277,7 +277,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/686"],
-      "nextAction": "Rebased directly onto main after #685 merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. The stale local native addon was rebuilt and its initial failure retained. Await maintainer review and explicitly authorized merge."
+      "nextAction": "Verified on both backends with refreshed local and observed canonical CI after restacking #687 with its reviewed WASM binary. Preserve semantic assessments and actual source/job references when inputs change."
     },
     {
       "id": "kplfrm-prerequisite",
@@ -287,7 +287,7 @@
         "https://github.com/rybosome/tspice/pull/680",
         "https://github.com/rybosome/tspice/pull/684"
       ],
-      "nextAction": "Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence."
+      "nextAction": "Verified on both backends with refreshed local and observed canonical CI after restacking #687 with its reviewed WASM binary. Preserve semantic assessments and actual source/job references when inputs change."
     },
     {
       "id": "kernels",
