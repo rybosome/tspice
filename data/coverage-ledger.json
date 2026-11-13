@@ -160,10 +160,14 @@
           "setmsg_c",
           "sigerr_c"
         ],
-        "dependsOn": [],
-        "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "dependsOn": [
+          "kplfrm-prerequisite"
+        ],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/682"
+        ],
+        "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change.",
+        "record": "data/parity-audits/error.json"
       },
       {
         "id": "file-io-1",
@@ -367,16 +371,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 141,
+        "unreviewed": 134,
         "reviewed": 1,
         "needs-repair": 0,
-        "verified": 20
+        "verified": 27
       },
       "wasm": {
-        "unreviewed": 141,
+        "unreviewed": 134,
         "reviewed": 0,
         "needs-repair": 1,
-        "verified": 20
+        "verified": 27
       }
     }
   },
@@ -395,7 +399,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 345,
+    "scenarios": 356,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -4308,7 +4312,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 36
+          "line": 64
         }
       },
       "mapping": {
@@ -4348,7 +4352,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -4436,6 +4440,28 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "error-chkin-audit-nested-visible-trace",
+            "source": "packages/py-parity-checking/src/cases/error/chkin.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.chkin",
+              "error.chkout",
+              "error.failed",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Complete real captured traceback includes both active names before checkout; after explicit pops the next captured signal has no user frames. All short/long/trace fields and recovered flag reach the live exact comparison.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
             "caseId": "error-chkin-empty-name-error",
             "source": "packages/py-parity-checking/src/cases/error/chkin.cases.json",
             "expectation": "error",
@@ -4443,7 +4469,13 @@
               "error.chkin"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative chkin error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           },
           {
             "caseId": "error-chkin-trace-stack-success",
@@ -4456,18 +4488,50 @@
               "error.reset"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "chkin/chkout updates traceback stack without setting failure status; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "error",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         }
       }
     },
@@ -4483,7 +4547,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 39
+          "line": 71
         }
       },
       "mapping": {
@@ -4523,7 +4587,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -4611,6 +4675,47 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "error-chkout-audit-balanced-empty-trace",
+            "source": "packages/py-parity-checking/src/cases/error/chkout.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.chkin",
+              "error.chkout",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Balanced push/pop leaves no user frame in the captured signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
+            "caseId": "error-chkout-audit-pop-child-preserve-parent",
+            "source": "packages/py-parity-checking/src/cases/error/chkout.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.chkin",
+              "error.chkout",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Checking out a child removes only that frame; a captured real error retains the parent.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
             "caseId": "error-chkout-balanced-trace-success",
             "source": "packages/py-parity-checking/src/cases/error/chkout.cases.json",
             "expectation": "success",
@@ -4621,7 +4726,13 @@
               "error.reset"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "chkout removes prior chkin entry and keeps error status clear; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           },
           {
             "caseId": "error-chkout-empty-name-error",
@@ -4631,18 +4742,50 @@
               "error.chkout"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative chkout error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "error",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         }
       }
     },
@@ -14443,7 +14586,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 21
+          "line": 25
         }
       },
       "mapping": {
@@ -14471,7 +14614,7 @@
             "failed_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -14551,6 +14694,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "error-failed-audit-post-signal-recovery",
+            "source": "packages/py-parity-checking/src/cases/error/failed.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.failed",
+              "error.reset",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "failed remains clear after the shim captures and resets a real signaled error.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
             "caseId": "error-failed-clean-state-success",
             "source": "packages/py-parity-checking/src/cases/error/failed.cases.json",
             "expectation": "success",
@@ -14559,7 +14723,15 @@
               "error.reset"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "failed reports false after explicit reset; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           },
           {
             "caseId": "error-failed-setmsg-does-not-fail-success",
@@ -14571,18 +14743,50 @@
               "error.setmsg"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "setmsg alone does not set failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "error",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         }
       }
     },
@@ -16043,7 +16247,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 27
+          "line": 41
         }
       },
       "mapping": {
@@ -16080,7 +16284,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -16166,6 +16370,27 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "error-getmsg-audit-all-selectors-clean-and-reset",
+            "source": "packages/py-parity-checking/src/cases/error/getmsg.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.getmsg",
+              "error.reset",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Each selector is observed before signaling, after automatic error recovery, and after explicit reset.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
             "caseId": "error-getmsg-invalid-selector-error",
             "source": "packages/py-parity-checking/src/cases/error/getmsg.cases.json",
             "expectation": "error",
@@ -16173,7 +16398,15 @@
               "error.getmsg"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge",
+                "state"
+              ],
+              "observes": "Representative getmsg selector validation error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           },
           {
             "caseId": "error-getmsg-long-roundtrip-success",
@@ -16185,18 +16418,52 @@
               "error.setmsg"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "getmsg(LONG) returns value previously set via setmsg; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "error",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         }
       }
     },
@@ -20251,8 +20518,8 @@
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-boundaries-node-2026-11-12",
-            "ci-boundaries-node-43310416805"
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -20268,8 +20535,8 @@
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-boundaries-wasm-2026-11-12",
-            "ci-boundaries-wasm-43310416805"
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
           ],
           "status": "needs-repair",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -24496,7 +24763,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 24
+          "line": 32
         }
       },
       "mapping": {
@@ -24524,7 +24791,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -24604,6 +24871,28 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "error-reset-audit-repeat-reenable-message",
+            "source": "packages/py-parity-checking/src/cases/error/reset.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.failed",
+              "error.getmsg",
+              "error.reset",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Repeated reset clears prepared text and allows replacement before another signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
             "caseId": "error-reset-clears-long-message-success",
             "source": "packages/py-parity-checking/src/cases/error/reset.cases.json",
             "expectation": "success",
@@ -24614,18 +24903,50 @@
               "error.setmsg"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "reset clears previously set long message and failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "error",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         }
       }
     },
@@ -26476,7 +26797,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 30
+          "line": 49
         }
       },
       "mapping": {
@@ -26516,7 +26837,7 @@
             "setmsg_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -26604,6 +26925,47 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "error-setmsg-audit-long-buffer-boundary",
+            "source": "packages/py-parity-checking/src/cases/error/setmsg.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.getmsg",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "A 1900-character authored ASCII message is truncated to CSPICE's 1840-character LONG buffer; the entire buffer reaches the comparison.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
+            "caseId": "error-setmsg-audit-replace-and-leading-blanks",
+            "source": "packages/py-parity-checking/src/cases/error/setmsg.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.failed",
+              "error.getmsg",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Long messages preserve leading blanks and replacement; messages alone do not set failure.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
             "caseId": "error-setmsg-empty-message-error",
             "source": "packages/py-parity-checking/src/cases/error/setmsg.cases.json",
             "expectation": "error",
@@ -26611,7 +26973,15 @@
               "error.setmsg"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge",
+                "state"
+              ],
+              "observes": "Representative setmsg empty-string error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           },
           {
             "caseId": "error-setmsg-long-roundtrip-success",
@@ -26623,18 +26993,50 @@
               "error.setmsg"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "setmsg updates the LONG message buffer; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "error",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         }
       }
     },
@@ -26671,7 +27073,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 33
+          "line": 57
         }
       },
       "mapping": {
@@ -26711,7 +27113,7 @@
             "sigerr_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -26799,6 +27201,64 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "error-sigerr-audit-details-and-recovery",
+            "source": "packages/py-parity-checking/src/cases/error/sigerr.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.failed",
+              "error.getmsg",
+              "error.setmsg",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Signal twice with distinct messages/codes and compare complete captured details and automatic recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
+            "caseId": "error-sigerr-audit-empty-code",
+            "source": "packages/py-parity-checking/src/cases/error/sigerr.cases.json",
+            "expectation": "error",
+            "operations": [
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge",
+                "state"
+              ],
+              "observes": "Empty short-code wrapper error is distinguishable from a valid user signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
+            "caseId": "error-sigerr-audit-short-buffer-boundary",
+            "source": "packages/py-parity-checking/src/cases/error/sigerr.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.failed",
+              "error.sigerr"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "An overlength authored short code is truncated to CSPICE's 25-character buffer and captured without hiding recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
+          },
+          {
             "caseId": "error-sigerr-signals-error-path",
             "source": "packages/py-parity-checking/src/cases/error/sigerr.cases.json",
             "expectation": "error",
@@ -26808,18 +27268,50 @@
               "error.sigerr"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "sigerr triggers representative SPICE error status/failure behavior; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures.",
+              "record": "data/parity-audits/error.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "error",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/error.json"
         }
       }
     },
