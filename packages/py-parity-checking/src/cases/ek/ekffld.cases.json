@@ -27,16 +27,198 @@
         "entszs": [1],
         "nlflgs": [false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_FFLD" },
-      { "op": "ek.eknseg", "handleId": "H_FFLD" },
-      { "op": "ek.ekcls", "handleId": "H_FFLD" }
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_FFLD"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_FFLD"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_FFLD"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekffld-missing-segment-id-error",
     "description": "ekffld errors when segmentId does not resolve in workflow state",
-    "workflow": [{ "op": "ek.ekffld", "segmentId": "MISSING_SEGMENT" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "ek.ekffld",
+        "segmentId": "MISSING_SEGMENT"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek-ekffld-audit-persisted-multitype-columns",
+    "description": "Actual finalized indexed integer, double and UTF-8 character columns persist through close/reload; all rows and selected column ordering reach assertions.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-finalize.ek",
+        "ifname": "AUTHORED_FINALIZE",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_FINAL",
+        "nrows": 2,
+        "cnames": ["I", "D", "C"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=DOUBLE PRECISION",
+          "DATATYPE=CHARACTER*(40)"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "I",
+        "ivals": [-7, 99],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "s",
+        "column": "D",
+        "dvals": [-7.25, 99.125],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "s",
+        "column": "C",
+        "cvals": ["  alpha", "\u00b5beta"],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-finalize.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT I,D,C FROM AUDIT_FINAL ORDER BY I DESC"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgd",
+        "selidx": 1,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 2,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgd",
+        "selidx": 1,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 2,
+        "row": 1,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekffld-audit-wrong-active-segment",
+    "description": "Valid row-length backing for another existing segment reaches actual WRONGSEGMENT; a missing harness label alone cannot establish a raw error path.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-wrong-segment.ek",
+        "ifname": "AUTHORED_WRONG_SEGMENT",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_SEG",
+        "nrows": 2,
+        "cnames": ["I"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "first"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "first",
+        "column": "I",
+        "ivals": [1, 2],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "first"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_SEG",
+        "nrows": 2,
+        "cnames": ["I"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "second"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "second",
+        "column": "I",
+        "ivals": [1, 2],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "first"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WRONGSEGMENT"]
+    }
   }
 ]

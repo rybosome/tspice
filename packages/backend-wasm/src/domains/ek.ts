@@ -24,6 +24,8 @@ import type {
 const UTF8_ENCODER = new TextEncoder();
 
 const INT32_MAX = 2_147_483_647;
+// CSPICE N0067: SPICE_EK_MXCLSG in SpiceEK.h.
+const MAX_EK_COLUMNS = 100;
 // Keep parity with the Node backend's `kMaxEkArrayLen`.
 const kMaxEkArrayLen = 1_000_000;
 // Prevent pathological `vallen` from forcing enormous allocations.
@@ -176,6 +178,28 @@ function callVoidHandle(
   });
 }
 
+function assertArray(value: unknown, label: string): void {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+}
+
+function assertString(value: unknown, label: string): void {
+  if (typeof value !== "string")
+    throw new TypeError(`${label} must be a string`);
+}
+function assertStringArray(value: unknown, label: string): void {
+  if (!Array.isArray(value))
+    throw new TypeError(`${label} must be a string array`);
+  if (value.length > MAX_EK_COLUMNS)
+    throw new RangeError(
+      `${label}: expected at most ${MAX_EK_COLUMNS} columns`,
+    );
+  for (let i = 0; i < value.length; i++) {
+    const item: unknown = value[i];
+    if (typeof item !== "string")
+      throw new TypeError(`${label}[${i}] must be a string`);
+  }
+}
+
 /** Create an {@link EkApi} implementation backed by a WASM Emscripten module. */
 export function createEkApi(
   module: EmscriptenModule,
@@ -247,6 +271,7 @@ export function createEkApi(
     },
 
     ekopn: (path: string, ifname: string, ncomch: number) => {
+      assertString(ifname, "ekopn(ifname)");
       assertSpiceInt32NonNegative(ncomch, "ekopn(ncomch)");
 
       const resolved = resolveKernelPath(path);
@@ -259,9 +284,9 @@ export function createEkApi(
       }
 
       const pathPtr = writeUtf8CString(module, resolved);
-      const ifnamePtr = writeUtf8CString(module, ifname);
-
+      let ifnamePtr = 0;
       try {
+        ifnamePtr = writeUtf8CString(module, ifname);
         const nativeHandle = withAllocs(
           module,
           [4, WASM_ERR_MAX_BYTES],
@@ -288,7 +313,7 @@ export function createEkApi(
 
         return spiceHandles.register("EK", nativeHandle);
       } finally {
-        module._free(ifnamePtr);
+        if (ifnamePtr) module._free(ifnamePtr);
         module._free(pathPtr);
       }
     },
@@ -373,6 +398,7 @@ export function createEkApi(
     },
 
     ekfind: (query: string) => {
+      assertString(query, "ekfind(query)");
       const queryPtr = writeUtf8CString(module, query);
       const outErrmsgMaxBytes = WASM_ERR_MAX_BYTES;
       try {
@@ -577,6 +603,9 @@ export function createEkApi(
       cnames: readonly string[],
       decls: readonly string[],
     ) => {
+      assertString(tabnam, "ekifld(tabnam)");
+      assertStringArray(cnames, "ekifld(cnames)");
+      assertStringArray(decls, "ekifld(decls)");
       assertSpiceInt32(nrows, "ekifld(nrows)", { min: 1 });
 
       // Hard cap to defend against pathological `nrows` values that would otherwise trigger
@@ -666,6 +695,11 @@ export function createEkApi(
       nlflgs: readonly boolean[],
       rcptrs: readonly number[],
     ) => {
+      assertString(column, "ekacli(column)");
+      assertArray(ivals, "ekacli(ivals)");
+      assertArray(entszs, "ekacli(entszs)");
+      assertArray(nlflgs, "ekacli(nlflgs)");
+      assertArray(rcptrs, "ekacli(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekacli(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
@@ -750,6 +784,11 @@ export function createEkApi(
       nlflgs: readonly boolean[],
       rcptrs: readonly number[],
     ) => {
+      assertString(column, "ekacld(column)");
+      assertArray(dvals, "ekacld(dvals)");
+      assertArray(entszs, "ekacld(entszs)");
+      assertArray(nlflgs, "ekacld(nlflgs)");
+      assertArray(rcptrs, "ekacld(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekacld(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
@@ -836,6 +875,11 @@ export function createEkApi(
       nlflgs: readonly boolean[],
       rcptrs: readonly number[],
     ) => {
+      assertString(column, "ekaclc(column)");
+      assertArray(cvals, "ekaclc(cvals)");
+      assertArray(entszs, "ekaclc(entszs)");
+      assertArray(nlflgs, "ekaclc(nlflgs)");
+      assertArray(rcptrs, "ekaclc(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekaclc(segno)");
       const nrows = rcptrs.length;
       if (entszs.length !== nrows || nlflgs.length !== nrows) {
@@ -856,9 +900,11 @@ export function createEkApi(
         throw new RangeError("ekaclc(): expected cvals.length === sum(entszs)");
       }
 
+      for (const value of cvals) assertString(value, "ekaclc(cvals)");
       const nvals = cvals.length;
 
-      let vallen = 1;
+      // N0067 ZZEKAC06 needs Fortran width >=2 to preserve single letters.
+      let vallen = 3;
       for (const s of cvals) {
         const bytes = UTF8_ENCODER.encode(s).length + 1;
         if (bytes > kMaxEkVallenBytes) {
@@ -938,6 +984,7 @@ export function createEkApi(
     },
 
     ekffld: (handle: SpiceHandle, segno: number, rcptrs: readonly number[]) => {
+      assertArray(rcptrs, "ekffld(rcptrs)");
       assertSpiceInt32NonNegative(segno, "ekffld(segno)");
       const nrows = rcptrs.length;
       if (nrows === 0) {
@@ -967,6 +1014,7 @@ export function createEkApi(
           const code = module._tspice_ekffld(
             nativeHandle,
             segno,
+            nrows,
             rcptrsPtr,
             errPtr,
             WASM_ERR_MAX_BYTES,
@@ -981,9 +1029,8 @@ export function createEkApi(
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
     value: () => {
-      const entries = (
-        spiceHandles as unknown as InternalSpiceHandleRegistry
-      ).__entries?.();
+      const internal: InternalSpiceHandleRegistry = spiceHandles;
+      const entries = internal.__entries?.();
       if (!entries) {
         return spiceHandles.size();
       }

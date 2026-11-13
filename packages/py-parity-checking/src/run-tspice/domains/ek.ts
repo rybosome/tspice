@@ -18,6 +18,7 @@ import type {
   StepEkEkopw,
   StepEkEktnam,
   StepOutput,
+  PathRefLike,
 } from "../../case-types.js";
 import { toVirtualKernelPath } from "../../fixtures.js";
 import {
@@ -48,7 +49,10 @@ type EkStep =
   | StepEkEkaclc
   | StepEkEkffld;
 
-function resolveEkPath(rawPath: string): string {
+function resolveEkPath(rawPath: PathRefLike): string {
+  // Existing string paths remain scratch-relative; fixture refs must be staged
+  // explicitly by a kernels.furnsh workflow step before opening them.
+  if (typeof rawPath !== "string") return toVirtualKernelPath(rawPath);
   if (path.isAbsolute(rawPath)) {
     return rawPath;
   }
@@ -135,7 +139,14 @@ export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
         segno: out.segno,
         rcptrs: [...out.rcptrs],
       });
-      return { op: step.op, value: { segmentId: step.segmentId } };
+      return {
+        op: step.op,
+        value: {
+          segmentId: step.segmentId,
+          segno: out.segno,
+          rcptrs: [...out.rcptrs],
+        },
+      };
     }
 
     case "ek.ekacli": {

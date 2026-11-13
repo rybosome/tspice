@@ -27,17 +27,38 @@
         "entszs": [1, 1],
         "nlflgs": [false, false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_ACLC" },
-      { "op": "ek.ekcls", "handleId": "H_ACLC" },
-      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekaclc-happy.ek" },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_ACLC"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_ACLC"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": ".py-parity-ek-ekaclc-happy.ek"
+      },
       {
         "op": "ek.ekfind",
         "query": "SELECT NAME FROM CHAR_TABLE ORDER BY NAME"
       },
-      { "op": "ek.ekgc", "selidx": 0, "row": 0, "elment": 0 },
-      { "op": "ek.ekgc", "selidx": 0, "row": 1, "elment": 0 }
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekaclc-missing-column-error",
@@ -68,6 +89,564 @@
         "nlflgs": [false, false]
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOCOLUMN"]
+    }
+  },
+  {
+    "caseId": "ek-ekaclc-audit-fixed-vectors-and-null",
+    "description": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekaclc-fixed-vectors-and-null.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=CHARACTER*(40),SIZE=2,NULLS_OK=TRUE"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "s",
+        "column": "DATA",
+        "cvals": ["  first", "\u00b5moon", "ignored", "unused", "last", ""],
+        "entszs": [2, 2, 2],
+        "nlflgs": [false, true, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-ekaclc-fixed-vectors-and-null.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekaclc-audit-variable-vectors-and-null",
+    "description": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekaclc-variable-vectors-and-null.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=CHARACTER*(40),SIZE=VARIABLE,NULLS_OK=TRUE"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "s",
+        "column": "DATA",
+        "cvals": ["  first", "\u00b5moon", "last"],
+        "entszs": [2, 0, 1],
+        "nlflgs": [false, true, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-ekaclc-variable-vectors-and-null.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekaclc-audit-all-null-variable",
+    "description": "Actual complete CHARACTER*(40) column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekaclc-all-null-variable.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=CHARACTER*(40),SIZE=VARIABLE,NULLS_OK=TRUE"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "s",
+        "column": "DATA",
+        "cvals": [],
+        "entszs": [0, 0, 0],
+        "nlflgs": [true, true, true]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-ekaclc-all-null-variable.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 9
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 9
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekaclc-audit-wrong-column-type",
+    "description": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekaclc-wrong-type.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": ["DATATYPE=INTEGER,INDEXED=TRUE", "DATATYPE=INTEGER"],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "s",
+        "column": "DATA",
+        "cvals": ["a", "b", "c"],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WRONGDATATYPE"]
+    }
+  },
+  {
+    "caseId": "ek-ekaclc-audit-blank-strings",
+    "description": "All three actual empty strings are concrete non-NULL values; two-byte minimum slots avoid STRINGTOOSHORT without changing observable data.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekaclc-blank-strings.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": ["DATATYPE=INTEGER,INDEXED=TRUE", "DATATYPE=CHARACTER*(40)"],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "s",
+        "column": "DATA",
+        "cvals": ["", "", ""],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-ekaclc-blank-strings.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekaclc-audit-single-character-slots",
+    "description": "Six literal single-character values survive fixed-width padding; a minimal two-byte C slot previously read every value back as blank in N0067 ZZEKAC06.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-single-char.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=CHARACTER*(40),SIZE=2,NULLS_OK=TRUE"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "s",
+        "column": "DATA",
+        "cvals": ["A", "B", "C", "D", "E", "F"],
+        "entszs": [2, 2, 2],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-single-char.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 1,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 0,
+        "row": 2,
+        "elment": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

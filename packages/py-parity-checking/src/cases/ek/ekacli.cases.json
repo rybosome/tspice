@@ -27,15 +27,44 @@
         "entszs": [1, 1, 1],
         "nlflgs": [false, false, false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_ACLI" },
-      { "op": "ek.ekcls", "handleId": "H_ACLI" },
-      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekacli-happy.ek" },
-      { "op": "ek.ekfind", "query": "SELECT ID FROM INTS_TABLE ORDER BY ID" },
-      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 0 },
-      { "op": "ek.ekgi", "selidx": 0, "row": 1, "elment": 0 },
-      { "op": "ek.ekgi", "selidx": 0, "row": 2, "elment": 0 }
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_ACLI"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_ACLI"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": ".py-parity-ek-ekacli-happy.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT ID FROM INTS_TABLE ORDER BY ID"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekacli-missing-column-error",
@@ -66,6 +95,375 @@
         "nlflgs": [false, false]
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BUG"]
+    }
+  },
+  {
+    "caseId": "ek-ekacli-audit-fixed-vectors-and-null",
+    "description": "Actual complete INTEGER column write/finalize/close/reload, with fixed-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekacli-fixed-vectors-and-null.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=INTEGER,SIZE=2,NULLS_OK=TRUE"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "DATA",
+        "ivals": [-7, 8, 0, 0, 77, -99],
+        "entszs": [2, 2, 2],
+        "nlflgs": [false, true, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-ekacli-fixed-vectors-and-null.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekacli-audit-variable-vectors-and-null",
+    "description": "Actual complete INTEGER column write/finalize/close/reload, with variable-vectors-and-null; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekacli-variable-vectors-and-null.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=INTEGER,SIZE=VARIABLE,NULLS_OK=TRUE"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "DATA",
+        "ivals": [-7, 8, 77],
+        "entszs": [2, 0, 1],
+        "nlflgs": [false, true, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-ekacli-variable-vectors-and-null.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekacli-audit-all-null-variable",
+    "description": "Actual complete INTEGER column write/finalize/close/reload, with all-null-variable; compare all concrete values, SQL NULL and absent elements. The fixed NULL row occupies its full declared backing; variable NULL rows have no logical values.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekacli-all-null-variable.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": [
+          "DATATYPE=INTEGER,INDEXED=TRUE",
+          "DATATYPE=INTEGER,SIZE=VARIABLE,NULLS_OK=TRUE"
+        ],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "DATA",
+        "ivals": [],
+        "entszs": [0, 0, 0],
+        "nlflgs": [true, true, true]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "audit-ekacli-all-null-variable.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT DATA FROM AUDIT_WRITE ORDER BY KEY"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 9
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 9
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekacli-audit-wrong-column-type",
+    "description": "Valid array backing reaches actual WRONGDATATYPE for a different declared column type.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "audit-ekacli-wrong-type.ek",
+        "ifname": "AUTHORED_COLUMNS",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_WRITE",
+        "nrows": 3,
+        "cnames": ["KEY", "DATA"],
+        "decls": ["DATATYPE=INTEGER,INDEXED=TRUE", "DATATYPE=DOUBLE PRECISION"],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "KEY",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "DATA",
+        "ivals": [1, 2, 3],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WRONGDATATYPE"]
+    }
   }
 ]

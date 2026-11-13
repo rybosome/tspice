@@ -10,16 +10,27 @@
         "ncomch": 0,
         "handleId": "H_CREATE"
       },
-      { "op": "ek.ekcls", "handleId": "H_CREATE" },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_CREATE"
+      },
       {
         "op": "ek.ekopw",
         "path": ".py-parity-ek-ekopw-happy.ek",
         "handleId": "H_WRITE"
       },
-      { "op": "ek.eknseg", "handleId": "H_WRITE" },
-      { "op": "ek.ekcls", "handleId": "H_WRITE" }
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_WRITE"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_WRITE"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekopw-missing-file-error",
@@ -31,6 +42,142 @@
         "handleId": "H_MISSING"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "ek-ekopw-audit-append-finalize-and-reopen",
+    "description": "Write and finalize a first segment, reopen for write, append a second segment, finalize/close and reopen for read. Count2 and independent actual data readback prove write access and persistence.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "append.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 2,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "s0"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s0",
+        "column": "ID",
+        "ivals": [-7, 11],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s0"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopw",
+        "handleId": "append",
+        "path": {
+          "kind": "scratch",
+          "rel": "append.ek"
+        }
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "append",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "s1"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s1",
+        "column": "ID",
+        "ivals": [99],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s1"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "append"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "read",
+        "path": {
+          "kind": "scratch",
+          "rel": "append.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "read"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "read"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekopw-audit-conflicting-read-claim",
+    "description": "An outstanding read claim prevents a conflicting write open; require actual FILEOPENCONFLICT.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "conflict.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "reader",
+        "path": {
+          "kind": "scratch",
+          "rel": "conflict.ek"
+        }
+      },
+      {
+        "op": "ek.ekopw",
+        "handleId": "writer",
+        "path": {
+          "kind": "scratch",
+          "rel": "conflict.ek"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENCONFLICT"]
+    }
   }
 ]

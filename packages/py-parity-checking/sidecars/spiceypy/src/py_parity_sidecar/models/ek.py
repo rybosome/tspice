@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal
+from .paths import PathRefInput
 
 
 @dataclass(frozen=True)
 class StepEkEkopn:
     op: Literal["ek.ekopn"]
-    path: str
+    path: PathRefInput
     ifname: str
     ncomch: int
     handleId: str
@@ -16,14 +17,14 @@ class StepEkEkopn:
 @dataclass(frozen=True)
 class StepEkEkopr:
     op: Literal["ek.ekopr"]
-    path: str
+    path: PathRefInput
     handleId: str
 
 
 @dataclass(frozen=True)
 class StepEkEkopw:
     op: Literal["ek.ekopw"]
-    path: str
+    path: PathRefInput
     handleId: str
 
 

@@ -27,11 +27,22 @@
         "entszs": [1, 1],
         "nlflgs": [false, false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_IFLD" },
-      { "op": "ek.eknseg", "handleId": "H_IFLD" },
-      { "op": "ek.ekcls", "handleId": "H_IFLD" }
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_IFLD"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_IFLD"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_IFLD"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekifld-invalid-nrows-error",
@@ -54,6 +65,318 @@
         "segmentId": "SEG_BAD"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek-ekifld-audit-full-workspace-and-data",
+    "description": "All returned segno/rcptrs entries are compared, retained unchanged for column writing/finalization, then consumed through actual finalized data and segment count. Lowercase table/default scalar declaration exercise CSPICE defaults.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "workspace.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "audit_mixed",
+        "nrows": 3,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "first"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "first",
+        "column": "ID",
+        "ivals": [-7, 11, 99],
+        "entszs": [1, 1, 1],
+        "nlflgs": [false, false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "first"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "workspace.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekifld-audit-second-segment-number",
+    "description": "Two sequential completed fast writes return distinct zero-based segment numbers and full record pointer arrays; no query or other EK operation interrupts a fast write.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "two-pointers.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 2,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "s0"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s0",
+        "column": "ID",
+        "ivals": [-7, 11],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s0"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopw",
+        "handleId": "append",
+        "path": {
+          "kind": "scratch",
+          "rel": "two-pointers.ek"
+        }
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "append",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "s1"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s1",
+        "column": "ID",
+        "ivals": [99],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s1"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "append"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "read",
+        "path": {
+          "kind": "scratch",
+          "rel": "two-pointers.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "read"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "read"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekifld-audit-long-table",
+    "description": "Valid-shaped buffers reach actual CSPICE IDSTRINGTOOLONG; failed-writer cleanup closes the outstanding EK before scratch removal.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "long-table.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "bad"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDSTRINGTOOLONG"]
+    }
+  },
+  {
+    "caseId": "ek-ekifld-audit-invalid-table",
+    "description": "Valid-shaped buffers reach actual CSPICE INVALIDNAME; failed-writer cleanup closes the outstanding EK before scratch removal.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "invalid-table.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "BAD?",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "bad"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDNAME"]
+    }
+  },
+  {
+    "caseId": "ek-ekifld-audit-invalid-column",
+    "description": "Valid-shaped buffers reach actual CSPICE INVALIDNAME; failed-writer cleanup closes the outstanding EK before scratch removal.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "invalid-column.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "OK",
+        "nrows": 1,
+        "cnames": ["BAD?"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "bad"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDNAME"]
+    }
+  },
+  {
+    "caseId": "ek-ekifld-audit-invalid-declaration",
+    "description": "Valid-shaped buffers reach actual CSPICE BADCOLUMNDECL; failed-writer cleanup closes the outstanding EK before scratch removal.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "invalid-declaration.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "OK",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=UNOBTAINIUM"],
+        "segmentId": "bad"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADCOLUMNDECL"]
+    }
+  },
+  {
+    "caseId": "ek-ekifld-audit-read-only-claim",
+    "description": "A real read-only claim reaches actual DASINVALIDACCESS when initialized for fast-write; cleanup still closes the valid read claim.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": {
+          "kind": "scratch",
+          "rel": "readonly.ek"
+        },
+        "ifname": "AUTHORED_READONLY",
+        "ncomch": 0,
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "scratch",
+          "rel": "readonly.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "r",
+        "tabnam": "AUDIT",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "bad"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
   }
 ]
