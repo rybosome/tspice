@@ -4,17 +4,9 @@
   "batches": [
     {
       "id": "cell-capacity-prerequisite",
-      "routines": [
-        "ssize_c",
-        "valid_c",
-        "wnvald_c"
-      ],
-      "dependsOn": [
-        "kplfrm-prerequisite"
-      ],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/683"
-      ],
+      "routines": ["ssize_c", "valid_c", "wnvald_c"],
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/683"],
       "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification."
     },
     {
@@ -30,9 +22,7 @@
         "wnfetd_c",
         "wninsd_c"
       ],
-      "dependsOn": [
-        "cell-capacity-prerequisite"
-      ],
+      "dependsOn": ["cell-capacity-prerequisite"],
       "prs": [],
       "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline."
     },
@@ -49,10 +39,8 @@
         "vsub_c"
       ],
       "dependsOn": [],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/679"
-      ],
-      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
+      "prs": ["https://github.com/rybosome/tspice/pull/679"],
+      "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations."
     },
     {
       "id": "coordinates-matrices",
@@ -70,22 +58,13 @@
         "rotmat_c",
         "sphrec_c"
       ],
-      "dependsOn": [
-        "kplfrm-prerequisite"
-      ],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/681"
-      ],
-      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/681"],
+      "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations."
     },
     {
       "id": "dsk",
-      "routines": [
-        "dskb02_c",
-        "dskgd_c",
-        "dskobj_c",
-        "dsksrf_c"
-      ],
+      "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
       "dependsOn": [],
       "prs": [],
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
@@ -165,13 +144,9 @@
         "setmsg_c",
         "sigerr_c"
       ],
-      "dependsOn": [
-        "kplfrm-prerequisite"
-      ],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/682"
-      ],
-      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/682"],
+      "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations."
     },
     {
       "id": "file-io-1",
@@ -303,15 +278,9 @@
     },
     {
       "id": "kplfrm-prerequisite",
-      "routines": [
-        "kplfrm_c"
-      ],
-      "dependsOn": [
-        "vectors-arithmetic"
-      ],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/680"
-      ],
+      "routines": ["kplfrm_c"],
+      "dependsOn": ["vectors-arithmetic"],
+      "prs": ["https://github.com/rybosome/tspice/pull/680"],
       "nextAction": "Complete the separate WASM handle lifetime repair; successful valid-handle comparisons do not certify the open ownership boundary."
     },
     {

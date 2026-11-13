@@ -303,7 +303,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch."
+      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch.",
+      "historical": true
     },
     {
       "id": "local-coordinate-boundaries-wasm-2026-11-12",
@@ -334,7 +335,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch."
+      "observation": "Final required JS lane passed 345 live WASM scenarios (locally present optional Node also ran); required native lane rebuilt/loaded the production addon, ran native-required assertion, all 690 parity tests (345 per backend) and all 721 parity-package tests passed with no skips. All 103 WASM tests, including 41 allocation rollback checks, passed. Both axis-validation and geodetic same-instance recovery tests ran on Node and WASM. Axis-validation negative control failed before the signed-integer guards. Host macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067; no C/WASM artifact change in this batch.",
+      "historical": true
     },
     {
       "id": "ci-coordinates-node-43315118711",
@@ -367,7 +369,8 @@
       ],
       "commit": "c508603d5073b63cfd2992ead708e0cc4393d887",
       "url": "https://github.com/rybosome/tspice/actions/runs/43315118711/job/131520983016",
-      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 690 live parity tests (345 per backend), all 721 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 690 live parity tests (345 per backend), all 721 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence.",
+      "historical": true
     },
     {
       "id": "ci-coordinates-wasm-43315118711",
@@ -400,7 +403,8 @@
       ],
       "commit": "c508603d5073b63cfd2992ead708e0cc4393d887",
       "url": "https://github.com/rybosome/tspice/actions/runs/43315118711/job/131520983016",
-      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 690 live parity tests (345 per backend), all 721 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 690 live parity tests (345 per backend), all 721 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence.",
+      "historical": true
     },
     {
       "id": "local-allocation-safety-node-2026-11-12",
@@ -431,7 +435,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
     },
     {
       "id": "local-allocation-safety-wasm-2026-11-12",
@@ -462,7 +467,70 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes."
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
+    },
+    {
+      "id": "local-683-main-22f45b80-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ca7a41a7c62ce24afbb96d829a0bf60c06d3937e1ce2e692a858c9a7c6c0ec23",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Both complete required local lanes passed after rebasing onto merged #681/#682. Production N0067 native rebuilt/loaded and its required guard ran; all 728 live comparisons (364 scenarios per actual backend), all 763 parity-package tests with zero native-required skips, 118 WASM / 62 Node / 21 core / 121 facade tests passed. The real C allocator fixture and all 16 capacity/registry integration tests passed. All 38 ledger regressions and drift/format/lint/typecheck passed. The original owning-script generated Node/web WASM is byte-identical, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4; C sources/build inputs match the original capacity PR. Merged coordinate/error implementations are preserved. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3-Python 3.12.15 / macOS arm64. Prior executions remain historical; fresh current-source CI is pending. Known ownership findings remain open and are not certified by valid-handle passes."
+    },
+    {
+      "id": "local-683-main-22f45b80-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ca7a41a7c62ce24afbb96d829a0bf60c06d3937e1ce2e692a858c9a7c6c0ec23",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Both complete required local lanes passed after rebasing onto merged #681/#682. Production N0067 native rebuilt/loaded and its required guard ran; all 728 live comparisons (364 scenarios per actual backend), all 763 parity-package tests with zero native-required skips, 118 WASM / 62 Node / 21 core / 121 facade tests passed. The real C allocator fixture and all 16 capacity/registry integration tests passed. All 38 ledger regressions and drift/format/lint/typecheck passed. The original owning-script generated Node/web WASM is byte-identical, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4; C sources/build inputs match the original capacity PR. Merged coordinate/error implementations are preserved. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3-Python 3.12.15 / macOS arm64. Prior executions remain historical; fresh current-source CI is pending. Known ownership findings remain open and are not certified by valid-handle passes."
     }
   ],
   "routines": [
@@ -474,17 +542,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vadd-happy-componentwise-sum",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vadd adds vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vadd-audit-cancellation-and-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vadd: cancellation and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -503,9 +566,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vadd.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vadd-audit-cancellation-and-fractions"
-          ]
+          "caseIds": ["coords-vectors-vadd-audit-cancellation-and-fractions"]
         }
       ],
       "backends": {
@@ -518,14 +579,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -536,14 +595,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     },
@@ -555,25 +612,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vcrss-happy-right-handed-basis",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vcrss computes right-handed cross product of x-hat and y-hat; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vcrss-audit-mixed-and-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vcrss: mixed and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vcrss-audit-parallel-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vcrss: parallel and zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -608,14 +657,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -626,14 +673,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     },
@@ -645,17 +690,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vdot-happy-basic-dot",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vdot computes scalar dot product for simple integer vectors; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vdot-audit-orthogonal-and-cancellation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vdot: orthogonal and cancellation; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -674,9 +714,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vdot.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vdot-audit-orthogonal-and-cancellation"
-          ]
+          "caseIds": ["coords-vectors-vdot-audit-orthogonal-and-cancellation"]
         }
       ],
       "backends": {
@@ -689,14 +727,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -707,14 +743,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     },
@@ -726,26 +760,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vhat-happy-zero-vector",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vhat preserves CSPICE zero-vector behavior by returning zero vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vhat-audit-mixed-normalization",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vhat: mixed normalization; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vhat-audit-wide-dynamic-range",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vhat: wide dynamic range; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -780,14 +805,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -798,14 +821,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     },
@@ -817,17 +838,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vminus-happy-negation",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vminus negates each component of an input vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vminus-audit-zero-and-fractions",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vminus: zero and fractions; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -846,9 +862,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vminus.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vminus-audit-zero-and-fractions"
-          ]
+          "caseIds": ["coords-vectors-vminus-audit-zero-and-fractions"]
         }
       ],
       "backends": {
@@ -861,14 +875,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -879,14 +891,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     },
@@ -898,25 +908,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vnorm-happy-pythagorean",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vnorm computes Euclidean magnitude for a 3-4-12 vector; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vnorm-audit-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vnorm: zero; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vnorm-audit-large-mixed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vnorm: large mixed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -951,14 +953,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -969,14 +969,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     },
@@ -988,17 +986,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vscl-happy-negative-scale",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vscl scales a vector by a negative scalar; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vscl-audit-zero-and-fractional-scale",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vscl: zero and fractional scale; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -1017,9 +1010,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vscl.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vscl-audit-zero-and-fractional-scale"
-          ]
+          "caseIds": ["coords-vectors-vscl-audit-zero-and-fractional-scale"]
         }
       ],
       "backends": {
@@ -1032,14 +1023,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -1050,14 +1039,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     },
@@ -1069,17 +1056,12 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-vsub-happy-componentwise-difference",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "vsub subtracts vectors componentwise with mixed signs; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         },
         {
           "caseId": "coords-vectors-vsub-audit-equal-and-reversed",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "vsub: equal and reversed; compare every scalar/vector component with live SpiceyPy; the raw return reaches StepOutput.value and is recursively compared including vector length/order. No harness substitute."
         }
       ],
@@ -1098,9 +1080,7 @@
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/vsub.cases.json"
           ],
-          "caseIds": [
-            "coords-vectors-vsub-audit-equal-and-reversed"
-          ]
+          "caseIds": ["coords-vectors-vsub-audit-equal-and-reversed"]
         }
       ],
       "backends": {
@@ -1113,14 +1093,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-coordinate-boundaries-node-2026-11-12",
-            "ci-coordinates-node-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-node"]
         },
         "wasm": {
           "history": [
@@ -1131,17 +1109,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-coordinate-boundaries-wasm-2026-11-12",
-            "ci-coordinates-wasm-43315118711"
-          ]
+          "executions": ["local-683-main-22f45b80-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Current-source full local and observed CI execution verified both backends; preserve historical observations when shared source changes."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }
