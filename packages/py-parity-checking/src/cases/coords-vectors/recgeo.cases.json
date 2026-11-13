@@ -26,7 +26,82 @@
       }
     ],
     "expectation": {
-      "kind": "error"
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recgeo-audit-oblate-and-prolate",
+    "description": "recgeo: oblate and prolate; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [-4000, 3000, 6000],
+        "re": 6378.137,
+        "f": 0.0033528106647474805
+      },
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [1, 2, -3],
+        "re": 1,
+        "f": -0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+    "description": "recgeo: negative pole and spherical; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [0, 0, -6500],
+        "re": 6378.137,
+        "f": 0.0033528106647474805
+      },
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [-1, -2, 3],
+        "re": 1,
+        "f": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recgeo-audit-flattening-boundary-error",
+    "description": "recgeo: reject flattening boundary with the specific SPICE diagnostic",
+    "workflow": [
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [1, 2, 3],
+        "re": 1,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recgeo-audit-zero-radius-error",
+    "description": "recgeo: reject zero radius with the specific SPICE diagnostic",
+    "workflow": [
+      {
+        "op": "coords-vectors.recgeo",
+        "rectan": [1, 2, 3],
+        "re": 0,
+        "f": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
     }
   }
 ]

@@ -219,6 +219,8 @@ Notes:
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
+`rotate` and `rotmat` preserve CSPICE's modulo-three axis mapping (including zero/negative integers); their typed adapters reject fractional, non-finite, or overflowing JS axes before conversion. Matrices are row-major. `rotate`/`rotmat` use passive coordinate rotation, while `axisar` returns an active vector rotation. The audit includes noncommuting matrix products, both vector multiplication directions, coordinate poles/zero inputs, and oblate/prolate geodetic conversions.
+
 Most routines in this domain are **pure math** and require no kernels.
 
 | domain.method                                 | CSPICE entrypoint(s) | Args (TS shape)                                                  | Returns (TS shape)                               | Comparison notes (tolerance/normalization)     | Statefulness / required kernels                                                       |

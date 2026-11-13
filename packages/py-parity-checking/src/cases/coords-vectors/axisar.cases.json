@@ -12,5 +12,43 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-axisar-audit-nonunit-general-axis",
+    "description": "axisar: nonunit general axis; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.axisar",
+        "axis": [2, -3, 4],
+        "angle": 0.37
+      },
+      {
+        "op": "coords-vectors.axisar",
+        "axis": [-4, 6, -8],
+        "angle": -0.37
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-axisar-audit-zero-axis-and-angle",
+    "description": "axisar: zero axis and angle; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.axisar",
+        "axis": [0, 0, 0],
+        "angle": 0.7
+      },
+      {
+        "op": "coords-vectors.axisar",
+        "axis": [2, -3, 4],
+        "angle": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -20,5 +20,88 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-mxm-audit-order-and-fractions",
+    "description": "mxm: order and fractions; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxm",
+        "m1": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ],
+        "m2": [
+          [2, 0, 1],
+          [-3, 4, 0],
+          [5, -6, 7]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxm",
+        "m1": [
+          [2, 0, 1],
+          [-3, 4, 0],
+          [5, -6, 7]
+        ],
+        "m2": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxm-audit-identity-and-zero",
+    "description": "mxm: identity and zero; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxm",
+        "m1": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ],
+        "m2": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxm",
+        "m1": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "m2": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ]
+      },
+      {
+        "op": "coords-vectors.mxm",
+        "m1": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ],
+        "m2": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -13,5 +13,47 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-latrec-audit-general-and-negative-radius",
+    "description": "latrec: general and negative radius; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.latrec",
+        "radius": 7.5,
+        "lon": -2.3,
+        "lat": 0.4
+      },
+      {
+        "op": "coords-vectors.latrec",
+        "radius": -3,
+        "lon": 0.7,
+        "lat": -0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-latrec-audit-zero-and-pole",
+    "description": "latrec: zero and pole; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.latrec",
+        "radius": 0,
+        "lon": 1.2,
+        "lat": 0.6
+      },
+      {
+        "op": "coords-vectors.latrec",
+        "radius": 4,
+        "lon": -2,
+        "lat": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

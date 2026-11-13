@@ -16,5 +16,50 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-mtxv-audit-basis-and-zero",
+    "description": "mtxv: basis and zero; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.mtxv",
+        "m": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ],
+        "v": [1, 0, 0]
+      },
+      {
+        "op": "coords-vectors.mtxv",
+        "m": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ],
+        "v": [0, 1, 0]
+      },
+      {
+        "op": "coords-vectors.mtxv",
+        "m": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ],
+        "v": [0, 0, 1]
+      },
+      {
+        "op": "coords-vectors.mtxv",
+        "m": [
+          [1.25, -2.5, 3.75],
+          [4.5, 0, -6.25],
+          [7, 8.5, -9.75]
+        ],
+        "v": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -12,5 +12,58 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-rotate-audit-all-axes-radians",
+    "description": "rotate: all axes radians; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotate",
+        "angle": 0.37,
+        "axis": 1
+      },
+      {
+        "op": "coords-vectors.rotate",
+        "angle": 0.37,
+        "axis": 2
+      },
+      {
+        "op": "coords-vectors.rotate",
+        "angle": 0.37,
+        "axis": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rotate-audit-zero-and-modulo-axes",
+    "description": "rotate: zero and modulo axes; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotate",
+        "angle": 0,
+        "axis": 1
+      },
+      {
+        "op": "coords-vectors.rotate",
+        "angle": -0.6,
+        "axis": 0
+      },
+      {
+        "op": "coords-vectors.rotate",
+        "angle": -0.6,
+        "axis": -1
+      },
+      {
+        "op": "coords-vectors.rotate",
+        "angle": -0.6,
+        "axis": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -13,5 +13,53 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-sphrec-audit-general-and-negative-radius",
+    "description": "sphrec: general and negative radius; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphrec",
+        "radius": 7.5,
+        "colat": 0.8,
+        "lon": -2.3
+      },
+      {
+        "op": "coords-vectors.sphrec",
+        "radius": -3,
+        "colat": 2.4,
+        "lon": 0.7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sphrec-audit-zero-and-poles",
+    "description": "sphrec: zero and poles; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphrec",
+        "radius": 0,
+        "colat": 0.8,
+        "lon": 1.2
+      },
+      {
+        "op": "coords-vectors.sphrec",
+        "radius": 4,
+        "colat": 0,
+        "lon": -2
+      },
+      {
+        "op": "coords-vectors.sphrec",
+        "radius": 4,
+        "colat": 3.141592653589793,
+        "lon": 1.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]
