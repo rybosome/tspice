@@ -2,17 +2,68 @@
   {
     "caseId": "error-failed-clean-state-success",
     "description": "failed reports false after explicit reset",
-    "workflow": [{ "op": "error.reset" }, { "op": "error.failed" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.failed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "error-failed-setmsg-does-not-fail-success",
     "description": "setmsg alone does not set failed state",
     "workflow": [
-      { "op": "error.reset" },
-      { "op": "error.setmsg", "message": "failed-check-message" },
-      { "op": "error.failed" }
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "failed-check-message"
+      },
+      {
+        "op": "error.failed"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-failed-audit-post-signal-recovery",
+    "description": "failed remains clear after the shim captures and resets a real signaled error.",
+    "workflow": [
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "recovery signal"
+      },
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITFAILED)",
+        "capture": true
+      },
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.failed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -3,13 +3,86 @@
     "caseId": "error-sigerr-signals-error-path",
     "description": "sigerr triggers representative SPICE error status/failure behavior",
     "workflow": [
-      { "op": "error.reset" },
-      { "op": "error.setmsg", "message": "sigerr parity long message" },
-      { "op": "error.sigerr", "short": "SPICE(PARITYSIGERR)" }
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "sigerr parity long message"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(PARITYSIGERR)"
+      }
     ],
     "expectation": {
       "kind": "error",
       "errorMessageIncludes": ["PARITYSIGERR"]
+    }
+  },
+  {
+    "caseId": "error-sigerr-audit-details-and-recovery",
+    "description": "Signal twice with distinct messages/codes and compare complete captured details and automatic recovery.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "first complete diagnostic"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITFIRST)",
+        "capture": true
+      },
+      {
+        "op": "error.getmsg",
+        "which": "LONG"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "second diagnostic after recovery"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITSECOND)",
+        "capture": true
+      },
+      {
+        "op": "error.failed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-sigerr-audit-empty-code",
+    "description": "Empty short-code wrapper error is distinguishable from a valid user signal.",
+    "workflow": [
+      {
+        "op": "error.sigerr",
+        "short": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "error-sigerr-audit-short-buffer-boundary",
+    "description": "An overlength authored short code is truncated to CSPICE's 25-character buffer and captured without hiding recovery.",
+    "workflow": [
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(ABCDEFGHIJKLMNOPQRSTUVWXYZ)",
+        "capture": true
+      },
+      {
+        "op": "error.failed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
     }
   }
 ]

@@ -813,6 +813,8 @@ export type StepErrorSetmsg = {
 export type StepErrorSigerr = {
   op: "error.sigerr";
   short: string;
+  /** Capture the actual thrown SPICE details and continue to observe recovery. */
+  capture?: boolean;
 };
 
 export type StepErrorChkin = {
@@ -1662,7 +1664,15 @@ export type StepOutput =
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }
   | { op: "error.setmsg"; value: null }
-  | { op: "error.sigerr"; value: null }
+  | {
+      op: "error.sigerr";
+      value: null | {
+        short: string;
+        long: string;
+        trace: string;
+        failed: boolean;
+      };
+    }
   | { op: "error.chkin"; value: null }
   | { op: "error.chkout"; value: null }
   | {

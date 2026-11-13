@@ -68,7 +68,13 @@ export type FramesState = {
   ckHandles: Map<string, number>;
 };
 
+export type ErrorState = {
+  traceStack: string[];
+  cleanupRegistered: boolean;
+};
+
 export type RunTspiceState = {
+  error: ErrorState;
   cellsWindows: CellsWindowsState;
   kernels: KernelsState;
   fileIo: FileIoState;
@@ -102,6 +108,7 @@ export function createRunTspiceContext(
     spice,
     paths,
     state: {
+      error: { traceStack: [], cleanupRegistered: false },
       cellsWindows: {
         intCells: new Map<string, SpiceIntCell>(),
         doubleCells: new Map<string, SpiceDoubleCell>(),

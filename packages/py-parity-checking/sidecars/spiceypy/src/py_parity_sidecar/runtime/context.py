@@ -78,6 +78,8 @@ class FramesState:
 
 @dataclass
 class CaseState:
+    errorTraceStack: list[str] = field(default_factory=list)
+    errorTraceCleanupRegistered: bool = False
     cellsWindows: CellsWindowsState = field(default_factory=CellsWindowsState)
     kernels: KernelsState = field(default_factory=KernelsState)
     fileIo: FileIoState = field(default_factory=FileIoState)
