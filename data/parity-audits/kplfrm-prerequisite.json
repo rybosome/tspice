@@ -148,7 +148,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 692 live parity comparisons (346 scenarios per backend), all 727 parity-package tests, 82 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64."
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 692 live parity comparisons (346 scenarios per backend), all 727 parity-package tests, 82 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64.",
+      "historical": true
     },
     {
       "id": "local-merged-kplfrm-2026-11-13-wasm",
@@ -165,7 +166,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 692 live parity comparisons (346 scenarios per backend), all 727 parity-package tests, 82 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64."
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 onto main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 692 live parity comparisons (346 scenarios per backend), all 727 parity-package tests, 82 WASM, 61 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained; generated reports recomputed from all registered cases and inherited kplfrm review. Old source-bound CI retained as historical. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64.",
+      "historical": true
     }
   ],
   "routines": [
@@ -272,6 +274,12 @@
             "kernels-kplfrm-empty-pool-success",
             "kernels-kplfrm-set-too-small-error"
           ]
+        },
+        {
+          "id": "shared-wasm-cell-handle-identity",
+          "status": "open",
+          "summary": "A later cell audit demonstrated foreign same-address handles and allocator-reused expired pointers can pass the common WASM membership guard. The separate lifetime prerequisite repairs this; valid-handle parity alone does not certify ownership.",
+          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
         }
       ],
       "backends": {
@@ -293,7 +301,8 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "needs-repair"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
@@ -302,5 +311,5 @@
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Imported merged kplfrm judgments explicitly retain the known shared WASM cell identity gap. #684 repairs it on its own dependency stack; passing this independent domain branch does not certify that gap. Prior source observations retained as historical."
 }
