@@ -115,8 +115,8 @@
         "spkssb_c"
       ],
       "dependsOn": ["ephemeris-1"],
-      "prs": [],
-      "nextAction": "Eight handwritten semantic reviews and actual focused comparisons exist. Complete both full required lanes, publish a reviewable PR, then observe source CI and explicit rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/703"],
+      "nextAction": "All 15 exact-source CI jobs passed. Implementation/test/fixture bytes are preserved after parent-proof restacking; wait for current metadata CI and explicit REST rebaseability."
     },
     {
       "id": "ephemeris-descriptors",

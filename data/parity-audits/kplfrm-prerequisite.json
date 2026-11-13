@@ -476,6 +476,44 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43412142905/job/131840933601",
       "observation": "Observed exact-source Linux22: all 772 live comparisons, all 824 parity-package tests, production N0067 native-required sanity with zero skips, all 96 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed.",
       "historical": true
+    },
+    {
+      "id": "ci-pr703-43413954878-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bca4ce5d9bf02431f326f727e26b5a122c2a7a1bd3d282f244b0de1c2b27c4a8",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "bb940440561ced2031d79ef8a3b9130b1bbee6c3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43413954878/job/131847058765",
+      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source."
+    },
+    {
+      "id": "ci-pr703-43413954878-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bca4ce5d9bf02431f326f727e26b5a122c2a7a1bd3d282f244b0de1c2b27c4a8",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "bb940440561ced2031d79ef8a3b9130b1bbee6c3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43413954878/job/131847058765",
+      "observation": "Observed exact-source Linux22: all 1048 live comparisons, all 1106 parity-package tests, production N0067 native-required sanity without skips, all 136 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed. Parent-proof restacking preserved every implementation/test/fixture byte; prior parent observations remain historical on changed query source."
     }
   ],
   "routines": [
@@ -615,11 +653,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-spk-states-final-node"]
+          "executions": [
+            "local-spk-states-final-node",
+            "ci-pr703-43413954878-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -633,14 +675,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-spk-states-final-wasm"]
+          "executions": [
+            "local-spk-states-final-wasm",
+            "ci-pr703-43413954878-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }
