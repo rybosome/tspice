@@ -3,30 +3,116 @@
     "caseId": "file-io-daffna-found-after-bfs-success",
     "description": "daffna returns true after dafbfs on deterministic DAF",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
       {
         "op": "file-io.dafopr",
         "path": "kernels/file-io-minimal.bsp",
         "handleId": "daf"
       },
-      { "op": "file-io.dafbfs", "handleId": "daf" },
-      { "op": "file-io.daffna", "handleId": "daf" },
-      { "op": "file-io.dafcls", "handleId": "daf" }
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "daf"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-daffna-without-bfs-error",
     "description": "Representative daffna error when search is not initialized",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
       {
         "op": "file-io.dafopr",
         "path": "kernels/file-io-minimal.bsp",
         "handleId": "daf"
       },
-      { "op": "file-io.daffna", "handleId": "daf" }
+      {
+        "op": "file-io.daffna",
+        "handleId": "daf"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DAFNOSEARCH"]
+    }
+  },
+  {
+    "caseId": "file-io-daffna-audit-interleaved-distinct-files",
+    "description": "Interleave two-segment and empty files so an omitted handle selection produces the wrong boolean sequence.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

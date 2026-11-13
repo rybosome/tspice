@@ -24,6 +24,25 @@ def _reset_best_effort() -> None:
         pass
 
 
+def _close_file_io_handles_best_effort(context: SidecarRuntimeContext) -> None:
+    # The response/error has already been captured. Clear any pending toolkit
+    # failure so it cannot prevent the actual close calls from running.
+    _reset_best_effort()
+    for entry in context.state.fileIo.handles.values():
+        if not entry.isOpen:
+            continue
+        try:
+            if entry.closeWith == "dafcls":
+                sp.dafcls(entry.handle)
+            else:
+                sp.dascls(entry.handle)
+            entry.isOpen = False
+        except BaseException:
+            # Keep the open marker if native close fails; process teardown is
+            # the final backstop, and other handles still need a close attempt.
+            pass
+
+
 def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
     if context.state.ephemeris.spkHandles:
         _reset_best_effort()
@@ -34,6 +53,8 @@ def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
             except BaseException:
                 # Preserve the claim for its registered retry before Scratch.
                 pass
+
+    _close_file_io_handles_best_effort(context)
     register_default_finalizers(context)
     context.run_finalizers_best_effort()
     _kclear_best_effort()

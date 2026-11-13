@@ -383,3 +383,31 @@ TIMDEF defaults persist across `kclear`/`reset`. Parity workflows capture and re
 `et2utc` uses signed integer precision, clamped by CSPICE to [0,14], and preserves format/era/leap rounding. Spacecraft IDs must fit signed SpiceInt before native/WASM conversion. `scencd`/`scdecd` operate in mission ticks with partition information; `scdecd` and `sce2s` round to whole ticks, while `sce2c` and `sct2e` retain fractional ticks. Shared partition boundaries decode to the later partition. A TDB clock correlation needs no LSK; other clock time systems need conversion constants. `deltet` returns ET minus UTC in seconds at the selected ET/formal-UTC epoch.
 
 The audit retains the real cookbook fixture and adds a repository-authored two-partition clock with small exact values, making fractional/partition errors observable under unchanged numeric tolerances. Every result/error comes from the actual raw operation and live SpiceyPy. Fixture provenance, conditional conversion requirements, same-instance recovery and temporary allocation rollback are recorded per routine.
+
+## Domain: `file-io` readers (`FileIoApi`)
+
+| Raw method       | Actual CSPICE route        | Semantic observations                                                                                                |
+| ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `dafopr(path)`   | `dafopr_c`                 | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |
+| `dafcls(handle)` | `dafcls_c`                 | Release one read claim; public tokens close once and are rejected after close.                                       |
+| `dafbfs(handle)` | `dafbfs_c`                 | Start/restart search; authored two-segment and empty files distinguish its effect.                                   |
+| `daffna(handle)` | `dafcs_c` then `daffna_c`  | Select the file before each global next operation; compare interleaved true/false sequences, exhaustion and restart. |
+| `dasopr(path)`   | `dasopr_c`                 | Open DAS/DLA/DSK for read; close-one/retain-another claims and real wrong-format/missing-file errors.                |
+| `dascls(handle)` | `dascls_c`                 | Finalize DAS/DLA output and release read claims; reopening proves a valid flushed empty DLA.                         |
+| `dlabfs(handle)` | `dlabfs_c`                 | Return a miss or all eight signed-integer descriptor fields, valid only on a hit.                                    |
+| `dlacls(handle)` | tspice alias of `dascls_c` | Same DAS/DLA ownership/close behavior. N0067 has no separate `dlacls_c` C entrypoint.                                |
+
+The opaque-handle contract rejects foreign (within the same host realm), wrong-kind
+and already-closed tokens before FFI. CSPICE's numeric close primitives themselves
+permit unknown handles as no-ops; workflow preflight errors are explicitly
+recorded as contract/lifecycle checks, not claimed as C error-path execution.
+Ordinary file/open/search errors require actual named CSPICE failures. DLA oracle
+handling checks the toolkit error status before accepting SpiceyPy's `NotFound`
+exception as a normal miss, because its decorator otherwise masks genuine errors.
+
+All descriptor fields reach live assertions, including linked-list pointers,
+integer/double/character bases and sizes. File counts, handle IDs and integer
+fields need no relaxed tolerance. Two authored tiny SPK/DAF fixtures distinguish
+nonempty/end/restart/interleaved searches; case-scoped DLA scratch files exercise
+close aliases and empty search. The remaining file writers, spatial-index helpers
+and `dlafns` retain their separate semantic audit assignments.

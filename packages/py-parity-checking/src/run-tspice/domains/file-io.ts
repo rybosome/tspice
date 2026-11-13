@@ -194,7 +194,7 @@ export function runFileIoStep(
       }
 
       context.state.fileIo.descriptors.set(step.descrId, out.descr);
-      return { op: step.op, value: { found: true } };
+      return { op: step.op, value: { found: true, descr: out.descr } };
     }
 
     case "file-io.dlafns": {
@@ -207,7 +207,7 @@ export function runFileIoStep(
       }
 
       context.state.fileIo.descriptors.set(step.descrId, out.descr);
-      return { op: step.op, value: { found: true } };
+      return { op: step.op, value: { found: true, descr: out.descr } };
     }
 
     case "file-io.dlacls": {
