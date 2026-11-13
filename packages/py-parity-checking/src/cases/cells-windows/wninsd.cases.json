@@ -22,10 +22,19 @@
         "left": 0.5,
         "right": 2.5
       },
-      { "op": "cells-windows.wncard", "windowId": "W_WNINSD" },
-      { "op": "cells-windows.wnfetd", "windowId": "W_WNINSD", "index": 0 }
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W_WNINSD"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W_WNINSD",
+        "index": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-wninsd-invalid-interval-error",
@@ -39,6 +48,108 @@
         "maxIntervals": 4
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADENDPOINTS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wninsd-audit-touching-containing-singletons",
+    "description": "Closed touching intervals merge, containing intervals are idempotent, and point intervals survive.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": -4,
+        "right": -2,
+        "maxIntervals": 6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 2
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0.5,
+        "right": 1.5
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 3,
+        "right": 3
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 1
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wninsd-audit-overflow",
+    "description": "A disjoint interval beyond fixed endpoint capacity raises WINDOWEXCESS.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 1
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 3,
+        "right": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wninsd-audit-zero-capacity",
+    "description": "Explicit zero interval capacity must reach the raw overflow path.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
   }
 ]

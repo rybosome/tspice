@@ -16,22 +16,88 @@
         "left": 5,
         "right": 6
       },
-      { "op": "cells-windows.wncard", "windowId": "W_WNCARD" },
-      { "op": "cells-windows.wnfetd", "windowId": "W_WNCARD", "index": 0 },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W_WNCARD"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W_WNCARD",
+        "index": 0
+      },
       {
         "op": "cells-windows.scard",
         "card": 0,
         "targetKind": "window",
         "targetId": "W_WNCARD"
       },
-      { "op": "cells-windows.wncard", "windowId": "W_WNCARD" }
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W_WNCARD"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-wncard-missing-window-error",
     "description": "Representative wncard missing-window error",
-    "workflow": [{ "op": "cells-windows.wncard", "windowId": "MISSING_WIN" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "MISSING_WIN"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows-wncard-audit-three-and-empty",
+    "description": "Interval cardinality differs from endpoint cardinality and returns zero after clearing.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": -4,
+        "right": -3,
+        "maxIntervals": 4
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 0
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 5,
+        "right": 6
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "window",
+        "targetId": "W"
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

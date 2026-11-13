@@ -254,3 +254,7 @@ Most routines in this domain are **pure math** and require no kernels.
 ### Opaque cell identity
 
 WASM cells/windows use host-issued opaque integer tokens above the uint32 range, with private token-to-pointer maps scoped to each module. Tokens are never reused within that host realm. Pointer reuse therefore cannot revive a freed handle or alias another live WASM instance. All raw cell/window consumers resolve tokens at the compiled boundary, including kplfrm, SPK/CK coverage/object queries, DSK object/surface queries, GF searches and progress-reporter initialization. Preserve the complete numeric handle and keep it with its owning process/module; handles are not portable across isolated workers or processes.
+
+### Cell/window observations
+
+`card` and `size` count elements (window endpoints); `wncard` counts intervals and `wnfetd` uses zero-based interval indices. `scard` changes cardinality without clearing or initializing stored bytes. Set insertion compares complete ordered contents with live SpiceyPy, including duplicate insertion into a full set, explicit zero capacity, and character truncation/trailing-blank equivalence. `insrtc` requires a string at runtime on both backends. Window cases observe every selected endpoint after touching, contained, bridging and singleton insertions; named overflow/bounds errors and separate same-instance recovery tests preserve error distinctions and lifecycle behavior. Missing-target workflow errors remain harness preflight and do not establish raw CSPICE error parity.

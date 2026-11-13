@@ -9,17 +9,31 @@
         "item": 1,
         "maxCardinality": 6
       },
-      { "op": "cells-windows.insrti", "cellId": "C_SCARD", "item": 2 },
-      { "op": "cells-windows.insrti", "cellId": "C_SCARD", "item": 3 },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C_SCARD",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C_SCARD",
+        "item": 3
+      },
       {
         "op": "cells-windows.scard",
         "card": 2,
         "targetKind": "int",
         "targetId": "C_SCARD"
       },
-      { "op": "cells-windows.card", "targetKind": "int", "targetId": "C_SCARD" }
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "C_SCARD"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-scard-negative-card-error",
@@ -38,6 +52,91 @@
         "targetId": "C_SCARD_ERR"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows-scard-audit-clear-refill-all-types",
+    "description": "Zero cardinality restores an empty set that can be refilled for all element types.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "I",
+        "item": 5,
+        "maxCardinality": 3
+      },
+      {
+        "op": "cells-windows.insrtd",
+        "cellId": "D",
+        "item": 1.25,
+        "maxCardinality": 3
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "S",
+        "item": "z",
+        "maxCardinality": 3,
+        "length": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "int",
+        "targetId": "I",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "double",
+        "targetId": "D",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "char",
+        "targetId": "S",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "I",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.insrtd",
+        "cellId": "D",
+        "item": -0.5
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "S",
+        "item": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-scard-audit-above-logical-capacity",
+    "description": "CSPICE rejects a cardinality exceeding the actual logical size.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "C",
+        "item": 1,
+        "maxCardinality": 2
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "int",
+        "targetId": "C",
+        "card": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDCARDINALITY"]
+    }
   }
 ]

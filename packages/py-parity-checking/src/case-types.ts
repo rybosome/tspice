@@ -1515,10 +1515,10 @@ export type StepOutput =
   | { op: "coords-vectors.mxv"; value: Vector3 }
   | { op: "coords-vectors.mtxv"; value: Vector3 }
   | { op: "cells-windows.card"; value: number }
-  | { op: "cells-windows.insrtc"; value: null }
-  | { op: "cells-windows.insrtd"; value: null }
-  | { op: "cells-windows.insrti"; value: null }
-  | { op: "cells-windows.scard"; value: null }
+  | { op: "cells-windows.insrtc"; value: string[] }
+  | { op: "cells-windows.insrtd"; value: number[] }
+  | { op: "cells-windows.insrti"; value: number[] }
+  | { op: "cells-windows.scard"; value: number }
   | { op: "cells-windows.size"; value: number }
   | { op: "cells-windows.ssize"; value: { size: number; card: number } }
   | { op: "cells-windows.valid"; value: number[] | string[] | null }
