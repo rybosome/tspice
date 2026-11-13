@@ -56,12 +56,12 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 
 | Backend | Unreviewed | Reviewed; verification pending | Needs repair | Verified |
 | --- | ---: | ---: | ---: | ---: |
-| node | 144 | 18 | 0 | 0 |
-| wasm | 144 | 18 | 0 | 0 |
+| node | 144 | 0 | 0 | 18 |
+| wasm | 144 | 0 | 0 | 18 |
 
 | Batch | Routines | Node / WASM verified | PRs / dependencies | Next action |
 | --- | --- | --- | --- | --- |
-| cell-capacity-prerequisite | `ssize_c`, `valid_c`, `wnvald_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/683, https://github.com/rybosome/tspice/pull/684, kplfrm-prerequisite | Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs. |
+| cell-capacity-prerequisite | `ssize_c`, `valid_c`, `wnvald_c` | 3 / 3 | https://github.com/rybosome/tspice/pull/683, https://github.com/rybosome/tspice/pull/684, kplfrm-prerequisite | Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs. |
 | cells-windows | `card_c`, `insrtc_c`, `insrtd_c`, `insrti_c`, `scard_c`, `size_c`, `wncard_c`, `wnfetd_c`, `wninsd_c` | 0 / 0 | cell-capacity-prerequisite | Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline. |
 | coordinates-matrices | `axisar_c`, `georec_c`, `latrec_c`, `mtxv_c`, `mxm_c`, `mxv_c`, `recgeo_c`, `reclat_c`, `recsph_c`, `rotate_c`, `rotmat_c`, `sphrec_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | dsk | `dskb02_c`, `dskgd_c`, `dskobj_c`, `dsksrf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
@@ -72,17 +72,17 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 | error | `chkin_c`, `chkout_c`, `failed_c`, `getmsg_c`, `reset_c`, `setmsg_c`, `sigerr_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | file-io-1 | `dafbfs_c`, `dafcls_c`, `daffna_c`, `dafopr_c`, `dascls_c`, `dasopr_c`, `dlabfs_c`, `dlacls` | 0 / 0 | https://github.com/rybosome/tspice/pull/691 | The shared file-token prerequisite has both required full local lanes and observed canonical Linux native CI in #691. Reader semantic audit continues in #692; all remaining routine assignments are retained. |
 | file-io-2 | `dlafns_c`, `dlaopn_c`, `dskmi2_c`, `dskopn_c`, `dskw02_c`, `exists_c`, `getfat_c` | 0 / 0 | None | Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix. |
-| frames-1 | `ckcov_c`, `ckgp_c`, `ckgpav_c`, `cklpf_c`, `ckobj_c`, `ckupf_c` | 0 / 0 | None | Record both full required local lanes, open the CK audit PR, then observe all canonical required CI jobs and explicit rebaseability. CK remains distinct from the eight frame lookup/transform routines in #698. |
+| frames-1 | `ckcov_c`, `ckgp_c`, `ckgpav_c`, `cklpf_c`, `ckobj_c`, `ckupf_c` | 6 / 6 | https://github.com/rybosome/tspice/pull/699 | Observed all15 exact-source CI jobs green with actual live comparisons and native-required execution. Wait for verification-metadata CI and explicit REST rebaseability, then hand off; continue other baseline batches. |
 | frames-2 | `ccifrm_c`, `cidfrm_c`, `cnmfrm_c`, `frinfo_c`, `frmnam_c`, `namfrm_c`, `pxform_c`, `sxform_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | geometry | `illumf_c`, `illumg_c`, `ilumin_c`, `nvc2pl_c`, `occult_c`, `pl2nvc_c`, `sincpt_c`, `subpnt_c`, `subslr_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | geometry-gf | `gfdist_c`, `gfrefn_c`, `gfrepf_c`, `gfrepi_c`, `gfsep_c`, `gfsstp_c`, `gfstep_c`, `gfstol_c` | 0 / 0 | None | Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy. |
 | ids-names | `bodc2n_c`, `bodc2s_c`, `boddef_c`, `bodfnd_c`, `bodn2c_c`, `bods2c_c`, `bodvar_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | kernel-pool | `cvpool_c`, `dtpool_c`, `expool_c`, `gcpool_c`, `gdpool_c`, `gipool_c`, `gnpool_c`, `pcpool_c`, `pdpool_c`, `pipool_c`, `swpool_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | kernels | `furnsh_c`, `kclear_c`, `kdata_c`, `kinfo_c`, `ktotal_c`, `kxtrct_c`, `unload_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| kplfrm-prerequisite | `kplfrm_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/680, https://github.com/rybosome/tspice/pull/684, vectors-arithmetic | Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs. |
+| kplfrm-prerequisite | `kplfrm_c` | 1 / 1 | https://github.com/rybosome/tspice/pull/680, https://github.com/rybosome/tspice/pull/684, vectors-arithmetic | Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs. |
 | time-1 | `deltet_c`, `et2utc_c`, `scdecd_c`, `sce2c_c`, `sce2s_c`, `scencd_c`, `scs2e_c`, `sct2e_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | time-2 | `str2et_c`, `timdef_c`, `timout_c`, `tkvrsn_c`, `tparse_c`, `tpictr_c`, `unitim_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/679 | Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical. |
+| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 8 / 8 | https://github.com/rybosome/tspice/pull/679 | Observe current-source CI after shared cell-capacity/rollback WASM regeneration; earlier observations are historical. |
 
 The JSON includes each baseline routine's assigned batch and per-backend review/repair/verification status, maintained evidence path, and verification references. Recorded CI jobs describe observed executions, not merely configured lanes.
 

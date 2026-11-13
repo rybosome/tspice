@@ -204,8 +204,10 @@
           "ckupf_c"
         ],
         "dependsOn": [],
-        "prs": [],
-        "nextAction": "Record both full required local lanes, open the CK audit PR, then observe all canonical required CI jobs and explicit rebaseability. CK remains distinct from the eight frame lookup/transform routines in #698.",
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/699"
+        ],
+        "nextAction": "Observed all15 exact-source CI jobs green with actual live comparisons and native-required execution. Wait for verification-metadata CI and explicit REST rebaseability, then hand off; continue other baseline batches.",
         "record": "data/parity-audits/frames-1.json"
       },
       {
@@ -383,15 +385,15 @@
     "counts": {
       "node": {
         "unreviewed": 144,
-        "reviewed": 18,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 18
       },
       "wasm": {
         "unreviewed": 144,
-        "reviewed": 18,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 18
       }
     }
   },
@@ -5269,28 +5271,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckcov -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckcov -> WASM adapter -> actual configured compiled _tspice_ckcov export -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         }
       }
@@ -5625,28 +5631,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgp -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgp -> WASM adapter -> actual configured compiled _tspice_ckgp export -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         }
       }
@@ -5967,28 +5977,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgpav -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgpav -> WASM adapter -> actual configured compiled _tspice_ckgpav export -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         }
       }
@@ -6260,28 +6274,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.cklpf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.cklpf -> WASM adapter -> actual configured compiled _tspice_cklpf export -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         }
       }
@@ -6642,28 +6660,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckobj -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckobj -> WASM adapter -> actual configured compiled _tspice_ckobj export -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         }
       }
@@ -6946,28 +6968,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckupf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ckupf -> WASM adapter -> actual configured compiled _tspice_ckupf export -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/frames-1.json"
         }
       }
@@ -21092,14 +21118,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -21112,14 +21140,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -30990,14 +31020,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -31006,14 +31038,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -33671,14 +33705,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33691,14 +33727,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33977,14 +34015,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -33993,14 +34033,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34209,14 +34251,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34229,14 +34273,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34442,14 +34488,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34462,14 +34510,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34700,14 +34750,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34720,14 +34772,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34954,14 +35008,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34974,14 +35030,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35190,14 +35248,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35210,14 +35270,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35479,14 +35541,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35499,14 +35563,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35719,14 +35785,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35739,14 +35807,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36651,14 +36721,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ck-pointing-2026-11-13-node"
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -36667,14 +36739,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-ck-pointing-2026-11-13-wasm"
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }

@@ -177,8 +177,8 @@
         "ckupf_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Record both full required local lanes, open the CK audit PR, then observe all canonical required CI jobs and explicit rebaseability. CK remains distinct from the eight frame lookup/transform routines in #698."
+      "prs": ["https://github.com/rybosome/tspice/pull/699"],
+      "nextAction": "Observed all15 exact-source CI jobs green with actual live comparisons and native-required execution. Wait for verification-metadata CI and explicit REST rebaseability, then hand off; continue other baseline batches."
     },
     {
       "id": "frames-2",

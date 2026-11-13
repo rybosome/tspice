@@ -324,6 +324,44 @@
         "kernels-kplfrm-set-too-small-error"
       ],
       "observation": "Both complete required local lanes passed. Production native N0067 loaded, all722 live comparisons (361scenarios per actual backend), all764 parity-package tests including native-required guard, all88WASM/62Node/26core/121facade tests passed. All92registered CK comparisons,21actual WASM allocation failures, complete independent matrix/AV/clock literals, both-harness accumulation/priority assertions and actual close-before-Scratch retry tests passed. Locked Python begins cleanup with a real pending toolkit error and verifies reset before close. Four leaking allocation positions and16new oracle/zero-capacity comparisons failed before repairs; controlled initial close failures remain explicit tests. The first independent priority assertion was corrected to compare numerical zero rather than Object.is signed zero; no tolerance changed and no retry hides a flake. JS-only lane skipped its dedicated native-required guard as designed; native-required lane ran every package test with zero skips. No C or WASM binary change. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64. The separate ledger regression initially retained the pre-batch327scenario expectation; its owning expected structural count was corrected to361 before the final38regression pass."
+    },
+    {
+      "id": "ci-pr699-43399076628-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ac435c45b15f19c783bab5015dfa95315755e8b71f6311bffce55f25c857d9d4",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "f12dcc770a9dbc51d44c74e4e15378efb7b7030d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43399076628/job/131797111041",
+      "observation": "Observed exact-source canonical Linux22 job. All722live comparisons, all764parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed. Complete CK outputs, literal priority/accumulation and cleanup/retry regressions all executed."
+    },
+    {
+      "id": "ci-pr699-43399076628-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ac435c45b15f19c783bab5015dfa95315755e8b71f6311bffce55f25c857d9d4",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "f12dcc770a9dbc51d44c74e4e15378efb7b7030d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43399076628/job/131797111041",
+      "observation": "Observed exact-source canonical Linux22 job. All722live comparisons, all764parity-package tests and actual production native-required N0067 sanity passed without skips. All15source jobs passed. Complete CK outputs, literal priority/accumulation and cleanup/retry regressions all executed."
     }
   ],
   "routines": [
@@ -461,11 +499,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-ck-pointing-2026-11-13-node"]
+          "executions": [
+            "local-ck-pointing-2026-11-13-node",
+            "ci-pr699-43399076628-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -477,14 +519,18 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-ck-pointing-2026-11-13-wasm"]
+          "executions": [
+            "local-ck-pointing-2026-11-13-wasm",
+            "ci-pr699-43399076628-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }
