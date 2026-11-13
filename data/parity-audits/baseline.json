@@ -276,8 +276,8 @@
         "swpool_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "prs": ["https://github.com/rybosome/tspice/pull/686"],
+      "nextAction": "Rebased directly onto main after #685 merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. The stale local native addon was rebuilt and its initial failure retained. Await maintainer review and explicitly authorized merge."
     },
     {
       "id": "kplfrm-prerequisite",

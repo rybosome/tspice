@@ -1,12 +1,19 @@
 import type { KernelPoolApi } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { assertSpiceInt32NonNegative, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+
+function assertPoolRange(fn: string, start: number, room: number): void {
+  assertSpiceInt32NonNegative(start, `${fn}(start)`);
+  assertSpiceInt32NonNegative(room, `${fn}(room)`);
+  if (room === 0) throw new RangeError(`${fn}(room): expected an integer > 0`);
+}
 
 /** Create a {@link KernelPoolApi} implementation backed by the native Node addon. */
 export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
   return {
     gdpool: (name, start, room) => {
+      assertPoolRange("gdpool", start, room);
       const out = native.gdpool(name, start, room);
       if (!out.found) {
         return { found: false };
@@ -19,6 +26,7 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
     },
 
     gipool: (name, start, room) => {
+      assertPoolRange("gipool", start, room);
       const out = native.gipool(name, start, room);
       if (!out.found) {
         return { found: false };
@@ -31,6 +39,7 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
     },
 
     gcpool: (name, start, room) => {
+      assertPoolRange("gcpool", start, room);
       const out = native.gcpool(name, start, room);
       if (!out.found) {
         return { found: false };
@@ -43,6 +52,7 @@ export function createKernelPoolApi(native: NativeAddon): KernelPoolApi {
     },
 
     gnpool: (template, start, room) => {
+      assertPoolRange("gnpool", start, room);
       const out = native.gnpool(template, start, room);
       if (!out.found) {
         return { found: false };

@@ -21,13 +21,19 @@
         "room": 10
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernel-pool-gcpool-invalid-room-error",
     "description": "Representative gcpool argument validation error (negative room)",
     "workflow": [
-      { "op": "kernel-pool.pcpool", "name": "KP_GC_CHAR", "values": ["alpha"] },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "KP_GC_CHAR",
+        "values": ["alpha"]
+      },
       {
         "op": "kernel-pool.gcpool",
         "name": "KP_GC_CHAR",
@@ -35,6 +41,57 @@
         "room": -1
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "kernel-pool-gcpool-audit-paging-rounding-and-wrong-type",
+    "description": "gcpool: paging rounding and wrong type, observe actual pool contents or notification flags with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "AUDIT",
+        "values": ["  leading", "trail  ", "", "   ", "last"]
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 2
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "AUDIT",
+        "start": 1,
+        "room": 2
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "AUDIT",
+        "start": 4,
+        "room": 3
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "AUDIT",
+        "start": 5,
+        "room": 1
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "AUDIT",
+        "values": [7]
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "AUDIT",
+        "start": 0,
+        "room": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]
