@@ -219,8 +219,8 @@
         "subslr_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Nine handwritten reviews and focused actual/live geometry evidence exist. Complete both full required lanes, publish the coherent audit PR, then observe source CI and explicit REST rebaseability. Known inherited KPL ownership remains separate pending #684."
+      "prs": ["https://github.com/rybosome/tspice/pull/704"],
+      "nextAction": "All 15 exact-source CI jobs passed with actual native-required/live comparisons. Observe metadata CI and explicit REST rebaseability; inherited KPL lifetime still requires #684."
     },
     {
       "id": "geometry-gf",

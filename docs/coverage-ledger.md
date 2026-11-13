@@ -56,13 +56,13 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 
 | Backend | Unreviewed | Reviewed; verification pending | Needs repair | Verified |
 | --- | ---: | ---: | ---: | ---: |
-| node | 144 | 18 | 0 | 0 |
-| wasm | 144 | 17 | 1 | 0 |
+| node | 144 | 1 | 0 | 17 |
+| wasm | 144 | 0 | 1 | 17 |
 
 | Batch | Routines | Node / WASM verified | PRs / dependencies | Next action |
 | --- | --- | --- | --- | --- |
 | cells-windows | `card_c`, `insrtc_c`, `insrtd_c`, `insrti_c`, `scard_c`, `size_c`, `ssize_c`, `valid_c`, `wncard_c`, `wnfetd_c`, `wninsd_c`, `wnvald_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/679 | Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change. |
+| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 8 / 8 | https://github.com/rybosome/tspice/pull/679 | Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change. |
 | coordinates-matrices | `axisar_c`, `georec_c`, `latrec_c`, `mtxv_c`, `mxm_c`, `mxv_c`, `recgeo_c`, `reclat_c`, `recsph_c`, `rotate_c`, `rotmat_c`, `sphrec_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | dsk | `dskb02_c`, `dskgd_c`, `dskobj_c`, `dsksrf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ek-1 | `ekaclc_c`, `ekacld_c`, `ekacli_c`, `ekcls_c`, `ekffld_c`, `ekfind_c`, `ekgc_c`, `ekgd_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
@@ -74,7 +74,7 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 | file-io-2 | `dlafns_c`, `dlaopn_c`, `dskmi2_c`, `dskopn_c`, `dskw02_c`, `exists_c`, `getfat_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | frames-1 | `ccifrm_c`, `cidfrm_c`, `ckcov_c`, `ckgp_c`, `ckgpav_c`, `cklpf_c`, `ckobj_c`, `ckupf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | frames-2 | `cnmfrm_c`, `frinfo_c`, `frmnam_c`, `namfrm_c`, `pxform_c`, `sxform_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| geometry | `illumf_c`, `illumg_c`, `ilumin_c`, `nvc2pl_c`, `occult_c`, `pl2nvc_c`, `sincpt_c`, `subpnt_c`, `subslr_c` | 0 / 0 | None | Nine handwritten reviews and focused actual/live geometry evidence exist. Complete both full required lanes, publish the coherent audit PR, then observe source CI and explicit REST rebaseability. Known inherited KPL ownership remains separate pending #684. |
+| geometry | `illumf_c`, `illumg_c`, `ilumin_c`, `nvc2pl_c`, `occult_c`, `pl2nvc_c`, `sincpt_c`, `subpnt_c`, `subslr_c` | 9 / 9 | https://github.com/rybosome/tspice/pull/704 | All 15 exact-source CI jobs passed with actual native-required/live comparisons. Observe metadata CI and explicit REST rebaseability; inherited KPL lifetime still requires #684. |
 | geometry-gf | `gfdist_c`, `gfrefn_c`, `gfrepf_c`, `gfrepi_c`, `gfsep_c`, `gfsstp_c`, `gfstep_c`, `gfstol_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ids-names | `bodc2n_c`, `bodc2s_c`, `boddef_c`, `bodfnd_c`, `bodn2c_c`, `bods2c_c`, `bodvar_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | kernel-pool | `cvpool_c`, `dtpool_c`, `expool_c`, `gcpool_c`, `gdpool_c`, `gipool_c`, `gnpool_c`, `pcpool_c`, `pdpool_c`, `pipool_c`, `swpool_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
