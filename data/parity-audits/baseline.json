@@ -228,9 +228,10 @@
       "dependsOn": ["cell-capacity-prerequisite"],
       "prs": [
         "https://github.com/rybosome/tspice/pull/684",
-        "https://github.com/rybosome/tspice/pull/704"
+        "https://github.com/rybosome/tspice/pull/704",
+        "https://github.com/rybosome/tspice/pull/705"
       ],
-      "nextAction": "Eight semantic reviews and focused actual Node/WASM/locked-SpiceyPy comparisons exist. Finish both required lanes and canonical CI before completion. Reuses exact authored geometry fixtures from #704; base #684 supplies opaque windows."
+      "nextAction": "Reviewed source71e30af5 passed all15canonical CI jobs and explicit REST rebaseability. Source-bound proof is recorded; verify the current metadata-only head CI before handoff. No merge performed."
     },
     {
       "id": "ids-names",
