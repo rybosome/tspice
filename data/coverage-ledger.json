@@ -17,7 +17,7 @@
           "https://github.com/rybosome/tspice/pull/683",
           "https://github.com/rybosome/tspice/pull/684"
         ],
-        "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs.",
+        "nextAction": "Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence.",
         "record": "data/parity-audits/cell-capacity-prerequisite.json"
       },
       {
@@ -333,7 +333,7 @@
           "https://github.com/rybosome/tspice/pull/680",
           "https://github.com/rybosome/tspice/pull/684"
         ],
-        "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs.",
+        "nextAction": "Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence.",
         "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
@@ -389,15 +389,15 @@
     "counts": {
       "node": {
         "unreviewed": 131,
-        "reviewed": 4,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 27
+        "verified": 31
       },
       "wasm": {
         "unreviewed": 131,
-        "reviewed": 4,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 27
+        "verified": 31
       }
     }
   },
@@ -20554,14 +20554,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-684-main-373b55dd-node"
+            "local-684-main-373b55dd-node",
+            "ci-684-main-373b55dd-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20572,14 +20574,16 @@
             "verified",
             "reviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-684-main-373b55dd-wasm"
+            "local-684-main-373b55dd-wasm",
+            "ci-684-main-373b55dd-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -31384,28 +31388,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-684-main-373b55dd-node"
+            "local-684-main-373b55dd-node",
+            "ci-684-main-373b55dd-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-684-main-373b55dd-wasm"
+            "local-684-main-373b55dd-wasm",
+            "ci-684-main-373b55dd-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34371,28 +34379,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-684-main-373b55dd-node"
+            "local-684-main-373b55dd-node",
+            "ci-684-main-373b55dd-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-684-main-373b55dd-wasm"
+            "local-684-main-373b55dd-wasm",
+            "ci-684-main-373b55dd-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -37069,28 +37081,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-684-main-373b55dd-node"
+            "local-684-main-373b55dd-node",
+            "ci-684-main-373b55dd-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-684-main-373b55dd-wasm"
+            "local-684-main-373b55dd-wasm",
+            "ci-684-main-373b55dd-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
