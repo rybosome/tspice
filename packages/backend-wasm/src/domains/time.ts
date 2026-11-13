@@ -1,5 +1,5 @@
 import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
-import { assertNever } from "@rybosome/tspice-core";
+import { assertNever, assertSpiceInt32 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -495,10 +495,17 @@ export function createTimeApi(
     })(),
 
     str2et: (utc) => tspiceCallStr2et(module, utc),
-    et2utc: (et, format, prec) => tspiceCallEt2utc(module, et, format, prec),
+    et2utc: (et, format, prec) => {
+      assertSpiceInt32(prec, "et2utc(prec)");
+      return tspiceCallEt2utc(module, et, format, prec);
+    },
     timout: (et, picture) => tspiceCallTimout(module, et, picture),
 
-    deltet: (epoch, eptype) => tspiceCallDeltet(module, epoch, eptype),
+    deltet: (epoch, eptype) => {
+      if (eptype !== "ET" && eptype !== "UTC")
+        throw new RangeError(`Unsupported deltet eptype: ${eptype}`);
+      return tspiceCallDeltet(module, epoch, eptype);
+    },
     unitim: (epoch, insys, outsys) =>
       tspiceCallUnitim(module, epoch, insys, outsys),
 
@@ -518,13 +525,31 @@ export function createTimeApi(
       return tspiceCallTpictr(module, sample, pictur);
     },
 
-    scs2e: (sc, sclkch) => tspiceCallScs2e(module, sc, sclkch),
-    sce2s: (sc, et) => tspiceCallSce2s(module, sc, et),
+    scs2e: (sc, sclkch) => {
+      assertSpiceInt32(sc, "scs2e(sc)");
+      return tspiceCallScs2e(module, sc, sclkch);
+    },
+    sce2s: (sc, et) => {
+      assertSpiceInt32(sc, "sce2s(sc)");
+      return tspiceCallSce2s(module, sc, et);
+    },
 
-    scencd: (sc, sclkch) => tspiceCallScencd(module, sc, sclkch),
-    scdecd: (sc, sclkdp) => tspiceCallScdecd(module, sc, sclkdp),
-    sct2e: (sc, sclkdp) => tspiceCallSct2e(module, sc, sclkdp),
-    sce2c: (sc, et) => tspiceCallSce2c(module, sc, et),
+    scencd: (sc, sclkch) => {
+      assertSpiceInt32(sc, "scencd(sc)");
+      return tspiceCallScencd(module, sc, sclkch);
+    },
+    scdecd: (sc, sclkdp) => {
+      assertSpiceInt32(sc, "scdecd(sc)");
+      return tspiceCallScdecd(module, sc, sclkdp);
+    },
+    sct2e: (sc, sclkdp) => {
+      assertSpiceInt32(sc, "sct2e(sc)");
+      return tspiceCallSct2e(module, sc, sclkdp);
+    },
+    sce2c: (sc, et) => {
+      assertSpiceInt32(sc, "sce2c(sc)");
+      return tspiceCallSce2c(module, sc, et);
+    },
   };
 }
 

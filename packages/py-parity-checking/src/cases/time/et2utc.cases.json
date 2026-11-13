@@ -3,17 +3,188 @@
     "caseId": "time-et2utc-happy-isoc",
     "description": "Formats J2000 epoch ET as UTC ISO calendar string",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.et2utc", "et": 0, "format": "ISOC", "prec": 3 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.et2utc",
+        "et": 0,
+        "format": "ISOC",
+        "prec": 3
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-et2utc-invalid-format-error",
     "description": "Representative formatting error with unsupported format token",
     "workflow": [
-      { "op": "time.et2utc", "et": 0, "format": "NOT_A_FORMAT", "prec": 3 }
+      {
+        "op": "time.et2utc",
+        "et": 0,
+        "format": "NOT_A_FORMAT",
+        "prec": 3
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTIMEFORMAT"]
+    }
+  },
+  {
+    "caseId": "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+    "description": "et2utc: all formats signed fractional and clamped precision, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.et2utc",
+        "et": 123456.125,
+        "format": "C",
+        "prec": 3
+      },
+      {
+        "op": "time.et2utc",
+        "et": -86400.875,
+        "format": "D",
+        "prec": 6
+      },
+      {
+        "op": "time.et2utc",
+        "et": 123456.125,
+        "format": "J",
+        "prec": 9
+      },
+      {
+        "op": "time.et2utc",
+        "et": 1.25,
+        "format": "ISOC",
+        "prec": 3
+      },
+      {
+        "op": "time.et2utc",
+        "et": 1.25,
+        "format": "ISOD",
+        "prec": 14
+      },
+      {
+        "op": "time.et2utc",
+        "et": 1.25,
+        "format": "ISOC",
+        "prec": -2
+      },
+      {
+        "op": "time.et2utc",
+        "et": 1.25,
+        "format": "ISOC",
+        "prec": 99
+      },
+      {
+        "op": "time.et2utc",
+        "et": 1.25,
+        "format": "ISOC",
+        "prec": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2utc-audit-utc-leap-second-rounding",
+    "description": "et2utc: utc leap second rounding, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.et2utc",
+        "et": 536500867.184,
+        "format": "ISOC",
+        "prec": 3
+      },
+      {
+        "op": "time.et2utc",
+        "et": 536500868.184,
+        "format": "ISOC",
+        "prec": 3
+      },
+      {
+        "op": "time.et2utc",
+        "et": 536500869.184,
+        "format": "ISOC",
+        "prec": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2utc-audit-missing-leap-information",
+    "description": "et2utc: missing leap information, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "time.et2utc",
+        "et": 1.25,
+        "format": "ISOC",
+        "prec": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGTIMEINFO"]
+    }
+  },
+  {
+    "caseId": "time-et2utc-audit-before-common-era-calendar",
+    "description": "Calendar/day formats retain era text for epochs before 1 AD.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.et2utc",
+        "et": -70000000000,
+        "format": "C",
+        "prec": 3
+      },
+      {
+        "op": "time.et2utc",
+        "et": -70000000000,
+        "format": "D",
+        "prec": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-et2utc-audit-before-common-era-iso-error",
+    "description": "ISO formats cannot represent a B.C. era and must signal YEAROUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.et2utc",
+        "et": -70000000000,
+        "format": "ISOC",
+        "prec": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["YEAROUTOFRANGE"]
+    }
   }
 ]
