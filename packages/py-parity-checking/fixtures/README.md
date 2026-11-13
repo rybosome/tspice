@@ -114,3 +114,15 @@ integer limits and a 1,024-character literal. The generator checks actual long
 string/numeric/NULL outputs. No external observations or datasets are included;
 the fixture and generator are distributed under the repository MIT license.
 Creation workflows additionally write disposable scratch files on each backend.
+
+### Step 7 authored frame utility fixture
+
+`kernels/audit-frames.tf` is handwritten synthetic FK text under repository MIT.
+Its arbitrary static negative frame ID, distinct class ID, center/body alias and
+preferred-frame override distinguish every lookup field. A three-axis class5
+Euler frame has arbitrary polynomial angles/rates and produces nonzero state
+velocity derivatives at negative, zero and positive TDB epochs. No mission
+observations or external data are included. The class-ID name is supplied for
+the actual TK engine; NAME binding keys respect the32-byte kernel-pool limit.
+Standalone tests verify literal metadata, load/unload state, complete inverse
+state products and position finite differences independently of live parity.

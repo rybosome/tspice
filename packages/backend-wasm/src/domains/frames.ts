@@ -11,6 +11,8 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32NonNegative,
+  assertSpiceInt32,
+  brandMat6RowMajor,
   brandMat3RowMajor,
 } from "@rybosome/tspice-core";
 
@@ -28,6 +30,48 @@ import {
   wasmCellPointer,
   wasmWindowPointer,
 } from "./cells-windows.js";
+
+function copyStateMatrix(value: unknown): SpiceMatrix6x6 {
+  const matrix = brandMat6RowMajor(value, { label: "sxform()" });
+  return [
+    matrix[0],
+    matrix[1],
+    matrix[2],
+    matrix[3],
+    matrix[4],
+    matrix[5],
+    matrix[6],
+    matrix[7],
+    matrix[8],
+    matrix[9],
+    matrix[10],
+    matrix[11],
+    matrix[12],
+    matrix[13],
+    matrix[14],
+    matrix[15],
+    matrix[16],
+    matrix[17],
+    matrix[18],
+    matrix[19],
+    matrix[20],
+    matrix[21],
+    matrix[22],
+    matrix[23],
+    matrix[24],
+    matrix[25],
+    matrix[26],
+    matrix[27],
+    matrix[28],
+    matrix[29],
+    matrix[30],
+    matrix[31],
+    matrix[32],
+    matrix[33],
+    matrix[34],
+    matrix[35],
+  ];
+}
 
 function tspiceCallCidfrm(
   module: EmscriptenModule,
@@ -102,58 +146,42 @@ function tspiceCallCnmfrm(
   ) => number,
   centerName: string,
 ): Found<{ frcode: number; frname: string }> {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const centerNamePtr = writeUtf8CString(module, centerName);
+  const errMaxBytes = WASM_ERR_MAX_BYTES;
   const outNameMaxBytes = 256;
-  const outNamePtr = module._malloc(outNameMaxBytes);
-  const outCodePtr = module._malloc(4);
-  const foundPtr = module._malloc(4);
-
-  if (!errPtr || !centerNamePtr || !outNamePtr || !outCodePtr || !foundPtr) {
-    for (const ptr of [
-      foundPtr,
-      outCodePtr,
-      outNamePtr,
-      centerNamePtr,
-      errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
+  const centerNamePtr = writeUtf8CString(module, centerName);
   try {
-    module.HEAPU8[outNamePtr] = 0;
-    module.HEAP32[outCodePtr >> 2] = 0;
-    module.HEAP32[foundPtr >> 2] = 0;
-    const result = fn(
-      centerNamePtr,
-      outCodePtr,
-      outNamePtr,
-      outNameMaxBytes,
-      foundPtr,
-      errPtr,
-      errMaxBytes,
+    return withAllocs(
+      module,
+      [errMaxBytes, outNameMaxBytes, 4, 4],
+      (errPtr, outNamePtr, outCodePtr, foundPtr) => {
+        module.HEAPU8[outNamePtr] = 0;
+        module.HEAP32[outCodePtr >> 2] = 0;
+        module.HEAP32[foundPtr >> 2] = 0;
+        const result = fn(
+          centerNamePtr,
+          outCodePtr,
+          outNamePtr,
+          outNameMaxBytes,
+          foundPtr,
+          errPtr,
+          errMaxBytes,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+        }
+        const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+        if (!found) {
+          return { found: false };
+        }
+        return {
+          found: true,
+          frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
+          frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
+        };
+      },
     );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-    if (!found) {
-      return { found: false };
-    }
-    return {
-      found: true,
-      frcode: module.HEAP32[outCodePtr >> 2] ?? 0,
-      frname: readFixedWidthCString(module, outNamePtr, outNameMaxBytes),
-    };
   } finally {
-    module._free(foundPtr);
-    module._free(outCodePtr);
-    module._free(outNamePtr);
     module._free(centerNamePtr);
-    module._free(errPtr);
   }
 }
 
@@ -494,40 +522,31 @@ function tspiceCallPxform(
   to: string,
   et: number,
 ): Mat3RowMajor {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
+  const errMaxBytes = WASM_ERR_MAX_BYTES;
   const fromPtr = writeUtf8CString(module, from);
-  const toPtr = writeUtf8CString(module, to);
-  const outPtr = module._malloc(9 * 8);
-
-  if (!errPtr || !fromPtr || !toPtr || !outPtr) {
-    for (const ptr of [outPtr, toPtr, fromPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
+  let toPtr = 0;
   try {
-    const result = module._tspice_pxform(
-      fromPtr,
-      toPtr,
-      et,
-      outPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-    const out = Array.from(
-      module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 9),
-    );
-    return brandMat3RowMajor(out, { label: "pxform()" });
+    toPtr = writeUtf8CString(module, to);
+    return withAllocs(module, [errMaxBytes, 9 * 8], (errPtr, outPtr) => {
+      const result = module._tspice_pxform(
+        fromPtr,
+        toPtr,
+        et,
+        outPtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
+      const out = Array.from(
+        module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 9),
+      );
+      return brandMat3RowMajor(out, { label: "pxform()" });
+    });
   } finally {
-    module._free(outPtr);
-    module._free(toPtr);
+    if (toPtr) module._free(toPtr);
     module._free(fromPtr);
-    module._free(errPtr);
   }
 }
 
@@ -537,64 +556,82 @@ function tspiceCallSxform(
   to: string,
   et: number,
 ): SpiceMatrix6x6 {
-  const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
+  const errMaxBytes = WASM_ERR_MAX_BYTES;
   const fromPtr = writeUtf8CString(module, from);
-  const toPtr = writeUtf8CString(module, to);
-  const outPtr = module._malloc(36 * 8);
-
-  if (!errPtr || !fromPtr || !toPtr || !outPtr) {
-    for (const ptr of [outPtr, toPtr, fromPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
+  let toPtr = 0;
   try {
-    const result = module._tspice_sxform(
-      fromPtr,
-      toPtr,
-      et,
-      outPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-    const out = Array.from(
-      module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 36),
-    );
-    return out as unknown as SpiceMatrix6x6;
+    toPtr = writeUtf8CString(module, to);
+    return withAllocs(module, [errMaxBytes, 36 * 8], (errPtr, outPtr) => {
+      const result = module._tspice_sxform(
+        fromPtr,
+        toPtr,
+        et,
+        outPtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
+      const out = Array.from(
+        module.HEAPF64.subarray(outPtr >> 3, (outPtr >> 3) + 36),
+      );
+      return copyStateMatrix(out);
+    });
   } finally {
-    module._free(outPtr);
-    module._free(toPtr);
+    if (toPtr) module._free(toPtr);
     module._free(fromPtr);
-    module._free(errPtr);
   }
+}
+
+function assertFrameString(value: unknown, label: string): void {
+  if (typeof value !== "string")
+    throw new TypeError(`${label} must be a string`);
+}
+function assertFrameTransform(
+  from: string,
+  to: string,
+  et: number,
+  method: string,
+): void {
+  assertFrameString(from, `${method}(from)`);
+  assertFrameString(to, `${method}(to)`);
+  if (!Number.isFinite(et)) throw new TypeError(`${method}(et) must be finite`);
 }
 
 /** Create a {@link FramesApi} implementation backed by a WASM Emscripten module. */
 export function createFramesApi(module: EmscriptenModule): FramesApi {
   return {
     namfrm: (name: string) => {
+      assertFrameString(name, "namfrm(name)");
       const out = tspiceCallFoundInt(module, module._tspice_namfrm, name);
       if (!out.found) return { found: false };
       return { found: true, code: out.value };
     },
     frmnam: (code: number) => {
+      assertSpiceInt32(code, "frmnam(code)");
       const out = tspiceCallFoundString(module, module._tspice_frmnam, code);
       if (!out.found) return { found: false };
       return { found: true, name: out.value };
     },
 
-    cidfrm: (center: number) =>
-      tspiceCallCidfrm(module, module._tspice_cidfrm, center),
-    cnmfrm: (centerName: string) =>
-      tspiceCallCnmfrm(module, module._tspice_cnmfrm, centerName),
-    frinfo: (frameId: number) => tspiceCallFrinfo(module, frameId),
-    ccifrm: (frameClass: number, classId: number) =>
-      tspiceCallCcifrm(module, frameClass, classId),
+    cidfrm: (center: number) => {
+      assertSpiceInt32(center, "cidfrm(center)");
+      return tspiceCallCidfrm(module, module._tspice_cidfrm, center);
+    },
+    cnmfrm: (centerName: string) => {
+      assertFrameString(centerName, "cnmfrm(centerName)");
+      return tspiceCallCnmfrm(module, module._tspice_cnmfrm, centerName);
+    },
+    frinfo: (frameId: number) => {
+      assertSpiceInt32(frameId, "frinfo(frameId)");
+      return tspiceCallFrinfo(module, frameId);
+    },
+    ccifrm: (frameClass: number, classId: number) => {
+      assertSpiceInt32(frameClass, "ccifrm(frameClass)");
+      assertSpiceInt32(classId, "ccifrm(classId)");
+      return tspiceCallCcifrm(module, frameClass, classId);
+    },
 
     ckgp: (inst: number, sclkdp: number, tol: number, ref: string) =>
       tspiceCallCkgp(module, inst, sclkdp, tol, ref),
@@ -620,9 +657,13 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
       tspiceCallCkcov(module, ck, idcode, needav, level, tol, timsys, cover);
     },
 
-    pxform: (from: string, to: string, et: number) =>
-      tspiceCallPxform(module, from, to, et),
-    sxform: (from: string, to: string, et: number) =>
-      tspiceCallSxform(module, from, to, et),
+    pxform: (from: string, to: string, et: number) => {
+      assertFrameTransform(from, to, et, "pxform");
+      return tspiceCallPxform(module, from, to, et);
+    },
+    sxform: (from: string, to: string, et: number) => {
+      assertFrameTransform(from, to, et, "sxform");
+      return tspiceCallSxform(module, from, to, et);
+    },
   };
 }
