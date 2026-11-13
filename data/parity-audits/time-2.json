@@ -107,6 +107,94 @@
       ],
       "observation": "Both required local JS/native lanes passed on the seven-routine time parsing/formatting source. Production N0067 native addon rebuilt/loaded and native sanity ran; all 662 live parity tests (331 scenarios per backend), all 704 parity-package tests, 86 WASM tests, 57 native tests and 101 facade tests passed without required native skips. Eleven new parity-package tests cover both SYSTEM/ZONE caller baselines after success/failure on both backends, non-string arguments and a 0.1-second Julian assertion corruption. Twenty-five temporary allocation failure positions and a two-module toolkit-version cache test passed. Failing-before cleanup tests demonstrated TIMDEF state leakage, and the first BADTIMEITEM case revealed oracle decoder preflight; both repairs passed the full lanes. All 37 ledger tests, doctor/format/lint passed. No C or WASM artifacts changed. Host macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15. Source tree remained unchanged when foundation was restacked after the CI-fix squash merge.",
       "historical": true
+    },
+    {
+      "id": "ci-time-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "244f94d22a4860322f29e7d813f9391b54f10085007bef7642e109a02ab369a2",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "1fc8d7531eb23c09a15058f0127dd98b3cfcd108",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43333289457/job/131583052603",
+      "observation": "Observed canonical Linux Node22 native-required job: all 662 live parity tests (331 per actual backend), all 704 parity-package tests, 86 WASM tests, 57 Node tests and 101 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-time-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "244f94d22a4860322f29e7d813f9391b54f10085007bef7642e109a02ab369a2",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "1fc8d7531eb23c09a15058f0127dd98b3cfcd108",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43333289457/job/131583052603",
+      "observation": "Observed canonical Linux Node22 native-required job: all 662 live parity tests (331 per actual backend), all 704 parity-package tests, 86 WASM tests, 57 Node tests and 101 facade tests passed with no required native skips; production addon guard and CSPICE_N0067 passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -171,16 +259,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-node"]
+          "executions": [
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-wasm"]
+          "executions": [
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -256,16 +362,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-node"]
+          "executions": [
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-wasm"]
+          "executions": [
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -316,16 +440,22 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-node"]
+          "executions": [
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-wasm"]
+          "executions": [
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -366,16 +496,22 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-node"]
+          "executions": [
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "cached",
           "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
-          "executions": ["local-time-formats-2026-11-12-wasm"]
+          "executions": [
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -429,16 +565,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-node"]
+          "executions": [
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-wasm"]
+          "executions": [
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -478,16 +632,22 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-node"]
+          "executions": [
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-wasm"]
+          "executions": [
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -549,16 +709,34 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-node"]
+          "executions": [
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": ["local-time-formats-2026-11-12-wasm"]
+          "executions": [
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     }

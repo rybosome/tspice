@@ -356,8 +356,10 @@
           "unitim_c"
         ],
         "dependsOn": [],
-        "prs": [],
-        "nextAction": "Run required local backend lanes, record source-bound evidence, open the seven-routine time parsing/formatting PR and observe canonical CI.",
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/688"
+        ],
+        "nextAction": "Reviewed routines have both required local lanes and observed current-source canonical Linux native CI. Complete remaining platform CI and metadata refresh before merge handoff; continue other baseline batches.",
         "record": "data/parity-audits/time-2.json"
       }
     ],
@@ -30206,12 +30208,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-node"
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -30220,12 +30225,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-wasm"
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -31317,12 +31325,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-node"
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -31331,12 +31342,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-wasm"
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -31594,12 +31608,15 @@
         "node": {
           "history": [
             "unreviewed",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-node"
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -31607,12 +31624,15 @@
         "wasm": {
           "history": [
             "unreviewed",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-wasm"
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -31855,12 +31875,15 @@
         "node": {
           "history": [
             "unreviewed",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-node"
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -31868,12 +31891,15 @@
         "wasm": {
           "history": [
             "unreviewed",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "cached",
           "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
           "executions": [
-            "local-time-formats-2026-11-12-wasm"
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -32103,12 +32129,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-node"
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -32117,12 +32146,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-wasm"
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -32344,12 +32376,15 @@
         "node": {
           "history": [
             "unreviewed",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-node"
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -32357,12 +32392,15 @@
         "wasm": {
           "history": [
             "unreviewed",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-wasm"
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -32715,12 +32753,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-node"
+            "local-time-formats-2026-11-12-node",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -32729,12 +32770,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
           "executions": [
-            "local-time-formats-2026-11-12-wasm"
+            "local-time-formats-2026-11-12-wasm",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/time-2.json"
@@ -33136,15 +33180,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33155,15 +33198,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33552,15 +33594,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33571,15 +33612,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33783,15 +33823,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33802,15 +33841,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34039,15 +34077,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34058,15 +34095,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34291,15 +34327,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34310,15 +34345,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34525,15 +34559,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34544,15 +34577,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34812,15 +34844,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34831,15 +34862,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35050,15 +35080,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-required-node-2026-11-12",
+            "ci-required-node-43297402592",
+            "ci-time-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35069,15 +35098,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-required-wasm-2026-11-12",
+            "ci-required-wasm-43297402592",
+            "ci-time-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"

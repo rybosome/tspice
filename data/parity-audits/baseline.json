@@ -322,8 +322,8 @@
         "unitim_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Run required local backend lanes, record source-bound evidence, open the seven-routine time parsing/formatting PR and observe canonical CI."
+      "prs": ["https://github.com/rybosome/tspice/pull/688"],
+      "nextAction": "Reviewed routines have both required local lanes and observed current-source canonical Linux native CI. Complete remaining platform CI and metadata refresh before merge handoff; continue other baseline batches."
     }
   ]
 }
