@@ -290,6 +290,40 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43341633735/job/131611077032",
       "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics.",
       "historical": true
+    },
+    {
+      "id": "local-ek-lifecycle-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f1901eb83a7b5b88f5da4f717b8c6a8f3b5bfdc8a333107b3c74d4de52422988",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both final required JS and production-native lanes passed on the current reviewed source. All 692 live comparisons (346 scenarios per backend), all 741 parity-package tests and required native sanity passed without native skips; 90 WASM, 62 Node, 26 core and 121 facade tests passed. Eight lifecycle routines have 35 registered cases, including 19 new, full segno/record-pointer outputs and named actual errors. Independent locked SpiceyPy readback compared complete DAS headers, all segment/column attributes and all persisted rows for actual Node/WASM writers; actual 100-column write/read and 101-column-before-element rejection passed. All 23 actual WASM heap fault positions passed after priming lazy malloc/free wrappers; failing-before controls established the ekopn second-allocation leak and 3 accepted shape gaps. Actual pending-error cleanup closes before scratch deletion; failed close retains claims for retry. Initial full-lane lint and empty-EK extra-reset regressions were repaired before final passes. Node 22.23.4/pnpm 10.13.1/CSPICE N0067/locked SpiceyPy 6.0.3/Python 3.12.15/macOS arm64. No C shim or WASM binary change. The 256 MiB packed-buffer limit was reviewed arithmetically rather than stress allocated. Rebase onto merged #680 / current #691 preserves byte-identical reviewed source."
+    },
+    {
+      "id": "local-ek-lifecycle-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f1901eb83a7b5b88f5da4f717b8c6a8f3b5bfdc8a333107b3c74d4de52422988",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both final required JS and production-native lanes passed on the current reviewed source. All 692 live comparisons (346 scenarios per backend), all 741 parity-package tests and required native sanity passed without native skips; 90 WASM, 62 Node, 26 core and 121 facade tests passed. Eight lifecycle routines have 35 registered cases, including 19 new, full segno/record-pointer outputs and named actual errors. Independent locked SpiceyPy readback compared complete DAS headers, all segment/column attributes and all persisted rows for actual Node/WASM writers; actual 100-column write/read and 101-column-before-element rejection passed. All 23 actual WASM heap fault positions passed after priming lazy malloc/free wrappers; failing-before controls established the ekopn second-allocation leak and 3 accepted shape gaps. Actual pending-error cleanup closes before scratch deletion; failed close retains claims for retry. Initial full-lane lint and empty-EK extra-reset regressions were repaired before final passes. Node 22.23.4/pnpm 10.13.1/CSPICE N0067/locked SpiceyPy 6.0.3/Python 3.12.15/macOS arm64. No C shim or WASM binary change. The 256 MiB packed-buffer limit was reviewed arithmetically rather than stress allocated. Rebase onto merged #680 / current #691 preserves byte-identical reviewed source."
     }
   ],
   "routines": [
@@ -431,10 +465,7 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-ek-lifecycle-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -450,13 +481,10 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-ek-lifecycle-2026-11-13-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Prior source-bound executions retained as historical after shared EK harness/lifecycle changes. Semantic judgments retained; both full required local lanes and canonical current-source CI refresh are pending."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

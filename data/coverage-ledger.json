@@ -11467,7 +11467,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekcls -> Node typed adapter -> registered N-API handler -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -11479,7 +11481,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekcls -> WASM typed helper -> configured compiled _tspice_ekcls export -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -12846,7 +12850,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekifld -> Node typed adapter -> registered N-API handler -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -12858,7 +12864,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekifld -> WASM typed helper -> configured compiled _tspice_ekifld export -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -13101,7 +13109,9 @@
           ],
           "route": "direct",
           "trace": "raw.eknseg -> Node typed adapter -> registered N-API handler -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -13113,7 +13123,9 @@
           ],
           "route": "direct",
           "trace": "raw.eknseg -> WASM typed helper -> configured compiled _tspice_eknseg export -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -13371,7 +13383,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekntab -> Node typed adapter -> registered N-API handler -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -13383,7 +13397,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekntab -> WASM typed helper -> configured compiled _tspice_ekntab export -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -13626,7 +13642,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekopn -> Node typed adapter -> registered N-API handler -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -13638,7 +13656,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekopn -> WASM typed helper -> configured compiled _tspice_ekopn export -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -13858,7 +13878,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekopr -> Node typed adapter -> registered N-API handler -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -13870,7 +13892,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekopr -> WASM typed helper -> configured compiled _tspice_ekopr export -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -14126,7 +14150,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekopw -> Node typed adapter -> registered N-API handler -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -14138,7 +14164,9 @@
           ],
           "route": "direct",
           "trace": "raw.ekopw -> WASM typed helper -> configured compiled _tspice_ekopw export -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -14422,7 +14450,9 @@
           ],
           "route": "direct",
           "trace": "raw.ektnam -> Node typed adapter -> registered N-API handler -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-node"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         },
@@ -14434,7 +14464,9 @@
           ],
           "route": "direct",
           "trace": "raw.ektnam -> WASM typed helper -> configured compiled _tspice_ektnam export -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [],
+          "executions": [
+            "local-ek-lifecycle-2026-11-13-wasm"
+          ],
           "status": "reviewed",
           "record": "data/parity-audits/ek-2.json"
         }
@@ -20846,8 +20878,7 @@
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -20867,8 +20898,7 @@
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -30746,8 +30776,7 @@
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -30763,8 +30792,7 @@
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -33429,8 +33457,7 @@
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33450,8 +33477,7 @@
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33737,8 +33763,7 @@
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -33754,8 +33779,7 @@
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -33971,8 +33995,7 @@
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33992,8 +34015,7 @@
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34206,8 +34228,7 @@
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34227,8 +34248,7 @@
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34466,8 +34486,7 @@
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34487,8 +34506,7 @@
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34722,8 +34740,7 @@
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34743,8 +34760,7 @@
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34960,8 +34976,7 @@
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34981,8 +34996,7 @@
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35251,8 +35265,7 @@
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35272,8 +35285,7 @@
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35493,8 +35505,7 @@
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35514,8 +35525,7 @@
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -36427,8 +36437,7 @@
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-ek-lifecycle-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -36444,8 +36453,7 @@
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-ek-lifecycle-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
