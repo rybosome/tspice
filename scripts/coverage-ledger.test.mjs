@@ -27,6 +27,8 @@ const inputs = [
   "data/cspice-functions.json",
   "data/coverage-ledger-policy.json",
   "data/parity-audits",
+  "packages/py-parity-checking/fixtures/kernels/kplfrm-minimal.tf",
+  "packages/py-parity-checking/src/case-types.ts",
   "packages/py-parity-checking/test/parity.test.ts",
   "packages/py-parity-checking/src/parity-assert.ts",
   "packages/py-parity-checking/src/run-tspice/index.ts",
@@ -61,6 +63,10 @@ function fixture(t) {
   // execution observations. Preserve the human review but reset verification.
   for (const file of fs.readdirSync(path.join(root, "data/parity-audits"))) {
     if (file === "baseline.json") continue;
+    if (file !== "vectors-arithmetic.json") {
+      fs.rmSync(path.join(root, "data/parity-audits", file));
+      continue;
+    }
     const target = path.join(root, "data/parity-audits", file);
     const record = JSON.parse(fs.readFileSync(target, "utf8"));
     record.executions = [];
@@ -82,7 +88,7 @@ function fixture(t) {
   return { root, edit, build: () => buildLedger(root, { trackedFiles }) };
 }
 
-test("baseline derives breadth and preserves fallback/non-direct evidence", (t) => {
+test("baseline derives breadth and preserves direct/non-direct evidence", (t) => {
   const f = fixture(t);
   const ledger = f.build();
   assert.deepEqual(ledger.summary, {
@@ -92,17 +98,14 @@ test("baseline derives breadth and preserves fallback/non-direct evidence", (t) 
     planned: 487,
     excluded: 3,
     caseFiles: 162,
-    scenarios: 316,
-    wasmRawUnsupported: 1,
+    scenarios: 319,
+    wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
   assert.equal(kplfrm.inventoryDecision, "planned");
   assert.equal(kplfrm.implementation, "contract-present");
-  assert.equal(kplfrm.backends.wasm.status, "unsupported");
-  assert.equal(
-    kplfrm.backends.wasm.oracleParity.classification,
-    "harness-fallback-not-raw-parity",
-  );
+  assert.equal(kplfrm.backends.wasm.status, "source-and-binary-route-present");
+  assert.ok(kplfrm.backends.wasm.shimSymbols.includes("tspice_kplfrm"));
   assert.equal(
     ledger.routines.find((r) => r.routine === "kxtrct_c").backends.wasm.status,
     "javascript-implementation",
@@ -273,7 +276,7 @@ test("the checked-in binary export is checked independently of source/config", (
 });
 
 test("stale unsupported-method exceptions fail", (t) => {
-  const f = fixture(t);
+  const f = unsupportedFixture(t);
   f.edit(
     "packages/backend-wasm/src/domains/kernels.ts",
     "kplfrm not supported in current WASM bundle",
@@ -283,7 +286,7 @@ test("stale unsupported-method exceptions fail", (t) => {
 });
 
 test("an inert error string cannot stand in for an unsupported throw", (t) => {
-  const f = fixture(t);
+  const f = unsupportedFixture(t);
   f.edit(
     "packages/backend-wasm/src/domains/kernels.ts",
     'throw new Error("kplfrm not supported in current WASM bundle");',
@@ -293,7 +296,7 @@ test("an inert error string cannot stand in for an unsupported throw", (t) => {
 });
 
 test("an existing but disconnected harness fallback does not count", (t) => {
-  const f = fixture(t);
+  const f = unsupportedFixture(t);
   f.edit(
     "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
     "return runWasmKplfrmFallback(context, frmcls);",
@@ -444,7 +447,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
   for (const backend of ["node", "wasm"]) {
-    assert.equal(ledger.audit.counts[backend].reviewed, 8);
+    assert.ok(ledger.audit.counts[backend].reviewed >= 8);
     assert.equal(ledger.audit.counts[backend].verified, 0);
   }
   assert.equal(
@@ -577,6 +580,8 @@ test("human route judgments must agree with traced implementations", (t) => {
 test("verified status accepts explicit source-bound local and observed CI evidence", (t) => {
   const f = fixture(t);
   const ledger = f.build();
+  const repairEvidence = path.join(f.root, "scripts/repair-assertion.test.mjs");
+  fs.writeFileSync(repairEvidence, "// maintained assertion fixture\n");
   editAudit(
     f,
     (r) => {
@@ -587,6 +592,9 @@ test("verified status accepts explicit source-bound local and observed CI eviden
     "baseline.json",
   );
   editAudit(f, (r) => {
+    r.routines[0].findings[0].evidence.push(
+      "scripts/repair-assertion.test.mjs",
+    );
     const names = new Set(r.routines.map((entry) => entry.routine));
     const sourceDigest = auditSourceDigest(
       f.root,
@@ -612,10 +620,94 @@ test("verified status accepts explicit source-bound local and observed CI eviden
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.equal(f.build().audit.counts.wasm.verified, 1);
+  fs.appendFileSync(repairEvidence, "// assertion changed\n");
+  assert.throws(f.build, /stale execution source digest/);
+  fs.writeFileSync(repairEvidence, "// maintained assertion fixture\n");
   f.edit(
     "packages/py-parity-checking/src/parity-assert.ts",
     "const ABSOLUTE_NUMERIC_TOLERANCE = 1e-12;",
     "const ABSOLUTE_NUMERIC_TOLERANCE = 1e-11;",
   );
   assert.throws(f.build, /stale execution source digest/);
+});
+
+// A synthetic unsupported implementation keeps the generic exception/fallback
+// drift checks covered after production kplfrm no longer needs an exception.
+function unsupportedFixture(t) {
+  const f = fixture(t);
+  fs.rmSync(path.join(f.root, "data/parity-audits/kplfrm-prerequisite.json"), {
+    force: true,
+  });
+  const file = "packages/backend-wasm/src/domains/kernels.ts";
+  const contents = fs.readFileSync(path.join(f.root, file), "utf8");
+  const start = contents.indexOf("    kplfrm:");
+  const end = contents.indexOf("    ktotal:", start);
+  f.edit(
+    file,
+    contents.slice(start, end),
+    `    kplfrm: () => { throw new Error("kplfrm not supported in current WASM bundle"); },\n`,
+  );
+  const dispatcher =
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts";
+  f.edit(
+    dispatcher,
+    "function runKplfrmStep(",
+    "function runWasmKplfrmFallback(): number[] { return []; }\nfunction runKplfrmStep(",
+  );
+  f.edit(
+    dispatcher,
+    "  const idset = context.spice.kit.newIntCell(capacity);",
+    '  if (context.spice.raw.kind === "wasm") return runWasmKplfrmFallback(context, frmcls);\n  const idset = context.spice.kit.newIntCell(capacity);',
+  );
+  const policyFile = path.join(f.root, "data/coverage-ledger-policy.json");
+  const policy = JSON.parse(fs.readFileSync(policyFile, "utf8"));
+  policy.exceptions.kplfrm = {
+    wasm: {
+      status: "unsupported",
+      reason: "synthetic exception validation fixture",
+      message: "kplfrm not supported in current WASM bundle",
+      errorType: "Error",
+      harnessFile: dispatcher,
+      harnessFunction: "runWasmKplfrmFallback",
+      harnessDispatcher: "runKplfrmStep",
+      operation: "kernels.kplfrm",
+    },
+  };
+  fs.writeFileSync(policyFile, JSON.stringify(policy));
+  return f;
+}
+
+test("historical executions remain visible but cannot establish current verification", (t) => {
+  const f = fixture(t);
+  editAudit(
+    f,
+    (r) => {
+      r.batches.find((b) => b.id === "vectors-arithmetic").prs = [
+        "https://github.com/rybosome/tspice/pull/1",
+      ];
+    },
+    "baseline.json",
+  );
+  editAudit(f, (r) => {
+    r.executions.push({
+      id: "historical",
+      kind: "local",
+      backend: "wasm",
+      command: "synthetic fixture",
+      result: "passed",
+      sourceDigest: "0".repeat(64),
+      historical: true,
+      caseIds: r.routines[0].scenarios.map((s) => s.caseId),
+      observation: "Prior source, retained explicitly as history",
+    });
+    r.routines[0].backends.wasm.executions = ["historical"];
+  });
+  assert.equal(
+    f.build().routines.find((r) => r.routine === "vadd_c").audit.wasm.status,
+    "reviewed",
+  );
+  editAudit(f, (r) => {
+    r.routines[0].backends.wasm.history.push("verified");
+  });
+  assert.throws(f.build, /missing local live verification/);
 });

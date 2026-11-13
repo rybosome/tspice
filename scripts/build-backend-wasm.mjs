@@ -7,6 +7,7 @@ import {
   WASM_BINARY_FILENAME,
   WASM_NODE_JS_FILENAME,
   WASM_WEB_JS_FILENAME,
+  rewriteQuotedWasmBasename,
 } from "./backend-wasm-assets.mjs";
 
 const repoRoot = path.resolve(
@@ -363,6 +364,7 @@ const exportedFunctions = [
   "_tspice_furnsh",
   "_tspice_unload",
   "_tspice_kclear",
+  "_tspice_kplfrm",
   "_tspice_ktotal",
   "_tspice_kdata",
   // NOTE: not required by the TS bindings, but handy for debugging.
@@ -640,14 +642,15 @@ fs.copyFileSync(outputWebWasmPath, outputWasmPath);
   const webWasmBasename = path.basename(outputWebWasmPath);
   const nodeWasmBasename = path.basename(outputNodeWasmPath);
 
-  const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[[\]\\]/g, "$&");
-
   const patchWasmBasename = (jsPath, oldBasename) => {
     const jsContents = fs.readFileSync(jsPath, "utf8");
 
     // Only patch quoted occurrences of the derived wasm filename.
-    const re = new RegExp(`(['"])${escapeRegExp(oldBasename)}\\1`, "g");
-    const patched = jsContents.replace(re, `$1${WASM_BINARY_FILENAME}$1`);
+    const patched = rewriteQuotedWasmBasename(
+      jsContents,
+      oldBasename,
+      WASM_BINARY_FILENAME,
+    );
     if (patched === jsContents) {
       throw new Error(
         `Expected to patch wasm basename in ${jsPath} but no changes were made`,

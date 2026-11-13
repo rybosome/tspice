@@ -373,9 +373,8 @@ static Napi::Value Kplfrm(const Napi::CallbackInfo& info) {
   }
 
   const int frmcls = info[0].As<Napi::Number>().Int32Value();
-  const uint32_t idsetHandle = info[1].As<Napi::Number>().Uint32Value();
-  if (idsetHandle == 0) {
-    ThrowSpiceError(Napi::TypeError::New(env, "kplfrm(idset): handle must be a non-zero integer"));
+  uint32_t idsetHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "kplfrm(idset)", &idsetHandle)) {
     return env.Undefined();
   }
 

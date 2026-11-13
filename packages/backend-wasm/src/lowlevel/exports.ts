@@ -50,6 +50,12 @@ export type EmscriptenModule = {
   _tspice_furnsh(pathPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_unload(pathPtr: number, errPtr: number, errMaxBytes: number): number;
   _tspice_kclear(errPtr: number, errMaxBytes: number): number;
+  _tspice_kplfrm(
+    frmcls: number,
+    idset: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_ktotal(
     kindPtr: number,
     outCountPtr: number,
@@ -2154,6 +2160,7 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_furnsh",
   "_tspice_unload",
   "_tspice_kclear",
+  "_tspice_kplfrm",
   "_tspice_ktotal",
   "_tspice_kdata",
 

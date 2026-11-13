@@ -507,6 +507,7 @@ export type StepKernelsKinfo = {
 export type StepKernelsKplfrm = {
   op: "kernels.kplfrm";
   frmcls: number;
+  capacity?: number;
 };
 
 export type StepKernelsKtotal = {

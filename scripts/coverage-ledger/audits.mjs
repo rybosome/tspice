@@ -45,8 +45,11 @@ export function auditSourceDigest(root, record, routines) {
     "packages/py-parity-checking/test/parity.test.ts",
     "packages/py-parity-checking/sidecars/spiceypy/uv.lock",
   ]);
-  for (const review of record.routines)
+  for (const review of record.routines) {
     for (const fixture of review.fixtures) files.add(fixture.path);
+    for (const finding of review.findings)
+      for (const file of finding.evidence ?? []) files.add(file);
+  }
   for (const routine of routines) {
     files.add(routine.contract.evidence.file);
     for (const backend of backends) {
@@ -176,7 +179,9 @@ export function applyAudits(root, routines) {
         `invalid execution ${execution.id}`,
       );
       requireValue(
-        execution.sourceDigest === digest,
+        execution.sourceDigest === digest ||
+          (execution.historical === true &&
+            /^[a-f0-9]{64}$/.test(execution.sourceDigest)),
         `stale execution source digest ${execution.id}`,
       );
       unique(execution.caseIds, `executed case identifiers in ${execution.id}`);
@@ -376,6 +381,8 @@ export function applyAudits(root, routines) {
               executions.some(
                 (e) =>
                   e.kind === kind &&
+                  e.historical !== true &&
+                  e.sourceDigest === digest &&
                   review.scenarios.every((s) => e.caseIds.includes(s.caseId)),
               ),
               `missing ${kind} live verification for ${backend}.${name}`,

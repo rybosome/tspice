@@ -36,7 +36,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Pilot verified on both backends; review/merge #678 then #679. Continue remaining coordinate/matrix audit."
+      "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change."
     },
     {
       "id": "coordinates-matrices",
@@ -273,13 +273,19 @@
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
     },
     {
+      "id": "kplfrm-prerequisite",
+      "routines": ["kplfrm_c"],
+      "dependsOn": ["vectors-arithmetic"],
+      "prs": ["https://github.com/rybosome/tspice/pull/680"],
+      "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change."
+    },
+    {
       "id": "kernels",
       "routines": [
         "furnsh_c",
         "kclear_c",
         "kdata_c",
         "kinfo_c",
-        "kplfrm_c",
         "ktotal_c",
         "kxtrct_c",
         "unload_c"

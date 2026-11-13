@@ -27,6 +27,7 @@ class StepKernelsKinfo:
 class StepKernelsKplfrm:
     op: Literal["kernels.kplfrm"]
     frmcls: int
+    capacity: int = 1024
 
 
 @dataclass(frozen=True)

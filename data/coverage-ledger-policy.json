@@ -1,19 +1,6 @@
 {
   "schemaVersion": 1,
-  "exceptions": {
-    "kplfrm": {
-      "wasm": {
-        "status": "unsupported",
-        "reason": "The raw WASM method throws; the parity harness substitutes a kernel-pool fallback instead of exercising raw.kplfrm.",
-        "message": "kplfrm not supported in current WASM bundle",
-        "harnessFile": "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
-        "harnessFunction": "runWasmKplfrmFallback",
-        "harnessDispatcher": "runKplfrmStep",
-        "operation": "kernels.kplfrm",
-        "errorType": "Error"
-      }
-    }
-  },
+  "exceptions": {},
   "routes": {
     "furnsh": {
       "node": {

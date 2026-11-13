@@ -8,6 +8,7 @@ import type {
   SpiceIntCell,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertSpiceInt32,
   kxtrctJs,
   matchesKernelKind,
   nativeKindQueryOrNull,
@@ -15,6 +16,9 @@ import {
 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
+
+import { WASM_ERR_MAX_BYTES, withMalloc } from "../codec/alloc.js";
+import { assertWasmOwnedCellHandle } from "./cells-windows.js";
 
 import { tspiceCall0, tspiceCall1Path } from "../codec/calls.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
@@ -232,8 +236,19 @@ export function createKernelsApi(
     kxtrct: (keywd: string, terms: readonly string[], wordsq: string) => {
       return kxtrctJs(keywd, terms, wordsq);
     },
-    kplfrm: (_frmcls: number, _idset: SpiceIntCell) => {
-      throw new Error("kplfrm not supported in current WASM bundle");
+    kplfrm: (frmcls: number, idset: SpiceIntCell) => {
+      assertSpiceInt32(frmcls, "kplfrm(frmcls)");
+      assertWasmOwnedCellHandle(module, idset, "kplfrm(idset)");
+      withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
+        const result = module._tspice_kplfrm(
+          frmcls,
+          idset,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      });
     },
     ktotal: (kind: KernelKindInput = "ALL") => {
       const kinds = normalizeKindInput(kind);
