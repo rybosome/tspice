@@ -629,6 +629,8 @@ export function createCellsWindowsApi(
       tspiceCallInsrtd(module, item, cell);
     },
     insrtc: (item, cell) => {
+      if (typeof item !== "string")
+        throw new TypeError("insrtc(item): expected a string");
       assertKnownCell(cell, "insrtc()");
       tspiceCallInsrtc(module, item, cell);
     },

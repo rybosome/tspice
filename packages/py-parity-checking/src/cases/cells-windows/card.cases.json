@@ -16,7 +16,9 @@
         "targetId": "W_CARD"
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-card-missing-target-error",
@@ -28,6 +30,62 @@
         "targetId": "MISSING_INT"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "cells-windows-card-audit-all-cell-types-and-zero",
+    "description": "Cardinality is observed for int/double/char cells before and after clearing.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrti",
+        "cellId": "I",
+        "item": 1,
+        "maxCardinality": 3
+      },
+      {
+        "op": "cells-windows.insrtd",
+        "cellId": "D",
+        "item": 1.25,
+        "maxCardinality": 5
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "S",
+        "item": "a",
+        "maxCardinality": 7,
+        "length": 8
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "I"
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "double",
+        "targetId": "D"
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "char",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "int",
+        "targetId": "I",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "I"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

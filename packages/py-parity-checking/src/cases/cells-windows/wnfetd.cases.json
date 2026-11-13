@@ -10,11 +10,26 @@
         "right": 2,
         "maxIntervals": 8
       },
-      { "op": "cells-windows.wninsd", "windowId": "W1", "left": 5, "right": 6 },
-      { "op": "cells-windows.wnfetd", "windowId": "W1", "index": 0 },
-      { "op": "cells-windows.wnfetd", "windowId": "W1", "index": 1 }
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W1",
+        "left": 5,
+        "right": 6
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W1",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W1",
+        "index": 1
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "cells-windows-wnfetd-out-of-range-error",
@@ -27,8 +42,86 @@
         "right": 2,
         "maxIntervals": 4
       },
-      { "op": "cells-windows.wnfetd", "windowId": "WERR", "index": 4 }
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "WERR",
+        "index": 4
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOINTERVAL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wnfetd-audit-zero-based-first-last",
+    "description": "Every interval is fetched using zero-based indices across negative and positive endpoints.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": -5,
+        "right": -2,
+        "maxIntervals": 4
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 8,
+        "right": 9
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 1
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnfetd-audit-empty-window",
+    "description": "An empty real window has no interval zero.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 1
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOINTERVAL"]
+    }
   }
 ]

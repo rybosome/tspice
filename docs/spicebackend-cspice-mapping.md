@@ -348,3 +348,7 @@ and compare complete identifiers, both TDB bounds and all six packed integers.
 Physical file handles are process-dependent: independent tests verify their
 identity against actual KDATA within each backend, including priority changes.
 The unchanged live comparator remains 1e-12 absolute-or-relative.
+
+### Cell/window observations
+
+`card` and `size` count elements (window endpoints); `wncard` counts intervals and `wnfetd` uses zero-based interval indices. `scard` changes cardinality without clearing or initializing stored bytes. Set insertion compares complete ordered contents with live SpiceyPy, including duplicate insertion into a full set, explicit zero capacity, and character truncation/trailing-blank equivalence. `insrtc` requires a string at runtime on both backends. Window cases observe every selected endpoint after touching, contained, bridging and singleton insertions; named overflow/bounds errors and separate same-instance recovery tests preserve error distinctions and lifecycle behavior. Missing-target workflow errors remain harness preflight and do not establish raw CSPICE error parity.

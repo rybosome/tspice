@@ -35,8 +35,8 @@ def _get_or_create_int_cell(
     if existing is not None:
         return existing
 
-    if max_cardinality <= 0:
-        raise ValueError("maxCardinality must be > 0")
+    if max_cardinality < 0:
+        raise ValueError("maxCardinality must be >= 0")
 
     cell = SPICEINT_CELL(max_cardinality)
     int_cells[cell_id] = cell
@@ -66,8 +66,8 @@ def _get_or_create_double_cell(
     if existing is not None:
         return existing
 
-    if max_cardinality <= 0:
-        raise ValueError("maxCardinality must be > 0")
+    if max_cardinality < 0:
+        raise ValueError("maxCardinality must be >= 0")
 
     cell = SPICEDOUBLE_CELL(max_cardinality)
     double_cells[cell_id] = cell
@@ -98,8 +98,8 @@ def _get_or_create_char_cell(
     if existing is not None:
         return existing
 
-    if max_cardinality <= 0:
-        raise ValueError("maxCardinality must be > 0")
+    if max_cardinality < 0:
+        raise ValueError("maxCardinality must be >= 0")
 
     if length <= 0:
         raise ValueError("length must be > 0")
@@ -127,8 +127,8 @@ def _get_or_create_window(context: SidecarRuntimeContext, window_id: str, *, max
     if existing is not None:
         return existing
 
-    if max_intervals <= 0:
-        raise ValueError("maxIntervals must be > 0")
+    if max_intervals < 0:
+        raise ValueError("maxIntervals must be >= 0")
 
     window = SPICEDOUBLE_CELL(max_intervals * 2)
     windows[window_id] = window
@@ -172,34 +172,34 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
         cell = _get_or_create_char_cell(
             context,
             step.cellId,
-            max_cardinality=step.maxCardinality or 8,
-            length=step.length or 32,
+            max_cardinality=8 if step.maxCardinality is None else step.maxCardinality,
+            length=32 if step.length is None else step.length,
         )
         sp.insrtc(step.item, cell)
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value=list(cell))
 
     if isinstance(step, StepCellsWindowsInsrtd):
         cell = _get_or_create_double_cell(
             context,
             step.cellId,
-            max_cardinality=step.maxCardinality or 8,
+            max_cardinality=8 if step.maxCardinality is None else step.maxCardinality,
         )
         sp.insrtd(step.item, cell)
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value=list(cell))
 
     if isinstance(step, StepCellsWindowsInsrti):
         cell = _get_or_create_int_cell(
             context,
             step.cellId,
-            max_cardinality=step.maxCardinality or 8,
+            max_cardinality=8 if step.maxCardinality is None else step.maxCardinality,
         )
         sp.insrti(step.item, cell)
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value=list(cell))
 
     if isinstance(step, StepCellsWindowsScard):
         target = _require_target(context, step.targetKind, step.targetId)
         sp.scard(step.card, target)
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value=int(sp.card(target)))
 
     if isinstance(step, StepCellsWindowsSize):
         target = _require_target(context, step.targetKind, step.targetId)
@@ -220,7 +220,7 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
         return StepOutput(op=step.op, value=int(sp.wncard(window)))
 
     if isinstance(step, StepCellsWindowsWninsd):
-        window = _get_or_create_window(context, step.windowId, max_intervals=step.maxIntervals or 8)
+        window = _get_or_create_window(context, step.windowId, max_intervals=8 if step.maxIntervals is None else step.maxIntervals)
         sp.wninsd(step.left, step.right, window)
         return StepOutput(op=step.op, value=None)
 
