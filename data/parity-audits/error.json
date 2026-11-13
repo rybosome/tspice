@@ -1,0 +1,628 @@
+{
+  "schemaVersion": 1,
+  "batch": "error",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/py-parity-checking/test/error-capture.test.ts",
+    "packages/backend-wasm/test/error-allocation-cleanup.test.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py"
+  ],
+  "executions": [
+    {
+      "id": "local-error-recovery-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c8ee0807ab6eff6b1715241df04da03e4c57ee2ecdcc01f3c64328f512b8be1e",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "After repairing the native trace leak exposed by the first full native run (9 failing comparisons), final full required JS/native lanes passed. Production addon built/loaded; native sanity ran; all 660 live parity tests (330 scenarios per backend), all 695 parity-package tests passed with no skips. All 76 WASM tests passed, including 14 allocation rollback tests. Capture negative controls and same-instance early-error trace cleanup passed on both backends. Eleven new live cases cover complete diagnostics, trace mutations, message buffer boundaries and recovery. macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. No C or WASM binary regeneration in the error batch."
+    },
+    {
+      "id": "local-error-recovery-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c8ee0807ab6eff6b1715241df04da03e4c57ee2ecdcc01f3c64328f512b8be1e",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "After repairing the native trace leak exposed by the first full native run (9 failing comparisons), final full required JS/native lanes passed. Production addon built/loaded; native sanity ran; all 660 live parity tests (330 scenarios per backend), all 695 parity-package tests passed with no skips. All 76 WASM tests passed, including 14 allocation rollback tests. Capture negative controls and same-instance early-error trace cleanup passed on both backends. Eleven new live cases cover complete diagnostics, trace mutations, message buffer boundaries and recovery. macOS arm64, Node22.23.4, pnpm10.13.1, locked SpiceyPy6.0.3/Python3.12.15, CSPICE N0067. No C or WASM binary regeneration in the error batch."
+    },
+    {
+      "id": "ci-error-node-43315317543",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c8ee0807ab6eff6b1715241df04da03e4c57ee2ecdcc01f3c64328f512b8be1e",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "27b603b8531ed621bcd3ff76a6a1518ac5bcf796",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315317543/job/131521684722",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 660 live parity tests (330 per backend), all 695 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
+    },
+    {
+      "id": "ci-error-wasm-43315317543",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c8ee0807ab6eff6b1715241df04da03e4c57ee2ecdcc01f3c64328f512b8be1e",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "27b603b8531ed621bcd3ff76a6a1518ac5bcf796",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43315317543/job/131521684722",
+      "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 660 live parity tests (330 per backend), all 695 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "chkin_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chkin_c.html",
+      "semantics": "Pushes the supplied module onto the CSPICE traceback stack; nested names appear in captured error trace. Empty names signal EMPTYSTRING. Blank/mismatched/overflow trace misuse emits diagnostic text rather than normal signaled exceptions.",
+      "scenarios": [
+        {
+          "caseId": "error-chkin-trace-stack-success",
+          "coverage": ["success"],
+          "observes": "chkin/chkout updates traceback stack without setting failure status; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-chkin-empty-name-error",
+          "coverage": ["error"],
+          "observes": "Representative chkin error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-chkin-audit-nested-visible-trace",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Complete real captured traceback includes both active names before checkout; after explicit pops the next captured signal has no user frames. All short/long/trace fields and recovered flag reach the live exact comparison."
+        }
+      ],
+      "edgeAssessment": "Pushes the supplied module onto the CSPICE traceback stack; nested names appear in captured error trace. Empty names signal EMPTYSTRING. Blank/mismatched/overflow trace misuse emits diagnostic text rather than normal signaled exceptions. Cross-backend live workflows cover prepared/replaced messages, reset/repeated reset, post-signal recovery and/or visible stack effects as applicable. WASM allocation rollback is injected at all 14 allocation positions across the seven wrappers.",
+      "errorAssessment": "Empty-string or invalid-selector cases require stable error fragments. Selector restriction is a typed wrapper policy on both oracle and tspice. Trace mismatch/underflow/overflow diagnostics write to the disabled output device, rather than producing ordinary SPICE failures, so they are not misrepresented as thrown-error cases.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or datasets required; all strings, nested module labels, and overlength ASCII messages are project-authored synthetic inputs.",
+      "cleanup": "Raw errors are captured/reset in the shared shim before throwing. Oracle capture obtains actual CSPICE messages/trace then resets in finally to model that documented policy. Case lifecycle calls kclear/reset before/after, clients dispose in finally, and each oracle workflow runs in its own process. Tests compare the next signal to detect stale state; WASM strings/output/error allocations are freed on every allocation failure. Trace entries are tracked per case and unwound in reverse order by a finalizer on success/failure; reset alone does not pop them. Direct same-instance tests check the next case has no leaked trace.",
+      "tolerance": "No numeric tolerance dependence: booleans, full strings, exact object keys/shapes and null effects compare exactly. Trace formatting is the shared CSPICE qcktrc output. No global or local tolerance changes.",
+      "findings": [
+        {
+          "id": "unobserved-trace-effect",
+          "status": "repaired",
+          "summary": "Original success workflows compared null push/pop results plus a clean status; no assertion observed the stack effect, so no-op stack operations could pass.",
+          "repair": "Add success workflows that signal/catch the real raw error and compare the complete trace against SpiceyPy for nested, child-pop, and balanced-stack behavior. Capture rejects no-op signaling and unrelated exceptions.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+            "packages/py-parity-checking/test/error-capture.test.ts",
+            "packages/py-parity-checking/src/cases/error/chkin.cases.json"
+          ],
+          "caseIds": ["error-chkin-audit-nested-visible-trace"]
+        },
+        {
+          "id": "trace-leaks-between-native-cases",
+          "status": "repaired",
+          "summary": "The first full native lane failed nine new cases because active user trace names survived reset and leaked into later cases. WASM fresh instances and separate oracle processes hid that lifecycle gap.",
+          "repair": "Track successful chkin/chkout operations per case and unwind remaining entries in reverse order in a finalizer on both handlers. Explicitly balance successful workflows; test early-error cleanup with the next workflow on the same real backend instance.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+            "packages/py-parity-checking/src/runtime/context.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+            "packages/py-parity-checking/test/error-capture.test.ts"
+          ],
+          "caseIds": ["error-chkin-audit-nested-visible-trace"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "chkout_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chkout_c.html",
+      "semantics": "Pops the matching top module from the traceback stack. Balanced push/pop removes that name; popping a child preserves its parent. Empty names signal EMPTYSTRING; mismatch/empty-stack diagnostics are not ordinary thrown SPICE errors.",
+      "scenarios": [
+        {
+          "caseId": "error-chkout-balanced-trace-success",
+          "coverage": ["success"],
+          "observes": "chkout removes prior chkin entry and keeps error status clear; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-chkout-empty-name-error",
+          "coverage": ["error"],
+          "observes": "Representative chkout error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-chkout-audit-pop-child-preserve-parent",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Checking out a child removes only that frame; a captured real error retains the parent.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-chkout-audit-balanced-empty-trace",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Balanced push/pop leaves no user frame in the captured signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        }
+      ],
+      "edgeAssessment": "Pops the matching top module from the traceback stack. Balanced push/pop removes that name; popping a child preserves its parent. Empty names signal EMPTYSTRING; mismatch/empty-stack diagnostics are not ordinary thrown SPICE errors. Cross-backend live workflows cover prepared/replaced messages, reset/repeated reset, post-signal recovery and/or visible stack effects as applicable. WASM allocation rollback is injected at all 14 allocation positions across the seven wrappers.",
+      "errorAssessment": "Empty-string or invalid-selector cases require stable error fragments. Selector restriction is a typed wrapper policy on both oracle and tspice. Trace mismatch/underflow/overflow diagnostics write to the disabled output device, rather than producing ordinary SPICE failures, so they are not misrepresented as thrown-error cases.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or datasets required; all strings, nested module labels, and overlength ASCII messages are project-authored synthetic inputs.",
+      "cleanup": "Raw errors are captured/reset in the shared shim before throwing. Oracle capture obtains actual CSPICE messages/trace then resets in finally to model that documented policy. Case lifecycle calls kclear/reset before/after, clients dispose in finally, and each oracle workflow runs in its own process. Tests compare the next signal to detect stale state; WASM strings/output/error allocations are freed on every allocation failure. Trace entries are tracked per case and unwound in reverse order by a finalizer on success/failure; reset alone does not pop them. Direct same-instance tests check the next case has no leaked trace.",
+      "tolerance": "No numeric tolerance dependence: booleans, full strings, exact object keys/shapes and null effects compare exactly. Trace formatting is the shared CSPICE qcktrc output. No global or local tolerance changes.",
+      "findings": [
+        {
+          "id": "unobserved-trace-effect",
+          "status": "repaired",
+          "summary": "Original success workflows compared null push/pop results plus a clean status; no assertion observed the stack effect, so no-op stack operations could pass.",
+          "repair": "Add success workflows that signal/catch the real raw error and compare the complete trace against SpiceyPy for nested, child-pop, and balanced-stack behavior. Capture rejects no-op signaling and unrelated exceptions.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+            "packages/py-parity-checking/test/error-capture.test.ts",
+            "packages/py-parity-checking/src/cases/error/chkout.cases.json"
+          ],
+          "caseIds": [
+            "error-chkout-audit-pop-child-preserve-parent",
+            "error-chkout-audit-balanced-empty-trace"
+          ]
+        },
+        {
+          "id": "trace-leaks-between-native-cases",
+          "status": "repaired",
+          "summary": "The first full native lane failed nine new cases because active user trace names survived reset and leaked into later cases. WASM fresh instances and separate oracle processes hid that lifecycle gap.",
+          "repair": "Track successful chkin/chkout operations per case and unwind remaining entries in reverse order in a finalizer on both handlers. Explicitly balance successful workflows; test early-error cleanup with the next workflow on the same real backend instance.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+            "packages/py-parity-checking/src/runtime/context.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+            "packages/py-parity-checking/test/error-capture.test.ts"
+          ],
+          "caseIds": [
+            "error-chkout-audit-pop-child-preserve-parent",
+            "error-chkout-audit-balanced-empty-trace"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "failed_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/failed_c.html",
+      "semantics": "Returns the current CSPICE failure flag. The shared shim captures diagnostics and resets before throwing, so normal public raw operations expose clean initial/prepared-message/post-caught-error states. A persistent true state is unreachable using only these raw operations; no harness sets a fake failure flag.",
+      "scenarios": [
+        {
+          "caseId": "error-failed-clean-state-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "failed reports false after explicit reset; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-failed-setmsg-does-not-fail-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "setmsg alone does not set failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-failed-audit-post-signal-recovery",
+          "coverage": ["success", "edge", "state"],
+          "observes": "failed remains clear after the shim captures and resets a real signaled error.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        }
+      ],
+      "edgeAssessment": "Returns the current CSPICE failure flag. The shared shim captures diagnostics and resets before throwing, so normal public raw operations expose clean initial/prepared-message/post-caught-error states. A persistent true state is unreachable using only these raw operations; no harness sets a fake failure flag. Cross-backend live workflows cover prepared/replaced messages, reset/repeated reset, post-signal recovery and/or visible stack effects as applicable. WASM allocation rollback is injected at all 14 allocation positions across the seven wrappers.",
+      "errorAssessment": "NAIF documents this routine as error-free. No artificial CSPICE error case is manufactured; state boundaries and recovery are observed. The true failed flag is reset before public raw exceptions return.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or datasets required; all strings, nested module labels, and overlength ASCII messages are project-authored synthetic inputs.",
+      "cleanup": "Raw errors are captured/reset in the shared shim before throwing. Oracle capture obtains actual CSPICE messages/trace then resets in finally to model that documented policy. Case lifecycle calls kclear/reset before/after, clients dispose in finally, and each oracle workflow runs in its own process. Tests compare the next signal to detect stale state; WASM strings/output/error allocations are freed on every allocation failure. Trace entries are tracked per case and unwound in reverse order by a finalizer on success/failure; reset alone does not pop them. Direct same-instance tests check the next case has no leaked trace.",
+      "tolerance": "No numeric tolerance dependence: booleans, full strings, exact object keys/shapes and null effects compare exactly. Trace formatting is the shared CSPICE qcktrc output. No global or local tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "getmsg_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getmsg_c.html",
+      "semantics": "Returns SHORT, LONG, or EXPLAIN with exact leading blanks retained and SPICE trailing padding removed. A prepared LONG message can be retrieved before signaling. The contract deliberately validates uppercase selectors. Error capture/reset clears buffers before subsequent raw calls.",
+      "scenarios": [
+        {
+          "caseId": "error-getmsg-long-roundtrip-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "getmsg(LONG) returns value previously set via setmsg; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-getmsg-invalid-selector-error",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Representative getmsg selector validation error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-getmsg-audit-all-selectors-clean-and-reset",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Each selector is observed before signaling, after automatic error recovery, and after explicit reset.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        }
+      ],
+      "edgeAssessment": "Returns SHORT, LONG, or EXPLAIN with exact leading blanks retained and SPICE trailing padding removed. A prepared LONG message can be retrieved before signaling. The contract deliberately validates uppercase selectors. Error capture/reset clears buffers before subsequent raw calls. Cross-backend live workflows cover prepared/replaced messages, reset/repeated reset, post-signal recovery and/or visible stack effects as applicable. WASM allocation rollback is injected at all 14 allocation positions across the seven wrappers.",
+      "errorAssessment": "Empty-string or invalid-selector cases require stable error fragments. Selector restriction is a typed wrapper policy on both oracle and tspice. Trace mismatch/underflow/overflow diagnostics write to the disabled output device, rather than producing ordinary SPICE failures, so they are not misrepresented as thrown-error cases.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or datasets required; all strings, nested module labels, and overlength ASCII messages are project-authored synthetic inputs.",
+      "cleanup": "Raw errors are captured/reset in the shared shim before throwing. Oracle capture obtains actual CSPICE messages/trace then resets in finally to model that documented policy. Case lifecycle calls kclear/reset before/after, clients dispose in finally, and each oracle workflow runs in its own process. Tests compare the next signal to detect stale state; WASM strings/output/error allocations are freed on every allocation failure. Trace entries are tracked per case and unwound in reverse order by a finalizer on success/failure; reset alone does not pop them. Direct same-instance tests check the next case has no leaked trace.",
+      "tolerance": "No numeric tolerance dependence: booleans, full strings, exact object keys/shapes and null effects compare exactly. Trace formatting is the shared CSPICE qcktrc output. No global or local tolerance changes.",
+      "findings": [
+        {
+          "id": "wasm-leading-blank-loss",
+          "status": "repaired",
+          "summary": "Two new live WASM cases failed: getmsg and captured LONG diagnostic removed leading spaces that Node/CSPICE/SpiceyPy preserve.",
+          "repair": "Use trimEnd instead of trim when reading raw messages and structured fields; preserve the leading payload while removing trailing padding. The full oracle buffer is explicitly 1841 bytes rather than SpiceyPy's smaller default.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/error.ts",
+            "packages/backend-wasm/src/codec/errors.ts",
+            "packages/py-parity-checking/src/cases/error/getmsg.cases.json",
+            "packages/py-parity-checking/src/cases/error/setmsg.cases.json"
+          ],
+          "caseIds": [
+            "error-getmsg-long-roundtrip-success",
+            "error-getmsg-audit-all-selectors-clean-and-reset"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "reset_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/reset_c.html",
+      "semantics": "Clears the CSPICE status and SHORT/LONG messages, reenables long-message preparation, and clears shim structured buffers. Safe repeated calls. It is error-free; recovery after a thrown signal is already automatic in the shim.",
+      "scenarios": [
+        {
+          "caseId": "error-reset-clears-long-message-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "reset clears previously set long message and failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-reset-audit-repeat-reenable-message",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Repeated reset clears prepared text and allows replacement before another signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        }
+      ],
+      "edgeAssessment": "Clears the CSPICE status and SHORT/LONG messages, reenables long-message preparation, and clears shim structured buffers. Safe repeated calls. It is error-free; recovery after a thrown signal is already automatic in the shim. Cross-backend live workflows cover prepared/replaced messages, reset/repeated reset, post-signal recovery and/or visible stack effects as applicable. WASM allocation rollback is injected at all 14 allocation positions across the seven wrappers.",
+      "errorAssessment": "NAIF documents this routine as error-free. No artificial CSPICE error case is manufactured; state boundaries and recovery are observed. The true failed flag is reset before public raw exceptions return.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or datasets required; all strings, nested module labels, and overlength ASCII messages are project-authored synthetic inputs.",
+      "cleanup": "Raw errors are captured/reset in the shared shim before throwing. Oracle capture obtains actual CSPICE messages/trace then resets in finally to model that documented policy. Case lifecycle calls kclear/reset before/after, clients dispose in finally, and each oracle workflow runs in its own process. Tests compare the next signal to detect stale state; WASM strings/output/error allocations are freed on every allocation failure. Trace entries are tracked per case and unwound in reverse order by a finalizer on success/failure; reset alone does not pop them. Direct same-instance tests check the next case has no leaked trace.",
+      "tolerance": "No numeric tolerance dependence: booleans, full strings, exact object keys/shapes and null effects compare exactly. Trace formatting is the shared CSPICE qcktrc output. No global or local tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "setmsg_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/setmsg_c.html",
+      "semantics": "Sets/replaces the prepared long diagnostic without setting failure; preserves leading spaces/internal newlines, with the CSPICE 1840-character ASCII buffer boundary tested. Empty text signals EMPTYSTRING. Diagnostic captured by subsequent signal equals the prepared message.",
+      "scenarios": [
+        {
+          "caseId": "error-setmsg-long-roundtrip-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "setmsg updates the LONG message buffer; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-setmsg-empty-message-error",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Representative setmsg empty-string error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-setmsg-audit-replace-and-leading-blanks",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Long messages preserve leading blanks and replacement; messages alone do not set failure.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-setmsg-audit-long-buffer-boundary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A 1900-character authored ASCII message is truncated to CSPICE's 1840-character LONG buffer; the entire buffer reaches the comparison.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        }
+      ],
+      "edgeAssessment": "Sets/replaces the prepared long diagnostic without setting failure; preserves leading spaces/internal newlines, with the CSPICE 1840-character ASCII buffer boundary tested. Empty text signals EMPTYSTRING. Diagnostic captured by subsequent signal equals the prepared message. Cross-backend live workflows cover prepared/replaced messages, reset/repeated reset, post-signal recovery and/or visible stack effects as applicable. WASM allocation rollback is injected at all 14 allocation positions across the seven wrappers.",
+      "errorAssessment": "Empty-string or invalid-selector cases require stable error fragments. Selector restriction is a typed wrapper policy on both oracle and tspice. Trace mismatch/underflow/overflow diagnostics write to the disabled output device, rather than producing ordinary SPICE failures, so they are not misrepresented as thrown-error cases.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or datasets required; all strings, nested module labels, and overlength ASCII messages are project-authored synthetic inputs.",
+      "cleanup": "Raw errors are captured/reset in the shared shim before throwing. Oracle capture obtains actual CSPICE messages/trace then resets in finally to model that documented policy. Case lifecycle calls kclear/reset before/after, clients dispose in finally, and each oracle workflow runs in its own process. Tests compare the next signal to detect stale state; WASM strings/output/error allocations are freed on every allocation failure. Trace entries are tracked per case and unwound in reverse order by a finalizer on success/failure; reset alone does not pop them. Direct same-instance tests check the next case has no leaked trace.",
+      "tolerance": "No numeric tolerance dependence: booleans, full strings, exact object keys/shapes and null effects compare exactly. Trace formatting is the shared CSPICE qcktrc output. No global or local tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "sigerr_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sigerr_c.html",
+      "semantics": "Signals the short error with a prepared LONG diagnostic and current traceback. Shared shim uses RETURN, captures details, resets, and throws a JS error. The short buffer truncates at 25 characters; empty code signals EMPTYSTRING. The internal capture option catches the actual raw exception and observes post-error failed(), without replacing the operation.",
+      "scenarios": [
+        {
+          "caseId": "error-sigerr-signals-error-path",
+          "coverage": ["error"],
+          "observes": "sigerr triggers representative SPICE error status/failure behavior; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-sigerr-audit-details-and-recovery",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Signal twice with distinct messages/codes and compare complete captured details and automatic recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-sigerr-audit-empty-code",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Empty short-code wrapper error is distinguishable from a valid user signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        },
+        {
+          "caseId": "error-sigerr-audit-short-buffer-boundary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An overlength authored short code is truncated to CSPICE's 25-character buffer and captured without hiding recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
+        }
+      ],
+      "edgeAssessment": "Signals the short error with a prepared LONG diagnostic and current traceback. Shared shim uses RETURN, captures details, resets, and throws a JS error. The short buffer truncates at 25 characters; empty code signals EMPTYSTRING. The internal capture option catches the actual raw exception and observes post-error failed(), without replacing the operation. Cross-backend live workflows cover prepared/replaced messages, reset/repeated reset, post-signal recovery and/or visible stack effects as applicable. WASM allocation rollback is injected at all 14 allocation positions across the seven wrappers.",
+      "errorAssessment": "Empty-string or invalid-selector cases require stable error fragments. Selector restriction is a typed wrapper policy on both oracle and tspice. Trace mismatch/underflow/overflow diagnostics write to the disabled output device, rather than producing ordinary SPICE failures, so they are not misrepresented as thrown-error cases.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or datasets required; all strings, nested module labels, and overlength ASCII messages are project-authored synthetic inputs.",
+      "cleanup": "Raw errors are captured/reset in the shared shim before throwing. Oracle capture obtains actual CSPICE messages/trace then resets in finally to model that documented policy. Case lifecycle calls kclear/reset before/after, clients dispose in finally, and each oracle workflow runs in its own process. Tests compare the next signal to detect stale state; WASM strings/output/error allocations are freed on every allocation failure. Trace entries are tracked per case and unwound in reverse order by a finalizer on success/failure; reset alone does not pop them. Direct same-instance tests check the next case has no leaked trace.",
+      "tolerance": "No numeric tolerance dependence: booleans, full strings, exact object keys/shapes and null effects compare exactly. Trace formatting is the shared CSPICE qcktrc output. No global or local tolerance changes.",
+      "findings": [
+        {
+          "id": "wasm-leading-blank-loss",
+          "status": "repaired",
+          "summary": "Two new live WASM cases failed: getmsg and captured LONG diagnostic removed leading spaces that Node/CSPICE/SpiceyPy preserve.",
+          "repair": "Use trimEnd instead of trim when reading raw messages and structured fields; preserve the leading payload while removing trailing padding. The full oracle buffer is explicitly 1841 bytes rather than SpiceyPy's smaller default.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/error.ts",
+            "packages/backend-wasm/src/codec/errors.ts",
+            "packages/py-parity-checking/src/cases/error/getmsg.cases.json",
+            "packages/py-parity-checking/src/cases/error/setmsg.cases.json"
+          ],
+          "caseIds": [
+            "error-sigerr-audit-details-and-recovery",
+            "error-sigerr-audit-short-buffer-boundary"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-node-2026-11-12",
+            "ci-error-node-43315317543"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
+          "executions": [
+            "local-error-recovery-wasm-2026-11-12",
+            "ci-error-wasm-43315317543"
+          ]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current-source full local and observed CI execution verified both backends; preserve historical observations when shared source changes."
+}

@@ -17,24 +17,56 @@ export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
  * `@rybosome/tspice-core`.
  */
 export interface ErrorApi {
-  /** Return `true` if the CSPICE error status is currently set. */
+  /**
+   * Return whether the CSPICE error status is set. Backend calls normally capture
+   * and reset that status before throwing, so a caught SPICE error leaves false.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/failed_c.html
+   */
   failed(): boolean;
 
-  /** Reset/clear the CSPICE error status and messages. */
+  /**
+   * Clear CSPICE error status/messages and backend structured error buffers.
+   * Repeated resets are safe. Caller-managed traceback entries still need chkout.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/reset_c.html
+   */
   reset(): void;
 
-  /** Get a CSPICE error message component. */
+  /**
+   * Return the selected CSPICE message, preserving leading blanks. A prepared
+   * LONG message is readable before signaling; reset clears SHORT/LONG. The
+   * selector is restricted to uppercase contract values. Thrown SPICE errors
+   * carry captured details because the backend resets CSPICE before throwing.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getmsg_c.html
+   */
   getmsg(which: GetmsgWhich): string;
 
-  /** Set the long error message text used by `sigerr()`. */
+  /**
+   * Set/replace the long diagnostic for a subsequent signal without setting
+   * failure status. CSPICE truncates text beyond its 1840-character buffer.
+   * Empty text signals EMPTYSTRING.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/setmsg_c.html
+   */
   setmsg(message: string): void;
 
-  /** Signal a CSPICE error with the provided short error code (e.g. `"SPICE(BADTIME)"`). */
+  /**
+   * Signal a CSPICE error (for example SPICE(BADTIME)). The backend captures
+   * diagnostic/trace details, resets CSPICE, and throws; callers can then recover.
+   * CSPICE truncates the short code to 25 characters. Empty text signals EMPTYSTRING.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sigerr_c.html
+   */
   sigerr(short: string): void;
 
-  /** Add `name` to the CSPICE traceback stack. */
+  /**
+   * Push a routine name onto the CSPICE traceback stack. Empty names signal
+   * EMPTYSTRING. Pair with chkout when leaving that routine.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chkin_c.html
+   */
   chkin(name: string): void;
 
-  /** Remove `name` from the CSPICE traceback stack. */
+  /**
+   * Pop the matching routine name from the CSPICE traceback stack. Empty names
+   * signal EMPTYSTRING; mismatched/unbalanced names are CSPICE diagnostic misuse.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chkout_c.html
+   */
   chkout(name: string): void;
 }

@@ -98,7 +98,7 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
     planned: 487,
     excluded: 3,
     caseFiles: 162,
-    scenarios: 345,
+    scenarios: 356,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");

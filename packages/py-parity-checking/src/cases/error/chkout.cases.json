@@ -3,20 +3,93 @@
     "caseId": "error-chkout-balanced-trace-success",
     "description": "chkout removes prior chkin entry and keeps error status clear",
     "workflow": [
-      { "op": "error.reset" },
-      { "op": "error.chkin", "name": "PARITY_TRACE_ONLY" },
-      { "op": "error.chkout", "name": "PARITY_TRACE_ONLY" },
-      { "op": "error.failed" }
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.chkin",
+        "name": "PARITY_TRACE_ONLY"
+      },
+      {
+        "op": "error.chkout",
+        "name": "PARITY_TRACE_ONLY"
+      },
+      {
+        "op": "error.failed"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "error-chkout-empty-name-error",
     "description": "Representative chkout error path for empty traceback name",
-    "workflow": [{ "op": "error.chkout", "name": "" }],
+    "workflow": [
+      {
+        "op": "error.chkout",
+        "name": ""
+      }
+    ],
     "expectation": {
       "kind": "error",
       "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "error-chkout-audit-pop-child-preserve-parent",
+    "description": "Checking out a child removes only that frame; a captured real error retains the parent.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "AUDIT_PARENT"
+      },
+      {
+        "op": "error.chkin",
+        "name": "AUDIT_POPPED"
+      },
+      {
+        "op": "error.chkout",
+        "name": "AUDIT_POPPED"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "Only the parent remains"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITPOP)",
+        "capture": true
+      },
+      {
+        "op": "error.chkout",
+        "name": "AUDIT_PARENT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-chkout-audit-balanced-empty-trace",
+    "description": "Balanced push/pop leaves no user frame in the captured signal.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "AUDIT_BALANCED"
+      },
+      {
+        "op": "error.chkout",
+        "name": "AUDIT_BALANCED"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(AUDITBALANCED)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
     }
   }
 ]

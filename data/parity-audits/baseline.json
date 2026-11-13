@@ -140,9 +140,9 @@
         "setmsg_c",
         "sigerr_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/682"],
+      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
     },
     {
       "id": "file-io-1",

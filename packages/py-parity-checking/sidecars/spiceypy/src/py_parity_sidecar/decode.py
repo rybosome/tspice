@@ -1175,6 +1175,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepErrorSigerr(
                 op=op,
                 short=_expect_string(step.get("short"), label="error.sigerr.short"),
+                capture=_expect_bool(step.get("capture", False), label="error.sigerr.capture"),
             )
 
         case "error.chkin":

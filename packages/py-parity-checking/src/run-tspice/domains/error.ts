@@ -8,7 +8,7 @@ import type {
   StepErrorSigerr,
   StepOutput,
 } from "../../case-types.js";
-import type { RunTspiceContext } from "../context.js";
+import { registerFinalizer, type RunTspiceContext } from "../context.js";
 
 type ErrorStep =
   | StepErrorFailed
@@ -39,16 +39,70 @@ export function runErrorStep(
       context.spice.raw.setmsg(step.message);
       return { op: step.op, value: null };
 
-    case "error.sigerr":
-      context.spice.raw.sigerr(step.short);
-      return { op: step.op, value: null };
+    case "error.sigerr": {
+      if (!step.capture) {
+        context.spice.raw.sigerr(step.short);
+        return { op: step.op, value: null };
+      }
+      // Capture only real structured SPICE exceptions. A no-op or unrelated
+      // failure cannot masquerade as successful signaling/recovery evidence.
+      try {
+        context.spice.raw.sigerr(step.short);
+      } catch (error) {
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "spiceShort" in error &&
+          typeof error.spiceShort === "string"
+        ) {
+          const long = "spiceLong" in error ? error.spiceLong : undefined;
+          const trace = "spiceTrace" in error ? error.spiceTrace : undefined;
+          if (
+            (long !== undefined && typeof long !== "string") ||
+            (trace !== undefined && typeof trace !== "string")
+          )
+            throw error;
+          return {
+            op: step.op,
+            value: {
+              short: error.spiceShort,
+              long: long ?? "",
+              trace: trace ?? "",
+              failed: context.spice.raw.failed(),
+            },
+          };
+        }
+        throw error;
+      }
+      throw new Error("raw.sigerr did not throw a structured SPICE error");
+    }
 
-    case "error.chkin":
+    case "error.chkin": {
       context.spice.raw.chkin(step.name);
+      const state = context.state.error;
+      state.traceStack.push(step.name);
+      if (!state.cleanupRegistered) {
+        state.cleanupRegistered = true;
+        registerFinalizer(context, "error.unwindTrace", () => {
+          // reset() clears errors, not caller-managed traceback entries. Unwind
+          // in reverse order even when a workflow stops at an expected error.
+          while (state.traceStack.length > 0) {
+            const name = state.traceStack.pop();
+            if (name === undefined) break;
+            try {
+              context.spice.raw.chkout(name);
+            } catch {
+              /* best effort */
+            }
+          }
+        });
+      }
       return { op: step.op, value: null };
+    }
 
     case "error.chkout":
       context.spice.raw.chkout(step.name);
+      context.state.error.traceStack.pop();
       return { op: step.op, value: null };
 
     default: {

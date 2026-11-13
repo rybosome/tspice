@@ -34,7 +34,7 @@ function readLastErrorField(
       module._tspice_get_last_error_long(outPtr, outMaxBytes);
     if (which === "trace")
       module._tspice_get_last_error_trace(outPtr, outMaxBytes);
-    const s = module.UTF8ToString(outPtr, outMaxBytes).trim();
+    const s = module.UTF8ToString(outPtr, outMaxBytes).trimEnd();
     return s || undefined;
   });
 }
