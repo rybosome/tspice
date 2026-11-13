@@ -122,8 +122,8 @@
       "id": "ephemeris-descriptors",
       "routines": ["spkpds_c", "spkuds_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Two-routine prerequisite split for valid NaN packed integer words across native/JS/worker boundaries. Complete full local lanes, publish exact judgments, then observe canonical CI and explicit rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/700"],
+      "nextAction": "All 15 source CI jobs passed with actual native-required/live parity. Wait for metadata CI and explicit REST rebaseability; proceed with dependent SPK audits."
     },
     {
       "id": "error",
