@@ -166,8 +166,8 @@
         "getfat_c"
       ],
       "dependsOn": ["file-io-1"],
-      "prs": [],
-      "nextAction": "Seven routines reviewed/repaired and both full required local lanes passed: 714 live comparisons, 773 parity-package tests, 32 writer allocation positions and actual compiled C bounds guard. Open the writer PR based on #692, then record observed current-source canonical CI and explicit rebaseability; all 162 assignments remain."
+      "prs": ["https://github.com/rybosome/tspice/pull/694"],
+      "nextAction": "Both required local lanes and all fifteen source-head canonical jobs passed for all seven routines; actual Linux Node22 native-required job observed. PR #694 is explicitly rebaseable. Finish CI for this observation-only follow-up and preserve merge order after #692; continue the separate DSK query audit."
     },
     {
       "id": "frames-1",

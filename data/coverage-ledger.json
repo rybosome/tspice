@@ -192,8 +192,10 @@
         "dependsOn": [
           "file-io-1"
         ],
-        "prs": [],
-        "nextAction": "Seven routines reviewed/repaired and both full required local lanes passed: 714 live comparisons, 773 parity-package tests, 32 writer allocation positions and actual compiled C bounds guard. Open the writer PR based on #692, then record observed current-source canonical CI and explicit rebaseability; all 162 assignments remain.",
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/694"
+        ],
+        "nextAction": "Both required local lanes and all fifteen source-head canonical jobs passed for all seven routines; actual Linux Node22 native-required job observed. PR #694 is explicitly rebaseable. Finish CI for this observation-only follow-up and preserve merge order after #692; continue the separate DSK query audit.",
         "record": "data/parity-audits/file-io-2.json"
       },
       {
@@ -386,15 +388,15 @@
     "counts": {
       "node": {
         "unreviewed": 135,
-        "reviewed": 27,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 27
       },
       "wasm": {
         "unreviewed": 135,
-        "reviewed": 27,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 27
       }
     }
   },
@@ -6690,14 +6692,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafbfs -> tspice_dafbfs -> dafbfs_c.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -6706,14 +6710,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafbfs -> shared C shim -> dafbfs_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -6945,14 +6951,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafcls -> tspice_dafcls -> dafcls_c.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -6961,14 +6969,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafcls -> shared C shim -> dafcls_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7230,14 +7240,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native daffna -> tspice_daffna -> daffna_c. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7246,14 +7258,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_daffna -> shared C shim -> daffna_c; withAllocs/withMalloc releases buffers. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7582,14 +7596,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dafopr -> tspice_dafopr -> dafopr_c.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7598,14 +7614,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dafopr -> shared C shim -> dafopr_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -7882,14 +7900,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -7898,14 +7918,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -8207,14 +8229,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dasopr -> tspice_dasopr -> dasopr_c.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -8223,14 +8247,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dasopr -> shared C shim -> dasopr_c; withAllocs/withMalloc releases buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -8784,14 +8810,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dlabfs -> tspice_dlabfs -> dlabfs_c. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -8800,14 +8828,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dlabfs -> shared C shim -> dlabfs_c; withAllocs/withMalloc releases buffers. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -9046,14 +9076,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         },
         "wasm": {
@@ -9062,14 +9094,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-1.json"
         }
       }
@@ -9311,28 +9345,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlafns -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlafns -> shared C shim -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -9631,28 +9669,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlaopn -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlaopn -> shared C shim -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -10466,28 +10508,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskmi2 -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskmi2 -> shared C shim -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -10927,28 +10973,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskopn -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskopn -> shared C shim -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -11509,28 +11559,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskw02 -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskw02 -> shared C shim -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -15431,28 +15485,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.exists -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_exists -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.exists -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_exists -> shared C shim -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -17151,28 +17209,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getfat -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_getfat -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getfat -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_getfat -> shared C shim -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/file-io-2.json"
         }
       }
@@ -21408,14 +21470,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -21428,14 +21492,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -31306,14 +31372,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -31322,14 +31390,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -33987,14 +34057,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34007,14 +34079,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34293,14 +34367,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -34309,14 +34385,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34525,14 +34603,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34545,14 +34625,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34758,14 +34840,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34778,14 +34862,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35016,14 +35102,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35036,14 +35124,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35270,14 +35360,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35290,14 +35382,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35506,14 +35600,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35526,14 +35622,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35795,14 +35893,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35815,14 +35915,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36035,14 +36137,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36055,14 +36159,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36967,14 +37073,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-writers-audit-2026-11-13-node"
+            "local-writers-audit-2026-11-13-node",
+            "ci-writers-source-ci-2026-11-13-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -36983,14 +37091,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-writers-audit-2026-11-13-wasm"
+            "local-writers-audit-2026-11-13-wasm",
+            "ci-writers-source-ci-2026-11-13-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
