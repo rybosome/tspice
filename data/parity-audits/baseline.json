@@ -268,8 +268,8 @@
         "unload_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Kernel lifecycle judgments retained after integrating merged kplfrm repair; refresh both full required lanes and source-bound CI for the combined source."
+      "prs": ["https://github.com/rybosome/tspice/pull/690"],
+      "nextAction": "Seven-routine kernel review retained with merged kplfrm; refresh both required local lanes and exact-source CI before current completion claims."
     },
     {
       "id": "kplfrm-prerequisite",

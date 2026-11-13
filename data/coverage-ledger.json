@@ -290,8 +290,10 @@
           "unload_c"
         ],
         "dependsOn": [],
-        "prs": [],
-        "nextAction": "Kernel lifecycle judgments retained after integrating merged kplfrm repair; refresh both full required lanes and source-bound CI for the combined source.",
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/690"
+        ],
+        "nextAction": "Seven-routine kernel review retained with merged kplfrm; refresh both required local lanes and exact-source CI before current completion claims.",
         "record": "data/parity-audits/kernels.json"
       },
       {
@@ -15239,12 +15241,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> Node typed adapter/stager -> native registered furnsh -> tspice_furnsh shared C shim -> furnsh_c; native buffers copied, SPICE errors captured/reset.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -15253,12 +15258,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_furnsh -> shared C shim -> furnsh_c; outputs read before finally frees allocations.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -19598,12 +19606,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kclear -> Node typed adapter/stager -> native registered kclear -> tspice_kclear shared C shim -> kclear_c; native buffers copied, SPICE errors captured/reset.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -19612,12 +19623,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kclear -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kclear -> shared C shim -> kclear_c; outputs read before finally frees allocations.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -19874,12 +19888,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kdata -> Node typed adapter/stager -> native registered kdata -> tspice_kdata shared C shim -> kdata_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -19888,12 +19905,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kdata -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kdata -> shared C shim -> kdata_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -20151,12 +20171,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kinfo -> Node typed adapter/stager -> native registered kinfo -> tspice_kinfo shared C shim -> kinfo_c; native buffers copied, SPICE errors captured/reset.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -20165,12 +20188,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "composed",
           "trace": "raw.kinfo -> filename-keyed cache built from actual _tspice_ktotal/_tspice_kdata -> shared shim/CSPICE. Clear cache before furnsh/unload/kclear; live meta child-source/duplicate and mutation tests validate composed semantics.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -20714,12 +20740,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> Node typed adapter/stager -> native registered ktotal -> tspice_ktotal shared C shim -> ktotal_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -20728,12 +20757,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_ktotal -> shared C shim -> ktotal_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -21187,12 +21219,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kxtrct -> Node typed adapter/stager -> native registered kxtrct -> tspice_kxtrct shared C shim -> kxtrct_c; native buffers copied, SPICE errors captured/reset.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -21201,12 +21236,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "javascript",
           "trace": "raw.kxtrct -> shared kxtrctJs; no WASM substitute in the parity handler. Independent oracle calls actual locked SpiceyPy libspice.kxtrct_c and reads exact buffers; supported adapter normalization/UTF-8 size limits are explicit.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -33193,12 +33231,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unload -> Node typed adapter/stager -> native registered unload -> tspice_unload shared C shim -> unload_c; native buffers copied, SPICE errors captured/reset.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -33207,12 +33248,15 @@
           "history": [
             "unreviewed",
             "needs-repair",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unload -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_unload -> shared C shim -> unload_c; outputs read before finally frees allocations.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kernels.json"
@@ -33423,12 +33467,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33439,12 +33486,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33833,12 +33883,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33849,12 +33902,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34058,12 +34114,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34074,12 +34133,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34308,12 +34370,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34324,12 +34389,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34554,12 +34622,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34570,12 +34641,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34782,12 +34856,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34798,12 +34875,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35063,12 +35143,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35079,12 +35162,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35295,12 +35381,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-kernels-audit-2026-11-13-node"
+            "local-kernels-audit-2026-11-13-node",
+            "ci-kernels-source-ci-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -35311,12 +35400,15 @@
             "needs-repair",
             "reviewed",
             "verified",
+            "reviewed",
+            "verified",
             "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-kernels-audit-2026-11-13-wasm"
+            "local-kernels-audit-2026-11-13-wasm",
+            "ci-kernels-source-ci-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
