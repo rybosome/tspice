@@ -1,3 +1,4 @@
+import { wasmWindowPointer, wasmCellPointer } from "./cells-windows.js";
 import type {
   AbCorr,
   EphemerisApi,
@@ -566,7 +567,7 @@ function tspiceCallSpkcov(
       const result = module._tspice_spkcov(
         spkPtr,
         idcode,
-        cover as unknown as number,
+        wasmWindowPointer(module, cover, "spkcov()"),
         errPtr,
         WASM_ERR_MAX_BYTES,
       );
@@ -592,7 +593,7 @@ function tspiceCallSpkobj(
     return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
       const result = module._tspice_spkobj(
         spkPtr,
-        ids as unknown as number,
+        wasmCellPointer(module, ids, "spkobj()"),
         errPtr,
         WASM_ERR_MAX_BYTES,
       );

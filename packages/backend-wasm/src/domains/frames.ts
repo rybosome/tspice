@@ -25,6 +25,8 @@ import { resolveKernelPath } from "../runtime/fs.js";
 import {
   assertWasmOwnedCellHandle,
   assertWasmOwnedWindowHandle,
+  wasmCellPointer,
+  wasmWindowPointer,
 } from "./cells-windows.js";
 
 function tspiceCallCidfrm(
@@ -429,7 +431,7 @@ function tspiceCallCkobj(
     try {
       const code = module._tspice_ckobj(
         ckPathPtr,
-        ids as unknown as number,
+        wasmCellPointer(module, ids, "ckobj()"),
         errPtr,
         WASM_ERR_MAX_BYTES,
       );
@@ -471,7 +473,7 @@ function tspiceCallCkcov(
         levelPtr,
         tol,
         timsysPtr,
-        cover as unknown as number,
+        wasmWindowPointer(module, cover, "ckcov()"),
         errPtr,
         WASM_ERR_MAX_BYTES,
       );
@@ -602,7 +604,7 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
     cklpf: (ck: string) => tspiceCallCklpf(module, ck),
     ckupf: (handle: number) => tspiceCallCkupf(module, handle),
     ckobj: (ck: string, ids: SpiceIntCell) => {
-      assertWasmOwnedCellHandle(module, ids as unknown as number, "ckobj(ids)");
+      assertWasmOwnedCellHandle(module, ids, "ckobj(ids)");
       tspiceCallCkobj(module, ck, ids);
     },
     ckcov: (
@@ -614,11 +616,7 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
       timsys: CkCoverageTimeSystem,
       cover: SpiceWindow,
     ) => {
-      assertWasmOwnedWindowHandle(
-        module,
-        cover as unknown as number,
-        "ckcov(cover)",
-      );
+      assertWasmOwnedWindowHandle(module, cover, "ckcov(cover)");
       tspiceCallCkcov(module, ck, idcode, needav, level, tol, timsys, cover);
     },
 

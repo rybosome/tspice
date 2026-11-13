@@ -18,10 +18,7 @@ import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
-function tspiceCallNewIntCell(
-  module: EmscriptenModule,
-  size: number,
-): SpiceIntCell {
+function tspiceCallNewIntCell(module: EmscriptenModule, size: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
     module.HEAP32[outCellPtr >> 2] = 0;
     const result = module._tspice_new_int_cell(
@@ -34,14 +31,14 @@ function tspiceCallNewIntCell(
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
     const ptr = module.HEAP32[outCellPtr >> 2] ?? 0;
-    return (ptr >>> 0) as unknown as SpiceIntCell;
+    return ptr >>> 0;
   });
 }
 
 function tspiceCallNewDoubleCell(
   module: EmscriptenModule,
   size: number,
-): SpiceDoubleCell {
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
     module.HEAP32[outCellPtr >> 2] = 0;
     const result = module._tspice_new_double_cell(
@@ -54,7 +51,7 @@ function tspiceCallNewDoubleCell(
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
     const ptr = module.HEAP32[outCellPtr >> 2] ?? 0;
-    return (ptr >>> 0) as unknown as SpiceDoubleCell;
+    return ptr >>> 0;
   });
 }
 
@@ -62,7 +59,7 @@ function tspiceCallNewCharCell(
   module: EmscriptenModule,
   size: number,
   length: number,
-): SpiceCharCell {
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
     module.HEAP32[outCellPtr >> 2] = 0;
     const result = module._tspice_new_char_cell(
@@ -76,14 +73,14 @@ function tspiceCallNewCharCell(
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
     const ptr = module.HEAP32[outCellPtr >> 2] ?? 0;
-    return (ptr >>> 0) as unknown as SpiceCharCell;
+    return ptr >>> 0;
   });
 }
 
 function tspiceCallNewWindow(
   module: EmscriptenModule,
   maxIntervals: number,
-): SpiceWindow {
+): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outWindowPtr) => {
     module.HEAP32[outWindowPtr >> 2] = 0;
     const result = module._tspice_new_window(
@@ -96,13 +93,17 @@ function tspiceCallNewWindow(
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
     const ptr = module.HEAP32[outWindowPtr >> 2] ?? 0;
-    return (ptr >>> 0) as unknown as SpiceWindow;
+    return ptr >>> 0;
   });
 }
 
 function tspiceCallFreeCell(module: EmscriptenModule, cell: number): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_free_cell(cell, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_free_cell(
+      wasmCellPointer(module, cell, "free_cell()"),
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -112,7 +113,7 @@ function tspiceCallFreeCell(module: EmscriptenModule, cell: number): void {
 function tspiceCallFreeWindow(module: EmscriptenModule, window: number): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const result = module._tspice_free_window(
-      window,
+      wasmWindowPointer(module, window, "free_window()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -128,7 +129,12 @@ function tspiceCallSsize(
   cell: number,
 ): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_ssize(size, cell, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_ssize(
+      size,
+      wasmCellOrWindowPointer(module, cell, "ssize()"),
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -141,7 +147,12 @@ function tspiceCallScard(
   cell: number,
 ): void {
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
-    const result = module._tspice_scard(card, cell, errPtr, WASM_ERR_MAX_BYTES);
+    const result = module._tspice_scard(
+      card,
+      wasmCellOrWindowPointer(module, cell, "scard()"),
+      errPtr,
+      WASM_ERR_MAX_BYTES,
+    );
     if (result !== 0) {
       throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
     }
@@ -152,7 +163,7 @@ function tspiceCallCard(module: EmscriptenModule, cell: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCardPtr) => {
     module.HEAP32[outCardPtr >> 2] = 0;
     const result = module._tspice_card(
-      cell,
+      wasmCellOrWindowPointer(module, cell, "card()"),
       outCardPtr,
       errPtr,
       WASM_ERR_MAX_BYTES,
@@ -168,7 +179,7 @@ function tspiceCallSize(module: EmscriptenModule, cell: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outSizePtr) => {
     module.HEAP32[outSizePtr >> 2] = 0;
     const result = module._tspice_size(
-      cell,
+      wasmCellOrWindowPointer(module, cell, "size()"),
       outSizePtr,
       errPtr,
       WASM_ERR_MAX_BYTES,
@@ -190,7 +201,7 @@ function tspiceCallValid(
     const result = module._tspice_valid(
       size,
       n,
-      cell,
+      wasmCellOrWindowPointer(module, cell, "valid()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -208,7 +219,7 @@ function tspiceCallInsrti(
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const result = module._tspice_insrti(
       item,
-      cell,
+      wasmCellPointer(module, cell, "insrti()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -226,7 +237,7 @@ function tspiceCallInsrtd(
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const result = module._tspice_insrtd(
       item,
-      cell,
+      wasmCellPointer(module, cell, "insrtd()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -246,7 +257,7 @@ function tspiceCallInsrtc(
     withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
       const result = module._tspice_insrtc(
         itemPtr,
-        cell,
+        wasmCellPointer(module, cell, "insrtc()"),
         errPtr,
         WASM_ERR_MAX_BYTES,
       );
@@ -267,7 +278,7 @@ function tspiceCallCellGeti(
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outItemPtr) => {
     module.HEAP32[outItemPtr >> 2] = 0;
     const result = module._tspice_cell_geti(
-      cell,
+      wasmCellPointer(module, cell, "cell_geti()"),
       index,
       outItemPtr,
       errPtr,
@@ -288,7 +299,7 @@ function tspiceCallCellGetd(
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (errPtr, outItemPtr) => {
     module.HEAPF64[outItemPtr >> 3] = 0;
     const result = module._tspice_cell_getd(
-      cell,
+      wasmCellPointer(module, cell, "cell_getd()"),
       index,
       outItemPtr,
       errPtr,
@@ -313,7 +324,7 @@ function tspiceCallCellGetc(
     (errPtr, outPtr) => {
       module.HEAPU8[outPtr] = 0;
       const result = module._tspice_cell_getc(
-        cell,
+        wasmCellPointer(module, cell, "cell_getc()"),
         index,
         outPtr,
         outMaxBytes,
@@ -338,7 +349,7 @@ function tspiceCallWninsd(
     const result = module._tspice_wninsd(
       left,
       right,
-      window,
+      wasmWindowPointer(module, window, "wninsd()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -352,7 +363,7 @@ function tspiceCallWncard(module: EmscriptenModule, window: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCardPtr) => {
     module.HEAP32[outCardPtr >> 2] = 0;
     const result = module._tspice_wncard(
-      window,
+      wasmWindowPointer(module, window, "wncard()"),
       outCardPtr,
       errPtr,
       WASM_ERR_MAX_BYTES,
@@ -377,7 +388,7 @@ function tspiceCallWnfetd(
       module.HEAPF64[outRightPtr >> 3] = 0;
 
       const result = module._tspice_wnfetd(
-        window,
+        wasmWindowPointer(module, window, "wnfetd()"),
         index,
         outLeftPtr,
         outRightPtr,
@@ -405,7 +416,7 @@ function tspiceCallWnvald(
     const result = module._tspice_wnvald(
       size,
       n,
-      window,
+      wasmWindowPointer(module, window, "wnvald()"),
       errPtr,
       WASM_ERR_MAX_BYTES,
     );
@@ -415,16 +426,45 @@ function tspiceCallWnvald(
   });
 }
 
+// Use one issuer per host realm, including separately loaded package copies.
+// Tokens live above uint32 so Node IDs and raw wasm32 pointers cannot alias them.
+const HANDLE_ISSUER = Symbol.for("@rybosome/tspice/wasm-cell-handle-issuer/v1");
+function issueWasmCellHandle(): number {
+  let issuer: unknown = Reflect.get(globalThis, HANDLE_ISSUER);
+  if (issuer === undefined) {
+    let next = 0x1_0000_0000;
+    issuer = () => {
+      if (!Number.isSafeInteger(next))
+        throw new RangeError("WASM cell handle space exhausted");
+      return next++;
+    };
+    if (!Reflect.defineProperty(globalThis, HANDLE_ISSUER, { value: issuer })) {
+      throw new Error("Cannot initialize the shared WASM cell handle issuer");
+    }
+  }
+  if (typeof issuer !== "function")
+    throw new TypeError("Invalid WASM cell handle issuer");
+  const handle: unknown = Reflect.apply(issuer, undefined, []);
+  if (
+    typeof handle !== "number" ||
+    !Number.isSafeInteger(handle) ||
+    handle < 0x1_0000_0000
+  ) {
+    throw new RangeError("Invalid issued WASM cell handle");
+  }
+  return handle;
+}
+
 type WasmHandleOwnership = {
-  allocatedCells: Set<number>;
-  allocatedWindows: Set<number>;
+  allocatedCells: Map<number, number>;
+  allocatedWindows: Map<number, number>;
   charCellLengths: Map<number, number>;
 };
 
 // Per-Emscripten-module handle ownership registry.
 //
-// This gives other WASM domains an O(1) way to reject foreign cell/window
-// handles (e.g. Node backend numeric handle ids) before calling into the shim.
+// Maps opaque token identities to private module-local pointers. Pointer reuse
+// cannot revive an expired token or accept another module's token.
 const WASM_HANDLE_OWNERSHIP = new WeakMap<
   EmscriptenModule,
   WasmHandleOwnership
@@ -436,8 +476,8 @@ function getOrInitWasmHandleOwnership(
   let ownership = WASM_HANDLE_OWNERSHIP.get(module);
   if (!ownership) {
     ownership = {
-      allocatedCells: new Set<number>(),
-      allocatedWindows: new Set<number>(),
+      allocatedCells: new Map<number, number>(),
+      allocatedWindows: new Map<number, number>(),
       charCellLengths: new Map<number, number>(),
     };
     WASM_HANDLE_OWNERSHIP.set(module, ownership);
@@ -503,17 +543,57 @@ export function assertWasmOwnedWindowHandle(
   }
 }
 
+/** Resolve a live opaque cell token to this module's private C pointer. */
+export function wasmCellPointer(
+  module: EmscriptenModule,
+  handle: number,
+  context: string,
+): number {
+  assertWasmOwnedCellHandle(module, handle, context);
+  const pointer =
+    getOrInitWasmHandleOwnership(module).allocatedCells.get(handle);
+  if (pointer === undefined)
+    throw new RangeError(`${context}: unknown/expired WASM cell handle`);
+  return pointer;
+}
+
+/** Resolve a live opaque window token to this module's private C pointer. */
+export function wasmWindowPointer(
+  module: EmscriptenModule,
+  handle: number,
+  context: string,
+): number {
+  assertWasmOwnedWindowHandle(module, handle, context);
+  const pointer =
+    getOrInitWasmHandleOwnership(module).allocatedWindows.get(handle);
+  if (pointer === undefined)
+    throw new RangeError(`${context}: unknown/expired WASM window handle`);
+  return pointer;
+}
+
+function wasmCellOrWindowPointer(
+  module: EmscriptenModule,
+  handle: number,
+  context: string,
+): number {
+  const owner = getOrInitWasmHandleOwnership(module);
+  const pointer =
+    owner.allocatedCells.get(handle) ?? owner.allocatedWindows.get(handle);
+  if (pointer === undefined)
+    throw new RangeError(
+      `${context}: unknown/expired WASM handle ${handle} (handles are per-module)`,
+    );
+  return pointer;
+}
+
 /** Create a {@link CellsWindowsApi} implementation backed by a WASM Emscripten module. */
 export function createCellsWindowsApi(
   module: EmscriptenModule,
 ): CellsWindowsApi {
   emscriptenExports.assertEmscriptenModule(module);
 
-  // Security + correctness: track allocated pointers per backend instance.
-  //
-  // In the WASM backend, cell/window handles are raw pointers. Without this
-  // tracking, callers could attempt to free arbitrary pointers or double-free
-  // previously-freed handles.
+  // Public handles are unique opaque tokens. Private pointers remain scoped to
+  // the owning module and are resolved only at the compiled-call boundary.
   const { allocatedCells, allocatedWindows } =
     getOrInitWasmHandleOwnership(module);
 
@@ -544,59 +624,59 @@ export function createCellsWindowsApi(
   return {
     ssize: (size, cell) => {
       assertSpiceInt32NonNegative(size, "ssize(size)");
-      assertKnownCellOrWindow(cell as unknown as number, "ssize()");
+      assertKnownCellOrWindow(cell, "ssize()");
       tspiceCallSsize(module, size, cell);
     },
     scard: (card, cell) => {
       assertSpiceInt32NonNegative(card, "scard(card)");
-      assertKnownCellOrWindow(cell as unknown as number, "scard()");
+      assertKnownCellOrWindow(cell, "scard()");
       tspiceCallScard(module, card, cell);
     },
     card: (cell) => {
-      assertKnownCellOrWindow(cell as unknown as number, "card()");
+      assertKnownCellOrWindow(cell, "card()");
       return tspiceCallCard(module, cell);
     },
     size: (cell) => {
-      assertKnownCellOrWindow(cell as unknown as number, "size()");
+      assertKnownCellOrWindow(cell, "size()");
       return tspiceCallSize(module, cell);
     },
     valid: (size, n, cell) => {
       assertSpiceInt32NonNegative(size, "valid(size)");
       assertSpiceInt32NonNegative(n, "valid(n)");
-      assertKnownCellOrWindow(cell as unknown as number, "valid()");
+      assertKnownCellOrWindow(cell, "valid()");
       tspiceCallValid(module, size, n, cell);
     },
 
     insrti: (item, cell) => {
       assertSpiceInt32(item, "insrti(item)");
-      assertKnownCell(cell as unknown as number, "insrti()");
+      assertKnownCell(cell, "insrti()");
       tspiceCallInsrti(module, item, cell);
     },
     insrtd: (item, cell) => {
-      assertKnownCell(cell as unknown as number, "insrtd()");
+      assertKnownCell(cell, "insrtd()");
       tspiceCallInsrtd(module, item, cell);
     },
     insrtc: (item, cell) => {
-      assertKnownCell(cell as unknown as number, "insrtc()");
+      assertKnownCell(cell, "insrtc()");
       tspiceCallInsrtc(module, item, cell);
     },
     wninsd: (left, right, window) => {
-      assertKnownWindow(window as unknown as number, "wninsd()");
+      assertKnownWindow(window, "wninsd()");
       tspiceCallWninsd(module, left, right, window);
     },
     wncard: (window) => {
-      assertKnownWindow(window as unknown as number, "wncard()");
+      assertKnownWindow(window, "wncard()");
       return tspiceCallWncard(module, window);
     },
     wnfetd: (window, index) => {
       assertSpiceInt32NonNegative(index, "wnfetd(index)");
-      assertKnownWindow(window as unknown as number, "wnfetd()");
+      assertKnownWindow(window, "wnfetd()");
       return tspiceCallWnfetd(module, window, index);
     },
     wnvald: (size, n, window) => {
       assertSpiceInt32NonNegative(size, "wnvald(size)");
       assertSpiceInt32NonNegative(n, "wnvald(n)");
-      assertKnownWindow(window as unknown as number, "wnvald()");
+      assertKnownWindow(window, "wnvald()");
       tspiceCallWnvald(module, size, n, window);
     },
   };
@@ -608,11 +688,8 @@ export function createCellsWindowsKitApi(
 ): CellsWindowsKitApi {
   emscriptenExports.assertEmscriptenModule(module);
 
-  // Security + correctness: track allocated pointers per backend instance.
-  //
-  // In the WASM backend, cell/window handles are raw pointers. Without this
-  // tracking, callers could attempt to free arbitrary pointers or double-free
-  // previously-freed handles.
+  // Public handles are unique opaque tokens. Private pointers remain scoped to
+  // the owning module and are resolved only at the compiled-call boundary.
   const { allocatedCells, allocatedWindows, charCellLengths } =
     getOrInitWasmHandleOwnership(module);
 
@@ -635,40 +712,44 @@ export function createCellsWindowsKitApi(
   return {
     newIntCell: (size) => {
       assertSpiceInt32NonNegative(size, "newIntCell(size)");
+      const handle = issueWasmCellHandle();
       const cell = tspiceCallNewIntCell(module, size);
-      allocatedCells.add(cell as unknown as number);
-      return cell;
+      allocatedCells.set(handle, cell);
+      return handle as SpiceIntCell;
     },
     newDoubleCell: (size) => {
       assertSpiceInt32NonNegative(size, "newDoubleCell(size)");
+      const handle = issueWasmCellHandle();
       const cell = tspiceCallNewDoubleCell(module, size);
-      allocatedCells.add(cell as unknown as number);
-      return cell;
+      allocatedCells.set(handle, cell);
+      return handle as SpiceDoubleCell;
     },
     newCharCell: (size, length) => {
       assertSpiceInt32NonNegative(size, "newCharCell(size)");
       assertSpiceInt32(length, "newCharCell(length)", { min: 1 });
+      const handle = issueWasmCellHandle();
       const cell = tspiceCallNewCharCell(module, size, length);
-      allocatedCells.add(cell as unknown as number);
-      charCellLengths.set(cell as unknown as number, length);
-      return cell;
+      allocatedCells.set(handle, cell);
+      charCellLengths.set(handle, length);
+      return handle as SpiceCharCell;
     },
     newWindow: (maxIntervals) => {
       assertSpiceInt32NonNegative(maxIntervals, "newWindow(maxIntervals)");
+      const handle = issueWasmCellHandle();
       const window = tspiceCallNewWindow(module, maxIntervals);
-      allocatedWindows.add(window as unknown as number);
-      return window;
+      allocatedWindows.set(handle, window);
+      return handle as SpiceWindow;
     },
 
     freeCell: (cell) => {
-      const handle = cell as unknown as number;
+      const handle = cell;
       assertKnownCell(handle, "freeCell()");
       tspiceCallFreeCell(module, handle);
       allocatedCells.delete(handle);
       charCellLengths.delete(handle);
     },
     freeWindow: (window) => {
-      const handle = window as unknown as number;
+      const handle = window;
       assertKnownWindow(handle, "freeWindow()");
       tspiceCallFreeWindow(module, handle);
       allocatedWindows.delete(handle);
@@ -676,18 +757,18 @@ export function createCellsWindowsKitApi(
 
     cellGeti: (cell, index) => {
       assertSpiceInt32NonNegative(index, "cellGeti(index)");
-      assertKnownCell(cell as unknown as number, "cellGeti()");
+      assertKnownCell(cell, "cellGeti()");
       return tspiceCallCellGeti(module, cell, index);
     },
     cellGetd: (cell, index) => {
       assertSpiceInt32NonNegative(index, "cellGetd(index)");
-      assertKnownCell(cell as unknown as number, "cellGetd()");
+      assertKnownCell(cell, "cellGetd()");
       return tspiceCallCellGetd(module, cell, index);
     },
     cellGetc: (cell, index) => {
       assertSpiceInt32NonNegative(index, "cellGetc(index)");
-      assertKnownCell(cell as unknown as number, "cellGetc()");
-      const handle = cell as unknown as number;
+      assertKnownCell(cell, "cellGetc()");
+      const handle = cell;
       const outMaxBytes = charCellLengths.get(handle);
       if (outMaxBytes === undefined) {
         throw new RangeError(

@@ -10,7 +10,10 @@ import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
-import { assertWasmOwnedWindowHandle } from "./cells-windows.js";
+import {
+  assertWasmOwnedWindowHandle,
+  wasmWindowPointer,
+} from "./cells-windows.js";
 
 function assertFiniteNumber(
   value: unknown,
@@ -92,6 +95,7 @@ function tspiceCallGfrepi(
   begmss: string,
   endmss: string,
 ): void {
+  const pointer = wasmWindowPointer(module, window, "gfrepi()");
   withMalloc(module, WASM_ERR_MAX_BYTES, (errPtr) => {
     const begmssPtr = writeUtf8CString(module, begmss);
     const endmssPtr = writeUtf8CString(module, endmss);
@@ -103,7 +107,7 @@ function tspiceCallGfrepi(
 
     try {
       const result = module._tspice_gfrepi(
-        window,
+        pointer,
         begmssPtr,
         endmssPtr,
         errPtr,
@@ -199,8 +203,8 @@ function tspiceCallGfsep(
         adjust,
         step,
         nintvls,
-        cnfine,
-        resultWindow,
+        wasmWindowPointer(module, cnfine, "gfsep()"),
+        wasmWindowPointer(module, resultWindow, "gfsep()"),
         errPtr,
         WASM_ERR_MAX_BYTES,
       );
@@ -257,8 +261,8 @@ function tspiceCallGfdist(
         adjust,
         step,
         nintvls,
-        cnfine,
-        resultWindow,
+        wasmWindowPointer(module, cnfine, "gfdist()"),
+        wasmWindowPointer(module, resultWindow, "gfdist()"),
         errPtr,
         WASM_ERR_MAX_BYTES,
       );
@@ -283,11 +287,7 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
     gfrefn: (t1, t2, s1, s2) => tspiceCallGfrefn(module, t1, t2, s1, s2),
 
     gfrepi: (window, begmss, endmss) => {
-      assertWasmOwnedWindowHandle(
-        module,
-        window as unknown as number,
-        "gfrepi(window)",
-      );
+      assertWasmOwnedWindowHandle(module, window, "gfrepi(window)");
       tspiceCallGfrepi(module, window, begmss, endmss);
     },
     gfrepf: () => tspiceCallGfrepf(module),
@@ -313,16 +313,8 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       assertFiniteNumber(refval, "gfsep(refval)");
       assertFiniteNumber(adjust, "gfsep(adjust)");
       assertFiniteNumber(step, "gfsep(step)");
-      assertWasmOwnedWindowHandle(
-        module,
-        cnfine as unknown as number,
-        "gfsep(cnfine)",
-      );
-      assertWasmOwnedWindowHandle(
-        module,
-        result as unknown as number,
-        "gfsep(result)",
-      );
+      assertWasmOwnedWindowHandle(module, cnfine, "gfsep(cnfine)");
+      assertWasmOwnedWindowHandle(module, result, "gfsep(result)");
       tspiceCallGfsep(
         module,
         targ1,
@@ -359,16 +351,8 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       assertFiniteNumber(refval, "gfdist(refval)");
       assertFiniteNumber(adjust, "gfdist(adjust)");
       assertFiniteNumber(step, "gfdist(step)");
-      assertWasmOwnedWindowHandle(
-        module,
-        cnfine as unknown as number,
-        "gfdist(cnfine)",
-      );
-      assertWasmOwnedWindowHandle(
-        module,
-        result as unknown as number,
-        "gfdist(result)",
-      );
+      assertWasmOwnedWindowHandle(module, cnfine, "gfdist(cnfine)");
+      assertWasmOwnedWindowHandle(module, result, "gfdist(result)");
       tspiceCallGfdist(
         module,
         target,

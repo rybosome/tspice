@@ -6,8 +6,11 @@
       "id": "cell-capacity-prerequisite",
       "routines": ["ssize_c", "valid_c", "wnvald_c"],
       "dependsOn": ["kplfrm-prerequisite"],
-      "prs": ["https://github.com/rybosome/tspice/pull/683"],
-      "nextAction": "Review the allocation prerequisite; integrate the separate #684 opaque-handle repair before semantic completion of the affected methods. User merges remain separate."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/683",
+        "https://github.com/rybosome/tspice/pull/684"
+      ],
+      "nextAction": "Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence."
     },
     {
       "id": "cells-windows",
@@ -24,7 +27,7 @@
       ],
       "dependsOn": ["cell-capacity-prerequisite"],
       "prs": [],
-      "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline."
+      "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline."
     },
     {
       "id": "vectors-arithmetic",
@@ -240,7 +243,7 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy."
     },
     {
       "id": "ids-names",
@@ -280,8 +283,11 @@
       "id": "kplfrm-prerequisite",
       "routines": ["kplfrm_c"],
       "dependsOn": ["vectors-arithmetic"],
-      "prs": ["https://github.com/rybosome/tspice/pull/680"],
-      "nextAction": "Complete the separate WASM handle lifetime repair; successful valid-handle comparisons do not certify the open ownership boundary."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/680",
+        "https://github.com/rybosome/tspice/pull/684"
+      ],
+      "nextAction": "Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence."
     },
     {
       "id": "kernels",
