@@ -243,3 +243,36 @@ Most routines in this domain are **pure math** and require no kernels.
 | `coords-vectors.recgeo(rect, re, f)`          | `recgeo_c`           | `(rect: SpiceVector3, re: number, f: number)`                    | `{ lon: number; lat: number; alt: number }`      | float tolerance; angles radians                | none                                                                                  |
 | `coords-vectors.mxv(m, v)`                    | `mxv_c`              | `(m: Mat3RowMajor, v: SpiceVector3)`                             | `SpiceVector3`                                   | float tolerance                                | none                                                                                  |
 | `coords-vectors.mtxv(m, v)`                   | `mtxv_c`             | `(m: Mat3RowMajor, v: SpiceVector3)`                             | `SpiceVector3`                                   | float tolerance                                | none                                                                                  |
+
+### Surface geometry and planes audit
+
+The nine `geometry` routines call actual compiled CSPICE through both adapters.
+New comparisons observe every point/vector component, target surface epoch,
+angle, flag, plane word and occultation code. Authored fixed frames, linear
+ephemerides and an octahedral DSK distinguish nearest versus radial ellipsoid
+points and nadir versus radial DSK intersections. Independent Lagrange-root
+ellipsoid, convex-halfspace plate and vector-angle formulas validate the full
+results; all four lighting/visibility combinations and all seven occultation
+codes have literal assertions. Contact-straddling point cases distinguish
+reception/transmission correction effects without ambiguous exact tangency.
+
+Both adapters reject nonfinite epochs/vector elements, incorrect vector lengths
+and non-string inputs before CSPICE. Checked explicit tuples replace unsafe
+output assertions. WASM uses existing withAllocs ownership and protected string
+allocation scopes: 41 failing-before leak positions are repaired and all 87
+geometry allocation-failure positions permit actual post-error calls. No shared
+C or generated WASM binary change is needed. Scoped SpiceyPy no_found_check
+preserves real SINCPT errors such as BADMETHODSYNTAX, then distinguishes misses.
+
+CSPICE scientific preconditions are retained. PL2NVC is error-free for a valid
+creator-produced plane; no malformed scientific plane error is invented. SUBSLR
+permits observer at the target center, and general-source illumination permits
+source at that center. DSK angle positives use facet interiors, since ridge and
+vertex normals are undefined. Pinned N0067 ILLUMF parses a DSK surface list but
+uses a zero/all-surfaces count for normal/ray initialization; its actual complete
+output is covered and retained. ILUMIN/ILLUMG missing-surface errors are tested
+separately. This is toolkit behavior, not a raw support exception.
+
+Live comparisons retain the existing 1e-12 absolute-or-relative tolerance.
+Independent point/plane checks use 1e-11 and angle checks 1e-12 radians. The
+small authored fixtures and generators are documented in the fixture README.

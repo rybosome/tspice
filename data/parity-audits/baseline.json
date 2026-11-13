@@ -220,7 +220,7 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Nine handwritten reviews and focused actual/live geometry evidence exist. Complete both full required lanes, publish the coherent audit PR, then observe source CI and explicit REST rebaseability. Known inherited KPL ownership remains separate pending #684."
     },
     {
       "id": "geometry-gf",

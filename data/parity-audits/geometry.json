@@ -1,0 +1,2338 @@
+{
+  "schemaVersion": 1,
+  "batch": "geometry",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+    "packages/py-parity-checking/test/geometry-observables.test.ts",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/test/geometry-allocations.test.ts",
+    "packages/backend-shim-c/src/domains/geometry.c"
+  ],
+  "executions": [
+    {
+      "id": "local-geometry-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "632e6936f3a2a78bdbbdaf4ca1026325bb89e3eeed22921b6a418f7055b68bc5",
+      "caseIds": [
+        "geometry-illumf-audit-alternate-source",
+        "geometry-illumf-audit-bad-correction",
+        "geometry-illumf-audit-bad-frame",
+        "geometry-illumf-audit-bad-method",
+        "geometry-illumf-audit-correction-cn",
+        "geometry-illumf-audit-correction-cn-s",
+        "geometry-illumf-audit-correction-lt",
+        "geometry-illumf-audit-correction-lt-s",
+        "geometry-illumf-audit-correction-xcn",
+        "geometry-illumf-audit-correction-xcn-s",
+        "geometry-illumf-audit-correction-xlt",
+        "geometry-illumf-audit-correction-xlt-s",
+        "geometry-illumf-audit-different-epoch",
+        "geometry-illumf-audit-dsk-facet",
+        "geometry-illumf-audit-dsk-missing-surface",
+        "geometry-illumf-audit-empty-target",
+        "geometry-illumf-audit-flags--3-100106",
+        "geometry-illumf-audit-flags--3-sun",
+        "geometry-illumf-audit-flags-3-100106",
+        "geometry-illumf-audit-flags-3-sun",
+        "geometry-illumf-audit-outside-coverage",
+        "geometry-illumf-audit-same-body",
+        "geometry-illumf-audit-same-source-target",
+        "geometry-illumf-audit-unknown-source",
+        "geometry-illumf-audit-wrong-center-frame",
+        "geometry-illumf-happy-path-success",
+        "geometry-illumf-invalid-method-error",
+        "geometry-illumg-audit-alternate-source",
+        "geometry-illumg-audit-bad-correction",
+        "geometry-illumg-audit-bad-frame",
+        "geometry-illumg-audit-bad-method",
+        "geometry-illumg-audit-correction-cn",
+        "geometry-illumg-audit-correction-cn-s",
+        "geometry-illumg-audit-correction-lt",
+        "geometry-illumg-audit-correction-lt-s",
+        "geometry-illumg-audit-correction-xcn",
+        "geometry-illumg-audit-correction-xcn-s",
+        "geometry-illumg-audit-correction-xlt",
+        "geometry-illumg-audit-correction-xlt-s",
+        "geometry-illumg-audit-different-epoch",
+        "geometry-illumg-audit-dsk-facet",
+        "geometry-illumg-audit-dsk-missing-surface",
+        "geometry-illumg-audit-empty-target",
+        "geometry-illumg-audit-outside-coverage",
+        "geometry-illumg-audit-same-body",
+        "geometry-illumg-audit-same-source-target",
+        "geometry-illumg-audit-unknown-source",
+        "geometry-illumg-audit-wrong-center-frame",
+        "geometry-illumg-happy-path-success",
+        "geometry-illumg-invalid-method-error",
+        "geometry-ilumin-audit-bad-correction",
+        "geometry-ilumin-audit-bad-frame",
+        "geometry-ilumin-audit-bad-method",
+        "geometry-ilumin-audit-correction-cn",
+        "geometry-ilumin-audit-correction-cn-s",
+        "geometry-ilumin-audit-correction-lt",
+        "geometry-ilumin-audit-correction-lt-s",
+        "geometry-ilumin-audit-correction-xcn",
+        "geometry-ilumin-audit-correction-xcn-s",
+        "geometry-ilumin-audit-correction-xlt",
+        "geometry-ilumin-audit-correction-xlt-s",
+        "geometry-ilumin-audit-different-epoch",
+        "geometry-ilumin-audit-dsk-facet",
+        "geometry-ilumin-audit-dsk-missing-surface",
+        "geometry-ilumin-audit-empty-target",
+        "geometry-ilumin-audit-outside-coverage",
+        "geometry-ilumin-audit-same-body",
+        "geometry-ilumin-audit-wrong-center-frame",
+        "geometry-ilumin-happy-path-success",
+        "geometry-ilumin-invalid-method-error",
+        "geometry-nvc2pl-audit-canonical-0",
+        "geometry-nvc2pl-audit-canonical-1",
+        "geometry-nvc2pl-audit-canonical-2",
+        "geometry-nvc2pl-audit-canonical-3",
+        "geometry-nvc2pl-audit-canonical-4",
+        "geometry-nvc2pl-audit-canonical-5",
+        "geometry-nvc2pl-audit-zero-normal",
+        "geometry-nvc2pl-happy-path-success",
+        "geometry-nvc2pl-zero-vector-error",
+        "geometry-occult-audit-annular",
+        "geometry-occult-audit-bad-correction",
+        "geometry-occult-audit-bad-shape",
+        "geometry-occult-audit-both-points",
+        "geometry-occult-audit-contact-after-cn",
+        "geometry-occult-audit-contact-after-lt",
+        "geometry-occult-audit-contact-after-none",
+        "geometry-occult-audit-contact-before-none",
+        "geometry-occult-audit-contact-before-xcn",
+        "geometry-occult-audit-contact-before-xlt",
+        "geometry-occult-audit-correction-cn",
+        "geometry-occult-audit-correction-cn-s",
+        "geometry-occult-audit-correction-lt",
+        "geometry-occult-audit-correction-lt-s",
+        "geometry-occult-audit-correction-xcn",
+        "geometry-occult-audit-correction-xcn-s",
+        "geometry-occult-audit-correction-xlt",
+        "geometry-occult-audit-correction-xlt-s",
+        "geometry-occult-audit-dsk-point",
+        "geometry-occult-audit-empty-name",
+        "geometry-occult-audit-none",
+        "geometry-occult-audit-outside-coverage",
+        "geometry-occult-audit-partial",
+        "geometry-occult-audit-point-target",
+        "geometry-occult-audit-reverse-annular",
+        "geometry-occult-audit-reverse-partial",
+        "geometry-occult-audit-reverse-total",
+        "geometry-occult-audit-same-targets",
+        "geometry-occult-audit-total",
+        "geometry-occult-audit-unknown-observer",
+        "geometry-occult-eclipse-code-success",
+        "geometry-occult-invalid-shape-error",
+        "geometry-pl2nvc-audit-canonical-0",
+        "geometry-pl2nvc-audit-canonical-1",
+        "geometry-pl2nvc-audit-canonical-2",
+        "geometry-pl2nvc-audit-canonical-3",
+        "geometry-pl2nvc-audit-canonical-4",
+        "geometry-pl2nvc-audit-canonical-5",
+        "geometry-pl2nvc-happy-path-success",
+        "geometry-sincpt-audit-bad-correction",
+        "geometry-sincpt-audit-bad-direction-frame",
+        "geometry-sincpt-audit-bad-frame",
+        "geometry-sincpt-audit-bad-method",
+        "geometry-sincpt-audit-badmethod",
+        "geometry-sincpt-audit-correction-cn",
+        "geometry-sincpt-audit-correction-cn-s",
+        "geometry-sincpt-audit-correction-lt",
+        "geometry-sincpt-audit-correction-lt-s",
+        "geometry-sincpt-audit-correction-xcn",
+        "geometry-sincpt-audit-correction-xcn-s",
+        "geometry-sincpt-audit-correction-xlt",
+        "geometry-sincpt-audit-correction-xlt-s",
+        "geometry-sincpt-audit-different-epoch",
+        "geometry-sincpt-audit-dsk-facet",
+        "geometry-sincpt-audit-dsk-missing-surface",
+        "geometry-sincpt-audit-dsk-rotated-output",
+        "geometry-sincpt-audit-empty-target",
+        "geometry-sincpt-audit-miss",
+        "geometry-sincpt-audit-outside-coverage",
+        "geometry-sincpt-audit-same-body",
+        "geometry-sincpt-audit-wrong-center-frame",
+        "geometry-sincpt-audit-zero-ray",
+        "geometry-sincpt-intercept-hit-success",
+        "geometry-sincpt-invalid-target-error",
+        "geometry-subpnt-audit-bad-correction",
+        "geometry-subpnt-audit-bad-frame",
+        "geometry-subpnt-audit-bad-method",
+        "geometry-subpnt-audit-correction-cn",
+        "geometry-subpnt-audit-correction-cn-s",
+        "geometry-subpnt-audit-correction-lt",
+        "geometry-subpnt-audit-correction-lt-s",
+        "geometry-subpnt-audit-correction-xcn",
+        "geometry-subpnt-audit-correction-xcn-s",
+        "geometry-subpnt-audit-correction-xlt",
+        "geometry-subpnt-audit-correction-xlt-s",
+        "geometry-subpnt-audit-different-epoch",
+        "geometry-subpnt-audit-empty-target",
+        "geometry-subpnt-audit-method-intercept-dsk",
+        "geometry-subpnt-audit-method-intercept-ellipsoid",
+        "geometry-subpnt-audit-method-nadir-dsk",
+        "geometry-subpnt-audit-method-near-point-ellipsoid",
+        "geometry-subpnt-audit-outside-coverage",
+        "geometry-subpnt-audit-same-body",
+        "geometry-subpnt-audit-wrong-center-frame",
+        "geometry-subpnt-happy-path-success",
+        "geometry-subpnt-invalid-method-error",
+        "geometry-subslr-audit-bad-correction",
+        "geometry-subslr-audit-bad-frame",
+        "geometry-subslr-audit-bad-method",
+        "geometry-subslr-audit-correction-cn",
+        "geometry-subslr-audit-correction-cn-s",
+        "geometry-subslr-audit-correction-lt",
+        "geometry-subslr-audit-correction-lt-s",
+        "geometry-subslr-audit-correction-xcn",
+        "geometry-subslr-audit-correction-xcn-s",
+        "geometry-subslr-audit-correction-xlt",
+        "geometry-subslr-audit-correction-xlt-s",
+        "geometry-subslr-audit-different-epoch",
+        "geometry-subslr-audit-empty-target",
+        "geometry-subslr-audit-method-intercept-dsk",
+        "geometry-subslr-audit-method-intercept-ellipsoid",
+        "geometry-subslr-audit-method-nadir-dsk",
+        "geometry-subslr-audit-method-near-point-ellipsoid",
+        "geometry-subslr-audit-outside-coverage",
+        "geometry-subslr-audit-same-body",
+        "geometry-subslr-audit-wrong-center-frame",
+        "geometry-subslr-happy-path-success",
+        "geometry-subslr-invalid-method-error"
+      ],
+      "observation": "Both full required local lanes passed: all 978 live comparisons (489 scenarios per actual backend), all 1019 parity-package tests with native required and zero skips, production N0067 native sanity, all 149 WASM/61 Node/21 core/102 facade tests. All 87 allocation fault positions pass after 41 failed before repair; all six boundary groups and four independent formula/flag/plane/occultation tests pass. Both actual SINCPT named-error comparisons failed before oracle repair. All 170 new workflows executed across focused/full runs, including correction-sensitive analytic contacts. No comparator relaxation. Inherited KPL WASM ownership remains explicitly needs-repair until #684."
+    },
+    {
+      "id": "local-geometry-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "632e6936f3a2a78bdbbdaf4ca1026325bb89e3eeed22921b6a418f7055b68bc5",
+      "caseIds": [
+        "geometry-illumf-audit-alternate-source",
+        "geometry-illumf-audit-bad-correction",
+        "geometry-illumf-audit-bad-frame",
+        "geometry-illumf-audit-bad-method",
+        "geometry-illumf-audit-correction-cn",
+        "geometry-illumf-audit-correction-cn-s",
+        "geometry-illumf-audit-correction-lt",
+        "geometry-illumf-audit-correction-lt-s",
+        "geometry-illumf-audit-correction-xcn",
+        "geometry-illumf-audit-correction-xcn-s",
+        "geometry-illumf-audit-correction-xlt",
+        "geometry-illumf-audit-correction-xlt-s",
+        "geometry-illumf-audit-different-epoch",
+        "geometry-illumf-audit-dsk-facet",
+        "geometry-illumf-audit-dsk-missing-surface",
+        "geometry-illumf-audit-empty-target",
+        "geometry-illumf-audit-flags--3-100106",
+        "geometry-illumf-audit-flags--3-sun",
+        "geometry-illumf-audit-flags-3-100106",
+        "geometry-illumf-audit-flags-3-sun",
+        "geometry-illumf-audit-outside-coverage",
+        "geometry-illumf-audit-same-body",
+        "geometry-illumf-audit-same-source-target",
+        "geometry-illumf-audit-unknown-source",
+        "geometry-illumf-audit-wrong-center-frame",
+        "geometry-illumf-happy-path-success",
+        "geometry-illumf-invalid-method-error",
+        "geometry-illumg-audit-alternate-source",
+        "geometry-illumg-audit-bad-correction",
+        "geometry-illumg-audit-bad-frame",
+        "geometry-illumg-audit-bad-method",
+        "geometry-illumg-audit-correction-cn",
+        "geometry-illumg-audit-correction-cn-s",
+        "geometry-illumg-audit-correction-lt",
+        "geometry-illumg-audit-correction-lt-s",
+        "geometry-illumg-audit-correction-xcn",
+        "geometry-illumg-audit-correction-xcn-s",
+        "geometry-illumg-audit-correction-xlt",
+        "geometry-illumg-audit-correction-xlt-s",
+        "geometry-illumg-audit-different-epoch",
+        "geometry-illumg-audit-dsk-facet",
+        "geometry-illumg-audit-dsk-missing-surface",
+        "geometry-illumg-audit-empty-target",
+        "geometry-illumg-audit-outside-coverage",
+        "geometry-illumg-audit-same-body",
+        "geometry-illumg-audit-same-source-target",
+        "geometry-illumg-audit-unknown-source",
+        "geometry-illumg-audit-wrong-center-frame",
+        "geometry-illumg-happy-path-success",
+        "geometry-illumg-invalid-method-error",
+        "geometry-ilumin-audit-bad-correction",
+        "geometry-ilumin-audit-bad-frame",
+        "geometry-ilumin-audit-bad-method",
+        "geometry-ilumin-audit-correction-cn",
+        "geometry-ilumin-audit-correction-cn-s",
+        "geometry-ilumin-audit-correction-lt",
+        "geometry-ilumin-audit-correction-lt-s",
+        "geometry-ilumin-audit-correction-xcn",
+        "geometry-ilumin-audit-correction-xcn-s",
+        "geometry-ilumin-audit-correction-xlt",
+        "geometry-ilumin-audit-correction-xlt-s",
+        "geometry-ilumin-audit-different-epoch",
+        "geometry-ilumin-audit-dsk-facet",
+        "geometry-ilumin-audit-dsk-missing-surface",
+        "geometry-ilumin-audit-empty-target",
+        "geometry-ilumin-audit-outside-coverage",
+        "geometry-ilumin-audit-same-body",
+        "geometry-ilumin-audit-wrong-center-frame",
+        "geometry-ilumin-happy-path-success",
+        "geometry-ilumin-invalid-method-error",
+        "geometry-nvc2pl-audit-canonical-0",
+        "geometry-nvc2pl-audit-canonical-1",
+        "geometry-nvc2pl-audit-canonical-2",
+        "geometry-nvc2pl-audit-canonical-3",
+        "geometry-nvc2pl-audit-canonical-4",
+        "geometry-nvc2pl-audit-canonical-5",
+        "geometry-nvc2pl-audit-zero-normal",
+        "geometry-nvc2pl-happy-path-success",
+        "geometry-nvc2pl-zero-vector-error",
+        "geometry-occult-audit-annular",
+        "geometry-occult-audit-bad-correction",
+        "geometry-occult-audit-bad-shape",
+        "geometry-occult-audit-both-points",
+        "geometry-occult-audit-contact-after-cn",
+        "geometry-occult-audit-contact-after-lt",
+        "geometry-occult-audit-contact-after-none",
+        "geometry-occult-audit-contact-before-none",
+        "geometry-occult-audit-contact-before-xcn",
+        "geometry-occult-audit-contact-before-xlt",
+        "geometry-occult-audit-correction-cn",
+        "geometry-occult-audit-correction-cn-s",
+        "geometry-occult-audit-correction-lt",
+        "geometry-occult-audit-correction-lt-s",
+        "geometry-occult-audit-correction-xcn",
+        "geometry-occult-audit-correction-xcn-s",
+        "geometry-occult-audit-correction-xlt",
+        "geometry-occult-audit-correction-xlt-s",
+        "geometry-occult-audit-dsk-point",
+        "geometry-occult-audit-empty-name",
+        "geometry-occult-audit-none",
+        "geometry-occult-audit-outside-coverage",
+        "geometry-occult-audit-partial",
+        "geometry-occult-audit-point-target",
+        "geometry-occult-audit-reverse-annular",
+        "geometry-occult-audit-reverse-partial",
+        "geometry-occult-audit-reverse-total",
+        "geometry-occult-audit-same-targets",
+        "geometry-occult-audit-total",
+        "geometry-occult-audit-unknown-observer",
+        "geometry-occult-eclipse-code-success",
+        "geometry-occult-invalid-shape-error",
+        "geometry-pl2nvc-audit-canonical-0",
+        "geometry-pl2nvc-audit-canonical-1",
+        "geometry-pl2nvc-audit-canonical-2",
+        "geometry-pl2nvc-audit-canonical-3",
+        "geometry-pl2nvc-audit-canonical-4",
+        "geometry-pl2nvc-audit-canonical-5",
+        "geometry-pl2nvc-happy-path-success",
+        "geometry-sincpt-audit-bad-correction",
+        "geometry-sincpt-audit-bad-direction-frame",
+        "geometry-sincpt-audit-bad-frame",
+        "geometry-sincpt-audit-bad-method",
+        "geometry-sincpt-audit-badmethod",
+        "geometry-sincpt-audit-correction-cn",
+        "geometry-sincpt-audit-correction-cn-s",
+        "geometry-sincpt-audit-correction-lt",
+        "geometry-sincpt-audit-correction-lt-s",
+        "geometry-sincpt-audit-correction-xcn",
+        "geometry-sincpt-audit-correction-xcn-s",
+        "geometry-sincpt-audit-correction-xlt",
+        "geometry-sincpt-audit-correction-xlt-s",
+        "geometry-sincpt-audit-different-epoch",
+        "geometry-sincpt-audit-dsk-facet",
+        "geometry-sincpt-audit-dsk-missing-surface",
+        "geometry-sincpt-audit-dsk-rotated-output",
+        "geometry-sincpt-audit-empty-target",
+        "geometry-sincpt-audit-miss",
+        "geometry-sincpt-audit-outside-coverage",
+        "geometry-sincpt-audit-same-body",
+        "geometry-sincpt-audit-wrong-center-frame",
+        "geometry-sincpt-audit-zero-ray",
+        "geometry-sincpt-intercept-hit-success",
+        "geometry-sincpt-invalid-target-error",
+        "geometry-subpnt-audit-bad-correction",
+        "geometry-subpnt-audit-bad-frame",
+        "geometry-subpnt-audit-bad-method",
+        "geometry-subpnt-audit-correction-cn",
+        "geometry-subpnt-audit-correction-cn-s",
+        "geometry-subpnt-audit-correction-lt",
+        "geometry-subpnt-audit-correction-lt-s",
+        "geometry-subpnt-audit-correction-xcn",
+        "geometry-subpnt-audit-correction-xcn-s",
+        "geometry-subpnt-audit-correction-xlt",
+        "geometry-subpnt-audit-correction-xlt-s",
+        "geometry-subpnt-audit-different-epoch",
+        "geometry-subpnt-audit-empty-target",
+        "geometry-subpnt-audit-method-intercept-dsk",
+        "geometry-subpnt-audit-method-intercept-ellipsoid",
+        "geometry-subpnt-audit-method-nadir-dsk",
+        "geometry-subpnt-audit-method-near-point-ellipsoid",
+        "geometry-subpnt-audit-outside-coverage",
+        "geometry-subpnt-audit-same-body",
+        "geometry-subpnt-audit-wrong-center-frame",
+        "geometry-subpnt-happy-path-success",
+        "geometry-subpnt-invalid-method-error",
+        "geometry-subslr-audit-bad-correction",
+        "geometry-subslr-audit-bad-frame",
+        "geometry-subslr-audit-bad-method",
+        "geometry-subslr-audit-correction-cn",
+        "geometry-subslr-audit-correction-cn-s",
+        "geometry-subslr-audit-correction-lt",
+        "geometry-subslr-audit-correction-lt-s",
+        "geometry-subslr-audit-correction-xcn",
+        "geometry-subslr-audit-correction-xcn-s",
+        "geometry-subslr-audit-correction-xlt",
+        "geometry-subslr-audit-correction-xlt-s",
+        "geometry-subslr-audit-different-epoch",
+        "geometry-subslr-audit-empty-target",
+        "geometry-subslr-audit-method-intercept-dsk",
+        "geometry-subslr-audit-method-intercept-ellipsoid",
+        "geometry-subslr-audit-method-nadir-dsk",
+        "geometry-subslr-audit-method-near-point-ellipsoid",
+        "geometry-subslr-audit-outside-coverage",
+        "geometry-subslr-audit-same-body",
+        "geometry-subslr-audit-wrong-center-frame",
+        "geometry-subslr-happy-path-success",
+        "geometry-subslr-invalid-method-error"
+      ],
+      "observation": "Both full required local lanes passed: all 978 live comparisons (489 scenarios per actual backend), all 1019 parity-package tests with native required and zero skips, production N0067 native sanity, all 149 WASM/61 Node/21 core/102 facade tests. All 87 allocation fault positions pass after 41 failed before repair; all six boundary groups and four independent formula/flag/plane/occultation tests pass. Both actual SINCPT named-error comparisons failed before oracle repair. All 170 new workflows executed across focused/full runs, including correction-sensitive analytic contacts. No comparator relaxation. Inherited KPL WASM ownership remains explicitly needs-repair until #684."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "subpnt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subpnt_c.html",
+      "semantics": "Nearest-ellipsoid, radial-ellipsoid, nadir-DSK or radial-DSK sub-observer surface point. The output point and observer-to-point vector are km in target-centered body-fixed frame at target surface epoch; trgepc is TDB ET, ET-lt or ET+lt according to correction. DSK nadir intersects the line toward the nearest reference-ellipsoid point, not the point nearest on the polyhedral surface.",
+      "scenarios": [
+        {
+          "caseId": "geometry-subpnt-happy-path-success",
+          "coverage": ["success", "edge"],
+          "observes": "subpnt near-point ellipsoid sub-observer geometry on Moon from Earth; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-invalid-method-error",
+          "coverage": ["error"],
+          "observes": "Representative subpnt method syntax error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-method-near-point-ellipsoid",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NEAR POINT/ELLIPSOID; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-method-intercept-ellipsoid",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/ELLIPSOID; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-method-nadir-dsk",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NADIR/DSK/UNPRIORITIZED; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-method-intercept-dsk",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/DSK/UNPRIORITIZED/SURFACES=101; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-lt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-lt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-cn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-cn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-xlt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-xlt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-xcn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-correction-xcn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-different-epoch",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-bad-method",
+          "coverage": ["error"],
+          "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-bad-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-wrong-center-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-empty-target",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-same-body",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subpnt-audit-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Distinct nearest/radial and ellipsoid/plate geometry, supported reception/transmission corrections, moving observer and nonzero signed ET, full vectors/epoch/angles and flags. SINCPT true hits/misses/zero ray, all seven occultation codes and analytically contact-straddling correction effects are observed where applicable.",
+      "errorAssessment": "Every new scientific error requires a specific actual SPICE short code, covering method/name/frame/center/epoch/correction/distinctness and missing shape data where applicable. No invented all-routine distinctness restriction: SUBSLR allows observer at target center; general illumination allows a source at that center. DSK angle positives use facet interiors; ridge/vertex undefined normals are excluded.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/de440s.bsp",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        }
+      ],
+      "fixtureRationale": "Three tiny exclusively authored kernels define geometry with independent analytic expectations. Existing real-body smoke inputs are reused unchanged. Octahedron triangles have outward normals; test points lie in facet interiors. Actual compiled operations are not replaced by formulas in the harness.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "subpnt-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/subpnt.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-subpnt-audit-method-near-point-ellipsoid",
+            "geometry-subpnt-audit-method-intercept-ellipsoid",
+            "geometry-subpnt-audit-method-nadir-dsk",
+            "geometry-subpnt-audit-method-intercept-dsk",
+            "geometry-subpnt-audit-correction-lt",
+            "geometry-subpnt-audit-correction-lt-s",
+            "geometry-subpnt-audit-correction-cn",
+            "geometry-subpnt-audit-correction-cn-s",
+            "geometry-subpnt-audit-correction-xlt",
+            "geometry-subpnt-audit-correction-xlt-s",
+            "geometry-subpnt-audit-correction-xcn",
+            "geometry-subpnt-audit-correction-xcn-s",
+            "geometry-subpnt-audit-different-epoch",
+            "geometry-subpnt-audit-bad-method",
+            "geometry-subpnt-audit-bad-frame",
+            "geometry-subpnt-audit-wrong-center-frame",
+            "geometry-subpnt-audit-empty-target",
+            "geometry-subpnt-audit-same-body",
+            "geometry-subpnt-audit-outside-coverage",
+            "geometry-subpnt-audit-bad-correction"
+          ]
+        },
+        {
+          "id": "subpnt-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Throwing UTF8 allocation occurred before cleanup protection; 41 actual failure positions across seven string-bearing geometry routines leaked earlier buffers.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 9 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-subpnt-audit-method-near-point-ellipsoid"]
+        },
+        {
+          "id": "subpnt-typed-numeric-boundary",
+          "status": "repaired",
+          "summary": "Nonfinite epochs/vector elements reached CSPICE; WASM encoding coerced non-string values and copying unchecked vector shapes could read stale components or overwrite adjacent output memory.",
+          "repair": "Validate finite epochs, exact finite vector shapes and actual string types before native/WASM calls, preserving CSPICE scientific errors. Both backend adapters return explicitly checked tuples instead of unsafe assertions. Five actual boundary regressions failed before repair; all six boundary groups now pass, including post-error raw calls and oversized vectors after the guard exists.",
+          "evidence": [
+            "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+            "packages/backend-node/src/domains/geometry.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-subpnt-audit-method-near-point-ellipsoid"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.subpnt -> typed node adapter -> actual registered N-API subpnt binding -> shared tspice_subpnt -> subpnt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subpnt. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.subpnt -> typed wasm adapter -> actual compiled _tspice_subpnt export -> shared tspice_subpnt -> subpnt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subpnt. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "subslr_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subslr_c.html",
+      "semantics": "Nearest-ellipsoid, radial-ellipsoid, nadir-DSK or radial-DSK sub-solar point. Complete target point and observer-to-point vector are km in target-fixed frame at trgepc. Sub-solar epoch is ET or received ET-lt; transmission corrections are not supported. Sun ephemeris is required. Unlike SUBPNT, CSPICE permits observer at target center.",
+      "scenarios": [
+        {
+          "caseId": "geometry-subslr-happy-path-success",
+          "coverage": ["success", "edge"],
+          "observes": "subslr near-point ellipsoid sub-solar geometry on Moon from Earth frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-invalid-method-error",
+          "coverage": ["error"],
+          "observes": "Representative subslr method syntax error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-method-near-point-ellipsoid",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NEAR POINT/ELLIPSOID; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-method-intercept-ellipsoid",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/ELLIPSOID; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-method-nadir-dsk",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NADIR/DSK/UNPRIORITIZED; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-method-intercept-dsk",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/DSK/UNPRIORITIZED/SURFACES=101; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-lt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-lt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-cn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-cn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-xlt",
+          "coverage": ["error"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-xlt-s",
+          "coverage": ["error"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-xcn",
+          "coverage": ["error"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-correction-xcn-s",
+          "coverage": ["error"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-different-epoch",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-bad-method",
+          "coverage": ["error"],
+          "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-bad-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-wrong-center-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-empty-target",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-same-body",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-subslr-audit-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Distinct nearest/radial and ellipsoid/plate geometry, supported reception/transmission corrections, moving observer and nonzero signed ET, full vectors/epoch/angles and flags. SINCPT true hits/misses/zero ray, all seven occultation codes and analytically contact-straddling correction effects are observed where applicable.",
+      "errorAssessment": "Every new scientific error requires a specific actual SPICE short code, covering method/name/frame/center/epoch/correction/distinctness and missing shape data where applicable. No invented all-routine distinctness restriction: SUBSLR allows observer at target center; general illumination allows a source at that center. DSK angle positives use facet interiors; ridge/vertex undefined normals are excluded.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/de440s.bsp",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        }
+      ],
+      "fixtureRationale": "Three tiny exclusively authored kernels define geometry with independent analytic expectations. Existing real-body smoke inputs are reused unchanged. Octahedron triangles have outward normals; test points lie in facet interiors. Actual compiled operations are not replaced by formulas in the harness.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "subslr-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/subslr.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-subslr-audit-method-near-point-ellipsoid",
+            "geometry-subslr-audit-method-intercept-ellipsoid",
+            "geometry-subslr-audit-method-nadir-dsk",
+            "geometry-subslr-audit-method-intercept-dsk",
+            "geometry-subslr-audit-correction-lt",
+            "geometry-subslr-audit-correction-lt-s",
+            "geometry-subslr-audit-correction-cn",
+            "geometry-subslr-audit-correction-cn-s",
+            "geometry-subslr-audit-correction-xlt",
+            "geometry-subslr-audit-correction-xlt-s",
+            "geometry-subslr-audit-correction-xcn",
+            "geometry-subslr-audit-correction-xcn-s",
+            "geometry-subslr-audit-different-epoch",
+            "geometry-subslr-audit-bad-method",
+            "geometry-subslr-audit-bad-frame",
+            "geometry-subslr-audit-wrong-center-frame",
+            "geometry-subslr-audit-empty-target",
+            "geometry-subslr-audit-same-body",
+            "geometry-subslr-audit-outside-coverage",
+            "geometry-subslr-audit-bad-correction"
+          ]
+        },
+        {
+          "id": "subslr-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Throwing UTF8 allocation occurred before cleanup protection; 41 actual failure positions across seven string-bearing geometry routines leaked earlier buffers.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 9 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-subslr-audit-method-near-point-ellipsoid"]
+        },
+        {
+          "id": "subslr-typed-numeric-boundary",
+          "status": "repaired",
+          "summary": "Nonfinite epochs/vector elements reached CSPICE; WASM encoding coerced non-string values and copying unchecked vector shapes could read stale components or overwrite adjacent output memory.",
+          "repair": "Validate finite epochs, exact finite vector shapes and actual string types before native/WASM calls, preserving CSPICE scientific errors. Both backend adapters return explicitly checked tuples instead of unsafe assertions. Five actual boundary regressions failed before repair; all six boundary groups now pass, including post-error raw calls and oversized vectors after the guard exists.",
+          "evidence": [
+            "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+            "packages/backend-node/src/domains/geometry.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-subslr-audit-method-near-point-ellipsoid"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.subslr -> typed node adapter -> actual registered N-API subslr binding -> shared tspice_subslr -> subslr_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subslr. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.subslr -> typed wasm adapter -> actual compiled _tspice_subslr export -> shared tspice_subslr -> subslr_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subslr. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sincpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sincpt_c.html",
+      "semantics": "Nearest forward ray/target intersection with ellipsoid or DSK, with complete point, target TDB epoch and observer-to-point vector in target-fixed frame. Ray direction is expressed in dref and is not required to be unit length. A true miss returns found:false; zero ray, bad method/frame/name, distinctness or missing-data errors remain errors. Supports geometric, reception and transmission corrections.",
+      "scenarios": [
+        {
+          "caseId": "geometry-sincpt-intercept-hit-success",
+          "coverage": ["success", "edge"],
+          "observes": "sincpt ellipsoid boresight toward Moon center returns found=true intercept; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-invalid-target-error",
+          "coverage": ["error"],
+          "observes": "Representative sincpt invalid target/frame combination error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-badmethod",
+          "coverage": ["error"],
+          "observes": "Preserve actual BADMETHODSYNTAX instead of generic found-decorator failure; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-lt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-lt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-cn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-cn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-xlt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-xlt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-xcn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-correction-xcn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-different-epoch",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-bad-method",
+          "coverage": ["error"],
+          "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-bad-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-wrong-center-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-empty-target",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-same-body",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-dsk-facet",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-dsk-missing-surface",
+          "coverage": ["error"],
+          "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-miss",
+          "coverage": ["success", "edge"],
+          "observes": "A ray directed away from the target is a genuine found:false; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-zero-ray",
+          "coverage": ["error"],
+          "observes": "A zero direction is actual ZEROVECTOR, not a successful miss; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-bad-direction-frame",
+          "coverage": ["error"],
+          "observes": "Require actual direction-frame error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-sincpt-audit-dsk-rotated-output",
+          "coverage": ["success", "edge"],
+          "observes": "Transform the complete DSK intercept into a distinct body-centered frame; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Distinct nearest/radial and ellipsoid/plate geometry, supported reception/transmission corrections, moving observer and nonzero signed ET, full vectors/epoch/angles and flags. SINCPT true hits/misses/zero ray, all seven occultation codes and analytically contact-straddling correction effects are observed where applicable.",
+      "errorAssessment": "Every new scientific error requires a specific actual SPICE short code, covering method/name/frame/center/epoch/correction/distinctness and missing shape data where applicable. No invented all-routine distinctness restriction: SUBSLR allows observer at target center; general illumination allows a source at that center. DSK angle positives use facet interiors; ridge/vertex undefined normals are excluded.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/de440s.bsp",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        }
+      ],
+      "fixtureRationale": "Three tiny exclusively authored kernels define geometry with independent analytic expectations. Existing real-body smoke inputs are reused unchanged. Octahedron triangles have outward normals; test points lie in facet interiors. Actual compiled operations are not replaced by formulas in the harness.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "sincpt-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/sincpt.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-sincpt-audit-badmethod",
+            "geometry-sincpt-audit-correction-lt",
+            "geometry-sincpt-audit-correction-lt-s",
+            "geometry-sincpt-audit-correction-cn",
+            "geometry-sincpt-audit-correction-cn-s",
+            "geometry-sincpt-audit-correction-xlt",
+            "geometry-sincpt-audit-correction-xlt-s",
+            "geometry-sincpt-audit-correction-xcn",
+            "geometry-sincpt-audit-correction-xcn-s",
+            "geometry-sincpt-audit-different-epoch",
+            "geometry-sincpt-audit-bad-method",
+            "geometry-sincpt-audit-bad-frame",
+            "geometry-sincpt-audit-wrong-center-frame",
+            "geometry-sincpt-audit-empty-target",
+            "geometry-sincpt-audit-same-body",
+            "geometry-sincpt-audit-outside-coverage",
+            "geometry-sincpt-audit-bad-correction",
+            "geometry-sincpt-audit-dsk-facet",
+            "geometry-sincpt-audit-dsk-missing-surface",
+            "geometry-sincpt-audit-miss",
+            "geometry-sincpt-audit-zero-ray",
+            "geometry-sincpt-audit-bad-direction-frame",
+            "geometry-sincpt-audit-dsk-rotated-output"
+          ]
+        },
+        {
+          "id": "sincpt-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Throwing UTF8 allocation occurred before cleanup protection; 41 actual failure positions across seven string-bearing geometry routines leaked earlier buffers.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 12 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-sincpt-audit-badmethod"]
+        },
+        {
+          "id": "sincpt-typed-numeric-boundary",
+          "status": "repaired",
+          "summary": "Nonfinite epochs/vector elements reached CSPICE; WASM encoding coerced non-string values and copying unchecked vector shapes could read stale components or overwrite adjacent output memory.",
+          "repair": "Validate finite epochs, exact finite vector shapes and actual string types before native/WASM calls, preserving CSPICE scientific errors. Both backend adapters return explicitly checked tuples instead of unsafe assertions. Five actual boundary regressions failed before repair; all six boundary groups now pass, including post-error raw calls and oversized vectors after the guard exists.",
+          "evidence": [
+            "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+            "packages/backend-node/src/domains/geometry.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-sincpt-audit-badmethod"]
+        },
+        {
+          "id": "sincpt-structured-oracle-error",
+          "status": "repaired",
+          "summary": "SpiceyPy found decorator intercepted actual BADMETHODSYNTAX before outer error checking. The old harness re-raised generic NotFoundError with pending SPICE state, losing structured scientific error evidence.",
+          "repair": "Use scoped no_found_check so actual CSPICE errors are raised before interpreting found. Both live bad-method comparisons failed before repair and now require BADMETHODSYNTAX. True ellipsoid/DSK hits and misses remain distinct.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+            "packages/py-parity-checking/src/cases/geometry/sincpt.cases.json"
+          ],
+          "caseIds": ["geometry-sincpt-audit-badmethod"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.sincpt -> typed node adapter -> actual registered N-API sincpt binding -> shared tspice_sincpt -> sincpt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual sincpt. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.sincpt -> typed wasm adapter -> actual compiled _tspice_sincpt export -> shared tspice_sincpt -> sincpt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual sincpt. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ilumin_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ilumin_c.html",
+      "semantics": "Solar phase, incidence and emission angles in radians at a caller-supplied target surface point, plus target surface TDB epoch and full observer-to-point km vector. Ellipsoid normal or actual DSK facet normal is used. Phase is angle between point-to-observer and point-to-Sun; incidence and emission use outward normal. DSK points must lie on a defined smooth facet, avoiding ridges/vertices.",
+      "scenarios": [
+        {
+          "caseId": "geometry-ilumin-happy-path-success",
+          "coverage": ["success", "edge"],
+          "observes": "ilumin ellipsoid illumination at stable Moon sub-observer surface point; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-invalid-method-error",
+          "coverage": ["error"],
+          "observes": "Representative ilumin method syntax error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-lt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-lt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-cn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-cn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-xlt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-xlt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-xcn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-correction-xcn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-different-epoch",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-bad-method",
+          "coverage": ["error"],
+          "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-bad-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-wrong-center-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-empty-target",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-same-body",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-dsk-facet",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-ilumin-audit-dsk-missing-surface",
+          "coverage": ["error"],
+          "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Distinct nearest/radial and ellipsoid/plate geometry, supported reception/transmission corrections, moving observer and nonzero signed ET, full vectors/epoch/angles and flags. SINCPT true hits/misses/zero ray, all seven occultation codes and analytically contact-straddling correction effects are observed where applicable.",
+      "errorAssessment": "Every new scientific error requires a specific actual SPICE short code, covering method/name/frame/center/epoch/correction/distinctness and missing shape data where applicable. No invented all-routine distinctness restriction: SUBSLR allows observer at target center; general illumination allows a source at that center. DSK angle positives use facet interiors; ridge/vertex undefined normals are excluded.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/de440s.bsp",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        }
+      ],
+      "fixtureRationale": "Three tiny exclusively authored kernels define geometry with independent analytic expectations. Existing real-body smoke inputs are reused unchanged. Octahedron triangles have outward normals; test points lie in facet interiors. Actual compiled operations are not replaced by formulas in the harness.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "ilumin-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/ilumin.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-ilumin-audit-correction-lt",
+            "geometry-ilumin-audit-correction-lt-s",
+            "geometry-ilumin-audit-correction-cn",
+            "geometry-ilumin-audit-correction-cn-s",
+            "geometry-ilumin-audit-correction-xlt",
+            "geometry-ilumin-audit-correction-xlt-s",
+            "geometry-ilumin-audit-correction-xcn",
+            "geometry-ilumin-audit-correction-xcn-s",
+            "geometry-ilumin-audit-different-epoch",
+            "geometry-ilumin-audit-bad-method",
+            "geometry-ilumin-audit-bad-frame",
+            "geometry-ilumin-audit-wrong-center-frame",
+            "geometry-ilumin-audit-empty-target",
+            "geometry-ilumin-audit-same-body",
+            "geometry-ilumin-audit-outside-coverage",
+            "geometry-ilumin-audit-bad-correction",
+            "geometry-ilumin-audit-dsk-facet",
+            "geometry-ilumin-audit-dsk-missing-surface"
+          ]
+        },
+        {
+          "id": "ilumin-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Throwing UTF8 allocation occurred before cleanup protection; 41 actual failure positions across seven string-bearing geometry routines leaked earlier buffers.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 12 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-ilumin-audit-correction-lt"]
+        },
+        {
+          "id": "ilumin-typed-numeric-boundary",
+          "status": "repaired",
+          "summary": "Nonfinite epochs/vector elements reached CSPICE; WASM encoding coerced non-string values and copying unchecked vector shapes could read stale components or overwrite adjacent output memory.",
+          "repair": "Validate finite epochs, exact finite vector shapes and actual string types before native/WASM calls, preserving CSPICE scientific errors. Both backend adapters return explicitly checked tuples instead of unsafe assertions. Five actual boundary regressions failed before repair; all six boundary groups now pass, including post-error raw calls and oversized vectors after the guard exists.",
+          "evidence": [
+            "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+            "packages/backend-node/src/domains/geometry.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-ilumin-audit-correction-lt"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ilumin -> typed node adapter -> actual registered N-API ilumin binding -> shared tspice_ilumin -> ilumin_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual ilumin. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ilumin -> typed wasm adapter -> actual compiled _tspice_ilumin export -> shared tspice_ilumin -> ilumin_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual ilumin. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "illumg_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illumg_c.html",
+      "semantics": "General-source illumination angles with explicitly selected source body, full target epoch and observer-to-point vector. Phase/incidence/emission are radians in[0,pi]. Geometric and supported reception/transmission corrections use actual source/target/observer ephemerides. DSK surface point must have a defined outward normal. Does not synthesize ILUMIN output via another routine.",
+      "scenarios": [
+        {
+          "caseId": "geometry-illumg-happy-path-success",
+          "coverage": ["success", "edge"],
+          "observes": "illumg ellipsoid illumination with explicit SUN source at stable Moon surface point; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-invalid-method-error",
+          "coverage": ["error"],
+          "observes": "Representative illumg method syntax error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-lt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-lt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-cn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-cn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-xlt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-xlt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-xcn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-correction-xcn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-different-epoch",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-bad-method",
+          "coverage": ["error"],
+          "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-bad-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-wrong-center-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-empty-target",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-same-body",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-dsk-facet",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-dsk-missing-surface",
+          "coverage": ["error"],
+          "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-alternate-source",
+          "coverage": ["success", "edge"],
+          "observes": "Explicitly change the illumination source direction; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-same-source-target",
+          "coverage": ["success", "edge"],
+          "observes": "CSPICE permits a source at the target center; observe complete angles and applicable flags; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumg-audit-unknown-source",
+          "coverage": ["error"],
+          "observes": "Unknown source name requires an actual toolkit ID error; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Distinct nearest/radial and ellipsoid/plate geometry, supported reception/transmission corrections, moving observer and nonzero signed ET, full vectors/epoch/angles and flags. SINCPT true hits/misses/zero ray, all seven occultation codes and analytically contact-straddling correction effects are observed where applicable.",
+      "errorAssessment": "Every new scientific error requires a specific actual SPICE short code, covering method/name/frame/center/epoch/correction/distinctness and missing shape data where applicable. No invented all-routine distinctness restriction: SUBSLR allows observer at target center; general illumination allows a source at that center. DSK angle positives use facet interiors; ridge/vertex undefined normals are excluded.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/de440s.bsp",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        }
+      ],
+      "fixtureRationale": "Three tiny exclusively authored kernels define geometry with independent analytic expectations. Existing real-body smoke inputs are reused unchanged. Octahedron triangles have outward normals; test points lie in facet interiors. Actual compiled operations are not replaced by formulas in the harness.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "illumg-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/illumg.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-illumg-audit-correction-lt",
+            "geometry-illumg-audit-correction-lt-s",
+            "geometry-illumg-audit-correction-cn",
+            "geometry-illumg-audit-correction-cn-s",
+            "geometry-illumg-audit-correction-xlt",
+            "geometry-illumg-audit-correction-xlt-s",
+            "geometry-illumg-audit-correction-xcn",
+            "geometry-illumg-audit-correction-xcn-s",
+            "geometry-illumg-audit-different-epoch",
+            "geometry-illumg-audit-bad-method",
+            "geometry-illumg-audit-bad-frame",
+            "geometry-illumg-audit-wrong-center-frame",
+            "geometry-illumg-audit-empty-target",
+            "geometry-illumg-audit-same-body",
+            "geometry-illumg-audit-outside-coverage",
+            "geometry-illumg-audit-bad-correction",
+            "geometry-illumg-audit-dsk-facet",
+            "geometry-illumg-audit-dsk-missing-surface",
+            "geometry-illumg-audit-alternate-source",
+            "geometry-illumg-audit-same-source-target",
+            "geometry-illumg-audit-unknown-source"
+          ]
+        },
+        {
+          "id": "illumg-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Throwing UTF8 allocation occurred before cleanup protection; 41 actual failure positions across seven string-bearing geometry routines leaked earlier buffers.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 13 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-illumg-audit-correction-lt"]
+        },
+        {
+          "id": "illumg-typed-numeric-boundary",
+          "status": "repaired",
+          "summary": "Nonfinite epochs/vector elements reached CSPICE; WASM encoding coerced non-string values and copying unchecked vector shapes could read stale components or overwrite adjacent output memory.",
+          "repair": "Validate finite epochs, exact finite vector shapes and actual string types before native/WASM calls, preserving CSPICE scientific errors. Both backend adapters return explicitly checked tuples instead of unsafe assertions. Five actual boundary regressions failed before repair; all six boundary groups now pass, including post-error raw calls and oversized vectors after the guard exists.",
+          "evidence": [
+            "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+            "packages/backend-node/src/domains/geometry.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-illumg-audit-correction-lt"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.illumg -> typed node adapter -> actual registered N-API illumg binding -> shared tspice_illumg -> illumg_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumg. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.illumg -> typed wasm adapter -> actual compiled _tspice_illumg export -> shared tspice_illumg -> illumg_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumg. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "illumf_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illumf_c.html",
+      "semantics": "General-source illumination plus independent visibility and lighting flags. Flags consider obstruction/shadow, not just the angle. Full three-vector/target epoch/three angles and both booleans are observed. A point source at the illumination body center determines lit. Pinned N0067 parses a DSK surface list but initializes its used surface count to zero, selecting all target surfaces; the wrapper preserves actual CSPICE behavior rather than imposing an invented missing-filter error.",
+      "scenarios": [
+        {
+          "caseId": "geometry-illumf-happy-path-success",
+          "coverage": ["success", "edge"],
+          "observes": "illumf ellipsoid illumination + visibility flags at stable Moon surface point; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-invalid-method-error",
+          "coverage": ["error"],
+          "observes": "Representative illumf method syntax error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-lt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-lt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for LT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-cn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-cn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for CN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-xlt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-xlt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-xcn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-correction-xcn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-different-epoch",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full geometry at a negative nonzero TDB epoch and moving observer; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-bad-method",
+          "coverage": ["error"],
+          "observes": "Require a structured toolkit method error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-bad-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-wrong-center-frame",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-empty-target",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-same-body",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-dsk-facet",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a genuine triangle-interior point/normal on the authored DSK; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-dsk-missing-surface",
+          "coverage": ["success", "edge"],
+          "observes": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-alternate-source",
+          "coverage": ["success", "edge"],
+          "observes": "Explicitly change the illumination source direction; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-same-source-target",
+          "coverage": ["success", "edge"],
+          "observes": "CSPICE permits a source at the target center; observe complete angles and applicable flags; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-unknown-source",
+          "coverage": ["error"],
+          "observes": "Unknown source name requires an actual toolkit ID error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-flags-3-sun",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-flags-3-100106",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-flags--3-sun",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-illumf-audit-flags--3-100106",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both visibility and lighting flags, including all four combinations; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Distinct nearest/radial and ellipsoid/plate geometry, supported reception/transmission corrections, moving observer and nonzero signed ET, full vectors/epoch/angles and flags. SINCPT true hits/misses/zero ray, all seven occultation codes and analytically contact-straddling correction effects are observed where applicable.",
+      "errorAssessment": "Every new scientific error requires a specific actual SPICE short code, covering method/name/frame/center/epoch/correction/distinctness and missing shape data where applicable. No invented all-routine distinctness restriction: SUBSLR allows observer at target center; general illumination allows a source at that center. DSK angle positives use facet interiors; ridge/vertex undefined normals are excluded.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/de440s.bsp",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        }
+      ],
+      "fixtureRationale": "Three tiny exclusively authored kernels define geometry with independent analytic expectations. Existing real-body smoke inputs are reused unchanged. Octahedron triangles have outward normals; test points lie in facet interiors. Actual compiled operations are not replaced by formulas in the harness.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "illumf-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/illumf.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-illumf-audit-correction-lt",
+            "geometry-illumf-audit-correction-lt-s",
+            "geometry-illumf-audit-correction-cn",
+            "geometry-illumf-audit-correction-cn-s",
+            "geometry-illumf-audit-correction-xlt",
+            "geometry-illumf-audit-correction-xlt-s",
+            "geometry-illumf-audit-correction-xcn",
+            "geometry-illumf-audit-correction-xcn-s",
+            "geometry-illumf-audit-different-epoch",
+            "geometry-illumf-audit-bad-method",
+            "geometry-illumf-audit-bad-frame",
+            "geometry-illumf-audit-wrong-center-frame",
+            "geometry-illumf-audit-empty-target",
+            "geometry-illumf-audit-same-body",
+            "geometry-illumf-audit-outside-coverage",
+            "geometry-illumf-audit-bad-correction",
+            "geometry-illumf-audit-dsk-facet",
+            "geometry-illumf-audit-dsk-missing-surface",
+            "geometry-illumf-audit-alternate-source",
+            "geometry-illumf-audit-same-source-target",
+            "geometry-illumf-audit-unknown-source",
+            "geometry-illumf-audit-flags-3-sun",
+            "geometry-illumf-audit-flags-3-100106",
+            "geometry-illumf-audit-flags--3-sun",
+            "geometry-illumf-audit-flags--3-100106"
+          ]
+        },
+        {
+          "id": "illumf-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Throwing UTF8 allocation occurred before cleanup protection; 41 actual failure positions across seven string-bearing geometry routines leaked earlier buffers.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 15 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-illumf-audit-correction-lt"]
+        },
+        {
+          "id": "illumf-typed-numeric-boundary",
+          "status": "repaired",
+          "summary": "Nonfinite epochs/vector elements reached CSPICE; WASM encoding coerced non-string values and copying unchecked vector shapes could read stale components or overwrite adjacent output memory.",
+          "repair": "Validate finite epochs, exact finite vector shapes and actual string types before native/WASM calls, preserving CSPICE scientific errors. Both backend adapters return explicitly checked tuples instead of unsafe assertions. Five actual boundary regressions failed before repair; all six boundary groups now pass, including post-error raw calls and oversized vectors after the guard exists.",
+          "evidence": [
+            "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+            "packages/backend-node/src/domains/geometry.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-illumf-audit-correction-lt"]
+        },
+        {
+          "id": "illumf-pinned-surface-list-semantics",
+          "status": "repaired",
+          "summary": "Expecting a missing-surface-list error would contradict actual pinned N0067 ILLUMF behavior. Its parsed nsurf is not the surface count used by the normal/ray initialization, which is explicitly zero/all surfaces.",
+          "repair": "Preserve and document actual toolkit behavior, compare complete valid facet-interior output with an absent parsed surface list, and distinguish ILUMIN/ILLUMG true missing-surface errors. No unsupported raw exception or upstream toolkit semantic rewrite is introduced. All facet-positive angle tests avoid ridges/vertices as NAIF requires.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/illumf.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts",
+            "docs/spicebackend-cspice-mapping.md"
+          ],
+          "caseIds": [
+            "geometry-illumf-audit-dsk-facet",
+            "geometry-illumf-audit-dsk-missing-surface"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.illumf -> typed node adapter -> actual registered N-API illumf binding -> shared tspice_illumf -> illumf_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumf. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.illumf -> typed wasm adapter -> actual compiled _tspice_illumf export -> shared tspice_illumf -> illumf_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumf. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "occult_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/occult_c.html",
+      "semantics": "Occultation code -3,-2,-1,0,1,2,3 for total/annular/partial first-body occulted, none, and partial/annular/total second-body occulted. Uses ellipsoid, point or supported DSK shape. Reversing targets reverses sign. Point-frame argument is ignored but the C string must be nonempty. All nine accepted correction strings are covered; contact-straddling point cases distinguish actual reception/transmission effects.",
+      "scenarios": [
+        {
+          "caseId": "geometry-occult-eclipse-code-success",
+          "coverage": ["success", "edge"],
+          "observes": "occult returns non-zero eclipse code for Moon vs Sun from Earth at 2024-04-08; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-invalid-shape-error",
+          "coverage": ["error"],
+          "observes": "Representative occult method syntax error on unsupported target shape; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-total",
+          "coverage": ["success", "edge"],
+          "observes": "Independently verified literal occultation code 3; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-partial",
+          "coverage": ["success", "edge"],
+          "observes": "Independently verified literal occultation code 1; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-none",
+          "coverage": ["success", "edge"],
+          "observes": "Independently verified literal occultation code 0; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-annular",
+          "coverage": ["success", "edge"],
+          "observes": "Independently verified literal occultation code 2; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-reverse-total",
+          "coverage": ["success", "edge"],
+          "observes": "Independently verified literal occultation code -3; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-reverse-partial",
+          "coverage": ["success", "edge"],
+          "observes": "Independently verified literal occultation code -1; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-reverse-annular",
+          "coverage": ["success", "edge"],
+          "observes": "Independently verified literal occultation code -2; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-point-target",
+          "coverage": ["success", "edge"],
+          "observes": "A point-like background target uses an ignored nonempty frame; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-dsk-point",
+          "coverage": ["success", "edge"],
+          "observes": "Actual DSK silhouette against a point target; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-lt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for LT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-lt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for LT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-cn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for CN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-cn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for CN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-xlt",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for XLT; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-xlt-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for XLT+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-xcn",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for XCN; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-correction-xcn-s",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual occultation correction parsing for XCN+S; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-both-points",
+          "coverage": ["error"],
+          "observes": "Require actual structured error for both-points; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-same-targets",
+          "coverage": ["error"],
+          "observes": "Require actual structured error for same-targets; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-bad-shape",
+          "coverage": ["error"],
+          "observes": "Require actual structured error for bad-shape; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-bad-correction",
+          "coverage": ["error"],
+          "observes": "Require actual structured error for bad-correction; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-unknown-observer",
+          "coverage": ["error"],
+          "observes": "Require actual structured error for unknown-observer; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-empty-name",
+          "coverage": ["error"],
+          "observes": "Require actual structured error for empty-name; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Require actual structured error for outside-coverage; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-contact-before-none",
+          "coverage": ["success", "edge"],
+          "observes": "At analytic apparent-limb contact plus -5e-05s, NONE must produce literal code 3, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-contact-before-xlt",
+          "coverage": ["success", "edge"],
+          "observes": "At analytic apparent-limb contact plus -5e-05s, XLT must produce literal code 0, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-contact-before-xcn",
+          "coverage": ["success", "edge"],
+          "observes": "At analytic apparent-limb contact plus -5e-05s, XCN must produce literal code 0, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-contact-after-none",
+          "coverage": ["success", "edge"],
+          "observes": "At analytic apparent-limb contact plus 5e-05s, NONE must produce literal code 0, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-contact-after-lt",
+          "coverage": ["success", "edge"],
+          "observes": "At analytic apparent-limb contact plus 5e-05s, LT must produce literal code 3, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-occult-audit-contact-after-cn",
+          "coverage": ["success", "edge"],
+          "observes": "At analytic apparent-limb contact plus 5e-05s, CN must produce literal code 3, distinguishing light-time behavior; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Distinct nearest/radial and ellipsoid/plate geometry, supported reception/transmission corrections, moving observer and nonzero signed ET, full vectors/epoch/angles and flags. SINCPT true hits/misses/zero ray, all seven occultation codes and analytically contact-straddling correction effects are observed where applicable.",
+      "errorAssessment": "Every new scientific error requires a specific actual SPICE short code, covering method/name/frame/center/epoch/correction/distinctness and missing shape data where applicable. No invented all-routine distinctness restriction: SUBSLR allows observer at target center; general illumination allows a source at that center. DSK angle positives use facet interiors; ridge/vertex undefined normals are excluded.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/de440s.bsp",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged tracked planetary/PCK/LSK inputs retained for original real-body smoke comparisons; no new external dataset.",
+          "distribution": "Existing tracked bytes reused unchanged; prior provenance remains documented."
+        }
+      ],
+      "fixtureRationale": "Three tiny exclusively authored kernels define geometry with independent analytic expectations. Existing real-body smoke inputs are reused unchanged. Octahedron triangles have outward normals; test points lie in facet interiors. Actual compiled operations are not replaced by formulas in the harness.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "occult-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/occult.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-occult-audit-total",
+            "geometry-occult-audit-partial",
+            "geometry-occult-audit-none",
+            "geometry-occult-audit-annular",
+            "geometry-occult-audit-reverse-total",
+            "geometry-occult-audit-reverse-partial",
+            "geometry-occult-audit-reverse-annular",
+            "geometry-occult-audit-point-target",
+            "geometry-occult-audit-dsk-point",
+            "geometry-occult-audit-correction-lt",
+            "geometry-occult-audit-correction-lt-s",
+            "geometry-occult-audit-correction-cn",
+            "geometry-occult-audit-correction-cn-s",
+            "geometry-occult-audit-correction-xlt",
+            "geometry-occult-audit-correction-xlt-s",
+            "geometry-occult-audit-correction-xcn",
+            "geometry-occult-audit-correction-xcn-s",
+            "geometry-occult-audit-both-points",
+            "geometry-occult-audit-same-targets",
+            "geometry-occult-audit-bad-shape",
+            "geometry-occult-audit-bad-correction",
+            "geometry-occult-audit-unknown-observer",
+            "geometry-occult-audit-empty-name",
+            "geometry-occult-audit-outside-coverage",
+            "geometry-occult-audit-contact-before-none",
+            "geometry-occult-audit-contact-before-xlt",
+            "geometry-occult-audit-contact-before-xcn",
+            "geometry-occult-audit-contact-after-none",
+            "geometry-occult-audit-contact-after-lt",
+            "geometry-occult-audit-contact-after-cn"
+          ]
+        },
+        {
+          "id": "occult-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Throwing UTF8 allocation occurred before cleanup protection; 41 actual failure positions across seven string-bearing geometry routines leaked earlier buffers.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 10 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-occult-audit-total"]
+        },
+        {
+          "id": "occult-typed-numeric-boundary",
+          "status": "repaired",
+          "summary": "Nonfinite epochs/vector elements reached CSPICE; WASM encoding coerced non-string values and copying unchecked vector shapes could read stale components or overwrite adjacent output memory.",
+          "repair": "Validate finite epochs, exact finite vector shapes and actual string types before native/WASM calls, preserving CSPICE scientific errors. Both backend adapters return explicitly checked tuples instead of unsafe assertions. Five actual boundary regressions failed before repair; all six boundary groups now pass, including post-error raw calls and oversized vectors after the guard exists.",
+          "evidence": [
+            "packages/py-parity-checking/test/geometry-boundaries.test.ts",
+            "packages/backend-node/src/domains/geometry.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-occult-audit-total"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.occult -> typed node adapter -> actual registered N-API occult binding -> shared tspice_occult -> occult_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual occult. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.occult -> typed wasm adapter -> actual compiled _tspice_occult export -> shared tspice_occult -> occult_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual occult. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "nvc2pl_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nvc2pl_c.html",
+      "semantics": "Construct canonical CSPICE plane from a nonzero, possibly nonunit normal and constant defining dot(x,normal)=konst. Output has unit normal and nonnegative distance constant, flipping orientation for negative constant. Zero normal is actual ZEROVECTOR. NAIF warns that arithmetic overflow is unchecked; balanced finite very large/small inputs are exercised without manufacturing overflow expectations.",
+      "scenarios": [
+        {
+          "caseId": "geometry-nvc2pl-happy-path-success",
+          "coverage": ["success", "edge"],
+          "observes": "nvc2pl normalizes non-unit normal and computes scaled plane constant; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-zero-vector-error",
+          "coverage": ["error"],
+          "observes": "Representative nvc2pl zero-normal vector error; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-audit-canonical-0",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-audit-canonical-1",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-audit-canonical-2",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-audit-canonical-3",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-audit-canonical-4",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-audit-canonical-5",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-nvc2pl-audit-zero-normal",
+          "coverage": ["error"],
+          "observes": "Require actual ZEROVECTOR for an undefined plane normal; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Canonical orientation/negative and zero constants, balanced huge/small finite values, all four plane words and decode composition. PL2NVC has no scientific error tests because valid creator storage is a documented precondition.",
+      "errorAssessment": "NVC2PL actual ZEROVECTOR; PL2NVC error-free valid-plane semantics. Shape/type/finite preflight errors remain separate. No expectation is manufactured for undefined malformed scientific plane storage or unchecked arithmetic overflow.",
+      "fixtures": [],
+      "fixtureRationale": "Input planes are actual CSPICE-creator results serialized as exact finite doubles; independent tests call both raw creation/extraction at runtime. No kernels needed.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "nvc2pl-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/nvc2pl.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-nvc2pl-audit-canonical-0",
+            "geometry-nvc2pl-audit-canonical-1",
+            "geometry-nvc2pl-audit-canonical-2",
+            "geometry-nvc2pl-audit-canonical-3",
+            "geometry-nvc2pl-audit-canonical-4",
+            "geometry-nvc2pl-audit-canonical-5",
+            "geometry-nvc2pl-audit-zero-normal"
+          ]
+        },
+        {
+          "id": "nvc2pl-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Existing plane-only allocation failures already released temporaries; complete actual failure/recovery evidence was absent.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 3 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-nvc2pl-audit-canonical-0"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.nvc2pl -> typed node adapter -> actual registered N-API nvc2pl binding -> shared tspice_nvc2pl -> nvc2pl_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual nvc2pl. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.nvc2pl -> typed wasm adapter -> actual compiled _tspice_nvc2pl export -> shared tspice_nvc2pl -> nvc2pl_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual nvc2pl. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pl2nvc_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pl2nvc_c.html",
+      "semantics": "Error-free extraction of unit normal and distance constant from a valid CSPICE-created plane. Do not diagnose scientifically malformed plane storage: NAIF requires construction by a plane creator. Registered tuple inputs were obtained from actual locked SpiceyPy NVC2PL and serialized losslessly; independent actual Node/WASM tests create then decode the raw plane. JS length/type/finite validation remains a separate boundary.",
+      "scenarios": [
+        {
+          "caseId": "geometry-pl2nvc-happy-path-success",
+          "coverage": ["success", "edge"],
+          "observes": "pl2nvc decodes normalized plane representation into normal + constant; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-pl2nvc-audit-canonical-0",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-pl2nvc-audit-canonical-1",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-pl2nvc-audit-canonical-2",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-pl2nvc-audit-canonical-3",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-pl2nvc-audit-canonical-4",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        },
+        {
+          "caseId": "geometry-pl2nvc-audit-canonical-5",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL; the complete requested raw result reaches the live comparison."
+        }
+      ],
+      "edgeAssessment": "Canonical orientation/negative and zero constants, balanced huge/small finite values, all four plane words and decode composition. PL2NVC has no scientific error tests because valid creator storage is a documented precondition.",
+      "errorAssessment": "NVC2PL actual ZEROVECTOR; PL2NVC error-free valid-plane semantics. Shape/type/finite preflight errors remain separate. No expectation is manufactured for undefined malformed scientific plane storage or unchecked arithmetic overflow.",
+      "fixtures": [],
+      "fixtureRationale": "Input planes are actual CSPICE-creator results serialized as exact finite doubles; independent tests call both raw creation/extraction at runtime. No kernels needed.",
+      "cleanup": "Actual backend setup is disposed in every test; sidecar runs in an isolated process with reset/kclear hooks. Both successful and failing calls release temporary buffers. All 87 actual WASM fault positions restore allocator hooks, release tracked buffers and execute genuine post-failure plane creation. Loaded fixture files are cleared/disposed through existing lifecycle. No new file/cell/window ownership mechanism is introduced.",
+      "tolerance": "Unchanged live1e-12 absolute-or-relative applies to every numeric component; flags/codes are exact. Independent positions/plane words use1e-11km/unit bounds; angle comparisons1e-12radians. Analytic contact uses a5e-5s offset from tangent contact so binary tangency ambiguity is excluded while light-time effects remain distinguishable. No global comparator relaxation.",
+      "findings": [
+        {
+          "id": "pl2nvc-meaningful-observables",
+          "status": "repaired",
+          "summary": "Original one-epoch smoke success and broad errors did not establish distinguishing geometry, all output fields or relevant shape/correction/error boundaries.",
+          "repair": "Add actual raw/SpiceyPy comparisons and independent closed-form or Lagrange-root ellipsoid, convex-halfspace DSK, angle/distance, flag and literal occultation assertions. Plane extraction cases preserve the valid-creator precondition rather than manufacture undefined scientific errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/geometry/pl2nvc.cases.json",
+            "packages/py-parity-checking/test/geometry-observables.test.ts"
+          ],
+          "caseIds": [
+            "geometry-pl2nvc-audit-canonical-0",
+            "geometry-pl2nvc-audit-canonical-1",
+            "geometry-pl2nvc-audit-canonical-2",
+            "geometry-pl2nvc-audit-canonical-3",
+            "geometry-pl2nvc-audit-canonical-4",
+            "geometry-pl2nvc-audit-canonical-5"
+          ]
+        },
+        {
+          "id": "pl2nvc-temporary-allocation-evidence",
+          "status": "repaired",
+          "summary": "Existing plane-only allocation failures already released temporaries; complete actual failure/recovery evidence was absent.",
+          "repair": "Use existing withAllocs ownership for numeric buffers and protected initialized string pointers. All 4 actual allocation positions for this routine and all 87 across geometry now release temporaries and permit actual CSPICE plane calls afterward. No C shim or WASM binary change is required.",
+          "evidence": [
+            "packages/backend-wasm/test/geometry-allocations.test.ts",
+            "packages/backend-wasm/src/domains/geometry.ts"
+          ],
+          "caseIds": ["geometry-pl2nvc-audit-canonical-0"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pl2nvc -> typed node adapter -> actual registered N-API pl2nvc binding -> shared tspice_pl2nvc -> pl2nvc_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual pl2nvc. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pl2nvc -> typed wasm adapter -> actual compiled _tspice_pl2nvc export -> shared tspice_pl2nvc -> pl2nvc_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual pl2nvc. Independent formulas are assertions, never harness replacements.",
+          "executions": ["local-geometry-final-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

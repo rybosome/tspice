@@ -62,5 +62,813 @@
     "expectation": {
       "kind": "error"
     }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-lt",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for LT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-lt-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for LT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT+S",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-cn",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for CN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-cn-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for CN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN+S",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-xlt",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XLT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-xlt-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT+S",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-xcn",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XCN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-correction-xcn-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN+S",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-different-epoch",
+    "description": "Observe full geometry at a negative nonzero TDB epoch and moving observer",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": -125.5,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-bad-method",
+    "description": "Require a structured toolkit method error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "BAD",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADMETHODSYNTAX)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-bad-frame",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "TSPICE_UNKNOWN",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-wrong-center-frame",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "J2000",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-empty-target",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-same-body",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100101",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-outside-coverage",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 20000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-bad-correction",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "TSPICE_BAD",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-dsk-facet",
+    "description": "Observe a genuine triangle-interior point/normal on the authored DSK",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [1, 0.6666666666666666, 0.3333333333333333]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-dsk-missing-surface",
+    "description": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "DSK/UNPRIORITIZED/SURFACES=102",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [1, 0.6666666666666666, 0.3333333333333333]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-alternate-source",
+    "description": "Explicitly change the illumination source direction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "100106",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-same-source-target",
+    "description": "CSPICE permits a source at the target center; observe complete angles and applicable flags",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-unknown-source",
+    "description": "Unknown source name requires an actual toolkit ID error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "TSPICE_UNKNOWN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-flags-3-sun",
+    "description": "Observe both visibility and lighting flags, including all four combinations",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-flags-3-100106",
+    "description": "Observe both visibility and lighting flags, including all four combinations",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "100106",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-flags--3-sun",
+    "description": "Observe both visibility and lighting flags, including all four combinations",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "SUN",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [-3, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illumf-audit-flags--3-100106",
+    "description": "Observe both visibility and lighting flags, including all four combinations",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.illumf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "ilusrc": "100106",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [-3, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]
