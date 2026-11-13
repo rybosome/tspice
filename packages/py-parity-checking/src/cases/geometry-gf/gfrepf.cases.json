@@ -3,8 +3,14 @@
     "caseId": "geometry-gf-gfrepf-success",
     "description": "gfrepf finalizes progress reporting without perturbing previously configured gfstep behavior",
     "workflow": [
-      { "op": "geometry-gf.gfsstp", "step": 42 },
-      { "op": "geometry-gf.gfstep", "time": 0 },
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 42
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 0
+      },
       {
         "op": "cells-windows.wninsd",
         "windowId": "GFREPF_WIN",
@@ -18,15 +24,67 @@
         "begmss": "GF begin",
         "endmss": "GF end"
       },
-      { "op": "geometry-gf.gfrepf" },
-      { "op": "geometry-gf.gfstep", "time": 86400 }
+      {
+        "op": "geometry-gf.gfrepf"
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 86400
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "geometry-gf-gfrepf-without-init-success",
     "description": "gfrepf is currently a no-op when called without prior gfrepi setup",
-    "workflow": [{ "op": "geometry-gf.gfrepf" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrepf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepf-audit-reinitialize",
+    "description": "Reinitialize/finalize twice without changing the actual window; supplementary live stdout comparison observes finalization",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "REPORT_W",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "AUDIT BEGIN",
+        "endmss": "AUDIT END"
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "REPORT_W",
+        "begmss": "SECOND BEGIN",
+        "endmss": "SECOND END"
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "REPORT_W",
+        "index": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

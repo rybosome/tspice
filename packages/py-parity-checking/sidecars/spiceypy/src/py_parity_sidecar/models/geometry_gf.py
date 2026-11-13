@@ -62,6 +62,7 @@ class StepGeometryGfGfsep:
     nintvls: int
     cnfineWindowId: str
     resultWindowId: str
+    resultMaxIntervals: int | None = None
 
 
 @dataclass(frozen=True)
@@ -77,3 +78,4 @@ class StepGeometryGfGfdist:
     nintvls: int
     cnfineWindowId: str
     resultWindowId: str
+    resultMaxIntervals: int | None = None

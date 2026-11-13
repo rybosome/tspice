@@ -153,3 +153,14 @@ independently verifies analytic ellipsoid/plate radial intersections and literal
 total/annular occultation codes. Angle tests use triangle-interior points to
 avoid the undefined normals at DSK ridges/vertices. Canonical plane case inputs
 are serialized results of actual locked SpiceyPy NVC2PL, with no kernel data.
+
+### GF analytic search fixtures
+
+The GF audit reuses the exact MIT-authored `audit-geometry.tf`,
+`audit-geometry.bsp`, `audit-geometry.bds` and `generate-audit-geometry.py`
+from the geometry audit (#704). Arbitrary body IDs, invented radii and linear
+ephemerides contain no mission observations or external scientific data.
+Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generator.
+Distance roots follow a quadratic norm; point separation follows an arctangent.
+Fresh-process tests compare actual reporter stdout and persistent GF settings
+against locked SpiceyPy, with no scientific operation replaced by a formula.

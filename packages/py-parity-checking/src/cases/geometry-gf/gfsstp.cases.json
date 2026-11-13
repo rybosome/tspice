@@ -3,15 +3,120 @@
     "caseId": "geometry-gf-gfsstp-success",
     "description": "gfsstp updates the constant step size used by gfstep",
     "workflow": [
-      { "op": "geometry-gf.gfsstp", "step": 123 },
-      { "op": "geometry-gf.gfstep", "time": 0 }
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 123
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "geometry-gf-gfsstp-invalid-step-error",
     "description": "Representative gfsstp invalid step size error",
-    "workflow": [{ "op": "geometry-gf.gfsstp", "step": 0 }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEP"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsstp-audit-0",
+    "description": "Observe distinct stored step values and updates through actual GFSTEP",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 0.00025
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": -100
+      },
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 0.0005
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 1000000000000.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsstp-audit-1",
+    "description": "Observe distinct stored step values and updates through actual GFSTEP",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 7.25
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": -100
+      },
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 14.5
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 1000000000000.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsstp-audit-2",
+    "description": "Observe distinct stored step values and updates through actual GFSTEP",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 123456.5
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": -100
+      },
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 246913.0
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 1000000000000.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsstp-audit-zero",
+    "description": "Require actual INVALIDSTEP",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfsstp",
+        "step": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEP"]
+    }
   }
 ]

@@ -3,16 +3,161 @@
     "caseId": "geometry-gf-gfrefn-success",
     "description": "gfrefn midpoint-style refinement estimate for a simple interval",
     "workflow": [
-      { "op": "geometry-gf.gfrefn", "t1": 0, "t2": 10, "s1": true, "s2": false }
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": 0,
+        "t2": 10,
+        "s1": true,
+        "s2": false
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "geometry-gf-gfrefn-invalid-flags-error",
     "description": "Representative gfrefn error when refinement flags are not booleans",
     "workflow": [
-      { "op": "geometry-gf.gfrefn", "t1": 0, "t2": 10, "s1": 1, "s2": false }
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": 0,
+        "t2": 10,
+        "s1": 1,
+        "s2": false
+      }
     ],
-    "expectation": { "kind": "error", "errorMessageIncludes": ["boolean"] }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["boolean"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-flags-False-False",
+    "description": "All valid boolean combinations give the same actual bisection midpoint",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": -10.25,
+        "t2": 17.75,
+        "s1": false,
+        "s2": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-flags-False-True",
+    "description": "All valid boolean combinations give the same actual bisection midpoint",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": -10.25,
+        "t2": 17.75,
+        "s1": false,
+        "s2": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-flags-True-False",
+    "description": "All valid boolean combinations give the same actual bisection midpoint",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": -10.25,
+        "t2": 17.75,
+        "s1": true,
+        "s2": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-flags-True-True",
+    "description": "All valid boolean combinations give the same actual bisection midpoint",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": -10.25,
+        "t2": 17.75,
+        "s1": true,
+        "s2": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-reversed",
+    "description": "Observe the complete midpoint under error-free CSPICE semantics",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": 17.75,
+        "t2": -10.25,
+        "s1": true,
+        "s2": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-equal",
+    "description": "Observe the complete midpoint under error-free CSPICE semantics",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": 0.125,
+        "t2": 0.125,
+        "s1": true,
+        "s2": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-fractional",
+    "description": "Observe the complete midpoint under error-free CSPICE semantics",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": -0.125,
+        "t2": 0.375,
+        "s1": true,
+        "s2": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrefn-audit-large",
+    "description": "Observe the complete midpoint under error-free CSPICE semantics",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrefn",
+        "t1": 1000000000000.25,
+        "t2": 1000000000016.75,
+        "s1": true,
+        "s2": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

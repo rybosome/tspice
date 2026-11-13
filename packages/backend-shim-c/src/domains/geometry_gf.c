@@ -5,8 +5,12 @@
 #include "../handle_validation.h"
 
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef __EMSCRIPTEN__
+#include <unistd.h>
+#endif
 
 static int tspice_geometry_gf_invalid_arg(char *err, int errMaxBytes, const char *msg) {
   // Stable ABI boundary: never invoke CSPICE with invalid pointers/lengths.
@@ -51,6 +55,22 @@ static int tspice_int_to_spice_int_checked(
     return tspice_geometry_gf_invalid_arg(err, errMaxBytes, buf);
   }
   *out = v;
+  return 0;
+}
+
+// N0067 doubles nintvls in signed SpiceInt before allocating five cells.
+// Bound the complete workspace in wide arithmetic before entering that code.
+static int tspice_check_gf_workspace(SpiceInt intervals, uint64_t windows, const char *context, char *err, int errMaxBytes) {
+  if (intervals > 0) {
+    const uint64_t words = ((uint64_t)intervals * UINT64_C(2) + SPICE_CELL_CTRLSZ) * windows;
+    const uint64_t bytes = words * sizeof(SpiceDouble);
+    if (bytes > UINT64_C(256) * 1024 * 1024) {
+      char message[160];
+      snprintf(message, sizeof(message), "%s: workspace exceeds 256 MiB", context);
+      return tspice_geometry_gf_invalid_arg(err, errMaxBytes, message);
+    }
+  }
+  // Nonpositive counts retain CSPICE's actual VALUEOUTOFRANGE error.
   return 0;
 }
 
@@ -188,6 +208,13 @@ int tspice_gfrepi(
     return 1;
   }
 
+#ifdef __EMSCRIPTEN__
+  // A library module never exits its C runtime, and progress has no newline.
+  // Drain libc and the Emscripten TTY so the actual report is observable now.
+  if (fflush(stdout) != 0 || fsync(STDOUT_FILENO) != 0) {
+    return tspice_geometry_gf_invalid_arg(err, errMaxBytes, "gfrepi: stdout flush failed");
+  }
+#endif
   return 0;
 }
 
@@ -233,6 +260,8 @@ int tspice_gfsep(
   if (tspice_int_to_spice_int_checked(nintvls, &nintvlsC, "tspice_gfsep(nintvls)", err, errMaxBytes) != 0) {
     return 1;
   }
+
+  if (tspice_check_gf_workspace(nintvlsC, SPICE_GF_NWSEP, "gfsep", err, errMaxBytes) != 0) return 1;
 
   SpiceCell *cnfine = NULL;
   if (tspice_expect_double_window(cnfineWindowHandle, "cnfine", "tspice_gfsep(cnfine)", &cnfine, err, errMaxBytes) != 0) {
@@ -289,6 +318,8 @@ int tspice_gfdist(
   if (tspice_int_to_spice_int_checked(nintvls, &nintvlsC, "tspice_gfdist(nintvls)", err, errMaxBytes) != 0) {
     return 1;
   }
+
+  if (tspice_check_gf_workspace(nintvlsC, SPICE_GF_NWDIST, "gfdist", err, errMaxBytes) != 0) return 1;
 
   SpiceCell *cnfine = NULL;
   if (tspice_expect_double_window(cnfineWindowHandle, "cnfine", "tspice_gfdist(cnfine)", &cnfine, err, errMaxBytes) != 0) {

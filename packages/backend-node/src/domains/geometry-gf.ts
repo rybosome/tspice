@@ -33,6 +33,16 @@ function assertOpaqueHandle(
   }
 }
 
+function assertGfStrings(values: readonly unknown[], context: string): void {
+  for (const value of values)
+    if (typeof value !== "string")
+      throw new TypeError(`${context}: expected strings`);
+}
+function assertGfBoolean(value: unknown, context: string): void {
+  if (typeof value !== "boolean")
+    throw new TypeError(`${context}: expected boolean`);
+}
+
 function assertFiniteNumber(
   value: unknown,
   context: string,
@@ -66,6 +76,8 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
     },
 
     gfrefn: (t1, t2, s1, s2) => {
+      assertGfBoolean(s1, "gfrefn(s1)");
+      assertGfBoolean(s2, "gfrefn(s2)");
       assertFiniteNumber(t1, "gfrefn(t1)");
       assertFiniteNumber(t2, "gfrefn(t2)");
       const out = native.gfrefn(t1, t2, s1, s2);
@@ -77,7 +89,8 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
     },
 
     gfrepi: (window, begmss, endmss) => {
-      assertOpaqueHandle(window as unknown as number, "gfrepi(window)");
+      assertGfStrings([begmss, endmss], "gfrepi");
+      assertOpaqueHandle(window, "gfrepi(window)");
       native.gfrepi(window, begmss, endmss);
     },
 
@@ -102,12 +115,16 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       cnfine,
       result,
     ) => {
-      assertSpiceInt32(nintvls, "gfsep(nintvls)", { min: 1 });
+      assertGfStrings(
+        [targ1, shape1, frame1, targ2, shape2, frame2, abcorr, obsrvr, relate],
+        "gfsep",
+      );
+      assertSpiceInt32(nintvls, "gfsep(nintvls)");
       assertFiniteNumber(refval, "gfsep(refval)");
       assertFiniteNumber(adjust, "gfsep(adjust)");
       assertFiniteNumber(step, "gfsep(step)");
-      assertOpaqueHandle(cnfine as unknown as number, "gfsep(cnfine)");
-      assertOpaqueHandle(result as unknown as number, "gfsep(result)");
+      assertOpaqueHandle(cnfine, "gfsep(cnfine)");
+      assertOpaqueHandle(result, "gfsep(result)");
 
       native.gfsep(
         targ1,
@@ -140,12 +157,13 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       cnfine,
       result,
     ) => {
-      assertSpiceInt32(nintvls, "gfdist(nintvls)", { min: 1 });
+      assertGfStrings([target, abcorr, obsrvr, relate], "gfdist");
+      assertSpiceInt32(nintvls, "gfdist(nintvls)");
       assertFiniteNumber(refval, "gfdist(refval)");
       assertFiniteNumber(adjust, "gfdist(adjust)");
       assertFiniteNumber(step, "gfdist(step)");
-      assertOpaqueHandle(cnfine as unknown as number, "gfdist(cnfine)");
-      assertOpaqueHandle(result as unknown as number, "gfdist(result)");
+      assertOpaqueHandle(cnfine, "gfdist(cnfine)");
+      assertOpaqueHandle(result, "gfdist(result)");
 
       native.gfdist(
         target,

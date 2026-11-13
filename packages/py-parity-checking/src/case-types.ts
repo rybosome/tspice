@@ -1085,6 +1085,8 @@ export type StepGeometryGfGfsep = {
   nintvls: number;
   cnfineWindowId: string;
   resultWindowId: string;
+  /** Output capacity, separate from the internal workspace interval count. */
+  resultMaxIntervals?: number;
 };
 
 export type StepGeometryGfGfdist = {
@@ -1099,6 +1101,8 @@ export type StepGeometryGfGfdist = {
   nintvls: number;
   cnfineWindowId: string;
   resultWindowId: string;
+  /** Output capacity, separate from the internal workspace interval count. */
+  resultMaxIntervals?: number;
 };
 
 export type StepGeometrySubpnt = {
@@ -1469,6 +1473,12 @@ export type EkGetNumberResult =
   | { found: false }
   | { found: true; isNull: true }
   | { found: true; isNull: false; value: number };
+
+/** Complete observable windows after an actual GF search. */
+export type GfSearchWindowPayload = {
+  intervals: [number, number][];
+  confinementIntervals: [number, number][];
+};
 
 export type StepOutput =
   | { op: "time.str2et"; value: number }
@@ -1876,8 +1886,8 @@ export type StepOutput =
   | { op: "geometry-gf.gfrefn"; value: number }
   | { op: "geometry-gf.gfrepi"; value: null }
   | { op: "geometry-gf.gfrepf"; value: null }
-  | { op: "geometry-gf.gfsep"; value: null }
-  | { op: "geometry-gf.gfdist"; value: null }
+  | { op: "geometry-gf.gfsep"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfdist"; value: GfSearchWindowPayload }
   | {
       op: "dsk.dskobj";
       value: { bodyIds: number[]; snapshots: number[][] };
