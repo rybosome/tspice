@@ -5,7 +5,7 @@ import struct
 from typing import Any
 
 import spiceypy as sp
-from spiceypy.utils.exceptions import NotFoundError, SpiceyError
+from spiceypy.utils.exceptions import SpiceyError
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
 
 from ..models import (
@@ -282,16 +282,16 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         return StepOutput(op=step.op, value={"pos": pos, "lt": lt})
 
     if isinstance(step, StepEphemerisSpksfs):
-        try:
-            out = _normalize_spksfs_result(sp.spksfs(step.body, step.et, 256))
+        # Preserve the actual toolkit error before interpreting the found flag:
+        # the default decorator otherwise masks NOLOADEDFILES as NotFoundError.
+        with sp.no_found_check():
+            out = _normalize_spksfs_result(sp.spksfs(step.body, step.et, 41))
             if out["found"]:
                 packed=_to_float_list(out["descr"],expected_len=5,label="spksfs.descr")
                 if step.descrId is not None:
                     context.state.ephemeris.descriptors[step.descrId]=packed
                 out["descr"]={"first":packed[0],"last":packed[1],"packedIntegers":list(struct.unpack("=6i",struct.pack("=3d",*packed[2:])))}
             return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
 
     if isinstance(step, StepEphemerisSpkssb):
         state = _to_float_list(sp.spkssb(step.target, step.et, step.ref), expected_len=6, label="spkssb")

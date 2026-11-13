@@ -36,3 +36,11 @@ no arrays, closed through SpiceyPy's DAF close solely during fixture generation.
 Writer parity cases independently create their own scratch files through the
 actual raw writer and actual SpiceyPy writer; the checked-in inputs are not
 substitutes for observing those newly written files.
+
+`audit-ephemeris-observer.bsp` (4096 bytes), created by
+`generate-audit-spk-observer.py` with locked SpiceyPy, supplies a separate arbitrary
+observer with distinct quadratic motion in all three axes. This synthetic
+MIT-authored input makes light-time and stellar corrections distinguishable in
+every returned component. It avoids subtracting identical Y/Z polynomials into
+near-zero roundoff residuals; no numeric comparator tolerance is changed. It
+contains no mission observations or external scientific dataset.

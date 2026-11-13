@@ -5,8 +5,6 @@ import type {
   SpiceVector3,
   SpiceWindow,
   SpkPackedDescriptor,
-  SpkezrResult,
-  SpkposResult,
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
@@ -21,6 +19,37 @@ import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 import type { SpiceHandleRegistry } from "../runtime/spice-handles.js";
 import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
+
+function requireSpkNumber(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new RangeError(`${label} must be finite`);
+  return value;
+}
+function requireSpkString(value: unknown, label: string): void {
+  if (typeof value !== "string")
+    throw new TypeError(`${label} must be a string`);
+}
+function readSpkState(value: unknown): SpiceStateVector {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError("Expected six SPK state components");
+  return [
+    requireSpkNumber(value[0], "state[0]"),
+    requireSpkNumber(value[1], "state[1]"),
+    requireSpkNumber(value[2], "state[2]"),
+    requireSpkNumber(value[3], "state[3]"),
+    requireSpkNumber(value[4], "state[4]"),
+    requireSpkNumber(value[5], "state[5]"),
+  ];
+}
+function readSpkPosition(value: unknown): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError("Expected three SPK position components");
+  return [
+    requireSpkNumber(value[0], "pos[0]"),
+    requireSpkNumber(value[1], "pos[1]"),
+    requireSpkNumber(value[2], "pos[2]"),
+  ];
+}
 
 function validateSpkWriterNumbers(
   body: number,
@@ -85,126 +114,87 @@ export function createEphemerisApi(
 
   return {
     spkezr: (target, et, ref, abcorr, observer) => {
+      requireSpkNumber(et, "spkezr(et)");
+      requireSpkString(ref, "spkezr(ref)");
+      requireSpkString(abcorr, "spkezr(abcorr)");
+      requireSpkString(target, "spkezr(target)");
+      requireSpkString(observer, "spkezr(observer)");
       const out = native.spkezr(target, et, ref, abcorr, observer);
-      invariant(
-        out && typeof out === "object",
-        "Expected spkezr() to return an object",
-      );
-      invariant(
-        Array.isArray(out.state) && out.state.length === 6,
-        "Expected spkezr().state to be a length-6 array",
-      );
-      invariant(
-        typeof out.lt === "number",
-        "Expected spkezr().lt to be a number",
-      );
-      const state = out.state as SpiceStateVector;
-      const result: SpkezrResult = { state, lt: out.lt };
-      return result;
+      return {
+        state: readSpkState(out.state),
+        lt: requireSpkNumber(out.lt, "spkezr(lt)"),
+      };
     },
 
     spkpos: (target, et, ref, abcorr, observer) => {
+      requireSpkNumber(et, "spkpos(et)");
+      requireSpkString(ref, "spkpos(ref)");
+      requireSpkString(abcorr, "spkpos(abcorr)");
+      requireSpkString(target, "spkpos(target)");
+      requireSpkString(observer, "spkpos(observer)");
       const out = native.spkpos(target, et, ref, abcorr, observer);
-      invariant(
-        out && typeof out === "object",
-        "Expected spkpos() to return an object",
-      );
-      invariant(
-        Array.isArray(out.pos) && out.pos.length === 3,
-        "Expected spkpos().pos to be a length-3 array",
-      );
-      invariant(
-        typeof out.lt === "number",
-        "Expected spkpos().lt to be a number",
-      );
-      const pos = out.pos as SpiceVector3;
-      const result: SpkposResult = { pos, lt: out.lt };
-      return result;
+      return {
+        pos: readSpkPosition(out.pos),
+        lt: requireSpkNumber(out.lt, "spkpos(lt)"),
+      };
     },
 
     spkez: (target, et, ref, abcorr, observer) => {
+      requireSpkNumber(et, "spkez(et)");
+      requireSpkString(ref, "spkez(ref)");
+      requireSpkString(abcorr, "spkez(abcorr)");
+      assertSpiceInt32(target, "spkez(target)");
+      assertSpiceInt32(observer, "spkez(observer)");
       const out = native.spkez(target, et, ref, abcorr, observer);
-      invariant(
-        out && typeof out === "object",
-        "Expected spkez() to return an object",
-      );
-      invariant(
-        Array.isArray(out.state) && out.state.length === 6,
-        "Expected spkez().state to be a length-6 array",
-      );
-      invariant(
-        typeof out.lt === "number",
-        "Expected spkez().lt to be a number",
-      );
-      const state = out.state as SpiceStateVector;
-      const result: SpkezrResult = { state, lt: out.lt };
-      return result;
+      return {
+        state: readSpkState(out.state),
+        lt: requireSpkNumber(out.lt, "spkez(lt)"),
+      };
     },
 
     spkezp: (target, et, ref, abcorr, observer) => {
+      requireSpkNumber(et, "spkezp(et)");
+      requireSpkString(ref, "spkezp(ref)");
+      requireSpkString(abcorr, "spkezp(abcorr)");
+      assertSpiceInt32(target, "spkezp(target)");
+      assertSpiceInt32(observer, "spkezp(observer)");
       const out = native.spkezp(target, et, ref, abcorr, observer);
-      invariant(
-        out && typeof out === "object",
-        "Expected spkezp() to return an object",
-      );
-      invariant(
-        Array.isArray(out.pos) && out.pos.length === 3,
-        "Expected spkezp().pos to be a length-3 array",
-      );
-      invariant(
-        typeof out.lt === "number",
-        "Expected spkezp().lt to be a number",
-      );
-      const pos = out.pos as SpiceVector3;
-      const result: SpkposResult = { pos, lt: out.lt };
-      return result;
+      return {
+        pos: readSpkPosition(out.pos),
+        lt: requireSpkNumber(out.lt, "spkezp(lt)"),
+      };
     },
 
     spkgeo: (target, et, ref, observer) => {
+      requireSpkNumber(et, "spkgeo(et)");
+      requireSpkString(ref, "spkgeo(ref)");
+      assertSpiceInt32(target, "spkgeo(target)");
+      assertSpiceInt32(observer, "spkgeo(observer)");
       const out = native.spkgeo(target, et, ref, observer);
-      invariant(
-        out && typeof out === "object",
-        "Expected spkgeo() to return an object",
-      );
-      invariant(
-        Array.isArray(out.state) && out.state.length === 6,
-        "Expected spkgeo().state to be a length-6 array",
-      );
-      invariant(
-        typeof out.lt === "number",
-        "Expected spkgeo().lt to be a number",
-      );
-      const state = out.state as SpiceStateVector;
-      const result: SpkezrResult = { state, lt: out.lt };
-      return result;
+      return {
+        state: readSpkState(out.state),
+        lt: requireSpkNumber(out.lt, "spkgeo(lt)"),
+      };
     },
 
     spkgps: (target, et, ref, observer) => {
+      requireSpkNumber(et, "spkgps(et)");
+      requireSpkString(ref, "spkgps(ref)");
+      assertSpiceInt32(target, "spkgps(target)");
+      assertSpiceInt32(observer, "spkgps(observer)");
       const out = native.spkgps(target, et, ref, observer);
-      invariant(
-        out && typeof out === "object",
-        "Expected spkgps() to return an object",
-      );
-      invariant(
-        Array.isArray(out.pos) && out.pos.length === 3,
-        "Expected spkgps().pos to be a length-3 array",
-      );
-      invariant(
-        typeof out.lt === "number",
-        "Expected spkgps().lt to be a number",
-      );
-      const pos = out.pos as SpiceVector3;
-      const result: SpkposResult = { pos, lt: out.lt };
-      return result;
+      return {
+        pos: readSpkPosition(out.pos),
+        lt: requireSpkNumber(out.lt, "spkgps(lt)"),
+      };
     },
 
     spkssb: (target, et, ref) => {
+      requireSpkNumber(et, "spkssb(et)");
+      requireSpkString(ref, "spkssb(ref)");
+      assertSpiceInt32(target, "spkssb(target)");
       const out = native.spkssb(target, et, ref);
-      invariant(
-        Array.isArray(out) && out.length === 6,
-        "Expected spkssb() to return a length-6 array",
-      );
-      return out as SpiceStateVector;
+      return readSpkState(out);
     },
 
     spkcov: (spk: string, idcode: number, cover: SpiceWindow) => {
@@ -218,6 +208,8 @@ export function createEphemerisApi(
     },
 
     spksfs: (body: number, et: number) => {
+      assertSpiceInt32(body, "spksfs(body)");
+      requireSpkNumber(et, "spksfs(et)");
       const out = native.spksfs(body, et);
       invariant(
         out && typeof out === "object",

@@ -100,7 +100,7 @@
       ],
       "dependsOn": ["ephemeris-descriptors"],
       "prs": ["https://github.com/rybosome/tspice/pull/702"],
-      "nextAction": "All 15 exact-source CI jobs passed with actual production native and live comparisons. Wait for verification metadata CI and explicit REST rebaseability; continue geometry/GF and the state/search child."
+      "nextAction": "Six SPK file/writer/coverage routines have handwritten semantic review and focused actual/live evidence. Complete full required local lanes, publish the audit PR, then observe canonical CI and explicit rebaseability."
     },
     {
       "id": "ephemeris-2",
@@ -114,9 +114,9 @@
         "spksfs_c",
         "spkssb_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["ephemeris-1"],
       "prs": [],
-      "nextAction": "Audit eight state/position/search routines with authored SPK fixtures and aberration/priority/state evidence. SPKSFS packed descriptor producers use the shared repair but its full semantic judgment remains pending."
+      "nextAction": "Eight handwritten semantic reviews and actual focused comparisons exist. Complete both full required lanes, publish a reviewable PR, then observe source CI and explicit rebaseability."
     },
     {
       "id": "ephemeris-descriptors",

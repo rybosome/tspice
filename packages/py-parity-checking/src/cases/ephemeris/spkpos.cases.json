@@ -24,8 +24,14 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H1" },
-      { "op": "kernels.furnsh", "file": "kernels/ephemeris-spkpos-happy.bsp" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H1"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/ephemeris-spkpos-happy.bsp"
+      },
       {
         "op": "ephemeris.spkpos",
         "target": "1000",
@@ -35,7 +41,9 @@
         "observer": "0"
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkpos-invalid-abcorr-error",
@@ -50,6 +58,700 @@
         "observer": "0"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-none",
+    "description": "Observe every component and light time for NONE with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-lt",
+    "description": "Observe every component and light time for LT with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "LT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-lt-s",
+    "description": "Observe every component and light time for LT+S with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "LT+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-cn",
+    "description": "Observe every component and light time for CN with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "CN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-cn-s",
+    "description": "Observe every component and light time for CN+S with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "CN+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-xlt",
+    "description": "Observe every component and light time for XLT with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "XLT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-xlt-s",
+    "description": "Observe every component and light time for XLT+S with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "XLT+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-xcn",
+    "description": "Observe every component and light time for XCN with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "XCN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-correction-xcn-s",
+    "description": "Observe every component and light time for XCN+S with moving target/observer polynomial ephemerides",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "XCN+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-bad-correction",
+    "description": "Require actual INVALIDOPTION rather than two unrelated errors",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "TSPICE_BAD_CORRECTION"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-empty-correction",
+    "description": "Require actual EMPTYSTRING",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-rotated-frame",
+    "description": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "ECLIPJ2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-first-endpoint",
+    "description": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": -1000,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-last-endpoint",
+    "description": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 1000,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-signed-chain",
+    "description": "Resolve multiple linked segments including a negative center and compare all components",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": -123.5,
+        "target": "-100011",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-coverage-gap",
+    "description": "A real gap between segments must produce SPKINSUFFDATA",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 50,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-unknown-frame",
+    "description": "Require actual UNKNOWNFRAME for a real state request",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "TSPICE_UNKNOWN_FRAME",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-empty-frame",
+    "description": "Require actual EMPTYSTRING at the compiled boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-no-files",
+    "description": "Require real NOLOADEDFILES with no ephemerides loaded",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-priority-restored",
+    "description": "Read changed complete state after competing segment load and restore the original after unload",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-priority.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-same-body",
+    "description": "Geometric same-body state/position and light time are zero",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "J2000",
+        "observer": "100001",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-unknown-name",
+    "description": "Require actual IDCODENOTFOUND for an unrecognized target name",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "TSPICE_NONEXISTENT_BODY",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-empty-target",
+    "description": "Require actual EMPTYSTRING for an empty target name",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "",
+        "ref": "J2000",
+        "observer": "100002",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-case-insensitive-names",
+    "description": "Use actual built-in barycenter name translation and case-insensitive frame/correction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 125.25,
+        "target": "100001",
+        "ref": "j2000",
+        "observer": "solar system barycenter",
+        "abcorr": "none"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpos-audit-noninertial-frame",
+    "description": "Compare complete real lunar state/position and light time in the rotating Earth frame with converged reception correction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/pck00010.tpc"
+      },
+      {
+        "op": "ephemeris.spkpos",
+        "et": 12345678.25,
+        "target": "MOON",
+        "ref": "IAU_EARTH",
+        "observer": "EARTH",
+        "abcorr": "CN+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

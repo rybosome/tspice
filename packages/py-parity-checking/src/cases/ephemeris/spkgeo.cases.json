@@ -24,8 +24,14 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H1" },
-      { "op": "kernels.furnsh", "file": "kernels/ephemeris-spkgeo-happy.bsp" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H1"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/ephemeris-spkgeo-happy.bsp"
+      },
       {
         "op": "ephemeris.spkgeo",
         "target": 1000,
@@ -34,7 +40,9 @@
         "observer": 0
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkgeo-invalid-frame-error",
@@ -48,6 +56,306 @@
         "observer": 0
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-polynomial",
+    "description": "Observe complete geometric state or position and light time, or all six barycentric components",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-rotated-frame",
+    "description": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "ECLIPJ2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-first-endpoint",
+    "description": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": -1000,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-last-endpoint",
+    "description": "Compare all components and light time at a distinguishing frame or exact closed coverage boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 1000,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-signed-chain",
+    "description": "Resolve multiple linked segments including a negative center and compare all components",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": -123.5,
+        "target": -100011,
+        "ref": "J2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-coverage-gap",
+    "description": "A real gap between segments must produce SPKINSUFFDATA",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 50,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-unknown-frame",
+    "description": "Require actual UNKNOWNFRAME for a real state request",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "TSPICE_UNKNOWN_FRAME",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-empty-frame",
+    "description": "Require actual EMPTYSTRING at the compiled boundary",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-no-files",
+    "description": "Require real NOLOADEDFILES with no ephemerides loaded",
+    "workflow": [
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-priority-restored",
+    "description": "Read changed complete state after competing segment load and restore the original after unload",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-priority.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-same-body",
+    "description": "Geometric same-body state/position and light time are zero",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100001,
+        "ref": "J2000",
+        "observer": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkgeo-audit-reverse-vector",
+    "description": "Swap target and observer to observe the opposite geometric vector",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "et": 125.25,
+        "target": 100002,
+        "ref": "J2000",
+        "observer": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -319,3 +319,29 @@ inspect all 24 persisted state words, header/internal name, degree/count and ful
 documented in the parity fixture README. The unchanged numeric comparator uses
 1e-12 absolute-or-relative tolerance; independent polynomial interpolation checks
 use 1e-9 km position and 1e-12 km/s velocity bounds.
+
+### SPK state, position and segment-search audit
+
+`ephemeris-2` reviews `spkez`, `spkezp`, `spkezr`, `spkpos`, `spkgeo`, `spkgps`,
+`spkssb` and `spksfs` through their actual compiled raw operations on both
+backends. Every state/position component and applicable light time reaches live
+comparison. All nine aberration modes use authored target and observer motion
+with distinct values in three axes. Linked signed centers, closed endpoints,
+coverage gaps, rotating frames, load-order priority and unload/reload are
+observed. Literal polynomial and distance/c checks independently verify units;
+a central difference of corrected position verifies the reported velocity.
+
+Both adapters reject nonfinite ET and non-string frame/correction/name inputs
+before CSPICE, while preserving scientific errors. Checked explicit tuples
+replace unchecked state/position casts. Later WASM string allocations are inside
+protected scopes; all 40 query/search allocation-failure positions permit real
+post-failure calls with zero net leaked temporaries. No shared C change or
+additional WASM regeneration is needed for this adapter/oracle repair.
+
+SpiceyPy's default found decorator could mask actual NOLOADEDFILES as a successful
+miss. A scoped `no_found_check` preserves the actual error, then interprets found.
+Search comparisons distinguish that error from a loaded-empty/unknown/gap miss,
+and compare complete identifiers, both TDB bounds and all six packed integers.
+Physical file handles are process-dependent: independent tests verify their
+identity against actual KDATA within each backend, including priority changes.
+The unchanged live comparator remains 1e-12 absolute-or-relative.

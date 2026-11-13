@@ -52,8 +52,14 @@ export interface EphemerisApi {
   /**
    * Compute state relative to observer using loaded kernels (see `spkezr_c`).
    *
-   * Note: `abcorr` is a known set of SPICE aberration correction strings, but we allow arbitrary
-   * strings for forward-compatibility.
+   * `et` is finite observer TDB seconds past J2000. Returns all six position
+   * (km) and velocity (km/s) components plus one-way light time in seconds.
+   * Velocity differentiates the corrected position. Names/integer strings and
+   * correction flags use CSPICE parsing; reception and transmission corrections
+   * also determine the orientation epoch of noninertial frames. Unknown names,
+   * frames, corrections and missing ephemerides retain actual CSPICE errors.
+   * Arbitrary correction strings are allowed for forward compatibility.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkezr_c.html
    */
   spkezr(
     target: string,
@@ -64,7 +70,10 @@ export interface EphemerisApi {
   ): SpkezrResult;
 
   /**
-   * Compute position relative to observer using loaded kernels (see `spkpos_c`).
+   * Compute position (km) and one-way light time (seconds) relative to observer.
+   * Names, finite observer TDB epoch, frame and correction parsing follow
+   * `spkezr`; noninertial orientation follows the frame-center light time.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpos_c.html
    */
   spkpos(
     target: string,
@@ -74,7 +83,11 @@ export interface EphemerisApi {
     observer: string,
   ): SpkposResult;
 
-  /** Compute state (6-vector) and light time via `spkez` (numeric IDs). */
+  /**
+   * Compute six-component km/km-s state and seconds light time with signed numeric IDs.
+   * Uses the finite observer TDB epoch, frame and correction semantics of `spkezr`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkez_c.html
+   */
   spkez(
     target: number,
     et: number,
@@ -83,7 +96,11 @@ export interface EphemerisApi {
     observer: number,
   ): SpkezrResult;
 
-  /** Compute position (3-vector) and light time via `spkezp` (numeric IDs). */
+  /**
+   * Compute three-component km position and seconds light time with signed numeric IDs.
+   * Uses the finite observer TDB epoch, frame and correction semantics of `spkpos`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkezp_c.html
+   */
   spkezp(
     target: number,
     et: number,
@@ -92,7 +109,12 @@ export interface EphemerisApi {
     observer: number,
   ): SpkposResult;
 
-  /** Compute geometric state (6-vector) and light time via `spkgeo` (numeric IDs). */
+  /**
+   * Compute geometric km/km-s state with signed IDs at finite TDB epoch.
+   * Includes seconds light time from the geometric distance; no aberration
+   * correction is applied. Resolves linked centers in the loaded SPKs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkgeo_c.html
+   */
   spkgeo(
     target: number,
     et: number,
@@ -100,7 +122,12 @@ export interface EphemerisApi {
     observer: number,
   ): SpkezrResult;
 
-  /** Compute geometric position (3-vector) and light time via `spkgps` (numeric IDs). */
+  /**
+   * Compute geometric km position with signed IDs at finite TDB epoch.
+   * Includes seconds light time from the geometric distance; no aberration
+   * correction is applied. Resolves linked centers in the loaded SPKs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkgps_c.html
+   */
   spkgps(
     target: number,
     et: number,
@@ -108,7 +135,12 @@ export interface EphemerisApi {
     observer: number,
   ): SpkposResult;
 
-  /** Compute state (6-vector) of `target` relative to the solar system barycenter via `spkssb`. */
+  /**
+   * Compute six-component geometric km/km-s state relative to the solar-system
+   * barycenter at finite TDB epoch. Signed target0 returns zero without kernels.
+   * The requested frame may require additional loaded orientation information.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkssb_c.html
+   */
   spkssb(target: number, et: number, ref: string): SpiceStateVector;
 
   /**
@@ -166,7 +198,16 @@ export interface EphemerisApi {
   /**
    * Search loaded SPK files for the highest-priority segment applicable to `body` and `et`.
    *
-   * Note: `handle` is the native SPICE DAF handle for the file containing the segment.
+   * `et` is finite TDB seconds past J2000; coverage endpoints are inclusive.
+   * Later loaded files and later matching segments have priority. A loaded
+   * empty file, uncovered epoch or unknown body returns `{found:false}`; no
+   * loaded SPK files raises NOLOADEDFILES. CSPICE caches segment searches.
+   *
+   * `handle` is the physical SPICE DAF handle of the containing file, valid
+   * while that file remains loaded. It is not a backend-owned writer token.
+   * `ident` retains the complete segment ID (up to 40 characters); retain the
+   * returned descriptor as described by `SpkPackedDescriptor`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spksfs_c.html
    */
   spksfs(
     body: number,
