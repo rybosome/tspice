@@ -3,16 +3,125 @@
     "caseId": "frames-sxform-identity-success",
     "description": "sxform identity transform for J2000->J2000",
     "workflow": [
-      { "op": "frames.sxform", "from": "J2000", "to": "J2000", "et": 0 }
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "J2000",
+        "et": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-sxform-unknown-frame-error",
     "description": "Representative sxform UNKNOWNFRAME error",
     "workflow": [
-      { "op": "frames.sxform", "from": "J2000", "to": "NOT_A_FRAME", "et": 0 }
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "NOT_A_FRAME",
+        "et": 0
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames-sxform-audit-static-dynamic-and-composite",
+    "description": "All 36 state-transform components compare in row-major order for nontrivial static, inverse, three dynamic epochs and composed frames. Dynamic velocity derivatives are nonzero and independently finite-difference checked.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.sxform",
+        "from": "AUDIT_FIXED_12345678901234",
+        "to": "J2000",
+        "et": 0
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "AUDIT_FIXED_12345678901234",
+        "et": 12
+      },
+      {
+        "op": "frames.sxform",
+        "from": "AUDIT_SPIN",
+        "to": "J2000",
+        "et": -12345.5
+      },
+      {
+        "op": "frames.sxform",
+        "from": "AUDIT_SPIN",
+        "to": "J2000",
+        "et": 0
+      },
+      {
+        "op": "frames.sxform",
+        "from": "AUDIT_SPIN",
+        "to": "J2000",
+        "et": 6789.25
+      },
+      {
+        "op": "frames.sxform",
+        "from": "AUDIT_FIXED_12345678901234",
+        "to": "AUDIT_SPIN",
+        "et": 42.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-sxform-audit-missing-orientation-data",
+    "description": "Known frames without required orientation kernels signal actual FRAMEDATANOTFOUND.",
+    "workflow": [
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "IAU_EARTH",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FRAMEDATANOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-sxform-audit-unload-removes-frame",
+    "description": "A successful transform before unload does not allow cached use of an unloaded custom frame; actual UNKNOWNFRAME follows.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.sxform",
+        "from": "AUDIT_FIXED_12345678901234",
+        "to": "J2000",
+        "et": 0
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.sxform",
+        "from": "AUDIT_FIXED_12345678901234",
+        "to": "J2000",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFRAME"]
+    }
   }
 ]

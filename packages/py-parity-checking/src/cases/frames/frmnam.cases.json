@@ -2,13 +2,107 @@
   {
     "caseId": "frames-frmnam-found-success",
     "description": "frmnam resolves frame code 1 -> J2000",
-    "workflow": [{ "op": "frames.frmnam", "code": 1 }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.frmnam",
+        "code": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-frmnam-not-found-success",
     "description": "frmnam miss returns found=false",
-    "workflow": [{ "op": "frames.frmnam", "code": 123456789 }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.frmnam",
+        "code": 123456789
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frmnam-audit-builtins-zero-and-limits",
+    "description": "Observe real names and empty-name misses at zero and both signed int32 limits; these are valid identifiers, not fabricated numeric errors.",
+    "workflow": [
+      {
+        "op": "frames.frmnam",
+        "code": 1
+      },
+      {
+        "op": "frames.frmnam",
+        "code": 17
+      },
+      {
+        "op": "frames.frmnam",
+        "code": 10013
+      },
+      {
+        "op": "frames.frmnam",
+        "code": 0
+      },
+      {
+        "op": "frames.frmnam",
+        "code": -2147483648
+      },
+      {
+        "op": "frames.frmnam",
+        "code": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frmnam-audit-full32-byte-name",
+    "description": "All32 actual frame-name characters reach raw result and exact comparison; no truncation to shorter buffers.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "FRAME_1800103_NAME",
+        "values": ["ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"]
+      },
+      {
+        "op": "frames.frmnam",
+        "code": 1800103
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+    "description": "Negative frame code resolves its complete26-character authored name only while its frame definition is loaded.",
+    "workflow": [
+      {
+        "op": "frames.frmnam",
+        "code": -1800102
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.frmnam",
+        "code": -1800102
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.frmnam",
+        "code": -1800102
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

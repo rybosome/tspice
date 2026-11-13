@@ -3,7 +3,10 @@
     "caseId": "frames-cklpf-open-query-close-success",
     "description": "cklpf opens CK for subsequent query and closes via ckupf",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_sclkscet_00061.tsc"
+      },
       {
         "op": "frames.cklpf",
         "ck": "kernels/mgs_hga_hinge_v2.bc",
@@ -15,13 +18,18 @@
         "idsId": "IDS_CKLPF",
         "maxCard": 32
       },
-      { "op": "frames.ckupf", "handleId": "CKH_CKLPF" }
+      {
+        "op": "frames.ckupf",
+        "handleId": "CKH_CKLPF"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-cklpf-missing-file-error",
-    "description": "Representative cklpf error for missing CK file",
+    "description": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it.",
     "workflow": [
       {
         "op": "frames.cklpf",
@@ -29,6 +37,109 @@
         "handleId": "CKH_MISSING"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-cklpf-audit-observable-search-priority",
+    "description": "Actual A/B/reloaded-A file search order changes the full pointing/AV result; duplicate loads share a native handle and one unload removes that file while B remains searchable.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing-priority.bc",
+        "handleId": "B"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "ALIAS"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "ALIAS"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "B"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cklpf-audit-does-not-register-furnsh-table",
+    "description": "Manual CK loading makes actual pointing available but does not create a FURNSH table entry; ktotal(CK)=0 and full pointing are both observed.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "CK"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]
