@@ -202,8 +202,8 @@
         "sxform_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Eight utility routines reviewed/focused repairs passed; run both full required lanes, record source-bound observations and open independent utility PR. Shared KPL cell identity remains needs-repair until separate #684."
+      "prs": ["https://github.com/rybosome/tspice/pull/698"],
+      "nextAction": "Observed all15 exact-source CI jobs green with actual live comparisons and native-required execution. Wait for verification-metadata CI and explicit REST rebaseability, then hand off; continue other baseline batches."
     },
     {
       "id": "geometry",

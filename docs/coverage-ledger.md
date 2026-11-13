@@ -56,13 +56,13 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 
 | Backend | Unreviewed | Reviewed; verification pending | Needs repair | Verified |
 | --- | ---: | ---: | ---: | ---: |
-| node | 145 | 17 | 0 | 0 |
-| wasm | 145 | 16 | 1 | 0 |
+| node | 145 | 1 | 0 | 16 |
+| wasm | 145 | 0 | 1 | 16 |
 
 | Batch | Routines | Node / WASM verified | PRs / dependencies | Next action |
 | --- | --- | --- | --- | --- |
 | cells-windows | `card_c`, `insrtc_c`, `insrtd_c`, `insrti_c`, `scard_c`, `size_c`, `ssize_c`, `valid_c`, `wncard_c`, `wnfetd_c`, `wninsd_c`, `wnvald_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/679 | Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change. |
+| vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 8 / 8 | https://github.com/rybosome/tspice/pull/679 | Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change. |
 | coordinates-matrices | `axisar_c`, `georec_c`, `latrec_c`, `mtxv_c`, `mxm_c`, `mxv_c`, `recgeo_c`, `reclat_c`, `recsph_c`, `rotate_c`, `rotmat_c`, `sphrec_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | dsk | `dskb02_c`, `dskgd_c`, `dskobj_c`, `dsksrf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ek-1 | `ekaclc_c`, `ekacld_c`, `ekacli_c`, `ekcls_c`, `ekffld_c`, `ekfind_c`, `ekgc_c`, `ekgd_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
@@ -73,7 +73,7 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 | file-io-1 | `dafbfs_c`, `dafcls_c`, `daffna_c`, `dafopr_c`, `dascls_c`, `dasopr_c`, `dlabfs_c`, `dlacls` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | file-io-2 | `dlafns_c`, `dlaopn_c`, `dskmi2_c`, `dskopn_c`, `dskw02_c`, `exists_c`, `getfat_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | frames-1 | `ckcov_c`, `ckgp_c`, `ckgpav_c`, `cklpf_c`, `ckobj_c`, `ckupf_c` | 0 / 0 | None | Audit six CK pointing/coverage/load/unload routines separately. Inspect and repair pre-try string allocation leaks seen in ckgp/ckgpav/ckcov and oracle found/error ordering; actual CK handle/global state semantics still require primary review. No CK routine is certified by utility helper use. |
-| frames-2 | `ccifrm_c`, `cidfrm_c`, `cnmfrm_c`, `frinfo_c`, `frmnam_c`, `namfrm_c`, `pxform_c`, `sxform_c` | 0 / 0 | None | Eight utility routines reviewed/focused repairs passed; run both full required lanes, record source-bound observations and open independent utility PR. Shared KPL cell identity remains needs-repair until separate #684. |
+| frames-2 | `ccifrm_c`, `cidfrm_c`, `cnmfrm_c`, `frinfo_c`, `frmnam_c`, `namfrm_c`, `pxform_c`, `sxform_c` | 8 / 8 | https://github.com/rybosome/tspice/pull/698 | Observed all15 exact-source CI jobs green with actual live comparisons and native-required execution. Wait for verification-metadata CI and explicit REST rebaseability, then hand off; continue other baseline batches. |
 | geometry | `illumf_c`, `illumg_c`, `ilumin_c`, `nvc2pl_c`, `occult_c`, `pl2nvc_c`, `sincpt_c`, `subpnt_c`, `subslr_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | geometry-gf | `gfdist_c`, `gfrefn_c`, `gfrepf_c`, `gfrepi_c`, `gfsep_c`, `gfsstp_c`, `gfstep_c`, `gfstol_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ids-names | `bodc2n_c`, `bodc2s_c`, `boddef_c`, `bodfnd_c`, `bodn2c_c`, `bods2c_c`, `bodvar_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
