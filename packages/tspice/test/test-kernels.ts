@@ -59,6 +59,11 @@ const DSK_FIXTURE_PATH = fileURLToPath(
   ),
 );
 
+/** Read the checked-in DSK fixture without downloading unrelated kernels. */
+export function loadTestDsk(): Uint8Array {
+  return fs.readFileSync(DSK_FIXTURE_PATH);
+}
+
 export async function loadTestKernels(): Promise<{
   lsk: Uint8Array;
   spk: Uint8Array;
@@ -69,7 +74,7 @@ export async function loadTestKernels(): Promise<{
     readCached(TEST_KERNEL_URLS.SPK),
   ]);
 
-  const dsk = fs.readFileSync(DSK_FIXTURE_PATH);
+  const dsk = loadTestDsk();
 
   return { lsk, spk, dsk };
 }
