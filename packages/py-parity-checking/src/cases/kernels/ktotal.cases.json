@@ -3,11 +3,87 @@
     "caseId": "kernels-ktotal-counts-loaded-kernels-success",
     "description": "ktotal reports loaded kernels across ALL and TEXT selectors",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.furnsh", "file": "kernels/kernel-pool-parity.tpc" },
-      { "op": "kernels.ktotal", "kind": "ALL" },
-      { "op": "kernels.ktotal", "kind": "TEXT" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/kernel-pool-parity.tpc"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "TEXT"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-ktotal-audit-subtypes-and-unions",
+    "description": "Distinct files make OR/deduplication/subtype/default selector errors visible.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/kernel-pool-parity.tpc"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": " lsk "
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "FK"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": ["LSK", "SPK", "LSK"]
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "SPK TEXT"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": ["TEXT", "LSK"]
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": ["ALL", "LSK"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-ktotal-audit-invalid-kind",
+    "description": "Unknown public contract selector is rejected by both adapters.",
+    "workflow": [
+      {
+        "op": "kernels.ktotal",
+        "kind": "not-a-kind"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["kernel kind"]
+    }
   }
 ]

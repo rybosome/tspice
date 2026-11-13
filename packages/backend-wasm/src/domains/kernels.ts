@@ -22,39 +22,32 @@ import { assertWasmOwnedCellHandle } from "./cells-windows.js";
 
 import { tspiceCall0, tspiceCall1Path } from "../codec/calls.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
-import { writeUtf8CString } from "../codec/strings.js";
+import { withAllocs } from "../codec/alloc.js";
 import type { WasmFsApi } from "../runtime/fs.js";
 import { resolveKernelPath, writeKernelSource } from "../runtime/fs.js";
 
 function tspiceCallKtotal(module: EmscriptenModule, kind: string): number {
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const kindPtr = writeUtf8CString(module, kind);
-  const outCountPtr = module._malloc(4);
-  if (!errPtr || !kindPtr || !outCountPtr) {
-    if (outCountPtr) module._free(outCountPtr);
-    if (kindPtr) module._free(kindPtr);
-    if (errPtr) module._free(errPtr);
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAP32[outCountPtr >> 2] = 0;
-    const result = module._tspice_ktotal(
-      kindPtr,
-      outCountPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-    return module.HEAP32[outCountPtr >> 2] ?? 0;
-  } finally {
-    module._free(outCountPtr);
-    module._free(kindPtr);
-    module._free(errPtr);
-  }
+  const encoded = new TextEncoder().encode(kind);
+  return withAllocs(
+    module,
+    [errMaxBytes, encoded.length + 1, 4],
+    (errPtr, kindPtr, outCountPtr) => {
+      module.HEAPU8.set(encoded, kindPtr);
+      module.HEAPU8[kindPtr + encoded.length] = 0;
+      module.HEAP32[outCountPtr >> 2] = 0;
+      const result = module._tspice_ktotal(
+        kindPtr,
+        outCountPtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
+      return module.HEAP32[outCountPtr >> 2] ?? 0;
+    },
+  );
 }
 
 function tspiceCallKdata(
@@ -63,85 +56,68 @@ function tspiceCallKdata(
   kind: string,
 ): Found<KernelData> {
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const kindPtr = writeUtf8CString(module, kind);
-
   const fileMaxBytes = 2048;
   const filtypMaxBytes = 256;
   const sourceMaxBytes = 2048;
-  const filePtr = module._malloc(fileMaxBytes);
-  const filtypPtr = module._malloc(filtypMaxBytes);
-  const sourcePtr = module._malloc(sourceMaxBytes);
-  const handlePtr = module._malloc(4);
-  const foundPtr = module._malloc(4);
-
-  if (
-    !errPtr ||
-    !kindPtr ||
-    !filePtr ||
-    !filtypPtr ||
-    !sourcePtr ||
-    !handlePtr ||
-    !foundPtr
-  ) {
-    for (const ptr of [
-      foundPtr,
-      handlePtr,
-      sourcePtr,
-      filtypPtr,
-      filePtr,
-      kindPtr,
-      errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAP32[handlePtr >> 2] = 0;
-    module.HEAP32[foundPtr >> 2] = 0;
-
-    const result = module._tspice_kdata(
-      which,
-      kindPtr,
-      filePtr,
-      fileMaxBytes,
-      filtypPtr,
-      filtypMaxBytes,
-      sourcePtr,
-      sourceMaxBytes,
-      handlePtr,
-      foundPtr,
-      errPtr,
+  const encoded = new TextEncoder().encode(kind);
+  return withAllocs(
+    module,
+    [
       errMaxBytes,
-    );
+      encoded.length + 1,
+      fileMaxBytes,
+      filtypMaxBytes,
+      sourceMaxBytes,
+      4,
+      4,
+    ],
+    (
+      errPtr,
+      kindPtr,
+      filePtr,
+      filtypPtr,
+      sourcePtr,
+      handlePtr,
+      foundPtr,
+    ): Found<KernelData> => {
+      module.HEAPU8.set(encoded, kindPtr);
+      module.HEAPU8[kindPtr + encoded.length] = 0;
+      module.HEAP32[handlePtr >> 2] = 0;
+      module.HEAP32[foundPtr >> 2] = 0;
 
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+      const result = module._tspice_kdata(
+        which,
+        kindPtr,
+        filePtr,
+        fileMaxBytes,
+        filtypPtr,
+        filtypMaxBytes,
+        sourcePtr,
+        sourceMaxBytes,
+        handlePtr,
+        foundPtr,
+        errPtr,
+        errMaxBytes,
+      );
 
-    const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-    if (!found) {
-      return { found: false };
-    }
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
 
-    return {
-      found: true,
-      file: module.UTF8ToString(filePtr, fileMaxBytes).trim(),
-      filtyp: module.UTF8ToString(filtypPtr, filtypMaxBytes).trim(),
-      source: module.UTF8ToString(sourcePtr, sourceMaxBytes).trim(),
-      handle: module.HEAP32[handlePtr >> 2] ?? 0,
-    };
-  } finally {
-    module._free(foundPtr);
-    module._free(handlePtr);
-    module._free(sourcePtr);
-    module._free(filtypPtr);
-    module._free(filePtr);
-    module._free(kindPtr);
-    module._free(errPtr);
-  }
+      const found = (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
+      if (!found) {
+        return { found: false };
+      }
+
+      return {
+        found: true,
+        file: module.UTF8ToString(filePtr, fileMaxBytes).trim(),
+        filtyp: module.UTF8ToString(filtypPtr, filtypMaxBytes).trim(),
+        source: module.UTF8ToString(sourcePtr, sourceMaxBytes).trim(),
+        handle: module.HEAP32[handlePtr >> 2] ?? 0,
+      };
+    },
+  );
 }
 
 /** Create a {@link KernelsApi} implementation backed by a WASM Emscripten module + WASM FS. */
@@ -204,7 +180,7 @@ export function createKernelsApi(
         tspiceCall1Path(
           module,
           module._tspice_furnsh,
-          resolveKernelPath(kernel),
+          kernel.length === 0 ? kernel : resolveKernelPath(kernel),
         );
         return;
       }
@@ -216,7 +192,11 @@ export function createKernelsApi(
     },
     unload: (path: string) => {
       clearKinfoCache();
-      tspiceCall1Path(module, module._tspice_unload, resolveKernelPath(path));
+      tspiceCall1Path(
+        module,
+        module._tspice_unload,
+        path.length === 0 ? path : resolveKernelPath(path),
+      );
     },
     kclear: () => {
       clearKinfoCache();
@@ -224,6 +204,10 @@ export function createKernelsApi(
     },
 
     kinfo: (path: string) => {
+      // CSPICE kinfo treats an empty/blank filename as an ordinary miss.
+      if (typeof path !== "string")
+        throw new TypeError("kinfo path must be a string");
+      if (/^ *$/.test(path)) return { found: false };
       const resolved = resolveKernelPath(path);
       const info = getKinfoCache().get(resolved);
       if (info == null) {
@@ -272,6 +256,8 @@ export function createKernelsApi(
     },
 
     kdata: (which: number, kind: KernelKindInput = "ALL") => {
+      if (!Number.isInteger(which) || which < -2147483648 || which > 2147483647)
+        throw new RangeError("kdata which must be a signed 32-bit integer");
       if (which < 0) {
         return { found: false };
       }

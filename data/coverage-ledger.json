@@ -25,25 +25,6 @@
         "record": null
       },
       {
-        "id": "vectors-arithmetic",
-        "routines": [
-          "vadd_c",
-          "vcrss_c",
-          "vdot_c",
-          "vhat_c",
-          "vminus_c",
-          "vnorm_c",
-          "vscl_c",
-          "vsub_c"
-        ],
-        "dependsOn": [],
-        "prs": [
-          "https://github.com/rybosome/tspice/pull/679"
-        ],
-        "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change.",
-        "record": "data/parity-audits/vectors-arithmetic.json"
-      },
-      {
         "id": "coordinates-matrices",
         "routines": [
           "axisar_c",
@@ -298,20 +279,6 @@
         "record": null
       },
       {
-        "id": "kplfrm-prerequisite",
-        "routines": [
-          "kplfrm_c"
-        ],
-        "dependsOn": [
-          "vectors-arithmetic"
-        ],
-        "prs": [
-          "https://github.com/rybosome/tspice/pull/680"
-        ],
-        "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change.",
-        "record": "data/parity-audits/kplfrm-prerequisite.json"
-      },
-      {
         "id": "kernels",
         "routines": [
           "furnsh_c",
@@ -324,8 +291,22 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "nextAction": "Kernel lifecycle judgments retained after integrating merged kplfrm repair; refresh both full required lanes and source-bound CI for the combined source.",
+        "record": "data/parity-audits/kernels.json"
+      },
+      {
+        "id": "kplfrm-prerequisite",
+        "routines": [
+          "kplfrm_c"
+        ],
+        "dependsOn": [
+          "vectors-arithmetic"
+        ],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/680"
+        ],
+        "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change.",
+        "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
         "id": "time-1",
@@ -359,20 +340,39 @@
         "prs": [],
         "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
         "record": null
+      },
+      {
+        "id": "vectors-arithmetic",
+        "routines": [
+          "vadd_c",
+          "vcrss_c",
+          "vdot_c",
+          "vhat_c",
+          "vminus_c",
+          "vnorm_c",
+          "vscl_c",
+          "vsub_c"
+        ],
+        "dependsOn": [],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/679"
+        ],
+        "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change.",
+        "record": "data/parity-audits/vectors-arithmetic.json"
       }
     ],
     "counts": {
       "node": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 146,
+        "reviewed": 16,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 146,
+        "reviewed": 16,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 0
       }
     }
   },
@@ -391,7 +391,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 319,
+    "scenarios": 349,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -14915,7 +14915,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 40
+          "line": 47
         }
       },
       "mapping": {
@@ -14927,8 +14927,7 @@
           "furnsh_c",
           "getmsg_c",
           "qcktrc_c",
-          "reset_c",
-          "unload_c"
+          "reset_c"
         ],
         "node": {
           "classification": "same-named-cspice-entrypoint",
@@ -14940,8 +14939,7 @@
             "furnsh_c",
             "getmsg_c",
             "qcktrc_c",
-            "reset_c",
-            "unload_c"
+            "reset_c"
           ]
         },
         "wasm": {
@@ -14957,7 +14955,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -14969,17 +14967,6 @@
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
             "line": 12
-          }
-        },
-        {
-          "symbol": "tspice_unload",
-          "declaration": {
-            "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 53
-          },
-          "definition": {
-            "file": "packages/backend-shim-c/src/domains/kernels.c",
-            "line": 28
           }
         }
       ],
@@ -14993,7 +14980,7 @@
           "factory": "createKernelsApi",
           "delegation": {
             "file": "packages/backend-node/src/runtime/kernel-staging.ts",
-            "line": 181
+            "line": 180
           },
           "routePolicy": {
             "classification": "delegated-shim-route",
@@ -15012,28 +14999,15 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 423
+                "line": 426
               },
               "calls": [
                 "tspice_furnsh"
               ]
-            },
-            {
-              "name": "unload",
-              "handler": "Unload",
-              "registration": "RegisterKernels",
-              "evidence": {
-                "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 424
-              },
-              "calls": [
-                "tspice_unload"
-              ]
             }
           ],
           "shimSymbols": [
-            "tspice_furnsh",
-            "tspice_unload"
+            "tspice_furnsh"
           ],
           "cspiceEntrypoints": [
             "erract_c",
@@ -15042,8 +15016,7 @@
             "furnsh_c",
             "getmsg_c",
             "qcktrc_c",
-            "reset_c",
-            "unload_c"
+            "reset_c"
           ],
           "ciJobs": [
             "check-native"
@@ -15055,7 +15028,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 191
+            "line": 167
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -15082,6 +15055,136 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernels-furnsh-audit-binary-and-text",
+            "source": "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.kdata",
+              "kernels.kinfo",
+              "kernels.ktotal"
+            ],
+            "paths": [
+              {
+                "path": "kernels/file-io-minimal.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Binary and text registrations preserve order, paths and zero/nonzero metadata handles. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-furnsh-audit-duplicate-byte-loads",
+            "source": "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.kinfo",
+              "kernels.ktotal",
+              "kernels.unload"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Repeated identical loads remain separate CSPICE database entries; one unload removes one reference. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-furnsh-audit-empty-meta",
+            "source": "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.kdata",
+              "kernels.kinfo",
+              "kernels.ktotal",
+              "kernels.unload"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-empty.tm",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "An authored empty meta-kernel is registered as TEXT, with its actual filtyp/handle. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-furnsh-audit-malformed-text",
+            "source": "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-partial-error.tpc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "A malformed kernel reaches CSPICE after assigning an earlier variable; supplemental tests inspect retained partial pool state. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-furnsh-audit-observable-pool-values",
+            "source": "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.gcpool",
+              "kernel-pool.gdpool",
+              "kernel-pool.gipool",
+              "kernels.furnsh"
+            ],
+            "paths": [
+              {
+                "path": "kernels/kernel-pool-parity.tpc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Loading the corrected authored text fixture must populate actual numeric, integer and character pool values. The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
             "caseId": "kernels-furnsh-loads-text-kernel-success",
             "source": "packages/py-parity-checking/src/cases/kernels/furnsh.cases.json",
             "expectation": "success",
@@ -15096,7 +15199,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "furnsh loads a text kernel that is visible through ktotal/kdata The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts.",
+              "record": "data/parity-audits/kernels.json"
+            }
           },
           {
             "caseId": "kernels-furnsh-missing-file-error",
@@ -15111,18 +15222,46 @@
                 "kind": "missing-or-negative-test-reference"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative furnsh missing-file error path The actual furnsh effect is observed through loaded metadata/counts or all returned pool values. Missing/malformed loads require the specific CSPICE error name; partial effects/recovery are additionally compared live in kernel-boundaries.test.ts.",
+              "record": "data/parity-audits/kernels.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernels",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.furnsh -> Node typed adapter/stager -> native registered furnsh -> tspice_furnsh shared C shim -> furnsh_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.furnsh -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_furnsh -> shared C shim -> furnsh_c; outputs read before finally frees allocations.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         }
       }
     },
@@ -19249,7 +19388,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 48
+          "line": 63
         }
       },
       "mapping": {
@@ -19289,7 +19428,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -19314,7 +19453,7 @@
           "factory": "createKernelsApi",
           "delegation": {
             "file": "packages/backend-node/src/runtime/kernel-staging.ts",
-            "line": 246
+            "line": 215
           },
           "routePolicy": {
             "classification": "delegated-shim-route",
@@ -19333,7 +19472,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 425
+                "line": 428
               },
               "calls": [
                 "tspice_kclear"
@@ -19362,7 +19501,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 221
+            "line": 201
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -19389,6 +19528,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernels-kclear-audit-pool-and-repeat",
+            "source": "packages/py-parity-checking/src/cases/kernels/kclear.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.dtpool",
+              "kernel-pool.gdpool",
+              "kernel-pool.pdpool",
+              "kernels.furnsh",
+              "kernels.kclear",
+              "kernels.kinfo",
+              "kernels.ktotal"
+            ],
+            "paths": [
+              {
+                "path": "kernels/kernel-pool-parity.tpc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Clear removes both registrations and user pool values and supports repeated clear/reload. Counts, metadata misses and pool absence after actual raw clear reach the assertions; later load shows usable state.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
             "caseId": "kernels-kclear-clears-loaded-kernels-success",
             "source": "packages/py-parity-checking/src/cases/kernels/kclear.cases.json",
             "expectation": "success",
@@ -19407,18 +19579,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "kclear clears previously loaded kernels from the kernel database Counts, metadata misses and pool absence after actual raw clear reach the assertions; later load shows usable state.",
+              "record": "data/parity-audits/kernels.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernels",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kclear -> Node typed adapter/stager -> native registered kclear -> tspice_kclear shared C shim -> kclear_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kclear -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kclear -> shared C shim -> kclear_c; outputs read before finally frees allocations.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         }
       }
     },
@@ -19434,7 +19636,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 79
+          "line": 118
         }
       },
       "mapping": {
@@ -19477,7 +19679,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -19508,7 +19710,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernels.ts",
-            "line": 175
+            "line": 179
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -19520,7 +19722,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 427
+                "line": 430
               },
               "calls": [
                 "tspice_kdata"
@@ -19532,7 +19734,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 426
+                "line": 429
               },
               "calls": [
                 "tspice_ktotal"
@@ -19563,7 +19765,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 274
+            "line": 258
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -19592,6 +19794,54 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernels-kdata-audit-index-and-filters",
+            "source": "packages/py-parity-checking/src/cases/kernels/kdata.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.kdata"
+            ],
+            "paths": [
+              {
+                "path": "kernels/file-io-minimal.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/kernel-pool-parity.tpc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Zero-based filtered indexing, negative/end misses, subtype composition and default ALL. The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kdata-audit-invalid-kind",
+            "source": "packages/py-parity-checking/src/cases/kernels/kdata.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.kdata"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Unknown public contract selector is rejected by both adapters. The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
             "caseId": "kernels-kdata-found-and-miss-success",
             "source": "packages/py-parity-checking/src/cases/kernels/kdata.cases.json",
             "expectation": "success",
@@ -19605,18 +19855,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "kdata returns metadata for loaded kernels and found=false when out of range The actual raw Found result, full relative file/source, type and handle zero/nonzero are recursively compared, with filtered indexing preserved.",
+              "record": "data/parity-audits/kernels.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernels",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kdata -> Node typed adapter/stager -> native registered kdata -> tspice_kdata shared C shim -> kdata_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kdata -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kdata -> shared C shim -> kdata_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         }
       }
     },
@@ -19632,7 +19912,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 51
+          "line": 72
         }
       },
       "mapping": {
@@ -19675,7 +19955,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -19729,7 +20009,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 428
+                "line": 431
               },
               "calls": [
                 "tspice_kinfo"
@@ -19758,7 +20038,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 226
+            "line": 206
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -19787,6 +20067,54 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernels-kinfo-audit-cache-invalidation",
+            "source": "packages/py-parity-checking/src/cases/kernels/kinfo.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.kclear",
+              "kernels.kinfo",
+              "kernels.unload"
+            ],
+            "paths": [
+              {
+                "path": "kernels/file-io-minimal.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Cached misses/hits are invalidated by load, unload, clear and reloading on the same backend. The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kinfo-audit-empty-path",
+            "source": "packages/py-parity-checking/src/cases/kernels/kinfo.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kinfo"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Empty lookup follows the actual raw contract. The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
             "caseId": "kernels-kinfo-found-and-miss-success",
             "source": "packages/py-parity-checking/src/cases/kernels/kinfo.cases.json",
             "expectation": "success",
@@ -19804,18 +20132,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "kinfo returns metadata for loaded kernels and found=false for unknown kernels The actual raw Found result, type and full relative source are compared; handle zero/nonzero and same-runtime kdata correspondence are observed.",
+              "record": "data/parity-audits/kernels.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernels",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kinfo -> Node typed adapter/stager -> native registered kinfo -> tspice_kinfo shared C shim -> kinfo_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "composed",
+          "trace": "raw.kinfo -> filename-keyed cache built from actual _tspice_ktotal/_tspice_kdata -> shared shim/CSPICE. Clear cache before furnsh/unload/kclear; live meta child-source/duplicate and mutation tests validate composed semantics.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         }
       }
     },
@@ -19831,7 +20189,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 73
+          "line": 102
         }
       },
       "mapping": {
@@ -19891,7 +20249,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernels.ts",
-            "line": 134
+            "line": 138
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -19903,7 +20261,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 430
+                "line": 433
               },
               "calls": [
                 "tspice_kplfrm"
@@ -19932,7 +20290,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 239
+            "line": 223
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -20071,7 +20429,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
@@ -20079,7 +20438,7 @@
             "local-boundaries-node-2026-11-12",
             "ci-boundaries-node-43310416805"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20087,7 +20446,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
@@ -20095,7 +20455,7 @@
             "local-boundaries-wasm-2026-11-12",
             "ci-boundaries-wasm-43310416805"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -20112,7 +20472,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 76
+          "line": 109
         }
       },
       "mapping": {
@@ -20155,7 +20515,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -20186,7 +20546,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernels.ts",
-            "line": 139
+            "line": 143
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -20198,7 +20558,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 427
+                "line": 430
               },
               "calls": [
                 "tspice_kdata"
@@ -20210,7 +20570,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 426
+                "line": 429
               },
               "calls": [
                 "tspice_ktotal"
@@ -20241,7 +20601,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 253
+            "line": 237
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -20270,6 +20630,54 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernels-ktotal-audit-invalid-kind",
+            "source": "packages/py-parity-checking/src/cases/kernels/ktotal.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.ktotal"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Unknown public contract selector is rejected by both adapters. The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-ktotal-audit-subtypes-and-unions",
+            "source": "packages/py-parity-checking/src/cases/kernels/ktotal.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.ktotal"
+            ],
+            "paths": [
+              {
+                "path": "kernels/file-io-minimal.bsp",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/kernel-pool-parity.tpc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Distinct files make OR/deduplication/subtype/default selector errors visible. The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
             "caseId": "kernels-ktotal-counts-loaded-kernels-success",
             "source": "packages/py-parity-checking/src/cases/kernels/ktotal.cases.json",
             "expectation": "success",
@@ -20287,18 +20695,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "ktotal reports loaded kernels across ALL and TEXT selectors The raw returned count is directly compared with actual SpiceyPy ktotal for ordinary selectors; contract subtype/union composition uses independent filtering of actual oracle metadata.",
+              "record": "data/parity-audits/kernels.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernels",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ktotal -> Node typed adapter/stager -> native registered ktotal -> tspice_ktotal shared C shim -> ktotal_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.ktotal -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_ktotal -> shared C shim -> ktotal_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         }
       }
     },
@@ -20314,7 +20752,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 59
+          "line": 88
         }
       },
       "mapping": {
@@ -20346,7 +20784,7 @@
           "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
           "cspiceEntrypoints": []
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -20366,7 +20804,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/kernels.ts",
-            "line": 116
+            "line": 120
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -20378,7 +20816,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 429
+                "line": 432
               },
               "calls": [
                 "tspice_kxtrct"
@@ -20407,12 +20845,12 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 236
+            "line": 220
           },
           "factory": "createKernelsApi",
           "delegation": {
             "file": "packages/core/src/spice-runtime/domains/kernels-utils.ts",
-            "line": 280
+            "line": 290
           },
           "routePolicy": {
             "classification": "javascript-implementation",
@@ -20436,6 +20874,277 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernels-kxtrct-audit-blank-key",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Compare actual CSPICE mutated wordsq and substring for blank-key Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-immediate-terminator",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: immediate-terminator Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-key-last",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: key-last Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-multiple-and-case",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: multiple-and-case Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-newline-within-value",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: newline-within-value Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-no-terminators",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: no-terminators Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-non-ascii-space",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare actual CSPICE mutated wordsq and substring for non-ascii-space Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-nul-key-term",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare actual CSPICE mutated wordsq and substring for nul-key-term Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-nul-sequence",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare actual CSPICE mutated wordsq and substring for nul-sequence Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-repeated-keyword",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: repeated-keyword Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-tab-within-value",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: tab-within-value Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-tabs-are-not-blanks",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: tabs-are-not-blanks Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-terminator-last",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Observe both mutated wordsq and substr: terminator-last Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-trailing-newline",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare actual CSPICE mutated wordsq and substring for trailing-newline Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-trailing-tab",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare actual CSPICE mutated wordsq and substring for trailing-tab Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-kxtrct-audit-unicode-words",
+            "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.kxtrct"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Compare actual CSPICE mutated wordsq and substring for unicode-words Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
             "caseId": "kernels-kxtrct-found-success",
             "source": "packages/py-parity-checking/src/cases/kernels/kxtrct.cases.json",
             "expectation": "success",
@@ -20443,7 +21152,14 @@
               "kernels.kxtrct"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "kxtrct extracts a matching substring Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
           },
           {
             "caseId": "kernels-kxtrct-not-found-success",
@@ -20453,18 +21169,47 @@
               "kernels.kxtrct"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "kxtrct miss returns found=false Both actual mutated wordsq and substr reach the exact-string assertion, including significant whitespace; Found misses and documented keyword errors remain distinct.",
+              "record": "data/parity-audits/kernels.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernels",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.kxtrct -> Node typed adapter/stager -> native registered kxtrct -> tspice_kxtrct shared C shim -> kxtrct_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "javascript",
+          "trace": "raw.kxtrct -> shared kxtrctJs; no WASM substitute in the parity handler. Independent oracle calls actual locked SpiceyPy libspice.kxtrct_c and reads exact buffers; supported adapter normalization/UTF-8 size limits are explicit.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         }
       }
     },
@@ -31449,7 +32194,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 422
+                "line": 425
               },
               "calls": [
                 "tspice_tkvrsn_toolkit"
@@ -32199,7 +32944,7 @@
         "domain": "kernels",
         "evidence": {
           "file": "packages/backend-contract/src/domains/kernels.ts",
-          "line": 45
+          "line": 56
         }
       },
       "mapping": {
@@ -32239,7 +32984,7 @@
             "unload_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -32264,7 +33009,7 @@
           "factory": "createKernelsApi",
           "delegation": {
             "file": "packages/backend-node/src/runtime/kernel-staging.ts",
-            "line": 225
+            "line": 202
           },
           "routePolicy": {
             "classification": "delegated-shim-route",
@@ -32283,7 +33028,7 @@
               "registration": "RegisterKernels",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernels.cc",
-                "line": 424
+                "line": 427
               },
               "calls": [
                 "tspice_unload"
@@ -32312,7 +33057,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/kernels.ts",
-            "line": 217
+            "line": 193
           },
           "factory": "createKernelsApi",
           "delegation": null,
@@ -32339,6 +33084,66 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "kernels-unload-audit-text-pool-reload",
+            "source": "packages/py-parity-checking/src/cases/kernels/unload.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.gdpool",
+              "kernels.furnsh",
+              "kernels.kinfo",
+              "kernels.ktotal",
+              "kernels.unload"
+            ],
+            "paths": [
+              {
+                "path": "kernels/kernel-pool-parity.tpc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Unloading one text kernel rereads the retained staged kernel without deleting its backing file. Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
+            "caseId": "kernels-unload-audit-unknown-and-repeat",
+            "source": "packages/py-parity-checking/src/cases/kernels/unload.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "kernels.ktotal",
+              "kernels.unload"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/never-loaded.tls",
+                "kind": "missing-or-negative-test-reference"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Unknown and repeated non-empty unloads are harmless actual CSPICE operations. Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING.",
+              "record": "data/parity-audits/kernels.json"
+            }
+          },
+          {
             "caseId": "kernels-unload-empty-path-error",
             "source": "packages/py-parity-checking/src/cases/kernels/unload.cases.json",
             "expectation": "error",
@@ -32346,7 +33151,13 @@
               "kernels.unload"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative unload invalid empty-path error Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING.",
+              "record": "data/parity-audits/kernels.json"
+            }
           },
           {
             "caseId": "kernels-unload-removes-loaded-kernel-success",
@@ -32363,18 +33174,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "unload removes a previously loaded kernel from lookup results Actual raw unload effects reach the assertion through counts, metadata and/or remaining pool values; errors require named EMPTYSTRING.",
+              "record": "data/parity-audits/kernels.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "kernels",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.unload -> Node typed adapter/stager -> native registered unload -> tspice_unload shared C shim -> unload_c; native buffers copied, SPICE errors captured/reset.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.unload -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_unload -> shared C shim -> unload_c; outputs read before finally frees allocations.",
+          "executions": [
+            "local-kernels-audit-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/kernels.json"
         }
       }
     },
@@ -32582,16 +33423,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -32600,16 +33439,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -32996,16 +33833,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33014,16 +33849,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33225,16 +34058,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33243,16 +34074,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33479,16 +34308,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33497,16 +34324,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33729,16 +34554,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33747,16 +34570,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33961,16 +34782,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33979,16 +34798,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34246,16 +35063,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34264,16 +35079,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34482,16 +35295,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-kernels-audit-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34500,16 +35311,14 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed",
-            "verified"
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-kernels-audit-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }

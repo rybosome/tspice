@@ -23,22 +23,6 @@
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
     },
     {
-      "id": "vectors-arithmetic",
-      "routines": [
-        "vadd_c",
-        "vcrss_c",
-        "vdot_c",
-        "vhat_c",
-        "vminus_c",
-        "vnorm_c",
-        "vscl_c",
-        "vsub_c"
-      ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change."
-    },
-    {
       "id": "coordinates-matrices",
       "routines": [
         "axisar_c",
@@ -273,13 +257,6 @@
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
     },
     {
-      "id": "kplfrm-prerequisite",
-      "routines": ["kplfrm_c"],
-      "dependsOn": ["vectors-arithmetic"],
-      "prs": ["https://github.com/rybosome/tspice/pull/680"],
-      "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change."
-    },
-    {
       "id": "kernels",
       "routines": [
         "furnsh_c",
@@ -292,7 +269,14 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Kernel lifecycle judgments retained after integrating merged kplfrm repair; refresh both full required lanes and source-bound CI for the combined source."
+    },
+    {
+      "id": "kplfrm-prerequisite",
+      "routines": ["kplfrm_c"],
+      "dependsOn": ["vectors-arithmetic"],
+      "prs": ["https://github.com/rybosome/tspice/pull/680"],
+      "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change."
     },
     {
       "id": "time-1",
@@ -324,6 +308,22 @@
       "dependsOn": [],
       "prs": [],
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+    },
+    {
+      "id": "vectors-arithmetic",
+      "routines": [
+        "vadd_c",
+        "vcrss_c",
+        "vdot_c",
+        "vhat_c",
+        "vminus_c",
+        "vnorm_c",
+        "vscl_c",
+        "vsub_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/679"],
+      "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change."
     }
   ]
 }

@@ -3,17 +3,103 @@
     "caseId": "kernels-unload-removes-loaded-kernel-success",
     "description": "unload removes a previously loaded kernel from lookup results",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.kinfo", "path": "kernels/naif0012.tls" },
-      { "op": "kernels.unload", "path": "kernels/naif0012.tls" },
-      { "op": "kernels.kinfo", "path": "kernels/naif0012.tls" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernels-unload-empty-path-error",
     "description": "Representative unload invalid empty-path error",
-    "workflow": [{ "op": "kernels.unload", "path": "" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "kernels.unload",
+        "path": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "kernels-unload-audit-unknown-and-repeat",
+    "description": "Unknown and repeated non-empty unloads are harmless actual CSPICE operations.",
+    "workflow": [
+      {
+        "op": "kernels.unload",
+        "path": "kernels/never-loaded.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-unload-audit-text-pool-reload",
+    "description": "Unloading one text kernel rereads the retained staged kernel without deleting its backing file.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/kernel-pool-parity.tpc"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "TSPICE_PARITY_DOUBLE_VAR",
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/kernel-pool-parity.tpc"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

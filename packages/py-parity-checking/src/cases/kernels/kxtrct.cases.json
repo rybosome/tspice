@@ -10,7 +10,9 @@
         "string": "A B C"
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernels-kxtrct-not-found-success",
@@ -23,6 +25,248 @@
         "string": "A B C"
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-terminator-last",
+    "description": "Observe both mutated wordsq and substr: terminator-last",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "KEY data END"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-key-last",
+    "description": "Observe both mutated wordsq and substr: key-last",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "prefix KEY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-immediate-terminator",
+    "description": "Observe both mutated wordsq and substr: immediate-terminator",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "prefix KEY END tail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-tabs-are-not-blanks",
+    "description": "Observe both mutated wordsq and substr: tabs-are-not-blanks",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "prefix\tKEY data END"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-tab-within-value",
+    "description": "Observe both mutated wordsq and substr: tab-within-value",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "KEY a\tb END tail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-newline-within-value",
+    "description": "Observe both mutated wordsq and substr: newline-within-value",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "KEY alpha\nEND tail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-multiple-and-case",
+    "description": "Observe both mutated wordsq and substr: multiple-and-case",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["STOP", "END"],
+        "string": "prefix KEY one  two STOP tail END"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-no-terminators",
+    "description": "Observe both mutated wordsq and substr: no-terminators",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": [],
+        "string": "KEY one two"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-repeated-keyword",
+    "description": "Observe both mutated wordsq and substr: repeated-keyword",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "KEY a KEY b END tail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-trailing-tab",
+    "description": "Compare actual CSPICE mutated wordsq and substring for trailing-tab",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": [],
+        "string": "KEY value\t"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-trailing-newline",
+    "description": "Compare actual CSPICE mutated wordsq and substring for trailing-newline",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": [],
+        "string": "KEY value\n"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-non-ascii-space",
+    "description": "Compare actual CSPICE mutated wordsq and substring for non-ascii-space",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": [],
+        "string": "KEY alpha "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-unicode-words",
+    "description": "Compare actual CSPICE mutated wordsq and substring for unicode-words",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "KEY 木星 軌道 END tail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-nul-sequence",
+    "description": "Compare actual CSPICE mutated wordsq and substring for nul-sequence",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY",
+        "terms": ["END"],
+        "string": "prefix KEY value\u0000 END ignored"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-nul-key-term",
+    "description": "Compare actual CSPICE mutated wordsq and substring for nul-key-term",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "KEY\u0000ignored",
+        "terms": ["END\u0000ignored"],
+        "string": "KEY value END tail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-kxtrct-audit-blank-key",
+    "description": "Compare actual CSPICE mutated wordsq and substring for blank-key",
+    "workflow": [
+      {
+        "op": "kernels.kxtrct",
+        "keywd": "   ",
+        "terms": ["END"],
+        "string": "KEY value END"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
   }
 ]
