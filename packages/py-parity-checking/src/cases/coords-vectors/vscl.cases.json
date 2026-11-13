@@ -12,5 +12,29 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-vscl-audit-zero-and-fractional-scale",
+    "description": "vscl: zero and fractional scale; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vscl",
+        "s": 0,
+        "v": [1, -2, 3]
+      },
+      {
+        "op": "coords-vectors.vscl",
+        "s": 0.5,
+        "v": [0.25, -1.5, 2.75]
+      },
+      {
+        "op": "coords-vectors.vscl",
+        "s": 2.5,
+        "v": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

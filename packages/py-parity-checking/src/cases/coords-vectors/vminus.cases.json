@@ -11,5 +11,22 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-vminus-audit-zero-and-fractions",
+    "description": "vminus: zero and fractions; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vminus",
+        "v": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vminus",
+        "v": [0.25, -1.5, 2.75]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -11,5 +11,31 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "coords-vectors-vnorm-audit-zero",
+    "description": "vnorm: zero; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vnorm",
+        "v": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vnorm-audit-large-mixed",
+    "description": "vnorm: large mixed; compare every scalar/vector component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.vnorm",
+        "v": [3e200, -4e200, 1.2e201]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]
