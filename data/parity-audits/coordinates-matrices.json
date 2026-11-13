@@ -330,6 +330,114 @@
         "coords-vectors-sphrec-happy-equatorial-quarter-turn"
       ],
       "observation": "Both complete required local lanes passed after rebasing onto merged #681/#682. Production N0067 native rebuilt/loaded and its required guard ran; all 728 live comparisons (364 scenarios per actual backend), all 763 parity-package tests with zero native-required skips, 118 WASM / 62 Node / 21 core / 121 facade tests passed. The real C allocator fixture and all 16 capacity/registry integration tests passed. All 38 ledger regressions and drift/format/lint/typecheck passed. The original owning-script generated Node/web WASM is byte-identical, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4; C sources/build inputs match the original capacity PR. Merged coordinate/error implementations are preserved. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3-Python 3.12.15 / macOS arm64. Prior executions remain historical; fresh current-source CI is pending. Known ownership findings remain open and are not certified by valid-handle passes."
+    },
+    {
+      "id": "ci-683-main-22f45b80-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8823d5a0db7a54e92fb59d9ca7907b8214cb38ba88e7d1d97edf8dc7b9b38e15",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "39b3a99e3ac22bf0dc7610f7bd214729c050e08a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43487831823/job/132100888690",
+      "observation": "All 15 source CI jobs passed on 39b3a99e3ac22bf0dc7610f7bd214729c050e08a. The inspected Linux Node 22 native-required job 132100888690 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067, and executed all 728 live comparisons (364 scenarios per actual Node/WASM backend), all 763 parity-package tests with zero skips, 118 WASM / 62 Node / 21 core / 121 facade tests. The real C allocator regression and 16 capacity/registry integration tests passed. Node 20/22 Linux/macOS JS/native lanes, ledger regressions/drift, docs and packed-native checks all passed. Explicit REST rebaseability is true on this source head. Execution remains bound to the actual tested source/job; prior observations remain historical. Open ownership findings are not certified by passing valid-handle/allocation cases."
+    },
+    {
+      "id": "ci-683-main-22f45b80-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8823d5a0db7a54e92fb59d9ca7907b8214cb38ba88e7d1d97edf8dc7b9b38e15",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "39b3a99e3ac22bf0dc7610f7bd214729c050e08a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43487831823/job/132100888690",
+      "observation": "All 15 source CI jobs passed on 39b3a99e3ac22bf0dc7610f7bd214729c050e08a. The inspected Linux Node 22 native-required job 132100888690 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067, and executed all 728 live comparisons (364 scenarios per actual Node/WASM backend), all 763 parity-package tests with zero skips, 118 WASM / 62 Node / 21 core / 121 facade tests. The real C allocator regression and 16 capacity/registry integration tests passed. Node 20/22 Linux/macOS JS/native lanes, ledger regressions/drift, docs and packed-native checks all passed. Explicit REST rebaseability is true on this source head. Execution remains bound to the actual tested source/job; prior observations remain historical. Open ownership findings are not certified by passing valid-handle/allocation cases."
     }
   ],
   "routines": [
@@ -384,11 +492,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -396,11 +508,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -473,11 +589,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -485,11 +605,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -544,11 +668,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -556,11 +684,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -607,11 +739,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -619,11 +755,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -678,11 +818,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -690,11 +834,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -741,11 +889,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -753,11 +905,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -830,11 +986,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -842,11 +1002,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -901,11 +1065,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -913,11 +1081,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -972,11 +1144,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -984,11 +1160,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -1059,11 +1239,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1071,11 +1255,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -1146,11 +1334,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1158,11 +1350,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     },
@@ -1217,11 +1413,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1229,14 +1429,18 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Fresh complete local and explicitly observed canonical CI passed on this rebased source fingerprint. Original source/job references remain historical; the subsequent metadata commit does not relabel them."
 }

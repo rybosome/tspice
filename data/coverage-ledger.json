@@ -16,7 +16,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/683"
         ],
-        "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification.",
+        "nextAction": "Review the allocation prerequisite; integrate the separate #684 opaque-handle repair before semantic completion of the affected methods. User merges remain separate.",
         "record": "data/parity-audits/cell-capacity-prerequisite.json"
       },
       {
@@ -55,7 +55,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/679"
         ],
-        "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations.",
+        "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change.",
         "record": "data/parity-audits/vectors-arithmetic.json"
       },
       {
@@ -80,7 +80,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/681"
         ],
-        "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations.",
+        "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change.",
         "record": "data/parity-audits/coordinates-matrices.json"
       },
       {
@@ -181,7 +181,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/682"
         ],
-        "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations.",
+        "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change.",
         "record": "data/parity-audits/error.json"
       },
       {
@@ -387,15 +387,15 @@
     "counts": {
       "node": {
         "unreviewed": 131,
-        "reviewed": 31,
+        "reviewed": 4,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 27
       },
       "wasm": {
         "unreviewed": 131,
-        "reviewed": 27,
+        "reviewed": 0,
         "needs-repair": 4,
-        "verified": 0
+        "verified": 27
       }
     }
   },
@@ -2565,14 +2565,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -2581,14 +2583,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -4522,14 +4526,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4538,14 +4544,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -4776,14 +4784,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4792,14 +4802,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -14778,14 +14790,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -14793,14 +14807,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -16011,14 +16027,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -16027,14 +16045,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -16454,14 +16474,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -16470,14 +16492,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -20533,7 +20557,8 @@
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -20549,7 +20574,8 @@
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
           "status": "needs-repair",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -21137,14 +21163,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -21153,14 +21181,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -21628,14 +21658,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -21644,14 +21676,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -21862,14 +21896,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -21878,14 +21914,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -22094,14 +22132,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -22110,14 +22150,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -24170,14 +24212,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -24186,14 +24230,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -24397,14 +24443,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -24413,14 +24461,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -24638,14 +24688,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -24654,14 +24706,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -24936,14 +24990,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -24951,14 +25007,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -25169,14 +25227,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -25185,14 +25245,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -25397,14 +25459,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -25413,14 +25477,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -27026,14 +27092,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -27041,14 +27109,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -27300,14 +27370,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -27316,14 +27388,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -27921,14 +27995,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -27937,14 +28013,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -31309,7 +31387,8 @@
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -31322,7 +31401,8 @@
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
           "status": "needs-repair",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -33982,14 +34062,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34002,14 +34084,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34291,7 +34375,8 @@
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -34304,7 +34389,8 @@
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
           "status": "needs-repair",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -34515,14 +34601,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34535,14 +34623,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34748,14 +34838,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34768,14 +34860,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35006,14 +35100,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35026,14 +35122,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35260,14 +35358,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35280,14 +35380,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35496,14 +35598,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35516,14 +35620,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35785,14 +35891,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35805,14 +35913,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36025,14 +36135,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36045,14 +36157,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36960,7 +37074,8 @@
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-node"
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -36973,7 +37088,8 @@
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-wasm"
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
           ],
           "status": "needs-repair",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"

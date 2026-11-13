@@ -278,6 +278,44 @@
         "kernels-kplfrm-set-too-small-error"
       ],
       "observation": "Both complete required local lanes passed after rebasing onto merged #681/#682. Production N0067 native rebuilt/loaded and its required guard ran; all 728 live comparisons (364 scenarios per actual backend), all 763 parity-package tests with zero native-required skips, 118 WASM / 62 Node / 21 core / 121 facade tests passed. The real C allocator fixture and all 16 capacity/registry integration tests passed. All 38 ledger regressions and drift/format/lint/typecheck passed. The original owning-script generated Node/web WASM is byte-identical, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4; C sources/build inputs match the original capacity PR. Merged coordinate/error implementations are preserved. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3-Python 3.12.15 / macOS arm64. Prior executions remain historical; fresh current-source CI is pending. Known ownership findings remain open and are not certified by valid-handle passes."
+    },
+    {
+      "id": "ci-683-main-22f45b80-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2891c31dfefa09d66a18e735cf7bec63748c770fce3b4aeeaa190a7a221164ea",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "39b3a99e3ac22bf0dc7610f7bd214729c050e08a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43487831823/job/132100888690",
+      "observation": "All 15 source CI jobs passed on 39b3a99e3ac22bf0dc7610f7bd214729c050e08a. The inspected Linux Node 22 native-required job 132100888690 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067, and executed all 728 live comparisons (364 scenarios per actual Node/WASM backend), all 763 parity-package tests with zero skips, 118 WASM / 62 Node / 21 core / 121 facade tests. The real C allocator regression and 16 capacity/registry integration tests passed. Node 20/22 Linux/macOS JS/native lanes, ledger regressions/drift, docs and packed-native checks all passed. Explicit REST rebaseability is true on this source head. Execution remains bound to the actual tested source/job; prior observations remain historical. Open ownership findings are not certified by passing valid-handle/allocation cases."
+    },
+    {
+      "id": "ci-683-main-22f45b80-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2891c31dfefa09d66a18e735cf7bec63748c770fce3b4aeeaa190a7a221164ea",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "39b3a99e3ac22bf0dc7610f7bd214729c050e08a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43487831823/job/132100888690",
+      "observation": "All 15 source CI jobs passed on 39b3a99e3ac22bf0dc7610f7bd214729c050e08a. The inspected Linux Node 22 native-required job 132100888690 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067, and executed all 728 live comparisons (364 scenarios per actual Node/WASM backend), all 763 parity-package tests with zero skips, 118 WASM / 62 Node / 21 core / 121 facade tests. The real C allocator regression and 16 capacity/registry integration tests passed. Node 20/22 Linux/macOS JS/native lanes, ledger regressions/drift, docs and packed-native checks all passed. Explicit REST rebaseability is true on this source head. Execution remains bound to the actual tested source/job; prior observations remain historical. Open ownership findings are not certified by passing valid-handle/allocation cases."
     }
   ],
   "routines": [
@@ -403,7 +441,10 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-683-main-22f45b80-node"]
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -415,10 +456,13 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-683-main-22f45b80-wasm"]
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both complete required local lanes passed on the rebased source. Current-source CI is pending. The separately tracked WASM ownership finding remains open; valid-handle/allocation passes do not certify semantic completion."
+  "verificationNote": "Fresh local and explicitly observed canonical CI passed for current registered valid-handle/allocation cases. The separately tracked ownership finding remains open and semantic completion is not claimed."
 }

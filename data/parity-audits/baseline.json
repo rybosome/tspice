@@ -7,7 +7,7 @@
       "routines": ["ssize_c", "valid_c", "wnvald_c"],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/683"],
-      "nextAction": "Observe current-source CI for shared allocation repairs, then complete the separately tracked WASM handle identity repair before verification."
+      "nextAction": "Review the allocation prerequisite; integrate the separate #684 opaque-handle repair before semantic completion of the affected methods. User merges remain separate."
     },
     {
       "id": "cells-windows",
@@ -40,7 +40,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations."
+      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "coordinates-matrices",
@@ -60,7 +60,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/681"],
-      "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations."
+      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "dsk",
@@ -146,7 +146,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/682"],
-      "nextAction": "Refresh local and canonical CI evidence on the combined source after the capacity binary prerequisite; preserve original runs as historical observations."
+      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "file-io-1",
