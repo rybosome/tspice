@@ -61,16 +61,6 @@
     }
   },
   "mappingNotes": {
-    "bodfnd": {
-      "node": {
-        "reason": "Existence is tested through dtpool so character-valued body variables are included.",
-        "expectedEntrypoints": ["dtpool_c"]
-      },
-      "wasm": {
-        "reason": "Existence is tested through dtpool so character-valued body variables are included.",
-        "expectedEntrypoints": ["dtpool_c"]
-      }
-    },
     "bodvar": {
       "node": {
         "reason": "The wrapper queries pool dimensions and delegates numeric retrieval to bodvcd.",

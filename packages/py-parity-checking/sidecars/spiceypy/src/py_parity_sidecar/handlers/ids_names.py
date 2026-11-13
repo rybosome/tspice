@@ -83,11 +83,18 @@ def _normalize_bod_item(item: str) -> str:
         raise ValueError(
             f"Kernel pool item name is too long: {len(item)} characters (max {_MAX_BOD_ITEM_CHARS})"
         )
-    return _to_ascii_uppercase(_trim_ascii_whitespace(item))
+    normalized = _to_ascii_uppercase(_trim_ascii_whitespace(item))
+    if not normalized:
+        raise ValueError("expected a non-empty item")
+    return normalized
 
 
 def _lookup_body_pool_entry(body: int, item: str) -> tuple[int, str] | None:
-    pool_var = f"BODY{body}_{item}"
+    try:
+        pool_var = f"BODY{body}_{item}".encode("utf-8")[:32].decode("utf-8")
+    except UnicodeDecodeError:
+        # Such a prefix cannot name a variable supplied through a UTF-8 string.
+        return None
 
     try:
         dtpool_out = sp.dtpool(pool_var)
@@ -135,6 +142,9 @@ def run_ids_names_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> S
             out = _normalize_found_code(sp.bodn2c(step.name), label="bodn2c")
             return StepOutput(op=step.op, value=out)
         except NotFoundError:
+            # SpiceyPy's found decorator can raise before its error decorator.
+            # A real CSPICE failure must not be normalized into an ordinary miss.
+            sp.check_for_spice_error(None)
             return StepOutput(op=step.op, value={"found": False})
 
     if isinstance(step, StepIdsNamesBodc2n):
@@ -142,6 +152,7 @@ def run_ids_names_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> S
             out = _normalize_bodc2n(sp.bodc2n(step.code))
             return StepOutput(op=step.op, value=out)
         except NotFoundError:
+            sp.check_for_spice_error(None)
             return StepOutput(op=step.op, value={"found": False})
 
     if isinstance(step, StepIdsNamesBodc2s):
@@ -153,6 +164,7 @@ def run_ids_names_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> S
             out = _normalize_found_code(sp.bods2c(step.name), label="bods2c")
             return StepOutput(op=step.op, value=out)
         except NotFoundError:
+            sp.check_for_spice_error(None)
             return StepOutput(op=step.op, value={"found": False})
 
     if isinstance(step, StepIdsNamesBoddef):
@@ -161,7 +173,7 @@ def run_ids_names_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> S
 
     if isinstance(step, StepIdsNamesBodfnd):
         normalized_item = _normalize_bod_item(step.item)
-        found = _lookup_body_pool_entry(step.body, normalized_item) is not None
+        found = bool(sp.bodfnd(step.body, normalized_item))
         return StepOutput(op=step.op, value=found)
 
     if isinstance(step, StepIdsNamesBodvar):

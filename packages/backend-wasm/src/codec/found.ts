@@ -82,7 +82,7 @@ export function tspiceCallFoundString(
       }
       return {
         found: true,
-        value: module.UTF8ToString(outPtr, outMaxBytes).trim(),
+        value: module.UTF8ToString(outPtr, outMaxBytes).trimEnd(),
       };
     },
   );

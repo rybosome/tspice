@@ -1,5 +1,5 @@
 import type { IdsNamesApi } from "@rybosome/tspice-backend-contract";
-import { normalizeBodItem } from "@rybosome/tspice-core";
+import { assertSpiceInt32, normalizeBodItem } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -9,7 +9,19 @@ import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 
 const BODY_NAME_MAX_BYTES = 256;
-const BODY_CONST_MAX_VALUES = 1024;
+
+function stringArg(value: string, label: string): string {
+  if (typeof value !== "string")
+    throw new TypeError(`${label}: expected a string`);
+  return value;
+}
+
+function bodyItem(item: string, fn: string): string {
+  const normalized = normalizeBodItem(stringArg(item, `${fn}(item)`));
+  if (normalized.length === 0)
+    throw new RangeError(`${fn}(item): expected a non-empty item`);
+  return normalized;
+}
 
 function tspiceCallBodc2s(module: EmscriptenModule, code: number): string {
   return withAllocs(
@@ -62,43 +74,23 @@ function tspiceCallBodfnd(
   body: number,
   item: string,
 ): boolean {
-  // `bodfnd_c()` is an existence check: it returns true even when the pool var
-  // exists but is character-typed ('C') vs numeric ('N').
-  //
-  // IMPORTANT: NAIF `expool_c()` only reports numeric ('N') variables, so use
-  // `dtpool_c()` to check for existence regardless of type.
-  const bodyI = body | 0;
-  const poolVar = `BODY${bodyI}_${item}`;
-  const poolVarPtr = writeUtf8CString(module, poolVar);
-  const outTypeMaxBytes = 2;
-
+  const itemPtr = writeUtf8CString(module, item);
   try {
-    return withAllocs(
-      module,
-      [WASM_ERR_MAX_BYTES, 4, 4, outTypeMaxBytes],
-      (errPtr, foundPtr, outNPtr, outTypePtr) => {
-        module.HEAP32[foundPtr >> 2] = 0;
-        module.HEAP32[outNPtr >> 2] = 0;
-        module.HEAPU8[outTypePtr] = 0;
-
-        const result = module._tspice_dtpool(
-          poolVarPtr,
-          foundPtr,
-          outNPtr,
-          outTypePtr,
-          outTypeMaxBytes,
-          errPtr,
-          WASM_ERR_MAX_BYTES,
-        );
-        if (result !== 0) {
-          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
-        }
-
-        return (module.HEAP32[foundPtr >> 2] ?? 0) !== 0;
-      },
-    );
+    return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+      module.HEAP32[outPtr >> 2] = 0;
+      const result = module._tspice_bodfnd(
+        body,
+        itemPtr,
+        outPtr,
+        errPtr,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (result !== 0)
+        throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+      return (module.HEAP32[outPtr >> 2] ?? 0) !== 0;
+    });
   } finally {
-    module._free(poolVarPtr);
+    module._free(itemPtr);
   }
 }
 
@@ -108,9 +100,29 @@ function tspiceCallBodvar(
   item: string,
 ): number[] {
   const itemPtr = writeUtf8CString(module, item);
-  const maxn = BODY_CONST_MAX_VALUES;
-
   try {
+    // Query the shared shim's normalized numeric dimension first. This shares
+    // NAIF's 32-byte key semantics without duplicating byte truncation in JS.
+    const maxn = withAllocs(
+      module,
+      [WASM_ERR_MAX_BYTES, 4],
+      (errPtr, outDimPtr) => {
+        module.HEAP32[outDimPtr >> 2] = 0;
+        const result = module._tspice_bodvar(
+          body,
+          itemPtr,
+          0,
+          outDimPtr,
+          0,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (result !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
+        return module.HEAP32[outDimPtr >> 2] ?? 0;
+      },
+    );
+    if (maxn <= 0) return [];
     const valuesBytes = Math.max(8, maxn * 8);
 
     return withAllocs(
@@ -152,32 +164,50 @@ function tspiceCallBodvar(
 export function createIdsNamesApi(module: EmscriptenModule): IdsNamesApi {
   return {
     bodn2c: (name: string) => {
-      const out = tspiceCallFoundInt(module, module._tspice_bodn2c, name);
+      const out = tspiceCallFoundInt(
+        module,
+        module._tspice_bodn2c,
+        stringArg(name, "bodn2c(name)"),
+      );
       if (!out.found) return { found: false };
       return { found: true, code: out.value };
     },
 
     bodc2n: (code: number) => {
+      assertSpiceInt32(code, "bodc2n(code)");
       const out = tspiceCallFoundString(module, module._tspice_bodc2n, code);
       if (!out.found) return { found: false };
       return { found: true, name: out.value };
     },
 
-    bodc2s: (code: number) => tspiceCallBodc2s(module, code),
+    bodc2s: (code: number) => {
+      assertSpiceInt32(code, "bodc2s(code)");
+      return tspiceCallBodc2s(module, code);
+    },
 
     bods2c: (name: string) => {
-      const out = tspiceCallFoundInt(module, module._tspice_bods2c, name);
+      const out = tspiceCallFoundInt(
+        module,
+        module._tspice_bods2c,
+        stringArg(name, "bods2c(name)"),
+      );
       if (!out.found) return { found: false };
       return { found: true, code: out.value };
     },
 
-    boddef: (name: string, code: number) =>
-      tspiceCallBoddef(module, name, code),
+    boddef: (name: string, code: number) => {
+      assertSpiceInt32(code, "boddef(code)");
+      tspiceCallBoddef(module, stringArg(name, "boddef(name)"), code);
+    },
 
-    bodfnd: (body: number, item: string) =>
-      tspiceCallBodfnd(module, body, normalizeBodItem(item)),
+    bodfnd: (body: number, item: string) => {
+      assertSpiceInt32(body, "bodfnd(body)");
+      return tspiceCallBodfnd(module, body, bodyItem(item, "bodfnd"));
+    },
 
-    bodvar: (body: number, item: string) =>
-      tspiceCallBodvar(module, body, normalizeBodItem(item)),
+    bodvar: (body: number, item: string) => {
+      assertSpiceInt32(body, "bodvar(body)");
+      return tspiceCallBodvar(module, body, bodyItem(item, "bodvar"));
+    },
   } satisfies IdsNamesApi;
 }
