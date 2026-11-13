@@ -24,7 +24,10 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H_CREATE" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H_CREATE"
+      },
       {
         "op": "ephemeris.spkopa",
         "file": "kernels/ephemeris-spkopa-happy.bsp",
@@ -44,7 +47,10 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H_APPEND" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H_APPEND"
+      },
       {
         "op": "ephemeris.spkobj",
         "spk": "kernels/ephemeris-spkopa-happy.bsp",
@@ -52,7 +58,9 @@
         "maxCardinality": 16
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkopa-missing-file-error",
@@ -64,6 +72,217 @@
         "handleId": "H_MISSING"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkopa-audit-append-complete-second-segment",
+    "description": "Actual append preserves the first segment and adds the full second object, metadata, coverage and all state components.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100002,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "APPENDED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          109895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 110000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 110145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 110330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idcode": 100002,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100002",
+        "observer": "0",
+        "et": 25.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100002,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkopa-audit-missing-file",
+    "description": "Require actual missing-file FILENOTFOUND from append.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "missing.bsp"
+        },
+        "handleId": "H"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkopa-audit-wrong-daf-type",
+    "description": "An actual CK DAF is not an SPK append target; require FILEISNOTSPK.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_hga_hinge_v2.bc"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "H"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEISNOTSPK"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkopa-audit-loaded-file-conflict",
+    "description": "The same physical generated SPK is loaded for read, so append must signal actual FILEOPENCONFLICT. A harness copy must not hide file identity.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "handleId": "H"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENCONFLICT"]
+    }
   }
 ]

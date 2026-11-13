@@ -24,7 +24,10 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H1"
+      },
       {
         "op": "ephemeris.spkobj",
         "spk": "kernels/ephemeris-spkcls-happy.bsp",
@@ -32,12 +35,197 @@
         "maxCardinality": 8
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkcls-missing-handle-error",
     "description": "spkcls errors when the logical handle ID is unknown",
-    "workflow": [{ "op": "ephemeris.spkcls", "handleId": "MISSING" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "MISSING"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcls-audit-empty-error-and-recovery",
+    "description": "Capture only a real structured empty-file NOSEGMENTSFOUND, retain the actual handle, then write/close/reopen/query successfully; a no-op or unrelated error cannot satisfy this success workflow.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H",
+        "captureError": true
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100001",
+        "observer": "0",
+        "et": 25.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcls-audit-close-reopen-append",
+    "description": "Successful physical close permits actual append/reclose and complete second-object state/descriptor inspection, rather than comparing a void return.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "ifname": "AUTHORED",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100001,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "AUTHORED_ALL_COMPONENTS",
+        "degree": 2,
+        "states": [
+          9895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 10000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 10145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 10330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "H",
+        "body": 100002,
+        "center": 0,
+        "frame": "J2000",
+        "first": -50.0,
+        "last": 150.0,
+        "segid": "APPENDED_SECOND",
+        "degree": 2,
+        "states": [
+          109895.0, -19915.0, 29945.0, 0.85, -0.95, 0.6, 110000.0, -20000.0,
+          30000.0, 1.25, -0.75, 0.5, 110145.0, -20065.0, 30045.0, 1.65, -0.55,
+          0.4, 110330.0, -20110.0, 30080.0, 2.05, -0.35, 0.3
+        ],
+        "epoch1": -100.0,
+        "step": 100.0
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        },
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "audit-written.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkezr",
+        "target": "100002",
+        "observer": "0",
+        "et": 25.25,
+        "ref": "J2000",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100002,
+        "et": 25.25,
+        "descrId": "WRITTEN"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "WRITTEN"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

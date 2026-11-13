@@ -18,7 +18,12 @@ import type { SpiceIntCell, SpiceWindow } from "./cells-windows.js";
 /**
  * Packed SPK segment descriptor (DAF summary) as a 5-double array.
  *
- * This is the packed form returned by `spksfs` and accepted by `spkuds`.
+ * This is the opaque packed form returned by `spksfs`/`spkpds` and accepted by
+ * `spkuds`. The first two words are TDB seconds; the remaining words contain
+ * signed integer pairs, whose bits may represent subnormal numbers or NaNs.
+ * Retain the returned readonly tuple: tspice preserves its exact packed storage
+ * through its worker clients. JSON serialization or reconstructing numeric words
+ * can discard that storage and corrupt integer fields; unpack before serialization.
  */
 export type SpkPackedDescriptor = readonly [
   number,
@@ -47,8 +52,14 @@ export interface EphemerisApi {
   /**
    * Compute state relative to observer using loaded kernels (see `spkezr_c`).
    *
-   * Note: `abcorr` is a known set of SPICE aberration correction strings, but we allow arbitrary
-   * strings for forward-compatibility.
+   * `et` is finite observer TDB seconds past J2000. Returns all six position
+   * (km) and velocity (km/s) components plus one-way light time in seconds.
+   * Velocity differentiates the corrected position. Names/integer strings and
+   * correction flags use CSPICE parsing; reception and transmission corrections
+   * also determine the orientation epoch of noninertial frames. Unknown names,
+   * frames, corrections and missing ephemerides retain actual CSPICE errors.
+   * Arbitrary correction strings are allowed for forward compatibility.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkezr_c.html
    */
   spkezr(
     target: string,
@@ -59,7 +70,10 @@ export interface EphemerisApi {
   ): SpkezrResult;
 
   /**
-   * Compute position relative to observer using loaded kernels (see `spkpos_c`).
+   * Compute position (km) and one-way light time (seconds) relative to observer.
+   * Names, finite observer TDB epoch, frame and correction parsing follow
+   * `spkezr`; noninertial orientation follows the frame-center light time.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpos_c.html
    */
   spkpos(
     target: string,
@@ -69,7 +83,11 @@ export interface EphemerisApi {
     observer: string,
   ): SpkposResult;
 
-  /** Compute state (6-vector) and light time via `spkez` (numeric IDs). */
+  /**
+   * Compute six-component km/km-s state and seconds light time with signed numeric IDs.
+   * Uses the finite observer TDB epoch, frame and correction semantics of `spkezr`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkez_c.html
+   */
   spkez(
     target: number,
     et: number,
@@ -78,7 +96,11 @@ export interface EphemerisApi {
     observer: number,
   ): SpkezrResult;
 
-  /** Compute position (3-vector) and light time via `spkezp` (numeric IDs). */
+  /**
+   * Compute three-component km position and seconds light time with signed numeric IDs.
+   * Uses the finite observer TDB epoch, frame and correction semantics of `spkpos`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkezp_c.html
+   */
   spkezp(
     target: number,
     et: number,
@@ -87,7 +109,12 @@ export interface EphemerisApi {
     observer: number,
   ): SpkposResult;
 
-  /** Compute geometric state (6-vector) and light time via `spkgeo` (numeric IDs). */
+  /**
+   * Compute geometric km/km-s state with signed IDs at finite TDB epoch.
+   * Includes seconds light time from the geometric distance; no aberration
+   * correction is applied. Resolves linked centers in the loaded SPKs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkgeo_c.html
+   */
   spkgeo(
     target: number,
     et: number,
@@ -95,7 +122,12 @@ export interface EphemerisApi {
     observer: number,
   ): SpkezrResult;
 
-  /** Compute geometric position (3-vector) and light time via `spkgps` (numeric IDs). */
+  /**
+   * Compute geometric km position with signed IDs at finite TDB epoch.
+   * Includes seconds light time from the geometric distance; no aberration
+   * correction is applied. Resolves linked centers in the loaded SPKs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkgps_c.html
+   */
   spkgps(
     target: number,
     et: number,
@@ -103,7 +135,12 @@ export interface EphemerisApi {
     observer: number,
   ): SpkposResult;
 
-  /** Compute state (6-vector) of `target` relative to the solar system barycenter via `spkssb`. */
+  /**
+   * Compute six-component geometric km/km-s state relative to the solar-system
+   * barycenter at finite TDB epoch. Signed target0 returns zero without kernels.
+   * The requested frame may require additional loaded orientation information.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkssb_c.html
+   */
   spkssb(target: number, et: number, ref: string): SpiceStateVector;
 
   /**
@@ -126,7 +163,9 @@ export interface EphemerisApi {
    * **Window semantics:** `cover` is updated in place. Like CSPICE `spkcov_c`,
    * coverage is **merged** with any intervals already present in `cover`.
    * Clear the window first (e.g. `scard(0, cover)`) if you want to avoid
-   * accumulation.
+   * accumulation. An absent object produces no added intervals; an empty SPK
+   * permits a zero-capacity window. Endpoints are TDB seconds past J2000.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcov_c.html
    */
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
 
@@ -151,21 +190,40 @@ export interface EphemerisApi {
    * output is the **union** of the IDs already present in `ids` and the IDs
    * found in `spk`.
    * Clear the cell first (e.g. `scard(0, ids)`) if you want to
-   * avoid accumulation.
+   * avoid accumulation. Empty SPKs permit zero-capacity cells.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkobj_c.html
    */
   spkobj(spk: string, ids: SpiceIntCell): void;
 
   /**
    * Search loaded SPK files for the highest-priority segment applicable to `body` and `et`.
    *
-   * Note: `handle` is the native SPICE DAF handle for the file containing the segment.
+   * `et` is finite TDB seconds past J2000; coverage endpoints are inclusive.
+   * Later loaded files and later matching segments have priority. A loaded
+   * empty file, uncovered epoch or unknown body returns `{found:false}`; no
+   * loaded SPK files raises NOLOADEDFILES. CSPICE caches segment searches.
+   *
+   * `handle` is the physical SPICE DAF handle of the containing file, valid
+   * while that file remains loaded. It is not a backend-owned writer token.
+   * `ident` retains the complete segment ID (up to 40 characters); retain the
+   * returned descriptor as described by `SpkPackedDescriptor`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spksfs_c.html
    */
   spksfs(
     body: number,
     et: number,
   ): Found<{ handle: number; descr: SpkPackedDescriptor; ident: string }>;
 
-  /** Pack an SPK segment descriptor via `spkpds`. */
+  /**
+   * Pack an SPK descriptor (`spkpds_c`) with signed body/center IDs, a known frame,
+   * type1..1000 and finite TDB endpoints `first < last`.
+   *
+   * The body must be nonzero and differ from center. The result contains the two
+   * times and six packed integers (body,center,frame,type,zero addresses), not five
+   * ordinary numerical measurements. See {@link SpkPackedDescriptor} for storage.
+   * This permits descriptor type codes without adding their segment writers.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpds_c.html
+   */
   spkpds(
     body: number,
     center: number,
@@ -175,7 +233,15 @@ export interface EphemerisApi {
     last: number,
   ): SpkPackedDescriptor;
 
-  /** Unpack a packed SPK segment descriptor via `spkuds`. */
+  /**
+   * Unpack all eight SPK descriptor fields (`spkuds_c`).
+   *
+   * CSPICE treats this as error-free: arbitrary bit patterns are not diagnosed
+   * as scientifically invalid and may produce nonnormal time values. JS input
+   * must still contain exactly five numeric words. Retain returned opaque tuples
+   * rather than reconstructing potentially NaN-packed integer words.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkuds_c.html
+   */
   spkuds(descr: SpkPackedDescriptor): SpkUnpackedDescriptor;
 
   // --- SPK writers ---------------------------------------------------------
@@ -202,6 +268,12 @@ export interface EphemerisApi {
    *
    * Callers should retain the `VirtualOutput` they passed to `spkopn`/`spkopa`.
    * It is the identifier used to read bytes back later.
+   *
+   * `ifname` must be nonempty; CSPICE stores at most 60 ASCII characters.
+   * `ncomch` is a signed 32-bit comment reservation; negative values mean zero.
+   * The returned writer token belongs to this backend instance. Write at least
+   * one segment before closing with `spkcls`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkopn_c.html
    */
   spkopn(
     file: string | VirtualOutput,
@@ -209,17 +281,35 @@ export interface EphemerisApi {
     ncomch: number,
   ): SpiceHandle;
 
-  /** Open an existing SPK for append (see `spkopa_c`). Same `file` semantics as `spkopn`. */
+  /**
+   * Open an existing SPK for append, with the same `file` semantics as `spkopn`.
+   * A file already loaded for reading raises CSPICE FILEOPENCONFLICT; unload
+   * it before opening for append. The returned writer token is backend-owned.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkopa_c.html
+   */
   spkopa(file: string | VirtualOutput): SpiceHandle;
 
-  /** Close an SPK file previously opened by `spkopn`/`spkopa` (see `spkcls_c`). */
+  /**
+   * Close an SPK writer and invalidate its backend-owned token after success.
+   * Closing an empty SPK raises NOSEGMENTSFOUND and retains the open writer;
+   * write a valid segment and retry. A failed close does not invalidate the token.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcls_c.html
+   */
   spkcls(handle: SpiceHandle): void;
 
   /**
    * Write a type 8 SPK segment (see `spkw08_c`).
    *
    * `states` is a flat array with layout `[x,y,z, dx,dy,dz]` for each record.
-   * The number of records `n` is derived as `states.length / 6`.
+   * The number of records `n` is derived as `states.length / 6`. Positions are
+   * kilometers and velocities kilometers/second, relative to `center` in `frame`.
+   * Samples are spaced by positive `step` seconds from `epoch1`; `first < last`
+   * bounds the segment in TDB seconds past J2000 and must lie within the samples.
+   * `degree` is 1..27 and requires at least `degree + 1` samples. `segid` contains
+   * at most 40 printable ASCII characters, excluding trailing blanks. CSPICE
+   * validates these scientific preconditions. The wrapper requires signed 32-bit
+   * IDs/degree, finite numeric inputs and a state buffer of at most 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw08_c.html
    */
   spkw08(
     handle: SpiceHandle,
