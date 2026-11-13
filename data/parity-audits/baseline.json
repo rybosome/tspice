@@ -269,7 +269,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/690"],
-      "nextAction": "Seven-routine kernel review retained with merged kplfrm; refresh both required local lanes and exact-source CI before current completion claims."
+      "nextAction": "Observed all15 exact-source CI jobs green with actual live comparisons and native-required execution. Wait for verification-metadata CI and explicit REST rebaseability, then hand off; continue other baseline batches."
     },
     {
       "id": "kplfrm-prerequisite",
