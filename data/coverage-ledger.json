@@ -39,7 +39,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/685"
         ],
-        "nextAction": "Restacked directly onto main 1bc826b0 after #684 merged; both required local lanes passed. Observe canonical CI after retargeting to main and record its actual source/job evidence before handoff.",
+        "nextAction": "Restacked directly onto main after #684 merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. Await maintainer review and explicitly authorized merge.",
         "record": "data/parity-audits/cells-windows.json"
       },
       {
@@ -391,15 +391,15 @@
     "counts": {
       "node": {
         "unreviewed": 122,
-        "reviewed": 20,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 20
+        "verified": 40
       },
       "wasm": {
         "unreviewed": 122,
-        "reviewed": 20,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 20
+        "verified": 40
       }
     }
   },
@@ -4149,14 +4149,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.card -> typed adapter -> native process handle registry -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -4164,14 +4166,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.card -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -4592,14 +4596,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4610,14 +4616,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -4850,14 +4858,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4868,14 +4878,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -14856,14 +14868,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -14873,14 +14887,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -16540,14 +16556,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -16558,14 +16576,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -19398,14 +19418,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrtc -> typed adapter -> native process handle registry -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -19414,14 +19436,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrtc -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -19663,14 +19687,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrtd -> typed adapter -> native process handle registry -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -19679,14 +19705,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrtd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -19928,14 +19956,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrti -> typed adapter -> native process handle registry -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -19944,14 +19974,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrti -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -20912,14 +20944,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20932,14 +20966,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -25354,14 +25390,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -25371,14 +25409,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -26106,14 +26146,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.scard -> typed adapter -> native process handle registry -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -26122,14 +26164,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.scard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -27534,14 +27578,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -27551,14 +27597,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -27812,14 +27860,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -27830,14 +27880,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -28248,14 +28300,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.size -> typed adapter -> native process handle registry -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -28263,14 +28317,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.size -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -31884,14 +31940,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -31900,14 +31958,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34875,14 +34935,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -34891,14 +34953,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -36926,14 +36990,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wncard -> typed adapter -> native process handle registry -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -36941,14 +37007,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wncard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -37217,14 +37285,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wnfetd -> typed adapter -> native process handle registry -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -37232,14 +37302,16 @@
             "unreviewed",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wnfetd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -37503,14 +37575,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wninsd -> typed adapter -> native process handle registry -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -37519,14 +37593,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wninsd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -37803,14 +37879,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-685-main-1bc826b0-node"
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -37819,14 +37897,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-685-main-1bc826b0-wasm"
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }

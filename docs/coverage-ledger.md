@@ -56,13 +56,13 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 
 | Backend | Unreviewed | Reviewed; verification pending | Needs repair | Verified |
 | --- | ---: | ---: | ---: | ---: |
-| node | 122 | 20 | 0 | 20 |
-| wasm | 122 | 20 | 0 | 20 |
+| node | 122 | 0 | 0 | 40 |
+| wasm | 122 | 0 | 0 | 40 |
 
 | Batch | Routines | Node / WASM verified | PRs / dependencies | Next action |
 | --- | --- | --- | --- | --- |
-| cell-capacity-prerequisite | `ssize_c`, `valid_c`, `wnvald_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/683, https://github.com/rybosome/tspice/pull/684, kplfrm-prerequisite | Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence. |
-| cells-windows | `card_c`, `insrtc_c`, `insrtd_c`, `insrti_c`, `scard_c`, `size_c`, `wncard_c`, `wnfetd_c`, `wninsd_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/685, cell-capacity-prerequisite | Restacked directly onto main 1bc826b0 after #684 merged; both required local lanes passed. Observe canonical CI after retargeting to main and record its actual source/job evidence before handoff. |
+| cell-capacity-prerequisite | `ssize_c`, `valid_c`, `wnvald_c` | 3 / 3 | https://github.com/rybosome/tspice/pull/683, https://github.com/rybosome/tspice/pull/684, kplfrm-prerequisite | Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence. |
+| cells-windows | `card_c`, `insrtc_c`, `insrtd_c`, `insrti_c`, `scard_c`, `size_c`, `wncard_c`, `wnfetd_c`, `wninsd_c` | 9 / 9 | https://github.com/rybosome/tspice/pull/685, cell-capacity-prerequisite | Restacked directly onto main after #684 merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. Await maintainer review and explicitly authorized merge. |
 | vectors-arithmetic | `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, `vsub_c` | 8 / 8 | https://github.com/rybosome/tspice/pull/679 | Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change. |
 | coordinates-matrices | `axisar_c`, `georec_c`, `latrec_c`, `mtxv_c`, `mxm_c`, `mxv_c`, `recgeo_c`, `reclat_c`, `recsph_c`, `rotate_c`, `rotmat_c`, `sphrec_c` | 12 / 12 | https://github.com/rybosome/tspice/pull/681, kplfrm-prerequisite | Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change. |
 | dsk | `dskb02_c`, `dskgd_c`, `dskobj_c`, `dsksrf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
@@ -70,7 +70,7 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 | ek-2 | `ekgi_c`, `ekifld_c`, `eknseg_c`, `ekntab_c`, `ekopn_c`, `ekopr_c`, `ekopw_c`, `ektnam_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ephemeris-1 | `spkcls_c`, `spkcov_c`, `spkez_c`, `spkezp_c`, `spkezr_c`, `spkgeo_c`, `spkgps_c`, `spkobj_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | ephemeris-2 | `spkopa_c`, `spkopn_c`, `spkpds_c`, `spkpos_c`, `spksfs_c`, `spkssb_c`, `spkuds_c`, `spkw08_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| error | `chkin_c`, `chkout_c`, `failed_c`, `getmsg_c`, `reset_c`, `setmsg_c`, `sigerr_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/682, kplfrm-prerequisite | Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change. |
+| error | `chkin_c`, `chkout_c`, `failed_c`, `getmsg_c`, `reset_c`, `setmsg_c`, `sigerr_c` | 7 / 7 | https://github.com/rybosome/tspice/pull/682, kplfrm-prerequisite | Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change. |
 | file-io-1 | `dafbfs_c`, `dafcls_c`, `daffna_c`, `dafopr_c`, `dascls_c`, `dasopr_c`, `dlabfs_c`, `dlacls` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | file-io-2 | `dlafns_c`, `dlaopn_c`, `dskmi2_c`, `dskopn_c`, `dskw02_c`, `exists_c`, `getfat_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | frames-1 | `ccifrm_c`, `cidfrm_c`, `ckcov_c`, `ckgp_c`, `ckgpav_c`, `cklpf_c`, `ckobj_c`, `ckupf_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
@@ -79,7 +79,7 @@ The Step 7 baseline is 162 contract-present routines at `3f950ae22993aaf9a629263
 | geometry-gf | `gfdist_c`, `gfrefn_c`, `gfrepf_c`, `gfrepi_c`, `gfsep_c`, `gfsstp_c`, `gfstep_c`, `gfstol_c` | 0 / 0 | None | Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy. |
 | ids-names | `bodc2n_c`, `bodc2s_c`, `boddef_c`, `bodfnd_c`, `bodn2c_c`, `bods2c_c`, `bodvar_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | kernel-pool | `cvpool_c`, `dtpool_c`, `expool_c`, `gcpool_c`, `gdpool_c`, `gipool_c`, `gnpool_c`, `pcpool_c`, `pdpool_c`, `pipool_c`, `swpool_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
-| kplfrm-prerequisite | `kplfrm_c` | 0 / 0 | https://github.com/rybosome/tspice/pull/680, https://github.com/rybosome/tspice/pull/684, vectors-arithmetic | Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence. |
+| kplfrm-prerequisite | `kplfrm_c` | 1 / 1 | https://github.com/rybosome/tspice/pull/680, https://github.com/rybosome/tspice/pull/684, vectors-arithmetic | Verified on both backends with fresh local and observed CI after the allocation and opaque-handle repairs. Review in the stated dependency order; user merges remain separate and source/base changes require refreshed evidence. |
 | kernels | `furnsh_c`, `kclear_c`, `kdata_c`, `kinfo_c`, `ktotal_c`, `kxtrct_c`, `unload_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | time-1 | `deltet_c`, `et2utc_c`, `scdecd_c`, `sce2c_c`, `sce2s_c`, `scencd_c`, `scs2e_c`, `sct2e_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |
 | time-2 | `str2et_c`, `timdef_c`, `timout_c`, `tkvrsn_c`, `tparse_c`, `tpictr_c`, `unitim_c` | 0 / 0 | None | Review NAIF semantics and trace raw implementations and live oracle assertions. |

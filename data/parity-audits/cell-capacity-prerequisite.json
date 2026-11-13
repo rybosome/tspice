@@ -524,6 +524,62 @@
         "cells-windows-wnvald-normalizes-window-success"
       ],
       "observation": "Both complete required local lanes passed after restacking onto merged #684/main1bc826b0. Production N0067 native rebuilt/loaded and its required guard ran; all 768 live comparisons (384 scenarios per actual backend), all 803 parity-package tests with zero native-required skips, 122 WASM / 62 Node / 21 core / 129 facade tests passed. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator fixture passed. All 38 ledger regressions, formatting, lint and typecheck passed. All 14 reviewed package implementation/test files and 36 other merged-main package files are byte-identical to their respective reviewed sources; the shared case types preserve both sets of changes. C/build inputs and owning-script generated Node/web WASM remain unchanged, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4. Node22.23.4 / pnpm10.13.1 / CSPICE N0067 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. Earlier observations remain historical; fresh canonical CI for this restacked source is pending."
+    },
+    {
+      "id": "ci-685-main-1bc826b0-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7058e24582bb56fd1a7e43905040963736dda71c312f4d5a7f34df89f75c0540",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "6838cf31801067b70c56e01135c38bbc2c50a07a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43506468615/job/132165337313",
+      "observation": "All 15 source CI jobs passed on 6838cf31801067b70c56e01135c38bbc2c50a07a. The inspected Linux Node22 native-required job 132165337313 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 768 live comparisons (384 scenarios per actual Node/WASM backend), all 803 parity-package tests with zero skips, 122 WASM / 62 Node / 21 core / 129 facade tests. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed without retries. REST explicitly confirmed mergeable:true and rebaseable:true on the restacked source/main1bc826b0 base. This observation remains bound to the actual tested source/job; earlier observations remain historical. C/build inputs and the owning-script WASM binary are unchanged."
+    },
+    {
+      "id": "ci-685-main-1bc826b0-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7058e24582bb56fd1a7e43905040963736dda71c312f4d5a7f34df89f75c0540",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "6838cf31801067b70c56e01135c38bbc2c50a07a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43506468615/job/132165337313",
+      "observation": "All 15 source CI jobs passed on 6838cf31801067b70c56e01135c38bbc2c50a07a. The inspected Linux Node22 native-required job 132165337313 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 768 live comparisons (384 scenarios per actual Node/WASM backend), all 803 parity-package tests with zero skips, 122 WASM / 62 Node / 21 core / 129 facade tests. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed without retries. REST explicitly confirmed mergeable:true and rebaseable:true on the restacked source/main1bc826b0 base. This observation remains bound to the actual tested source/job; earlier observations remain historical. C/build inputs and the owning-script WASM binary are unchanged."
     }
   ],
   "routines": [
@@ -627,11 +683,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-685-main-1bc826b0-node"]
+          "executions": [
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -639,11 +699,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-685-main-1bc826b0-wasm"]
+          "executions": [
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
+          ]
         }
       }
     },
@@ -794,11 +858,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-685-main-1bc826b0-node"]
+          "executions": [
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -806,11 +874,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-685-main-1bc826b0-wasm"]
+          "executions": [
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
+          ]
         }
       }
     },
@@ -950,11 +1022,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-685-main-1bc826b0-node"]
+          "executions": [
+            "local-685-main-1bc826b0-node",
+            "ci-685-main-1bc826b0-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -962,14 +1038,18 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-685-main-1bc826b0-wasm"]
+          "executions": [
+            "local-685-main-1bc826b0-wasm",
+            "ci-685-main-1bc826b0-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

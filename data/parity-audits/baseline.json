@@ -27,7 +27,7 @@
       ],
       "dependsOn": ["cell-capacity-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/685"],
-      "nextAction": "Restacked directly onto main 1bc826b0 after #684 merged; both required local lanes passed. Observe canonical CI after retargeting to main and record its actual source/job evidence before handoff."
+      "nextAction": "Restacked directly onto main after #684 merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. Await maintainer review and explicitly authorized merge."
     },
     {
       "id": "vectors-arithmetic",
