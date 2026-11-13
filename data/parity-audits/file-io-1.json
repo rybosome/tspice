@@ -1,0 +1,1201 @@
+{
+  "schemaVersion": 1,
+  "batch": "file-io-1",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-tspice/post-case.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+    "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+    "packages/backend-wasm/test/file-reader-allocations.test.ts",
+    "packages/core/test/spice-handle-ownership.test.ts",
+    "packages/tspice/test/file-handle-ownership.test.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+  ],
+  "executions": [
+    {
+      "id": "local-readers-audit-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2a191a386491a631b5e10fe3fdb3bce8315ab05d3b0acda46bb5c1f128478b28",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both full required lanes passed on the reviewed eight-reader source: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including real oracle error/cleanup and Node/WASM same-instance recovery, 82 WASM tests including fifteen allocation failure positions, 62 Node tests, 26 core tests and 121 facade tests. Required native execution had no skips and built/loaded the production N0067 addon; checked-in actual WASM is unchanged. Full JS passed with its one expected optional guard skip. Thirty-eight ledger regressions and drift passed. Eleven new cases and complete eight-field descriptor observations distinguish real effects; no global numeric tolerance change.",
+      "historical": true
+    },
+    {
+      "id": "local-readers-audit-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2a191a386491a631b5e10fe3fdb3bce8315ab05d3b0acda46bb5c1f128478b28",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both full required lanes passed on the reviewed eight-reader source: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including real oracle error/cleanup and Node/WASM same-instance recovery, 82 WASM tests including fifteen allocation failure positions, 62 Node tests, 26 core tests and 121 facade tests. Required native execution had no skips and built/loaded the production N0067 addon; checked-in actual WASM is unchanged. Full JS passed with its one expected optional guard skip. Thirty-eight ledger regressions and drift passed. Eleven new cases and complete eight-field descriptor observations distinguish real effects; no global numeric tolerance change.",
+      "historical": true
+    },
+    {
+      "id": "ci-readers-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2a191a386491a631b5e10fe3fdb3bce8315ab05d3b0acda46bb5c1f128478b28",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source.",
+      "historical": true
+    },
+    {
+      "id": "ci-readers-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2a191a386491a631b5e10fe3fdb3bce8315ab05d3b0acda46bb5c1f128478b28",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "74dc4828c4fb292be6268955e9f2e17d931ff65ec557a396909e5b225c6b6383",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "74dc4828c4fb292be6268955e9f2e17d931ff65ec557a396909e5b225c6b6383",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "74dc4828c4fb292be6268955e9f2e17d931ff65ec557a396909e5b225c6b6383",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "74dc4828c4fb292be6268955e9f2e17d931ff65ec557a396909e5b225c6b6383",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dafopr_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafopr_c.html",
+      "semantics": "Open an existing DAF for read. A new opaque backend-owned token represents each claim; repeated CSPICE opens of one file return the same native file handle and share its search state/refcount.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafopr-lifecycle-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dafopr handle lifecycle validated via dafbfs/daffna/dafcls Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        },
+        {
+          "caseId": "file-io-dafopr-missing-file-error",
+          "coverage": ["error"],
+          "observes": "Representative dafopr missing-file error Requires the actual named CSPICE error FILENOTFOUND."
+        },
+        {
+          "caseId": "file-io-dafopr-audit-duplicate-read-claims",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Two opens of one file have separate public ownership tokens but share the actual CSPICE cursor/refcount; one close leaves the other usable. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        },
+        {
+          "caseId": "file-io-dafopr-audit-empty-file",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A valid authored empty DAF returns false at start/end rather than conflating file-open success with nonempty search. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        },
+        {
+          "caseId": "file-io-dafopr-audit-wrong-file-format",
+          "coverage": ["error"],
+          "observes": "Stage then unload the existing kernel before the actual raw reader rejects its wrong on-disk architecture; avoid an already-open-file conflict. Requires the actual named CSPICE error UNKNOWNFILARC."
+        }
+      ],
+      "edgeAssessment": "Observe consumed open handles through two-segment/empty traversal, duplicate read claims and successful use after closing one claim. Wrong-format and missing-file cases must reach actual CSPICE and require UNKNOWNFILARC/FILENOTFOUND.",
+      "errorAssessment": "Both open path allocations and handle mapping are traced. Runtime wrong-kind/expired/foreign handle behavior is separately checked at the shared registry boundary. An ordinary open failure must not prevent a later valid read on the same instance.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "dafopr-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "Observe consumed open handles through two-segment/empty traversal, duplicate read claims and successful use after closing one claim. Wrong-format and missing-file cases must reach actual CSPICE and require UNKNOWNFILARC/FILENOTFOUND. Both open path allocations and handle mapping are traced. Runtime wrong-kind/expired/foreign handle behavior is separately checked at the shared registry boundary. An ordinary open failure must not prevent a later valid read on the same instance.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dafopr.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-dafopr-lifecycle-success",
+            "file-io-dafopr-missing-file-error",
+            "file-io-dafopr-audit-duplicate-read-claims",
+            "file-io-dafopr-audit-empty-file",
+            "file-io-dafopr-audit-wrong-file-format"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dafopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dafopr -> tspice_dafopr -> dafopr_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dafopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dafopr -> shared C shim -> dafopr_c; withAllocs/withMalloc releases buffers.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dafcls_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcls_c.html",
+      "semantics": "Release one DAF read claim with dafcls_c and invalidate its opaque token only after native close succeeds. Remaining read claims on the same native file remain usable.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafcls-close-and-reopen-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dafcls closes a DAF handle and allows reopen traversal Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        },
+        {
+          "caseId": "file-io-dafcls-double-close-error",
+          "coverage": ["error"],
+          "observes": "Representative dafcls double-close error Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
+        },
+        {
+          "caseId": "file-io-dafcls-audit-last-close-and-reopen",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Close and reopen a real DAF; a new search observes every segment and the end, independent of the prior cursor. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        }
+      ],
+      "edgeAssessment": "Close/reopen and duplicate-claim workflows observe successful later traversal and correct shared cursor state. The shared registry tests prove failed-native-close retry and stale/foreign token rejection; actual compiled close is traced and exercised.",
+      "errorAssessment": "CSPICE itself permits unknown numeric DAF close handles as no-ops. The established tspice opaque contract intentionally rejects a second/foreign/wrong-kind close before C; Python workflow guards model that precondition. These cases are not claimed as CSPICE close error execution.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "dafcls-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "Close/reopen and duplicate-claim workflows observe successful later traversal and correct shared cursor state. The shared registry tests prove failed-native-close retry and stale/foreign token rejection; actual compiled close is traced and exercised. CSPICE itself permits unknown numeric DAF close handles as no-ops. The established tspice opaque contract intentionally rejects a second/foreign/wrong-kind close before C; Python workflow guards model that precondition. These cases are not claimed as CSPICE close error execution.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dafcls.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-dafcls-close-and-reopen-success",
+            "file-io-dafcls-double-close-error",
+            "file-io-dafcls-audit-last-close-and-reopen"
+          ]
+        },
+        {
+          "id": "dafcls-oracle-failure-cleanup",
+          "status": "repaired",
+          "summary": "Sidecar finalization removed scratch before explicitly closing outstanding reader/writer handles; process exit was the only close backstop on errors.",
+          "repair": "After response/error capture, reset pending status and attempt actual dafcls/dascls for every outstanding file claim before scratch finalizers. A failing-before real-reader/real-writer regression wraps and invokes actual native closes and asserts ordering before scratch removal. Reader outputs now use case-scoped scratch refs.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
+          ],
+          "caseIds": ["file-io-dafcls-close-and-reopen-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dafcls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafcls -> tspice_dafcls -> dafcls_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dafcls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafcls -> shared C shim -> dafcls_c; withAllocs/withMalloc releases buffers.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dafbfs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafbfs_c.html",
+      "semantics": "Begin or restart a forward search in a DAF. Search state belongs to the native file, not each opaque read token.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafbfs-search-sequence-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dafbfs initializes DAF search state used by daffna Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        },
+        {
+          "caseId": "file-io-dafbfs-kind-mismatch-error",
+          "coverage": ["error"],
+          "observes": "Representative dafbfs error when called with DAS handle Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
+        },
+        {
+          "caseId": "file-io-dafbfs-audit-restart-and-end",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Two authored segments distinguish true/true/false/false, followed by a real restart to true. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        }
+      ],
+      "edgeAssessment": "A two-segment file yields true,true,false,false after start, then true after restart; a real empty file yields false. Interleaving and duplicate-claim workflows distinguish initialization from a no-op or token-local cursor invention.",
+      "errorAssessment": "Wrong-kind and closed tokens are wrapper precondition errors, exercised on actual public backends with subsequent valid use. Genuine uninitialized-search DAFNOSEARCH is observed for daffna; no fabricated corruption/OS I/O failure fixture is introduced.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "dafbfs-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "A two-segment file yields true,true,false,false after start, then true after restart; a real empty file yields false. Interleaving and duplicate-claim workflows distinguish initialization from a no-op or token-local cursor invention. Wrong-kind and closed tokens are wrapper precondition errors, exercised on actual public backends with subsequent valid use. Genuine uninitialized-search DAFNOSEARCH is observed for daffna; no fabricated corruption/OS I/O failure fixture is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dafbfs.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-dafbfs-search-sequence-success",
+            "file-io-dafbfs-kind-mismatch-error",
+            "file-io-dafbfs-audit-restart-and-end"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dafbfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafbfs -> tspice_dafbfs -> dafbfs_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dafbfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafbfs -> shared C shim -> dafbfs_c; withAllocs/withMalloc releases buffers.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "daffna_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daffna_c.html",
+      "semantics": "Select the requested native DAF with dafcs_c before invoking CSPICE's global daffna_c. Return true at each array, false at/after the end; search must already have begun.",
+      "scenarios": [
+        {
+          "caseId": "file-io-daffna-found-after-bfs-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "daffna returns true after dafbfs on deterministic DAF Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        },
+        {
+          "caseId": "file-io-daffna-without-bfs-error",
+          "coverage": ["error"],
+          "observes": "Representative daffna error when search is not initialized Requires the actual named CSPICE error DAFNOSEARCH."
+        },
+        {
+          "caseId": "file-io-daffna-audit-interleaved-distinct-files",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleave two-segment and empty files so an omitted handle selection produces the wrong boolean sequence. Actual raw opens/start/next/close feed the observed true/false traversal sequence; authored segment counts, interleaving, exhaustion or restart distinguish state effects. Handles are consumed, not compared as opaque absolute IDs."
+        }
+      ],
+      "edgeAssessment": "Interleave authored two-segment and empty files to force different boolean sequences. Same-file duplicate claims share one actual CSPICE cursor. Exhaustion is repeated, then a restart proves correct state recovery.",
+      "errorAssessment": "Require actual DAFNOSEARCH for a valid opened handle without a search; wrong-kind/closed/foreign tokens remain explicit wrapper errors. Same-instance tests recover with dafbfs then valid traversal after errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "daffna-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "Interleave authored two-segment and empty files to force different boolean sequences. Same-file duplicate claims share one actual CSPICE cursor. Exhaustion is repeated, then a restart proves correct state recovery. Require actual DAFNOSEARCH for a valid opened handle without a search; wrong-kind/closed/foreign tokens remain explicit wrapper errors. Same-instance tests recover with dafbfs then valid traversal after errors.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/daffna.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-daffna-found-after-bfs-success",
+            "file-io-daffna-without-bfs-error",
+            "file-io-daffna-audit-interleaved-distinct-files"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.daffna -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native daffna -> tspice_daffna -> daffna_c. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.daffna -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_daffna -> shared C shim -> daffna_c; withAllocs/withMalloc releases buffers. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dasopr_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasopr_c.html",
+      "semantics": "Open an existing DAS-backed file (including DLA/DSK) for read. Each returned opaque token owns one native read claim; duplicate opens may share the native handle.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasopr-open-empty-dla-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dasopr opens a DLA-backed DAS file and dlabfs reports no segments Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
+        },
+        {
+          "caseId": "file-io-dasopr-missing-file-error",
+          "coverage": ["error"],
+          "observes": "Representative dasopr missing-file error Requires the actual named CSPICE error FILENOTFOUND."
+        },
+        {
+          "caseId": "file-io-dasopr-audit-duplicate-read-claims",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Duplicate DAS read claims retain a usable remaining handle after one close; compare the complete descriptor each time. Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
+        },
+        {
+          "caseId": "file-io-dasopr-audit-wrong-file-format",
+          "coverage": ["error"],
+          "observes": "Stage then unload the existing kernel before the actual raw reader rejects its wrong on-disk architecture; avoid an already-open-file conflict. Requires the actual named CSPICE error FILARCHMISMATCH."
+        }
+      ],
+      "edgeAssessment": "Reopen finalized empty DLA files and observe genuine empty search. Real DSK duplicate claims preserve the entire first DLA descriptor after one close. Stage then unload a DAF before a wrong-architecture read so FILARCHMISMATCH is tested rather than a prior-open conflict.",
+      "errorAssessment": "Missing files require actual FILENOTFOUND; wrong architecture requires actual FILARCHMISMATCH. Wrong-kind/expired tokens are checked on public raw backends and followed by valid use. Failed allocations release all prior WASM buffers.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "dasopr-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "Reopen finalized empty DLA files and observe genuine empty search. Real DSK duplicate claims preserve the entire first DLA descriptor after one close. Stage then unload a DAF before a wrong-architecture read so FILARCHMISMATCH is tested rather than a prior-open conflict. Missing files require actual FILENOTFOUND; wrong architecture requires actual FILARCHMISMATCH. Wrong-kind/expired tokens are checked on public raw backends and followed by valid use. Failed allocations release all prior WASM buffers.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dasopr.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-dasopr-open-empty-dla-success",
+            "file-io-dasopr-missing-file-error",
+            "file-io-dasopr-audit-duplicate-read-claims",
+            "file-io-dasopr-audit-wrong-file-format"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dasopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dasopr -> tspice_dasopr -> dasopr_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dasopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dasopr -> shared C shim -> dasopr_c; withAllocs/withMalloc releases buffers.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dascls_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dascls_c.html",
+      "semantics": "Finalize/close a DAS-backed read or DLA writer claim with dascls_c, preserving interchangeable DAS/DLA token kinds. Successful close invalidates the public token.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dascls-closes-dla-handle-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dascls closes a handle returned by dlaopn Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
+        },
+        {
+          "caseId": "file-io-dascls-double-close-error",
+          "coverage": ["error"],
+          "observes": "Representative dascls double-close error Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
+        }
+      ],
+      "edgeAssessment": "Writer close is observed by reopening a valid flushed empty DLA and searching it, which a matching close no-op would fail. Duplicate DAS claims preserve another usable reader. Cross-alias close/reopen and error cleanup are explicit.",
+      "errorAssessment": "CSPICE dascls is error-free for an unknown numeric handle; tspice's established close-once opaque contract rejects invalid/closed/wrong-kind/foreign tokens. Tests and docs distinguish these boundary errors from C execution. Allocation failure preserves the registry entry for cleanup retry.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "dascls-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "Writer close is observed by reopening a valid flushed empty DLA and searching it, which a matching close no-op would fail. Duplicate DAS claims preserve another usable reader. Cross-alias close/reopen and error cleanup are explicit. CSPICE dascls is error-free for an unknown numeric handle; tspice's established close-once opaque contract rejects invalid/closed/wrong-kind/foreign tokens. Tests and docs distinguish these boundary errors from C execution. Allocation failure preserves the registry entry for cleanup retry.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dascls.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-dascls-closes-dla-handle-success",
+            "file-io-dascls-double-close-error"
+          ]
+        },
+        {
+          "id": "dascls-oracle-failure-cleanup",
+          "status": "repaired",
+          "summary": "Sidecar finalization removed scratch before explicitly closing outstanding reader/writer handles; process exit was the only close backstop on errors.",
+          "repair": "After response/error capture, reset pending status and attempt actual dafcls/dascls for every outstanding file claim before scratch finalizers. A failing-before real-reader/real-writer regression wraps and invokes actual native closes and asserts ordering before scratch removal. Reader outputs now use case-scoped scratch refs.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
+          ],
+          "caseIds": ["file-io-dascls-closes-dla-handle-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dascls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dascls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dlabfs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlabfs_c.html",
+      "semantics": "Begin/restart forward segment search in an open DAS-backed DLA file. Return a miss for an empty file or the first segment's eight descriptor fields, valid only on a hit.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlabfs-first-segment-found-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dlabfs finds the first segment in a deterministic DSK fixture Every field of the actual returned DLA descriptor is compared exactly; a miss has no descriptor. The raw value is not reduced to found=true."
+        },
+        {
+          "caseId": "file-io-dlabfs-kind-mismatch-error",
+          "coverage": ["error"],
+          "observes": "Representative dlabfs error when called with a DAF handle Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
+        },
+        {
+          "caseId": "file-io-dlabfs-audit-repeat-descriptor",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Beginning DLA search repeatedly returns all eight fields of the same first descriptor, not only found=true. Every field of the actual returned DLA descriptor is compared exactly; a miss has no descriptor. The raw value is not reduced to found=true."
+        },
+        {
+          "caseId": "file-io-dlabfs-audit-empty-closed-writer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An empty authored DLA is valid after actual writer close, and its search returns a genuine miss; close aliases interoperate. Every field of the actual returned DLA descriptor is compared exactly; a miss has no descriptor. The raw value is not reduced to found=true."
+        }
+      ],
+      "edgeAssessment": "Compare bwdptr,fwdptr,ibase,isize,dbase,dsize,cbase,csize from the actual raw return with actual SpiceDLADescr fields. Real DSK nonempty/repeated reads and authored empty DLA outputs distinguish hit/miss and restart. No descriptor is manufactured on a miss.",
+      "errorAssessment": "SpiceyPy Found handling masked actual CSPICE errors as ordinary misses. A failing-before regression with an invalid actual C handle demonstrates the defect; check_for_spice_error now runs before accepting a NotFound exception. Wrong-kind/closed public handles are distinct registry errors; three WASM allocation positions are fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "dlabfs-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "Compare bwdptr,fwdptr,ibase,isize,dbase,dsize,cbase,csize from the actual raw return with actual SpiceDLADescr fields. Real DSK nonempty/repeated reads and authored empty DLA outputs distinguish hit/miss and restart. No descriptor is manufactured on a miss. SpiceyPy Found handling masked actual CSPICE errors as ordinary misses. A failing-before regression with an invalid actual C handle demonstrates the defect; check_for_spice_error now runs before accepting a NotFound exception. Wrong-kind/closed public handles are distinct registry errors; three WASM allocation positions are fault-injected.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dlabfs.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-dlabfs-first-segment-found-success",
+            "file-io-dlabfs-kind-mismatch-error",
+            "file-io-dlabfs-audit-repeat-descriptor",
+            "file-io-dlabfs-audit-empty-closed-writer"
+          ]
+        },
+        {
+          "id": "dlabfs-found-decorator-error-mask",
+          "status": "repaired",
+          "summary": "The locked SpiceyPy wrapper could report found=false for an actual invalid-handle C error, leaving toolkit failure pending.",
+          "repair": "Check actual SPICE status in the NotFound exception handler before returning a miss. The deterministic oracle regression failed before this change and now sees the genuine CSPICE error; dlafns gets the same narrow correction.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
+          ],
+          "caseIds": ["file-io-dlabfs-first-segment-found-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlabfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dlabfs -> tspice_dlabfs -> dlabfs_c. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlabfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dlabfs -> shared C shim -> dlabfs_c; withAllocs/withMalloc releases buffers. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dlacls",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": [
+        "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dascls_c.html",
+        "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/dla.html"
+      ],
+      "semantics": "tspice-provided alias of DAS close with the same DAS/DLA token compatibility and close-once ownership. Pinned N0067 contains no separate dlacls_c entrypoint.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlacls-alias-for-das-handle-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dlacls closes a handle opened by dasopr on a DLA file Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
+        },
+        {
+          "caseId": "file-io-dlacls-double-close-error",
+          "coverage": ["error"],
+          "observes": "Representative dlacls double-close error Public opaque handle kind/close-once precondition: TS invokes the actual raw method, while Python guards its workflow handle state. This is not a claim that CSPICE rejects unknown numeric close handles."
+        },
+        {
+          "caseId": "file-io-dlacls-audit-empty-closed-writer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An empty authored DLA is valid after actual writer close, and its search returns a genuine miss; close aliases interoperate. Actual raw close/open/search operations observe flushed/reopened DLA output or a surviving DAS read claim; full descriptor fields or a genuine empty miss reach comparison. Mere file existence is not the only close assertion."
+        }
+      ],
+      "edgeAssessment": "Cross-alias writer/read closure and reopening of flushed empty DLA outputs prove actual dascls effects; later valid reads remain usable. This legitimate alias retains meaningful live SpiceyPy dascls parity rather than a harness substitute.",
+      "errorAssessment": "Closed/foreign/wrong-kind opaque tokens are public contract errors before C, unlike CSPICE's permissive numeric close. Documentation no longer invents a separate CSPICE dlacls_c symbol. Allocation failure keeps the token live for cleanup retry.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing unchanged facade/NAIF kernel fixture reused with provenance in fixtures/README.md: station SPK, Apophis DSK or naif0012 LSK.",
+          "distribution": "Existing repository fixture and established provenance retained unchanged; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Small authored DAFs distinguish exact state sequences; existing real DSK supplies nontrivial descriptor addresses/sizes. Supplemental raw boundary tests consume both. Inline empty DLA outputs are authored in scratch and removed on success/failure. No new external science data.",
+      "cleanup": "Every claimed raw file handle is explicitly closed on success. TS metadata-driven post-case cleanup closes remaining handles before context scratch/kclear/reset and client dispose. Python now resets pending error status and closes outstanding actual DAF/DAS claims before scratch finalizers, even after workflow failure. Native backend disposal also attempts remaining registry closes. Fifteen WASM allocation failure positions leave no live buffers or lost close-retry entries. Backend-owned staged inputs follow kclear/dispose; empty staging-root retention is independently repaired in kernel PR #690.",
+      "tolerance": "Booleans and all eight descriptor int32 fields compare exactly; absolute native handles are runtime-local and consumed through typed operations, not numerically compared between processes. No floating scientific result or relaxed tolerance is needed for this batch. Authored binary fixtures use standard CSPICE DAF/SPK layout and are read by both actual backends.",
+      "findings": [
+        {
+          "id": "dlacls-meaningful-reader-lifecycle",
+          "status": "repaired",
+          "summary": "Existing evidence omitted complete descriptor fields, end/restart/interleaved searches or observable writer finalization/claim lifetime.",
+          "repair": "Cross-alias writer/read closure and reopening of flushed empty DLA outputs prove actual dascls effects; later valid reads remain usable. This legitimate alias retains meaningful live SpiceyPy dascls parity rather than a harness substitute. Closed/foreign/wrong-kind opaque tokens are public contract errors before C, unlike CSPICE's permissive numeric close. Documentation no longer invents a separate CSPICE dlacls_c symbol. Allocation failure keeps the token live for cleanup retry.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dlacls.cases.json",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts",
+            "packages/py-parity-checking/test/file-reader-boundaries.test.ts",
+            "packages/backend-wasm/test/file-reader-allocations.test.ts",
+            "packages/core/test/spice-handle-ownership.test.ts",
+            "packages/tspice/test/file-handle-ownership.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-daf.py"
+          ],
+          "caseIds": [
+            "file-io-dlacls-alias-for-das-handle-success",
+            "file-io-dlacls-double-close-error",
+            "file-io-dlacls-audit-empty-closed-writer"
+          ]
+        },
+        {
+          "id": "dlacls-oracle-failure-cleanup",
+          "status": "repaired",
+          "summary": "Sidecar finalization removed scratch before explicitly closing outstanding reader/writer handles; process exit was the only close backstop on errors.",
+          "repair": "After response/error capture, reset pending status and attempt actual dafcls/dascls for every outstanding file claim before scratch finalizers. A failing-before real-reader/real-writer regression wraps and invokes actual native closes and asserts ordering before scratch removal. Reader outputs now use case-scoped scratch refs.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/test/file-reader-oracle-errors.test.ts"
+          ],
+          "caseIds": ["file-io-dlacls-alias-for-das-handle-success"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "alias",
+          "trace": "raw.dlacls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "alias",
+          "trace": "raw.dlacls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Consolidated onto current main for PR #706. Prior source/job observations remain historical; fresh owning-script regeneration, complete local lanes and canonical CI are pending for the integrated source."
+}

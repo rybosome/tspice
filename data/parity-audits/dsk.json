@@ -1,0 +1,819 @@
+{
+  "schemaVersion": 1,
+  "batch": "dsk",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/test/dsk-allocations.test.ts",
+    "packages/py-parity-checking/test/dsk-boundaries.test.ts",
+    "packages/py-parity-checking/test/dsk-oracle-lifecycle.test.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-dsk.py"
+  ],
+  "executions": [
+    {
+      "id": "local-dsk-audit-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24be7e649c4ae641cb0b66ee67bb354953f5fceb2b78a3a3aaae88f0112b1c70",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "observation": "Both full required local lanes passed on the reviewed DSK query source, preserved byte-identically across the #679 squash restack. Production-native required executed all 752 live comparisons (376 per actual backend), all 815 parity-package tests including actual query union/capacity, literal descriptor/layout, same-instance recovery and oracle close/error checks, 126 WASM tests including twelve actual-heap query allocation failures, 63 native tests, 26 core tests and 121 facade tests without skips. Full JS passed with one expected optional parity guard skip. Nineteen new scenarios; no tolerance widening. No C or generated WASM changes beyond verified writer prerequisite #694. Thirty-eight ledger regressions and drift passed; current-source canonical CI is pending.",
+      "historical": true
+    },
+    {
+      "id": "local-dsk-audit-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24be7e649c4ae641cb0b66ee67bb354953f5fceb2b78a3a3aaae88f0112b1c70",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "observation": "Both full required local lanes passed on the reviewed DSK query source, preserved byte-identically across the #679 squash restack. Production-native required executed all 752 live comparisons (376 per actual backend), all 815 parity-package tests including actual query union/capacity, literal descriptor/layout, same-instance recovery and oracle close/error checks, 126 WASM tests including twelve actual-heap query allocation failures, 63 native tests, 26 core tests and 121 facade tests without skips. Full JS passed with one expected optional parity guard skip. Nineteen new scenarios; no tolerance widening. No C or generated WASM changes beyond verified writer prerequisite #694. Thirty-eight ledger regressions and drift passed; current-source canonical CI is pending.",
+      "historical": true
+    },
+    {
+      "id": "ci-dsk-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24be7e649c4ae641cb0b66ee67bb354953f5fceb2b78a3a3aaae88f0112b1c70",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "commit": "58127e7358725e31caf7e9135ad58dc4e5e47a8d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43384149761/job/131748572416",
+      "observation": "All 15 required CI jobs for exact source head 58127e7358725e31caf7e9135ad58dc4e5e47a8d passed on their first attempt after the user-merge restack. Actual Linux Node22 native job log shows pinned CSPICE N0067, the production-addon build/load and native sanity, all 752 live Node/WASM comparisons and all 815 parity-package tests without required native skips. All 126 WASM, 63 Node, 26 core and 121 facade tests passed. Source tree was verified byte-identical across the restack; this observed source run is distinct from configured lanes and older historical jobs. Exact DSK descriptor fields, full type2 statistics, segment/body/surface unions, actual authored fixtures and public error/lifecycle/OOM recovery remain the maintained per-routine evidence. No CI retry or merge.",
+      "historical": true
+    },
+    {
+      "id": "ci-dsk-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "24be7e649c4ae641cb0b66ee67bb354953f5fceb2b78a3a3aaae88f0112b1c70",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "commit": "58127e7358725e31caf7e9135ad58dc4e5e47a8d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43384149761/job/131748572416",
+      "observation": "All 15 required CI jobs for exact source head 58127e7358725e31caf7e9135ad58dc4e5e47a8d passed on their first attempt after the user-merge restack. Actual Linux Node22 native job log shows pinned CSPICE N0067, the production-addon build/load and native sanity, all 752 live Node/WASM comparisons and all 815 parity-package tests without required native skips. All 126 WASM, 63 Node, 26 core and 121 facade tests passed. Source tree was verified byte-identical across the restack; this observed source run is distinct from configured lanes and older historical jobs. Exact DSK descriptor fields, full type2 statistics, segment/body/surface unions, actual authored fixtures and public error/lifecycle/OOM recovery remain the maintained per-routine evidence. No CI retry or merge.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3ef5f00efd4961326b72c635798157a30ddfb6ca0592d4b1fd1afe3d18df13a",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3ef5f00efd4961326b72c635798157a30ddfb6ca0592d4b1fd1afe3d18df13a",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3ef5f00efd4961326b72c635798157a30ddfb6ca0592d4b1fd1afe3d18df13a",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3ef5f00efd4961326b72c635798157a30ddfb6ca0592d4b1fd1afe3d18df13a",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dskobj_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskobj_c.html",
+      "semantics": "Union body IDs from all segments into an initialized caller-owned integer cell, retaining input IDs, sorting and deduplicating on success. N0067 temporarily appends each segment ID before final deduplication, so capacity must cover temporary contents rather than only the final unique count.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskobj-happy-apophis-fixture",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Returns body IDs from checked-in DSK fixture Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dskobj-non-dsk-file-error",
+          "coverage": ["error"],
+          "observes": "Representative dskobj error when path does not reference a DSK Actual CSPICE error required: INVALIDARCHTYPE."
+        },
+        {
+          "caseId": "dsk-dskobj-audit-union-duplicates-and-repeat",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual caller-owned cell union preserves initial IDs, adds missing IDs, sorts/deduplicates repeated segment IDs and remains idempotent on a second call; every snapshot is compared. Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dskobj-audit-empty-zero-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A valid empty DSK and an actual zero-capacity output cell return an empty set; Python must not substitute a default large cell. Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dskobj-audit-small-capacity",
+          "coverage": ["error"],
+          "observes": "A real two-ID result overflows capacity1 and must signal actual CELLTOOSMALL; contents after toolkit failure are not assumed unchanged. Actual CSPICE error required: CELLTOOSMALL."
+        },
+        {
+          "caseId": "dsk-dskobj-audit-missing-file",
+          "coverage": ["error"],
+          "observes": "Missing scratch path reaches the actual CSPICE query and requires FILENOTFOUND, not a fixture read failure. Actual CSPICE error required: FILENOTFOUND."
+        },
+        {
+          "caseId": "dsk-dskobj-audit-wrong-das-file-type",
+          "coverage": ["error"],
+          "observes": "An actual closed DAS/DLA file has the right architecture but wrong type; query must reach INVALIDFILETYPE. Actual CSPICE error required: INVALIDFILETYPE."
+        },
+        {
+          "caseId": "dsk-dskobj-audit-transient-capacity-before-deduplication",
+          "coverage": ["error"],
+          "observes": "CSPICE temporarily appends segment IDs before deduplicating: capacity 3 can fail even though the final unique union would have only three IDs. Preserve this raw behavior. Actual CSPICE error required: CELLTOOSMALL."
+        }
+      ],
+      "edgeAssessment": "Authored four-segment file has body IDs 399/399/499/399; initial[-100,399] is retained, final[-100,399,499] and repeated-call snapshots compare. Real empty DSK with zero capacity returns empty. A capacity 3 cell can fail before the three-ID final union would fit; actual source dskobj.c confirms append-before-valid behavior.",
+      "errorAssessment": "Actual missing/wrong-architecture/wrong-DAS-type and capacity cases require FILENOTFOUND, INVALIDARCHTYPE, INVALIDFILETYPE and CELLTOOSMALL. Wrong dtype is an explicit typed-cell precondition. The same public instance explicitly clears/restores a partially changed cell after error before another successful query.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+          "provenance": "Existing unchanged NAIF Apophis DSK or naif0012 LSK; source and distribution provenance retained in fixtures/README.md.",
+          "distribution": "Existing repository fixture reused unchanged under its recorded provenance; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged NAIF Apophis DSK or naif0012 LSK; source and distribution provenance retained in fixtures/README.md.",
+          "distribution": "Existing repository fixture reused unchanged under its recorded provenance; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-dsk.bds",
+          "provenance": "Generated and read back by checked-in generate-audit-dsk.py with locked SpiceyPy6.0.3/CSPICE_N0067; invented tetrahedron vertices/plates, body/surface pairs and epochs, no external observations.",
+          "distribution": "Project-authored MIT synthetic data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Generated and read back by checked-in generate-audit-dsk.py with locked SpiceyPy6.0.3/CSPICE_N0067; invented tetrahedron vertices/plates, body/surface pairs and epochs, no external observations.",
+          "distribution": "Project-authored MIT synthetic data."
+        }
+      ],
+      "fixtureRationale": "Tiny authored multi/empty DSKs distinguish body/surface union, duplication and temporary capacity. Additional tetrahedron/pyramid and rectangular/planetodetic segments are generated in case scratch from authored MIT constants. Real Apophis/LSK fixtures retain provenance unchanged. Writer/source-index semantics are independently audited in prerequisite #694; no new public raw routines.",
+      "cleanup": "CSPICE queries close their internally opened read claims, including before capacity error (reviewed pinned N0067 append/capacity source). TS cell buffers free in finally. File claims close through tracked cleanup/disposal; Python now resets captured error status and closes pending actual DSK claims before scratch deletion, retaining open markers only for failed-close retry. An actual writer close-order regression failed before repair. Twelve actual-WASM-heap allocation failures now leave zero live temporary buffers; two second-allocation leaks failed before repair. Native staging-root cleanup remains separate in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative comparator; int32 ID sets/counts and descriptor integer fields are exact at their numeric scale. Authored small ET intervals avoid relying solely on weaker relative bounds for large legacy epochs. Voxel geometry uses the existing floating policy; public authored axis-bound and descriptor assertions are exact. No tolerance widening or guessed matrix transpose.",
+      "findings": [
+        {
+          "id": "dskobj-semantic-dsk-query-evidence",
+          "status": "repaired",
+          "summary": "Existing two-scenario evidence omitted distinguishing union/capacity/layout/resource and invalid-input behavior.",
+          "repair": "Replace hard-coded fresh-cell evidence with actual initialized-cell unions/capacities/repetition and full snapshots; fix error-buffer leak when subsequent WASM path allocation fails.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/dsk/dskobj.cases.json",
+            "packages/backend-wasm/test/dsk-allocations.test.ts",
+            "packages/py-parity-checking/test/dsk-boundaries.test.ts",
+            "packages/py-parity-checking/test/dsk-oracle-lifecycle.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-dsk.py"
+          ],
+          "caseIds": [
+            "dsk-dskobj-happy-apophis-fixture",
+            "dsk-dskobj-non-dsk-file-error",
+            "dsk-dskobj-audit-union-duplicates-and-repeat",
+            "dsk-dskobj-audit-empty-zero-capacity",
+            "dsk-dskobj-audit-small-capacity",
+            "dsk-dskobj-audit-missing-file",
+            "dsk-dskobj-audit-wrong-das-file-type",
+            "dsk-dskobj-audit-transient-capacity-before-deduplication"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskobj -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskobj -> dskobj_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dskobj_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskobj -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskobj -> shared tspice_dskobj -> dskobj_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dskobj_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dsksrf_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dsksrf_c.html",
+      "semantics": "Union surface IDs only for the requested signed int32 body into an initialized integer cell. An absent body retains the existing set. As for dskobj, matching segment IDs are appended before final deduplication.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dsksrf-happy-apophis-fixture",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Returns surface IDs for the known fixture body ID Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dsksrf-non-dsk-file-error",
+          "coverage": ["error"],
+          "observes": "Representative dsksrf error when path does not reference a DSK Actual CSPICE error required: INVALIDARCHTYPE."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-union-duplicates-and-repeat",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Actual caller-owned cell union preserves initial IDs, adds missing IDs, sorts/deduplicates repeated segment IDs and remains idempotent on a second call; every snapshot is compared. Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-empty-zero-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A valid empty DSK and an actual zero-capacity output cell return an empty set; Python must not substitute a default large cell. Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-small-capacity",
+          "coverage": ["error"],
+          "observes": "A real two-ID result overflows capacity1 and must signal actual CELLTOOSMALL; contents after toolkit failure are not assumed unchanged. Actual CSPICE error required: CELLTOOSMALL."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-missing-file",
+          "coverage": ["error"],
+          "observes": "Missing scratch path reaches the actual CSPICE query and requires FILENOTFOUND, not a fixture read failure. Actual CSPICE error required: FILENOTFOUND."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-wrong-das-file-type",
+          "coverage": ["error"],
+          "observes": "An actual closed DAS/DLA file has the right architecture but wrong type; query must reach INVALIDFILETYPE. Actual CSPICE error required: INVALIDFILETYPE."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-absent-body-preserves-set",
+          "coverage": ["success", "edge", "state"],
+          "observes": "No matching body is a successful unchanged input union, not an error or an empty replacement. Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-fractional-body",
+          "coverage": ["error"],
+          "observes": "Strict body ID int32 precondition prevents WASM FFI coercion; this is a contract error before the scientific call. Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-overflow-body",
+          "coverage": ["error"],
+          "observes": "Strict body ID int32 precondition prevents WASM FFI coercion; this is a contract error before the scientific call. Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
+        },
+        {
+          "caseId": "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+          "coverage": ["error"],
+          "observes": "CSPICE temporarily appends segment IDs before deduplicating: capacity 3 can fail even though the final unique union would have only three IDs. Preserve this raw behavior. Actual CSPICE error required: CELLTOOSMALL."
+        }
+      ],
+      "edgeAssessment": "The multi-body fixture distinguishes surfaces 71/72 for body 399 from surface 73 for body499 and duplicate 71. Initial[-5,72] yields[-5,71,72]; repeated snapshots, absent-body preservation, empty zero-capacity and transient/final capacity cases are observed.",
+      "errorAssessment": "Actual named missing/wrong-format/type/capacity errors execute CSPICE. Fractional/overflow IDs are explicit int32 preconditions. An actual old-adapter probe accepted 399.5 and returned surfaces 71/72 in WASM while Node rejected it; the repaired WASM guard rejects before FFI. Recovery reinitializes the output cell instead of assuming unchanged contents after error.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+          "provenance": "Existing unchanged NAIF Apophis DSK or naif0012 LSK; source and distribution provenance retained in fixtures/README.md.",
+          "distribution": "Existing repository fixture reused unchanged under its recorded provenance; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing unchanged NAIF Apophis DSK or naif0012 LSK; source and distribution provenance retained in fixtures/README.md.",
+          "distribution": "Existing repository fixture reused unchanged under its recorded provenance; no newly acquired scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-dsk.bds",
+          "provenance": "Generated and read back by checked-in generate-audit-dsk.py with locked SpiceyPy6.0.3/CSPICE_N0067; invented tetrahedron vertices/plates, body/surface pairs and epochs, no external observations.",
+          "distribution": "Project-authored MIT synthetic data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Generated and read back by checked-in generate-audit-dsk.py with locked SpiceyPy6.0.3/CSPICE_N0067; invented tetrahedron vertices/plates, body/surface pairs and epochs, no external observations.",
+          "distribution": "Project-authored MIT synthetic data."
+        }
+      ],
+      "fixtureRationale": "Tiny authored multi/empty DSKs distinguish body/surface union, duplication and temporary capacity. Additional tetrahedron/pyramid and rectangular/planetodetic segments are generated in case scratch from authored MIT constants. Real Apophis/LSK fixtures retain provenance unchanged. Writer/source-index semantics are independently audited in prerequisite #694; no new public raw routines.",
+      "cleanup": "CSPICE queries close their internally opened read claims, including before capacity error (reviewed pinned N0067 append/capacity source). TS cell buffers free in finally. File claims close through tracked cleanup/disposal; Python now resets captured error status and closes pending actual DSK claims before scratch deletion, retaining open markers only for failed-close retry. An actual writer close-order regression failed before repair. Twelve actual-WASM-heap allocation failures now leave zero live temporary buffers; two second-allocation leaks failed before repair. Native staging-root cleanup remains separate in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative comparator; int32 ID sets/counts and descriptor integer fields are exact at their numeric scale. Authored small ET intervals avoid relying solely on weaker relative bounds for large legacy epochs. Voxel geometry uses the existing floating policy; public authored axis-bound and descriptor assertions are exact. No tolerance widening or guessed matrix transpose.",
+      "findings": [
+        {
+          "id": "dsksrf-semantic-dsk-query-evidence",
+          "status": "repaired",
+          "summary": "Existing two-scenario evidence omitted distinguishing union/capacity/layout/resource and invalid-input behavior.",
+          "repair": "Exercise body-filtered unions/capacity/absence and all snapshots, add strict WASM body int32 preflight, and free the earlier error allocation when path allocation fails.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/dsk/dsksrf.cases.json",
+            "packages/backend-wasm/test/dsk-allocations.test.ts",
+            "packages/py-parity-checking/test/dsk-boundaries.test.ts",
+            "packages/py-parity-checking/test/dsk-oracle-lifecycle.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-dsk.py"
+          ],
+          "caseIds": [
+            "dsk-dsksrf-happy-apophis-fixture",
+            "dsk-dsksrf-non-dsk-file-error",
+            "dsk-dsksrf-audit-union-duplicates-and-repeat",
+            "dsk-dsksrf-audit-empty-zero-capacity",
+            "dsk-dsksrf-audit-small-capacity",
+            "dsk-dsksrf-audit-missing-file",
+            "dsk-dsksrf-audit-wrong-das-file-type",
+            "dsk-dsksrf-audit-absent-body-preserves-set",
+            "dsk-dsksrf-audit-fractional-body",
+            "dsk-dsksrf-audit-overflow-body",
+            "dsk-dsksrf-audit-transient-capacity-before-deduplication"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dsksrf -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dsksrf -> dsksrf_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dsksrf_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dsksrf -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dsksrf -> shared tspice_dsksrf -> dsksrf_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dsksrf_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskgd_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskgd_c.html",
+      "semantics": "Read all six integer descriptor fields, ten coordinate parameters, six coordinate bounds and start/stop ET values from a valid DLA descriptor in an open DAS-backed DSK file.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskgd-happy-open-write-read-close-roundtrip",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Writes a minimal type-2 DSK, reopens it, then reads descriptor via dskgd Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dskgd-closed-handle-error",
+          "coverage": ["error"],
+          "observes": "Representative dskgd error when using a closed DAS handle Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
+        },
+        {
+          "caseId": "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All six integer fields, ten coordinate parameters, nonzero asymmetric coordinate bounds and nontrivial ET interval reach full descriptor comparison. Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dskgd-audit-planetodetic-descriptor",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Planetodetic coordinate code 4, nonzero equatorial radius/flattening, radian bounds and a different built-in frame distinguish corpar/layout/frame values. Complete returned fields or full integer-set snapshots reach live assertions."
+        }
+      ],
+      "edgeAssessment": "A real fixture and authored rectangular/planetodetic segments distinguish nonzero xyz bounds, coordinate code 4, radius 20/flattening 0.125, B1950 vs J2000, and small nontrivial ET intervals. Full values reach the live comparator; public literal descriptor assertions independently establish field mapping.",
+      "errorAssessment": "Closed/foreign tokens and negative/fractional descriptor fields are rejected before FFI. NAIF declares invalid descriptors undefined; plausible arbitrary addresses are deliberately not fabricated for scientific C calls. Missing or empty DLA search is distinguished correctly by the shared DSK oracle helper; no matching unrelated failure is counted as success.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+          "provenance": "Existing unchanged NAIF Apophis DSK or naif0012 LSK; source and distribution provenance retained in fixtures/README.md.",
+          "distribution": "Existing repository fixture reused unchanged under its recorded provenance; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Tiny authored multi/empty DSKs distinguish body/surface union, duplication and temporary capacity. Additional tetrahedron/pyramid and rectangular/planetodetic segments are generated in case scratch from authored MIT constants. Real Apophis/LSK fixtures retain provenance unchanged. Writer/source-index semantics are independently audited in prerequisite #694; no new public raw routines.",
+      "cleanup": "CSPICE queries close their internally opened read claims, including before capacity error (reviewed pinned N0067 append/capacity source). TS cell buffers free in finally. File claims close through tracked cleanup/disposal; Python now resets captured error status and closes pending actual DSK claims before scratch deletion, retaining open markers only for failed-close retry. An actual writer close-order regression failed before repair. Twelve actual-WASM-heap allocation failures now leave zero live temporary buffers; two second-allocation leaks failed before repair. Native staging-root cleanup remains separate in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative comparator; int32 ID sets/counts and descriptor integer fields are exact at their numeric scale. Authored small ET intervals avoid relying solely on weaker relative bounds for large legacy epochs. Voxel geometry uses the existing floating policy; public authored axis-bound and descriptor assertions are exact. No tolerance widening or guessed matrix transpose.",
+      "findings": [
+        {
+          "id": "dskgd-semantic-dsk-query-evidence",
+          "status": "repaired",
+          "summary": "Existing two-scenario evidence omitted distinguishing union/capacity/layout/resource and invalid-input behavior.",
+          "repair": "Add distinguishing full descriptor cases and literal assertions, reject negative descriptor bases/sizes, remove Node double casts by explicitly parsing each unknown result field, and repair DSK oracle Found error masking and close-before-scratch ordering.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/dsk/dskgd.cases.json",
+            "packages/backend-wasm/test/dsk-allocations.test.ts",
+            "packages/py-parity-checking/test/dsk-boundaries.test.ts",
+            "packages/py-parity-checking/test/dsk-oracle-lifecycle.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-dsk.py"
+          ],
+          "caseIds": [
+            "dsk-dskgd-happy-open-write-read-close-roundtrip",
+            "dsk-dskgd-closed-handle-error",
+            "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+            "dsk-dskgd-audit-planetodetic-descriptor"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskgd -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskgd -> dskgd_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskgd and full descriptor/bookkeeping normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskgd -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskgd -> shared tspice_dskgd -> dskgd_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskgd and full descriptor/bookkeeping normalization.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskb02_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskb02_c.html",
+      "semantics": "Read every type-2 segment bookkeeping field: nv,np,nvxtot,3x2 xyz vertex bounds, voxel size/origin/extents, coarse scale and all vertex/voxel list sizes. Caller must establish a valid type-2 segment first.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskb02-happy-apophis-fixture",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Reads type-2 bookkeeping from first segment in checked-in DSK fixture Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dskb02-closed-handle-error",
+          "coverage": ["error"],
+          "observes": "Representative dskb02 error when using a closed DAS handle Explicit contract/workflow precondition; not claimed as a CSPICE error-path comparison."
+        },
+        {
+          "caseId": "dsk-dskb02-audit-asymmetric-vertex-bounds",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Nonzero unequal xyz axis bounds prove the actual C 3x2 layout and SpiceyPy normalization; full voxel counts/origin/extent/list sizes are compared. Complete returned fields or full integer-set snapshots reach live assertions."
+        },
+        {
+          "caseId": "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Five-vertex/six-plate pyramid and disabled optional lists distinguish nv/np, vtxnpl, voxel scale/grid and all six vertex-bound values. Complete returned fields or full integer-set snapshots reach live assertions."
+        }
+      ],
+      "edgeAssessment": "Nonzero asymmetric tetrahedron bounds and a five-vertex/six-plate pyramid distinguish every axis pair and nv/np; different fine/coarse scales and disabled optional vertex lists distinguish voxel/list outputs. The real NAIF fixture remains. The existing SpiceyPy 2x3 wrapper representation is normalized by raw memory order to the C 3x2 layout, independently checked against authored literal bounds.",
+      "errorAssessment": "Closed/foreign tokens, malformed descriptor integers and allocation failures are checked at their explicit boundaries; a later valid query succeeds on the same instance. Arbitrary descriptors or non-type2 segments violate NAIF preconditions and can have undefined behavior, so no unsafe manufactured C error is claimed.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/apophis_g_25000mm_rad_obj_0000n00000_v001.bds",
+          "provenance": "Existing unchanged NAIF Apophis DSK or naif0012 LSK; source and distribution provenance retained in fixtures/README.md.",
+          "distribution": "Existing repository fixture reused unchanged under its recorded provenance; no newly acquired scientific data."
+        }
+      ],
+      "fixtureRationale": "Tiny authored multi/empty DSKs distinguish body/surface union, duplication and temporary capacity. Additional tetrahedron/pyramid and rectangular/planetodetic segments are generated in case scratch from authored MIT constants. Real Apophis/LSK fixtures retain provenance unchanged. Writer/source-index semantics are independently audited in prerequisite #694; no new public raw routines.",
+      "cleanup": "CSPICE queries close their internally opened read claims, including before capacity error (reviewed pinned N0067 append/capacity source). TS cell buffers free in finally. File claims close through tracked cleanup/disposal; Python now resets captured error status and closes pending actual DSK claims before scratch deletion, retaining open markers only for failed-close retry. An actual writer close-order regression failed before repair. Twelve actual-WASM-heap allocation failures now leave zero live temporary buffers; two second-allocation leaks failed before repair. Native staging-root cleanup remains separate in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative comparator; int32 ID sets/counts and descriptor integer fields are exact at their numeric scale. Authored small ET intervals avoid relying solely on weaker relative bounds for large legacy epochs. Voxel geometry uses the existing floating policy; public authored axis-bound and descriptor assertions are exact. No tolerance widening or guessed matrix transpose.",
+      "findings": [
+        {
+          "id": "dskb02-semantic-dsk-query-evidence",
+          "status": "repaired",
+          "summary": "Existing two-scenario evidence omitted distinguishing union/capacity/layout/resource and invalid-input behavior.",
+          "repair": "Strengthen full bookkeeping/layout/optional-list evidence, preserve the valid existing normalization, reject negative descriptor bases/sizes and construct typed Node output without double casts. DSK oracle cleanup and error distinction apply to all query workflows.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/dsk/dskb02.cases.json",
+            "packages/backend-wasm/test/dsk-allocations.test.ts",
+            "packages/py-parity-checking/test/dsk-boundaries.test.ts",
+            "packages/py-parity-checking/test/dsk-oracle-lifecycle.test.ts",
+            "packages/py-parity-checking/fixtures/generate-audit-dsk.py"
+          ],
+          "caseIds": [
+            "dsk-dskb02-happy-apophis-fixture",
+            "dsk-dskb02-closed-handle-error",
+            "dsk-dskb02-audit-asymmetric-vertex-bounds",
+            "dsk-dskb02-audit-different-mesh-without-vertex-lists"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskb02 -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskb02 -> dskb02_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskb02 and full descriptor/bookkeeping normalization.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskb02 -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskb02 -> shared tspice_dskb02 -> dskb02_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskb02 and full descriptor/bookkeeping normalization.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Consolidated onto current main for PR #706. Prior source/job observations remain historical; fresh owning-script regeneration, complete local lanes and canonical CI are pending for the integrated source."
+}

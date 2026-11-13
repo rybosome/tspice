@@ -1,0 +1,1149 @@
+{
+  "schemaVersion": 1,
+  "batch": "file-io-2",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-tspice/post-case.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/core/test/spice-handle-ownership.test.ts",
+    "packages/tspice/test/file-handle-ownership.test.ts",
+    "packages/backend-wasm/test/file-writer-allocations.test.ts",
+    "packages/backend-node/test/dsk-index-bounds.test.ts",
+    "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+    "packages/backend-node/test/fixtures/dsk-index-shim.c",
+    "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+    "packages/py-parity-checking/test/dsk-shapes.test.ts",
+    "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+    "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-writers-audit-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16e3737cb96975e86e0305c0c290f6b55f5b73c2fe2917ee6ecc6c1274423e13",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending.",
+      "historical": true
+    },
+    {
+      "id": "local-writers-audit-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16e3737cb96975e86e0305c0c290f6b55f5b73c2fe2917ee6ecc6c1274423e13",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both full required lanes passed on the seven-writer reviewed source. Production-native required executed all 714 live comparisons (357 per actual backend), all 773 parity-package tests including full-index mutation and independent geometry/header readback, 114 WASM tests including 32 allocation failure positions, 63 native tests including the actual compiled C bounds guard, 26 core tests and 121 facade tests, without skips. Full JS passed with its one expected optional parity guard skip.19 new scenarios; no tolerance widening. Owning WASM regeneration used pinned N0067/emcc3.1.74 and verified web/Node binary identity. Thirty-eight ledger regressions passed. Prior inherited observations are historical after shared inputs changed; current canonical CI is pending.",
+      "historical": true
+    },
+    {
+      "id": "ci-writers-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16e3737cb96975e86e0305c0c290f6b55f5b73c2fe2917ee6ecc6c1274423e13",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "94e65bde270296d3eab24bc4d81ad260aec8fa97",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43372863697/job/131712466087",
+      "observation": "Observed canonical Linux Node22 production-native required job: 714 live comparisons (357 per actual backend), 773 parity-package tests, 114 WASM tests, 63 native tests including actual compiled C bounds fixture, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 smoke passed. All fifteen current-source jobs are green and explicit REST rebaseable/mergeable true. Current shared C/WASM, full-index assertion, runtime-type and resource-cleanup source is verified; no tolerance widening.",
+      "historical": true
+    },
+    {
+      "id": "ci-writers-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16e3737cb96975e86e0305c0c290f6b55f5b73c2fe2917ee6ecc6c1274423e13",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "94e65bde270296d3eab24bc4d81ad260aec8fa97",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43372863697/job/131712466087",
+      "observation": "Observed canonical Linux Node22 production-native required job: 714 live comparisons (357 per actual backend), 773 parity-package tests, 114 WASM tests, 63 native tests including actual compiled C bounds fixture, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 smoke passed. All fifteen current-source jobs are green and explicit REST rebaseable/mergeable true. Current shared C/WASM, full-index assertion, runtime-type and resource-cleanup source is verified; no tolerance widening.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "64896f6de476869f6d5be57e300cfdba49fe67fdc4c3753a34b0ae9cd03574b1",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "64896f6de476869f6d5be57e300cfdba49fe67fdc4c3753a34b0ae9cd03574b1",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "64896f6de476869f6d5be57e300cfdba49fe67fdc4c3753a34b0ae9cd03574b1",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "64896f6de476869f6d5be57e300cfdba49fe67fdc4c3753a34b0ae9cd03574b1",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dlafns_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlafns_c.html",
+      "semantics": "Advance after a valid DLA descriptor from the same file, returning all eight next-descriptor fields on a hit or found:false after the last segment. Descriptor addresses are not portable across files.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlafns-next-segment-search-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dlafns advances from first DSK segment and reports end of traversal Compare all eight linked descriptor fields only when found, plus end/restart flags."
+        },
+        {
+          "caseId": "file-io-dlafns-closed-handle-error",
+          "coverage": ["error"],
+          "observes": "Representative dlafns error when handle is closed before traversal Contract/workflow precondition; not claimed as a CSPICE error path."
+        },
+        {
+          "caseId": "file-io-dlafns-audit-positive-second-segment-and-end",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Advance through a real second segment and end, restart, and compare every linked descriptor field. Supplemental content parity reads all geometry/metadata. Compare all eight linked descriptor fields only when found, plus end/restart flags."
+        }
+      ],
+      "edgeAssessment": "A real two-segment DSK produces first/second/end; restarting then advancing reproduces the second descriptor. The old real DSK only tested a miss after a single segment.",
+      "errorAssessment": "Closed/wrong-kind tokens and malformed integer descriptor fields fail at tspice preflight. NAIF declares arbitrary descriptor contents unpredictable; deliberately fabricated plausible addresses are not passed into CSPICE. The prerequisite tests actual DLA C error status before accepting NotFound.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Unchanged existing fixture; provenance and distribution terms remain in packages/py-parity-checking/fixtures/README.md.",
+          "distribution": "Existing repository input reused unchanged under its recorded provenance; no new external scientific data."
+        }
+      ],
+      "fixtureRationale": "Inline invented tetrahedron meshes, integer IDs, bounds/epochs and DLA names/comment counts are authored MIT scratch inputs. No scientific observations or new external kernels. Existing files are listed only where consumed by this routine's registered scenarios. Supplemental Python dskv02/dskp02/dskgd/dasrfr inspection adds no public raw routines.",
+      "cleanup": "Each successful writer/read claim is closed before scratch removal. TS post-case metadata cleanup and Python reset/explicit pending-handle close precede finalizers on failure; actual client disposal closes remaining entries. Thirty-two deterministic WASM allocation positions cover all seven methods; failing-before opener leaks are repaired. Same-writer bounds failures preserve the live handle for a valid exact-length write/reopen and exactly one segment. Native staged-root retention has its separate repair in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative policy for full index doubles, including voxel size/origin and bounds. Int32 indices and descriptors compare exactly at this numeric scale; identifiers/booleans/strings compare exactly. Supplemental authored content and independently generated reference readback compare exactly. No global or local tolerance widening.",
+      "findings": [
+        {
+          "id": "dlafns-meaningful-writer-evidence",
+          "status": "repaired",
+          "summary": "Advance after a valid DLA descriptor from the same file, returning all eight next-descriptor fields on a hit or found:false after the last segment. Descriptor addresses are not portable across files. Existing shallow workflow observations or argument/resource boundaries required repair.",
+          "repair": "Complete DLA descriptors and second-segment/end/restart observations replace a miss-only success test.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dlafns.cases.json",
+            "packages/backend-wasm/test/file-writer-allocations.test.ts",
+            "packages/backend-node/test/dsk-index-bounds.test.ts",
+            "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+            "packages/backend-node/test/fixtures/dsk-index-shim.c",
+            "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+            "packages/py-parity-checking/test/dsk-shapes.test.ts",
+            "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+            "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+          ],
+          "caseIds": [
+            "file-io-dlafns-next-segment-search-success",
+            "file-io-dlafns-closed-handle-error",
+            "file-io-dlafns-audit-positive-second-segment-and-end"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlafns -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlafns -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlafns -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlafns -> shared C shim -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dlaopn_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlaopn_c.html",
+      "semantics": "Create an empty DAS-backed DLA file for write, store the first four type characters with original case in its ID word, internal name and comment reservation; return a backend-owned DLA token requiring explicit close.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dlaopn-create-empty-file-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dlaopn creates an empty DLA file and dlabfs reports no segments"
+        },
+        {
+          "caseId": "file-io-dlaopn-negative-ncomch-error",
+          "coverage": ["error"],
+          "observes": "Representative dlaopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path."
+        },
+        {
+          "caseId": "file-io-dlaopn-existing-file-error",
+          "coverage": ["error"],
+          "observes": "Representative dlaopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL."
+        },
+        {
+          "caseId": "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Four-character type truncation and case-aware header semantics, comment reservation and reopened valid empty DLA. Independent DAS header readback checks original type/name/comment records."
+        },
+        {
+          "caseId": "file-io-dlaopn-audit-blank-type",
+          "coverage": ["error"],
+          "observes": "Actual CSPICE rejects invalid file type with BLANKFILETYPE. Actual CSPICE error required: BLANKFILETYPE."
+        },
+        {
+          "caseId": "file-io-dlaopn-audit-control-type",
+          "coverage": ["error"],
+          "observes": "Actual CSPICE rejects invalid file type with ILLEGALCHARACTER. Actual CSPICE error required: ILLEGALCHARACTER."
+        }
+      ],
+      "edgeAssessment": "Close/reopen empty output, mixed-case long type and 1025 comment characters; supplemental live DAS file-record readback compares full header/name and at least two reserved comment records. getfat intentionally returns uppercase MIXD although the raw ID word is DAS/mIxD.",
+      "errorAssessment": "Negative comment counts and invalid runtime string types are wrapper/contract checks. Blank and control-character type and existing paths reach actual BLANKFILETYPE, ILLEGALCHARACTER and FILEOPENFAIL. WASM second/third string allocation failures leaked earlier buffers before repair.",
+      "fixtures": [],
+      "fixtureRationale": "Inline invented tetrahedron meshes, integer IDs, bounds/epochs and DLA names/comment counts are authored MIT scratch inputs. No scientific observations or new external kernels. Existing files are listed only where consumed by this routine's registered scenarios. Supplemental Python dskv02/dskp02/dskgd/dasrfr inspection adds no public raw routines.",
+      "cleanup": "Each successful writer/read claim is closed before scratch removal. TS post-case metadata cleanup and Python reset/explicit pending-handle close precede finalizers on failure; actual client disposal closes remaining entries. Thirty-two deterministic WASM allocation positions cover all seven methods; failing-before opener leaks are repaired. Same-writer bounds failures preserve the live handle for a valid exact-length write/reopen and exactly one segment. Native staged-root retention has its separate repair in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative policy for full index doubles, including voxel size/origin and bounds. Int32 indices and descriptors compare exactly at this numeric scale; identifiers/booleans/strings compare exactly. Supplemental authored content and independently generated reference readback compare exactly. No global or local tolerance widening.",
+      "findings": [
+        {
+          "id": "dlaopn-meaningful-writer-evidence",
+          "status": "repaired",
+          "summary": "Create an empty DAS-backed DLA file for write, store the first four type characters with original case in its ID word, internal name and comment reservation; return a backend-owned DLA token requiring explicit close. Existing shallow workflow observations or argument/resource boundaries required repair.",
+          "repair": "Observe actual headers and reopen validity, validate runtime string types, and start cleanup before subsequent opener string allocations.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dlaopn.cases.json",
+            "packages/backend-wasm/test/file-writer-allocations.test.ts",
+            "packages/backend-node/test/dsk-index-bounds.test.ts",
+            "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+            "packages/backend-node/test/fixtures/dsk-index-shim.c",
+            "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+            "packages/py-parity-checking/test/dsk-shapes.test.ts",
+            "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+            "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+          ],
+          "caseIds": [
+            "file-io-dlaopn-create-empty-file-success",
+            "file-io-dlaopn-negative-ncomch-error",
+            "file-io-dlaopn-existing-file-error",
+            "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+            "file-io-dlaopn-audit-blank-type",
+            "file-io-dlaopn-audit-control-type"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlaopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlaopn -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dlaopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlaopn -> shared C shim -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskmi2_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskmi2_c.html",
+      "semantics": "Build the type-2 plate-model spatial index from flattened xyz vertices in km and one-based triangle indices. Return ten doubles and spxisz integers, including fixed header, coarse-grid pointers, voxel/plate lists and optional vertex/plate lists.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dskmi2-minimal-mesh-success",
+          "coverage": ["success", "edge"],
+          "observes": "dskmi2 builds a complete deterministic type-2 spatial index Every returned double/integer reaches the live comparator; no summary truncation."
+        },
+        {
+          "caseId": "file-io-dskmi2-invalid-nv-error",
+          "coverage": ["error"],
+          "observes": "Representative dskmi2 error for invalid nv Contract/workflow precondition; not claimed as a CSPICE error path."
+        },
+        {
+          "caseId": "file-io-dskmi2-non-integer-corscl-error",
+          "coverage": ["error"],
+          "observes": "Representative dskmi2 error for non-integer corscl Contract/workflow precondition; not claimed as a CSPICE error path."
+        },
+        {
+          "caseId": "file-io-dskmi2-audit-vertex-mapping-disabled",
+          "coverage": ["success", "edge"],
+          "observes": "Full 10-double/120000-int outputs distinguish absent optional vertex-plate lists and preserve all active voxel pointers. Every returned double/integer reaches the live comparator; no summary truncation."
+        },
+        {
+          "caseId": "file-io-dskmi2-audit-coarser-grid",
+          "coverage": ["success", "edge"],
+          "observes": "A different fine/coarse scale on noncoplanar geometry distinguishes voxel size/origin and full integer index contents. Every returned double/integer reaches the live comparator; no summary truncation."
+        },
+        {
+          "caseId": "file-io-dskmi2-audit-two-vertices",
+          "coverage": ["error"],
+          "observes": "Valid array shapes reach actual CSPICE BADVERTEXCOUNT. Actual CSPICE error required: BADVERTEXCOUNT."
+        },
+        {
+          "caseId": "file-io-dskmi2-audit-zero-fine-scale",
+          "coverage": ["error"],
+          "observes": "Require named actual CSPICE BADFINEVOXELSCALE rather than matching incidental failures. Actual CSPICE error required: BADFINEVOXELSCALE."
+        },
+        {
+          "caseId": "file-io-dskmi2-audit-zero-coarse-scale",
+          "coverage": ["error"],
+          "observes": "Require named actual CSPICE BADCOARSEVOXSCALE rather than matching incidental failures. Actual CSPICE error required: BADCOARSEVOXSCALE."
+        },
+        {
+          "caseId": "file-io-dskmi2-audit-small-index",
+          "coverage": ["error"],
+          "observes": "Require named actual CSPICE INTINDEXTOOSMALL rather than matching incidental failures. Actual CSPICE error required: INTINDEXTOOSMALL."
+        },
+        {
+          "caseId": "file-io-dskmi2-audit-small-workspace",
+          "coverage": ["error"],
+          "observes": "Require named actual CSPICE WORKSPACETOOSMALL rather than matching incidental failures. Actual CSPICE error required: WORKSPACETOOSMALL."
+        }
+      ],
+      "edgeAssessment": "Noncoplanar tetrahedra, different fine/coarse voxel scales, enabled/disabled optional vertex lists and full returned buffers. All implementations zero initialize output padding; complete comparison is defined. Mutation regression changes double index 9 and integer index 100007, which former eight-element summaries omitted.",
+      "errorAssessment": "Actual named BADVERTEXCOUNT, BADFINEVOXELSCALE, BADCOARSEVOXSCALE, INTINDEXTOOSMALL and WORKSPACETOOSMALL require valid shapes and execute CSPICE. Zero count/fractional int/shape checks are explicit preconditions. Tiny arrays with very large declared counts are rejected before native allocations; no unsafe old allocation/crash was deliberately attempted.",
+      "fixtures": [],
+      "fixtureRationale": "Inline invented tetrahedron meshes, integer IDs, bounds/epochs and DLA names/comment counts are authored MIT scratch inputs. No scientific observations or new external kernels. Existing files are listed only where consumed by this routine's registered scenarios. Supplemental Python dskv02/dskp02/dskgd/dasrfr inspection adds no public raw routines.",
+      "cleanup": "Each successful writer/read claim is closed before scratch removal. TS post-case metadata cleanup and Python reset/explicit pending-handle close precede finalizers on failure; actual client disposal closes remaining entries. Thirty-two deterministic WASM allocation positions cover all seven methods; failing-before opener leaks are repaired. Same-writer bounds failures preserve the live handle for a valid exact-length write/reopen and exactly one segment. Native staged-root retention has its separate repair in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative policy for full index doubles, including voxel size/origin and bounds. Int32 indices and descriptors compare exactly at this numeric scale; identifiers/booleans/strings compare exactly. Supplemental authored content and independently generated reference readback compare exactly. No global or local tolerance widening.",
+      "findings": [
+        {
+          "id": "dskmi2-meaningful-writer-evidence",
+          "status": "repaired",
+          "summary": "Build the type-2 plate-model spatial index from flattened xyz vertices in km and one-based triangle indices. Return ten doubles and spxisz integers, including fixed header, coarse-grid pointers, voxel/plate lists and optional vertex/plate lists. Existing shallow workflow observations or argument/resource boundaries required repair.",
+          "repair": "Replace eight-value summaries with all output data; reject WASM string arrays/scales and numeric booleans before coercion; move native vertex/plate length checks before resize. Compiled WASM was regenerated through node scripts/build-backend-wasm.mjs using pinned CSPICE N0067 and Emscripten3.1.74; the owning script verified web/Node binary identity. Checked-in binary SHA256 ab25f02880d80e904521557be848ab9457c818d8d64a38167923b1d04e91c9b4; glue ABI is unchanged. The old actual C guard failed the downstream-observer fixture before repair (fixed length100007 forwarded an unsafe declared index); no unsafe actual scientific consumer was invoked for that negative reproduction.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dskmi2.cases.json",
+            "packages/backend-wasm/test/file-writer-allocations.test.ts",
+            "packages/backend-node/test/dsk-index-bounds.test.ts",
+            "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+            "packages/backend-node/test/fixtures/dsk-index-shim.c",
+            "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+            "packages/py-parity-checking/test/dsk-shapes.test.ts",
+            "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+            "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+          ],
+          "caseIds": [
+            "file-io-dskmi2-minimal-mesh-success",
+            "file-io-dskmi2-invalid-nv-error",
+            "file-io-dskmi2-non-integer-corscl-error",
+            "file-io-dskmi2-audit-vertex-mapping-disabled",
+            "file-io-dskmi2-audit-coarser-grid",
+            "file-io-dskmi2-audit-two-vertices",
+            "file-io-dskmi2-audit-zero-fine-scale",
+            "file-io-dskmi2-audit-zero-coarse-scale",
+            "file-io-dskmi2-audit-small-index",
+            "file-io-dskmi2-audit-small-workspace"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskmi2 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskmi2 -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskmi2 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskmi2 -> shared C shim -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskopn_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskopn_c.html",
+      "semantics": "Create a new DAS/DSK file with internal name and reserved comment space. Return an opaque DAS token consumed by dskw02 and finalized by dascls/dlacls; creation itself need not add a segment.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dskopn-write-and-identify-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dskopn creates a writable DSK later identified by getfat"
+        },
+        {
+          "caseId": "file-io-dskopn-negative-ncomch-error",
+          "coverage": ["error"],
+          "observes": "Representative dskopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path."
+        },
+        {
+          "caseId": "file-io-dskopn-existing-file-error",
+          "coverage": ["error"],
+          "observes": "Representative dskopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL."
+        },
+        {
+          "caseId": "file-io-dskopn-audit-empty-file-header",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An empty DSK is still a valid DAS/DSK after close; read its actual type and genuine empty DLA miss."
+        }
+      ],
+      "edgeAssessment": "Both empty and two-segment DSKs close/reopen with DAS/DSK identity. Independent reference writer/readback checks the actual internal name, comment records, full mesh and descriptor content.",
+      "errorAssessment": "Existing-file FILEOPENFAIL executes CSPICE. Negative comment count and nonstring name are contract checks. WASM failure at the second string allocation previously leaked the path buffer; deterministic rollback now covers all four allocations.",
+      "fixtures": [],
+      "fixtureRationale": "Inline invented tetrahedron meshes, integer IDs, bounds/epochs and DLA names/comment counts are authored MIT scratch inputs. No scientific observations or new external kernels. Existing files are listed only where consumed by this routine's registered scenarios. Supplemental Python dskv02/dskp02/dskgd/dasrfr inspection adds no public raw routines.",
+      "cleanup": "Each successful writer/read claim is closed before scratch removal. TS post-case metadata cleanup and Python reset/explicit pending-handle close precede finalizers on failure; actual client disposal closes remaining entries. Thirty-two deterministic WASM allocation positions cover all seven methods; failing-before opener leaks are repaired. Same-writer bounds failures preserve the live handle for a valid exact-length write/reopen and exactly one segment. Native staged-root retention has its separate repair in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative policy for full index doubles, including voxel size/origin and bounds. Int32 indices and descriptors compare exactly at this numeric scale; identifiers/booleans/strings compare exactly. Supplemental authored content and independently generated reference readback compare exactly. No global or local tolerance widening.",
+      "findings": [
+        {
+          "id": "dskopn-meaningful-writer-evidence",
+          "status": "repaired",
+          "summary": "Create a new DAS/DSK file with internal name and reserved comment space. Return an opaque DAS token consumed by dskw02 and finalized by dascls/dlacls; creation itself need not add a segment. Existing shallow workflow observations or argument/resource boundaries required repair.",
+          "repair": "Observe actual DSK headers/content and valid empty DSK; validate runtime name type and free earlier path allocation on subsequent string failure.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dskopn.cases.json",
+            "packages/backend-wasm/test/file-writer-allocations.test.ts",
+            "packages/backend-node/test/dsk-index-bounds.test.ts",
+            "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+            "packages/backend-node/test/fixtures/dsk-index-shim.c",
+            "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+            "packages/py-parity-checking/test/dsk-shapes.test.ts",
+            "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+            "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+          ],
+          "caseIds": [
+            "file-io-dskopn-write-and-identify-success",
+            "file-io-dskopn-negative-ncomch-error",
+            "file-io-dskopn-existing-file-error",
+            "file-io-dskopn-audit-empty-file-header"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskopn -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskopn -> shared C shim -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskw02_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskw02_c.html",
+      "semantics": "Append a type-2 DSK segment with supplied body/surface, frame, coordinate system/bounds, ET interval, one-based plates and matching dskmi2 spatial index; close finalizes the DAS-backed file.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dskw02-write-and-traverse-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "dskw02 writes a segment that can be traversed via dlabfs/dlafns Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata."
+        },
+        {
+          "caseId": "file-io-dskw02-closed-handle-error",
+          "coverage": ["error"],
+          "observes": "Representative dskw02 error when writing with a closed handle Contract/workflow precondition; not claimed as a CSPICE error path."
+        },
+        {
+          "caseId": "file-io-dskw02-dlaopn-handle-kind-error",
+          "coverage": ["error"],
+          "observes": "Representative dskw02 error when called with a handle opened by dlaopn Contract/workflow precondition; not claimed as a CSPICE error path."
+        },
+        {
+          "caseId": "file-io-dskw02-audit-two-meshes-and-metadata",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Write distinct 3D meshes, bodies/surfaces, coordinate bounds and ET intervals; compare full spatial indices and both DLA descriptors plus independent content readback. Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata."
+        },
+        {
+          "caseId": "file-io-dskw02-audit-unknown-frame",
+          "coverage": ["error"],
+          "observes": "Valid compiled index reaches actual writer FRAMEIDNOTFOUND; failure cleanup closes the outstanding writer. Actual CSPICE error required: FRAMEIDNOTFOUND."
+        },
+        {
+          "caseId": "file-io-dskw02-audit-backward-times",
+          "coverage": ["error"],
+          "observes": "Valid compiled index reaches actual writer TIMESOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: TIMESOUTOFORDER."
+        },
+        {
+          "caseId": "file-io-dskw02-audit-zero-rectangle-extent",
+          "coverage": ["error"],
+          "observes": "Valid compiled index reaches actual writer BOUNDSOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: BOUNDSOUTOFORDER."
+        },
+        {
+          "caseId": "file-io-dskw02-audit-unsupported-class",
+          "coverage": ["error"],
+          "observes": "Valid compiled index reaches actual writer NOTSUPPORTED; failure cleanup closes the outstanding writer. Actual CSPICE error required: NOTSUPPORTED."
+        }
+      ],
+      "edgeAssessment": "Two distinct tetrahedron meshes, bodies 399/499, surfaces 71/72, nontrivial bounds and ET intervals produce two descriptors. Independent live SpiceyPy readback checks every vertex/plate and every DSK descriptor field, internal name and comments against a reference writer and literal authored input. Valid exact active index length works with optional vertex lists both enabled and disabled.",
+      "errorAssessment": "Actual FRAMEIDNOTFOUND, TIMESOUTOFORDER, BOUNDSOUTOFORDER and NOTSUPPORTED are required. Closed/wrong-kind tokens and malformed shapes are preflight. New shared C bounds guard rejects negative/overflowing component counts and truncated active data before any downstream write; same handle then writes exactly one valid segment. NAIF requires the index to correspond to the mesh: bounds checks cannot certify arbitrary scientifically fabricated index values.",
+      "fixtures": [],
+      "fixtureRationale": "Inline invented tetrahedron meshes, integer IDs, bounds/epochs and DLA names/comment counts are authored MIT scratch inputs. No scientific observations or new external kernels. Existing files are listed only where consumed by this routine's registered scenarios. Supplemental Python dskv02/dskp02/dskgd/dasrfr inspection adds no public raw routines.",
+      "cleanup": "Each successful writer/read claim is closed before scratch removal. TS post-case metadata cleanup and Python reset/explicit pending-handle close precede finalizers on failure; actual client disposal closes remaining entries. Thirty-two deterministic WASM allocation positions cover all seven methods; failing-before opener leaks are repaired. Same-writer bounds failures preserve the live handle for a valid exact-length write/reopen and exactly one segment. Native staged-root retention has its separate repair in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative policy for full index doubles, including voxel size/origin and bounds. Int32 indices and descriptors compare exactly at this numeric scale; identifiers/booleans/strings compare exactly. Supplemental authored content and independently generated reference readback compare exactly. No global or local tolerance widening.",
+      "findings": [
+        {
+          "id": "dskw02-meaningful-writer-evidence",
+          "status": "repaired",
+          "summary": "Append a type-2 DSK segment with supplied body/surface, frame, coordinate system/bounds, ET interval, one-based plates and matching dskmi2 spatial index; close finalizes the DAS-backed file. Existing shallow workflow observations or argument/resource boundaries required repair.",
+          "repair": "Validate all active integer index spans with a uint64 sum including the unconditional nv vertex-pointer span, not only fixed 100007-element header; full independent content assertions replace mere traversal/file-existence evidence. WASM input types match native; native sizes are checked before allocation. Compiled WASM was regenerated through node scripts/build-backend-wasm.mjs using pinned CSPICE N0067 and Emscripten3.1.74; the owning script verified web/Node binary identity. Checked-in binary SHA256 ab25f02880d80e904521557be848ab9457c818d8d64a38167923b1d04e91c9b4; glue ABI is unchanged. The old actual C guard failed the downstream-observer fixture before repair (fixed length100007 forwarded an unsafe declared index); no unsafe actual scientific consumer was invoked for that negative reproduction.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/dskw02.cases.json",
+            "packages/backend-wasm/test/file-writer-allocations.test.ts",
+            "packages/backend-node/test/dsk-index-bounds.test.ts",
+            "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+            "packages/backend-node/test/fixtures/dsk-index-shim.c",
+            "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+            "packages/py-parity-checking/test/dsk-shapes.test.ts",
+            "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+            "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+          ],
+          "caseIds": [
+            "file-io-dskw02-write-and-traverse-success",
+            "file-io-dskw02-closed-handle-error",
+            "file-io-dskw02-dlaopn-handle-kind-error",
+            "file-io-dskw02-audit-two-meshes-and-metadata",
+            "file-io-dskw02-audit-unknown-frame",
+            "file-io-dskw02-audit-backward-times",
+            "file-io-dskw02-audit-zero-rectangle-extent",
+            "file-io-dskw02-audit-unsupported-class"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskw02 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskw02 -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.dskw02 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskw02 -> shared C shim -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "exists_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/exists_c.html",
+      "semantics": "Return actual CSPICE existence for a backend filesystem path without loading or opening the file; a nonexistent file is false.",
+      "scenarios": [
+        {
+          "caseId": "file-io-exists-fixture-present-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "exists reports true for fixture path after furnsh staging"
+        },
+        {
+          "caseId": "file-io-exists-missing-file-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "exists reports false for a missing fixture-relative file"
+        },
+        {
+          "caseId": "file-io-exists-audit-create-open-close-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe false before creation and true both while open and after actual close; scratch is removed after finalization."
+        }
+      ],
+      "edgeAssessment": "Present fixture, missing path and false/true/true before-create/while-open/after-close sequence reach actual raw exists and independent sp.exists.",
+      "errorAssessment": "Ordinary missing files are not errors. The established nonempty-string/path contract is separate from CSPICE scientific errors; no meaningless numeric error case is invented. Three deterministic WASM allocation failures release all prior buffers.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bsp",
+          "provenance": "Unchanged existing fixture; provenance and distribution terms remain in packages/py-parity-checking/fixtures/README.md.",
+          "distribution": "Existing repository input reused unchanged under its recorded provenance; no new external scientific data."
+        }
+      ],
+      "fixtureRationale": "Inline invented tetrahedron meshes, integer IDs, bounds/epochs and DLA names/comment counts are authored MIT scratch inputs. No scientific observations or new external kernels. Existing files are listed only where consumed by this routine's registered scenarios. Supplemental Python dskv02/dskp02/dskgd/dasrfr inspection adds no public raw routines.",
+      "cleanup": "Each successful writer/read claim is closed before scratch removal. TS post-case metadata cleanup and Python reset/explicit pending-handle close precede finalizers on failure; actual client disposal closes remaining entries. Thirty-two deterministic WASM allocation positions cover all seven methods; failing-before opener leaks are repaired. Same-writer bounds failures preserve the live handle for a valid exact-length write/reopen and exactly one segment. Native staged-root retention has its separate repair in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative policy for full index doubles, including voxel size/origin and bounds. Int32 indices and descriptors compare exactly at this numeric scale; identifiers/booleans/strings compare exactly. Supplemental authored content and independently generated reference readback compare exactly. No global or local tolerance widening.",
+      "findings": [
+        {
+          "id": "exists-meaningful-writer-evidence",
+          "status": "repaired",
+          "summary": "Return actual CSPICE existence for a backend filesystem path without loading or opening the file; a nonexistent file is false. Existing shallow workflow observations or argument/resource boundaries required repair.",
+          "repair": "Add observable creation lifecycle and allocation rollback rather than only unrelated final file output.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/exists.cases.json",
+            "packages/backend-wasm/test/file-writer-allocations.test.ts",
+            "packages/backend-node/test/dsk-index-bounds.test.ts",
+            "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+            "packages/backend-node/test/fixtures/dsk-index-shim.c",
+            "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+            "packages/py-parity-checking/test/dsk-shapes.test.ts",
+            "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+            "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+          ],
+          "caseIds": [
+            "file-io-exists-fixture-present-success",
+            "file-io-exists-missing-file-success",
+            "file-io-exists-audit-create-open-close-lifecycle"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.exists -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_exists -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.exists -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_exists -> shared C shim -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "getfat_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getfat_c.html",
+      "semantics": "Read a file architecture/type pair from its actual header. Identifiers are uppercase, including a mixed-case authored DLA type; missing files fail rather than returning an unknown pair.",
+      "scenarios": [
+        {
+          "caseId": "file-io-getfat-dsk-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "getfat identifies a deterministic DSK fixture"
+        },
+        {
+          "caseId": "file-io-getfat-missing-file-error",
+          "coverage": ["error"],
+          "observes": "Representative getfat missing-file error Actual CSPICE error required: FILENOTFOUND."
+        },
+        {
+          "caseId": "file-io-getfat-audit-text-and-daf-types",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe distinct KPL/LSK and DAF/SPK type pairs on actual closed files, including a valid empty DAF."
+        }
+      ],
+      "edgeAssessment": "Distinguish existing DAS/DSK, closed KPL/LSK and empty DAF/SPK. Cross-writer cases observe DAS/MIXD and empty DAS/DSK. Kernel fixture staging is unloaded before probing so a preexisting claim does not mask header semantics.",
+      "errorAssessment": "Missing path requires actual FILENOTFOUND. Four deterministic WASM allocation failures roll back buffers. This query does not load a kernel, consume a numeric file token or promise a recognized science type for arbitrary non-SPICE bytes.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Unchanged existing fixture; provenance and distribution terms remain in packages/py-parity-checking/fixtures/README.md.",
+          "distribution": "Existing repository input reused unchanged under its recorded provenance; no new external scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Unchanged existing fixture; provenance and distribution terms remain in packages/py-parity-checking/fixtures/README.md.",
+          "distribution": "Existing repository input reused unchanged under its recorded provenance; no new external scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Project-authored empty DAF fixture generated by the checked-in locked SpiceyPy6.0.3/N0067 script.",
+          "distribution": "Project-authored MIT synthetic data."
+        }
+      ],
+      "fixtureRationale": "Inline invented tetrahedron meshes, integer IDs, bounds/epochs and DLA names/comment counts are authored MIT scratch inputs. No scientific observations or new external kernels. Existing files are listed only where consumed by this routine's registered scenarios. Supplemental Python dskv02/dskp02/dskgd/dasrfr inspection adds no public raw routines.",
+      "cleanup": "Each successful writer/read claim is closed before scratch removal. TS post-case metadata cleanup and Python reset/explicit pending-handle close precede finalizers on failure; actual client disposal closes remaining entries. Thirty-two deterministic WASM allocation positions cover all seven methods; failing-before opener leaks are repaired. Same-writer bounds failures preserve the live handle for a valid exact-length write/reopen and exactly one segment. Native staged-root retention has its separate repair in #690.",
+      "tolerance": "Unchanged 1e-12 absolute/relative policy for full index doubles, including voxel size/origin and bounds. Int32 indices and descriptors compare exactly at this numeric scale; identifiers/booleans/strings compare exactly. Supplemental authored content and independently generated reference readback compare exactly. No global or local tolerance widening.",
+      "findings": [
+        {
+          "id": "getfat-meaningful-writer-evidence",
+          "status": "repaired",
+          "summary": "Read a file architecture/type pair from its actual header. Identifiers are uppercase, including a mixed-case authored DLA type; missing files fail rather than returning an unknown pair. Existing shallow workflow observations or argument/resource boundaries required repair.",
+          "repair": "Add distinct file architectures/types and require the actual missing-file CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/file-io/getfat.cases.json",
+            "packages/backend-wasm/test/file-writer-allocations.test.ts",
+            "packages/backend-node/test/dsk-index-bounds.test.ts",
+            "packages/backend-node/test/fixtures/dsk-index-bounds.c",
+            "packages/backend-node/test/fixtures/dsk-index-shim.c",
+            "packages/py-parity-checking/test/dsk-content-parity.test.ts",
+            "packages/py-parity-checking/test/dsk-shapes.test.ts",
+            "packages/py-parity-checking/test/dsk-writer-recovery.test.ts",
+            "packages/py-parity-checking/test/dsk-index-observation.test.ts"
+          ],
+          "caseIds": [
+            "file-io-getfat-dsk-success",
+            "file-io-getfat-missing-file-error",
+            "file-io-getfat-audit-text-and-daf-types"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.getfat -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_getfat -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.getfat -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_getfat -> shared C shim -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Consolidated onto current main for PR #706. Prior source/job observations remain historical; fresh owning-script regeneration, complete local lanes and canonical CI are pending for the integrated source."
+}

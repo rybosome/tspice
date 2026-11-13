@@ -94,6 +94,10 @@ flowchart TD
 
 ### Workstream 3 — Close the CSPICE implementation gap
 
+Step 7 review results and current execution evidence are tracked in the
+[completion report](step7-completion.md) and generated per-routine audit ledger.
+Remaining implementation delivery is consolidated in [PR #706](https://github.com/rybosome/tspice/pull/706) against current main; the domain PRs remain review records. Integrated validation and a separately user-authorized merge remain required.
+
 **8. CSPICE expansion batches (many PRs, parallel within dependency waves).** Start only once steps 1, 3, 4, and 6 are complete; early low-dependency batches may overlap the latter part of step 7 if the ledger and acceptance rules are stable. Derive exact routine lists from the generated planned inventory, never from stale issue titles. Each PR should target one cohesive slice (usually about 5–15 routines; larger only for a tightly coupled family), and list the exact NAIF routine names in its description. Suggested topological waves:
 
 1. **Independent utility foundations:** simple scalar/math, strings, and remaining coordinate/vector operations. These have few kernel and fixture dependencies and are suitable first parallel tasks.
