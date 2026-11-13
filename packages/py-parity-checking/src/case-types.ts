@@ -951,7 +951,7 @@ export type StepEkEkgi = {
 
 export type StepEkEkopn = {
   op: "ek.ekopn";
-  path: string;
+  path: PathRefLike;
   ifname: string;
   ncomch: number;
   handleId: string;
@@ -959,13 +959,13 @@ export type StepEkEkopn = {
 
 export type StepEkEkopr = {
   op: "ek.ekopr";
-  path: string;
+  path: PathRefLike;
   handleId: string;
 };
 
 export type StepEkEkopw = {
   op: "ek.ekopw";
-  path: string;
+  path: PathRefLike;
   handleId: string;
 };
 
@@ -1796,7 +1796,7 @@ export type StepOutput =
     }
   | {
       op: "ek.ekifld";
-      value: { segmentId: string };
+      value: { segmentId: string; segno: number; rcptrs: number[] };
     }
   | {
       op: "ek.ekacli";

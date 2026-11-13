@@ -94,3 +94,13 @@ invented tetrahedron segments with body/surface pairs (399,71), (399,72),
 these contain no observations and use no external scientific data. Duplicate
 segments distinguish set unions and temporary capacity before deduplication.
 Regenerate from this package using the command in the script docstring.
+
+### Step 7 authored EK lifecycle fixtures
+
+`kernels/audit-tables-one.ek` (32,768 bytes) and
+`kernels/audit-tables-two.ek` (23,552 bytes) are authored MIT synthetic data, generated
+and independently read back by `generate-audit-ek.py` using locked SpiceyPy 6.0.3/
+CSPICE_N0067. Invented scalar integer rows populate three/two physical segments
+with shared AUDIT_SHARED and distinct AUDIT_ALPHA/AUDIT_BETA table names. There
+are no external observations. Duplicate logical table names distinguish segment
+counts from loaded-table counts. Regeneration is documented in the script.

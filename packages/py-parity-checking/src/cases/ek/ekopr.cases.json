@@ -10,16 +10,27 @@
         "ncomch": 0,
         "handleId": "H_WRITE"
       },
-      { "op": "ek.ekcls", "handleId": "H_WRITE" },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_WRITE"
+      },
       {
         "op": "ek.ekopr",
         "path": ".py-parity-ek-ekopr-happy.ek",
         "handleId": "H_READ"
       },
-      { "op": "ek.eknseg", "handleId": "H_READ" },
-      { "op": "ek.ekcls", "handleId": "H_READ" }
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_READ"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_READ"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekopr-missing-file-error",
@@ -31,6 +42,54 @@
         "handleId": "H_MISSING"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "ek-ekopr-audit-duplicate-read-claims",
+    "description": "Two public tokens retain separate read claims on one native EK; one close leaves the other valid and all three physical segments visible.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "a",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-one.ek"
+        }
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "b",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-one.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "a"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "a"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

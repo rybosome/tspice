@@ -10,16 +10,27 @@
         "ncomch": 0,
         "handleId": "H_ONE"
       },
-      { "op": "ek.ekcls", "handleId": "H_ONE" },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_ONE"
+      },
       {
         "op": "ek.ekopr",
         "path": ".py-parity-ek-ekcls-happy.ek",
         "handleId": "H_TWO"
       },
-      { "op": "ek.eknseg", "handleId": "H_TWO" },
-      { "op": "ek.ekcls", "handleId": "H_TWO" }
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_TWO"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_TWO"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekcls-double-close-error",
@@ -32,9 +43,173 @@
         "ncomch": 0,
         "handleId": "H_DOUBLE"
       },
-      { "op": "ek.ekcls", "handleId": "H_DOUBLE" },
-      { "op": "ek.ekcls", "handleId": "H_DOUBLE" }
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_DOUBLE"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_DOUBLE"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek-ekcls-audit-finalized-output-reopens",
+    "description": "Finalize populated output before each close, reopen and observe both physical segments; independent content checks ensure close flushes actual data.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "close-populated.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 2,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "s0"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s0",
+        "column": "ID",
+        "ivals": [-7, 11],
+        "entszs": [1, 1],
+        "nlflgs": [false, false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s0"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopw",
+        "handleId": "append",
+        "path": {
+          "kind": "scratch",
+          "rel": "close-populated.ek"
+        }
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "append",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "s1"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s1",
+        "column": "ID",
+        "ivals": [99],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s1"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "append"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "read",
+        "path": {
+          "kind": "scratch",
+          "rel": "close-populated.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "read"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "read"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekcls-audit-read-claim-survives-kclear",
+    "description": "Kernel clearing does not close an explicit EK read claim. Its later count and actual close still succeed; cleanup must retain that token independently of loaded kernels.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "clear.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "segment"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "segment",
+        "column": "ID",
+        "ivals": [7],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "segment"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "clear.ek"
+        }
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

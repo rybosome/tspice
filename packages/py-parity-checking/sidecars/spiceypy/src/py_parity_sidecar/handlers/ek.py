@@ -74,8 +74,8 @@ def _close_handle_best_effort(context: SidecarRuntimeContext, handle_id: str) ->
     try:
         sp.ekcls(handle)
     except BaseException:
-        # best-effort cleanup only
-        pass
+        # Keep the claim so cleanup can retry the actual close.
+        return
 
     context.state.ek.handles.pop(handle_id, None)
     _drop_segments_for_handle(context, handle_id)
@@ -160,7 +160,9 @@ def _char_vallen(values: list[str]) -> int:
     return max(max(len(value), 1) for value in values) + 1
 
 
-def _resolve_ek_path(context: SidecarRuntimeContext, raw_path: str) -> str:
+def _resolve_ek_path(context: SidecarRuntimeContext, raw_path: PathRef | str) -> str:
+    if not isinstance(raw_path, str):
+        return resolve_path_ref(context.paths, raw_path)
     if Path(raw_path).is_absolute():
         return str(Path(raw_path).resolve())
 
@@ -284,7 +286,7 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
                 rcptrs=[int(value) for value in rcptrs],
             ),
         )
-        return StepOutput(op=step.op, value={"segmentId": step.segmentId})
+        return StepOutput(op=step.op, value={"segmentId": step.segmentId, "segno": int(segno), "rcptrs": [int(value) for value in rcptrs]})
 
     if isinstance(step, StepEkEkacli):
         segment = _require_segment(context, step.segmentId)

@@ -22,9 +22,11 @@ using tspice_napi::TrimAsciiWhitespace;
 namespace {
 
 constexpr uint32_t kMaxEkArrayLen = 1'000'000;
+// CSPICE N0067: SPICE_EK_MXCLSG in SpiceEK.h.
+constexpr uint32_t kMaxEkColumns = 100;
 // Keep parity with backend-wasm `kMaxEkVallenBytes` / `WASM_MAX_ALLOC_BYTES`.
 constexpr size_t kMaxEkVallenBytes = 1'000'000;
-constexpr size_t kMaxEkCvalsBytes = 256ull * 1024ull * 1024ull; // 256 MiB
+constexpr size_t kMaxEkBufferBytes = 256ull * 1024ull * 1024ull; // 256 MiB
 
 static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int32_t* out) {
   const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
@@ -721,6 +723,18 @@ static Napi::Object Ekifld(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
+  // Validate counts before converting strings or allocating padded arrays.
+  if (!info[3].IsArray() || !info[4].IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ekifld() expects string arrays for cnames and decls"));
+    return Napi::Object::New(env);
+  }
+  const uint32_t nameCount = info[3].As<Napi::Array>().Length();
+  const uint32_t declCount = info[4].As<Napi::Array>().Length();
+  if (nameCount == 0 || nameCount > kMaxEkColumns || declCount != nameCount) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ekifld() expects 1..100 columns and matching declarations"));
+    return Napi::Object::New(env);
+  }
+
   tspice_napi::JsStringArrayArg cnames;
   tspice_napi::JsStringArrayArg decls;
   if (!ReadStringArray(env, info[3], &cnames, "cnames")) return Napi::Object::New(env);
@@ -748,6 +762,12 @@ static Napi::Object Ekifld(const Napi::CallbackInfo& info) {
     }
     cnamln = std::max(cnamln, cnames.values[i].size() + 1);
     declen = std::max(declen, decls.values[i].size() + 1);
+  }
+
+  // Match the WASM codec allocation cap; division avoids product overflow.
+  if (ncols > kMaxEkBufferBytes / cnamln || ncols > kMaxEkBufferBytes / declen) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ekifld() padded string buffer exceeds allocation cap"));
+    return Napi::Object::New(env);
   }
 
   std::vector<char> cnamesBuf(ncols * cnamln);
@@ -1007,7 +1027,7 @@ static void Ekaclc(const Napi::CallbackInfo& info) {
 
   // Guardrail against pathological allocations while packing `string[]` into
   // the fixed-width buffer expected by CSPICE.
-  if (nvals > 0 && vallen > 0 && nvals > (kMaxEkCvalsBytes / vallen)) {
+  if (nvals > 0 && vallen > 0 && nvals > (kMaxEkBufferBytes / vallen)) {
     const uint64_t bytes = (uint64_t)nvals * (uint64_t)vallen;
     ThrowSpiceError(Napi::RangeError::New(
         env,
