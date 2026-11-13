@@ -352,7 +352,8 @@
         "error-sigerr-audit-short-buffer-boundary",
         "error-sigerr-signals-error-path"
       ],
-      "observation": "Both complete required local lanes passed after restacking onto merged #684/main1bc826b0. Production N0067 native rebuilt/loaded and its required guard ran; all 768 live comparisons (384 scenarios per actual backend), all 803 parity-package tests with zero native-required skips, 122 WASM / 62 Node / 21 core / 129 facade tests passed. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator fixture passed. All 38 ledger regressions, formatting, lint and typecheck passed. All 14 reviewed package implementation/test files and 36 other merged-main package files are byte-identical to their respective reviewed sources; the shared case types preserve both sets of changes. C/build inputs and owning-script generated Node/web WASM remain unchanged, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4. Node22.23.4 / pnpm10.13.1 / CSPICE N0067 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. Earlier observations remain historical; fresh canonical CI for this restacked source is pending."
+      "observation": "Both complete required local lanes passed after restacking onto merged #684/main1bc826b0. Production N0067 native rebuilt/loaded and its required guard ran; all 768 live comparisons (384 scenarios per actual backend), all 803 parity-package tests with zero native-required skips, 122 WASM / 62 Node / 21 core / 129 facade tests passed. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator fixture passed. All 38 ledger regressions, formatting, lint and typecheck passed. All 14 reviewed package implementation/test files and 36 other merged-main package files are byte-identical to their respective reviewed sources; the shared case types preserve both sets of changes. C/build inputs and owning-script generated Node/web WASM remain unchanged, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4. Node22.23.4 / pnpm10.13.1 / CSPICE N0067 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. Earlier observations remain historical; fresh canonical CI for this restacked source is pending.",
+      "historical": true
     },
     {
       "id": "local-685-main-1bc826b0-wasm",
@@ -387,7 +388,8 @@
         "error-sigerr-audit-short-buffer-boundary",
         "error-sigerr-signals-error-path"
       ],
-      "observation": "Both complete required local lanes passed after restacking onto merged #684/main1bc826b0. Production N0067 native rebuilt/loaded and its required guard ran; all 768 live comparisons (384 scenarios per actual backend), all 803 parity-package tests with zero native-required skips, 122 WASM / 62 Node / 21 core / 129 facade tests passed. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator fixture passed. All 38 ledger regressions, formatting, lint and typecheck passed. All 14 reviewed package implementation/test files and 36 other merged-main package files are byte-identical to their respective reviewed sources; the shared case types preserve both sets of changes. C/build inputs and owning-script generated Node/web WASM remain unchanged, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4. Node22.23.4 / pnpm10.13.1 / CSPICE N0067 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. Earlier observations remain historical; fresh canonical CI for this restacked source is pending."
+      "observation": "Both complete required local lanes passed after restacking onto merged #684/main1bc826b0. Production N0067 native rebuilt/loaded and its required guard ran; all 768 live comparisons (384 scenarios per actual backend), all 803 parity-package tests with zero native-required skips, 122 WASM / 62 Node / 21 core / 129 facade tests passed. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator fixture passed. All 38 ledger regressions, formatting, lint and typecheck passed. All 14 reviewed package implementation/test files and 36 other merged-main package files are byte-identical to their respective reviewed sources; the shared case types preserve both sets of changes. C/build inputs and owning-script generated Node/web WASM remain unchanged, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4. Node22.23.4 / pnpm10.13.1 / CSPICE N0067 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. Earlier observations remain historical; fresh canonical CI for this restacked source is pending.",
+      "historical": true
     },
     {
       "id": "ci-685-main-1bc826b0-node",
@@ -424,7 +426,8 @@
       ],
       "commit": "6838cf31801067b70c56e01135c38bbc2c50a07a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43506468615/job/132165337313",
-      "observation": "All 15 source CI jobs passed on 6838cf31801067b70c56e01135c38bbc2c50a07a. The inspected Linux Node22 native-required job 132165337313 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 768 live comparisons (384 scenarios per actual Node/WASM backend), all 803 parity-package tests with zero skips, 122 WASM / 62 Node / 21 core / 129 facade tests. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed without retries. REST explicitly confirmed mergeable:true and rebaseable:true on the restacked source/main1bc826b0 base. This observation remains bound to the actual tested source/job; earlier observations remain historical. C/build inputs and the owning-script WASM binary are unchanged."
+      "observation": "All 15 source CI jobs passed on 6838cf31801067b70c56e01135c38bbc2c50a07a. The inspected Linux Node22 native-required job 132165337313 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 768 live comparisons (384 scenarios per actual Node/WASM backend), all 803 parity-package tests with zero skips, 122 WASM / 62 Node / 21 core / 129 facade tests. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed without retries. REST explicitly confirmed mergeable:true and rebaseable:true on the restacked source/main1bc826b0 base. This observation remains bound to the actual tested source/job; earlier observations remain historical. C/build inputs and the owning-script WASM binary are unchanged.",
+      "historical": true
     },
     {
       "id": "ci-685-main-1bc826b0-wasm",
@@ -461,7 +464,8 @@
       ],
       "commit": "6838cf31801067b70c56e01135c38bbc2c50a07a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43506468615/job/132165337313",
-      "observation": "All 15 source CI jobs passed on 6838cf31801067b70c56e01135c38bbc2c50a07a. The inspected Linux Node22 native-required job 132165337313 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 768 live comparisons (384 scenarios per actual Node/WASM backend), all 803 parity-package tests with zero skips, 122 WASM / 62 Node / 21 core / 129 facade tests. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed without retries. REST explicitly confirmed mergeable:true and rebaseable:true on the restacked source/main1bc826b0 base. This observation remains bound to the actual tested source/job; earlier observations remain historical. C/build inputs and the owning-script WASM binary are unchanged."
+      "observation": "All 15 source CI jobs passed on 6838cf31801067b70c56e01135c38bbc2c50a07a. The inspected Linux Node22 native-required job 132165337313 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 768 live comparisons (384 scenarios per actual Node/WASM backend), all 803 parity-package tests with zero skips, 122 WASM / 62 Node / 21 core / 129 facade tests. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed without retries. REST explicitly confirmed mergeable:true and rebaseable:true on the restacked source/main1bc826b0 base. This observation remains bound to the actual tested source/job; earlier observations remain historical. C/build inputs and the owning-script WASM binary are unchanged.",
+      "historical": true
     }
   ],
   "routines": [
@@ -531,14 +535,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -549,14 +551,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -637,14 +637,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -655,14 +653,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -704,14 +700,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -721,14 +715,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -788,14 +780,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -806,14 +796,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -850,14 +838,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -867,14 +853,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -921,14 +905,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -938,14 +920,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1010,14 +990,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1028,17 +1006,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Earlier observed source/job evidence is preserved as historical. Required local and canonical CI verification of the restacked source is pending."
 }

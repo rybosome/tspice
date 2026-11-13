@@ -592,6 +592,8 @@ int tspice_bodfnd(
 // Missing-item semantics:
 // - If the requested item is not found for the body, this returns success with
 //   `*outDim = 0`. Call `tspice_bodfnd` if you need a strict presence check.
+// - maxn == 0 queries the numeric dimension in outDim without writing values;
+//   adapters can then allocate the exact required output storage.
 int tspice_bodvar(
     int body,
     const char *item,

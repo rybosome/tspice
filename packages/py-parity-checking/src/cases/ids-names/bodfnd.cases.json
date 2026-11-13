@@ -40,5 +40,83 @@
     "expectation": {
       "kind": "error"
     }
+  },
+  {
+    "caseId": "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+    "description": "bodfnd: normalized items types and missing, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY-123456_X",
+        "values": [-3.5, 0, 4.25, 9]
+      },
+      {
+        "op": "ids-names.bodfnd",
+        "body": -123456,
+        "item": " \t x \n"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY-123456_X",
+        "values": ["char"]
+      },
+      {
+        "op": "ids-names.bodfnd",
+        "body": -123456,
+        "item": "x"
+      },
+      {
+        "op": "ids-names.bodfnd",
+        "body": -123456,
+        "item": "MISSING"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY-123456_X",
+        "values": [7.5]
+      },
+      {
+        "op": "ids-names.bodfnd",
+        "body": -123456,
+        "item": "X"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-bodfnd-audit-canonical-32-byte-key",
+    "description": "NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY399_ABCDEFGHIJKLMNOPQRSTUVWX",
+        "values": [-1.25, 3.5]
+      },
+      {
+        "op": "ids-names.bodfnd",
+        "body": 399,
+        "item": "ABCDEFGHIJKLMNOPQRSTUVWXignored"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-bodfnd-audit-empty-normalized-item",
+    "description": "Reject an empty normalized item before lookup, rather than treating it as an absent constant.",
+    "workflow": [
+      {
+        "op": "ids-names.bodfnd",
+        "body": 399,
+        "item": " \t\n"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["item"]
+    }
   }
 ]

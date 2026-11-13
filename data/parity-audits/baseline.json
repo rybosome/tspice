@@ -256,9 +256,9 @@
         "bods2c_c",
         "bodvar_c"
       ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "dependsOn": ["cell-capacity-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/687"],
+      "nextAction": "Restacked onto current main after the prerequisites merged; run both required local lanes and observe source-bound canonical CI before handoff."
     },
     {
       "id": "kernel-pool",

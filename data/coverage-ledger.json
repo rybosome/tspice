@@ -298,10 +298,14 @@
           "bods2c_c",
           "bodvar_c"
         ],
-        "dependsOn": [],
-        "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "dependsOn": [
+          "cell-capacity-prerequisite"
+        ],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/687"
+        ],
+        "nextAction": "Restacked onto current main after the prerequisites merged; run both required local lanes and observe source-bound canonical CI before handoff.",
+        "record": "data/parity-audits/ids-names.json"
       },
       {
         "id": "kernel-pool",
@@ -392,16 +396,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 111,
-        "reviewed": 0,
+        "unreviewed": 104,
+        "reviewed": 58,
         "needs-repair": 0,
-        "verified": 51
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 111,
-        "reviewed": 0,
+        "unreviewed": 104,
+        "reviewed": 58,
         "needs-repair": 0,
-        "verified": 51
+        "verified": 0
       }
     }
   },
@@ -420,7 +424,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 399,
+    "scenarios": 418,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -2431,7 +2435,7 @@
           "symbol": "tspice_axisar",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1173
+            "line": 1175
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -2572,15 +2576,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -2590,15 +2592,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -2657,7 +2657,7 @@
         "domain": "ids-names",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ids-names.ts",
-          "line": 14
+          "line": 24
         }
       },
       "mapping": {
@@ -2697,7 +2697,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -2708,7 +2708,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
-            "line": 98
+            "line": 100
           }
         }
       ],
@@ -2717,7 +2717,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ids-names.ts",
-            "line": 21
+            "line": 36
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -2729,7 +2729,7 @@
               "registration": "RegisterIdsNames",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ids_names.cc",
-                "line": 275
+                "line": 263
               },
               "calls": [
                 "tspice_bodc2n"
@@ -2758,7 +2758,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ids-names.ts",
-            "line": 160
+            "line": 176
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -2785,6 +2785,44 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodc2n.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodc2n",
+              "ids-names.boddef",
+              "ids-names.bodn2c"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodc2n-audit-malformed-pool-mapping",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodc2n.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bodc2n",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string.",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
             "caseId": "ids-names-bodc2n-found-success",
             "source": "packages/py-parity-checking/src/cases/ids-names/bodc2n.cases.json",
             "expectation": "success",
@@ -2792,7 +2830,15 @@
               "ids-names.bodc2n"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n resolves body code 399 to EARTH",
+              "record": "data/parity-audits/ids-names.json"
+            }
           },
           {
             "caseId": "ids-names-bodc2n-not-found-success",
@@ -2802,18 +2848,48 @@
               "ids-names.bodc2n"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n miss returns found=false",
+              "record": "data/parity-audits/ids-names.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ids-names",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2n -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2n -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         }
       }
     },
@@ -2829,7 +2905,7 @@
         "domain": "ids-names",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ids-names.ts",
-          "line": 17
+          "line": 31
         }
       },
       "mapping": {
@@ -2869,7 +2945,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -2880,7 +2956,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
-            "line": 138
+            "line": 140
           }
         }
       ],
@@ -2889,7 +2965,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ids-names.ts",
-            "line": 33
+            "line": 49
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -2901,7 +2977,7 @@
               "registration": "RegisterIdsNames",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ids_names.cc",
-                "line": 276
+                "line": 264
               },
               "calls": [
                 "tspice_bodc2s"
@@ -2930,7 +3006,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ids-names.ts",
-            "line": 166
+            "line": 183
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -2957,6 +3033,44 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodc2s.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodc2s",
+              "ids-names.boddef",
+              "ids-names.bodn2c"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodc2s-audit-malformed-pool-mapping",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodc2s.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bodc2s",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string.",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
             "caseId": "ids-names-bodc2s-known-code-success",
             "source": "packages/py-parity-checking/src/cases/ids-names/bodc2s.cases.json",
             "expectation": "success",
@@ -2964,18 +3078,48 @@
               "ids-names.bodc2s"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s resolves body code 399 to EARTH",
+              "record": "data/parity-audits/ids-names.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ids-names",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2s -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodc2s -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         }
       }
     },
@@ -2991,7 +3135,7 @@
         "domain": "ids-names",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ids-names.ts",
-          "line": 23
+          "line": 47
         }
       },
       "mapping": {
@@ -3031,7 +3175,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -3042,7 +3186,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
-            "line": 211
+            "line": 213
           }
         }
       ],
@@ -3051,7 +3195,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ids-names.ts",
-            "line": 54
+            "line": 71
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3063,7 +3207,7 @@
               "registration": "RegisterIdsNames",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ids_names.cc",
-                "line": 278
+                "line": 266
               },
               "calls": [
                 "tspice_boddef"
@@ -3092,7 +3236,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ids-names.ts",
-            "line": 174
+            "line": 198
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3119,6 +3263,49 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ids-names-boddef-audit-long-name-collision",
+            "source": "packages/py-parity-checking/src/cases/ids-names/boddef.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodc2n",
+              "ids-names.boddef",
+              "ids-names.bodn2c"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Names that differ only beyond NAIF maximum length select the latest definition; inspect both forward and reverse mappings.",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+            "source": "packages/py-parity-checking/src/cases/ids-names/boddef.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodc2n",
+              "ids-names.boddef",
+              "ids-names.bodn2c",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool",
+              "kernels.kclear"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef: name reassignment and pool precedence, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
             "caseId": "ids-names-boddef-empty-name-error",
             "source": "packages/py-parity-checking/src/cases/ids-names/boddef.cases.json",
             "expectation": "error",
@@ -3126,7 +3313,13 @@
               "ids-names.boddef"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Representative boddef validation error for empty body name",
+              "record": "data/parity-audits/ids-names.json"
+            }
           },
           {
             "caseId": "ids-names-boddef-round-trip-success",
@@ -3138,18 +3331,48 @@
               "ids-names.bods2c"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef mapping can be resolved by bods2c and bodc2s in the same workflow",
+              "record": "data/parity-audits/ids-names.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ids-names",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.boddef -> Node typed adapter -> serialized native registered handler -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.boddef -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         }
       }
     },
@@ -3165,13 +3388,13 @@
         "domain": "ids-names",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ids-names.ts",
-          "line": 33
+          "line": 61
         }
       },
       "mapping": {
-        "classification": "alias-or-composed",
+        "classification": "same-named-cspice-entrypoint",
         "cspiceEntrypoints": [
-          "dtpool_c",
+          "bodfnd_c",
           "erract_c",
           "errprt_c",
           "failed_c",
@@ -3180,10 +3403,10 @@
           "reset_c"
         ],
         "node": {
-          "classification": "alias-or-composed",
-          "reason": "Existence is tested through dtpool so character-valued body variables are included.",
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
           "cspiceEntrypoints": [
-            "dtpool_c",
+            "bodfnd_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -3193,10 +3416,10 @@
           ]
         },
         "wasm": {
-          "classification": "alias-or-composed",
-          "reason": "Existence is tested through dtpool so character-valued body variables are included.",
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
           "cspiceEntrypoints": [
-            "dtpool_c",
+            "bodfnd_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -3205,7 +3428,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -3216,18 +3439,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
-            "line": 232
-          }
-        },
-        {
-          "symbol": "tspice_dtpool",
-          "declaration": {
-            "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 421
-          },
-          "definition": {
-            "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
-            "line": 303
+            "line": 234
           }
         }
       ],
@@ -3236,7 +3448,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ids-names.ts",
-            "line": 58
+            "line": 76
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3248,7 +3460,7 @@
               "registration": "RegisterIdsNames",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ids_names.cc",
-                "line": 279
+                "line": 267
               },
               "calls": [
                 "tspice_bodfnd"
@@ -3259,7 +3471,7 @@
             "tspice_bodfnd"
           ],
           "cspiceEntrypoints": [
-            "dtpool_c",
+            "bodfnd_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -3277,16 +3489,16 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ids-names.ts",
-            "line": 177
+            "line": 203
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
           "routePolicy": null,
           "shimSymbols": [
-            "tspice_dtpool"
+            "tspice_bodfnd"
           ],
           "cspiceEntrypoints": [
-            "dtpool_c",
+            "bodfnd_c",
             "erract_c",
             "errprt_c",
             "failed_c",
@@ -3304,6 +3516,61 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ids-names-bodfnd-audit-canonical-32-byte-key",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodfnd",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant.",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodfnd-audit-empty-normalized-item",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bodfnd"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input.",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodfnd",
+              "kernel-pool.pcpool",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd: normalized items types and missing, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
             "caseId": "ids-names-bodfnd-item-too-long-error",
             "source": "packages/py-parity-checking/src/cases/ids-names/bodfnd.cases.json",
             "expectation": "error",
@@ -3311,7 +3578,13 @@
               "ids-names.bodfnd"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input.",
+              "record": "data/parity-audits/ids-names.json"
+            }
           },
           {
             "caseId": "ids-names-bodfnd-presence-success",
@@ -3327,18 +3600,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd reports presence for numeric and character body constants",
+              "record": "data/parity-audits/ids-names.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ids-names",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodfnd -> Node typed adapter -> serialized native registered handler -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodfnd -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         }
       }
     },
@@ -3354,7 +3657,7 @@
         "domain": "ids-names",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ids-names.ts",
-          "line": 12
+          "line": 17
         }
       },
       "mapping": {
@@ -3394,7 +3697,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -3405,7 +3708,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
-            "line": 62
+            "line": 64
           }
         }
       ],
@@ -3414,7 +3717,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ids-names.ts",
-            "line": 9
+            "line": 24
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3426,7 +3729,7 @@
               "registration": "RegisterIdsNames",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ids_names.cc",
-                "line": 274
+                "line": 262
               },
               "calls": [
                 "tspice_bodn2c"
@@ -3455,7 +3758,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ids-names.ts",
-            "line": 154
+            "line": 166
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3482,6 +3785,58 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ids-names-bodn2c-audit-empty-name",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodn2c.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bodn2c"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: empty name, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodn2c-audit-malformed-pool-mapping",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodn2c.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bodn2c",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: malformed pool mapping, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodn2c.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodn2c"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: normalized names and numeric is not name, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
             "caseId": "ids-names-bodn2c-found-success",
             "source": "packages/py-parity-checking/src/cases/ids-names/bodn2c.cases.json",
             "expectation": "success",
@@ -3489,7 +3844,15 @@
               "ids-names.bodn2c"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c resolves EARTH code",
+              "record": "data/parity-audits/ids-names.json"
+            }
           },
           {
             "caseId": "ids-names-bodn2c-not-found-success",
@@ -3499,18 +3862,48 @@
               "ids-names.bodn2c"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c miss returns found=false",
+              "record": "data/parity-audits/ids-names.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ids-names",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodn2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bodn2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         }
       }
     },
@@ -3526,7 +3919,7 @@
         "domain": "ids-names",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ids-names.ts",
-          "line": 20
+          "line": 38
         }
       },
       "mapping": {
@@ -3566,7 +3959,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -3577,7 +3970,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
-            "line": 175
+            "line": 177
           }
         }
       ],
@@ -3586,7 +3979,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ids-names.ts",
-            "line": 42
+            "line": 59
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3598,7 +3991,7 @@
               "registration": "RegisterIdsNames",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ids_names.cc",
-                "line": 277
+                "line": 265
               },
               "calls": [
                 "tspice_bods2c"
@@ -3627,7 +4020,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ids-names.ts",
-            "line": 168
+            "line": 188
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3654,6 +4047,58 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ids-names-bods2c-audit-empty-name",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bods2c.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bods2c"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: empty name, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bods2c-audit-malformed-pool-mapping",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bods2c.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bods2c",
+              "kernel-pool.pcpool",
+              "kernel-pool.pipool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: malformed pool mapping, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bods2c.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bods2c"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: numeric strings and normalized names, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
             "caseId": "ids-names-bods2c-name-success",
             "source": "packages/py-parity-checking/src/cases/ids-names/bods2c.cases.json",
             "expectation": "success",
@@ -3661,7 +4106,15 @@
               "ids-names.bods2c"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c resolves EARTH to code 399",
+              "record": "data/parity-audits/ids-names.json"
+            }
           },
           {
             "caseId": "ids-names-bods2c-not-found-success",
@@ -3671,18 +4124,48 @@
               "ids-names.bods2c"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c miss returns found=false",
+              "record": "data/parity-audits/ids-names.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ids-names",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bods2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.bods2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         }
       }
     },
@@ -3698,7 +4181,7 @@
         "domain": "ids-names",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ids-names.ts",
-          "line": 47
+          "line": 81
         }
       },
       "mapping": {
@@ -3741,18 +4224,18 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
           "symbol": "tspice_bodvar",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 595
+            "line": 597
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
-            "line": 272
+            "line": 264
           }
         },
         {
@@ -3772,7 +4255,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ids-names.ts",
-            "line": 68
+            "line": 86
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3784,7 +4267,7 @@
               "registration": "RegisterIdsNames",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ids_names.cc",
-                "line": 280
+                "line": 268
               },
               "calls": [
                 "tspice_bodvar",
@@ -3816,7 +4299,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ids-names.ts",
-            "line": 180
+            "line": 208
           },
           "factory": "createIdsNamesApi",
           "delegation": null,
@@ -3844,6 +4327,80 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ids-names-bodvar-audit-all-values-beyond-old-cap",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodvar",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: all values beyond old cap, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodvar-audit-canonical-32-byte-key",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodvar",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant.",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodvar-audit-empty-normalized-item",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ids-names.bodvar"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input.",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
+            "caseId": "ids-names-bodvar-audit-normalized-items-types-and-missing",
+            "source": "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ids-names.bodvar",
+              "kernel-pool.pcpool",
+              "kernel-pool.pdpool"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: normalized items types and missing, compare complete live SpiceyPy results/effects",
+              "record": "data/parity-audits/ids-names.json"
+            }
+          },
+          {
             "caseId": "ids-names-bodvar-item-too-long-error",
             "source": "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json",
             "expectation": "error",
@@ -3851,7 +4408,13 @@
               "ids-names.bodvar"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input.",
+              "record": "data/parity-audits/ids-names.json"
+            }
           },
           {
             "caseId": "ids-names-bodvar-values-success",
@@ -3867,18 +4430,48 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar returns numeric values and normal misses for char/missing vars",
+              "record": "data/parity-audits/ids-names.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "ids-names",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "composed",
+          "trace": "Workflow -> actual raw.bodvar -> Node typed adapter -> serialized native registered handler -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
+          "route": "composed",
+          "trace": "Workflow -> actual raw.bodvar -> WASM typed adapter -> owned buffers and required compiled export -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/ids-names.json"
         }
       }
     },
@@ -4004,7 +4597,7 @@
           "symbol": "tspice_card",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1340
+            "line": 1342
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -4152,15 +4745,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.card -> typed adapter -> native process handle registry -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -4169,15 +4760,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.card -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -4241,7 +4830,7 @@
           "symbol": "tspice_ccifrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 656
+            "line": 658
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -4599,15 +5188,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4619,15 +5206,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -4861,15 +5446,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -4881,15 +5464,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -4953,7 +5534,7 @@
           "symbol": "tspice_cidfrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 622
+            "line": 624
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -5132,7 +5713,7 @@
           "symbol": "tspice_ckcov",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1296
+            "line": 1298
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -5335,7 +5916,7 @@
           "symbol": "tspice_ckgp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1257
+            "line": 1259
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -5531,7 +6112,7 @@
           "symbol": "tspice_ckgpav",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1272
+            "line": 1274
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -5741,7 +6322,7 @@
           "symbol": "tspice_cklpf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1287
+            "line": 1289
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -5951,7 +6532,7 @@
           "symbol": "tspice_ckobj",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1293
+            "line": 1295
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -6147,7 +6728,7 @@
           "symbol": "tspice_ckupf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1290
+            "line": 1292
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -6400,7 +6981,7 @@
           "symbol": "tspice_cnmfrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 632
+            "line": 634
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -6758,15 +7339,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -6777,15 +7356,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -10942,15 +11519,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -10961,15 +11536,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -14844,15 +15417,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -14863,15 +15434,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -15068,15 +15637,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -15087,15 +15654,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -15194,7 +15759,7 @@
           "symbol": "tspice_frinfo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 642
+            "line": 644
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -15366,7 +15931,7 @@
           "symbol": "tspice_frmnam",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 613
+            "line": 615
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -15918,15 +16483,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -15938,15 +16501,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -16160,15 +16721,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -16180,15 +16739,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -16252,7 +16809,7 @@
           "symbol": "tspice_georec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1181
+            "line": 1183
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -16443,15 +17000,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -16461,15 +17016,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -16892,15 +17445,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -16912,15 +17463,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -16998,7 +17547,7 @@
           "symbol": "tspice_gfdist",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1064
+            "line": 1066
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -17245,7 +17794,7 @@
           "symbol": "tspice_gfrefn",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1035
+            "line": 1037
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -17417,7 +17966,7 @@
           "symbol": "tspice_gfrepf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1041
+            "line": 1043
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -17593,7 +18142,7 @@
           "symbol": "tspice_gfrepi",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1038
+            "line": 1040
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -17789,7 +18338,7 @@
           "symbol": "tspice_gfsep",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1044
+            "line": 1046
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -17983,7 +18532,7 @@
           "symbol": "tspice_gfsstp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1026
+            "line": 1028
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -18156,7 +18705,7 @@
           "symbol": "tspice_gfstep",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1029
+            "line": 1031
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -18329,7 +18878,7 @@
           "symbol": "tspice_gfstol",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1032
+            "line": 1034
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -18697,15 +19246,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -18717,15 +19264,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -18940,15 +19485,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -18960,15 +19503,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -19088,7 +19629,7 @@
           "symbol": "tspice_illumf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 782
+            "line": 784
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -19288,7 +19829,7 @@
           "symbol": "tspice_illumg",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 762
+            "line": 764
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -19488,7 +20029,7 @@
           "symbol": "tspice_ilumin",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 992
+            "line": 994
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -19709,7 +20250,7 @@
           "symbol": "tspice_insrtc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1346
+            "line": 1348
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -19906,15 +20447,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrtc -> typed adapter -> native process handle registry -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -19924,15 +20463,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrtc -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -19996,7 +20533,7 @@
           "symbol": "tspice_insrtd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1345
+            "line": 1347
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -20175,15 +20712,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrtd -> typed adapter -> native process handle registry -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -20193,15 +20728,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrtd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -20265,7 +20798,7 @@
           "symbol": "tspice_insrti",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1344
+            "line": 1346
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -20444,15 +20977,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrti -> typed adapter -> native process handle registry -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -20462,15 +20993,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrti -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -21432,15 +21961,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -21454,15 +21981,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -21908,7 +22433,7 @@
           "symbol": "tspice_latrec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1090
+            "line": 1092
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -22049,15 +22574,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -22067,15 +22590,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -22419,7 +22940,7 @@
           "symbol": "tspice_mtxv",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1137
+            "line": 1139
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -22544,15 +23065,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -22562,15 +23081,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -22641,7 +23158,7 @@
           "symbol": "tspice_mxm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1141
+            "line": 1143
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -22782,15 +23299,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -22800,15 +23315,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -22893,7 +23406,7 @@
           "symbol": "tspice_mxv",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1133
+            "line": 1135
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -23018,15 +23531,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -23036,15 +23547,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -23115,7 +23624,7 @@
           "symbol": "tspice_namfrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 605
+            "line": 607
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -23343,7 +23852,7 @@
           "symbol": "tspice_nvc2pl",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 815
+            "line": 817
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -23522,7 +24031,7 @@
           "symbol": "tspice_occult",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1009
+            "line": 1011
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -23995,15 +24504,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -24015,15 +24522,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -24254,15 +24759,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -24274,15 +24777,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -24533,15 +25034,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -24553,15 +25052,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -24632,7 +25129,7 @@
           "symbol": "tspice_pl2nvc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 825
+            "line": 827
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -24906,7 +25403,7 @@
           "symbol": "tspice_pxform",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 671
+            "line": 673
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -25162,7 +25659,7 @@
           "symbol": "tspice_recgeo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1192
+            "line": 1194
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -25353,15 +25850,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -25371,15 +25866,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -25443,7 +25936,7 @@
           "symbol": "tspice_reclat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1081
+            "line": 1083
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -25584,15 +26077,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -25602,15 +26093,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -25688,7 +26177,7 @@
           "symbol": "tspice_recsph",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1099
+            "line": 1101
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -25829,15 +26318,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -25847,15 +26334,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -26133,15 +26618,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -26152,15 +26635,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -26231,7 +26712,7 @@
           "symbol": "tspice_rotate",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1161
+            "line": 1163
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -26372,15 +26853,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -26390,15 +26869,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -26462,7 +26939,7 @@
           "symbol": "tspice_rotmat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1164
+            "line": 1166
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -26604,15 +27081,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -26622,15 +27097,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -26722,7 +27195,7 @@
           "symbol": "tspice_scard",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1339
+            "line": 1341
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -26889,15 +27362,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.scard -> typed adapter -> native process handle registry -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -26907,15 +27378,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.scard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -26979,7 +27448,7 @@
           "symbol": "tspice_scdecd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1230
+            "line": 1232
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -27167,7 +27636,7 @@
           "symbol": "tspice_sce2c",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1247
+            "line": 1249
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -27355,7 +27824,7 @@
           "symbol": "tspice_sce2s",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1213
+            "line": 1215
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -27550,7 +28019,7 @@
           "symbol": "tspice_scencd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1222
+            "line": 1224
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -27752,7 +28221,7 @@
           "symbol": "tspice_scs2e",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1205
+            "line": 1207
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -27940,7 +28409,7 @@
           "symbol": "tspice_sct2e",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1239
+            "line": 1241
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -28321,15 +28790,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -28340,15 +28807,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -28603,15 +29068,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         },
         "wasm": {
@@ -28623,15 +29086,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/error.json"
         }
       }
@@ -28695,7 +29156,7 @@
           "symbol": "tspice_sincpt",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 975
+            "line": 977
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -28895,7 +29356,7 @@
           "symbol": "tspice_size",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1341
+            "line": 1343
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -29043,15 +29504,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.size -> typed adapter -> native process handle registry -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -29060,15 +29519,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.size -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -29153,7 +29610,7 @@
           "symbol": "tspice_sphrec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1108
+            "line": 1110
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -29294,15 +29751,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
@@ -29312,15 +29767,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
@@ -29433,7 +29886,7 @@
           "symbol": "tspice_spkcls",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 903
+            "line": 905
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -29613,7 +30066,7 @@
           "symbol": "tspice_spkcov",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 833
+            "line": 835
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -29826,7 +30279,7 @@
           "symbol": "tspice_spkez",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 715
+            "line": 717
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -30007,7 +30460,7 @@
           "symbol": "tspice_spkezp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 727
+            "line": 729
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -30188,7 +30641,7 @@
           "symbol": "tspice_spkezr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 691
+            "line": 693
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -30369,7 +30822,7 @@
           "symbol": "tspice_spkgeo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 739
+            "line": 741
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -30550,7 +31003,7 @@
           "symbol": "tspice_spkgps",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 750
+            "line": 752
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -30745,7 +31198,7 @@
           "symbol": "tspice_spkobj",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 841
+            "line": 843
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -30930,7 +31383,7 @@
           "symbol": "tspice_spkopa",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 900
+            "line": 902
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -31116,7 +31569,7 @@
           "symbol": "tspice_spkopn",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 891
+            "line": 893
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -31303,7 +31756,7 @@
           "symbol": "tspice_spkpds",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 863
+            "line": 865
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -31475,7 +31928,7 @@
           "symbol": "tspice_spkpos",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 703
+            "line": 705
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -31663,7 +32116,7 @@
           "symbol": "tspice_spksfs",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 851
+            "line": 853
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -31853,7 +32306,7 @@
           "symbol": "tspice_spkssb",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 802
+            "line": 804
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -32041,7 +32494,7 @@
           "symbol": "tspice_spkuds",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 875
+            "line": 877
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -32242,7 +32695,7 @@
           "symbol": "tspice_spkw08_v2",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 927
+            "line": 929
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -32533,7 +32986,7 @@
           "symbol": "tspice_ssize",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1338
+            "line": 1340
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -32683,15 +33136,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -32701,15 +33152,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -32972,7 +33421,7 @@
           "symbol": "tspice_subpnt",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 947
+            "line": 949
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -33186,7 +33635,7 @@
           "symbol": "tspice_subslr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 961
+            "line": 963
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -33586,15 +34035,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-node",
-            "ci-686-main-54a226e3-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -33605,15 +34052,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [
-            "local-686-main-54a226e3-wasm",
-            "ci-686-main-54a226e3-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -33677,7 +34122,7 @@
           "symbol": "tspice_sxform",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 682
+            "line": 684
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -35307,7 +35752,7 @@
           "symbol": "tspice_vadd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1149
+            "line": 1151
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -35436,15 +35881,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35458,15 +35901,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35537,7 +35978,7 @@
           "symbol": "tspice_valid",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1342
+            "line": 1344
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -35746,15 +36187,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -35764,15 +36203,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -35836,7 +36273,7 @@
           "symbol": "tspice_vcrss",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1129
+            "line": 1131
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -35982,15 +36419,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36004,15 +36439,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36090,7 +36523,7 @@
           "symbol": "tspice_vdot",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1126
+            "line": 1128
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -36219,15 +36652,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36241,15 +36672,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36334,7 +36763,7 @@
           "symbol": "tspice_vhat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1123
+            "line": 1125
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -36481,15 +36910,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36503,15 +36930,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36610,7 +37035,7 @@
           "symbol": "tspice_vminus",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1155
+            "line": 1157
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -36739,15 +37164,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36761,15 +37184,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36833,7 +37254,7 @@
           "symbol": "tspice_vnorm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1117
+            "line": 1119
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -36979,15 +37400,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -37001,15 +37420,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -37143,7 +37560,7 @@
           "symbol": "tspice_vscl",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1158
+            "line": 1160
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -37272,15 +37689,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -37294,15 +37709,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -37387,7 +37800,7 @@
           "symbol": "tspice_vsub",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1152
+            "line": 1154
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -37516,15 +37929,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
-          "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -37538,15 +37949,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
-          "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -37652,7 +38061,7 @@
           "symbol": "tspice_wncard",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1359
+            "line": 1361
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -37801,15 +38210,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wncard -> typed adapter -> native process handle registry -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -37818,15 +38225,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wncard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -37932,7 +38337,7 @@
           "symbol": "tspice_wnfetd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1360
+            "line": 1362
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -38096,15 +38501,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wnfetd -> typed adapter -> native process handle registry -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -38113,15 +38516,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wnfetd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -38206,7 +38607,7 @@
           "symbol": "tspice_wninsd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1358
+            "line": 1360
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -38386,15 +38787,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wninsd -> typed adapter -> native process handle registry -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         },
         "wasm": {
@@ -38404,15 +38803,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wninsd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cells-windows.json"
         }
       }
@@ -38504,7 +38901,7 @@
           "symbol": "tspice_wnvald",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1367
+            "line": 1369
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -38690,15 +39087,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-685-main-1bc826b0-node",
-            "ci-685-main-1bc826b0-node"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -38708,15 +39103,13 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-685-main-1bc826b0-wasm",
-            "ci-685-main-1bc826b0-wasm"
-          ],
-          "status": "verified",
+          "executions": [],
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }

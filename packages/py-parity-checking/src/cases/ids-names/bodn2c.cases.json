@@ -24,5 +24,68 @@
     "expectation": {
       "kind": "success"
     }
+  },
+  {
+    "caseId": "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+    "description": "bodn2c: normalized names and numeric is not name, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "ids-names.bodn2c",
+        "name": "  eArTh  "
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "solar   system barycenter"
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "399"
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "-123456789"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-bodn2c-audit-malformed-pool-mapping",
+    "description": "bodn2c: malformed pool mapping, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["AUDIT A", "AUDIT B"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_BODY_CODE",
+        "values": [-123451]
+      },
+      {
+        "op": "ids-names.bodn2c",
+        "name": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDIMENSIONS"]
+    }
+  },
+  {
+    "caseId": "ids-names-bodn2c-audit-empty-name",
+    "description": "bodn2c: empty name, compare complete live SpiceyPy results/effects",
+    "workflow": [
+      {
+        "op": "ids-names.bodn2c",
+        "name": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
   }
 ]
