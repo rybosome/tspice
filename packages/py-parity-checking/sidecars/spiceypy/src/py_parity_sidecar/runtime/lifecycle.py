@@ -86,6 +86,16 @@ def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
     _close_file_io_handles_best_effort(context)
     _close_dsk_handles_best_effort(context)
     _close_ek_handles_best_effort(context)
+
+    if context.state.frames.ckHandles:
+        _reset_best_effort()
+        for handle_id, handle in list(context.state.frames.ckHandles.items()):
+            try:
+                sp.ckupf(handle)
+                context.state.frames.ckHandles.pop(handle_id, None)
+            except BaseException:
+                # Keep the claim for its registered retry before Scratch cleanup.
+                pass
     register_default_finalizers(context)
     context.run_finalizers_best_effort()
     _kclear_best_effort()

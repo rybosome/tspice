@@ -126,3 +126,16 @@ observations or external data are included. The class-ID name is supplied for
 the actual TK engine; NAME binding keys respect the32-byte kernel-pool limit.
 Standalone tests verify literal metadata, load/unload state, complete inverse
 state products and position finite differences independently of live parity.
+
+The CK audit adds exclusively project-authored synthetic fixtures under the
+repository MIT license: `audit-pointing.bc`, `audit-pointing-priority.bc`,
+`audit-pointing-empty.bc`, and `audit-ck-clock.tsc`. `generate-audit-ck.py` writes
+Type3 CKs using the locked SpiceyPy writer. Arbitrary signed instruments, quaternion
+angles, constant rates, interpolation gaps and competing priority segments contain
+no mission observations or external scientific dataset. The empty CK contains a
+DAF header with no segments. The handwritten clock makes encoded1000ticks equal
+ET0 and one tick equal one TDB second; no leap-second data is needed. Generator
+assertions check actual complete coverage/IDs/clock, pointing/AV and the physical
+state derivative. Binary fixtures are generated inputs, never hand edited. These
+small authored data are distributable as MIT test material; provenance is explicit
+for the repository's normal maintainer fixture review.

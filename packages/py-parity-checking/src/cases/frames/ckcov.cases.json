@@ -3,7 +3,10 @@
     "caseId": "frames-ckcov-open-query-close-success",
     "description": "ckcov CK coverage query with explicit cklpf/ckupf lifecycle",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_sclkscet_00061.tsc"
+      },
       {
         "op": "frames.cklpf",
         "ck": "kernels/mgs_hga_hinge_v2.bc",
@@ -20,13 +23,18 @@
         "coverId": "COV_MAIN",
         "maxIntervals": 128
       },
-      { "op": "frames.ckupf", "handleId": "CKH_CKCOV" }
+      {
+        "op": "frames.ckupf",
+        "handleId": "CKH_CKCOV"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-ckcov-missing-file-error",
-    "description": "Representative ckcov error for missing CK file",
+    "description": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it.",
     "workflow": [
       {
         "op": "frames.ckcov",
@@ -39,6 +47,302 @@
         "coverId": "COV_ERR"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-segment",
+    "description": "Observe every actual coverage endpoint for segment; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "SEGMENT",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-interval",
+    "description": "Observe every actual coverage endpoint for interval; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-tolerance-merges",
+    "description": "Observe every actual coverage endpoint for tolerance-merges; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 10,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-no-av-included",
+    "description": "Observe every actual coverage endpoint for no-av-included; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123001,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-no-av-filtered",
+    "description": "Observe every actual coverage endpoint for no-av-filtered; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123001,
+        "needav": true,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-absent-instrument",
+    "description": "Observe every actual coverage endpoint for absent-instrument; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -999999,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-empty-zero-window",
+    "description": "Observe every actual coverage endpoint for empty-zero-window; distinguish segment bounds, interpolation gaps, angular-velocity filtering, absence and empty output.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing-empty.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 0,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-clock-converted-tdb",
+    "description": "Authored clock maps ticks1000 to TDB0; compare every converted interval endpoint in seconds, distinct from encoded ticks.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": true,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "TDB",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-accumulate-across-files",
+    "description": "Reuse the actual output window: B fills one gap while the later A segment remains in the union; no implicit reset before the second raw call.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      },
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing-priority.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-negative-tolerance",
+    "description": "Coverage negative tolerance is actual VALUEOUTOFRANGE, distinct from the pointing routines negative-tolerance miss.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": -1,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-capacity-excess",
+    "description": "Three interpolation intervals exceed an actual one-interval window; require WINDOWEXCESS.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 1,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-missing-clock-for-tdb",
+    "description": "TDB conversion without the required SCLK variables signals actual KERNELVARNOTFOUND.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/audit-pointing.bc",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "TDB",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-ckcov-audit-wrong-daf-type",
+    "description": "Actual CK coverage inspection rejects a valid SPK DAF as INVALIDFILETYPE.",
+    "workflow": [
+      {
+        "op": "frames.ckcov",
+        "ck": "kernels/file-io-minimal.bsp",
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "SCLK",
+        "coverId": "COV",
+        "maxIntervals": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFILETYPE"]
+    }
   }
 ]

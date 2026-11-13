@@ -1,12 +1,12 @@
 import type {
   FramesApi,
   SpiceMatrix6x6,
-  SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
   brandMat6RowMajor,
   brandMat3RowMajor,
+  brandVec3,
   invariant,
 } from "@rybosome/tspice-core";
 
@@ -83,6 +83,19 @@ function assertOpaqueHandle(
       `${context}: expected handle to be a non-zero uint32 (got ${handle})`,
     );
   }
+}
+
+function validateCkPointing(
+  inst: number,
+  sclkdp: number,
+  tol: number,
+  ref: string,
+): void {
+  assertSpiceInt32(inst, "CK instrument");
+  if (!Number.isFinite(sclkdp) || !Number.isFinite(tol))
+    throw new RangeError("CK clock and tolerance must be finite");
+  if (typeof ref !== "string")
+    throw new TypeError("CK reference must be a string");
 }
 
 /** Create a {@link FramesApi} implementation backed by the native Node addon. */
@@ -205,6 +218,7 @@ export function createFramesApi(
     },
 
     ckgp: (inst, sclkdp, tol, ref) => {
+      validateCkPointing(inst, sclkdp, tol, ref);
       const out = native.ckgp(inst, sclkdp, tol, ref);
       if (!out.found) {
         return { found: false };
@@ -218,11 +232,13 @@ export function createFramesApi(
     },
 
     ckgpav: (inst, sclkdp, tol, ref) => {
+      validateCkPointing(inst, sclkdp, tol, ref);
       const out = native.ckgpav(inst, sclkdp, tol, ref);
       if (!out.found) {
         return { found: false };
       }
       const cmat = brandMat3RowMajor(out.cmat, { label: "ckgpav().cmat" });
+      const av = brandVec3(out.av, { label: "ckgpav().av" });
       invariant(
         Array.isArray(out.av) && out.av.length === 3,
         "Expected ckgpav().av to be a length-3 array",
@@ -234,7 +250,7 @@ export function createFramesApi(
       return {
         found: true,
         cmat,
-        av: out.av as SpiceVector3,
+        av: [av[0], av[1], av[2]],
         clkout: out.clkout,
       };
     },
@@ -258,6 +274,11 @@ export function createFramesApi(
     },
 
     ckcov: (ck, idcode, needav, level, tol, timsys, cover) => {
+      assertSpiceInt32(idcode, "ckcov(idcode)");
+      if (!Number.isFinite(tol))
+        throw new RangeError("ckcov tolerance must be finite");
+      if (typeof needav !== "boolean")
+        throw new TypeError("ckcov needav must be boolean");
       assertOpaqueHandle(cover, "ckcov(cover)");
       native.ckcov(resolvePath(ck), idcode, needav, level, tol, timsys, cover);
     },

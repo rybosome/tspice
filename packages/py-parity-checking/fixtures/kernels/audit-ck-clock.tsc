@@ -1,0 +1,16 @@
+KPL/SCLK
+
+Authored MIT synthetic clock: one encoded tick equals one TDB second.
+
+\begindata
+SCLK_KERNEL_ID           = ( @2000-01-01/12:00:00 )
+SCLK_DATA_TYPE_123        = ( 1 )
+SCLK01_TIME_SYSTEM_123    = ( 1 )
+SCLK01_N_FIELDS_123       = ( 1 )
+SCLK01_MODULI_123         = ( 4294967296 )
+SCLK01_OFFSETS_123        = ( 0 )
+SCLK01_OUTPUT_DELIM_123   = ( 1 )
+SCLK_PARTITION_START_123  = ( 0 )
+SCLK_PARTITION_END_123    = ( 4294967295 )
+SCLK01_COEFFICIENTS_123   = ( 0 -1000 1 )
+\begintext

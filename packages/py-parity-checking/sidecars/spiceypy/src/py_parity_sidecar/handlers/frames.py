@@ -207,6 +207,12 @@ def _set_ck_handle(context: SidecarRuntimeContext, handle_id: str, handle: int) 
     if handle_id in context.state.frames.ckHandles:
         raise ValueError(f"CK handle already exists: {handle_id}")
     context.state.frames.ckHandles[handle_id] = int(handle)
+    def close_pending() -> None:
+        tracked = context.state.frames.ckHandles.get(handle_id)
+        if tracked is not None:
+            sp.ckupf(tracked)
+            context.state.frames.ckHandles.pop(handle_id, None)
+    context.register_finalizer(f"frames.ckupf:{handle_id}", close_pending)
 
 
 def _require_ck_handle(context: SidecarRuntimeContext, handle_id: str) -> int:
@@ -225,8 +231,8 @@ def _get_or_create_window(context: SidecarRuntimeContext, window_id: str, *, max
     if existing is not None:
         return existing
 
-    if max_intervals <= 0:
-        raise ValueError("maxIntervals must be > 0")
+    if max_intervals < 0:
+        raise ValueError("maxIntervals must be >= 0")
 
     window = SPICEDOUBLE_CELL(max_intervals * 2)
     context.state.cellsWindows.windows[window_id] = window
@@ -284,20 +290,18 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesCkgp):
-        try:
+        with sp.no_found_check():
             out = _normalize_ckgp(sp.ckgp(step.inst, step.sclkdp, step.tol, step.ref))
-            return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
+        return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesCkgpav):
-        try:
+        with sp.no_found_check():
             out = _normalize_ckgpav(sp.ckgpav(step.inst, step.sclkdp, step.tol, step.ref))
-            return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
+        return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesCklpf):
+        if step.handleId in context.state.frames.ckHandles:
+            raise ValueError(f"CK handle already exists: {step.handleId}")
         ck_path = resolve_path_ref(context.paths, step.ck)
         handle = sp.cklpf(ck_path)
         _set_ck_handle(context, step.handleId, int(handle))
@@ -311,8 +315,13 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
 
     if isinstance(step, StepFramesCkobj):
         ck_path = resolve_path_ref(context.paths, step.ck)
-        ids = SPICEINT_CELL(step.maxCard or 32)
-        sp.scard(0, ids)
+        ids = context.state.cellsWindows.intCells.get(step.idsId)
+        if ids is None:
+            ids = SPICEINT_CELL(32 if step.maxCard is None else step.maxCard)
+            context.state.cellsWindows.intCells[step.idsId] = ids
+            context.register_finalizer(f"cellsWindows.release:{step.idsId}", lambda: context.state.cellsWindows.intCells.pop(step.idsId, None))
+        if step.reset:
+            sp.scard(0, ids)
         sp.ckobj(ck_path, ids)
         return StepOutput(op=step.op, value={"ids": [int(v) for v in list(ids)]})
 
@@ -321,9 +330,10 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
         cover = _get_or_create_window(
             context,
             step.coverId,
-            max_intervals=step.maxIntervals or 128,
+            max_intervals=128 if step.maxIntervals is None else step.maxIntervals,
         )
-        sp.scard(0, cover)
+        if step.reset:
+            sp.scard(0, cover)
         sp.ckcov(ck_path, step.idcode, step.needav, step.level, step.tol, step.timsys, cover)
         return StepOutput(op=step.op, value={"intervals": _window_to_intervals(cover)})
 

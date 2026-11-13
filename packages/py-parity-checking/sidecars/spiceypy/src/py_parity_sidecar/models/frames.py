@@ -83,6 +83,7 @@ class StepFramesCkobj:
     ck: PathRefInput
     idsId: str
     maxCard: int | None = None
+    reset: bool = True
 
 
 @dataclass(frozen=True)
@@ -96,6 +97,7 @@ class StepFramesCkcov:
     timsys: CkCoverageTimeSystem
     coverId: str
     maxIntervals: int | None = None
+    reset: bool = True
 
 
 @dataclass(frozen=True)

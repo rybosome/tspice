@@ -895,6 +895,8 @@ export type StepFramesCkobj = {
   ck: PathRefLike;
   idsId: string;
   maxCard?: number;
+  /** Clear before inspection by default; false accumulates raw set output. */
+  reset?: boolean;
 };
 
 export type StepFramesCkcov = {
@@ -907,6 +909,8 @@ export type StepFramesCkcov = {
   timsys: CkCoverageTimeSystem;
   coverId: string;
   maxIntervals?: number;
+  /** Clear before inspection by default; false accumulates raw window output. */
+  reset?: boolean;
 };
 
 export type StepFramesPxform = {

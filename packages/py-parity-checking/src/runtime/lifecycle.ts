@@ -45,6 +45,19 @@ function closeEkHandlesBestEffort(context: RunTspiceContext): void {
 
 /** Finalize toolkit lifecycle: run finalizers best-effort, then always kclear + reset. */
 export function finalizeCaseLifecycle(context: RunTspiceContext): void {
+  // Close CKs while Scratch files still exist. Preserve failed claims so their
+  // registered finalizers can retry once before Scratch is removed.
+  if (context.state.frames.ckHandles.size > 0) {
+    resetBestEffort(context);
+    for (const [id, handle] of context.state.frames.ckHandles) {
+      try {
+        context.spice.raw.ckupf(handle);
+        context.state.frames.ckHandles.delete(id);
+      } catch {
+        // A pending claim remains available to its registered finalizer.
+      }
+    }
+  }
   // Keep failed claims for the registered retry, while Scratch still exists.
   if (context.state.ephemeris.spkHandles.size > 0) {
     resetBestEffort(context);

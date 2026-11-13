@@ -3,7 +3,10 @@
     "caseId": "frames-ckobj-open-query-close-success",
     "description": "ckobj object-id query with explicit CK open/close lifecycle",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_sclkscet_00061.tsc"
+      },
       {
         "op": "frames.cklpf",
         "ck": "kernels/mgs_hga_hinge_v2.bc",
@@ -15,13 +18,18 @@
         "idsId": "IDS_MAIN",
         "maxCard": 32
       },
-      { "op": "frames.ckupf", "handleId": "CKH_CKOBJ" }
+      {
+        "op": "frames.ckupf",
+        "handleId": "CKH_CKOBJ"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-ckobj-missing-file-error",
-    "description": "Representative ckobj error for missing CK file",
+    "description": "Missing file must reach the actual raw/CSPICE operation and return FILENOTFOUND; host fixture read errors cannot satisfy it.",
     "workflow": [
       {
         "op": "frames.ckobj",
@@ -30,6 +38,115 @@
         "maxCard": 8
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-ckobj-audit-all-distinct-instruments",
+    "description": "All signed instrument IDs from multiple segments are sorted/deduplicated; a repeated instrument appears once.",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/audit-pointing.bc",
+        "idsId": "IDS",
+        "maxCard": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckobj-audit-accumulate-across-files",
+    "description": "Reuse the actual named output cell across files: A contributes two instruments and B repeats one, so both IDs remain in the union.",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/audit-pointing.bc",
+        "idsId": "IDS",
+        "maxCard": 8,
+        "reset": true
+      },
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/audit-pointing-priority.bc",
+        "idsId": "IDS",
+        "maxCard": 8,
+        "reset": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckobj-audit-empty-zero-capacity",
+    "description": "An actual empty CK returns an empty initialized set with zero allocated capacity.",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/audit-pointing-empty.bc",
+        "idsId": "IDS",
+        "maxCard": 0,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckobj-audit-populated-zero-capacity",
+    "description": "Zero capacity is preserved rather than defaulted to32; actual populated CK must signal SETEXCESS.",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/audit-pointing.bc",
+        "idsId": "IDS",
+        "maxCard": 0,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "frames-ckobj-audit-insufficient-capacity",
+    "description": "A real one-element cell cannot hold two distinct instruments; require actual SETEXCESS.",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/audit-pointing.bc",
+        "idsId": "IDS",
+        "maxCard": 1,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "frames-ckobj-audit-wrong-daf-type",
+    "description": "Actual CK object inspection rejects a valid SPK DAF as INVALIDFILETYPE.",
+    "workflow": [
+      {
+        "op": "frames.ckobj",
+        "ck": "kernels/file-io-minimal.bsp",
+        "idsId": "IDS",
+        "maxCard": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFILETYPE"]
+    }
   }
 ]

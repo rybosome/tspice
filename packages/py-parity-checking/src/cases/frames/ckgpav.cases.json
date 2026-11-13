@@ -3,7 +3,10 @@
     "caseId": "frames-ckgpav-open-query-close-success",
     "description": "ckgpav pointing+AV query with explicit CK open/close lifecycle",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_sclkscet_00061.tsc"
+      },
       {
         "op": "frames.cklpf",
         "ck": "kernels/mgs_hga_hinge_v2.bc",
@@ -16,15 +19,23 @@
         "tol": 1,
         "ref": "MGS_SPACECRAFT"
       },
-      { "op": "frames.ckupf", "handleId": "CKH_CKGPAV" }
+      {
+        "op": "frames.ckupf",
+        "handleId": "CKH_CKGPAV"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-ckgpav-out-of-coverage-found-false-success",
     "description": "ckgpav miss outside CK coverage returns found=false",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_sclkscet_00061.tsc"
+      },
       {
         "op": "frames.cklpf",
         "ck": "kernels/mgs_hga_hinge_v2.bc",
@@ -37,8 +48,180 @@
         "tol": 0,
         "ref": "MGS_SPACECRAFT"
       },
-      { "op": "frames.ckupf", "handleId": "CKH_CKGPAV_ERR" }
+      {
+        "op": "frames.ckupf",
+        "handleId": "CKH_CKGPAV_ERR"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+    "description": "Compare every real matrix/AV component, exact returned clock, interpolation, gap misses, tolerance-adjusted time1010, later segment and negative-tolerance miss followed by valid recovery.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1000,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1012,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1012,
+        "tol": 3,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1050,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1065,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": -1,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckgpav-audit-reference-and-no-av",
+    "description": "Actual inertial reference conversion changes full matrix/AV; pointing-only instrument is found by ckgp and skipped by ckgpav.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "ECLIPJ2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123001,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckgpav-audit-no-loaded-files",
+    "description": "Without a loaded CK, actual NOLOADEDFILES remains an error rather than a found:false substitute.",
+    "workflow": [
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "frames-ckgpav-audit-unknown-reference",
+    "description": "Actual invalid reference signals KERNELVARNOTFOUND in pinned N0067; do not coerce the error into a miss.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "NOT_A_FRAME"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-ckgpav-audit-empty-reference",
+    "description": "Actual empty reference string signals EMPTYSTRING; pending CK cleanup must still precede scratch deletion.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
   }
 ]
