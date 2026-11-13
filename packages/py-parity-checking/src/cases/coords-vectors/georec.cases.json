@@ -30,7 +30,94 @@
       }
     ],
     "expectation": {
-      "kind": "error"
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-georec-audit-oblate-and-prolate",
+    "description": "georec: oblate and prolate; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.georec",
+        "lon": 1.2,
+        "lat": -0.7,
+        "alt": 12.34,
+        "re": 6378.137,
+        "f": 0.0033528106647474805
+      },
+      {
+        "op": "coords-vectors.georec",
+        "lon": -0.3,
+        "lat": 0.4,
+        "alt": 0.1,
+        "re": 1,
+        "f": -0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-georec-audit-pole-and-negative-altitude",
+    "description": "georec: pole and negative altitude; observe every returned field/component with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "coords-vectors.georec",
+        "lon": 2,
+        "lat": 1.5707963267948966,
+        "alt": 2,
+        "re": 10,
+        "f": 0.1
+      },
+      {
+        "op": "coords-vectors.georec",
+        "lon": -1,
+        "lat": 0.4,
+        "alt": -0.25,
+        "re": 10,
+        "f": 0.1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-georec-audit-flattening-boundary-error",
+    "description": "georec: reject flattening boundary with the specific SPICE diagnostic",
+    "workflow": [
+      {
+        "op": "coords-vectors.georec",
+        "lon": 0.3,
+        "lat": 0.4,
+        "alt": 0,
+        "re": 1,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-georec-audit-zero-radius-error",
+    "description": "georec: reject zero radius with the specific SPICE diagnostic",
+    "workflow": [
+      {
+        "op": "coords-vectors.georec",
+        "lon": 0.3,
+        "lat": 0.4,
+        "alt": 0,
+        "re": 0,
+        "f": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
     }
   }
 ]

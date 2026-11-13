@@ -4,6 +4,7 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertMat3ArrayLike9,
+  assertSpiceInt32,
   brandMat3RowMajor,
   invariant,
 } from "@rybosome/tspice-core";
@@ -175,6 +176,7 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
     },
 
     rotate: (angle, axis) => {
+      assertSpiceInt32(axis, "rotate(axis)");
       const out = native.rotate(angle, axis);
       invariant(
         Array.isArray(out) && out.length === 9,
@@ -184,6 +186,7 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
     },
 
     rotmat: (m, angle, axis) => {
+      assertSpiceInt32(axis, "rotmat(axis)");
       assertMat3ArrayLike9(m, { label: "rotmat().m" });
       const out = native.rotmat(m, angle, axis);
       invariant(

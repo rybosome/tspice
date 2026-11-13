@@ -3,7 +3,11 @@ import type {
   Mat3RowMajor,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
-import { assertMat3ArrayLike9, brandMat3RowMajor } from "@rybosome/tspice-core";
+import {
+  assertMat3ArrayLike9,
+  assertSpiceInt32,
+  brandMat3RowMajor,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -794,8 +798,14 @@ export function createCoordsVectorsApi(
     mxv: (m, v) => tspiceCallMxv(module, m, v),
     mtxv: (m, v) => tspiceCallMtxv(module, m, v),
 
-    rotate: (angle, axis) => tspiceCallRotate(module, angle, axis),
-    rotmat: (m, angle, axis) => tspiceCallRotmat(module, m, angle, axis),
+    rotate: (angle, axis) => {
+      assertSpiceInt32(axis, "rotate(axis)");
+      return tspiceCallRotate(module, angle, axis);
+    },
+    rotmat: (m, angle, axis) => {
+      assertSpiceInt32(axis, "rotmat(axis)");
+      return tspiceCallRotmat(module, m, angle, axis);
+    },
     axisar: (axis, angle) => tspiceCallAxisar(module, axis, angle),
 
     georec: (lon, lat, alt, re, f) =>

@@ -40,7 +40,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/679"
         ],
-        "nextAction": "Verified on both backends after shared WASM regeneration; preserve evidence when shared sources change.",
+        "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change.",
         "record": "data/parity-audits/vectors-arithmetic.json"
       },
       {
@@ -59,10 +59,14 @@
           "rotmat_c",
           "sphrec_c"
         ],
-        "dependsOn": [],
-        "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "dependsOn": [
+          "kplfrm-prerequisite"
+        ],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/681"
+        ],
+        "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change.",
+        "record": "data/parity-audits/coordinates-matrices.json"
       },
       {
         "id": "dsk",
@@ -308,7 +312,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/680"
         ],
-        "nextAction": "Verified on both backends after native handle/class repairs; preserve source-bound evidence when shared files change.",
+        "nextAction": "Complete the separate WASM handle lifetime repair; successful valid-handle comparisons do not certify the open ownership boundary.",
         "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
@@ -363,16 +367,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 141,
+        "reviewed": 1,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 20
       },
       "wasm": {
-        "unreviewed": 153,
+        "unreviewed": 141,
         "reviewed": 0,
-        "needs-repair": 0,
-        "verified": 9
+        "needs-repair": 1,
+        "verified": 20
       }
     }
   },
@@ -391,7 +395,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 319,
+    "scenarios": 345,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -2355,7 +2359,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 67
+          "line": 76
         }
       },
       "mapping": {
@@ -2395,7 +2399,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -2415,7 +2419,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 196
+            "line": 199
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -2456,7 +2460,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 799
+            "line": 809
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -2483,6 +2487,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-axisar-audit-nonunit-general-axis",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/axisar.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.axisar"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "axisar: nonunit general axis; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-axisar-audit-zero-axis-and-angle",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/axisar.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.axisar"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "axisar: zero axis and angle; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-axisar-happy-z-axis-quarter-turn",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/axisar.cases.json",
             "expectation": "success",
@@ -2490,18 +2527,50 @@
               "coords-vectors.axisar"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "axisar converts axis-angle form to rotation matrix; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -15486,7 +15555,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 70
+          "line": 79
         }
       },
       "mapping": {
@@ -15526,7 +15595,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -15546,7 +15615,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 205
+            "line": 208
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -15587,7 +15656,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 801
+            "line": 811
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -15614,6 +15683,73 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-georec-audit-flattening-boundary-error",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/georec.cases.json",
+            "expectation": "error",
+            "operations": [
+              "coords-vectors.georec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "georec: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-georec-audit-oblate-and-prolate",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/georec.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.georec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "georec: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-georec-audit-pole-and-negative-altitude",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/georec.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.georec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "georec: pole and negative altitude; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-georec-audit-zero-radius-error",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/georec.cases.json",
+            "expectation": "error",
+            "operations": [
+              "coords-vectors.georec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "georec: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-georec-happy-spherical-equator",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/georec.cases.json",
             "expectation": "success",
@@ -15621,7 +15757,13 @@
               "coords-vectors.georec"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "georec converts geodetic lon/lat/alt to rectangular coordinates; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           },
           {
             "caseId": "coords-vectors-georec-invalid-flattening-error",
@@ -15631,18 +15773,50 @@
               "coords-vectors.georec"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative georec invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -20071,7 +20245,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
@@ -20079,7 +20254,7 @@
             "local-boundaries-node-2026-11-12",
             "ci-boundaries-node-43310416805"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20087,7 +20262,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "needs-repair"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
@@ -20095,7 +20271,7 @@
             "local-boundaries-wasm-2026-11-12",
             "ci-boundaries-wasm-43310416805"
           ],
-          "status": "verified",
+          "status": "needs-repair",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -20534,7 +20710,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -20554,7 +20730,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 41
+            "line": 42
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -20595,7 +20771,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 777
+            "line": 781
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -20622,6 +20798,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-latrec-audit-general-and-negative-radius",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/latrec.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.latrec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "latrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-latrec-audit-zero-and-pole",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/latrec.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.latrec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "latrec: zero and pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-latrec-happy-equatorial-quarter-turn",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/latrec.cases.json",
             "expectation": "success",
@@ -20629,18 +20838,50 @@
               "coords-vectors.latrec"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "latrec latitudinal-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -20936,7 +21177,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 87
+          "line": 96
         }
       },
       "mapping": {
@@ -20976,7 +21217,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -20996,7 +21237,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 120
+            "line": 121
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -21037,7 +21278,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 795
+            "line": 799
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -21064,6 +21305,23 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-mtxv-audit-basis-and-zero",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/mtxv.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.mtxv"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "mtxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/mtxv.cases.json",
             "expectation": "success",
@@ -21071,18 +21329,50 @@
               "coords-vectors.mtxv"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "mtxv multiplies transpose(matrix) by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -21145,7 +21435,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -21165,7 +21455,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 166
+            "line": 167
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -21206,7 +21496,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 792
+            "line": 796
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -21233,6 +21523,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-mxm-audit-identity-and-zero",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/mxm.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.mxm"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "mxm: identity and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-mxm-audit-order-and-fractions",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/mxm.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.mxm"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "mxm: order and fractions; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-mxm-happy-fixed-matrix-product",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/mxm.cases.json",
             "expectation": "success",
@@ -21240,18 +21563,50 @@
               "coords-vectors.mxm"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "mxm matrix multiplication fixed case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -21288,7 +21643,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 85
+          "line": 94
         }
       },
       "mapping": {
@@ -21328,7 +21683,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -21348,7 +21703,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 110
+            "line": 111
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -21389,7 +21744,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 794
+            "line": 798
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -21416,6 +21771,23 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-mxv-audit-basis-and-zero",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/mxv.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.mxv"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "mxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-mxv-happy-fixed-matrix-vector-product",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/mxv.cases.json",
             "expectation": "success",
@@ -21423,18 +21795,50 @@
               "coords-vectors.mxv"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "mxv multiplies row-major matrix by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -23249,7 +23653,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 78
+          "line": 87
         }
       },
       "mapping": {
@@ -23289,7 +23693,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -23309,7 +23713,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 214
+            "line": 217
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -23350,7 +23754,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 803
+            "line": 813
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -23377,6 +23781,73 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-recgeo-audit-flattening-boundary-error",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/recgeo.cases.json",
+            "expectation": "error",
+            "operations": [
+              "coords-vectors.recgeo"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "recgeo: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/recgeo.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.recgeo"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "recgeo: negative pole and spherical; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-recgeo-audit-oblate-and-prolate",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/recgeo.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.recgeo"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "recgeo: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-recgeo-audit-zero-radius-error",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/recgeo.cases.json",
+            "expectation": "error",
+            "operations": [
+              "coords-vectors.recgeo"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "recgeo: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-recgeo-happy-axis-aligned",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/recgeo.cases.json",
             "expectation": "success",
@@ -23384,7 +23855,13 @@
               "coords-vectors.recgeo"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "recgeo deterministic axis-aligned case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           },
           {
             "caseId": "coords-vectors-recgeo-invalid-flattening-error",
@@ -23394,18 +23871,50 @@
               "coords-vectors.recgeo"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Representative recgeo invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -23461,7 +23970,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -23481,7 +23990,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 20
+            "line": 21
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -23522,7 +24031,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 776
+            "line": 780
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -23549,6 +24058,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-reclat-audit-origin-and-poles",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/reclat.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.reclat"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "reclat: origin and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-reclat-audit-quadrants",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/reclat.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.reclat"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "reclat: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-reclat-happy-axis-y",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/reclat.cases.json",
             "expectation": "success",
@@ -23556,18 +24098,50 @@
               "coords-vectors.reclat"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "reclat rectangular-to-latitudinal conversion for +Y unit axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -23637,7 +24211,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -23657,7 +24231,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 50
+            "line": 51
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -23698,7 +24272,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 778
+            "line": 782
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -23725,6 +24299,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-recsph-audit-origin-and-negative-pole",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/recsph.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.recsph"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "recsph: origin and negative pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-recsph-audit-quadrants",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/recsph.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.recsph"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "recsph: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-recsph-happy-positive-z",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/recsph.cases.json",
             "expectation": "success",
@@ -23732,18 +24339,50 @@
               "coords-vectors.recsph"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "recsph rectangular-to-spherical conversion for +Z axis point; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -24009,7 +24648,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 55
+          "line": 58
         }
       },
       "mapping": {
@@ -24049,7 +24688,7 @@
             "rotate_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -24069,7 +24708,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 177
+            "line": 178
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -24110,7 +24749,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 797
+            "line": 801
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -24137,6 +24776,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-rotate-audit-all-axes-radians",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/rotate.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.rotate"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "rotate: all axes radians; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-rotate-audit-zero-and-modulo-axes",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/rotate.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.rotate"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "rotate: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-rotate-happy-z-axis-quarter-turn",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/rotate.cases.json",
             "expectation": "success",
@@ -24144,18 +24816,50 @@
               "coords-vectors.rotate"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "rotate builds a +90 degree rotation matrix about the Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -24171,7 +24875,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 62
+          "line": 68
         }
       },
       "mapping": {
@@ -24211,7 +24915,7 @@
             "rotmat_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -24231,7 +24935,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 186
+            "line": 188
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -24272,7 +24976,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 798
+            "line": 805
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -24299,6 +25003,40 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-rotmat-audit-nonidentity-left-product",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/rotmat.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.rotmat"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "rotmat: nonidentity left product; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/rotmat.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.rotmat"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "rotmat: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-rotmat-happy-z-axis-quarter-turn",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/rotmat.cases.json",
             "expectation": "success",
@@ -24306,18 +25044,50 @@
               "coords-vectors.rotmat"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "rotmat rotates identity matrix by +90 degrees about Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -26499,7 +27269,7 @@
             "sphrec_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -26519,7 +27289,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 71
+            "line": 72
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -26560,7 +27330,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 779
+            "line": 783
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -26587,6 +27357,39 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "coords-vectors-sphrec-audit-general-and-negative-radius",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/sphrec.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.sphrec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "sphrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
+            "caseId": "coords-vectors-sphrec-audit-zero-and-poles",
+            "source": "packages/py-parity-checking/src/cases/coords-vectors/sphrec.cases.json",
+            "expectation": "success",
+            "operations": [
+              "coords-vectors.sphrec"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "sphrec: zero and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
+          },
+          {
             "caseId": "coords-vectors-sphrec-happy-equatorial-quarter-turn",
             "source": "packages/py-parity-checking/src/cases/coords-vectors/sphrec.cases.json",
             "expectation": "success",
@@ -26594,18 +27397,50 @@
               "coords-vectors.sphrec"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "sphrec spherical-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation.",
+              "record": "data/parity-audits/coordinates-matrices.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "coordinates-matrices",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
+          "executions": [
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
+          "executions": [
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
+          ],
+          "status": "verified",
+          "record": "data/parity-audits/coordinates-matrices.json"
         }
       }
     },
@@ -32471,7 +33306,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 130
+            "line": 131
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -32512,7 +33347,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 787
+            "line": 791
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -32583,13 +33418,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -32601,13 +33438,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -32868,7 +33707,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 101
+            "line": 102
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -32909,7 +33748,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 785
+            "line": 789
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -32997,13 +33836,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33015,13 +33856,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33114,7 +33957,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 95
+            "line": 96
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33155,7 +33998,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 784
+            "line": 788
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33226,13 +34069,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33244,13 +34089,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33350,7 +34197,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 86
+            "line": 87
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33391,7 +34238,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 783
+            "line": 787
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33480,13 +34327,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33498,13 +34347,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33618,7 +34469,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 148
+            "line": 149
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33659,7 +34510,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 789
+            "line": 793
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33730,13 +34581,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33748,13 +34601,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33833,7 +34688,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 80
+            "line": 81
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33874,7 +34729,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 782
+            "line": 786
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -33962,13 +34817,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33980,13 +34837,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34135,7 +34994,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 157
+            "line": 158
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -34176,7 +35035,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 790
+            "line": 794
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -34247,13 +35106,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34265,13 +35126,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34371,7 +35234,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 139
+            "line": 140
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -34412,7 +35275,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 788
+            "line": 792
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -34483,13 +35346,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-regenerated-node-2026-11-12",
-            "ci-regenerated-node-43300708314"
+            "local-coordinate-boundaries-node-2026-11-12",
+            "ci-coordinates-node-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34501,13 +35366,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-regenerated-wasm-2026-11-12",
-            "ci-regenerated-wasm-43300708314"
+            "local-coordinate-boundaries-wasm-2026-11-12",
+            "ci-coordinates-wasm-43315118711"
           ],
           "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
