@@ -21,3 +21,24 @@
 The EK fixture is generated once via SpiceyPy tooling and checked in. Tests that exercise file-creation routines may generate scratch DLA/DSK outputs under `fixtures/kernels/generated/`; these are ignored and are not input fixtures.
 
 `kplfrm-minimal.tf` is an existing project-authored synthetic frame definition for `TSPICE_PARITY_TOPO` relative to J2000. It contains an arbitrary test frame ID and fixed rotation angles, with no mission observations or external scientific dataset. The kplfrm audit reuses this unchanged fixture; it introduces no new kernel data.
+
+The Step 7 file-reader fixtures `audit-two-segment.bsp` (4096 bytes) and
+`audit-empty-daf.bsp` (3048 bytes) are project-authored synthetic DAF/SPK data,
+MIT-licensed with the repository. `generate-audit-daf.py` generates and validates
+them using the locked SpiceyPy 6.0.3/CSPICE N0067 sidecar. The two segments use
+invented body IDs 9100001/9100002, J2000, and small linear state samples at ET
+0–2 and 10–12. No external observations are incorporated. The empty DAF is
+closed via `dafcls`; `spkcls` intentionally requires at least one segment.
+
+From the repository root, regenerate in a task-owned directory with:
+
+```bash
+uv run --locked --project packages/py-parity-checking/sidecars/spiceypy python packages/py-parity-checking/fixtures/generate-audit-daf.py /tmp/tspice-authored-daf
+```
+
+Reader scenarios create empty DLA outputs only under case-scoped scratch refs.
+Both execution paths close outstanding file handles before removing scratch,
+including workflow failures. Backend-owned staged inputs are cleared/disposed
+by the existing case lifecycle. The unchanged existing DSK fixture supplies a
+real eight-field DLA descriptor for comparison; no new scientific dataset is
+added.

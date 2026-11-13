@@ -148,8 +148,11 @@
         "dlacls"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/691"],
-      "nextAction": "The shared file-token prerequisite has both required full local lanes and observed canonical Linux native CI in #691. Reader semantic audit continues in #692; all remaining routine assignments are retained."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/691",
+        "https://github.com/rybosome/tspice/pull/692"
+      ],
+      "nextAction": "Both required local lanes passed for all eight readers; record observed current-source canonical CI and finish refreshed platform checks. Shared issuer prerequisite is #691; writer/spatial-index assignments remain separate."
     },
     {
       "id": "file-io-2",

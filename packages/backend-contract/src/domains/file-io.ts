@@ -63,13 +63,27 @@ export interface FileIoApi {
 
   // --- DAF -----------------------------------------------------------------
 
-  /** Open a DAF file for read (see `dafopr_c`). */
+  /**
+   * Open a DAF file for read and return a backend-owned opaque token.
+   * Duplicate read opens have separate tokens but share CSPICE's file/cursor.
+   * @param path Existing backend filesystem path (staged virtual ID in WASM).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafopr_c.html
+   */
   dafopr(path: string): SpiceHandle;
 
-  /** Close a DAF file previously opened by `dafopr()`. */
+  /**
+   * Release one DAF read claim and invalidate its opaque token.
+   * Wrong-kind, foreign and already-closed tokens throw at the registry boundary.
+   * @param handle Live token returned by this backend's `dafopr`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcls_c.html
+   */
   dafcls(handle: SpiceHandle): void;
 
-  /** Begin a forward search for arrays in the given DAF file (see `dafbfs_c`). */
+  /**
+   * Start or restart the given DAF file's forward array search.
+   * @param handle Live DAF token; two read claims on one file share its cursor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafbfs_c.html
+   */
   dafbfs(handle: SpiceHandle): void;
 
   /**
@@ -77,21 +91,32 @@ export interface FileIoApi {
    *
    * Backend implementations should select the current DAF via `dafcs_c(handle)`
    * before calling `daffna_c` to support interleaving multiple DAF searches.
+   * @param handle Live DAF token with a search started by `dafbfs`.
+   * @returns True on the next array, false at/after the end of the array list.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daffna_c.html
    */
   daffna(handle: SpiceHandle): boolean;
 
   // --- DAS -----------------------------------------------------------------
 
-  /** Open a DAS file for read (see `dasopr_c`). */
+  /**
+   * Open a DAS-backed file (including DLA/DSK) for read.
+   * @param path Existing backend filesystem path (staged virtual ID in WASM).
+   * @returns Backend-owned opaque token; duplicate opens retain read claims.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasopr_c.html
+   */
   dasopr(path: string): SpiceHandle;
 
   /**
    * Close a DAS-backed file handle.
    *
-   * In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c` is an
-   * alias. We mirror that behavior: `dascls` and `dlacls` are interchangeable
+   * CSPICE `dascls_c` closes both DAS and DLA handles. tspice provides `dlacls`
+   * as an alias: `dascls` and `dlacls` are interchangeable
    * and accept handles returned from either `dasopr()` (read) or `dlaopn()`
-   * (write).
+   * (write). The opaque-token contract rejects already-closed tokens even though
+   * CSPICE's numeric close primitive permits unknown handles as no-ops.
+   * @param handle Live DAS/DLA token belonging to this backend.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dascls_c.html
    */
   dascls(handle: SpiceHandle): void;
 
@@ -110,6 +135,10 @@ export interface FileIoApi {
    *
    * DLA is DAS-backed: `handle` must be a DAS handle to a DLA file, opened via
    * `dasopr()` (read) or `dlaopn()` (write).
+   * @param handle Live DAS-backed DLA token.
+   * @returns A miss for an empty file, or all eight descriptor fields.
+   * Descriptor addresses/sizes are valid only when `found` is true.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlabfs_c.html
    */
   dlabfs(handle: SpiceHandle): FoundDlaDescriptor;
 
@@ -124,8 +153,9 @@ export interface FileIoApi {
   /**
    * Close a DAS-backed DLA handle.
    *
-   * Provided for parity with CSPICE `dlacls_c`, but implemented as an alias of
-   * `dascls` (same handle compatibility).
+   * This is a tspice alias of `dascls` (same handle compatibility); CSPICE has
+   * no separate `dlacls_c` entrypoint.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dascls_c.html
    */
   dlacls(handle: SpiceHandle): void;
 

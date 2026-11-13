@@ -1,3 +1,5 @@
+import type { FoundDlaDescriptor } from "@rybosome/tspice-backend-contract";
+
 export type TimdefItem = "SYSTEM" | "CALENDAR" | "ZONE";
 
 export type ErrorGetmsgWhich = "SHORT" | "LONG" | "EXPLAIN";
@@ -1632,8 +1634,8 @@ export type StepOutput =
   | { op: "file-io.dasopr"; value: null }
   | { op: "file-io.dascls"; value: null }
   | { op: "file-io.dlaopn"; value: null }
-  | { op: "file-io.dlabfs"; value: { found: boolean } }
-  | { op: "file-io.dlafns"; value: { found: boolean } }
+  | { op: "file-io.dlabfs"; value: FoundDlaDescriptor }
+  | { op: "file-io.dlafns"; value: FoundDlaDescriptor }
   | { op: "file-io.dlacls"; value: null }
   | { op: "file-io.dskopn"; value: null }
   | {

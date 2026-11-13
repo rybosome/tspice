@@ -102,6 +102,12 @@ def _require_spatial_index(state: FileIoState, spaix_id: str) -> tuple[np.ndarra
     return index
 
 
+def _descriptor_fields(descr: Any) -> dict[str, int]:
+    return {key: int(getattr(descr, key)) for key in (
+        "bwdptr", "fwdptr", "ibase", "isize", "dbase", "dsize", "cbase", "csize"
+    )}
+
+
 def _normalize_dla_result(value: Any) -> tuple[bool, Any | None]:
     if isinstance(value, tuple) and len(value) == 2 and isinstance(value[1], (bool, int)):
         descr, found_raw = value
@@ -223,6 +229,9 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         try:
             found, descr = _normalize_dla_result(sp.dlabfs(handle_state.handle))
         except NotFoundError:
+            # The Found decorator runs before SpiceyPy's outer error check.
+            # Preserve actual CSPICE failures rather than treating them as misses.
+            sp.check_for_spice_error(None)
             found = False
             descr = None
 
@@ -231,7 +240,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             return StepOutput(op=step.op, value={"found": False})
 
         state.descriptors[step.descrId] = descr
-        return StepOutput(op=step.op, value={"found": True})
+        return StepOutput(op=step.op, value={"found": True, "descr": _descriptor_fields(descr)})
 
     if isinstance(step, StepFileIoDlafns):
         handle_state = _require_handle(
@@ -244,6 +253,9 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         try:
             found, next_descr = _normalize_dla_result(sp.dlafns(handle_state.handle, descr))
         except NotFoundError:
+            # The Found decorator runs before SpiceyPy's outer error check.
+            # Preserve actual CSPICE failures rather than treating them as misses.
+            sp.check_for_spice_error(None)
             found = False
             next_descr = None
 
@@ -252,7 +264,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             return StepOutput(op=step.op, value={"found": False})
 
         state.descriptors[step.descrId] = next_descr
-        return StepOutput(op=step.op, value={"found": True})
+        return StepOutput(op=step.op, value={"found": True, "descr": _descriptor_fields(next_descr)})
 
     if isinstance(step, StepFileIoDlacls):
         handle_state = _require_handle(
@@ -261,7 +273,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             expected_kind=("DAS", "DLA"),
             require_open=True,
         )
-        # SpiceyPy does not expose dlacls; CSPICE defines it as an alias of dascls.
+        # tspice exposes dlacls as a DAS-close alias; CSPICE has no separate dlacls_c entrypoint.
         sp.dascls(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)

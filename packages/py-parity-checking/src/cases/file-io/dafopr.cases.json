@@ -3,17 +3,31 @@
     "caseId": "file-io-dafopr-lifecycle-success",
     "description": "dafopr handle lifecycle validated via dafbfs/daffna/dafcls",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
       {
         "op": "file-io.dafopr",
         "path": "kernels/file-io-minimal.bsp",
         "handleId": "daf"
       },
-      { "op": "file-io.dafbfs", "handleId": "daf" },
-      { "op": "file-io.daffna", "handleId": "daf" },
-      { "op": "file-io.dafcls", "handleId": "daf" }
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "daf"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dafopr-missing-file-error",
@@ -25,6 +39,121 @@
         "handleId": "daf"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "file-io-dafopr-audit-duplicate-read-claims",
+    "description": "Two opens of one file have separate public ownership tokens but share the actual CSPICE cursor/refcount; one close leaves the other usable.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafopr-audit-empty-file",
+    "description": "A valid authored empty DAF returns false at start/end rather than conflating file-open success with nonempty search.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "e",
+        "path": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "e"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "e"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "e"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "e"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafopr-audit-wrong-file-format",
+    "description": "Stage then unload the existing kernel before the actual raw reader rejects its wrong on-disk architecture; avoid an already-open-file conflict.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/naif0012.tls",
+        "handleId": "bad"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNFILARC"]
+    }
   }
 ]
