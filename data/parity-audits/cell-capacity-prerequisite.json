@@ -304,6 +304,62 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43341633735/job/131611077032",
       "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics.",
       "historical": true
+    },
+    {
+      "id": "ci-readers-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "01da4ce5a2c00261841d9406ac5921a43afdcc202e7bdcded61fa604056910e4",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source."
+    },
+    {
+      "id": "ci-readers-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "01da4ce5a2c00261841d9406ac5921a43afdcc202e7bdcded61fa604056910e4",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source."
     }
   ],
   "routines": [
@@ -402,16 +458,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-readers-audit-2026-11-13-node"]
+          "executions": [
+            "local-readers-audit-2026-11-13-node",
+            "ci-readers-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-readers-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-readers-audit-2026-11-13-wasm",
+            "ci-readers-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -557,16 +619,22 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-readers-audit-2026-11-13-node"]
+          "executions": [
+            "local-readers-audit-2026-11-13-node",
+            "ci-readers-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-readers-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-readers-audit-2026-11-13-wasm",
+            "ci-readers-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     },
@@ -701,19 +769,25 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-readers-audit-2026-11-13-node"]
+          "executions": [
+            "local-readers-audit-2026-11-13-node",
+            "ci-readers-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-readers-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-readers-audit-2026-11-13-wasm",
+            "ci-readers-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

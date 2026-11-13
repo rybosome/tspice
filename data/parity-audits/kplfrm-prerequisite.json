@@ -324,6 +324,44 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43341633735/job/131611077032",
       "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics.",
       "historical": true
+    },
+    {
+      "id": "ci-readers-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6144dd84c260a59b5b725d7e63039f849b61ebb7246af5fec6381ca2b300f8e6",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source."
+    },
+    {
+      "id": "ci-readers-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6144dd84c260a59b5b725d7e63039f849b61ebb7246af5fec6381ca2b300f8e6",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "96f320e8aba5e3ff226b2fe38184e559b4c07aa3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43345671118/job/131624340407",
+      "observation": "Observed canonical Linux Node22 native-required job: all 676 live comparisons (338 per actual backend), all 711 parity-package tests including actual DLA error/cleanup and public same-instance recovery, 82 WASM tests, 62 native tests, 26 core tests and 121 facade tests passed without skips. Production addon guard and CSPICE_N0067 passed. All fifteen current-head jobs are observed green; explicit REST rebaseable/mergeable true. This is current proof for the reader-modified shared oracle cleanup source."
     }
   ],
   "routines": [
@@ -459,11 +497,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-readers-audit-2026-11-13-node"]
+          "executions": [
+            "local-readers-audit-2026-11-13-node",
+            "ci-readers-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -473,14 +515,18 @@
             "verified",
             "reviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-readers-audit-2026-11-13-wasm"]
+          "executions": [
+            "local-readers-audit-2026-11-13-wasm",
+            "ci-readers-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }
