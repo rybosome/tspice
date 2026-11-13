@@ -27,7 +27,7 @@
       ],
       "dependsOn": ["cell-capacity-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/685"],
-      "nextAction": "Current-source local and canonical CI verification recorded; await maintainer review and explicitly authorized dependency-order merges while the remaining baseline audits continue."
+      "nextAction": "Both required local lanes passed after restacking onto merged #684; observe canonical CI on the current source and record its actual source/job evidence before handoff."
     },
     {
       "id": "vectors-arithmetic",
