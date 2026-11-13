@@ -1,3 +1,4 @@
+import type { SpiceWindow } from "@rybosome/tspice-backend-contract";
 import type {
   StepGeometryGfGfdist,
   StepGeometryGfGfrefn,
@@ -11,6 +12,7 @@ import type {
 } from "../../case-types.js";
 import {
   getOrCreateWindow,
+  registerFinalizer,
   requireWindow,
   type RunTspiceContext,
 } from "../context.js";
@@ -34,6 +36,19 @@ function assertBoolean(
   }
 }
 
+function windowIntervals(
+  context: RunTspiceContext,
+  window: SpiceWindow,
+): [number, number][] {
+  const intervals: [number, number][] = [];
+  const count = context.spice.raw.wncard(window);
+  for (let i = 0; i < count; i++) {
+    const [left, right] = context.spice.raw.wnfetd(window, i);
+    intervals.push([left, right]);
+  }
+  return intervals;
+}
+
 /** Execute one `geometry-gf.*` workflow step in tspice. */
 export function runGeometryGfStep(
   context: RunTspiceContext,
@@ -48,6 +63,11 @@ export function runGeometryGfStep(
       return { op: step.op, value: context.spice.raw.gfstep(step.time) };
 
     case "geometry-gf.gfstol":
+      // Each test case owns this process-global setting; restore NAIF's default
+      // even if a later scientific query fails. Raw API persistence is unchanged.
+      registerFinalizer(context, "geometryGF.restoreTolerance", () =>
+        context.spice.raw.gfstol(1e-6),
+      );
       context.spice.raw.gfstol(step.value);
       return { op: step.op, value: null };
 
@@ -75,7 +95,7 @@ export function runGeometryGfStep(
       const result = getOrCreateWindow(
         context,
         step.resultWindowId,
-        Math.max(step.nintvls, 8),
+        step.resultMaxIntervals ?? Math.max(step.nintvls, 8),
       );
       context.spice.raw.gfsep(
         step.targ1,
@@ -94,7 +114,13 @@ export function runGeometryGfStep(
         cnfine,
         result,
       );
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
     }
 
     case "geometry-gf.gfdist": {
@@ -102,7 +128,7 @@ export function runGeometryGfStep(
       const result = getOrCreateWindow(
         context,
         step.resultWindowId,
-        Math.max(step.nintvls, 8),
+        step.resultMaxIntervals ?? Math.max(step.nintvls, 8),
       );
       context.spice.raw.gfdist(
         step.target,
@@ -116,7 +142,13 @@ export function runGeometryGfStep(
         cnfine,
         result,
       );
-      return { op: step.op, value: null };
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
     }
 
     default: {

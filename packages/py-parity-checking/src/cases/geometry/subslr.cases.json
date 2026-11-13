@@ -58,5 +58,615 @@
     "expectation": {
       "kind": "error"
     }
+  },
+  {
+    "caseId": "geometry-subslr-audit-method-near-point-ellipsoid",
+    "description": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NEAR POINT/ELLIPSOID",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-method-intercept-ellipsoid",
+    "description": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/ELLIPSOID",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "INTERCEPT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-method-nadir-dsk",
+    "description": "Compare all point coordinates, target surface epoch and observer-to-surface vector for NADIR/DSK/UNPRIORITIZED",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NADIR/DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-method-intercept-dsk",
+    "description": "Compare all point coordinates, target surface epoch and observer-to-surface vector for INTERCEPT/DSK/UNPRIORITIZED/SURFACES=101",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "INTERCEPT/DSK/UNPRIORITIZED/SURFACES=101",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-lt",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for LT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-lt-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for LT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT+S",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-cn",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for CN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-cn-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for CN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN+S",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-xlt",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XLT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-xlt-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT+S",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-xcn",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XCN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-correction-xcn-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN+S",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-different-epoch",
+    "description": "Observe full geometry at a negative nonzero TDB epoch and moving observer",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": -125.5,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-bad-method",
+    "description": "Require a structured toolkit method error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "BAD",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADMETHODSYNTAX)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-bad-frame",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "TSPICE_UNKNOWN",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-wrong-center-frame",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "J2000",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-empty-target",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-same-body",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100101"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-outside-coverage",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 20000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-subslr-audit-bad-correction",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.subslr",
+        "method": "NEAR POINT/ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "TSPICE_BAD",
+        "observer": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
   }
 ]

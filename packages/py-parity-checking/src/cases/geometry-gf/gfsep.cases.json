@@ -3,7 +3,10 @@
     "caseId": "geometry-gf-gfsep-success",
     "description": "Runs gfsep and verifies the first returned separation interval",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/de440s.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
       {
         "op": "cells-windows.wninsd",
         "windowId": "GF_SEP_CNFIN",
@@ -29,15 +32,24 @@
         "cnfineWindowId": "GF_SEP_CNFIN",
         "resultWindowId": "GF_SEP_RESULT"
       },
-      { "op": "cells-windows.wnfetd", "windowId": "GF_SEP_RESULT", "index": 0 }
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "GF_SEP_RESULT",
+        "index": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "geometry-gf-gfsep-invalid-relate-error",
     "description": "Representative gfsep invalid relation operator error",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/de440s.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/de440s.bsp"
+      },
       {
         "op": "cells-windows.wninsd",
         "windowId": "GF_SEP_ERR_CNFIN",
@@ -64,6 +76,1747 @@
         "resultWindowId": "GF_SEP_ERR_RESULT"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-relation-less",
+    "description": "Compare every result endpoint and unchanged confinement for <",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-relation-greater",
+    "description": "Compare every result endpoint and unchanged confinement for >",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": ">",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-relation-equal",
+    "description": "Compare every result endpoint and unchanged confinement for =",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "=",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-relation-absmin",
+    "description": "Compare every result endpoint and unchanged confinement for ABSMIN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "ABSMIN",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-relation-absmax",
+    "description": "Compare every result endpoint and unchanged confinement for ABSMAX",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "ABSMAX",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-relation-locmin",
+    "description": "Compare every result endpoint and unchanged confinement for LOCMIN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "LOCMIN",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-relation-locmax",
+    "description": "Compare every result endpoint and unchanged confinement for LOCMAX",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "LOCMAX",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-absmin-adjust",
+    "description": "Positive adjustment expands absolute-extremum solutions into intervals",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "ABSMIN",
+        "refval": 0.1,
+        "adjust": 0.01,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-absmax-adjust",
+    "description": "Positive adjustment expands absolute-extremum solutions into intervals",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "ABSMAX",
+        "refval": 0.1,
+        "adjust": 0.01,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-empty-result",
+    "description": "A valid condition with no events produces an empty complete output",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": ">",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-result-replacement",
+    "description": "Search discards existing result intervals rather than unioning them",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "R",
+        "left": 5000,
+        "right": 5100,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-split-confinement",
+    "description": "Every interval respects disjoint confinement gaps",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -100,
+        "right": -30,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -20,
+        "right": 20,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": 30,
+        "right": 100,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-lt",
+    "description": "Observe complete nontrivial event windows with moving target/observer for LT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "LT",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-lt-s",
+    "description": "Observe complete nontrivial event windows with moving target/observer for LT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "LT+S",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-cn",
+    "description": "Observe complete nontrivial event windows with moving target/observer for CN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "CN",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-cn-s",
+    "description": "Observe complete nontrivial event windows with moving target/observer for CN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "CN+S",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-xlt",
+    "description": "Observe complete nontrivial event windows with moving target/observer for XLT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "XLT",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-xlt-s",
+    "description": "Observe complete nontrivial event windows with moving target/observer for XLT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "XLT+S",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-xcn",
+    "description": "Observe complete nontrivial event windows with moving target/observer for XCN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "XCN",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-correction-xcn-s",
+    "description": "Observe complete nontrivial event windows with moving target/observer for XCN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "XCN+S",
+        "relate": "=",
+        "refval": 0.4,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100102"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-zero-step",
+    "description": "Require a specific actual toolkit error for zero-step",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 0,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSTEP)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-negative-step",
+    "description": "Require a specific actual toolkit error for negative-step",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": -1,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSTEP)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-zero-workspace",
+    "description": "Require a specific actual toolkit error for zero-workspace",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 0,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-negative-workspace",
+    "description": "Require a specific actual toolkit error for negative-workspace",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": -1,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-bad-relation",
+    "description": "Require a specific actual toolkit error for bad-relation",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "TSPICE_BAD",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRECOGNIZED)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-bad-correction",
+    "description": "Require a specific actual toolkit error for bad-correction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "TSPICE_BAD",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-negative-adjust",
+    "description": "Require a specific actual toolkit error for negative-adjust",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "ABSMIN",
+        "refval": 0.1,
+        "adjust": -1,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-unknown-observer",
+    "description": "Require a specific actual toolkit error for unknown-observer",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "TSPICE_UNKNOWN"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-zero-result-capacity",
+    "description": "Require a specific actual toolkit error for zero-result-capacity",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 0,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDDIMENSION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-insufficient-result",
+    "description": "Require a specific actual toolkit error for insufficient-result",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": ">",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 1,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(CELLTOOSMALL)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-insufficient-workspace",
+    "description": "Internal workspace is separate from ample output capacity",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -100,
+        "right": -30,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -20,
+        "right": 20,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": 30,
+        "right": 100,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 1,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(CELLTOOSMALL)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-zero-equality-limitation",
+    "description": "NAIF documents equality-to-zero cannot detect point alignment; extrema cases cover it",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "=",
+        "refval": 0,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-sphere-point",
+    "description": "Sphere limb separation differs from point-center separation",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-two-spheres",
+    "description": "Both authored radii affect the returned limb-separation event window",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-ignored-point-frames",
+    "description": "Current point shape has no orientation dependence",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "IGNORED_FRAME_A",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME_B",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsep-audit-bad-shape",
+    "description": "Reject an unsupported shape through actual GFSEP",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "C",
+        "left": -80.0,
+        "right": 100.0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-12
+      },
+      {
+        "op": "geometry-gf.gfsep",
+        "abcorr": "NONE",
+        "relate": "<",
+        "refval": 0.1,
+        "adjust": 0,
+        "step": 5,
+        "nintvls": 100,
+        "cnfineWindowId": "C",
+        "resultWindowId": "R",
+        "resultMaxIntervals": 8,
+        "targ1": "100101",
+        "shape1": "TSPICE_BAD",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "obsrvr": "100104"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRECOGNIZED)"]
+    }
   }
 ]

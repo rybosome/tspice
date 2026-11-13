@@ -31,10 +31,45 @@ function assertFiniteNumberArrayFixed(
   }
 }
 
+function geometryNumber(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new RangeError(`${label} must be finite`);
+  return value;
+}
+function readGeometryVector(value: unknown, label: string): SpiceVector3 {
+  assertFiniteNumberArrayFixed(value, 3, label);
+  return [
+    geometryNumber(value[0], label),
+    geometryNumber(value[1], label),
+    geometryNumber(value[2], label),
+  ];
+}
+function readGeometryPlane(value: unknown, label: string): SpicePlane {
+  assertFiniteNumberArrayFixed(value, 4, label);
+  return [
+    geometryNumber(value[0], label),
+    geometryNumber(value[1], label),
+    geometryNumber(value[2], label),
+    geometryNumber(value[3], label),
+  ];
+}
+function geometryInputs(
+  et: unknown,
+  strings: readonly unknown[],
+  label: string,
+): void {
+  if (typeof et !== "number" || !Number.isFinite(et))
+    throw new RangeError(`${label}: ET must be finite`);
+  for (const value of strings)
+    if (typeof value !== "string")
+      throw new TypeError(`${label}: inputs must be strings`);
+}
+
 /** Create a {@link GeometryApi} implementation backed by the native Node addon. */
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
     subpnt: (method, target, et, fixref, abcorr, observer) => {
+      geometryInputs(et, [method, target, fixref, abcorr, observer], "subpnt");
       const out = native.subpnt(method, target, et, fixref, abcorr, observer);
       invariant(
         out && typeof out === "object",
@@ -53,13 +88,14 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
         "Expected subpnt().srfvec to be a length-3 array",
       );
       return {
-        spoint: out.spoint as SpiceVector3,
-        trgepc: out.trgepc,
-        srfvec: out.srfvec as SpiceVector3,
+        spoint: readGeometryVector(out.spoint, "spoint"),
+        trgepc: geometryNumber(out.trgepc, "trgepc"),
+        srfvec: readGeometryVector(out.srfvec, "srfvec"),
       } satisfies SubPointResult;
     },
 
     subslr: (method, target, et, fixref, abcorr, observer) => {
+      geometryInputs(et, [method, target, fixref, abcorr, observer], "subslr");
       const out = native.subslr(method, target, et, fixref, abcorr, observer);
       invariant(
         out && typeof out === "object",
@@ -78,13 +114,19 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
         "Expected subslr().srfvec to be a length-3 array",
       );
       return {
-        spoint: out.spoint as SpiceVector3,
-        trgepc: out.trgepc,
-        srfvec: out.srfvec as SpiceVector3,
+        spoint: readGeometryVector(out.spoint, "spoint"),
+        trgepc: geometryNumber(out.trgepc, "trgepc"),
+        srfvec: readGeometryVector(out.srfvec, "srfvec"),
       } satisfies SubPointResult;
     },
 
     sincpt: (method, target, et, fixref, abcorr, observer, dref, dvec) => {
+      geometryInputs(
+        et,
+        [method, target, fixref, abcorr, observer, dref],
+        "sincpt",
+      );
+      assertFiniteNumberArrayFixed(dvec, 3, "sincpt(dvec)");
       const out = native.sincpt(
         method,
         target,
@@ -117,13 +159,15 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
       );
       return {
         found: true,
-        spoint: out.spoint as SpiceVector3,
-        trgepc: out.trgepc,
-        srfvec: out.srfvec as SpiceVector3,
+        spoint: readGeometryVector(out.spoint, "spoint"),
+        trgepc: geometryNumber(out.trgepc, "trgepc"),
+        srfvec: readGeometryVector(out.srfvec, "srfvec"),
       } satisfies Found<SubPointResult>;
     },
 
     ilumin: (method, target, et, fixref, abcorr, observer, spoint) => {
+      geometryInputs(et, [method, target, fixref, abcorr, observer], "ilumin");
+      assertFiniteNumberArrayFixed(spoint, 3, "ilumin(spoint)");
       const out = native.ilumin(
         method,
         target,
@@ -158,15 +202,21 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
         "Expected ilumin().emissn to be a number",
       );
       return {
-        trgepc: out.trgepc,
-        srfvec: out.srfvec as SpiceVector3,
-        phase: out.phase,
-        incdnc: out.incdnc,
-        emissn: out.emissn,
+        trgepc: geometryNumber(out.trgepc, "trgepc"),
+        srfvec: readGeometryVector(out.srfvec, "srfvec"),
+        phase: geometryNumber(out.phase, "phase"),
+        incdnc: geometryNumber(out.incdnc, "incdnc"),
+        emissn: geometryNumber(out.emissn, "emissn"),
       } satisfies IluminResult;
     },
 
     illumg: (method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      geometryInputs(
+        et,
+        [method, target, ilusrc, fixref, abcorr, observer],
+        "illumg",
+      );
+      assertFiniteNumberArrayFixed(spoint, 3, "illumg(spoint)");
       const out = native.illumg(
         method,
         target,
@@ -203,15 +253,21 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
       );
 
       return {
-        trgepc: out.trgepc,
-        srfvec: out.srfvec as SpiceVector3,
-        phase: out.phase,
-        incdnc: out.incdnc,
-        emissn: out.emissn,
+        trgepc: geometryNumber(out.trgepc, "trgepc"),
+        srfvec: readGeometryVector(out.srfvec, "srfvec"),
+        phase: geometryNumber(out.phase, "phase"),
+        incdnc: geometryNumber(out.incdnc, "incdnc"),
+        emissn: geometryNumber(out.emissn, "emissn"),
       } satisfies IllumgResult;
     },
 
     illumf: (method, target, ilusrc, et, fixref, abcorr, observer, spoint) => {
+      geometryInputs(
+        et,
+        [method, target, ilusrc, fixref, abcorr, observer],
+        "illumf",
+      );
+      assertFiniteNumberArrayFixed(spoint, 3, "illumf(spoint)");
       const out = native.illumf(
         method,
         target,
@@ -256,11 +312,11 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
       );
 
       return {
-        trgepc: out.trgepc,
-        srfvec: out.srfvec as SpiceVector3,
-        phase: out.phase,
-        incdnc: out.incdnc,
-        emissn: out.emissn,
+        trgepc: geometryNumber(out.trgepc, "trgepc"),
+        srfvec: readGeometryVector(out.srfvec, "srfvec"),
+        phase: geometryNumber(out.phase, "phase"),
+        incdnc: geometryNumber(out.incdnc, "incdnc"),
+        emissn: geometryNumber(out.emissn, "emissn"),
         visibl: out.visibl,
         lit: out.lit,
       } satisfies IllumfResult;
@@ -277,6 +333,11 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
       observer,
       et,
     ) => {
+      geometryInputs(
+        et,
+        [targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer],
+        "occult",
+      );
       const out = native.occult(
         targ1,
         shape1,
@@ -304,7 +365,7 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
 
       const out = native.nvc2pl(normal, konst);
       assertFiniteNumberArrayFixed(out, 4, "nvc2pl(): result");
-      return out as unknown as SpicePlane;
+      return readGeometryPlane(out, "nvc2pl(result)");
     },
 
     pl2nvc: (plane) => {
@@ -321,7 +382,7 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
         "Expected pl2nvc().konst to be a finite number",
       );
       return {
-        normal: out.normal as SpiceVector3,
+        normal: readGeometryVector(out.normal, "normal"),
         konst: out.konst,
       } satisfies Pl2nvcResult;
     },

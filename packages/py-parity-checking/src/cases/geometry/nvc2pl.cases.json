@@ -2,13 +2,128 @@
   {
     "caseId": "geometry-nvc2pl-happy-path-success",
     "description": "nvc2pl normalizes non-unit normal and computes scaled plane constant",
-    "workflow": [{ "op": "geometry.nvc2pl", "normal": [1, 2, 3], "konst": 4 }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [1, 2, 3],
+        "konst": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "geometry-nvc2pl-zero-vector-error",
     "description": "Representative nvc2pl zero-normal vector error",
-    "workflow": [{ "op": "geometry.nvc2pl", "normal": [0, 0, 0], "konst": 4 }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [0, 0, 0],
+        "konst": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "geometry-nvc2pl-audit-canonical-0",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [3, 4, 0],
+        "konst": 10
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nvc2pl-audit-canonical-1",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [-3, 4, 2],
+        "konst": -7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nvc2pl-audit-canonical-2",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [0, 0, -2],
+        "konst": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nvc2pl-audit-canonical-3",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [3, 4, 12],
+        "konst": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nvc2pl-audit-canonical-4",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [3e150, 4e150, 0],
+        "konst": 1e151
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nvc2pl-audit-canonical-5",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [3e-150, 4e-150, 0],
+        "konst": 1e-149
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nvc2pl-audit-zero-normal",
+    "description": "Require actual ZEROVECTOR for an undefined plane normal",
+    "workflow": [
+      {
+        "op": "geometry.nvc2pl",
+        "normal": [0, 0, 0],
+        "konst": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ZEROVECTOR)"]
+    }
   }
 ]

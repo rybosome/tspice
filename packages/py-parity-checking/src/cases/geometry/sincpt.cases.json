@@ -62,5 +62,748 @@
     "expectation": {
       "kind": "error"
     }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-badmethod",
+    "description": "Preserve actual BADMETHODSYNTAX instead of generic found-decorator failure",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "BAD",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10, -4, -3]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADMETHODSYNTAX"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-lt",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for LT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-lt-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for LT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT+S",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-cn",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for CN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-cn-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for CN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN+S",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-xlt",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XLT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-xlt-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XLT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT+S",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-xcn",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XCN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-correction-xcn-s",
+    "description": "Observe complete point/vector/angles/flags and target surface epoch for XCN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN+S",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-different-epoch",
+    "description": "Observe full geometry at a negative nonzero TDB epoch and moving observer",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": -125.5,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-bad-method",
+    "description": "Require a structured toolkit method error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "BAD",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADMETHODSYNTAX)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-bad-frame",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "TSPICE_UNKNOWN",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-wrong-center-frame",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for wrong-center-frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "J2000",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-empty-target",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for empty-target",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-same-body",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for same-body",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100101",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-outside-coverage",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for outside-coverage",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 20000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-bad-correction",
+    "description": "Observe actual CSPICE body/frame/epoch/correction behavior for bad-correction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "TSPICE_BAD",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-dsk-facet",
+    "description": "Observe a genuine triangle-interior point/normal on the authored DSK",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-dsk-missing-surface",
+    "description": "Pinned N0067 ILLUMF uses all target DSK surfaces despite a parsed list; other routines require matching data",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "DSK/UNPRIORITIZED/SURFACES=102",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(DSKDATANOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-miss",
+    "description": "A ray directed away from the target is a genuine found:false",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [10, 4, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-zero-ray",
+    "description": "A zero direction is actual ZEROVECTOR, not a successful miss",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ZEROVECTOR)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-bad-direction-frame",
+    "description": "Require actual direction-frame error",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "TSPICE_UNKNOWN",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-sincpt-audit-dsk-rotated-output",
+    "description": "Transform the complete DSK intercept into a distinct body-centered frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.sincpt",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 17.25,
+        "fixref": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10.1725, -3.9655, -3.05175]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]
