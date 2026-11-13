@@ -88,7 +88,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
         "record": null
       },
       {
@@ -105,7 +105,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
         "record": null
       },
       {
@@ -122,7 +122,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
         "record": null
       },
       {
@@ -139,7 +139,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
         "record": null
       },
       {
@@ -172,7 +172,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
         "record": null
       },
       {
@@ -188,7 +188,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
         "record": null
       },
       {
@@ -3977,7 +3977,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 635
+            "line": 607
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -18729,7 +18729,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 659
+            "line": 631
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -18902,7 +18902,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 655
+            "line": 627
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -19075,7 +19075,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 650
+            "line": 622
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -20094,7 +20094,7 @@
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -20112,7 +20112,7 @@
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -24481,7 +24481,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 630
+            "line": 602
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -26385,7 +26385,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 639
+            "line": 611
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -29890,7 +29890,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 625
+            "line": 597
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -29988,7 +29988,7 @@
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -30002,7 +30002,7 @@
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -32665,8 +32665,7 @@
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -32684,8 +32683,7 @@
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -32812,7 +32810,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 643
+            "line": 615
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -32969,7 +32967,7 @@
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -32983,7 +32981,7 @@
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -33197,8 +33195,7 @@
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33216,8 +33213,7 @@
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33428,8 +33424,7 @@
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33447,8 +33442,7 @@
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33684,8 +33678,7 @@
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33703,8 +33696,7 @@
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33936,8 +33928,7 @@
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -33955,8 +33946,7 @@
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34170,8 +34160,7 @@
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34189,8 +34178,7 @@
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34457,8 +34445,7 @@
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34476,8 +34463,7 @@
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34695,8 +34681,7 @@
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-allocation-safety-node-2026-11-12",
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34714,8 +34699,7 @@
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-allocation-safety-wasm-2026-11-12",
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
@@ -34877,7 +34861,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 667
+            "line": 639
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -35094,7 +35078,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 671
+            "line": 643
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -35289,7 +35273,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 663
+            "line": 635
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -35491,7 +35475,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 676
+            "line": 648
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -35625,7 +35609,7 @@
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-node-2026-11-12"
+            "local-file-handles-2026-11-13-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -35639,7 +35623,7 @@
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-opaque-handles-wasm-2026-11-12"
+            "local-file-handles-2026-11-13-wasm"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"

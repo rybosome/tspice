@@ -31,3 +31,21 @@ Keep CI observations tied to the tested source digest; editing audit metadata al
 ## Vector arithmetic pilot
 
 The initial pilot reviews `vadd_c`, `vcrss_c`, `vdot_c`, `vhat_c`, `vminus_c`, `vnorm_c`, `vscl_c`, and `vsub_c`. Eleven additional scenarios cover nonzero normalization (previously absent), wide dynamic range, mixed/reversed operands, cancellation, orthogonality, parallel/zero vectors, and fractional/zero scales. Every scalar or vector component reaches the normal live SpiceyPy comparison. These authored mathematical inputs require no kernels or external scientific data. NAIF documents these routines as error-free for their ordinary finite inputs; the audit records that rationale separately from JavaScript argument validation.
+
+## File-handle prerequisite
+
+The file-reader review reproduced foreign-handle acceptance on actual WASM
+backends: each registry started at ID 1, so a foreign token selected an unrelated
+local DAF/DAS file. File registries now share the existing host-realm opaque token
+issuer with WASM cells/windows and keep owner-local token maps. IDs are never
+reused in that realm, exceed uint32, and are resolved to original signed CSPICE
+handles at every compiled boundary. The old global symbol key is retained so
+separately loaded package copies share the sequence. This change claims no new
+semantically completed routines; file/EK/ephemeris batches still require their
+individual live audits. It does not change worker transport or make tokens
+portable between realms.
+
+`file-handle-ownership.test.ts` exercises real public Node/WASM backends for DAF
+and DAS reads/closes and rejects cell/file category confusion. Core tests cover
+all five registry kinds, native-close failure/retry and stale-token rejection.
+This reuses the #684 cell identity mechanism; no C/WASM regeneration is needed.

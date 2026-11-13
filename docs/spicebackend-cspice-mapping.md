@@ -251,3 +251,14 @@ Most routines in this domain are **pure math** and require no kernels.
 ### Opaque cell identity
 
 WASM cells/windows use host-issued opaque integer tokens above the uint32 range, with private token-to-pointer maps scoped to each module. Tokens are never reused within that host realm. Pointer reuse therefore cannot revive a freed handle or alias another live WASM instance. All raw cell/window consumers resolve tokens at the compiled boundary, including kplfrm, SPK/CK coverage/object queries, DSK object/surface queries, GF searches and progress-reporter initialization. Preserve the complete numeric handle and keep it with its owning process/module; handles are not portable across isolated workers or processes.
+
+### File handle ownership
+
+File APIs expose backend-owned opaque `SpiceHandle` tokens, not portable CSPICE
+handle numbers. Within one host realm, the shared issuer prevents tokens from
+separate registry/backend instances or WASM cells/windows from colliding. Each
+registry checks its own live token and expected file kind before invoking the
+compiled operation; a successful close invalidates the token, and a failed
+native close retains it for cleanup retry. The alias `dlacls` retains the same
+DAS/DLA ownership checks as `dascls`. File/EK/ephemeris semantic audit status is
+tracked separately from this shared ownership prerequisite.
