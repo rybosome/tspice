@@ -341,8 +341,8 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
-        "record": null
+        "nextAction": "Run both required local lanes on the eight-routine UTC/SCLK audit, record evidence, open the bounded PR and observe CI.",
+        "record": "data/parity-audits/time-1.json"
       },
       {
         "id": "time-2",
@@ -363,16 +363,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 145,
+        "reviewed": 17,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 153,
-        "reviewed": 0,
+        "unreviewed": 145,
+        "reviewed": 17,
         "needs-repair": 0,
-        "verified": 9
+        "verified": 0
       }
     }
   },
@@ -391,7 +391,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 319,
+    "scenarios": 346,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -7854,7 +7854,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 44
+          "line": 54
         }
       },
       "mapping": {
@@ -7894,7 +7894,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -7914,7 +7914,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 69
+            "line": 74
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -7955,7 +7955,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 499
+            "line": 504
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -7982,6 +7982,30 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-deltet-audit-both-input-scales-and-leap-step",
+            "source": "packages/py-parity-checking/src/cases/time/deltet.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.deltet"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: deltet: both input scales and leap step, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-deltet-happy-et-with-lsk",
             "source": "packages/py-parity-checking/src/cases/time/deltet.cases.json",
             "expectation": "success",
@@ -7995,7 +8019,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Computes ET-UTC delta at J2000 ET with LSK loaded",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-deltet-missing-lsk-error",
@@ -8005,18 +8037,46 @@
               "time.deltet"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Representative deltet error when leap-seconds kernel is not loaded",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.deltet -> Node adapter with integer validation -> serialized native handler -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.deltet -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -13811,7 +13871,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 27
+          "line": 34
         }
       },
       "mapping": {
@@ -13851,7 +13911,7 @@
             "reset_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -13871,7 +13931,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 62
+            "line": 66
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -13912,7 +13972,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 496
+            "line": 498
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -13939,6 +13999,116 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+            "source": "packages/py-parity-checking/src/cases/time/et2utc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.et2utc"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: all formats signed fractional and clamped precision, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-et2utc-audit-before-common-era-calendar",
+            "source": "packages/py-parity-checking/src/cases/time/et2utc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.et2utc"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Calendar/day formats retain era text for epochs before 1 AD.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-et2utc-audit-before-common-era-iso-error",
+            "source": "packages/py-parity-checking/src/cases/time/et2utc.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.et2utc"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: ISO formats cannot represent a B.C. era and must signal YEAROUTOFRANGE.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-et2utc-audit-missing-leap-information",
+            "source": "packages/py-parity-checking/src/cases/time/et2utc.cases.json",
+            "expectation": "error",
+            "operations": [
+              "time.et2utc"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: missing leap information, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-et2utc-audit-utc-leap-second-rounding",
+            "source": "packages/py-parity-checking/src/cases/time/et2utc.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.et2utc"
+            ],
+            "paths": [
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: utc leap second rounding, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-et2utc-happy-isoc",
             "source": "packages/py-parity-checking/src/cases/time/et2utc.cases.json",
             "expectation": "success",
@@ -13952,7 +14122,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Formats J2000 epoch ET as UTC ISO calendar string",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-et2utc-invalid-format-error",
@@ -13962,18 +14140,46 @@
               "time.et2utc"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Representative formatting error with unsupported format token",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.et2utc -> Node adapter with integer validation -> serialized native handler -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.et2utc -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -20071,7 +20277,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
@@ -20079,7 +20286,7 @@
             "local-boundaries-node-2026-11-12",
             "ci-boundaries-node-43310416805"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20087,7 +20294,8 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
@@ -20095,7 +20303,7 @@
             "local-boundaries-wasm-2026-11-12",
             "ci-boundaries-wasm-43310416805"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -24536,7 +24744,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 126
+          "line": 150
         }
       },
       "mapping": {
@@ -24576,7 +24784,7 @@
             "scdecd_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -24596,7 +24804,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 138
+            "line": 146
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -24637,7 +24845,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 523
+            "line": 541
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -24664,6 +24872,52 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+            "source": "packages/py-parity-checking/src/cases/time/scdecd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.scdecd"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-scdecd-audit-negative-clock-range",
+            "source": "packages/py-parity-checking/src/cases/time/scdecd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.scdecd"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: negative clock range, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-scdecd-happy-with-cook-sclk",
             "source": "packages/py-parity-checking/src/cases/time/scdecd.cases.json",
             "expectation": "success",
@@ -24681,7 +24935,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Decodes cookbook SCLK ticks to partitioned clock string",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-scdecd-missing-sclk-error",
@@ -24697,18 +24959,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Representative scdecd error when SCLK kernel is not loaded",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scdecd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scdecd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -24724,7 +25014,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 148
+          "line": 176
         }
       },
       "mapping": {
@@ -24764,7 +25054,7 @@
             "sce2c_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -24784,7 +25074,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 153
+            "line": 163
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -24825,7 +25115,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 525
+            "line": 549
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -24852,6 +25142,104 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-sce2c-audit-fractional-tick-versus-rounded-string",
+            "source": "packages/py-parity-checking/src/cases/time/sce2c.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.sce2c"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sce2c-audit-negative-epoch-range",
+            "source": "packages/py-parity-checking/src/cases/time/sce2c.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.sce2c"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: negative epoch range, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/sce2c.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.sce2c"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/sce2c.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.sce2c"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-sce2c-happy-with-cook-sclk",
             "source": "packages/py-parity-checking/src/cases/time/sce2c.cases.json",
             "expectation": "success",
@@ -24869,7 +25257,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Converts cookbook ET to encoded SCLK ticks",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-sce2c-missing-sclk-error",
@@ -24885,18 +25281,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Representative sce2c error when SCLK kernel is missing",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2c -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2c -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -24912,7 +25336,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 106
+          "line": 126
         }
       },
       "mapping": {
@@ -24952,7 +25376,7 @@
             "sce2s_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -24972,7 +25396,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 123
+            "line": 129
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25013,7 +25437,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 520
+            "line": 532
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25040,6 +25464,104 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-sce2s-audit-fractional-tick-versus-rounded-string",
+            "source": "packages/py-parity-checking/src/cases/time/sce2s.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.sce2s"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sce2s-audit-negative-epoch-range",
+            "source": "packages/py-parity-checking/src/cases/time/sce2s.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.sce2s"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: negative epoch range, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/sce2s.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.sce2s"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Non-TDB clock mapping requires actual LSK conversion information.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/sce2s.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.sce2s"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-sce2s-happy-with-cook-sclk",
             "source": "packages/py-parity-checking/src/cases/time/sce2s.cases.json",
             "expectation": "success",
@@ -25057,7 +25579,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Formats cookbook ET into spacecraft clock string",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-sce2s-missing-sclk-error",
@@ -25073,18 +25603,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Representative sce2s error when SCLK kernel is not loaded",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2s -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2s -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -25107,7 +25665,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 116
+          "line": 138
         }
       },
       "mapping": {
@@ -25147,7 +25705,7 @@
             "scencd_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -25167,7 +25725,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 129
+            "line": 136
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25208,7 +25766,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 522
+            "line": 537
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25235,6 +25793,74 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-scencd-audit-bad-partition",
+            "source": "packages/py-parity-checking/src/cases/time/scencd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.scencd"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: bad partition, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-scencd-audit-empty-clock-string",
+            "source": "packages/py-parity-checking/src/cases/time/scencd.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.scencd"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: empty clock string, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+            "source": "packages/py-parity-checking/src/cases/time/scencd.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.scencd"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-scencd-happy-with-cook-sclk",
             "source": "packages/py-parity-checking/src/cases/time/scencd.cases.json",
             "expectation": "success",
@@ -25252,7 +25878,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Encodes cookbook SCLK string into ticks",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-scencd-missing-sclk-error",
@@ -25268,18 +25902,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Representative scencd error when SCLK kernel is not loaded",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scencd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scencd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -25309,7 +25971,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 103
+          "line": 118
         }
       },
       "mapping": {
@@ -25349,7 +26011,7 @@
             "scs2e_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -25369,7 +26031,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 117
+            "line": 122
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25410,7 +26072,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 519
+            "line": 528
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25437,6 +26099,104 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-scs2e-audit-bad-partition",
+            "source": "packages/py-parity-checking/src/cases/time/scs2e.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.scs2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: bad partition, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/scs2e.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.scs2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Non-TDB clock mapping requires actual LSK conversion information.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/scs2e.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.scs2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+            "source": "packages/py-parity-checking/src/cases/time/scs2e.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.scs2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-scs2e-happy-with-cook-sclk",
             "source": "packages/py-parity-checking/src/cases/time/scs2e.cases.json",
             "expectation": "success",
@@ -25454,7 +26214,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Converts cookbook spacecraft clock string to ET",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-scs2e-missing-sclk-error",
@@ -25470,18 +26238,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Representative scs2e error when SCLK kernel is missing",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scs2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scs2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -25497,7 +26293,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 137
+          "line": 163
         }
       },
       "mapping": {
@@ -25537,7 +26333,7 @@
             "sct2e_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -25557,7 +26353,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 147
+            "line": 156
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25598,7 +26394,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 524
+            "line": 545
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -25625,6 +26421,104 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+            "source": "packages/py-parity-checking/src/cases/time/sct2e.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernels.furnsh",
+              "time.sct2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sct2e-audit-negative-clock-range",
+            "source": "packages/py-parity-checking/src/cases/time/sct2e.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernels.furnsh",
+              "time.sct2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: negative clock range, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/sct2e.cases.json",
+            "expectation": "error",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.sct2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
+            "caseId": "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+            "source": "packages/py-parity-checking/src/cases/time/sct2e.cases.json",
+            "expectation": "success",
+            "operations": [
+              "kernel-pool.pipool",
+              "kernels.furnsh",
+              "time.sct2e"
+            ],
+            "paths": [
+              {
+                "path": "kernels/audit-two-partition.tsc",
+                "kind": "checked-in-fixture"
+              },
+              {
+                "path": "kernels/naif0012.tls",
+                "kind": "checked-in-fixture"
+              }
+            ],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion.",
+              "record": "data/parity-audits/time-1.json"
+            }
+          },
+          {
             "caseId": "time-sct2e-happy-with-cook-sclk",
             "source": "packages/py-parity-checking/src/cases/time/sct2e.cases.json",
             "expectation": "success",
@@ -25642,7 +26536,15 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge",
+                "state"
+              ],
+              "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Converts cookbook encoded SCLK ticks to ET",
+              "record": "data/parity-audits/time-1.json"
+            }
           },
           {
             "caseId": "time-sct2e-missing-sclk-error",
@@ -25658,18 +26560,46 @@
                 "kind": "checked-in-fixture"
               }
             ],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Representative sct2e error when SCLK kernel is not loaded",
+              "record": "data/parity-audits/time-1.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
         "batch": "time-1",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sct2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sct2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": [
+            "local-utc-sclk-2026-11-12-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/time-1.json"
         }
       }
     },
@@ -30026,7 +30956,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 59
+            "line": 63
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -30067,7 +30997,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 495
+            "line": 497
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -30981,7 +31911,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 96
+          "line": 106
         }
       },
       "mapping": {
@@ -31052,7 +31982,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 115
+            "line": 120
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31106,7 +32036,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 457
+            "line": 459
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31178,7 +32108,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 34
+          "line": 41
         }
       },
       "mapping": {
@@ -31238,7 +32168,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 65
+            "line": 70
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31279,7 +32209,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 497
+            "line": 502
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31437,7 +32367,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 49
+            "line": 53
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31478,12 +32408,12 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 450
+            "line": 452
           },
           "factory": "createTimeApi",
           "delegation": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 421
+            "line": 423
           },
           "routePolicy": {
             "classification": "cached-shim-result",
@@ -31565,7 +32495,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 73
+          "line": 83
         }
       },
       "mapping": {
@@ -31625,7 +32555,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 91
+            "line": 96
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31666,7 +32596,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 503
+            "line": 512
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31737,7 +32667,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 86
+          "line": 96
         }
       },
       "mapping": {
@@ -31797,7 +32727,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 100
+            "line": 105
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -31838,7 +32768,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 509
+            "line": 518
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -32021,7 +32951,7 @@
         "domain": "time",
         "evidence": {
           "file": "packages/backend-contract/src/domains/time.ts",
-          "line": 54
+          "line": 64
         }
       },
       "mapping": {
@@ -32081,7 +33011,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/time.ts",
-            "line": 82
+            "line": 87
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -32122,7 +33052,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/time.ts",
-            "line": 500
+            "line": 509
           },
           "factory": "createTimeApi",
           "delegation": null,
@@ -32583,7 +33513,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
@@ -32591,7 +33522,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -32601,7 +33532,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
@@ -32609,7 +33541,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -32997,7 +33929,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
@@ -33005,7 +33938,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33015,7 +33948,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
@@ -33023,7 +33957,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33226,7 +34160,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
@@ -33234,7 +34169,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33244,7 +34179,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
@@ -33252,7 +34188,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33480,7 +34416,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
@@ -33488,7 +34425,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33498,7 +34435,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
@@ -33506,7 +34444,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33730,7 +34668,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
@@ -33738,7 +34677,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33748,7 +34687,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
@@ -33756,7 +34696,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33962,7 +34902,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
@@ -33970,7 +34911,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33980,7 +34921,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
@@ -33988,7 +34930,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34247,7 +35189,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
@@ -34255,7 +35198,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34265,7 +35208,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
@@ -34273,7 +35217,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34483,7 +35427,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
@@ -34491,7 +35436,7 @@
             "local-regenerated-node-2026-11-12",
             "ci-regenerated-node-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34501,7 +35446,8 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
@@ -34509,7 +35455,7 @@
             "local-regenerated-wasm-2026-11-12",
             "ci-regenerated-wasm-43300708314"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }

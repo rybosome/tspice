@@ -3,15 +3,96 @@
     "caseId": "time-deltet-happy-et-with-lsk",
     "description": "Computes ET-UTC delta at J2000 ET with LSK loaded",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.deltet", "epoch": 0, "eptype": "ET" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 0,
+        "eptype": "ET"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-deltet-missing-lsk-error",
     "description": "Representative deltet error when leap-seconds kernel is not loaded",
-    "workflow": [{ "op": "time.deltet", "epoch": 0, "eptype": "ET" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "time.deltet",
+        "epoch": 0,
+        "eptype": "ET"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-deltet-audit-both-input-scales-and-leap-step",
+    "description": "deltet: both input scales and leap step, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": -86400,
+        "eptype": "UTC"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 0,
+        "eptype": "UTC"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 86400,
+        "eptype": "UTC"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 536500799,
+        "eptype": "UTC"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 536500800,
+        "eptype": "UTC"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": -86400,
+        "eptype": "ET"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 0,
+        "eptype": "ET"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 86400,
+        "eptype": "ET"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 536500868.184,
+        "eptype": "ET"
+      },
+      {
+        "op": "time.deltet",
+        "epoch": 536500870.184,
+        "eptype": "ET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -15,6 +15,11 @@
   - `mgs_hga_hinge_v2.bc`
 - Added package-local fixed EK fixture:
   - `py-parity-minimal.ek`
+- Added package-local authored synthetic clock:
+  - `audit-two-partition.tsc`: two fields (256 ticks per major unit), two
+    partitions sharing encoded tick 1023, and a linear TDB correlation. It models
+    no real spacecraft or measurements; its constants were authored for these
+    tests and are distributed under the repository license.
 - Added package-local ids-names fixture:
   - `ids-names-body399-vars.tpc`
 

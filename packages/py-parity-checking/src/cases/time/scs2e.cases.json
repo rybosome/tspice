@@ -3,19 +3,159 @@
     "caseId": "time-scs2e-happy-with-cook-sclk",
     "description": "Converts cookbook spacecraft clock string to ET",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
-      { "op": "time.scs2e", "sc": -77, "sclkch": "593328:90:5:0" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/cook_01.tsc"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -77,
+        "sclkch": "593328:90:5:0"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-scs2e-missing-sclk-error",
     "description": "Representative scs2e error when SCLK kernel is missing",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.scs2e", "sc": -77, "sclkch": "593328:90:5:0" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -77,
+        "sclkch": "593328:90:5:0"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+    "description": "scs2e: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "1/0:0"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "1/1:64"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "1/3:255"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "2/4:0"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "2/4:1"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "2/15:255"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "0:256"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scs2e-audit-bad-partition",
+    "description": "scs2e: bad partition, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "3/0:0"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADPARTNUMBER"]
+    }
+  },
+  {
+    "caseId": "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+    "description": "Non-TDB clock mapping requires actual LSK conversion information.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "1/1:64"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGTIMEINFO"]
+    }
+  },
+  {
+    "caseId": "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+    "description": "Loading LSK makes non-TDB clock mapping perform the actual time-system conversion.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.scs2e",
+        "sc": -12345,
+        "sclkch": "1/1:64"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -3,19 +3,127 @@
     "caseId": "time-scencd-happy-with-cook-sclk",
     "description": "Encodes cookbook SCLK string into ticks",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
-      { "op": "time.scencd", "sc": -77, "sclkch": "593328:90:5:0" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/cook_01.tsc"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -77,
+        "sclkch": "593328:90:5:0"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-scencd-missing-sclk-error",
     "description": "Representative scencd error when SCLK kernel is not loaded",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.scencd", "sc": -77, "sclkch": "593328:90:5:0" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -77,
+        "sclkch": "593328:90:5:0"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+    "description": "scencd: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "1/0:0"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "1/1:64"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "1/3:255"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "2/4:0"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "2/4:1"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "2/15:255"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "0:256"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-scencd-audit-bad-partition",
+    "description": "scencd: bad partition, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": "3/0:0"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADPARTNUMBER"]
+    }
+  },
+  {
+    "caseId": "time-scencd-audit-empty-clock-string",
+    "description": "scencd: empty clock string, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.scencd",
+        "sc": -12345,
+        "sclkch": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
   }
 ]

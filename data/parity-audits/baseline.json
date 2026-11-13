@@ -308,7 +308,7 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Run both required local lanes on the eight-routine UTC/SCLK audit, record evidence, open the bounded PR and observe CI."
     },
     {
       "id": "time-2",

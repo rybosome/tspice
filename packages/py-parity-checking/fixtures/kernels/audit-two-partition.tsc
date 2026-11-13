@@ -1,0 +1,18 @@
+KPL/SCLK
+
+Synthetic two-field, two-partition type-1 clock authored for tspice parity tests.
+There are 256 ticks per major unit and one TDB second per major unit. The two
+partitions share an encoded boundary at tick 1023. These constants model no real
+spacecraft or measurements and are distributed under the repository license.
+
+\begindata
+SCLK_DATA_TYPE_12345       = ( 1 )
+SCLK01_TIME_SYSTEM_12345   = ( 1 )
+SCLK01_N_FIELDS_12345      = ( 2 )
+SCLK01_MODULI_12345        = ( 1000000 256 )
+SCLK01_OFFSETS_12345       = ( 0 0 )
+SCLK01_OUTPUT_DELIM_12345  = ( 1 )
+SCLK_PARTITION_START_12345 = ( 0 1024 )
+SCLK_PARTITION_END_12345   = ( 1023 4095 )
+SCLK01_COEFFICIENTS_12345  = ( 0 0 1 )
+\begintext

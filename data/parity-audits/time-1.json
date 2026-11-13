@@ -1,0 +1,935 @@
+{
+  "schemaVersion": 1,
+  "batch": "time-1",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/py-parity-checking/test/sclk-boundaries.test.ts",
+    "packages/backend-wasm/test/sclk-allocation-cleanup.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-utc-sclk-2026-11-12-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3429e767aa075a38dfaebe42961734d88c52a3456dadd0126ae7a09f476611b4",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both required local JS/native lanes passed using the actual production N0067 native addon and checked-in WASM. Native build/load and sanity ran; all 686 live parity tests (343 scenarios per backend), all 721 parity-package tests, 80 WASM tests, 57 native tests and 101 facade tests passed with no required native skips. Four actual-backend numeric/string/selector and same-instance recovery tests passed; all 20 temporary allocation failure positions released prior buffers. Forty-three UTC/SCLK scenarios include the authored two-partition clock, exact small fractional ticks, later-partition boundary selection, non-TDB correlation with/without LSK, all UTC formats, precision clamps, leap rounding and B.C. era/ISO errors. A failing-before actual WASM boundary test exposed unchecked spacecraft/precision conversion; precise missing-info names were established with the exact live input. All 37 ledger regressions and doctor/format/lint passed. No C or compiled WASM artifacts changed; new fixture is repository-authored synthetic constants, not scientific data. macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15.",
+      "historical": true
+    },
+    {
+      "id": "local-utc-sclk-2026-11-12-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3429e767aa075a38dfaebe42961734d88c52a3456dadd0126ae7a09f476611b4",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both required local JS/native lanes passed using the actual production N0067 native addon and checked-in WASM. Native build/load and sanity ran; all 686 live parity tests (343 scenarios per backend), all 721 parity-package tests, 80 WASM tests, 57 native tests and 101 facade tests passed with no required native skips. Four actual-backend numeric/string/selector and same-instance recovery tests passed; all 20 temporary allocation failure positions released prior buffers. Forty-three UTC/SCLK scenarios include the authored two-partition clock, exact small fractional ticks, later-partition boundary selection, non-TDB correlation with/without LSK, all UTC formats, precision clamps, leap rounding and B.C. era/ISO errors. A failing-before actual WASM boundary test exposed unchecked spacecraft/precision conversion; precise missing-info names were established with the exact live input. All 37 ledger regressions and doctor/format/lint passed. No C or compiled WASM artifacts changed; new fixture is repository-authored synthetic constants, not scientific data. macOS arm64/Node22.23.4/pnpm10.13.1/locked SpiceyPy6.0.3/Python3.12.15.",
+      "historical": true
+    }
+  ],
+  "routines": [
+    {
+      "routine": "deltet_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/deltet_c.html",
+      "semantics": "Returns ET minus UTC in seconds at an epoch expressed as formal UTC or ET seconds past J2000. Epoch scale matters near a leap boundary; UTC and ET queries are not interchangeable inputs. Both uppercase selectors are the existing typed contract. Required LSK/relativistic variables must be present.",
+      "scenarios": [
+        {
+          "caseId": "time-deltet-happy-et-with-lsk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Computes ET-UTC delta at J2000 ET with LSK loaded"
+        },
+        {
+          "caseId": "time-deltet-missing-lsk-error",
+          "coverage": ["error"],
+          "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Representative deltet error when leap-seconds kernel is not loaded"
+        },
+        {
+          "caseId": "time-deltet-audit-both-input-scales-and-leap-step",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: deltet: both input scales and leap step, observe actual output or named diagnostic with live SpiceyPy"
+        }
+      ],
+      "edgeAssessment": "Returns ET minus UTC in seconds at an epoch expressed as formal UTC or ET seconds past J2000. Epoch scale matters near a leap boundary; UTC and ET queries are not interchangeable inputs. Both uppercase selectors are the existing typed contract. Required LSK/relativistic variables must be present. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/deltet.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-deltet-happy-et-with-lsk",
+            "time-deltet-audit-both-input-scales-and-leap-step"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.deltet -> Node adapter with integer validation -> serialized native handler -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.deltet -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "et2utc_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/et2utc_c.html",
+      "semantics": "Converts ET/TDB seconds past J2000 to UTC C/D/J/ISOC/ISOD strings with LSK data. Signed integer precision is clamped by CSPICE to [0,14], not truncated from fractions or wrapped. Calendar/ordinal formats include era text for early epochs; ISO before 1 AD signals YEAROUTOFRANGE. Full returned strings preserve format and rounding.",
+      "scenarios": [
+        {
+          "caseId": "time-et2utc-happy-isoc",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Formats J2000 epoch ET as UTC ISO calendar string"
+        },
+        {
+          "caseId": "time-et2utc-invalid-format-error",
+          "coverage": ["error"],
+          "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Representative formatting error with unsupported format token"
+        },
+        {
+          "caseId": "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: all formats signed fractional and clamped precision, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-et2utc-audit-utc-leap-second-rounding",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: utc leap second rounding, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-et2utc-audit-missing-leap-information",
+          "coverage": ["error"],
+          "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: missing leap information, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-et2utc-audit-before-common-era-calendar",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Calendar/day formats retain era text for epochs before 1 AD."
+        },
+        {
+          "caseId": "time-et2utc-audit-before-common-era-iso-error",
+          "coverage": ["error"],
+          "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: ISO formats cannot represent a B.C. era and must signal YEAROUTOFRANGE."
+        }
+      ],
+      "edgeAssessment": "Converts ET/TDB seconds past J2000 to UTC C/D/J/ISOC/ISOD strings with LSK data. Signed integer precision is clamped by CSPICE to [0,14], not truncated from fractions or wrapped. Calendar/ordinal formats include era text for early epochs; ISO before 1 AD signals YEAROUTOFRANGE. Full returned strings preserve format and rounding. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "unchecked-spiceint-conversion",
+          "status": "repaired",
+          "summary": "Native Int32Value/WASM conversion could truncate fractional or wrap large spacecraft IDs/precision, silently selecting different input semantics. A failing-before actual WASM boundary test confirmed missing validation.",
+          "repair": "Validate spacecraft IDs for all six clock methods and et2utc precision as signed SpiceInt before conversion. Keep valid negative/large integer precision clamping; direct backend tests reject fractional/nonfinite/wrapped values.",
+          "evidence": [
+            "packages/backend-node/src/domains/time.ts",
+            "packages/backend-wasm/src/domains/time.ts",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-et2utc-happy-isoc",
+            "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+            "time-et2utc-audit-utc-leap-second-rounding",
+            "time-et2utc-audit-before-common-era-calendar"
+          ]
+        },
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/et2utc.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-et2utc-happy-isoc",
+            "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+            "time-et2utc-audit-utc-leap-second-rounding",
+            "time-et2utc-audit-before-common-era-calendar"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.et2utc -> Node adapter with integer validation -> serialized native handler -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.et2utc -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "scdecd_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scdecd_c.html",
+      "semantics": "Decodes encoded mission ticks into the clock-specific partitioned string. Fractional ticks round to nearest whole tick; the later partition is chosen at a shared boundary. Negative/out-of-mission counts signal VALUEOUTOFRANGE. The spacecraft ID must fit signed SpiceInt.",
+      "scenarios": [
+        {
+          "caseId": "time-scdecd-happy-with-cook-sclk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Decodes cookbook SCLK ticks to partitioned clock string"
+        },
+        {
+          "caseId": "time-scdecd-missing-sclk-error",
+          "coverage": ["error"],
+          "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Representative scdecd error when SCLK kernel is not loaded"
+        },
+        {
+          "caseId": "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-scdecd-audit-negative-clock-range",
+          "coverage": ["error"],
+          "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: negative clock range, observe actual output or named diagnostic with live SpiceyPy"
+        }
+      ],
+      "edgeAssessment": "Decodes encoded mission ticks into the clock-specific partitioned string. Fractional ticks round to nearest whole tick; the later partition is chosen at a shared boundary. Negative/out-of-mission counts signal VALUEOUTOFRANGE. The spacecraft ID must fit signed SpiceInt. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/cook_01.tsc",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. Galileo GLL 00003 SCLK kernel, released 1990-12-07 per its header.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "unchecked-spiceint-conversion",
+          "status": "repaired",
+          "summary": "Native Int32Value/WASM conversion could truncate fractional or wrap large spacecraft IDs/precision, silently selecting different input semantics. A failing-before actual WASM boundary test confirmed missing validation.",
+          "repair": "Validate spacecraft IDs for all six clock methods and et2utc precision as signed SpiceInt before conversion. Keep valid negative/large integer precision clamping; direct backend tests reject fractional/nonfinite/wrapped values.",
+          "evidence": [
+            "packages/backend-node/src/domains/time.ts",
+            "packages/backend-wasm/src/domains/time.ts",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-scdecd-happy-with-cook-sclk",
+            "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count"
+          ]
+        },
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/scdecd.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-scdecd-happy-with-cook-sclk",
+            "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scdecd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scdecd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sce2c_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sce2c_c.html",
+      "semantics": "Converts ET seconds past J2000 to encoded mission ticks without rounding fractional ticks. Uses the signed spacecraft ID, partition offsets and clock correlation; range/missing metadata are real errors. Non-TDB correlation needs LSK conversion constants.",
+      "scenarios": [
+        {
+          "caseId": "time-sce2c-happy-with-cook-sclk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Converts cookbook ET to encoded SCLK ticks"
+        },
+        {
+          "caseId": "time-sce2c-missing-sclk-error",
+          "coverage": ["error"],
+          "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Representative sce2c error when SCLK kernel is missing"
+        },
+        {
+          "caseId": "time-sce2c-audit-fractional-tick-versus-rounded-string",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sce2c-audit-negative-epoch-range",
+          "coverage": ["error"],
+          "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: negative epoch range, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+          "coverage": ["error"],
+          "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
+        }
+      ],
+      "edgeAssessment": "Converts ET seconds past J2000 to encoded mission ticks without rounding fractional ticks. Uses the signed spacecraft ID, partition offsets and clock correlation; range/missing metadata are real errors. Non-TDB correlation needs LSK conversion constants. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/cook_01.tsc",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. Galileo GLL 00003 SCLK kernel, released 1990-12-07 per its header.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "unchecked-spiceint-conversion",
+          "status": "repaired",
+          "summary": "Native Int32Value/WASM conversion could truncate fractional or wrap large spacecraft IDs/precision, silently selecting different input semantics. A failing-before actual WASM boundary test confirmed missing validation.",
+          "repair": "Validate spacecraft IDs for all six clock methods and et2utc precision as signed SpiceInt before conversion. Keep valid negative/large integer precision clamping; direct backend tests reject fractional/nonfinite/wrapped values.",
+          "evidence": [
+            "packages/backend-node/src/domains/time.ts",
+            "packages/backend-wasm/src/domains/time.ts",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-sce2c-happy-with-cook-sclk",
+            "time-sce2c-audit-fractional-tick-versus-rounded-string",
+            "time-sce2c-audit-non-tdb-clock-with-conversion-info"
+          ]
+        },
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/sce2c.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-sce2c-happy-with-cook-sclk",
+            "time-sce2c-audit-fractional-tick-versus-rounded-string",
+            "time-sce2c-audit-non-tdb-clock-with-conversion-info"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2c -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2c -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sce2s_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sce2s_c.html",
+      "semantics": "Converts ET seconds past J2000 to a partitioned formatted clock string for the signed spacecraft ID. It rounds to a whole tick, unlike sce2c fractional output. Partition selection follows toolkit semantics; out-of-mission ET and missing/conditional conversion information are errors.",
+      "scenarios": [
+        {
+          "caseId": "time-sce2s-happy-with-cook-sclk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Formats cookbook ET into spacecraft clock string"
+        },
+        {
+          "caseId": "time-sce2s-missing-sclk-error",
+          "coverage": ["error"],
+          "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Representative sce2s error when SCLK kernel is not loaded"
+        },
+        {
+          "caseId": "time-sce2s-audit-fractional-tick-versus-rounded-string",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sce2s-audit-negative-epoch-range",
+          "coverage": ["error"],
+          "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: negative epoch range, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+          "coverage": ["error"],
+          "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Non-TDB clock mapping requires actual LSK conversion information."
+        },
+        {
+          "caseId": "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
+        }
+      ],
+      "edgeAssessment": "Converts ET seconds past J2000 to a partitioned formatted clock string for the signed spacecraft ID. It rounds to a whole tick, unlike sce2c fractional output. Partition selection follows toolkit semantics; out-of-mission ET and missing/conditional conversion information are errors. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/cook_01.tsc",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. Galileo GLL 00003 SCLK kernel, released 1990-12-07 per its header.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "unchecked-spiceint-conversion",
+          "status": "repaired",
+          "summary": "Native Int32Value/WASM conversion could truncate fractional or wrap large spacecraft IDs/precision, silently selecting different input semantics. A failing-before actual WASM boundary test confirmed missing validation.",
+          "repair": "Validate spacecraft IDs for all six clock methods and et2utc precision as signed SpiceInt before conversion. Keep valid negative/large integer precision clamping; direct backend tests reject fractional/nonfinite/wrapped values.",
+          "evidence": [
+            "packages/backend-node/src/domains/time.ts",
+            "packages/backend-wasm/src/domains/time.ts",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-sce2s-happy-with-cook-sclk",
+            "time-sce2s-audit-fractional-tick-versus-rounded-string",
+            "time-sce2s-audit-non-tdb-clock-with-conversion-info"
+          ]
+        },
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/sce2s.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-sce2s-happy-with-cook-sclk",
+            "time-sce2s-audit-fractional-tick-versus-rounded-string",
+            "time-sce2s-audit-non-tdb-clock-with-conversion-info"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2s -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sce2s -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "scencd_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scencd_c.html",
+      "semantics": "Encodes a formatted optionally partitioned clock string to mission ticks using the signed spacecraft ID and loaded SCLK kernel. Clock fields may roll over; partition offsets are included. Shared partition endpoints encode identically, inferred partition and explicit partition forms are accepted where valid. Bad partitions/empty strings/missing clock data are real errors.",
+      "scenarios": [
+        {
+          "caseId": "time-scencd-happy-with-cook-sclk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Encodes cookbook SCLK string into ticks"
+        },
+        {
+          "caseId": "time-scencd-missing-sclk-error",
+          "coverage": ["error"],
+          "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Representative scencd error when SCLK kernel is not loaded"
+        },
+        {
+          "caseId": "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-scencd-audit-bad-partition",
+          "coverage": ["error"],
+          "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: bad partition, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-scencd-audit-empty-clock-string",
+          "coverage": ["error"],
+          "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: empty clock string, observe actual output or named diagnostic with live SpiceyPy"
+        }
+      ],
+      "edgeAssessment": "Encodes a formatted optionally partitioned clock string to mission ticks using the signed spacecraft ID and loaded SCLK kernel. Clock fields may roll over; partition offsets are included. Shared partition endpoints encode identically, inferred partition and explicit partition forms are accepted where valid. Bad partitions/empty strings/missing clock data are real errors. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/cook_01.tsc",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. Galileo GLL 00003 SCLK kernel, released 1990-12-07 per its header.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "unchecked-spiceint-conversion",
+          "status": "repaired",
+          "summary": "Native Int32Value/WASM conversion could truncate fractional or wrap large spacecraft IDs/precision, silently selecting different input semantics. A failing-before actual WASM boundary test confirmed missing validation.",
+          "repair": "Validate spacecraft IDs for all six clock methods and et2utc precision as signed SpiceInt before conversion. Keep valid negative/large integer precision clamping; direct backend tests reject fractional/nonfinite/wrapped values.",
+          "evidence": [
+            "packages/backend-node/src/domains/time.ts",
+            "packages/backend-wasm/src/domains/time.ts",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-scencd-happy-with-cook-sclk",
+            "time-scencd-audit-partitions-shared-boundary-and-field-rollover"
+          ]
+        },
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/scencd.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-scencd-happy-with-cook-sclk",
+            "time-scencd-audit-partitions-shared-boundary-and-field-rollover"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scencd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scencd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "scs2e_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scs2e_c.html",
+      "semantics": "Converts a formatted, optionally partitioned clock string to ET seconds past J2000 for a signed spacecraft ID. It composes the toolkit clock encoding/time correlation internally, preserving partition offsets and field normalization. TDB clock correlations work without LSK; non-TDB correlations need conversion constants.",
+      "scenarios": [
+        {
+          "caseId": "time-scs2e-happy-with-cook-sclk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Converts cookbook spacecraft clock string to ET"
+        },
+        {
+          "caseId": "time-scs2e-missing-sclk-error",
+          "coverage": ["error"],
+          "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Representative scs2e error when SCLK kernel is missing"
+        },
+        {
+          "caseId": "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-scs2e-audit-bad-partition",
+          "coverage": ["error"],
+          "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: bad partition, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+          "coverage": ["error"],
+          "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Non-TDB clock mapping requires actual LSK conversion information."
+        },
+        {
+          "caseId": "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
+        }
+      ],
+      "edgeAssessment": "Converts a formatted, optionally partitioned clock string to ET seconds past J2000 for a signed spacecraft ID. It composes the toolkit clock encoding/time correlation internally, preserving partition offsets and field normalization. TDB clock correlations work without LSK; non-TDB correlations need conversion constants. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/cook_01.tsc",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. Galileo GLL 00003 SCLK kernel, released 1990-12-07 per its header.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "unchecked-spiceint-conversion",
+          "status": "repaired",
+          "summary": "Native Int32Value/WASM conversion could truncate fractional or wrap large spacecraft IDs/precision, silently selecting different input semantics. A failing-before actual WASM boundary test confirmed missing validation.",
+          "repair": "Validate spacecraft IDs for all six clock methods and et2utc precision as signed SpiceInt before conversion. Keep valid negative/large integer precision clamping; direct backend tests reject fractional/nonfinite/wrapped values.",
+          "evidence": [
+            "packages/backend-node/src/domains/time.ts",
+            "packages/backend-wasm/src/domains/time.ts",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-scs2e-happy-with-cook-sclk",
+            "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+            "time-scs2e-audit-non-tdb-clock-with-conversion-info"
+          ]
+        },
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/scs2e.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-scs2e-happy-with-cook-sclk",
+            "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+            "time-scs2e-audit-non-tdb-clock-with-conversion-info"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scs2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.scs2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sct2e_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sct2e_c.html",
+      "semantics": "Converts encoded mission ticks to ET seconds past J2000, retaining fractional ticks and partition offsets for the signed spacecraft ID. Negative/out-of-mission counts fail. A matching SCLK kernel is required; non-TDB clock correlation additionally requires LSK conversion information.",
+      "scenarios": [
+        {
+          "caseId": "time-sct2e-happy-with-cook-sclk",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Converts cookbook encoded SCLK ticks to ET"
+        },
+        {
+          "caseId": "time-sct2e-missing-sclk-error",
+          "coverage": ["error"],
+          "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Representative sct2e error when SCLK kernel is not loaded"
+        },
+        {
+          "caseId": "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sct2e-audit-negative-clock-range",
+          "coverage": ["error"],
+          "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: negative clock range, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+          "coverage": ["error"],
+          "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy"
+        },
+        {
+          "caseId": "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
+        }
+      ],
+      "edgeAssessment": "Converts encoded mission ticks to ET seconds past J2000, retaining fractional ticks and partition offsets for the signed spacecraft ID. Negative/out-of-mission counts fail. A matching SCLK kernel is required; non-TDB clock correlation additionally requires LSK conversion information. The synthetic clock has small exact tick/epoch values, two partitions and a shared endpoint, so it exercises precision/indexing beyond one real-clock sample. Same-instance integration tests recover after clock/UTC errors; string/selector/numeric boundaries are tested separately.",
+      "errorAssessment": "Registered error cases require actual specific CSPICE codes: missing SCLK/LSK variables, INVALIDTIMEFORMAT, MISSINGTIMEINFO, VALUEOUTOFRANGE, BADPARTNUMBER, EMPTYSTRING or YEAROUTOFRANGE as applicable. The initial exact-input oracle probe corrected an assumed NOLEAPSECONDS name to actual et2utc MISSINGTIMEINFO rather than weakening the assertion. Fractional/wrapped integer parameters, non-string JS inputs and unsupported uppercase-contract selectors are adapter validation, not CSPICE diagnostic equivalence. Output-buffer null/truncation/partition-capacity flooding is not fabricated through unsafe descriptors; temporary allocation rollback is fault-injected.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+          "provenance": "Authored for this audit: synthetic spacecraft -12345 type-1 clock, two fields with 256 ticks per major unit, one TDB second per major unit, partition raw ranges [0,1023] and [1024,4095]. No real calibration/measurement data.",
+          "distribution": "Repository-authored synthetic numeric constants under the repository license; no externally sourced scientific data."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/cook_01.tsc",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. Galileo GLL 00003 SCLK kernel, released 1990-12-07 per its header.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing real-clock/LSK smoke inputs are retained. New synthetic clock constants are authored, minimal, deterministic and explicitly documented; they model no real spacecraft. Both ET and conditional non-TDB correlation paths execute actual CSPICE rather than a harness clock model.",
+      "cleanup": "Each case registers kernel ownership, unloads/clears kernel pool and resets errors on success/failure. Clock watcher invalidation is exercised by fresh/missing metadata cases in the shared native process; no pool data escapes a case. Direct tests dispose clients and verify a bad partition/UTC error is followed by successful work on the same backend. All 20 temporary allocation failure positions release earlier strings/error/output buffers.",
+      "tolerance": "No tolerance changes. Complete clock/calendar strings compare exactly, including era/partition/rounding. New synthetic clock values are small binary-exact fractions, so existing 1e-12 absolute/relative comparison detects fractional tick/partition/normalization defects. Legacy large real-clock values retain the existing relative tolerance and are supplemented by the small-clock cases; UTC delta outputs stay near 60 seconds.",
+      "findings": [
+        {
+          "id": "unchecked-spiceint-conversion",
+          "status": "repaired",
+          "summary": "Native Int32Value/WASM conversion could truncate fractional or wrap large spacecraft IDs/precision, silently selecting different input semantics. A failing-before actual WASM boundary test confirmed missing validation.",
+          "repair": "Validate spacecraft IDs for all six clock methods and et2utc precision as signed SpiceInt before conversion. Keep valid negative/large integer precision clamping; direct backend tests reject fractional/nonfinite/wrapped values.",
+          "evidence": [
+            "packages/backend-node/src/domains/time.ts",
+            "packages/backend-wasm/src/domains/time.ts",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-sct2e-happy-with-cook-sclk",
+            "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+            "time-sct2e-audit-non-tdb-clock-with-conversion-info"
+          ]
+        },
+        {
+          "id": "single-epoch-fixture-evidence",
+          "status": "repaired",
+          "summary": "Original success evidence used one epoch/one cookbook clock, leaving constant results, partition handling, fractional rounding or epoch-dependent delta insufficiently distinguished.",
+          "repair": "Add multiple distinguishing UTC epochs or an authored small two-partition clock, compare every actual scalar/string, and require named relevant diagnostics. Keep live SpiceyPy as oracle, without fixture-derived substitute outputs.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/time/sct2e.cases.json",
+            "packages/py-parity-checking/fixtures/kernels/audit-two-partition.tsc",
+            "packages/py-parity-checking/test/sclk-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "time-sct2e-happy-with-cook-sclk",
+            "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+            "time-sct2e-audit-non-tdb-clock-with-conversion-info"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sct2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Workflow -> actual raw.sct2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
+          "executions": ["local-utc-sclk-2026-11-12-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Prior observations retained as historical after integrating merged kplfrm source. Semantic judgments retained; full required local lanes and canonical current-source CI are pending."
+}
