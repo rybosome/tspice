@@ -322,7 +322,7 @@
         "prs": [
           "https://github.com/rybosome/tspice/pull/686"
         ],
-        "nextAction": "Rebased onto current main after #685 merged; run both required local lanes, then observe and record current-source canonical CI before handoff.",
+        "nextAction": "Rebased directly onto main after #685 merged; both required local lanes and all 15 canonical source CI jobs passed with actual source/job evidence recorded. The stale local native addon was rebuilt and its initial failure retained. Await maintainer review and explicitly authorized merge.",
         "record": "data/parity-audits/kernel-pool.json"
       },
       {
@@ -393,15 +393,15 @@
     "counts": {
       "node": {
         "unreviewed": 111,
-        "reviewed": 11,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 40
+        "verified": 51
       },
       "wasm": {
         "unreviewed": 111,
-        "reviewed": 11,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 40
+        "verified": 51
       }
     }
   },
@@ -6757,12 +6757,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -6772,12 +6776,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -10933,12 +10941,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -10948,12 +10960,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -14827,12 +14843,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -14842,12 +14862,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -15893,12 +15917,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -15909,12 +15937,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -16127,12 +16159,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -16143,12 +16179,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -18656,12 +18696,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -18672,12 +18716,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -18891,12 +18939,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -18907,12 +18959,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -23938,12 +23994,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -23954,12 +24014,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -24189,12 +24253,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -24205,12 +24273,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -24460,12 +24532,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -24476,12 +24552,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
@@ -33505,12 +33585,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-node",
+            "ci-686-main-54a226e3-node"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         },
         "wasm": {
@@ -33520,12 +33604,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": [],
-          "status": "reviewed",
+          "executions": [
+            "local-686-main-54a226e3-wasm",
+            "ci-686-main-54a226e3-wasm"
+          ],
+          "status": "verified",
           "record": "data/parity-audits/kernel-pool.json"
         }
       }
