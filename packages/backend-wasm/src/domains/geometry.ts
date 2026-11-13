@@ -13,8 +13,47 @@ import type {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
+
+function geometryInputs(
+  et: unknown,
+  strings: readonly unknown[],
+  label: string,
+): void {
+  if (typeof et !== "number" || !Number.isFinite(et))
+    throw new RangeError(`${label}: ET must be finite`);
+  for (const value of strings)
+    if (typeof value !== "string")
+      throw new TypeError(`${label}: inputs must be strings`);
+}
+
+function geometryNumber(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new RangeError(`${label} must be finite`);
+  return value;
+}
+function readGeometryVector(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceVector3 {
+  const i = ptr >> 3;
+  return [
+    geometryNumber(module.HEAPF64[i], "vector[0]"),
+    geometryNumber(module.HEAPF64[i + 1], "vector[1]"),
+    geometryNumber(module.HEAPF64[i + 2], "vector[2]"),
+  ];
+}
+function readGeometryPlane(module: EmscriptenModule, ptr: number): SpicePlane {
+  const i = ptr >> 3;
+  return [
+    geometryNumber(module.HEAPF64[i], "plane[0]"),
+    geometryNumber(module.HEAPF64[i + 1], "plane[1]"),
+    geometryNumber(module.HEAPF64[i + 2], "plane[2]"),
+    geometryNumber(module.HEAPF64[i + 3], "plane[3]"),
+  ];
+}
 
 function tspiceCallSubpnt(
   module: EmscriptenModule,
@@ -25,84 +64,57 @@ function tspiceCallSubpnt(
   abcorr: string,
   observer: string,
 ): SubPointResult {
+  geometryInputs(et, [method, target, fixref, abcorr, observer], "subpnt");
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const methodPtr = writeUtf8CString(module, method);
-  const targetPtr = writeUtf8CString(module, target);
-  const fixrefPtr = writeUtf8CString(module, fixref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const observerPtr = writeUtf8CString(module, observer);
-  const outSpointPtr = module._malloc(3 * 8);
-  const outTrgepcPtr = module._malloc(8);
-  const outSrfvecPtr = module._malloc(3 * 8);
+  return withAllocs(
+    module,
+    [errMaxBytes, 3 * 8, 8, 3 * 8],
+    (errPtr, outSpointPtr, outTrgepcPtr, outSrfvecPtr) => {
+      let methodPtr = 0,
+        targetPtr = 0,
+        fixrefPtr = 0,
+        abcorrPtr = 0,
+        observerPtr = 0;
+      try {
+        methodPtr = writeUtf8CString(module, method);
+        targetPtr = writeUtf8CString(module, target);
+        fixrefPtr = writeUtf8CString(module, fixref);
+        abcorrPtr = writeUtf8CString(module, abcorr);
+        observerPtr = writeUtf8CString(module, observer);
 
-  if (
-    !errPtr ||
-    !methodPtr ||
-    !targetPtr ||
-    !fixrefPtr ||
-    !abcorrPtr ||
-    !observerPtr ||
-    !outSpointPtr ||
-    !outTrgepcPtr ||
-    !outSrfvecPtr
-  ) {
-    for (const ptr of [
-      outSrfvecPtr,
-      outTrgepcPtr,
-      outSpointPtr,
-      observerPtr,
-      abcorrPtr,
-      fixrefPtr,
-      targetPtr,
-      methodPtr,
-      errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
+        module.HEAPF64[outTrgepcPtr >> 3] = 0;
 
-  try {
-    module.HEAPF64[outTrgepcPtr >> 3] = 0;
+        const result = module._tspice_subpnt(
+          methodPtr,
+          targetPtr,
+          et,
+          fixrefPtr,
+          abcorrPtr,
+          observerPtr,
+          outSpointPtr,
+          outTrgepcPtr,
+          outSrfvecPtr,
+          errPtr,
+          errMaxBytes,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+        }
 
-    const result = module._tspice_subpnt(
-      methodPtr,
-      targetPtr,
-      et,
-      fixrefPtr,
-      abcorrPtr,
-      observerPtr,
-      outSpointPtr,
-      outTrgepcPtr,
-      outSrfvecPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+        const spoint = readGeometryVector(module, outSpointPtr);
+        const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+        const srfvec = readGeometryVector(module, outSrfvecPtr);
 
-    const spoint = Array.from(
-      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(
-      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-
-    return { spoint, trgepc, srfvec };
-  } finally {
-    module._free(outSrfvecPtr);
-    module._free(outTrgepcPtr);
-    module._free(outSpointPtr);
-    module._free(observerPtr);
-    module._free(abcorrPtr);
-    module._free(fixrefPtr);
-    module._free(targetPtr);
-    module._free(methodPtr);
-    module._free(errPtr);
-  }
+        return { spoint, trgepc, srfvec };
+      } finally {
+        if (observerPtr) module._free(observerPtr);
+        if (abcorrPtr) module._free(abcorrPtr);
+        if (fixrefPtr) module._free(fixrefPtr);
+        if (targetPtr) module._free(targetPtr);
+        if (methodPtr) module._free(methodPtr);
+      }
+    },
+  );
 }
 
 function tspiceCallSubslr(
@@ -114,84 +126,57 @@ function tspiceCallSubslr(
   abcorr: string,
   observer: string,
 ): SubPointResult {
+  geometryInputs(et, [method, target, fixref, abcorr, observer], "subslr");
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const methodPtr = writeUtf8CString(module, method);
-  const targetPtr = writeUtf8CString(module, target);
-  const fixrefPtr = writeUtf8CString(module, fixref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const observerPtr = writeUtf8CString(module, observer);
-  const outSpointPtr = module._malloc(3 * 8);
-  const outTrgepcPtr = module._malloc(8);
-  const outSrfvecPtr = module._malloc(3 * 8);
+  return withAllocs(
+    module,
+    [errMaxBytes, 3 * 8, 8, 3 * 8],
+    (errPtr, outSpointPtr, outTrgepcPtr, outSrfvecPtr) => {
+      let methodPtr = 0,
+        targetPtr = 0,
+        fixrefPtr = 0,
+        abcorrPtr = 0,
+        observerPtr = 0;
+      try {
+        methodPtr = writeUtf8CString(module, method);
+        targetPtr = writeUtf8CString(module, target);
+        fixrefPtr = writeUtf8CString(module, fixref);
+        abcorrPtr = writeUtf8CString(module, abcorr);
+        observerPtr = writeUtf8CString(module, observer);
 
-  if (
-    !errPtr ||
-    !methodPtr ||
-    !targetPtr ||
-    !fixrefPtr ||
-    !abcorrPtr ||
-    !observerPtr ||
-    !outSpointPtr ||
-    !outTrgepcPtr ||
-    !outSrfvecPtr
-  ) {
-    for (const ptr of [
-      outSrfvecPtr,
-      outTrgepcPtr,
-      outSpointPtr,
-      observerPtr,
-      abcorrPtr,
-      fixrefPtr,
-      targetPtr,
-      methodPtr,
-      errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
+        module.HEAPF64[outTrgepcPtr >> 3] = 0;
 
-  try {
-    module.HEAPF64[outTrgepcPtr >> 3] = 0;
+        const result = module._tspice_subslr(
+          methodPtr,
+          targetPtr,
+          et,
+          fixrefPtr,
+          abcorrPtr,
+          observerPtr,
+          outSpointPtr,
+          outTrgepcPtr,
+          outSrfvecPtr,
+          errPtr,
+          errMaxBytes,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+        }
 
-    const result = module._tspice_subslr(
-      methodPtr,
-      targetPtr,
-      et,
-      fixrefPtr,
-      abcorrPtr,
-      observerPtr,
-      outSpointPtr,
-      outTrgepcPtr,
-      outSrfvecPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+        const spoint = readGeometryVector(module, outSpointPtr);
+        const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+        const srfvec = readGeometryVector(module, outSrfvecPtr);
 
-    const spoint = Array.from(
-      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(
-      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-
-    return { spoint, trgepc, srfvec };
-  } finally {
-    module._free(outSrfvecPtr);
-    module._free(outTrgepcPtr);
-    module._free(outSpointPtr);
-    module._free(observerPtr);
-    module._free(abcorrPtr);
-    module._free(fixrefPtr);
-    module._free(targetPtr);
-    module._free(methodPtr);
-    module._free(errPtr);
-  }
+        return { spoint, trgepc, srfvec };
+      } finally {
+        if (observerPtr) module._free(observerPtr);
+        if (abcorrPtr) module._free(abcorrPtr);
+        if (fixrefPtr) module._free(fixrefPtr);
+        if (targetPtr) module._free(targetPtr);
+        if (methodPtr) module._free(methodPtr);
+      }
+    },
+  );
 }
 
 function tspiceCallSincpt(
@@ -205,106 +190,82 @@ function tspiceCallSincpt(
   dref: string,
   dvec: SpiceVector3,
 ): Found<SubPointResult> {
+  geometryInputs(
+    et,
+    [method, target, fixref, abcorr, observer, dref],
+    "sincpt",
+  );
+  assertFiniteNumberArrayFixed(dvec, 3, "sincpt(dvec)");
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const methodPtr = writeUtf8CString(module, method);
-  const targetPtr = writeUtf8CString(module, target);
-  const fixrefPtr = writeUtf8CString(module, fixref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const observerPtr = writeUtf8CString(module, observer);
-  const drefPtr = writeUtf8CString(module, dref);
-  const dvecPtr = module._malloc(3 * 8);
-  const outSpointPtr = module._malloc(3 * 8);
-  const outTrgepcPtr = module._malloc(8);
-  const outSrfvecPtr = module._malloc(3 * 8);
-  const outFoundPtr = module._malloc(4);
-
-  if (
-    !errPtr ||
-    !methodPtr ||
-    !targetPtr ||
-    !fixrefPtr ||
-    !abcorrPtr ||
-    !observerPtr ||
-    !drefPtr ||
-    !dvecPtr ||
-    !outSpointPtr ||
-    !outTrgepcPtr ||
-    !outSrfvecPtr ||
-    !outFoundPtr
-  ) {
-    for (const ptr of [
-      outFoundPtr,
-      outSrfvecPtr,
-      outTrgepcPtr,
-      outSpointPtr,
-      dvecPtr,
-      drefPtr,
-      observerPtr,
-      abcorrPtr,
-      fixrefPtr,
-      targetPtr,
-      methodPtr,
+  return withAllocs(
+    module,
+    [errMaxBytes, 3 * 8, 3 * 8, 8, 3 * 8, 4],
+    (
       errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAPF64.set(dvec, dvecPtr >> 3);
-    module.HEAPF64[outTrgepcPtr >> 3] = 0;
-    module.HEAP32[outFoundPtr >> 2] = 0;
-
-    const result = module._tspice_sincpt(
-      methodPtr,
-      targetPtr,
-      et,
-      fixrefPtr,
-      abcorrPtr,
-      observerPtr,
-      drefPtr,
       dvecPtr,
       outSpointPtr,
       outTrgepcPtr,
       outSrfvecPtr,
       outFoundPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+    ) => {
+      let methodPtr = 0,
+        targetPtr = 0,
+        fixrefPtr = 0,
+        abcorrPtr = 0,
+        observerPtr = 0,
+        drefPtr = 0;
+      try {
+        methodPtr = writeUtf8CString(module, method);
+        targetPtr = writeUtf8CString(module, target);
+        fixrefPtr = writeUtf8CString(module, fixref);
+        abcorrPtr = writeUtf8CString(module, abcorr);
+        observerPtr = writeUtf8CString(module, observer);
+        drefPtr = writeUtf8CString(module, dref);
 
-    const found = module.HEAP32[outFoundPtr >> 2] ?? 0;
-    if (!found) {
-      return { found: false };
-    }
+        module.HEAPF64.set(dvec, dvecPtr >> 3);
+        module.HEAPF64[outTrgepcPtr >> 3] = 0;
+        module.HEAP32[outFoundPtr >> 2] = 0;
 
-    const spoint = Array.from(
-      module.HEAPF64.subarray(outSpointPtr >> 3, (outSpointPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(
-      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
+        const result = module._tspice_sincpt(
+          methodPtr,
+          targetPtr,
+          et,
+          fixrefPtr,
+          abcorrPtr,
+          observerPtr,
+          drefPtr,
+          dvecPtr,
+          outSpointPtr,
+          outTrgepcPtr,
+          outSrfvecPtr,
+          outFoundPtr,
+          errPtr,
+          errMaxBytes,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+        }
 
-    return { found: true, spoint, trgepc, srfvec };
-  } finally {
-    module._free(outFoundPtr);
-    module._free(outSrfvecPtr);
-    module._free(outTrgepcPtr);
-    module._free(outSpointPtr);
-    module._free(dvecPtr);
-    module._free(drefPtr);
-    module._free(observerPtr);
-    module._free(abcorrPtr);
-    module._free(fixrefPtr);
-    module._free(targetPtr);
-    module._free(methodPtr);
-    module._free(errPtr);
-  }
+        const found = module.HEAP32[outFoundPtr >> 2] ?? 0;
+        if (!found) {
+          return { found: false };
+        }
+
+        const spoint = readGeometryVector(module, outSpointPtr);
+        const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+        const srfvec = readGeometryVector(module, outSrfvecPtr);
+
+        return { found: true, spoint, trgepc, srfvec };
+      } finally {
+        if (drefPtr) module._free(drefPtr);
+        if (observerPtr) module._free(observerPtr);
+        if (abcorrPtr) module._free(abcorrPtr);
+        if (fixrefPtr) module._free(fixrefPtr);
+        if (targetPtr) module._free(targetPtr);
+        if (methodPtr) module._free(methodPtr);
+      }
+    },
+  );
 }
 
 function tspiceCallIlumin(
@@ -317,103 +278,75 @@ function tspiceCallIlumin(
   observer: string,
   spoint: SpiceVector3,
 ): IluminResult {
+  geometryInputs(et, [method, target, fixref, abcorr, observer], "ilumin");
+  assertFiniteNumberArrayFixed(spoint, 3, "ilumin(spoint)");
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const methodPtr = writeUtf8CString(module, method);
-  const targetPtr = writeUtf8CString(module, target);
-  const fixrefPtr = writeUtf8CString(module, fixref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const observerPtr = writeUtf8CString(module, observer);
-  const spointPtr = module._malloc(3 * 8);
-  const outTrgepcPtr = module._malloc(8);
-  const outSrfvecPtr = module._malloc(3 * 8);
-  const outPhasePtr = module._malloc(8);
-  const outIncdncPtr = module._malloc(8);
-  const outEmissnPtr = module._malloc(8);
-
-  if (
-    !errPtr ||
-    !methodPtr ||
-    !targetPtr ||
-    !fixrefPtr ||
-    !abcorrPtr ||
-    !observerPtr ||
-    !spointPtr ||
-    !outTrgepcPtr ||
-    !outSrfvecPtr ||
-    !outPhasePtr ||
-    !outIncdncPtr ||
-    !outEmissnPtr
-  ) {
-    for (const ptr of [
-      outEmissnPtr,
-      outIncdncPtr,
-      outPhasePtr,
-      outSrfvecPtr,
-      outTrgepcPtr,
-      spointPtr,
-      observerPtr,
-      abcorrPtr,
-      fixrefPtr,
-      targetPtr,
-      methodPtr,
+  return withAllocs(
+    module,
+    [errMaxBytes, 3 * 8, 8, 3 * 8, 8, 8, 8],
+    (
       errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAPF64.set(spoint, spointPtr >> 3);
-    module.HEAPF64[outTrgepcPtr >> 3] = 0;
-    module.HEAPF64[outPhasePtr >> 3] = 0;
-    module.HEAPF64[outIncdncPtr >> 3] = 0;
-    module.HEAPF64[outEmissnPtr >> 3] = 0;
-
-    const result = module._tspice_ilumin(
-      methodPtr,
-      targetPtr,
-      et,
-      fixrefPtr,
-      abcorrPtr,
-      observerPtr,
       spointPtr,
       outTrgepcPtr,
       outSrfvecPtr,
       outPhasePtr,
       outIncdncPtr,
       outEmissnPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+    ) => {
+      let methodPtr = 0,
+        targetPtr = 0,
+        fixrefPtr = 0,
+        abcorrPtr = 0,
+        observerPtr = 0;
+      try {
+        methodPtr = writeUtf8CString(module, method);
+        targetPtr = writeUtf8CString(module, target);
+        fixrefPtr = writeUtf8CString(module, fixref);
+        abcorrPtr = writeUtf8CString(module, abcorr);
+        observerPtr = writeUtf8CString(module, observer);
 
-    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(
-      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
-    const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
-    const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
+        module.HEAPF64.set(spoint, spointPtr >> 3);
+        module.HEAPF64[outTrgepcPtr >> 3] = 0;
+        module.HEAPF64[outPhasePtr >> 3] = 0;
+        module.HEAPF64[outIncdncPtr >> 3] = 0;
+        module.HEAPF64[outEmissnPtr >> 3] = 0;
 
-    return { trgepc, srfvec, phase, incdnc, emissn };
-  } finally {
-    module._free(outEmissnPtr);
-    module._free(outIncdncPtr);
-    module._free(outPhasePtr);
-    module._free(outSrfvecPtr);
-    module._free(outTrgepcPtr);
-    module._free(spointPtr);
-    module._free(observerPtr);
-    module._free(abcorrPtr);
-    module._free(fixrefPtr);
-    module._free(targetPtr);
-    module._free(methodPtr);
-    module._free(errPtr);
-  }
+        const result = module._tspice_ilumin(
+          methodPtr,
+          targetPtr,
+          et,
+          fixrefPtr,
+          abcorrPtr,
+          observerPtr,
+          spointPtr,
+          outTrgepcPtr,
+          outSrfvecPtr,
+          outPhasePtr,
+          outIncdncPtr,
+          outEmissnPtr,
+          errPtr,
+          errMaxBytes,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+        }
+
+        const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+        const srfvec = readGeometryVector(module, outSrfvecPtr);
+        const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
+        const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
+        const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
+
+        return { trgepc, srfvec, phase, incdnc, emissn };
+      } finally {
+        if (observerPtr) module._free(observerPtr);
+        if (abcorrPtr) module._free(abcorrPtr);
+        if (fixrefPtr) module._free(fixrefPtr);
+        if (targetPtr) module._free(targetPtr);
+        if (methodPtr) module._free(methodPtr);
+      }
+    },
+  );
 }
 
 function tspiceCallIllumg(
@@ -427,108 +360,83 @@ function tspiceCallIllumg(
   observer: string,
   spoint: SpiceVector3,
 ): IllumgResult {
+  geometryInputs(
+    et,
+    [method, target, ilusrc, fixref, abcorr, observer],
+    "illumg",
+  );
+  assertFiniteNumberArrayFixed(spoint, 3, "illumg(spoint)");
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const methodPtr = writeUtf8CString(module, method);
-  const targetPtr = writeUtf8CString(module, target);
-  const ilusrcPtr = writeUtf8CString(module, ilusrc);
-  const fixrefPtr = writeUtf8CString(module, fixref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const observerPtr = writeUtf8CString(module, observer);
-  const spointPtr = module._malloc(3 * 8);
-  const outTrgepcPtr = module._malloc(8);
-  const outSrfvecPtr = module._malloc(3 * 8);
-  const outPhasePtr = module._malloc(8);
-  const outIncdncPtr = module._malloc(8);
-  const outEmissnPtr = module._malloc(8);
-
-  if (
-    !errPtr ||
-    !methodPtr ||
-    !targetPtr ||
-    !ilusrcPtr ||
-    !fixrefPtr ||
-    !abcorrPtr ||
-    !observerPtr ||
-    !spointPtr ||
-    !outTrgepcPtr ||
-    !outSrfvecPtr ||
-    !outPhasePtr ||
-    !outIncdncPtr ||
-    !outEmissnPtr
-  ) {
-    for (const ptr of [
-      outEmissnPtr,
-      outIncdncPtr,
-      outPhasePtr,
-      outSrfvecPtr,
-      outTrgepcPtr,
-      spointPtr,
-      observerPtr,
-      abcorrPtr,
-      fixrefPtr,
-      ilusrcPtr,
-      targetPtr,
-      methodPtr,
+  return withAllocs(
+    module,
+    [errMaxBytes, 3 * 8, 8, 3 * 8, 8, 8, 8],
+    (
       errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAPF64.set(spoint, spointPtr >> 3);
-    module.HEAPF64[outTrgepcPtr >> 3] = 0;
-    module.HEAPF64[outPhasePtr >> 3] = 0;
-    module.HEAPF64[outIncdncPtr >> 3] = 0;
-    module.HEAPF64[outEmissnPtr >> 3] = 0;
-
-    const result = module._tspice_illumg(
-      methodPtr,
-      targetPtr,
-      ilusrcPtr,
-      et,
-      fixrefPtr,
-      abcorrPtr,
-      observerPtr,
       spointPtr,
       outTrgepcPtr,
       outSrfvecPtr,
       outPhasePtr,
       outIncdncPtr,
       outEmissnPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+    ) => {
+      let methodPtr = 0,
+        targetPtr = 0,
+        ilusrcPtr = 0,
+        fixrefPtr = 0,
+        abcorrPtr = 0,
+        observerPtr = 0;
+      try {
+        methodPtr = writeUtf8CString(module, method);
+        targetPtr = writeUtf8CString(module, target);
+        ilusrcPtr = writeUtf8CString(module, ilusrc);
+        fixrefPtr = writeUtf8CString(module, fixref);
+        abcorrPtr = writeUtf8CString(module, abcorr);
+        observerPtr = writeUtf8CString(module, observer);
 
-    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(
-      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
-    const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
-    const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
+        module.HEAPF64.set(spoint, spointPtr >> 3);
+        module.HEAPF64[outTrgepcPtr >> 3] = 0;
+        module.HEAPF64[outPhasePtr >> 3] = 0;
+        module.HEAPF64[outIncdncPtr >> 3] = 0;
+        module.HEAPF64[outEmissnPtr >> 3] = 0;
 
-    return { trgepc, srfvec, phase, incdnc, emissn };
-  } finally {
-    module._free(outEmissnPtr);
-    module._free(outIncdncPtr);
-    module._free(outPhasePtr);
-    module._free(outSrfvecPtr);
-    module._free(outTrgepcPtr);
-    module._free(spointPtr);
-    module._free(observerPtr);
-    module._free(abcorrPtr);
-    module._free(fixrefPtr);
-    module._free(ilusrcPtr);
-    module._free(targetPtr);
-    module._free(methodPtr);
-    module._free(errPtr);
-  }
+        const result = module._tspice_illumg(
+          methodPtr,
+          targetPtr,
+          ilusrcPtr,
+          et,
+          fixrefPtr,
+          abcorrPtr,
+          observerPtr,
+          spointPtr,
+          outTrgepcPtr,
+          outSrfvecPtr,
+          outPhasePtr,
+          outIncdncPtr,
+          outEmissnPtr,
+          errPtr,
+          errMaxBytes,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+        }
+
+        const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+        const srfvec = readGeometryVector(module, outSrfvecPtr);
+        const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
+        const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
+        const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
+
+        return { trgepc, srfvec, phase, incdnc, emissn };
+      } finally {
+        if (observerPtr) module._free(observerPtr);
+        if (abcorrPtr) module._free(abcorrPtr);
+        if (fixrefPtr) module._free(fixrefPtr);
+        if (ilusrcPtr) module._free(ilusrcPtr);
+        if (targetPtr) module._free(targetPtr);
+        if (methodPtr) module._free(methodPtr);
+      }
+    },
+  );
 }
 
 function tspiceCallIllumf(
@@ -542,79 +450,18 @@ function tspiceCallIllumf(
   observer: string,
   spoint: SpiceVector3,
 ): IllumfResult {
+  geometryInputs(
+    et,
+    [method, target, ilusrc, fixref, abcorr, observer],
+    "illumf",
+  );
+  assertFiniteNumberArrayFixed(spoint, 3, "illumf(spoint)");
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const methodPtr = writeUtf8CString(module, method);
-  const targetPtr = writeUtf8CString(module, target);
-  const ilusrcPtr = writeUtf8CString(module, ilusrc);
-  const fixrefPtr = writeUtf8CString(module, fixref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const observerPtr = writeUtf8CString(module, observer);
-  const spointPtr = module._malloc(3 * 8);
-  const outTrgepcPtr = module._malloc(8);
-  const outSrfvecPtr = module._malloc(3 * 8);
-  const outPhasePtr = module._malloc(8);
-  const outIncdncPtr = module._malloc(8);
-  const outEmissnPtr = module._malloc(8);
-  const outVisiblPtr = module._malloc(4);
-  const outLitPtr = module._malloc(4);
-
-  if (
-    !errPtr ||
-    !methodPtr ||
-    !targetPtr ||
-    !ilusrcPtr ||
-    !fixrefPtr ||
-    !abcorrPtr ||
-    !observerPtr ||
-    !spointPtr ||
-    !outTrgepcPtr ||
-    !outSrfvecPtr ||
-    !outPhasePtr ||
-    !outIncdncPtr ||
-    !outEmissnPtr ||
-    !outVisiblPtr ||
-    !outLitPtr
-  ) {
-    for (const ptr of [
-      outLitPtr,
-      outVisiblPtr,
-      outEmissnPtr,
-      outIncdncPtr,
-      outPhasePtr,
-      outSrfvecPtr,
-      outTrgepcPtr,
-      spointPtr,
-      observerPtr,
-      abcorrPtr,
-      fixrefPtr,
-      ilusrcPtr,
-      targetPtr,
-      methodPtr,
+  return withAllocs(
+    module,
+    [errMaxBytes, 3 * 8, 8, 3 * 8, 8, 8, 8, 4, 4],
+    (
       errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAPF64.set(spoint, spointPtr >> 3);
-    module.HEAPF64[outTrgepcPtr >> 3] = 0;
-    module.HEAPF64[outPhasePtr >> 3] = 0;
-    module.HEAPF64[outIncdncPtr >> 3] = 0;
-    module.HEAPF64[outEmissnPtr >> 3] = 0;
-    module.HEAP32[outVisiblPtr >> 2] = 0;
-    module.HEAP32[outLitPtr >> 2] = 0;
-
-    const result = module._tspice_illumf(
-      methodPtr,
-      targetPtr,
-      ilusrcPtr,
-      et,
-      fixrefPtr,
-      abcorrPtr,
-      observerPtr,
       spointPtr,
       outTrgepcPtr,
       outSrfvecPtr,
@@ -623,49 +470,79 @@ function tspiceCallIllumf(
       outEmissnPtr,
       outVisiblPtr,
       outLitPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
+    ) => {
+      let methodPtr = 0,
+        targetPtr = 0,
+        ilusrcPtr = 0,
+        fixrefPtr = 0,
+        abcorrPtr = 0,
+        observerPtr = 0;
+      try {
+        methodPtr = writeUtf8CString(module, method);
+        targetPtr = writeUtf8CString(module, target);
+        ilusrcPtr = writeUtf8CString(module, ilusrc);
+        fixrefPtr = writeUtf8CString(module, fixref);
+        abcorrPtr = writeUtf8CString(module, abcorr);
+        observerPtr = writeUtf8CString(module, observer);
 
-    const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
-    const srfvec = Array.from(
-      module.HEAPF64.subarray(outSrfvecPtr >> 3, (outSrfvecPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
-    const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
-    const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
-    const visibl = module.HEAP32[outVisiblPtr >> 2] ?? 0;
-    const lit = module.HEAP32[outLitPtr >> 2] ?? 0;
+        module.HEAPF64.set(spoint, spointPtr >> 3);
+        module.HEAPF64[outTrgepcPtr >> 3] = 0;
+        module.HEAPF64[outPhasePtr >> 3] = 0;
+        module.HEAPF64[outIncdncPtr >> 3] = 0;
+        module.HEAPF64[outEmissnPtr >> 3] = 0;
+        module.HEAP32[outVisiblPtr >> 2] = 0;
+        module.HEAP32[outLitPtr >> 2] = 0;
 
-    return {
-      trgepc,
-      srfvec,
-      phase,
-      incdnc,
-      emissn,
-      visibl: Boolean(visibl),
-      lit: Boolean(lit),
-    };
-  } finally {
-    module._free(outLitPtr);
-    module._free(outVisiblPtr);
-    module._free(outEmissnPtr);
-    module._free(outIncdncPtr);
-    module._free(outPhasePtr);
-    module._free(outSrfvecPtr);
-    module._free(outTrgepcPtr);
-    module._free(spointPtr);
-    module._free(observerPtr);
-    module._free(abcorrPtr);
-    module._free(fixrefPtr);
-    module._free(ilusrcPtr);
-    module._free(targetPtr);
-    module._free(methodPtr);
-    module._free(errPtr);
-  }
+        const result = module._tspice_illumf(
+          methodPtr,
+          targetPtr,
+          ilusrcPtr,
+          et,
+          fixrefPtr,
+          abcorrPtr,
+          observerPtr,
+          spointPtr,
+          outTrgepcPtr,
+          outSrfvecPtr,
+          outPhasePtr,
+          outIncdncPtr,
+          outEmissnPtr,
+          outVisiblPtr,
+          outLitPtr,
+          errPtr,
+          errMaxBytes,
+        );
+        if (result !== 0) {
+          throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+        }
+
+        const trgepc = module.HEAPF64[outTrgepcPtr >> 3] ?? 0;
+        const srfvec = readGeometryVector(module, outSrfvecPtr);
+        const phase = module.HEAPF64[outPhasePtr >> 3] ?? 0;
+        const incdnc = module.HEAPF64[outIncdncPtr >> 3] ?? 0;
+        const emissn = module.HEAPF64[outEmissnPtr >> 3] ?? 0;
+        const visibl = module.HEAP32[outVisiblPtr >> 2] ?? 0;
+        const lit = module.HEAP32[outLitPtr >> 2] ?? 0;
+
+        return {
+          trgepc,
+          srfvec,
+          phase,
+          incdnc,
+          emissn,
+          visibl: Boolean(visibl),
+          lit: Boolean(lit),
+        };
+      } finally {
+        if (observerPtr) module._free(observerPtr);
+        if (abcorrPtr) module._free(abcorrPtr);
+        if (fixrefPtr) module._free(fixrefPtr);
+        if (ilusrcPtr) module._free(ilusrcPtr);
+        if (targetPtr) module._free(targetPtr);
+        if (methodPtr) module._free(methodPtr);
+      }
+    },
+  );
 }
 
 function tspiceCallNvc2pl(
@@ -674,39 +551,26 @@ function tspiceCallNvc2pl(
   konst: number,
 ): SpicePlane {
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const normalPtr = module._malloc(3 * 8);
-  const outPlanePtr = module._malloc(4 * 8);
+  return withAllocs(
+    module,
+    [errMaxBytes, 3 * 8, 4 * 8],
+    (errPtr, normalPtr, outPlanePtr) => {
+      module.HEAPF64.set(normal, normalPtr >> 3);
 
-  if (!errPtr || !normalPtr || !outPlanePtr) {
-    for (const ptr of [outPlanePtr, normalPtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
+      const result = module._tspice_nvc2pl(
+        normalPtr,
+        konst,
+        outPlanePtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
 
-  try {
-    module.HEAPF64.set(normal, normalPtr >> 3);
-
-    const result = module._tspice_nvc2pl(
-      normalPtr,
-      konst,
-      outPlanePtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-
-    return Array.from(
-      module.HEAPF64.subarray(outPlanePtr >> 3, (outPlanePtr >> 3) + 4),
-    ) as unknown as SpicePlane;
-  } finally {
-    module._free(outPlanePtr);
-    module._free(normalPtr);
-    module._free(errPtr);
-  }
+      return readGeometryPlane(module, outPlanePtr);
+    },
+  );
 }
 
 function tspiceCallPl2nvc(
@@ -714,45 +578,30 @@ function tspiceCallPl2nvc(
   plane: SpicePlane,
 ): Pl2nvcResult {
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const planePtr = module._malloc(4 * 8);
-  const outNormalPtr = module._malloc(3 * 8);
-  const outKonstPtr = module._malloc(8);
+  return withAllocs(
+    module,
+    [errMaxBytes, 4 * 8, 3 * 8, 8],
+    (errPtr, planePtr, outNormalPtr, outKonstPtr) => {
+      module.HEAPF64.set(plane, planePtr >> 3);
+      module.HEAPF64[outKonstPtr >> 3] = 0;
 
-  if (!errPtr || !planePtr || !outNormalPtr || !outKonstPtr) {
-    for (const ptr of [outKonstPtr, outNormalPtr, planePtr, errPtr]) {
-      if (ptr) module._free(ptr);
-    }
-    throw new Error("WASM malloc failed");
-  }
+      const result = module._tspice_pl2nvc(
+        planePtr,
+        outNormalPtr,
+        outKonstPtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
 
-  try {
-    module.HEAPF64.set(plane, planePtr >> 3);
-    module.HEAPF64[outKonstPtr >> 3] = 0;
+      const normal = readGeometryVector(module, outNormalPtr);
+      const konst = module.HEAPF64[outKonstPtr >> 3] ?? 0;
 
-    const result = module._tspice_pl2nvc(
-      planePtr,
-      outNormalPtr,
-      outKonstPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-
-    const normal = Array.from(
-      module.HEAPF64.subarray(outNormalPtr >> 3, (outNormalPtr >> 3) + 3),
-    ) as unknown as SpiceVector3;
-    const konst = module.HEAPF64[outKonstPtr >> 3] ?? 0;
-
-    return { normal, konst };
-  } finally {
-    module._free(outKonstPtr);
-    module._free(outNormalPtr);
-    module._free(planePtr);
-    module._free(errPtr);
-  }
+      return { normal, konst };
+    },
+  );
 }
 
 function tspiceCallOccult(
@@ -767,81 +616,63 @@ function tspiceCallOccult(
   observer: string,
   et: number,
 ): number {
+  geometryInputs(
+    et,
+    [targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer],
+    "occult",
+  );
   const errMaxBytes = 2048;
-  const errPtr = module._malloc(errMaxBytes);
-  const targ1Ptr = writeUtf8CString(module, targ1);
-  const shape1Ptr = writeUtf8CString(module, shape1);
-  const frame1Ptr = writeUtf8CString(module, frame1);
-  const targ2Ptr = writeUtf8CString(module, targ2);
-  const shape2Ptr = writeUtf8CString(module, shape2);
-  const frame2Ptr = writeUtf8CString(module, frame2);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const observerPtr = writeUtf8CString(module, observer);
-  const outOcltidPtr = module._malloc(4);
+  return withAllocs(module, [errMaxBytes, 4], (errPtr, outOcltidPtr) => {
+    let targ1Ptr = 0,
+      shape1Ptr = 0,
+      frame1Ptr = 0,
+      targ2Ptr = 0,
+      shape2Ptr = 0,
+      frame2Ptr = 0,
+      abcorrPtr = 0,
+      observerPtr = 0;
+    try {
+      targ1Ptr = writeUtf8CString(module, targ1);
+      shape1Ptr = writeUtf8CString(module, shape1);
+      frame1Ptr = writeUtf8CString(module, frame1);
+      targ2Ptr = writeUtf8CString(module, targ2);
+      shape2Ptr = writeUtf8CString(module, shape2);
+      frame2Ptr = writeUtf8CString(module, frame2);
+      abcorrPtr = writeUtf8CString(module, abcorr);
+      observerPtr = writeUtf8CString(module, observer);
 
-  if (
-    !errPtr ||
-    !targ1Ptr ||
-    !shape1Ptr ||
-    !frame1Ptr ||
-    !targ2Ptr ||
-    !shape2Ptr ||
-    !frame2Ptr ||
-    !abcorrPtr ||
-    !observerPtr ||
-    !outOcltidPtr
-  ) {
-    for (const ptr of [
-      outOcltidPtr,
-      observerPtr,
-      abcorrPtr,
-      frame2Ptr,
-      shape2Ptr,
-      targ2Ptr,
-      frame1Ptr,
-      shape1Ptr,
-      targ1Ptr,
-      errPtr,
-    ]) {
-      if (ptr) module._free(ptr);
+      module.HEAP32[outOcltidPtr >> 2] = 0;
+
+      const result = module._tspice_occult(
+        targ1Ptr,
+        shape1Ptr,
+        frame1Ptr,
+        targ2Ptr,
+        shape2Ptr,
+        frame2Ptr,
+        abcorrPtr,
+        observerPtr,
+        et,
+        outOcltidPtr,
+        errPtr,
+        errMaxBytes,
+      );
+      if (result !== 0) {
+        throwWasmSpiceError(module, errPtr, errMaxBytes, result);
+      }
+
+      return module.HEAP32[outOcltidPtr >> 2] ?? 0;
+    } finally {
+      if (observerPtr) module._free(observerPtr);
+      if (abcorrPtr) module._free(abcorrPtr);
+      if (frame2Ptr) module._free(frame2Ptr);
+      if (shape2Ptr) module._free(shape2Ptr);
+      if (targ2Ptr) module._free(targ2Ptr);
+      if (frame1Ptr) module._free(frame1Ptr);
+      if (shape1Ptr) module._free(shape1Ptr);
+      if (targ1Ptr) module._free(targ1Ptr);
     }
-    throw new Error("WASM malloc failed");
-  }
-
-  try {
-    module.HEAP32[outOcltidPtr >> 2] = 0;
-
-    const result = module._tspice_occult(
-      targ1Ptr,
-      shape1Ptr,
-      frame1Ptr,
-      targ2Ptr,
-      shape2Ptr,
-      frame2Ptr,
-      abcorrPtr,
-      observerPtr,
-      et,
-      outOcltidPtr,
-      errPtr,
-      errMaxBytes,
-    );
-    if (result !== 0) {
-      throwWasmSpiceError(module, errPtr, errMaxBytes, result);
-    }
-
-    return module.HEAP32[outOcltidPtr >> 2] ?? 0;
-  } finally {
-    module._free(outOcltidPtr);
-    module._free(observerPtr);
-    module._free(abcorrPtr);
-    module._free(frame2Ptr);
-    module._free(shape2Ptr);
-    module._free(targ2Ptr);
-    module._free(frame1Ptr);
-    module._free(shape1Ptr);
-    module._free(targ1Ptr);
-    module._free(errPtr);
-  }
+  });
 }
 
 function assertFiniteNumberArrayFixed(
