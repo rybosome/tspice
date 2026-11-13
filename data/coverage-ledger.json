@@ -14,9 +14,10 @@
           "kplfrm-prerequisite"
         ],
         "prs": [
-          "https://github.com/rybosome/tspice/pull/683"
+          "https://github.com/rybosome/tspice/pull/683",
+          "https://github.com/rybosome/tspice/pull/684"
         ],
-        "nextAction": "Review the allocation prerequisite; integrate the separate #684 opaque-handle repair before semantic completion of the affected methods. User merges remain separate.",
+        "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs.",
         "record": "data/parity-audits/cell-capacity-prerequisite.json"
       },
       {
@@ -36,7 +37,7 @@
           "cell-capacity-prerequisite"
         ],
         "prs": [],
-        "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline.",
+        "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline.",
         "record": null
       },
       {
@@ -281,7 +282,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions.",
+        "nextAction": "Review GF semantics, gfrepi intermediate string-allocation rollback/global reporter state, and live search fixture adequacy.",
         "record": null
       },
       {
@@ -329,9 +330,10 @@
           "vectors-arithmetic"
         ],
         "prs": [
-          "https://github.com/rybosome/tspice/pull/680"
+          "https://github.com/rybosome/tspice/pull/680",
+          "https://github.com/rybosome/tspice/pull/684"
         ],
-        "nextAction": "Complete the separate WASM handle lifetime repair; successful valid-handle comparisons do not certify the open ownership boundary.",
+        "nextAction": "Observe current-source CI for the opaque WASM handle identity repair and record successful backend jobs.",
         "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
@@ -393,8 +395,8 @@
       },
       "wasm": {
         "unreviewed": 131,
-        "reviewed": 0,
-        "needs-repair": 4,
+        "reviewed": 4,
+        "needs-repair": 0,
         "verified": 27
       }
     }
@@ -3951,7 +3953,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 106
+          "line": 109
         }
       },
       "mapping": {
@@ -4052,7 +4054,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 555
+            "line": 635
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -4225,7 +4227,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 594
+            "line": 596
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -4929,7 +4931,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 589
+            "line": 591
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5108,7 +5110,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 608
+            "line": 610
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5311,7 +5313,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 597
+            "line": 599
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5507,7 +5509,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 599
+            "line": 601
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5717,7 +5719,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 602
+            "line": 604
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -5927,7 +5929,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 604
+            "line": 606
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -6123,7 +6125,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 603
+            "line": 605
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -6376,7 +6378,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 591
+            "line": 593
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -9283,7 +9285,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/dsk.ts",
-            "line": 302
+            "line": 294
           },
           "factory": "createDskApi",
           "delegation": null,
@@ -9485,7 +9487,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/dsk.ts",
-            "line": 296
+            "line": 288
           },
           "factory": "createDskApi",
           "delegation": null,
@@ -10277,7 +10279,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/dsk.ts",
-            "line": 287
+            "line": 283
           },
           "factory": "createDskApi",
           "delegation": null,
@@ -14969,7 +14971,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 593
+            "line": 595
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -15141,7 +15143,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 583
+            "line": 585
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -16633,7 +16635,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 346
+            "line": 338
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -16880,7 +16882,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 283
+            "line": 287
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17228,7 +17230,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 285
+            "line": 289
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17618,7 +17620,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 280
+            "line": 284
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17791,7 +17793,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 281
+            "line": 285
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -17964,7 +17966,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/geometry-gf.ts",
-            "line": 282
+            "line": 286
           },
           "factory": "createGeometryGfApi",
           "delegation": null,
@@ -19091,7 +19093,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 134
+          "line": 137
         }
       },
       "mapping": {
@@ -19192,7 +19194,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 579
+            "line": 659
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -19264,7 +19266,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 131
+          "line": 134
         }
       },
       "mapping": {
@@ -19365,7 +19367,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 575
+            "line": 655
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -19437,7 +19439,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 128
+          "line": 131
         }
       },
       "mapping": {
@@ -19538,7 +19540,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 570
+            "line": 650
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -20557,8 +20559,7 @@
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
+            "local-684-main-373b55dd-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
@@ -20569,15 +20570,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "needs-repair"
+            "reviewed",
+            "needs-repair",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
+            "local-684-main-373b55dd-wasm"
           ],
-          "status": "needs-repair",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -22284,7 +22286,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 578
+            "line": 580
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -23820,7 +23822,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 625
+            "line": 623
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -25531,7 +25533,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 100
+          "line": 103
         }
       },
       "mapping": {
@@ -25632,7 +25634,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 550
+            "line": 630
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -27614,7 +27616,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 111
+          "line": 114
         }
       },
       "mapping": {
@@ -27715,7 +27717,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 559
+            "line": 639
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -28189,7 +28191,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 884
+            "line": 885
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28369,7 +28371,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 824
+            "line": 825
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28582,7 +28584,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 799
+            "line": 800
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28763,7 +28765,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 807
+            "line": 808
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28944,7 +28946,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 783
+            "line": 784
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29125,7 +29127,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 815
+            "line": 816
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29306,7 +29308,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 818
+            "line": 819
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29501,7 +29503,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 827
+            "line": 828
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29686,7 +29688,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 865
+            "line": 866
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29872,7 +29874,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 845
+            "line": 846
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -30059,7 +30061,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 832
+            "line": 833
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -30231,7 +30233,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 791
+            "line": 792
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -30419,7 +30421,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 830
+            "line": 831
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -30609,7 +30611,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 821
+            "line": 822
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -30797,7 +30799,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 841
+            "line": 842
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -30998,7 +31000,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 899
+            "line": 900
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -31188,7 +31190,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 94
+          "line": 97
         }
       },
       "mapping": {
@@ -31289,7 +31291,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 545
+            "line": 625
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -31387,8 +31389,7 @@
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
+            "local-684-main-373b55dd-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -31396,15 +31397,15 @@
         "wasm": {
           "history": [
             "unreviewed",
-            "needs-repair"
+            "needs-repair",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
+            "local-684-main-373b55dd-wasm"
           ],
-          "status": "needs-repair",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -32358,7 +32359,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/frames.ts",
-            "line": 627
+            "line": 625
           },
           "factory": "createFramesApi",
           "delegation": null,
@@ -34117,7 +34118,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 121
+          "line": 124
         }
       },
       "mapping": {
@@ -34218,7 +34219,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 563
+            "line": 643
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -34375,8 +34376,7 @@
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
+            "local-684-main-373b55dd-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -34384,15 +34384,15 @@
         "wasm": {
           "history": [
             "unreviewed",
-            "needs-repair"
+            "needs-repair",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
+            "local-684-main-373b55dd-wasm"
           ],
-          "status": "needs-repair",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -36225,7 +36225,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 142
+          "line": 145
         }
       },
       "mapping": {
@@ -36326,7 +36326,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 587
+            "line": 667
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -36442,7 +36442,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 145
+          "line": 148
         }
       },
       "mapping": {
@@ -36543,7 +36543,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 591
+            "line": 671
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -36637,7 +36637,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 139
+          "line": 142
         }
       },
       "mapping": {
@@ -36738,7 +36738,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 583
+            "line": 663
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -36839,7 +36839,7 @@
         "domain": "cells-windows",
         "evidence": {
           "file": "packages/backend-contract/src/domains/cells-windows.ts",
-          "line": 157
+          "line": 160
         }
       },
       "mapping": {
@@ -36940,7 +36940,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/cells-windows.ts",
-            "line": 596
+            "line": 676
           },
           "factory": "createCellsWindowsApi",
           "delegation": null,
@@ -37074,8 +37074,7 @@
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-node",
-            "ci-683-main-22f45b80-node"
+            "local-684-main-373b55dd-node"
           ],
           "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
@@ -37083,15 +37082,15 @@
         "wasm": {
           "history": [
             "unreviewed",
-            "needs-repair"
+            "needs-repair",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-683-main-22f45b80-wasm",
-            "ci-683-main-22f45b80-wasm"
+            "local-684-main-373b55dd-wasm"
           ],
-          "status": "needs-repair",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }

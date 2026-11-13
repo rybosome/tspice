@@ -4,14 +4,8 @@
   "batches": [
     {
       "id": "cell-capacity-prerequisite",
-      "routines": [
-        "ssize_c",
-        "valid_c",
-        "wnvald_c"
-      ],
-      "dependsOn": [
-        "kplfrm-prerequisite"
-      ],
+      "routines": ["ssize_c", "valid_c", "wnvald_c"],
+      "dependsOn": ["kplfrm-prerequisite"],
       "prs": [
         "https://github.com/rybosome/tspice/pull/683",
         "https://github.com/rybosome/tspice/pull/684"
@@ -31,9 +25,7 @@
         "wnfetd_c",
         "wninsd_c"
       ],
-      "dependsOn": [
-        "cell-capacity-prerequisite"
-      ],
+      "dependsOn": ["cell-capacity-prerequisite"],
       "prs": [],
       "nextAction": "Complete the nine-routine cell/window semantic audit on the allocation and opaque-handle prerequisite baseline."
     },
@@ -50,9 +42,7 @@
         "vsub_c"
       ],
       "dependsOn": [],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/679"
-      ],
+      "prs": ["https://github.com/rybosome/tspice/pull/679"],
       "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
@@ -71,22 +61,13 @@
         "rotmat_c",
         "sphrec_c"
       ],
-      "dependsOn": [
-        "kplfrm-prerequisite"
-      ],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/681"
-      ],
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/681"],
       "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "dsk",
-      "routines": [
-        "dskb02_c",
-        "dskgd_c",
-        "dskobj_c",
-        "dsksrf_c"
-      ],
+      "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
       "dependsOn": [],
       "prs": [],
       "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
@@ -166,12 +147,8 @@
         "setmsg_c",
         "sigerr_c"
       ],
-      "dependsOn": [
-        "kplfrm-prerequisite"
-      ],
-      "prs": [
-        "https://github.com/rybosome/tspice/pull/682"
-      ],
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/682"],
       "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
@@ -304,12 +281,8 @@
     },
     {
       "id": "kplfrm-prerequisite",
-      "routines": [
-        "kplfrm_c"
-      ],
-      "dependsOn": [
-        "vectors-arithmetic"
-      ],
+      "routines": ["kplfrm_c"],
+      "dependsOn": ["vectors-arithmetic"],
       "prs": [
         "https://github.com/rybosome/tspice/pull/680",
         "https://github.com/rybosome/tspice/pull/684"
