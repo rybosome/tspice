@@ -5,6 +5,7 @@ import type {
   SpiceHandle,
   SpiceIntCell,
   SpiceWindow,
+  SpkPackedDescriptor,
 } from "@rybosome/tspice-backend-contract";
 import type { Spice } from "@rybosome/tspice";
 
@@ -55,6 +56,7 @@ export type EkSegmentState = {
 };
 
 export type EphemerisState = {
+  descriptors: Map<string, SpkPackedDescriptor>;
   requestedTargets: Set<number>;
   intCells: Map<string, SpiceIntCell>;
   spkHandles: Map<string, SpiceHandle>;
@@ -134,6 +136,7 @@ export function createRunTspiceContext(
         segments: new Map<string, EkSegmentState>(),
       },
       ephemeris: {
+        descriptors: new Map<string, SpkPackedDescriptor>(),
         requestedTargets: new Set<number>(),
         intCells: new Map<string, SpiceIntCell>(),
         spkHandles: new Map<string, SpiceHandle>(),

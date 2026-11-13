@@ -113,34 +113,43 @@
         "routines": [
           "spkcls_c",
           "spkcov_c",
-          "spkez_c",
-          "spkezp_c",
-          "spkezr_c",
-          "spkgeo_c",
-          "spkgps_c",
-          "spkobj_c"
+          "spkobj_c",
+          "spkopa_c",
+          "spkopn_c",
+          "spkw08_c"
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
+        "nextAction": "Audit six SPK file/writer/coverage routines. Verify real written segment contents, append/close/errors, zero-capacity unions and pending resource cleanup. Fix shared C negative ncomch semantic mismatch and regenerate pinned WASM when needed.",
         "record": null
       },
       {
         "id": "ephemeris-2",
         "routines": [
-          "spkopa_c",
-          "spkopn_c",
-          "spkpds_c",
+          "spkez_c",
+          "spkezp_c",
+          "spkezr_c",
+          "spkgeo_c",
+          "spkgps_c",
           "spkpos_c",
           "spksfs_c",
-          "spkssb_c",
-          "spkuds_c",
-          "spkw08_c"
+          "spkssb_c"
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix.",
+        "nextAction": "Audit eight state/position/search routines with authored SPK fixtures and aberration/priority/state evidence. SPKSFS packed descriptor producers use the shared repair but its full semantic judgment remains pending.",
         "record": null
+      },
+      {
+        "id": "ephemeris-descriptors",
+        "routines": [
+          "spkpds_c",
+          "spkuds_c"
+        ],
+        "dependsOn": [],
+        "prs": [],
+        "nextAction": "Two-routine prerequisite split for valid NaN packed integer words across native/JS/worker boundaries. Complete full local lanes, publish exact judgments, then observe canonical CI and explicit rebaseability.",
+        "record": "data/parity-audits/ephemeris-descriptors.json"
       },
       {
         "id": "error",
@@ -196,8 +205,6 @@
       {
         "id": "frames-1",
         "routines": [
-          "ccifrm_c",
-          "cidfrm_c",
           "ckcov_c",
           "ckgp_c",
           "ckgpav_c",
@@ -213,6 +220,8 @@
       {
         "id": "frames-2",
         "routines": [
+          "ccifrm_c",
+          "cidfrm_c",
           "cnmfrm_c",
           "frinfo_c",
           "frmnam_c",
@@ -382,16 +391,16 @@
     ],
     "counts": {
       "node": {
-        "unreviewed": 150,
-        "reviewed": 0,
+        "unreviewed": 148,
+        "reviewed": 14,
         "needs-repair": 0,
-        "verified": 12
+        "verified": 0
       },
       "wasm": {
-        "unreviewed": 150,
-        "reviewed": 0,
+        "unreviewed": 148,
+        "reviewed": 14,
         "needs-repair": 0,
-        "verified": 12
+        "verified": 0
       }
     }
   },
@@ -410,7 +419,7 @@
     "planned": 487,
     "excluded": 3,
     "caseFiles": 162,
-    "scenarios": 327,
+    "scenarios": 342,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -4202,7 +4211,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "frames-1",
+        "batch": "frames-2",
         "node": {
           "status": "unreviewed"
         },
@@ -4759,7 +4768,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "frames-1",
+        "batch": "frames-2",
         "node": {
           "status": "unreviewed"
         },
@@ -5062,7 +5071,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 818
+                "line": 835
               },
               "calls": [
                 "tspice_ckgp"
@@ -5258,7 +5267,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 819
+                "line": 836
               },
               "calls": [
                 "tspice_ckgpav"
@@ -20092,15 +20101,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20112,15 +20121,15 @@
             "reviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -26695,7 +26704,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 216
+          "line": 238
         }
       },
       "mapping": {
@@ -26755,7 +26764,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 322
+            "line": 307
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -26767,7 +26776,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 825
+                "line": 842
               },
               "calls": [
                 "tspice_spkcls"
@@ -26796,7 +26805,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 885
+            "line": 895
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -26875,7 +26884,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 131
+          "line": 136
         }
       },
       "mapping": {
@@ -26935,7 +26944,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 199
+            "line": 185
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -26947,7 +26956,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 833
+                "line": 850
               },
               "calls": [
                 "tspice_spkcov"
@@ -26976,7 +26985,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 825
+            "line": 830
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27088,7 +27097,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 73
+          "line": 78
         }
       },
       "mapping": {
@@ -27148,7 +27157,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 114
+            "line": 100
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27160,7 +27169,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 827
+                "line": 844
               },
               "calls": [
                 "tspice_spkez"
@@ -27189,7 +27198,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 800
+            "line": 805
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27248,7 +27257,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-1",
+        "batch": "ephemeris-2",
         "node": {
           "status": "unreviewed"
         },
@@ -27269,7 +27278,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 82
+          "line": 87
         }
       },
       "mapping": {
@@ -27329,7 +27338,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 133
+            "line": 119
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27341,7 +27350,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 828
+                "line": 845
               },
               "calls": [
                 "tspice_spkezp"
@@ -27370,7 +27379,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 808
+            "line": 813
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27429,7 +27438,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-1",
+        "batch": "ephemeris-2",
         "node": {
           "status": "unreviewed"
         },
@@ -27450,7 +27459,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 53
+          "line": 58
         }
       },
       "mapping": {
@@ -27510,7 +27519,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 76
+            "line": 62
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27522,7 +27531,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 820
+                "line": 837
               },
               "calls": [
                 "tspice_spkezr"
@@ -27551,7 +27560,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 784
+            "line": 789
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27610,7 +27619,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-1",
+        "batch": "ephemeris-2",
         "node": {
           "status": "unreviewed"
         },
@@ -27631,7 +27640,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 91
+          "line": 96
         }
       },
       "mapping": {
@@ -27691,7 +27700,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 152
+            "line": 138
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27703,7 +27712,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 829
+                "line": 846
               },
               "calls": [
                 "tspice_spkgeo"
@@ -27732,7 +27741,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 816
+            "line": 821
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27791,7 +27800,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-1",
+        "batch": "ephemeris-2",
         "node": {
           "status": "unreviewed"
         },
@@ -27812,7 +27821,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 99
+          "line": 104
         }
       },
       "mapping": {
@@ -27872,7 +27881,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 171
+            "line": 157
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27884,7 +27893,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 830
+                "line": 847
               },
               "calls": [
                 "tspice_spkgps"
@@ -27913,7 +27922,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 819
+            "line": 824
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -27972,7 +27981,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-1",
+        "batch": "ephemeris-2",
         "node": {
           "status": "unreviewed"
         },
@@ -28007,7 +28016,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 156
+          "line": 161
         }
       },
       "mapping": {
@@ -28067,7 +28076,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 204
+            "line": 190
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28079,7 +28088,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 834
+                "line": 851
               },
               "calls": [
                 "tspice_spkobj"
@@ -28108,7 +28117,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 828
+            "line": 833
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28192,7 +28201,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 213
+          "line": 235
         }
       },
       "mapping": {
@@ -28252,7 +28261,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 304
+            "line": 289
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28264,7 +28273,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 823
+                "line": 840
               },
               "calls": [
                 "tspice_spkopa"
@@ -28293,7 +28302,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 866
+            "line": 876
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28357,7 +28366,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-2",
+        "batch": "ephemeris-1",
         "node": {
           "status": "unreviewed"
         },
@@ -28378,7 +28387,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 206
+          "line": 228
         }
       },
       "mapping": {
@@ -28438,7 +28447,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 285
+            "line": 270
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28450,7 +28459,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 822
+                "line": 839
               },
               "calls": [
                 "tspice_spkopn"
@@ -28479,7 +28488,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 846
+            "line": 856
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28544,7 +28553,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-2",
+        "batch": "ephemeris-1",
         "node": {
           "status": "unreviewed"
         },
@@ -28565,7 +28574,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 169
+          "line": 183
         }
       },
       "mapping": {
@@ -28605,7 +28614,7 @@
             "spkpds_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -28625,7 +28634,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 242
+            "line": 227
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28637,7 +28646,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 836
+                "line": 853
               },
               "calls": [
                 "tspice_spkpds"
@@ -28666,7 +28675,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 833
+            "line": 838
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28693,6 +28702,176 @@
       "parity": {
         "scenarios": [
           {
+            "caseId": "ephemeris-spkpds-audit-barycenter-body",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Require actual BARYCENTEREPHEM from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-empty-frame",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Require actual EMPTYSTRING from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-equal-epochs",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Fractional negative/positive endpoints and frame code must survive packing; all six embedded integers are compared. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-large-type",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-reversed-epochs",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-same-body-center",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Require actual BODYANDCENTERSAME from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Valid descriptor type1000 is allowed without claiming an implementation of that planned segment routine; signed ID bounds and negative epochs retain exact fields. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-signed-negative-center",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Signed instrument/negative center produce a legitimate NaN packed word. Compare all six integer fields rather than subnormal doubles. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkpds-audit-zero-type",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
+            "expectation": "error",
+            "operations": [
+              "ephemeris.spkpds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "error",
+                "edge"
+              ],
+              "observes": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
             "caseId": "ephemeris-spkpds-invalid-frame-error",
             "source": "packages/py-parity-checking/src/cases/ephemeris/spkpds.cases.json",
             "expectation": "error",
@@ -28700,7 +28879,13 @@
               "ephemeris.spkpds"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "error"
+              ],
+              "observes": "spkpds errors when the frame name is unknown The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
           },
           {
             "caseId": "ephemeris-spkpds-pack-descriptor-success",
@@ -28710,18 +28895,46 @@
               "ephemeris.spkpds"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "spkpds packs a segment descriptor for type-8 metadata The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
-        "batch": "ephemeris-2",
+        "batch": "ephemeris-descriptors",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.spkpds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": [
+            "local-spk-descriptors-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ephemeris-descriptors.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.spkpds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkpds export -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": [
+            "local-spk-descriptors-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ephemeris-descriptors.json"
         }
       }
     },
@@ -28737,7 +28950,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 64
+          "line": 69
         }
       },
       "mapping": {
@@ -28797,7 +29010,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 95
+            "line": 81
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28809,7 +29022,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 821
+                "line": 838
               },
               "calls": [
                 "tspice_spkpos"
@@ -28838,7 +29051,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 792
+            "line": 797
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28925,7 +29138,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 163
+          "line": 168
         }
       },
       "mapping": {
@@ -28985,7 +29198,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 209
+            "line": 195
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -28997,7 +29210,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 835
+                "line": 852
               },
               "calls": [
                 "tspice_spksfs"
@@ -29026,7 +29239,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 831
+            "line": 836
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29115,7 +29328,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 107
+          "line": 112
         }
       },
       "mapping": {
@@ -29175,7 +29388,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 190
+            "line": 176
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29187,7 +29400,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 831
+                "line": 848
               },
               "calls": [
                 "tspice_spkssb"
@@ -29216,7 +29429,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 822
+            "line": 827
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29303,7 +29516,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 179
+          "line": 201
         }
       },
       "mapping": {
@@ -29343,7 +29556,7 @@
             "spkuds_c"
           ]
         },
-        "semanticEquivalence": "unaudited; static call graph does not establish 1:1 wrapper semantics"
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
       },
       "shim": [
         {
@@ -29363,7 +29576,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 255
+            "line": 241
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29375,7 +29588,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 837
+                "line": 854
               },
               "calls": [
                 "tspice_spkuds"
@@ -29404,7 +29617,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 842
+            "line": 851
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29438,7 +29651,101 @@
               "ephemeris.spkuds"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "spkuds accepts arbitrary packed-descriptor bit patterns The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkuds-audit-actual-packed-frame-code",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkuds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkpds",
+              "ephemeris.spkuds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkuds-audit-actual-packed-id-limits",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkuds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkpds",
+              "ephemeris.spkuds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkuds-audit-actual-packed-negative-payload",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkuds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkpds",
+              "ephemeris.spkuds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkuds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkuds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Error-free SPKUDS unpacks arbitrary bits without inventing scientific validity errors; zero fields/addresses are compared exactly. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
+          },
+          {
+            "caseId": "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+            "source": "packages/py-parity-checking/src/cases/ephemeris/spkuds.cases.json",
+            "expectation": "success",
+            "operations": [
+              "ephemeris.spkuds"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Unpack a literal native DAF summary with independently encoded signed IDs/frame/type and nonzero first/last DAF addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
           },
           {
             "caseId": "ephemeris-spkuds-unpack-descriptor-success",
@@ -29449,18 +29756,46 @@
               "ephemeris.spkuds"
             ],
             "paths": [],
-            "assertionQuality": "unaudited"
+            "assertionQuality": {
+              "coverage": [
+                "success"
+              ],
+              "observes": "spkuds unpacks a representative packed descriptor The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant.",
+              "record": "data/parity-audits/ephemeris-descriptors.json"
+            }
           }
         ],
-        "meaningfulCoverage": "unaudited"
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
       },
       "audit": {
-        "batch": "ephemeris-2",
+        "batch": "ephemeris-descriptors",
         "node": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.spkuds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": [
+            "local-spk-descriptors-2026-11-13-node"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ephemeris-descriptors.json"
         },
         "wasm": {
-          "status": "unreviewed"
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.spkuds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkuds export -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": [
+            "local-spk-descriptors-2026-11-13-wasm"
+          ],
+          "status": "reviewed",
+          "record": "data/parity-audits/ephemeris-descriptors.json"
         }
       }
     },
@@ -29504,7 +29839,7 @@
         "domain": "ephemeris",
         "evidence": {
           "file": "packages/backend-contract/src/domains/ephemeris.ts",
-          "line": 224
+          "line": 246
         }
       },
       "mapping": {
@@ -29564,7 +29899,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/ephemeris.ts",
-            "line": 336
+            "line": 321
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29576,7 +29911,7 @@
               "registration": "RegisterEphemeris",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/ephemeris.cc",
-                "line": 824
+                "line": 841
               },
               "calls": [
                 "tspice_spkw08_v2"
@@ -29605,7 +29940,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/ephemeris.ts",
-            "line": 900
+            "line": 910
           },
           "factory": "createEphemerisApi",
           "delegation": null,
@@ -29669,7 +30004,7 @@
         "meaningfulCoverage": "unaudited"
       },
       "audit": {
-        "batch": "ephemeris-2",
+        "batch": "ephemeris-1",
         "node": {
           "status": "unreviewed"
         },
@@ -29990,15 +30325,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -30006,15 +30341,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -32671,15 +33006,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -32691,15 +33026,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -32977,15 +33312,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -32993,15 +33328,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -33209,15 +33544,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33229,15 +33564,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33442,15 +33777,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33462,15 +33797,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33700,15 +34035,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33720,15 +34055,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -33954,15 +34289,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -33974,15 +34309,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34190,15 +34525,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34210,15 +34545,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34479,15 +34814,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34499,15 +34834,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34719,15 +35054,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34739,15 +35074,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35651,15 +35986,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
+            "local-spk-descriptors-2026-11-13-node"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -35667,15 +36002,15 @@
             "unreviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
+            "local-spk-descriptors-2026-11-13-wasm"
           ],
-          "status": "verified",
+          "status": "reviewed",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }

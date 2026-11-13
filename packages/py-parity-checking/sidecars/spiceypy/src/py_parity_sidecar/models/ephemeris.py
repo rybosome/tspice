@@ -102,6 +102,7 @@ class StepEphemerisSpkpds:
     type: int
     first: float
     last: float
+    descrId: str | None = None
 
 
 @dataclass(frozen=True)
@@ -132,7 +133,8 @@ class StepEphemerisSpkssb:
 @dataclass(frozen=True)
 class StepEphemerisSpkuds:
     op: Literal["ephemeris.spkuds"]
-    descr: tuple[float, float, float, float, float]
+    descr: tuple[float, float, float, float, float] | None = None
+    descrId: str | None = None
 
 
 @dataclass(frozen=True)

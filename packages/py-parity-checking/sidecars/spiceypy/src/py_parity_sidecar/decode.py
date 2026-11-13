@@ -973,6 +973,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 type=_expect_int(step.get("type"), label="ephemeris.spkpds.type"),
                 first=_expect_number(step.get("first"), label="ephemeris.spkpds.first"),
                 last=_expect_number(step.get("last"), label="ephemeris.spkpds.last"),
+                descrId=None if step.get("descrId") is None else _expect_string(step["descrId"],label="ephemeris.spkpds.descrId"),
             )
 
         case "ephemeris.spkpos":
@@ -1001,9 +1002,12 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             )
 
         case "ephemeris.spkuds":
+            if ("descr" in step) == ("descrId" in step):
+                raise ValueError("ephemeris.spkuds requires exactly one of descr or descrId")
             return StepEphemerisSpkuds(
                 op=op,
-                descr=_expect_spk_packed_descriptor(step.get("descr"), label="ephemeris.spkuds.descr"),
+                descr=None if "descr" not in step else _expect_spk_packed_descriptor(step["descr"], label="ephemeris.spkuds.descr"),
+                descrId=None if "descrId" not in step else _expect_string(step["descrId"],label="ephemeris.spkuds.descrId"),
             )
 
         case "ephemeris.spkw08":

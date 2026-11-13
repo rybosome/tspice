@@ -63,6 +63,7 @@ class EkState:
 
 @dataclass
 class EphemerisState:
+    descriptors: dict[str, list[float]] = field(default_factory=dict)
     requestedTargets: set[int] = field(default_factory=set)
     intCells: dict[str, Any] = field(default_factory=dict)
     spkHandles: dict[str, int] = field(default_factory=dict)

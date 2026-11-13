@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import struct
 from typing import Any
 
 import spiceypy as sp
@@ -248,7 +249,9 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             expected_len=5,
             label="spkpds",
         )
-        return StepOutput(op=step.op, value=packed)
+        if step.descrId is not None:
+            context.state.ephemeris.descriptors[step.descrId]=packed
+        return StepOutput(op=step.op, value={"first":packed[0],"last":packed[1],"packedIntegers":list(struct.unpack("=6i",struct.pack("=3d",*packed[2:])))})
 
     if isinstance(step, StepEphemerisSpkpos):
         pos, lt = _normalize_pos_lt(
@@ -270,7 +273,10 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         return StepOutput(op=step.op, value=state)
 
     if isinstance(step, StepEphemerisSpkuds):
-        body, center, frame, typenum, first, last, baddr, eaddr = sp.spkuds(step.descr)
+        descriptor = step.descr if step.descr is not None else context.state.ephemeris.descriptors.get(step.descrId)
+        if descriptor is None:
+            raise ValueError(f"SPK descriptor does not exist: {step.descrId}")
+        body, center, frame, typenum, first, last, baddr, eaddr = sp.spkuds(descriptor)
         return StepOutput(
             op=step.op,
             value={

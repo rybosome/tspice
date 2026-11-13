@@ -18,7 +18,12 @@ import type { SpiceIntCell, SpiceWindow } from "./cells-windows.js";
 /**
  * Packed SPK segment descriptor (DAF summary) as a 5-double array.
  *
- * This is the packed form returned by `spksfs` and accepted by `spkuds`.
+ * This is the opaque packed form returned by `spksfs`/`spkpds` and accepted by
+ * `spkuds`. The first two words are TDB seconds; the remaining words contain
+ * signed integer pairs, whose bits may represent subnormal numbers or NaNs.
+ * Retain the returned readonly tuple: tspice preserves its exact packed storage
+ * through its worker clients. JSON serialization or reconstructing numeric words
+ * can discard that storage and corrupt integer fields; unpack before serialization.
  */
 export type SpkPackedDescriptor = readonly [
   number,
@@ -165,7 +170,16 @@ export interface EphemerisApi {
     et: number,
   ): Found<{ handle: number; descr: SpkPackedDescriptor; ident: string }>;
 
-  /** Pack an SPK segment descriptor via `spkpds`. */
+  /**
+   * Pack an SPK descriptor (`spkpds_c`) with signed body/center IDs, a known frame,
+   * type1..1000 and finite TDB endpoints `first < last`.
+   *
+   * The body must be nonzero and differ from center. The result contains the two
+   * times and six packed integers (body,center,frame,type,zero addresses), not five
+   * ordinary numerical measurements. See {@link SpkPackedDescriptor} for storage.
+   * This permits descriptor type codes without adding their segment writers.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpds_c.html
+   */
   spkpds(
     body: number,
     center: number,
@@ -175,7 +189,15 @@ export interface EphemerisApi {
     last: number,
   ): SpkPackedDescriptor;
 
-  /** Unpack a packed SPK segment descriptor via `spkuds`. */
+  /**
+   * Unpack all eight SPK descriptor fields (`spkuds_c`).
+   *
+   * CSPICE treats this as error-free: arbitrary bit patterns are not diagnosed
+   * as scientifically invalid and may produce nonnormal time values. JS input
+   * must still contain exactly five numeric words. Retain returned opaque tuples
+   * rather than reconstructing potentially NaN-packed integer words.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkuds_c.html
+   */
   spkuds(descr: SpkPackedDescriptor): SpkUnpackedDescriptor;
 
   // --- SPK writers ---------------------------------------------------------

@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "batch": "ephemeris-descriptors",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/core/src/spice-runtime/shared/spk-descriptor.ts",
+    "packages/core/test/spk-descriptor.test.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/test/valueCodec.test.ts",
+    "packages/tspice/test/spk-descriptor-rpc.test.ts",
+    "packages/py-parity-checking/test/spk-descriptor-bits.test.ts",
+    "packages/py-parity-checking/test/spk-descriptor-observables.test.ts",
+    "packages/backend-wasm/test/spk-descriptor-allocations.test.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-node/src/runtime/addon.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-spk-descriptors-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16631d6dcfe71752ec96fb5c15a855f6af4d188379e9fcbfbb77294c478c2303",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64."
+    },
+    {
+      "id": "local-spk-descriptors-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16631d6dcfe71752ec96fb5c15a855f6af4d188379e9fcbfbb77294c478c2303",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "spkpds_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpds_c.html",
+      "semantics": "Pack body, center, frame code, segment type and TDB first/last endpoints into five opaque DAF words. First two words are times; last three store six signed integer fields, including zero DAF addresses. Some valid signed ID pairs form NaN bit patterns; neither finite-number rejection nor numeric comparison/JSON cloning is valid for that opaque storage. Type1..1000 is accepted without claiming any newly implemented segment writer.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkpds-pack-descriptor-success",
+          "coverage": ["success"],
+          "observes": "spkpds packs a segment descriptor for type-8 metadata The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-invalid-frame-error",
+          "coverage": ["error"],
+          "observes": "spkpds errors when the frame name is unknown The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-signed-negative-center",
+          "coverage": ["success", "edge"],
+          "observes": "Signed instrument/negative center produce a legitimate NaN packed word. Compare all six integer fields rather than subnormal doubles. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+          "coverage": ["success", "edge"],
+          "observes": "Valid descriptor type1000 is allowed without claiming an implementation of that planned segment routine; signed ID bounds and negative epochs retain exact fields. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+          "coverage": ["success", "edge"],
+          "observes": "Fractional negative/positive endpoints and frame code must survive packing; all six embedded integers are compared. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-barycenter-body",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual BARYCENTEREPHEM from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-same-body-center",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual BODYANDCENTERSAME from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-equal-epochs",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-reversed-epochs",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-zero-type",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-large-type",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkpds-audit-empty-frame",
+          "coverage": ["error", "edge"],
+          "observes": "Require actual EMPTYSTRING from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        }
+      ],
+      "edgeAssessment": "Negative body/center, signed int32 limits, ECLIPJ2000 frame17 versus J2000 frame1, fractional negative/positive epochs, types1/8/1000. Literal complete field outputs and a controlled one-bit body mutation prove the comparator observes packed integers. Actual sync and worker request/response clone paths return the original five-number public shape with exact byte storage.",
+      "errorAssessment": "Actual BARYCENTEREPHEM, BODYANDCENTERSAME, INVALIDREFFRAME, BADDESCRTIMES for equal/reversed epochs, UNKNOWNSPKTYPE at0/1001 and EMPTYSTRING. JS fractional/overflow IDs and nonfinite physical epochs are separate typed preflight checks. Three actual WASM allocation failures leave no leaks and allow subsequent actual pack/unpack.",
+      "fixtures": [],
+      "fixtureRationale": "Exclusively authored in-memory integer/time/descriptor values; the literal address descriptor is generated from independent native integer-pair encoding. No new kernels or external data are needed. The shared SPKSFS packed producer receives the byte-preservation repair but its separate full state/search audit is not certified here.",
+      "cleanup": "Descriptor operations acquire no persistent kernel/file/cell state. Per-case kclear/reset and backend dispose remain in finally. All13actual WASM allocation positions free all owned temporaries and allow a genuine post-failure negative-center pack/unpack. Hidden exact storage owns a byte copy, independent of mutable heap/caller buffers. RPC test disposes transport and actual backend in finally. Workflow descriptor maps are per-case ordinary memory and cannot leak claims across cases.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for physical time endpoints. Opaque subnormal/NaN word values are never used as numeric evidence: all six signed-int32 fields are exposed as integer numbers, where a one-bit integer difference exceeds tolerance throughout the int32 range. Independent exact40byte comparisons verify preserved payload and literal all-eight-field comparisons verify unpacking. No global tolerance relaxation.",
+      "findings": [
+        {
+          "id": "spkpds-opaque-bits-and-assertions",
+          "status": "repaired",
+          "summary": "Floating absolute/relative tolerance can equate distinct embedded integer bit patterns; old unpack case ignored the actual pack output. Valid negative-center descriptor NaN words were rejected by the Node adapter, and native Number construction/worker structured clone could canonicalize the payload.",
+          "repair": "Keep exact byte copies behind the unchanged public readonly five-number tuple. Private N-API uses typed packed buffers in both directions; WASM copies bytes into/out of its heap. The existing extensible RPC codec has a descriptor-specific typed tag. Both harnesses compare time bounds plus all six extracted signed integer fields and can retain actual packed output for later actual unpack. Literal all-eight-field assertions and a controlled one-bit defect establish assertion sensitivity. Ordinary numerical arrays retain their existing RPC representation.",
+          "evidence": [
+            "packages/core/src/spice-runtime/shared/spk-descriptor.ts",
+            "packages/core/test/spk-descriptor.test.ts",
+            "packages/backend-node/native/src/domains/ephemeris.cc",
+            "packages/backend-node/src/domains/ephemeris.ts",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/tspice/src/transport/rpc/valueCodec.ts",
+            "packages/tspice/test/valueCodec.test.ts",
+            "packages/tspice/test/spk-descriptor-rpc.test.ts",
+            "packages/py-parity-checking/test/spk-descriptor-observables.test.ts",
+            "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py"
+          ],
+          "caseIds": [
+            "ephemeris-spkpds-audit-signed-negative-center",
+            "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+            "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+            "ephemeris-spkpds-audit-barycenter-body",
+            "ephemeris-spkpds-audit-same-body-center",
+            "ephemeris-spkpds-audit-equal-epochs",
+            "ephemeris-spkpds-audit-reversed-epochs",
+            "ephemeris-spkpds-audit-zero-type",
+            "ephemeris-spkpds-audit-large-type",
+            "ephemeris-spkpds-audit-empty-frame"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkpds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": ["local-spk-descriptors-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkpds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkpds export -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": ["local-spk-descriptors-2026-11-13-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkuds_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkuds_c.html",
+      "semantics": "Unpack all eight fields from an opaque five-word SPK descriptor: body,center,frame,type,first,last,baddr,eaddr. NAIF specifies this routine is error-free; it does not diagnose arbitrary invalid bit patterns, whose time fields can be nonnormal. Therefore validate JS shape/types but do not invent scientific validity errors or reject opaque NaN words.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkuds-unpack-descriptor-success",
+          "coverage": ["success"],
+          "observes": "spkuds unpacks a representative packed descriptor The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkuds-arbitrary-packed-input-success",
+          "coverage": ["success"],
+          "observes": "spkuds accepts arbitrary packed-descriptor bit patterns The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkuds-audit-actual-packed-negative-payload",
+          "coverage": ["success", "edge"],
+          "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkuds-audit-actual-packed-id-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkuds-audit-actual-packed-frame-code",
+          "coverage": ["success", "edge"],
+          "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+          "coverage": ["success", "edge"],
+          "observes": "Unpack a literal native DAF summary with independently encoded signed IDs/frame/type and nonzero first/last DAF addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        },
+        {
+          "caseId": "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+          "coverage": ["success", "edge"],
+          "observes": "Error-free SPKUDS unpacks arbitrary bits without inventing scientific validity errors; zero fields/addresses are compared exactly. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
+        }
+      ],
+      "edgeAssessment": "Consume real raw SPKPDS output at negative center/ID extrema/frame changes. Independently encoded literal descriptor requires all nonzero DAF addresses513/1234567 and signed body, while arbitrary all-zero and existing arbitrary finite patterns retain NAIF error-free semantics. Exact storage survives both actual RPC structured-clone directions and caller/source buffer mutation cannot alter retained bytes.",
+      "errorAssessment": "No intrinsic CSPICE error is manufactured for arbitrary descriptors. Separate actual public tests reject wrong JS length/type and verify recovery. Ten actual WASM allocation failures release everything and permit actual negative-center unpack. Plain caller-created five-word tuples remain accepted; retain returned opaque descriptors instead of numeric/JSON reconstruction.",
+      "fixtures": [],
+      "fixtureRationale": "Exclusively authored in-memory integer/time/descriptor values; the literal address descriptor is generated from independent native integer-pair encoding. No new kernels or external data are needed. The shared SPKSFS packed producer receives the byte-preservation repair but its separate full state/search audit is not certified here.",
+      "cleanup": "Descriptor operations acquire no persistent kernel/file/cell state. Per-case kclear/reset and backend dispose remain in finally. All13actual WASM allocation positions free all owned temporaries and allow a genuine post-failure negative-center pack/unpack. Hidden exact storage owns a byte copy, independent of mutable heap/caller buffers. RPC test disposes transport and actual backend in finally. Workflow descriptor maps are per-case ordinary memory and cannot leak claims across cases.",
+      "tolerance": "Live comparator remains1e-12 absolute-or-relative for physical time endpoints. Opaque subnormal/NaN word values are never used as numeric evidence: all six signed-int32 fields are exposed as integer numbers, where a one-bit integer difference exceeds tolerance throughout the int32 range. Independent exact40byte comparisons verify preserved payload and literal all-eight-field comparisons verify unpacking. No global tolerance relaxation.",
+      "findings": [
+        {
+          "id": "spkuds-opaque-bits-and-assertions",
+          "status": "repaired",
+          "summary": "Floating absolute/relative tolerance can equate distinct embedded integer bit patterns; old unpack case ignored the actual pack output. Valid negative-center descriptor NaN words were rejected by the Node adapter, and native Number construction/worker structured clone could canonicalize the payload.",
+          "repair": "Keep exact byte copies behind the unchanged public readonly five-number tuple. Private N-API uses typed packed buffers in both directions; WASM copies bytes into/out of its heap. The existing extensible RPC codec has a descriptor-specific typed tag. Both harnesses compare time bounds plus all six extracted signed integer fields and can retain actual packed output for later actual unpack. Literal all-eight-field assertions and a controlled one-bit defect establish assertion sensitivity. Ordinary numerical arrays retain their existing RPC representation.",
+          "evidence": [
+            "packages/core/src/spice-runtime/shared/spk-descriptor.ts",
+            "packages/core/test/spk-descriptor.test.ts",
+            "packages/backend-node/native/src/domains/ephemeris.cc",
+            "packages/backend-node/src/domains/ephemeris.ts",
+            "packages/backend-wasm/src/domains/ephemeris.ts",
+            "packages/tspice/src/transport/rpc/valueCodec.ts",
+            "packages/tspice/test/valueCodec.test.ts",
+            "packages/tspice/test/spk-descriptor-rpc.test.ts",
+            "packages/py-parity-checking/test/spk-descriptor-observables.test.ts",
+            "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py"
+          ],
+          "caseIds": [
+            "ephemeris-spkuds-audit-actual-packed-negative-payload",
+            "ephemeris-spkuds-audit-actual-packed-id-limits",
+            "ephemeris-spkuds-audit-actual-packed-frame-code",
+            "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+            "ephemeris-spkuds-audit-all-zero-arbitrary-pattern"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkuds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": ["local-spk-descriptors-2026-11-13-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkuds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkuds export -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
+          "executions": ["local-spk-descriptors-2026-11-13-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+}

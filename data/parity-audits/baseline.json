@@ -93,32 +93,37 @@
       "routines": [
         "spkcls_c",
         "spkcov_c",
+        "spkobj_c",
+        "spkopa_c",
+        "spkopn_c",
+        "spkw08_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Audit six SPK file/writer/coverage routines. Verify real written segment contents, append/close/errors, zero-capacity unions and pending resource cleanup. Fix shared C negative ncomch semantic mismatch and regenerate pinned WASM when needed."
+    },
+    {
+      "id": "ephemeris-2",
+      "routines": [
         "spkez_c",
         "spkezp_c",
         "spkezr_c",
         "spkgeo_c",
         "spkgps_c",
-        "spkobj_c"
-      ],
-      "dependsOn": [],
-      "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
-    },
-    {
-      "id": "ephemeris-2",
-      "routines": [
-        "spkopa_c",
-        "spkopn_c",
-        "spkpds_c",
         "spkpos_c",
         "spksfs_c",
-        "spkssb_c",
-        "spkuds_c",
-        "spkw08_c"
+        "spkssb_c"
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "nextAction": "Audit eight state/position/search routines with authored SPK fixtures and aberration/priority/state evidence. SPKSFS packed descriptor producers use the shared repair but its full semantic judgment remains pending."
+    },
+    {
+      "id": "ephemeris-descriptors",
+      "routines": ["spkpds_c", "spkuds_c"],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Two-routine prerequisite split for valid NaN packed integer words across native/JS/worker boundaries. Complete full local lanes, publish exact judgments, then observe canonical CI and explicit rebaseability."
     },
     {
       "id": "error",
@@ -169,8 +174,6 @@
     {
       "id": "frames-1",
       "routines": [
-        "ccifrm_c",
-        "cidfrm_c",
         "ckcov_c",
         "ckgp_c",
         "ckgpav_c",
@@ -185,6 +188,8 @@
     {
       "id": "frames-2",
       "routines": [
+        "ccifrm_c",
+        "cidfrm_c",
         "cnmfrm_c",
         "frinfo_c",
         "frmnam_c",

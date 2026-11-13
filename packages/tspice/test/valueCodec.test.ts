@@ -49,3 +49,31 @@ describe("rpc valueCodec", () => {
     });
   });
 });
+
+it("preserves opaque SPK descriptor bits through actual structured clone", async () => {
+  const { copySpkPackedDescriptor, copySpkPackedDescriptorWords } =
+    await import("@rybosome/tspice-core");
+  const bytes = new DataView(new ArrayBuffer(40));
+  bytes.setFloat64(0, -123.5, true);
+  bytes.setFloat64(8, 456.75, true);
+  bytes.setInt32(16, -123456, true);
+  bytes.setInt32(20, -42, true);
+  const descriptor = copySpkPackedDescriptor(new Float64Array(bytes.buffer));
+  // Without the RPC encoding, structured clone drops exact opaque storage.
+  expect(
+    Array.from(
+      new Uint8Array(
+        copySpkPackedDescriptorWords(structuredClone(descriptor)).buffer,
+      ),
+    ),
+  ).not.toEqual(Array.from(new Uint8Array(bytes.buffer)));
+  const decoded = decodeRpcValue(structuredClone(encodeRpcValue(descriptor)));
+  const result = copySpkPackedDescriptorWords(decoded);
+  expect(Array.from(new Uint8Array(result.buffer))).toEqual(
+    Array.from(new Uint8Array(bytes.buffer)),
+  );
+});
+
+it("ordinary numerical arrays keep their original RPC representation", () => {
+  expect(encodeRpcValue([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
+});

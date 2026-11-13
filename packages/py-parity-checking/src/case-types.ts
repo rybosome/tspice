@@ -613,6 +613,8 @@ export type StepEphemerisSpkopn = {
 
 export type StepEphemerisSpkpds = {
   op: "ephemeris.spkpds";
+  /** Retain the actual packed result for a later raw spkuds step. */
+  descrId?: string;
   body: number;
   center: number;
   frame: string;
@@ -645,10 +647,10 @@ export type StepEphemerisSpkssb = {
 
 export type SpkPackedDescriptor = [number, number, number, number, number];
 
-export type StepEphemerisSpkuds = {
-  op: "ephemeris.spkuds";
-  descr: SpkPackedDescriptor;
-};
+export type StepEphemerisSpkuds = { op: "ephemeris.spkuds" } & (
+  | { descr: SpkPackedDescriptor; descrId?: never }
+  | { descr?: never; descrId: string }
+);
 
 export type StepEphemerisSpkw08 = {
   op: "ephemeris.spkw08";
@@ -1594,7 +1596,10 @@ export type StepOutput =
   | { op: "ephemeris.spkobj"; value: { ids: number[] } }
   | { op: "ephemeris.spkopa"; value: { handleId: string } }
   | { op: "ephemeris.spkopn"; value: { handleId: string } }
-  | { op: "ephemeris.spkpds"; value: SpkPackedDescriptor }
+  | {
+      op: "ephemeris.spkpds";
+      value: { first: number; last: number; packedIntegers: number[] };
+    }
   | {
       op: "ephemeris.spkpos";
       value: { pos: [number, number, number]; lt: number };

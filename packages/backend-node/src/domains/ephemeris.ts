@@ -5,13 +5,16 @@ import type {
   SpiceVector3,
   SpiceWindow,
   SpkPackedDescriptor,
-  SpkUnpackedDescriptor,
   SpkezrResult,
   SpkposResult,
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import {
+  copySpkPackedDescriptor,
+  copySpkPackedDescriptorWords,
+  invariant,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
@@ -19,23 +22,6 @@ import type { SpiceHandleRegistry } from "../runtime/spice-handles.js";
 import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 
 const I32_MAX = 2147483647;
-
-function assertSpkPackedDescriptor(
-  out: unknown,
-  label: string,
-): asserts out is SpkPackedDescriptor {
-  invariant(
-    Array.isArray(out) && out.length === 5,
-    `Expected ${label} to be a length-5 array`,
-  );
-  for (let i = 0; i < 5; i++) {
-    const v = out[i];
-    invariant(
-      typeof v === "number" && Number.isFinite(v),
-      `Expected ${label}[${i}] to be a finite number`,
-    );
-  }
-}
 
 function isVirtualOutput(value: unknown): value is VirtualOutput {
   return (
@@ -224,8 +210,7 @@ export function createEphemerisApi(
         typeof out.handle === "number",
         "Expected spksfs().handle to be a number when found",
       );
-      const descr = out.descr;
-      assertSpkPackedDescriptor(descr, "spksfs().descr");
+      const descr = copySpkPackedDescriptor(out.descr);
       invariant(
         typeof out.ident === "string",
         "Expected spksfs().ident to be a string when found",
@@ -247,18 +232,18 @@ export function createEphemerisApi(
       first: number,
       last: number,
     ) => {
+      if (!Number.isFinite(first) || !Number.isFinite(last))
+        throw new RangeError("spkpds epochs must be finite");
       const out = native.spkpds(body, center, frame, type, first, last);
-      assertSpkPackedDescriptor(out, "spkpds() output");
-      return out;
+      return copySpkPackedDescriptor(out);
     },
 
     spkuds: (descr: SpkPackedDescriptor) => {
-      const out = native.spkuds(descr);
+      const out = native.spkuds(copySpkPackedDescriptorWords(descr));
       invariant(
         out && typeof out === "object",
         "Expected spkuds() to return an object",
       );
-      const obj = out as Record<string, unknown>;
 
       const keys = [
         "body",
@@ -272,12 +257,12 @@ export function createEphemerisApi(
       ] as const;
       for (const k of keys) {
         invariant(
-          typeof obj[k] === "number",
+          typeof out[k] === "number",
           `Expected spkuds().${k} to be a number`,
         );
       }
 
-      return out as SpkUnpackedDescriptor;
+      return out;
     },
 
     // --- SPK writers -------------------------------------------------------

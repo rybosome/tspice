@@ -1,3 +1,8 @@
+import {
+  copySpkPackedDescriptor,
+  copySpkPackedDescriptorWords,
+  hasSpkPackedDescriptorStorage,
+} from "@rybosome/tspice-core";
 import { Mat3 } from "../../kit/math/mat3.js";
 
 /**
@@ -41,6 +46,12 @@ function isMat3RowMajorData(value: unknown): value is readonly number[] {
 
 /** Encode an arbitrary value into a structured-clone-safe shape. */
 export function encodeRpcValue(value: unknown): unknown {
+  if (hasSpkPackedDescriptorStorage(value)) {
+    return {
+      [tspiceRpcTagKey]: "SpkPackedDescriptor",
+      data: copySpkPackedDescriptorWords(value),
+    };
+  }
   if (value instanceof Mat3) {
     const data = Array.from(value.rowMajor as readonly number[]);
     return {
@@ -112,6 +123,14 @@ export function encodeRpcValue(value: unknown): unknown {
 export function decodeRpcValue(value: unknown): unknown {
   if (isTaggedRecord(value)) {
     const tag = value[tspiceRpcTagKey];
+
+    if (
+      tag === "SpkPackedDescriptor" &&
+      value.data instanceof Float64Array &&
+      value.data.length === 5
+    ) {
+      return copySpkPackedDescriptor(value.data);
+    }
 
     if (tag === "Mat3") {
       const layout = value.layout;

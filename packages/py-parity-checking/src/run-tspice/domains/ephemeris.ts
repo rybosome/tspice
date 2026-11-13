@@ -1,3 +1,4 @@
+import { copySpkPackedDescriptorWords } from "@rybosome/tspice-core";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -102,6 +103,17 @@ function resolveEphemerisPath(
   }
 
   return resolved;
+}
+
+function descriptorOutput(descr: Readonly<SpkPackedDescriptor>) {
+  // Last three doubles hold six signed integer fields in native memory order.
+  // Compare those fields as integers: floating tolerance hides subnormal changes.
+  const packed = copySpkPackedDescriptorWords(descr);
+  return {
+    first: descr[0],
+    last: descr[1],
+    packedIntegers: Array.from(new Int32Array(packed.buffer, 16, 6)),
+  };
 }
 
 /** Execute one `ephemeris.*` workflow step in tspice. */
@@ -281,9 +293,11 @@ export function runEphemerisStep(
         step.first,
         step.last,
       );
+      if (step.descrId !== undefined)
+        context.state.ephemeris.descriptors.set(step.descrId, out);
       return {
         op: step.op,
-        value: toPackedDescriptor(out),
+        value: descriptorOutput(out),
       };
     }
 
@@ -334,7 +348,11 @@ export function runEphemerisStep(
     }
 
     case "ephemeris.spkuds": {
-      const out = context.spice.raw.spkuds(step.descr);
+      const descriptor =
+        step.descr ?? context.state.ephemeris.descriptors.get(step.descrId);
+      if (!descriptor)
+        throw new Error(`SPK descriptor does not exist: ${step.descrId}`);
+      const out = context.spice.raw.spkuds(descriptor);
       return {
         op: step.op,
         value: {

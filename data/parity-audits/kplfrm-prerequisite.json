@@ -230,7 +230,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both full required local lanes passed after the shared issuer repair. Native required ran all 654 live comparisons (327 per actual backend), all 685 parity-package tests, 26 core tests including all five file kinds, 121 facade tests including four actual native/WASM ownership regressions, 67 WASM tests and 62 native tests with no skips. Inherited real C allocator rollback, 16 capacity cases and all WASM pointer lifetime tests passed. Full JS passed; only its expected native-required guard fixture skipped. The checked-in N0067/emcc3.1.74 WASM binary is unchanged. Initial local setup failures were unstaged platform-addon packaging, a missing new helper JSDoc and an implicit test-handle type; each was corrected before full final passes, with no failed CI retry."
+      "observation": "Both full required local lanes passed after the shared issuer repair. Native required ran all 654 live comparisons (327 per actual backend), all 685 parity-package tests, 26 core tests including all five file kinds, 121 facade tests including four actual native/WASM ownership regressions, 67 WASM tests and 62 native tests with no skips. Inherited real C allocator rollback, 16 capacity cases and all WASM pointer lifetime tests passed. Full JS passed; only its expected native-required guard fixture skipped. The checked-in N0067/emcc3.1.74 WASM binary is unchanged. Initial local setup failures were unstaged platform-addon packaging, a missing new helper JSDoc and an implicit test-handle type; each was corrected before full final passes, with no failed CI retry.",
+      "historical": true
     },
     {
       "id": "local-file-handles-2026-11-13-wasm",
@@ -247,7 +248,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both full required local lanes passed after the shared issuer repair. Native required ran all 654 live comparisons (327 per actual backend), all 685 parity-package tests, 26 core tests including all five file kinds, 121 facade tests including four actual native/WASM ownership regressions, 67 WASM tests and 62 native tests with no skips. Inherited real C allocator rollback, 16 capacity cases and all WASM pointer lifetime tests passed. Full JS passed; only its expected native-required guard fixture skipped. The checked-in N0067/emcc3.1.74 WASM binary is unchanged. Initial local setup failures were unstaged platform-addon packaging, a missing new helper JSDoc and an implicit test-handle type; each was corrected before full final passes, with no failed CI retry."
+      "observation": "Both full required local lanes passed after the shared issuer repair. Native required ran all 654 live comparisons (327 per actual backend), all 685 parity-package tests, 26 core tests including all five file kinds, 121 facade tests including four actual native/WASM ownership regressions, 67 WASM tests and 62 native tests with no skips. Inherited real C allocator rollback, 16 capacity cases and all WASM pointer lifetime tests passed. Full JS passed; only its expected native-required guard fixture skipped. The checked-in N0067/emcc3.1.74 WASM binary is unchanged. Initial local setup failures were unstaged platform-addon packaging, a missing new helper JSDoc and an implicit test-handle type; each was corrected before full final passes, with no failed CI retry.",
+      "historical": true
     },
     {
       "id": "ci-file-handles-source-ci-2026-11-13-node",
@@ -266,7 +268,8 @@
       ],
       "commit": "874db6cfca85e2172bd4539e9dfb53c03cd534b8",
       "url": "https://github.com/rybosome/tspice/actions/runs/43341633735/job/131611077032",
-      "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics."
+      "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics.",
+      "historical": true
     },
     {
       "id": "ci-file-handles-source-ci-2026-11-13-wasm",
@@ -285,7 +288,42 @@
       ],
       "commit": "874db6cfca85e2172bd4539e9dfb53c03cd534b8",
       "url": "https://github.com/rybosome/tspice/actions/runs/43341633735/job/131611077032",
-      "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics."
+      "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics.",
+      "historical": true
+    },
+    {
+      "id": "local-spk-descriptors-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cd525d31d81c0857d5c9629a8e8281a76d0d75d27f8adabba5204f08c26d584d",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64."
+    },
+    {
+      "id": "local-spk-descriptors-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cd525d31d81c0857d5c9629a8e8281a76d0d75d27f8adabba5204f08c26d584d",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required local lanes passed. Production N0067 native built/loaded and native-required guard passed. All684live comparisons (342scenarios per actual backend), all721parity-package tests without required skips, all80WASM/62Node/28core/125facade tests and all38ledger regressions passed. All38registered descriptor comparisons, six actual boundary/literal/one-bit negative-control tests, two actual Node/WASM RPC round trips through real structured clone in both directions, exact40byte codec tests and all13actual WASM allocation failure/recovery positions passed. Node public negative-center round trip and an actual unencoded structured-clone payload failed before repair; baseline WASM synchronous case already passed. Early build errors exposed an inappropriate core-to-contract type dependency and a missing import; the helper now returns the structural readonly tuple without a dependency cycle. A prototype generic NaN encoding was insufficient; final storage/codec is descriptor-specific and preserves ordinary array behavior. No C shim or WASM binary change. Existing SPKSFS producer shares the repair but full search semantic audit remains pending. Node22.23.4/pnpm10.13.1/SpiceyPy6.0.3/Python3.12.15/macOSarm64."
     }
   ],
   "routines": [
@@ -422,14 +460,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-file-handles-2026-11-13-node",
-            "ci-file-handles-source-ci-2026-11-13-node"
-          ]
+          "executions": ["local-spk-descriptors-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -440,17 +476,15 @@
             "reviewed",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-file-handles-2026-11-13-wasm",
-            "ci-file-handles-source-ci-2026-11-13-wasm"
-          ]
+          "executions": ["local-spk-descriptors-2026-11-13-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }

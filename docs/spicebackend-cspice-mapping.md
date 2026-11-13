@@ -262,3 +262,29 @@ compiled operation; a successful close invalidates the token, and a failed
 native close retains it for cleanup retry. The alias `dlacls` retains the same
 DAS/DLA ownership checks as `dascls`. File/EK/ephemeris semantic audit status is
 tracked separately from this shared ownership prerequisite.
+
+### Opaque SPK descriptor preservation
+
+`spkpds` and `spkuds` use the actual compiled raw path on both backends. Their
+five-word public readonly tuple is unchanged. The last three double words encode
+six signed integers; a valid negative body/center pair can have a NaN bit pattern.
+The Node private binding uses typed buffers, shared runtime helpers retain exact
+byte copies behind returned tuples, and WASM copies descriptor bytes rather than
+performing floating-point conversions. The existing RPC value codec carries this
+opaque storage with a descriptor-specific typed encoding through structured clone.
+Ordinary numerical arrays retain their existing representation. Callers should
+retain returned descriptors or unpack fields before JSON/numeric reconstruction.
+
+Registered packing comparisons expose both time bounds and all six integer fields;
+subnormal/NaN words are never judged through a numeric tolerance. `descrId` lets an
+unpack workflow consume the actual pack result, including a NaN payload that JSON
+input cannot directly express. Literal signed IDs/frame/type/DAF addresses and a
+controlled one-bit body defect verify assertion sensitivity. NAIF's error-free
+SPKUDS behavior for arbitrary bits is retained; malformed JS shape/type remains a
+separate wrapper error. The live1e-12 comparator is unchanged.
+
+The focused two-routine `ephemeris-descriptors` batch is a prerequisite split for
+this cross-boundary repair. Six SPK file/writer/coverage routines remain in
+`ephemeris-1`; eight state/position/search routines remain in `ephemeris-2`. The
+SPKSFS packed producer uses the same preservation repair but its semantic audit
+is still pending. No planned routine or new external fixture is introduced.

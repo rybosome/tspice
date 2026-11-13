@@ -14,7 +14,11 @@ import type {
   SpkposResult,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32 } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  copySpkPackedDescriptor,
+  copySpkPackedDescriptorWords,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -647,9 +651,9 @@ function tspiceCallSpksfs(
       }
 
       const handle = module.HEAP32[outHandlePtr >> 2] ?? 0;
-      const descr = Array.from(
+      const descr = copySpkPackedDescriptor(
         module.HEAPF64.subarray(outDescrPtr >> 3, (outDescrPtr >> 3) + 5),
-      ) as unknown as SpkPackedDescriptor;
+      );
       const ident = readFixedWidthCString(module, outIdentPtr, identMaxBytes);
 
       return {
@@ -697,9 +701,9 @@ function tspiceCallSpkpds(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        return Array.from(
+        return copySpkPackedDescriptor(
           module.HEAPF64.subarray(outDescrPtr >> 3, (outDescrPtr >> 3) + 5),
-        ) as unknown as SpkPackedDescriptor;
+        );
       },
     );
   } finally {
@@ -726,10 +730,11 @@ function tspiceCallSpkuds(
       outBaddrPtr,
       outEaddrPtr,
     ) => {
-      const base = descrPtr >> 3;
-      for (let i = 0; i < 5; i++) {
-        module.HEAPF64[base + i] = descr[i] ?? 0;
-      }
+      const words = copySpkPackedDescriptorWords(descr);
+      module.HEAPU8.set(
+        new Uint8Array(words.buffer, words.byteOffset, 40),
+        descrPtr,
+      );
 
       module.HEAP32[outBodyPtr >> 2] = 0;
       module.HEAP32[outCenterPtr >> 2] = 0;
@@ -837,9 +842,14 @@ export function createEphemerisApi(
       type: number,
       first: number,
       last: number,
-    ) => tspiceCallSpkpds(module, body, center, frame, type, first, last),
+    ) => {
+      if (!Number.isFinite(first) || !Number.isFinite(last))
+        throw new RangeError("spkpds epochs must be finite");
+      return tspiceCallSpkpds(module, body, center, frame, type, first, last);
+    },
 
-    spkuds: (descr: SpkPackedDescriptor) => tspiceCallSpkuds(module, descr),
+    spkuds: (descr: SpkPackedDescriptor) =>
+      tspiceCallSpkuds(module, copySpkPackedDescriptor(descr)),
 
     // --- SPK writers -------------------------------------------------------
 

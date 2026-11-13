@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 #include <limits>
 #include <string>
 
@@ -16,6 +17,15 @@ using tspice_napi::MakeNumberArray;
 using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+// Napi::Number canonicalizes NaN payloads, which can encode legitimate signed
+// SPK identifier pairs. Keep descriptor words in a typed buffer across N-API;
+// the TypeScript adapter then creates the existing public five-number tuple.
+static Napi::Float64Array MakePackedSpkDescriptor(Napi::Env env, const double* words) {
+  auto result = Napi::Float64Array::New(env, 5);
+  std::memcpy(result.Data(), words, 5 * sizeof(double));
+  return result;
+}
 
 static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char* what, int32_t* out) {
   const std::string label = (what != nullptr && what[0] != '\0') ? std::string(what) : std::string("value");
@@ -514,36 +524,36 @@ static Napi::Object Spksfs(const Napi::CallbackInfo& info) {
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, true));
   result.Set("handle", Napi::Number::New(env, static_cast<double>(handle)));
-  result.Set("descr", MakeNumberArray(env, descr, 5));
+  result.Set("descr", MakePackedSpkDescriptor(env, descr));
   result.Set("ident", FixedWidthToJsString(env, ident, sizeof(ident)));
   return result;
 }
 
-static Napi::Array Spkpds(const Napi::CallbackInfo& info) {
+static Napi::Float64Array Spkpds(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 6 || !info[2].IsString() || !info[4].IsNumber() || !info[5].IsNumber()) {
     ThrowSpiceError(Napi::TypeError::New(
         env,
         "spkpds(body: number, center: number, frame: string, type: number, first: number, last: number) expects 6 args"));
-    return Napi::Array::New(env);
+    return Napi::Float64Array::New(env, 0);
   }
 
   int32_t body = 0;
   if (!ReadInt32Checked(env, info[0], "body", &body)) {
-    return Napi::Array::New(env);
+    return Napi::Float64Array::New(env, 0);
   }
 
   int32_t center = 0;
   if (!ReadInt32Checked(env, info[1], "center", &center)) {
-    return Napi::Array::New(env);
+    return Napi::Float64Array::New(env, 0);
   }
 
   const std::string frame = info[2].As<Napi::String>().Utf8Value();
 
   int32_t type = 0;
   if (!ReadInt32Checked(env, info[3], "type", &type)) {
-    return Napi::Array::New(env);
+    return Napi::Float64Array::New(env, 0);
   }
 
   const double first = info[4].As<Napi::Number>().DoubleValue();
@@ -556,10 +566,10 @@ static Napi::Array Spkpds(const Napi::CallbackInfo& info) {
   const int code = tspice_spkpds(body, center, frame.c_str(), type, first, last, descr, err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling spkpds", err);
-    return Napi::Array::New(env);
+    return Napi::Float64Array::New(env, 0);
   }
 
-  return MakeNumberArray(env, descr, 5);
+  return MakePackedSpkDescriptor(env, descr);
 }
 
 static Napi::Object Spkuds(const Napi::CallbackInfo& info) {
@@ -571,7 +581,14 @@ static Napi::Object Spkuds(const Napi::CallbackInfo& info) {
   }
 
   double descr[5] = {0};
-  if (!tspice_backend_node::ReadNumberArrayFixed(env, info[0], 5, descr, "descr")) {
+  if (info[0].IsTypedArray() && info[0].As<Napi::TypedArray>().TypedArrayType() == napi_float64_array) {
+    auto words = info[0].As<Napi::Float64Array>();
+    if (words.ElementLength() != 5) {
+      ThrowSpiceError(Napi::TypeError::New(env, "SPK descriptor must contain five words"));
+      return Napi::Object::New(env);
+    }
+    std::memcpy(descr, words.Data(), sizeof(descr));
+  } else if (!tspice_backend_node::ReadNumberArrayFixed(env, info[0], 5, descr, "descr")) {
     return Napi::Object::New(env);
   }
 
