@@ -70,7 +70,8 @@ export function registerEkHandle(
     try {
       context.spice.raw.ekcls(tracked);
     } catch {
-      // best-effort cleanup only
+      // Retain the claim for a later cleanup/disposal retry.
+      return;
     }
     context.state.ek.handles.delete(handleId);
     clearSegmentsForHandle(context, handleId);

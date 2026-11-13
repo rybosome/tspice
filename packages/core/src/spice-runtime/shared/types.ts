@@ -50,7 +50,11 @@ export type KernelData = {
 // Type-only brand (no runtime Symbol export).
 declare const __spiceHandleBrand: unique symbol;
 
-/** Opaque numeric handle returned by low-level SPICE file APIs (DAF/DAS/DLA). */
+/**
+ * Opaque numeric handle returned by low-level SPICE file APIs (DAF/DAS/DLA/SPK/EK).
+ * A handle belongs to its creating backend. Foreign/closed handles are rejected;
+ * tokens are never reused within the host realm and are not CSPICE handle IDs.
+ */
 export type SpiceHandle = number & { readonly [__spiceHandleBrand]: true };
 
 export type SpiceHandleKind = "DAF" | "DAS" | "DLA" | "SPK" | "EK";

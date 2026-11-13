@@ -410,8 +410,6 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "time.timdef":
             action = _expect_string(step.get("action"), label="time.timdef.action")
             item = _expect_string(step.get("item"), label="time.timdef.item")
-            if item not in {"SYSTEM", "CALENDAR", "ZONE"}:
-                raise ValueError("time.timdef.item must be SYSTEM|CALENDAR|ZONE")
             if action == "GET":
                 return StepTimeTimdefGet(op=op, action="GET", item=item)
             if action == "SET":
@@ -849,13 +847,13 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepKernelsKplfrm(op=op, frmcls=_expect_int(step.get("frmcls"), label="kernels.kplfrm.frmcls"), capacity=_expect_int(step.get("capacity", 1024), label="kernels.kplfrm.capacity"))
 
         case "kernels.ktotal":
-            return StepKernelsKtotal(op=op, kind=_expect_string(step.get("kind"), label="kernels.ktotal.kind"))
+            return StepKernelsKtotal(op=op, kind=step.get("kind"))
 
         case "kernels.kdata":
             return StepKernelsKdata(
                 op=op,
                 which=_expect_int(step.get("which"), label="kernels.kdata.which"),
-                kind=_expect_string(step.get("kind"), label="kernels.kdata.kind"),
+                kind=step.get("kind"),
             )
 
         case "kernels.kxtrct":
@@ -873,6 +871,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepEphemerisSpkcls(
                 op=op,
                 handleId=_expect_string(step.get("handleId"), label="ephemeris.spkcls.handleId"),
+                captureError=_expect_bool(step.get("captureError",False),label="ephemeris.spkcls.captureError"),
             )
 
         case "ephemeris.spkcov":
@@ -973,6 +972,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 type=_expect_int(step.get("type"), label="ephemeris.spkpds.type"),
                 first=_expect_number(step.get("first"), label="ephemeris.spkpds.first"),
                 last=_expect_number(step.get("last"), label="ephemeris.spkpds.last"),
+                descrId=None if step.get("descrId") is None else _expect_string(step["descrId"],label="ephemeris.spkpds.descrId"),
             )
 
         case "ephemeris.spkpos":
@@ -989,6 +989,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepEphemerisSpksfs(
                 op=op,
                 body=_expect_int(step.get("body"), label="ephemeris.spksfs.body"),
+                descrId=None if step.get("descrId") is None else _expect_string(step["descrId"],label="ephemeris.spksfs.descrId"),
                 et=_expect_number(step.get("et"), label="ephemeris.spksfs.et"),
             )
 
@@ -1001,9 +1002,12 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             )
 
         case "ephemeris.spkuds":
+            if ("descr" in step) == ("descrId" in step):
+                raise ValueError("ephemeris.spkuds requires exactly one of descr or descrId")
             return StepEphemerisSpkuds(
                 op=op,
-                descr=_expect_spk_packed_descriptor(step.get("descr"), label="ephemeris.spkuds.descr"),
+                descr=None if "descr" not in step else _expect_spk_packed_descriptor(step["descr"], label="ephemeris.spkuds.descr"),
+                descrId=None if "descrId" not in step else _expect_string(step["descrId"],label="ephemeris.spkuds.descrId"),
             )
 
         case "ephemeris.spkw08":
@@ -1256,6 +1260,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 ck=_decode_path_ref(step.get("ck"), label="frames.ckobj.ck"),
                 idsId=_expect_string(step.get("idsId"), label="frames.ckobj.idsId"),
                 maxCard=max_card,
+                reset=_expect_bool(step.get("reset", True), label="frames.ckobj.reset"),
             )
 
         case "frames.ckcov":
@@ -1282,6 +1287,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 timsys=timsys,
                 coverId=_expect_string(step.get("coverId"), label="frames.ckcov.coverId"),
                 maxIntervals=max_intervals,
+                reset=_expect_bool(step.get("reset", True), label="frames.ckcov.reset"),
             )
 
         case "frames.pxform":
@@ -1306,7 +1312,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ek.ekopn":
             return StepEkEkopn(
                 op=op,
-                path=_expect_string(step.get("path"), label="ek.ekopn.path"),
+                path=_decode_path_ref(step.get("path"), label="ek.ekopn.path"),
                 ifname=_expect_string(step.get("ifname"), label="ek.ekopn.ifname"),
                 ncomch=_expect_int(step.get("ncomch"), label="ek.ekopn.ncomch"),
                 handleId=_expect_string(step.get("handleId"), label="ek.ekopn.handleId"),
@@ -1315,14 +1321,14 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ek.ekopr":
             return StepEkEkopr(
                 op=op,
-                path=_expect_string(step.get("path"), label="ek.ekopr.path"),
+                path=_decode_path_ref(step.get("path"), label="ek.ekopr.path"),
                 handleId=_expect_string(step.get("handleId"), label="ek.ekopr.handleId"),
             )
 
         case "ek.ekopw":
             return StepEkEkopw(
                 op=op,
-                path=_expect_string(step.get("path"), label="ek.ekopw.path"),
+                path=_decode_path_ref(step.get("path"), label="ek.ekopw.path"),
                 handleId=_expect_string(step.get("handleId"), label="ek.ekopw.handleId"),
             )
 
@@ -1416,13 +1422,19 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             )
 
         case "dsk.dskobj":
-            return StepDskDskobj(op=op, path=_decode_path_ref(step.get("path"), label="dsk.dskobj.path"))
+            return StepDskDskobj(op=op, path=_decode_path_ref(step.get("path"), label="dsk.dskobj.path"),
+                cellSize=_expect_int(step.get("cellSize",10000),label="dsk.dskobj.cellSize"),
+                initial=_expect_int_list(step.get("initial",[]),label="dsk.dskobj.initial"),
+                repetitions=_expect_int(step.get("repetitions",1),label="dsk.dskobj.repetitions"))
 
         case "dsk.dsksrf":
             return StepDskDsksrf(
                 op=op,
                 path=_decode_path_ref(step.get("path"), label="dsk.dsksrf.path"),
                 bodyid=_expect_int(step.get("bodyid"), label="dsk.dsksrf.bodyid"),
+                cellSize=_expect_int(step.get("cellSize",10000),label="dsk.dsksrf.cellSize"),
+                initial=_expect_int_list(step.get("initial",[]),label="dsk.dsksrf.initial"),
+                repetitions=_expect_int(step.get("repetitions",1),label="dsk.dsksrf.repetitions"),
             )
 
         case "dsk.dskopn":
@@ -1668,6 +1680,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                     step.get("cnfineWindowId"),
                     label="geometry-gf.gfsep.cnfineWindowId",
                 ),
+                resultMaxIntervals=(_expect_int(step.get("resultMaxIntervals"),label="geometry-gf.gfsep.resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
                 resultWindowId=_expect_string(
                     step.get("resultWindowId"),
                     label="geometry-gf.gfsep.resultWindowId",
@@ -1689,6 +1702,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                     step.get("cnfineWindowId"),
                     label="geometry-gf.gfdist.cnfineWindowId",
                 ),
+                resultMaxIntervals=(_expect_int(step.get("resultMaxIntervals"),label="geometry-gf.gfdist.resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
                 resultWindowId=_expect_string(
                     step.get("resultWindowId"),
                     label="geometry-gf.gfdist.resultWindowId",

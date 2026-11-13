@@ -28,7 +28,8 @@
   },
   "dependencies": {
     "@rybosome/tspice": "workspace:*",
-    "@rybosome/tspice-backend-contract": "workspace:*"
+    "@rybosome/tspice-backend-contract": "workspace:*",
+    "@rybosome/tspice-core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

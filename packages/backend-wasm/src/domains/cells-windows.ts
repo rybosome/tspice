@@ -7,6 +7,7 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  issueOpaqueSpiceHandle,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
@@ -426,35 +427,6 @@ function tspiceCallWnvald(
   });
 }
 
-// Use one issuer per host realm, including separately loaded package copies.
-// Tokens live above uint32 so Node IDs and raw wasm32 pointers cannot alias them.
-const HANDLE_ISSUER = Symbol.for("@rybosome/tspice/wasm-cell-handle-issuer/v1");
-function issueWasmCellHandle(): number {
-  let issuer: unknown = Reflect.get(globalThis, HANDLE_ISSUER);
-  if (issuer === undefined) {
-    let next = 0x1_0000_0000;
-    issuer = () => {
-      if (!Number.isSafeInteger(next))
-        throw new RangeError("WASM cell handle space exhausted");
-      return next++;
-    };
-    if (!Reflect.defineProperty(globalThis, HANDLE_ISSUER, { value: issuer })) {
-      throw new Error("Cannot initialize the shared WASM cell handle issuer");
-    }
-  }
-  if (typeof issuer !== "function")
-    throw new TypeError("Invalid WASM cell handle issuer");
-  const handle: unknown = Reflect.apply(issuer, undefined, []);
-  if (
-    typeof handle !== "number" ||
-    !Number.isSafeInteger(handle) ||
-    handle < 0x1_0000_0000
-  ) {
-    throw new RangeError("Invalid issued WASM cell handle");
-  }
-  return handle;
-}
-
 type WasmHandleOwnership = {
   allocatedCells: Map<number, number>;
   allocatedWindows: Map<number, number>;
@@ -714,14 +686,14 @@ export function createCellsWindowsKitApi(
   return {
     newIntCell: (size) => {
       assertSpiceInt32NonNegative(size, "newIntCell(size)");
-      const handle = issueWasmCellHandle();
+      const handle = issueOpaqueSpiceHandle();
       const cell = tspiceCallNewIntCell(module, size);
       allocatedCells.set(handle, cell);
       return handle as SpiceIntCell;
     },
     newDoubleCell: (size) => {
       assertSpiceInt32NonNegative(size, "newDoubleCell(size)");
-      const handle = issueWasmCellHandle();
+      const handle = issueOpaqueSpiceHandle();
       const cell = tspiceCallNewDoubleCell(module, size);
       allocatedCells.set(handle, cell);
       return handle as SpiceDoubleCell;
@@ -729,7 +701,7 @@ export function createCellsWindowsKitApi(
     newCharCell: (size, length) => {
       assertSpiceInt32NonNegative(size, "newCharCell(size)");
       assertSpiceInt32(length, "newCharCell(length)", { min: 1 });
-      const handle = issueWasmCellHandle();
+      const handle = issueOpaqueSpiceHandle();
       const cell = tspiceCallNewCharCell(module, size, length);
       allocatedCells.set(handle, cell);
       charCellLengths.set(handle, length);
@@ -737,7 +709,7 @@ export function createCellsWindowsKitApi(
     },
     newWindow: (maxIntervals) => {
       assertSpiceInt32NonNegative(maxIntervals, "newWindow(maxIntervals)");
-      const handle = issueWasmCellHandle();
+      const handle = issueOpaqueSpiceHandle();
       const window = tspiceCallNewWindow(module, maxIntervals);
       allocatedWindows.set(handle, window);
       return handle as SpiceWindow;

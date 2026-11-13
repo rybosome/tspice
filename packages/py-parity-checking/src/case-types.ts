@@ -1,4 +1,9 @@
-export type TimdefItem = "SYSTEM" | "CALENDAR" | "ZONE";
+import type {
+  FoundDlaDescriptor,
+  KernelKindInput,
+} from "@rybosome/tspice-backend-contract";
+
+export type TimdefItem = string;
 
 export type ErrorGetmsgWhich = "SHORT" | "LONG" | "EXPLAIN";
 
@@ -512,13 +517,13 @@ export type StepKernelsKplfrm = {
 
 export type StepKernelsKtotal = {
   op: "kernels.ktotal";
-  kind: string;
+  kind?: KernelKindInput;
 };
 
 export type StepKernelsKdata = {
   op: "kernels.kdata";
   which: number;
-  kind: string;
+  kind?: KernelKindInput;
 };
 
 export type StepKernelsKxtrct = {
@@ -537,6 +542,8 @@ export type StepKernelsUnload = {
 export type StepEphemerisSpkcls = {
   op: "ephemeris.spkcls";
   handleId: string;
+  /** Require/capture a real structured toolkit error without discarding the handle. */
+  captureError?: boolean;
 };
 
 export type StepEphemerisSpkcov = {
@@ -613,6 +620,8 @@ export type StepEphemerisSpkopn = {
 
 export type StepEphemerisSpkpds = {
   op: "ephemeris.spkpds";
+  /** Retain the actual packed result for a later raw spkuds step. */
+  descrId?: string;
   body: number;
   center: number;
   frame: string;
@@ -632,6 +641,7 @@ export type StepEphemerisSpkpos = {
 
 export type StepEphemerisSpksfs = {
   op: "ephemeris.spksfs";
+  descrId?: string;
   body: number;
   et: number;
 };
@@ -645,10 +655,10 @@ export type StepEphemerisSpkssb = {
 
 export type SpkPackedDescriptor = [number, number, number, number, number];
 
-export type StepEphemerisSpkuds = {
-  op: "ephemeris.spkuds";
-  descr: SpkPackedDescriptor;
-};
+export type StepEphemerisSpkuds = { op: "ephemeris.spkuds" } & (
+  | { descr: SpkPackedDescriptor; descrId?: never }
+  | { descr?: never; descrId: string }
+);
 
 export type StepEphemerisSpkw08 = {
   op: "ephemeris.spkw08";
@@ -888,6 +898,8 @@ export type StepFramesCkobj = {
   ck: PathRefLike;
   idsId: string;
   maxCard?: number;
+  /** Clear before inspection by default; false accumulates raw set output. */
+  reset?: boolean;
 };
 
 export type StepFramesCkcov = {
@@ -900,6 +912,8 @@ export type StepFramesCkcov = {
   timsys: CkCoverageTimeSystem;
   coverId: string;
   maxIntervals?: number;
+  /** Clear before inspection by default; false accumulates raw window output. */
+  reset?: boolean;
 };
 
 export type StepFramesPxform = {
@@ -944,7 +958,7 @@ export type StepEkEkgi = {
 
 export type StepEkEkopn = {
   op: "ek.ekopn";
-  path: string;
+  path: PathRefLike;
   ifname: string;
   ncomch: number;
   handleId: string;
@@ -952,13 +966,13 @@ export type StepEkEkopn = {
 
 export type StepEkEkopr = {
   op: "ek.ekopr";
-  path: string;
+  path: PathRefLike;
   handleId: string;
 };
 
 export type StepEkEkopw = {
   op: "ek.ekopw";
-  path: string;
+  path: PathRefLike;
   handleId: string;
 };
 
@@ -1074,6 +1088,8 @@ export type StepGeometryGfGfsep = {
   nintvls: number;
   cnfineWindowId: string;
   resultWindowId: string;
+  /** Output capacity, separate from the internal workspace interval count. */
+  resultMaxIntervals?: number;
 };
 
 export type StepGeometryGfGfdist = {
@@ -1088,6 +1104,8 @@ export type StepGeometryGfGfdist = {
   nintvls: number;
   cnfineWindowId: string;
   resultWindowId: string;
+  /** Output capacity, separate from the internal workspace interval count. */
+  resultMaxIntervals?: number;
 };
 
 export type StepGeometrySubpnt = {
@@ -1184,12 +1202,18 @@ export type StepGeometryPl2nvc = {
 export type StepDskDskobj = {
   op: "dsk.dskobj";
   path: PathRefLike;
+  cellSize?: number;
+  initial?: number[];
+  repetitions?: number;
 };
 
 export type StepDskDsksrf = {
   op: "dsk.dsksrf";
   path: PathRefLike;
   bodyid: number;
+  cellSize?: number;
+  initial?: number[];
+  repetitions?: number;
 };
 
 export type StepDskDskopn = {
@@ -1453,13 +1477,19 @@ export type EkGetNumberResult =
   | { found: true; isNull: true }
   | { found: true; isNull: false; value: number };
 
+/** Complete observable windows after an actual GF search. */
+export type GfSearchWindowPayload = {
+  intervals: [number, number][];
+  confinementIntervals: [number, number][];
+};
+
 export type StepOutput =
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
-  | { op: "time.unitim"; value: number }
+  | { op: "time.unitim"; value: { epoch: number; secondsPastJ2000: number } }
   | { op: "time.tparse"; value: number }
   | { op: "time.tpictr"; value: string }
   | { op: "time.timdef"; value: string | null }
@@ -1544,7 +1574,15 @@ export type StepOutput =
   | { op: "kernels.kclear"; value: null }
   | {
       op: "kernels.kinfo";
-      value: { found: false } | { found: true; filtyp: string; source: string };
+      value:
+        | { found: false }
+        | {
+            found: true;
+            filtyp: string;
+            source: string;
+            handleIsZero: boolean;
+            handleMatchesEntry: boolean;
+          };
     }
   | { op: "kernels.kplfrm"; value: { ids: number[] } }
   | { op: "kernels.ktotal"; value: number }
@@ -1552,14 +1590,20 @@ export type StepOutput =
       op: "kernels.kdata";
       value:
         | { found: false }
-        | { found: true; file: string; filtyp: string; source: string };
+        | {
+            found: true;
+            file: string;
+            filtyp: string;
+            source: string;
+            handleIsZero: boolean;
+          };
     }
   | {
       op: "kernels.kxtrct";
       value: { found: false } | { found: true; wordsq: string; substr: string };
     }
   | { op: "kernels.unload"; value: null }
-  | { op: "ephemeris.spkcls"; value: null }
+  | { op: "ephemeris.spkcls"; value: null | { short: string } }
   | {
       op: "ephemeris.spkcov";
       value: { intervals: [number, number][] };
@@ -1596,7 +1640,10 @@ export type StepOutput =
   | { op: "ephemeris.spkobj"; value: { ids: number[] } }
   | { op: "ephemeris.spkopa"; value: { handleId: string } }
   | { op: "ephemeris.spkopn"; value: { handleId: string } }
-  | { op: "ephemeris.spkpds"; value: SpkPackedDescriptor }
+  | {
+      op: "ephemeris.spkpds";
+      value: { first: number; last: number; packedIntegers: number[] };
+    }
   | {
       op: "ephemeris.spkpos";
       value: { pos: [number, number, number]; lt: number };
@@ -1605,7 +1652,11 @@ export type StepOutput =
       op: "ephemeris.spksfs";
       value:
         | { found: false }
-        | { found: true; descr: SpkPackedDescriptor; ident: string };
+        | {
+            found: true;
+            descr: { first: number; last: number; packedIntegers: number[] };
+            ident: string;
+          };
     }
   | {
       op: "ephemeris.spkssb";
@@ -1634,17 +1685,15 @@ export type StepOutput =
   | { op: "file-io.dasopr"; value: null }
   | { op: "file-io.dascls"; value: null }
   | { op: "file-io.dlaopn"; value: null }
-  | { op: "file-io.dlabfs"; value: { found: boolean } }
-  | { op: "file-io.dlafns"; value: { found: boolean } }
+  | { op: "file-io.dlabfs"; value: FoundDlaDescriptor }
+  | { op: "file-io.dlafns"; value: FoundDlaDescriptor }
   | { op: "file-io.dlacls"; value: null }
   | { op: "file-io.dskopn"; value: null }
   | {
       op: "file-io.dskmi2";
       value: {
-        spaixdLength: number;
-        spaixiLength: number;
-        spaixdHead: number[];
-        spaixiHead: number[];
+        spaixd: number[];
+        spaixi: number[];
       };
     }
   | { op: "file-io.dskw02"; value: null }
@@ -1764,7 +1813,7 @@ export type StepOutput =
     }
   | {
       op: "ek.ekifld";
-      value: { segmentId: string };
+      value: { segmentId: string; segno: number; rcptrs: number[] };
     }
   | {
       op: "ek.ekacli";
@@ -1840,15 +1889,15 @@ export type StepOutput =
   | { op: "geometry-gf.gfrefn"; value: number }
   | { op: "geometry-gf.gfrepi"; value: null }
   | { op: "geometry-gf.gfrepf"; value: null }
-  | { op: "geometry-gf.gfsep"; value: null }
-  | { op: "geometry-gf.gfdist"; value: null }
+  | { op: "geometry-gf.gfsep"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfdist"; value: GfSearchWindowPayload }
   | {
       op: "dsk.dskobj";
-      value: { bodyIds: number[] };
+      value: { bodyIds: number[]; snapshots: number[][] };
     }
   | {
       op: "dsk.dsksrf";
-      value: { surfaceIds: number[] };
+      value: { surfaceIds: number[]; snapshots: number[][] };
     }
   | { op: "dsk.dskopn"; value: null }
   | { op: "dsk.dskmi2"; value: null }

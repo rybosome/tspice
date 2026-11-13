@@ -5,10 +5,11 @@ import type {
   SpiceHandleRegistry,
 } from "./types.js";
 import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
+import { issueOpaqueSpiceHandle } from "./opaque-handles.js";
 import { SpiceBackendContractError } from "./errors.js";
 
 function asHandleId(handle: SpiceHandle, context: string): number {
-  const id = handle as unknown as number;
+  const id: number = handle;
   if (typeof id !== "number" || !Number.isFinite(id) || !Number.isInteger(id)) {
     throw new TypeError(
       `${context}: expected a SpiceHandle to be an integer number`,
@@ -28,7 +29,8 @@ function asHandleId(handle: SpiceHandle, context: string): number {
 }
 
 function asSpiceHandle(handleId: number): SpiceHandle {
-  return handleId as unknown as SpiceHandle;
+  // This is the one brand-construction boundary for an issued numeric token.
+  return handleId as SpiceHandle;
 }
 
 type InternalSpiceHandleRegistry = SpiceHandleRegistry & {
@@ -49,7 +51,6 @@ function snapshotSpiceHandleEntry(
  * Used by backends to map stable JS handles to backend-native integer handles.
  */
 export function createSpiceHandleRegistry(): SpiceHandleRegistry {
-  let nextHandleId = 1;
   const handles = new Map<number, SpiceHandleEntry>();
 
   function register(kind: SpiceHandleKind, nativeHandle: number): SpiceHandle {
@@ -64,23 +65,9 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
       );
     }
 
-    if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
-      throw new SpiceBackendContractError(
-        `backend contract violation: SpiceHandle ID overflow (nextHandleId=${nextHandleId})`,
-      );
-    }
-
-    // Defensive: never reuse/collide IDs even if `nextHandleId` gets out of sync.
-    while (handles.has(nextHandleId)) {
-      nextHandleId++;
-      if (nextHandleId >= Number.MAX_SAFE_INTEGER) {
-        throw new SpiceBackendContractError(
-          `backend contract violation: SpiceHandle ID overflow (nextHandleId=${nextHandleId})`,
-        );
-      }
-    }
-
-    const handleId = nextHandleId++;
+    // A per-registry counter aliases the first handle in another backend.
+    // Share the issuer with WASM cells/windows, but retain this owner-local map.
+    const handleId = issueOpaqueSpiceHandle();
     handles.set(handleId, { kind, nativeHandle });
     return asSpiceHandle(handleId);
   }
