@@ -12,7 +12,7 @@ routines** from baseline `3f950ae22993aaf9a629263a12388bf56894879c`:
 **324 backend judgments across 23 maintained batches**. Every record retains its
 NAIF references, implementation trace, scenario observations, fixture provenance,
 cleanup/error assessments and repair evidence. Registration alone does not
-certify parity. Fresh verification of this delivery branch is pending; earlier
+certify parity. All 324 backend judgments are verified on the current integrated source; earlier
 source/job observations remain historical.
 
 There are zero open findings and no support exceptions. The inventory remains
@@ -61,9 +61,23 @@ It matches the reviewed combined artifact. Generated glue/binary were not
 hand-edited. All three doctors passed with Node 22.23.4 / pnpm 10.13.1,
 production N0067 and locked Python 3.12.15 / SpiceyPy 6.0.3.
 
-Current delivery verification: both complete required local lanes, generated
-ledger checks and canonical CI are pending. Current-source observations will be
-recorded after their actual results are inspected; no historical run is relabeled.
+Both complete required local lanes passed with matching task caches. An additional
+`TSPICE_EXPECT_NATIVE=true pnpm run test:required --force` executed all 15 graph
+tasks with **zero cache hits**, passing all **2,218 live comparisons** and all
+**2,431 parity-package tests without skips**, plus 600 WASM / 66 Node / 28 core /
+150 facade tests. All 38 ledger regressions, generated drift, formatting, lint
+and typecheck passed. Current-source canonical CI passed all 15 jobs; no historical
+run is relabeled.
+
+Current delivery source `388063d4ee0c81c58b3ed653d84a9195e4f31da7` passed
+[all 15 canonical jobs](https://github.com/rybosome/tspice/actions/runs/43521244532).
+Its inspected [Linux Node22 native-required job](https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970)
+freshly executed all 2,218 live comparisons and all 2,431 parity-package tests
+without skips, plus 600 WASM / 66 Node / 28 core / 150 facade tests. All current
+maintained records identify that actual tested source/job. REST explicitly
+confirmed mergeability and rebaseability against unchanged current main. Final
+verification-metadata CI is linked from PR #706; executable/test/build inputs
+remain identical to this source.
 
 Historical combined source `30753720aaed683d25a1807a7a789b3a8d1fe43a` passed
 [all 15 canonical jobs](https://github.com/rybosome/tspice/actions/runs/43428741796).

@@ -669,6 +669,218 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
       "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
       "historical": true
+    },
+    {
+      "id": "local-706-main-c5f0b058-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b4e2199987ce30bcef5e4c6e5624e309bc7aace781c808f804e5670fc064901",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "local-706-main-c5f0b058-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b4e2199987ce30bcef5e4c6e5624e309bc7aace781c808f804e5670fc064901",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b4e2199987ce30bcef5e4c6e5624e309bc7aace781c808f804e5670fc064901",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b4e2199987ce30bcef5e4c6e5624e309bc7aace781c808f804e5670fc064901",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
     }
   ],
   "routines": [
@@ -795,11 +1007,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> Node typed adapter/stager -> native registered furnsh -> tspice_furnsh shared C shim -> furnsh_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -811,11 +1027,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_furnsh -> shared C shim -> furnsh_c; outputs read before finally frees allocations.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -909,11 +1129,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.unload -> Node typed adapter/stager -> native registered unload -> tspice_unload shared C shim -> unload_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -925,11 +1149,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.unload -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_unload -> shared C shim -> unload_c; outputs read before finally frees allocations.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -1011,11 +1239,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kclear -> Node typed adapter/stager -> native registered kclear -> tspice_kclear shared C shim -> kclear_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1027,11 +1259,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kclear -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kclear -> shared C shim -> kclear_c; outputs read before finally frees allocations.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -1123,11 +1359,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kdata -> Node typed adapter/stager -> native registered kdata -> tspice_kdata shared C shim -> kdata_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1139,11 +1379,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kdata -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kdata -> shared C shim -> kdata_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -1219,11 +1463,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kinfo -> Node typed adapter/stager -> native registered kinfo -> tspice_kinfo shared C shim -> kinfo_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1235,11 +1483,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "composed",
           "trace": "raw.kinfo -> filename-keyed cache built from actual _tspice_ktotal/_tspice_kdata -> shared shim/CSPICE. Clear cache before furnsh/unload/kclear; live meta child-source/duplicate and mutation tests validate composed semantics.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -1331,11 +1583,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> Node typed adapter/stager -> native registered ktotal -> tspice_ktotal shared C shim -> ktotal_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1347,11 +1603,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_ktotal -> shared C shim -> ktotal_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -1506,11 +1766,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kxtrct -> Node typed adapter/stager -> native registered kxtrct -> tspice_kxtrct shared C shim -> kxtrct_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1522,14 +1786,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "javascript",
           "trace": "raw.kxtrct -> shared kxtrctJs; no WASM substitute in the parity handler. Independent oracle calls actual locked SpiceyPy libspice.kxtrct_c and reads exact buffers; supported adapter normalization/UTF-8 size limits are explicit.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Consolidated onto current main for PR #706. Prior source/job observations remain historical; fresh owning-script regeneration, complete local lanes and canonical CI are pending for the integrated source."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

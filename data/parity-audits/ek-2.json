@@ -422,6 +422,198 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
       "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
       "historical": true
+    },
+    {
+      "id": "local-706-main-c5f0b058-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "local-706-main-c5f0b058-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
     }
   ],
   "routines": [
@@ -507,11 +699,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> Node typed adapter -> registered N-API handler -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -521,11 +717,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> WASM typed helper -> configured compiled _tspice_ekopn export -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -591,11 +791,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> Node typed adapter -> registered N-API handler -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -605,11 +809,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> WASM typed helper -> configured compiled _tspice_ekopr export -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -683,11 +891,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> Node typed adapter -> registered N-API handler -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -697,11 +909,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> WASM typed helper -> configured compiled _tspice_ekopw export -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -793,11 +1009,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> Node typed adapter -> registered N-API handler -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -807,11 +1027,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> WASM typed helper -> configured compiled _tspice_ekcls export -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -885,11 +1109,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> Node typed adapter -> registered N-API handler -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -899,11 +1127,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> WASM typed helper -> configured compiled _tspice_ekntab export -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -977,11 +1209,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> Node typed adapter -> registered N-API handler -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -991,11 +1227,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> WASM typed helper -> configured compiled _tspice_ektnam export -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -1061,11 +1301,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> Node typed adapter -> registered N-API handler -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1075,11 +1319,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> WASM typed helper -> configured compiled _tspice_eknseg export -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -1206,11 +1454,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> Node typed adapter -> registered N-API handler -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1220,14 +1472,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> WASM typed helper -> configured compiled _tspice_ekifld export -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Consolidated onto current main for PR #706. Prior source/job observations remain historical; fresh owning-script regeneration, complete local lanes and canonical CI are pending for the integrated source."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

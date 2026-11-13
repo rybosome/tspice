@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
   "mainAtAssembly": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
-  "purpose": "Single merge delivery for the remaining reviewed Step 7 work through PR #706 on current main. Original PRs #688-#705 remain review records; merged #681-#687 are deduplicated. Prior CI remains historical and fresh integrated local/canonical verification is pending. No PR/main merge performed.",
+  "purpose": "Single merge delivery for all remaining reviewed Step 7 work through PR #706 on current main. All 162 routines / 324 backend judgments have fresh local and observed canonical verification. Original PRs #688-#705 remain review records, merged #681-#687 are deduplicated and historical source/job evidence is preserved. Final verification-metadata checks precede handoff; no PR/main merge performed.",
   "batches": [
     {
       "batch": "vectors-arithmetic",
@@ -771,7 +771,19 @@
       "mergeCommit": null
     }
   ],
-  "canonicalSourceVerification": null,
+  "canonicalSourceVerification": {
+    "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+    "mainBaseCommit": "c5f0b058da08940f2fc7cb0453c9508663d91434",
+    "ciRun": "https://github.com/rybosome/tspice/actions/runs/43521244532",
+    "nativeRequiredJob": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+    "all15JobsPassed": true,
+    "testTasksFreshlyExecuted": true,
+    "verifiedRoutines": 162,
+    "verifiedBackendJudgments": 324,
+    "liveComparisons": 2218,
+    "nativeRequiredParityPackageTests": 2431,
+    "nativeRequiredSkips": 0
+  },
   "sourceTreePreservation": {
     "referenceCommit": "43a4f952d07896561b8aedecab6da54cee064cb7",
     "executableTestBuildInputsIdentical": true,
@@ -794,5 +806,30 @@
       ],
       "note": "Retain the assembly's additional DSK offline fixture repair from #693; do not replay the already-merged SPK/PCK repair."
     }
-  ]
+  ],
+  "localVerification": {
+    "sourceCommit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+    "requiredLanesPassed": true,
+    "requiredLanesUsedMatchingCaches": true,
+    "freshCommand": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+    "freshGraphTasks": 15,
+    "freshCachedTasks": 0,
+    "liveComparisons": 2218,
+    "nativeRequiredParityPackageTests": 2431,
+    "nativeRequiredSkips": 0
+  },
+  "reviewRecordsLinkedTo706": [
+    688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702,
+    703, 704, 705
+  ],
+  "reviewFeedback": {
+    "observedAt": "2026-11-13T22:50:19.777790+00:00",
+    "checkedPRs": [
+      688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702,
+      703, 704, 705
+    ],
+    "openThreads": 0,
+    "discussionComments": 0,
+    "reviews": 0
+  }
 }
