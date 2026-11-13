@@ -27,6 +27,15 @@ SpiceCell *tspice_validate_handle(
 int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes);
 int tspice_registry_remove(SpiceCell *cell);
 
+// Enforce the caller precondition that a size cannot exceed original allocated
+// backing storage. CSPICE cannot detect this from the mutable cell descriptor.
+int tspice_validate_cell_capacity(
+    SpiceCell *cell,
+    SpiceInt size,
+    const char *ctx,
+    char *err,
+    int errMaxBytes);
+
 #ifdef __cplusplus
 }
 #endif

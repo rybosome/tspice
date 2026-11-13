@@ -3,6 +3,13 @@
   "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
   "batches": [
     {
+      "id": "cell-capacity-prerequisite",
+      "routines": ["ssize_c", "valid_c", "wnvald_c"],
+      "dependsOn": ["kplfrm-prerequisite"],
+      "prs": ["https://github.com/rybosome/tspice/pull/683"],
+      "nextAction": "Review the allocation prerequisite; integrate the separate #684 opaque-handle repair before semantic completion of the affected methods. User merges remain separate."
+    },
+    {
       "id": "cells-windows",
       "routines": [
         "card_c",
@@ -11,16 +18,13 @@
         "insrti_c",
         "scard_c",
         "size_c",
-        "ssize_c",
-        "valid_c",
         "wncard_c",
         "wnfetd_c",
-        "wninsd_c",
-        "wnvald_c"
+        "wninsd_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["cell-capacity-prerequisite"],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Repair WASM handle lifetime/ownership, then complete cell/window semantic audits on the safe allocation baseline."
     },
     {
       "id": "vectors-arithmetic",
@@ -36,7 +40,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/679"],
-      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
+      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "coordinates-matrices",
@@ -56,7 +60,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/681"],
-      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
+      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "dsk",
@@ -142,7 +146,7 @@
       ],
       "dependsOn": ["kplfrm-prerequisite"],
       "prs": ["https://github.com/rybosome/tspice/pull/682"],
-      "nextAction": "Verified on both backends with current-source local and observed CI evidence; retain evidence when sources change."
+      "nextAction": "Verified with fresh local and observed source CI on the combined capacity prerequisite. Preserve exact execution references and refresh evidence when sources change."
     },
     {
       "id": "file-io-1",

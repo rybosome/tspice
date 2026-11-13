@@ -1,0 +1,575 @@
+{
+  "schemaVersion": 1,
+  "batch": "cell-capacity-prerequisite",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-shim-c/src/handle_validation.c",
+    "packages/backend-shim-c/src/handle_validation.h",
+    "packages/backend-node/native/src/cell_handles.cc",
+    "packages/backend-node/native/src/cell_handles.h",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/tspice/test/cells-capacity-bounds.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-allocation-safety-node-2026-11-12",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c81d0c23210bc589b798df064dfe26aa71cf92bfee72957529a21e32b470de7b",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
+    },
+    {
+      "id": "local-allocation-safety-wasm-2026-11-12",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c81d0c23210bc589b798df064dfe26aa71cf92bfee72957529a21e32b470de7b",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Final required JS/native lanes passed after final owning-script WASM regeneration for bounds, registry rollback and checked storage arithmetic. Production native addon rebuilt/loaded, sanity assertion ran, all 654 parity tests (327 scenarios per backend), all 685 parity-package tests passed with no skips. All 16 capacity/registry integration tests ran across both backends; all 63 WASM tests included wasm32 unrepresentable-allocation recovery. The instrumented real-C fixture compiled/ran under forwarded SDKROOT, proving zero leaked allocations for all four registry-growth failures/null outputs and exact boundary arithmetic without huge allocations. Separate failing-before controls observed the three accepted oversized descriptors, two leaked allocations and signed-overflow allocation request. CSPICE N0067 / Emscripten3.1.74 / Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3/Python3.12.15 on macOS arm64. WASM pointer-identity findings remain open and are not certified by these passes.",
+      "historical": true
+    },
+    {
+      "id": "local-683-main-22f45b80-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bb49a8aa7c8761ea7c1b4fe3dc749f8310597b6161811fc066fd1dd5337f9125",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required local lanes passed after rebasing onto merged #681/#682. Production N0067 native rebuilt/loaded and its required guard ran; all 728 live comparisons (364 scenarios per actual backend), all 763 parity-package tests with zero native-required skips, 118 WASM / 62 Node / 21 core / 121 facade tests passed. The real C allocator fixture and all 16 capacity/registry integration tests passed. All 38 ledger regressions and drift/format/lint/typecheck passed. The original owning-script generated Node/web WASM is byte-identical, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4; C sources/build inputs match the original capacity PR. Merged coordinate/error implementations are preserved. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3-Python 3.12.15 / macOS arm64. Prior executions remain historical; fresh current-source CI is pending. Known ownership findings remain open and are not certified by valid-handle passes."
+    },
+    {
+      "id": "local-683-main-22f45b80-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bb49a8aa7c8761ea7c1b4fe3dc749f8310597b6161811fc066fd1dd5337f9125",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required local lanes passed after rebasing onto merged #681/#682. Production N0067 native rebuilt/loaded and its required guard ran; all 728 live comparisons (364 scenarios per actual backend), all 763 parity-package tests with zero native-required skips, 118 WASM / 62 Node / 21 core / 121 facade tests passed. The real C allocator fixture and all 16 capacity/registry integration tests passed. All 38 ledger regressions and drift/format/lint/typecheck passed. The original owning-script generated Node/web WASM is byte-identical, SHA256 6861f0e8f7500826f2eb7b4fb604301efc40e1b8bc3e5dfc243b6d74334985c4; C sources/build inputs match the original capacity PR. Merged coordinate/error implementations are preserved. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3-Python 3.12.15 / macOS arm64. Prior executions remain historical; fresh current-source CI is pending. Known ownership findings remain open and are not certified by valid-handle passes."
+    },
+    {
+      "id": "ci-683-main-22f45b80-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bb49a8aa7c8761ea7c1b4fe3dc749f8310597b6161811fc066fd1dd5337f9125",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "39b3a99e3ac22bf0dc7610f7bd214729c050e08a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43487831823/job/132100888690",
+      "observation": "All 15 source CI jobs passed on 39b3a99e3ac22bf0dc7610f7bd214729c050e08a. The inspected Linux Node 22 native-required job 132100888690 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067, and executed all 728 live comparisons (364 scenarios per actual Node/WASM backend), all 763 parity-package tests with zero skips, 118 WASM / 62 Node / 21 core / 121 facade tests. The real C allocator regression and 16 capacity/registry integration tests passed. Node 20/22 Linux/macOS JS/native lanes, ledger regressions/drift, docs and packed-native checks all passed. Explicit REST rebaseability is true on this source head. Execution remains bound to the actual tested source/job; prior observations remain historical. Open ownership findings are not certified by passing valid-handle/allocation cases."
+    },
+    {
+      "id": "ci-683-main-22f45b80-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bb49a8aa7c8761ea7c1b4fe3dc749f8310597b6161811fc066fd1dd5337f9125",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "39b3a99e3ac22bf0dc7610f7bd214729c050e08a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43487831823/job/132100888690",
+      "observation": "All 15 source CI jobs passed on 39b3a99e3ac22bf0dc7610f7bd214729c050e08a. The inspected Linux Node 22 native-required job 132100888690 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067, and executed all 728 live comparisons (364 scenarios per actual Node/WASM backend), all 763 parity-package tests with zero skips, 118 WASM / 62 Node / 21 core / 121 facade tests. The real C allocator regression and 16 capacity/registry integration tests passed. Node 20/22 Linux/macOS JS/native lanes, ledger regressions/drift, docs and packed-native checks all passed. Explicit REST rebaseability is true on this source head. Execution remains bound to the actual tested source/job; prior observations remain historical. Open ownership findings are not certified by passing valid-handle/allocation cases."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "ssize_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ssize_c.html",
+      "semantics": "Updates logical maximum cardinality, resets cardinality to zero and set status to true, while retaining original backing allocation. Shrink/zero/restore within original storage is allowed; size beyond original allocation violates a documented NAIF caller precondition and is now rejected by the shared shim before descriptor mutation.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-ssize-resizes-cell-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "ssize shrinks logical capacity within original storage and resets cardinality; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-ssize-negative-size-error",
+          "coverage": ["error"],
+          "observes": "Representative ssize argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-ssize-audit-shrink-restore-original",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Logical capacity shrinks/resets then returns to original allocation, including a temporary zero size.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        }
+      ],
+      "edgeAssessment": "Updates logical maximum cardinality, resets cardinality to zero and set status to true, while retaining original backing allocation. Shrink/zero/restore within original storage is allowed; size beyond original allocation violates a documented NAIF caller precondition and is now rejected by the shared shim before descriptor mutation. Direct regression covers original int/double/char/window backing limits and preservation after rejection; registry stress covers retained capacities across realloc/removal/shrink. Foreign and reused-pointer ownership remains open and is not certified.",
+      "errorAssessment": "NAIF allocation-size preconditions are not diagnosed by CSPICE and must not be tested by unsafe oracle access. Safe direct tests use n=0 and assert rejection before descriptor changes. Live valid n>size requires INVALIDSIZE, wnvald odd n requires UNMATCHENDPTS and n>size requires WINDOWTOOSMALL. Negative size/n are existing typed wrapper checks, not claimed as live CSPICE diagnostic equivalence.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external data; authored finite cells, initialized zero storage, integer endpoints and local allocation markers only.",
+      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection.",
+      "tolerance": "Capacities/cardinalities and fixture integers compare exactly at the existing 1e-12 absolute/relative threshold; sorted char strings, complete lengths/keys and endpoints are preserved. Fractions are binary-exact. No tolerance changes.",
+      "findings": [
+        {
+          "id": "logical-size-exceeds-allocation",
+          "status": "repaired",
+          "summary": "Safe new regressions showed ssize/valid/wnvald accepted size 6 for a two-element backing allocation. The original ssize scenario also grew capacity beyond declared storage, contrary to NAIF preconditions, without accessing the enlarged data.",
+          "repair": "Retain original capacities alongside live pointers in the shared sorted registry. Validate requested size before any descriptor/init mutation in all three wrappers. Replace the unsafe scenario with legal shrinking/restoration and add safe n=0 violations plus all cell types, registry growth/removal/shrink and same-instance recovery tests. Regenerate both WASM targets with the owning script.",
+          "evidence": [
+            "packages/backend-shim-c/src/handle_validation.c",
+            "packages/backend-shim-c/src/handle_validation.h",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
+            "packages/tspice/test/cells-capacity-bounds.test.ts",
+            "packages/py-parity-checking/src/cases/cells-windows/ssize.cases.json"
+          ],
+          "caseIds": [
+            "cells-windows-ssize-resizes-cell-success",
+            "cells-windows-ssize-negative-size-error",
+            "cells-windows-ssize-audit-shrink-restore-original"
+          ]
+        },
+        {
+          "id": "registry-growth-failure-leak",
+          "status": "repaired",
+          "summary": "A deterministic C fixture forced the first registry realloc to fail and observed two live allocations after construction returned an error. Constructors attempted public free on an unregistered pointer, which the live-handle guard correctly rejected.",
+          "repair": "Release owned but unregistered descriptor/backing storage directly on registration failure for all four constructors. Require non-null output handles before allocating. The isolated fixture compiles the actual shared C files against pinned CSPICE with test-only allocator substitutions; all four failed constructors and null-output paths leave zero live allocations. No production test hook or replacement SPICE implementation is introduced.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-registry-rollback.test.ts",
+            "packages/backend-node/test/fixtures/cell-registry-rollback.c"
+          ],
+          "caseIds": ["cells-windows-ssize-audit-shrink-restore-original"]
+        },
+        {
+          "id": "signed-storage-size-overflow",
+          "status": "repaired",
+          "summary": "The instrumented real C fixture observed INT_MAX integer-cell storage requesting 18446744065119617044 bytes instead of 8589934612 on a 64-bit host: control-slot addition overflowed signed int before conversion. The same constructors could overflow wasm32 byte multiplication. No huge allocation was performed in the regression.",
+          "repair": "Compute control-slot counts in size_t and reject byte multiplication beyond SIZE_MAX for all four constructors. Native fault fixture checks exact boundary requests while refusing large payloads; real WASM tests reject unrepresentable storage then allocate/use/free a normal cell.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-registry-rollback.test.ts",
+            "packages/backend-node/test/fixtures/cell-registry-rollback.c",
+            "packages/backend-wasm/test/cell-allocation-size.test.ts"
+          ],
+          "caseIds": ["cells-windows-ssize-audit-shrink-restore-original"]
+        },
+        {
+          "id": "wasm-handle-address-aliasing",
+          "status": "open",
+          "summary": "Separate direct tests in the in-progress cell audit fail when a foreign module allocates the same pointer and when an expired pointer is reused. Numeric pointer membership does not establish lifetime/owner identity. The capacity fix does not claim to repair this; a focused WASM handle prerequisite follows.",
+          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair"],
+          "route": "direct",
+          "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "valid_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/valid_c.html",
+      "semantics": "Sorts and removes duplicates from the first n existing stored elements, updates logical size/cardinality and creates a valid set. Size cannot exceed the original backing allocation; n must fit logical size. Character comparisons ignore trailing blanks. Tests expose zero-initialized unused slots to form unsorted/duplicate input instead of validating an already-normalized set.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-valid-normalizes-set-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "valid runs against a populated int set cell; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-valid-negative-n-error",
+          "coverage": ["error"],
+          "observes": "Representative valid argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-valid-audit-unsorted-duplicate-int",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-valid-audit-unsorted-duplicate-double",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-valid-audit-unsorted-duplicate-char",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-valid-audit-n-exceeds-size",
+          "coverage": ["error"],
+          "observes": "Set validation rejects too many input elements before accessing them.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        }
+      ],
+      "edgeAssessment": "Sorts and removes duplicates from the first n existing stored elements, updates logical size/cardinality and creates a valid set. Size cannot exceed the original backing allocation; n must fit logical size. Character comparisons ignore trailing blanks. Tests expose zero-initialized unused slots to form unsorted/duplicate input instead of validating an already-normalized set. Direct regression covers original int/double/char/window backing limits and preservation after rejection; registry stress covers retained capacities across realloc/removal/shrink. Foreign and reused-pointer ownership remains open and is not certified.",
+      "errorAssessment": "NAIF allocation-size preconditions are not diagnosed by CSPICE and must not be tested by unsafe oracle access. Safe direct tests use n=0 and assert rejection before descriptor changes. Live valid n>size requires INVALIDSIZE, wnvald odd n requires UNMATCHENDPTS and n>size requires WINDOWTOOSMALL. Negative size/n are existing typed wrapper checks, not claimed as live CSPICE diagnostic equivalence.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external data; authored finite cells, initialized zero storage, integer endpoints and local allocation markers only.",
+      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection.",
+      "tolerance": "Capacities/cardinalities and fixture integers compare exactly at the existing 1e-12 absolute/relative threshold; sorted char strings, complete lengths/keys and endpoints are preserved. Fractions are binary-exact. No tolerance changes.",
+      "findings": [
+        {
+          "id": "logical-size-exceeds-allocation",
+          "status": "repaired",
+          "summary": "Safe new regressions showed ssize/valid/wnvald accepted size 6 for a two-element backing allocation. The original ssize scenario also grew capacity beyond declared storage, contrary to NAIF preconditions, without accessing the enlarged data.",
+          "repair": "Retain original capacities alongside live pointers in the shared sorted registry. Validate requested size before any descriptor/init mutation in all three wrappers. Replace the unsafe scenario with legal shrinking/restoration and add safe n=0 violations plus all cell types, registry growth/removal/shrink and same-instance recovery tests. Regenerate both WASM targets with the owning script.",
+          "evidence": [
+            "packages/backend-shim-c/src/handle_validation.c",
+            "packages/backend-shim-c/src/handle_validation.h",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
+            "packages/tspice/test/cells-capacity-bounds.test.ts",
+            "packages/py-parity-checking/src/cases/cells-windows/valid.cases.json"
+          ],
+          "caseIds": [
+            "cells-windows-valid-normalizes-set-success",
+            "cells-windows-valid-negative-n-error",
+            "cells-windows-valid-audit-unsorted-duplicate-int",
+            "cells-windows-valid-audit-unsorted-duplicate-double",
+            "cells-windows-valid-audit-unsorted-duplicate-char",
+            "cells-windows-valid-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "registry-growth-failure-leak",
+          "status": "repaired",
+          "summary": "A deterministic C fixture forced the first registry realloc to fail and observed two live allocations after construction returned an error. Constructors attempted public free on an unregistered pointer, which the live-handle guard correctly rejected.",
+          "repair": "Release owned but unregistered descriptor/backing storage directly on registration failure for all four constructors. Require non-null output handles before allocating. The isolated fixture compiles the actual shared C files against pinned CSPICE with test-only allocator substitutions; all four failed constructors and null-output paths leave zero live allocations. No production test hook or replacement SPICE implementation is introduced.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-registry-rollback.test.ts",
+            "packages/backend-node/test/fixtures/cell-registry-rollback.c"
+          ],
+          "caseIds": [
+            "cells-windows-valid-audit-unsorted-duplicate-int",
+            "cells-windows-valid-audit-unsorted-duplicate-double",
+            "cells-windows-valid-audit-unsorted-duplicate-char",
+            "cells-windows-valid-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "signed-storage-size-overflow",
+          "status": "repaired",
+          "summary": "The instrumented real C fixture observed INT_MAX integer-cell storage requesting 18446744065119617044 bytes instead of 8589934612 on a 64-bit host: control-slot addition overflowed signed int before conversion. The same constructors could overflow wasm32 byte multiplication. No huge allocation was performed in the regression.",
+          "repair": "Compute control-slot counts in size_t and reject byte multiplication beyond SIZE_MAX for all four constructors. Native fault fixture checks exact boundary requests while refusing large payloads; real WASM tests reject unrepresentable storage then allocate/use/free a normal cell.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-registry-rollback.test.ts",
+            "packages/backend-node/test/fixtures/cell-registry-rollback.c",
+            "packages/backend-wasm/test/cell-allocation-size.test.ts"
+          ],
+          "caseIds": [
+            "cells-windows-valid-audit-unsorted-duplicate-int",
+            "cells-windows-valid-audit-unsorted-duplicate-double",
+            "cells-windows-valid-audit-unsorted-duplicate-char",
+            "cells-windows-valid-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "already-normalized-input-only",
+          "status": "repaired",
+          "summary": "Original scenarios constructed normalized sets/windows before validating them, so an implementation that did no sorting/deduplication/merging could pass.",
+          "repair": "Grow cardinality into initialized unused storage to create genuine unsorted duplicate set entries or an out-of-order zero interval, then compare all resulting values/endpoints after the actual raw validation.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+            "packages/py-parity-checking/src/cases/cells-windows/valid.cases.json"
+          ],
+          "caseIds": [
+            "cells-windows-valid-audit-unsorted-duplicate-int",
+            "cells-windows-valid-audit-unsorted-duplicate-double",
+            "cells-windows-valid-audit-unsorted-duplicate-char",
+            "cells-windows-valid-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "wasm-handle-address-aliasing",
+          "status": "open",
+          "summary": "Separate direct tests in the in-progress cell audit fail when a foreign module allocates the same pointer and when an expired pointer is reused. Numeric pointer membership does not establish lifetime/owner identity. The capacity fix does not claim to repair this; a focused WASM handle prerequisite follows.",
+          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair"],
+          "route": "direct",
+          "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "wnvald_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnvald_c.html",
+      "semantics": "Validates n stored DP endpoints, sorts interval pairs and merges overlapping pairs. Size counts endpoints, n must be even and fit size, and each pair must have valid left/right bounds. The logical size cannot exceed allocated endpoints; the shim checks original backing capacity before changing init/descriptor state.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnvald-normalizes-window-success",
+          "coverage": ["success", "edge", "state"],
+          "observes": "wnvald validates a tracked window and preserves interval access; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-wnvald-negative-n-error",
+          "coverage": ["error"],
+          "observes": "Representative wnvald argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-wnvald-audit-unsorted-zero-pair",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Growing endpoint cardinality appends zero storage; validation sorts/merges the resulting out-of-order intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-wnvald-audit-odd-endpoint-count",
+          "coverage": ["error"],
+          "observes": "An odd input count cannot form complete intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        },
+        {
+          "caseId": "cells-windows-wnvald-audit-n-exceeds-size",
+          "coverage": ["error"],
+          "observes": "Too many endpoints are rejected before inspecting data.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
+        }
+      ],
+      "edgeAssessment": "Validates n stored DP endpoints, sorts interval pairs and merges overlapping pairs. Size counts endpoints, n must be even and fit size, and each pair must have valid left/right bounds. The logical size cannot exceed allocated endpoints; the shim checks original backing capacity before changing init/descriptor state. Direct regression covers original int/double/char/window backing limits and preservation after rejection; registry stress covers retained capacities across realloc/removal/shrink. Foreign and reused-pointer ownership remains open and is not certified.",
+      "errorAssessment": "NAIF allocation-size preconditions are not diagnosed by CSPICE and must not be tested by unsafe oracle access. Safe direct tests use n=0 and assert rejection before descriptor changes. Live valid n>size requires INVALIDSIZE, wnvald odd n requires UNMATCHENDPTS and n>size requires WINDOWTOOSMALL. Negative size/n are existing typed wrapper checks, not claimed as live CSPICE diagnostic equivalence.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels or external data; authored finite cells, initialized zero storage, integer endpoints and local allocation markers only.",
+      "cleanup": "Case runtime owns cell/window handles and frees them in registered finalizers on success/error, then resets toolkit state; facade clients dispose in finally. Shared registry retires capacities with pointers and shrinks best-effort. Direct tests free all surviving handles even after allocation-bound rejection. WASM scoped allocators free temporary error buffers. Known pointer-identity lifetime gap remains explicit. Registry-allocation failure releases unregistered storage directly; the deterministic compiled C fixture observes zero outstanding allocations for int/double/char/window construction and null-output rejection.",
+      "tolerance": "Capacities/cardinalities and fixture integers compare exactly at the existing 1e-12 absolute/relative threshold; sorted char strings, complete lengths/keys and endpoints are preserved. Fractions are binary-exact. No tolerance changes.",
+      "findings": [
+        {
+          "id": "logical-size-exceeds-allocation",
+          "status": "repaired",
+          "summary": "Safe new regressions showed ssize/valid/wnvald accepted size 6 for a two-element backing allocation. The original ssize scenario also grew capacity beyond declared storage, contrary to NAIF preconditions, without accessing the enlarged data.",
+          "repair": "Retain original capacities alongside live pointers in the shared sorted registry. Validate requested size before any descriptor/init mutation in all three wrappers. Replace the unsafe scenario with legal shrinking/restoration and add safe n=0 violations plus all cell types, registry growth/removal/shrink and same-instance recovery tests. Regenerate both WASM targets with the owning script.",
+          "evidence": [
+            "packages/backend-shim-c/src/handle_validation.c",
+            "packages/backend-shim-c/src/handle_validation.h",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
+            "packages/tspice/test/cells-capacity-bounds.test.ts",
+            "packages/py-parity-checking/src/cases/cells-windows/wnvald.cases.json"
+          ],
+          "caseIds": [
+            "cells-windows-wnvald-normalizes-window-success",
+            "cells-windows-wnvald-negative-n-error",
+            "cells-windows-wnvald-audit-unsorted-zero-pair",
+            "cells-windows-wnvald-audit-odd-endpoint-count",
+            "cells-windows-wnvald-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "registry-growth-failure-leak",
+          "status": "repaired",
+          "summary": "A deterministic C fixture forced the first registry realloc to fail and observed two live allocations after construction returned an error. Constructors attempted public free on an unregistered pointer, which the live-handle guard correctly rejected.",
+          "repair": "Release owned but unregistered descriptor/backing storage directly on registration failure for all four constructors. Require non-null output handles before allocating. The isolated fixture compiles the actual shared C files against pinned CSPICE with test-only allocator substitutions; all four failed constructors and null-output paths leave zero live allocations. No production test hook or replacement SPICE implementation is introduced.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-registry-rollback.test.ts",
+            "packages/backend-node/test/fixtures/cell-registry-rollback.c"
+          ],
+          "caseIds": [
+            "cells-windows-wnvald-audit-unsorted-zero-pair",
+            "cells-windows-wnvald-audit-odd-endpoint-count",
+            "cells-windows-wnvald-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "signed-storage-size-overflow",
+          "status": "repaired",
+          "summary": "The instrumented real C fixture observed INT_MAX integer-cell storage requesting 18446744065119617044 bytes instead of 8589934612 on a 64-bit host: control-slot addition overflowed signed int before conversion. The same constructors could overflow wasm32 byte multiplication. No huge allocation was performed in the regression.",
+          "repair": "Compute control-slot counts in size_t and reject byte multiplication beyond SIZE_MAX for all four constructors. Native fault fixture checks exact boundary requests while refusing large payloads; real WASM tests reject unrepresentable storage then allocate/use/free a normal cell.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-registry-rollback.test.ts",
+            "packages/backend-node/test/fixtures/cell-registry-rollback.c",
+            "packages/backend-wasm/test/cell-allocation-size.test.ts"
+          ],
+          "caseIds": [
+            "cells-windows-wnvald-audit-unsorted-zero-pair",
+            "cells-windows-wnvald-audit-odd-endpoint-count",
+            "cells-windows-wnvald-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "already-normalized-input-only",
+          "status": "repaired",
+          "summary": "Original scenarios constructed normalized sets/windows before validating them, so an implementation that did no sorting/deduplication/merging could pass.",
+          "repair": "Grow cardinality into initialized unused storage to create genuine unsorted duplicate set entries or an out-of-order zero interval, then compare all resulting values/endpoints after the actual raw validation.",
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+            "packages/py-parity-checking/src/cases/cells-windows/wnvald.cases.json"
+          ],
+          "caseIds": [
+            "cells-windows-wnvald-audit-unsorted-zero-pair",
+            "cells-windows-wnvald-audit-odd-endpoint-count",
+            "cells-windows-wnvald-audit-n-exceeds-size"
+          ]
+        },
+        {
+          "id": "wasm-handle-address-aliasing",
+          "status": "open",
+          "summary": "Separate direct tests in the in-progress cell audit fail when a foreign module allocates the same pointer and when an expired pointer is reused. Numeric pointer membership does not establish lifetime/owner identity. The capacity fix does not claim to repair this; a focused WASM handle prerequisite follows.",
+          "evidence": ["packages/backend-wasm/src/domains/cells-windows.ts"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-683-main-22f45b80-node",
+            "ci-683-main-22f45b80-node"
+          ]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair"],
+          "route": "direct",
+          "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
+          "executions": [
+            "local-683-main-22f45b80-wasm",
+            "ci-683-main-22f45b80-wasm"
+          ]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Fresh local and explicitly observed canonical CI passed for current registered valid-handle/allocation cases. The separately tracked ownership finding remains open and semantic completion is not claimed."
+}

@@ -208,12 +208,12 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
     if isinstance(step, StepCellsWindowsSsize):
         target = _require_target(context, step.targetKind, step.targetId)
         sp.ssize(step.size, target)
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value={"size": int(sp.size(target)), "card": int(sp.card(target))})
 
     if isinstance(step, StepCellsWindowsValid):
         target = _require_target(context, step.targetKind, step.targetId)
         sp.valid(step.size, step.n, target)
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value=None if step.targetKind == "window" else list(target))
 
     if isinstance(step, StepCellsWindowsWncard):
         window = _require_window(context, step.windowId)
@@ -232,6 +232,7 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
     if isinstance(step, StepCellsWindowsWnvald):
         window = _require_window(context, step.windowId)
         sp.wnvald(step.size, step.n, window)
-        return StepOutput(op=step.op, value=None)
+        intervals = [sp.wnfetd(window, i) for i in range(sp.wncard(window))]
+        return StepOutput(op=step.op, value=[{"left": float(left), "right": float(right)} for left, right in intervals])
 
     return None
