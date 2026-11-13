@@ -99,8 +99,8 @@
         "spkw08_c"
       ],
       "dependsOn": ["ephemeris-descriptors"],
-      "prs": [],
-      "nextAction": "Six SPK file/writer/coverage routines have handwritten semantic review and focused actual/live evidence. Complete full required local lanes, publish the audit PR, then observe canonical CI and explicit rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/702"],
+      "nextAction": "All 15 exact-source CI jobs passed with actual production native and live comparisons. Wait for verification metadata CI and explicit REST rebaseability; continue geometry/GF and the state/search child."
     },
     {
       "id": "ephemeris-2",

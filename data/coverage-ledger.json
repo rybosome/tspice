@@ -121,8 +121,10 @@
         "dependsOn": [
           "ephemeris-descriptors"
         ],
-        "prs": [],
-        "nextAction": "Six SPK file/writer/coverage routines have handwritten semantic review and focused actual/live evidence. Complete full required local lanes, publish the audit PR, then observe canonical CI and explicit rebaseability.",
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/702"
+        ],
+        "nextAction": "All 15 exact-source CI jobs passed with actual production native and live comparisons. Wait for verification metadata CI and explicit REST rebaseability; continue geometry/GF and the state/search child.",
         "record": "data/parity-audits/ephemeris-1.json"
       },
       {
@@ -396,15 +398,15 @@
     "counts": {
       "node": {
         "unreviewed": 142,
-        "reviewed": 20,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 20
       },
       "wasm": {
         "unreviewed": 142,
-        "reviewed": 20,
+        "reviewed": 0,
         "needs-repair": 0,
-        "verified": 0
+        "verified": 20
       }
     }
   },
@@ -20108,14 +20110,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         },
         "wasm": {
@@ -20130,14 +20134,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/kplfrm-prerequisite.json"
         }
       }
@@ -26949,28 +26955,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcls -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkcls -> spkcls_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcls -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkcls export -> shared tspice_spkcls -> spkcls_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         }
       }
@@ -27311,28 +27321,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcov -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkcov -> spkcov_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcov -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkcov export -> shared tspice_spkcov -> spkcov_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         }
       }
@@ -28620,28 +28634,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkobj -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkobj -> spkobj_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkobj -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkobj export -> shared tspice_spkobj -> spkobj_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         }
       }
@@ -28945,28 +28963,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopa -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkopa -> spkopa_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopa -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkopa export -> shared tspice_spkopa -> spkopa_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         }
       }
@@ -29300,28 +29322,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopn -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkopn -> spkopn_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopn -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkopn export -> shared tspice_spkopn -> spkopn_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         }
       }
@@ -29678,14 +29704,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-descriptors.json"
         },
         "wasm": {
@@ -29694,14 +29722,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkpds export -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-descriptors.json"
         }
       }
@@ -30543,14 +30573,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-descriptors.json"
         },
         "wasm": {
@@ -30559,14 +30591,16 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkuds export -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-descriptors.json"
         }
       }
@@ -31321,28 +31355,32 @@
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkw08 -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkw08 _v2 -> spkw08_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         },
         "wasm": {
           "history": [
             "unreviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkw08 -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkw08 _v2 export -> shared tspice_spkw08 _v2 -> spkw08_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/ephemeris-1.json"
         }
       }
@@ -31662,14 +31700,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -31680,14 +31720,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34347,14 +34389,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34369,14 +34413,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -34657,14 +34703,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -34675,14 +34723,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }
@@ -34893,14 +34943,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -34915,14 +34967,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35130,14 +35184,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35152,14 +35208,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35392,14 +35450,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35414,14 +35474,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35650,14 +35712,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35672,14 +35736,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -35890,14 +35956,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -35912,14 +35980,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36183,14 +36253,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36205,14 +36277,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -36427,14 +36501,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         },
         "wasm": {
@@ -36449,14 +36525,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/vectors-arithmetic.json"
         }
       }
@@ -37363,14 +37441,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-spk-writers-final-node"
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         },
         "wasm": {
@@ -37381,14 +37461,16 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
           "executions": [
-            "local-spk-writers-final-wasm"
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
           ],
-          "status": "reviewed",
+          "status": "verified",
           "record": "data/parity-audits/cell-capacity-prerequisite.json"
         }
       }

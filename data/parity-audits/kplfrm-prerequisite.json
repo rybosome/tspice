@@ -400,6 +400,44 @@
         "kernels-kplfrm-set-too-small-error"
       ],
       "observation": "Both complete required lanes passed after parent restacking and the offline fixture prerequisite: all 772 live comparisons (386 scenarios per actual backend), all 824 parity-package tests with native required and zero skips, production N0067 sanity, all 96 WASM/63 Node/28 core/126 facade tests. Forty-four new workflows plus persisted complete state/metadata, cleanup and all 16 actual WASM fault positions passed. The first full run exposed seven generated Node EK path regressions; host existence versus virtual-path routing was corrected, all 30 targeted comparisons and both complete lanes then passed. No retry concealed that failure."
+    },
+    {
+      "id": "ci-pr702-43412142905-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "817fb253d8002fcc478fb9dfb73ea6c13a80627efa22c64881a0d1b96c5da6c8",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "182cdb4e7bcca5638943fe62f7c8850138de72fd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43412142905/job/131840933601",
+      "observation": "Observed exact-source Linux22: all 772 live comparisons, all 824 parity-package tests, production N0067 native-required sanity with zero skips, all 96 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed."
+    },
+    {
+      "id": "ci-pr702-43412142905-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "817fb253d8002fcc478fb9dfb73ea6c13a80627efa22c64881a0d1b96c5da6c8",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "182cdb4e7bcca5638943fe62f7c8850138de72fd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43412142905/job/131840933601",
+      "observation": "Observed exact-source Linux22: all 772 live comparisons, all 824 parity-package tests, production N0067 native-required sanity with zero skips, all 96 WASM/63 Node/28 core/126 facade tests. All 15 source jobs passed."
     }
   ],
   "routines": [
@@ -539,11 +577,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-spk-writers-final-node"]
+          "executions": [
+            "local-spk-writers-final-node",
+            "ci-pr702-43412142905-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -557,14 +599,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-spk-writers-final-wasm"]
+          "executions": [
+            "local-spk-writers-final-wasm",
+            "ci-pr702-43412142905-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }
