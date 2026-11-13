@@ -92,6 +92,26 @@ export async function ensureKernelFile(opts: {
   url: string;
   sha256: string;
 }): Promise<{ path: string; bytes: Buffer }> {
+  // These exact inputs are already tracked. Reading them first makes a cold CI
+  // checkout independent of NAIF availability while retaining hash validation.
+  if (opts.name === "de440s.bsp" || opts.name === "pck00010.tpc") {
+    const fixturePath = path.join(
+      __dirname,
+      "..",
+      "fixtures",
+      "kernels",
+      "ephemeris-de440s",
+      opts.name,
+    );
+    const fixture = await readFileAndSha256(fixturePath);
+    if (fixture.sha256 !== opts.sha256) {
+      throw new Error(
+        `Tracked fixture SHA-256 mismatch for ${opts.name}. Expected ${opts.sha256}, got ${fixture.sha256}`,
+      );
+    }
+    return { path: fixturePath, bytes: fixture.bytes };
+  }
+
   const outPath = path.join(cacheDir, opts.name);
 
   // Read the cached file once (hash + bytes) to avoid races where another
