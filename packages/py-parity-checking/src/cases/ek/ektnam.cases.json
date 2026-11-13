@@ -3,19 +3,89 @@
     "caseId": "ek-ektnam-happy-first-table",
     "description": "ektnam returns the loaded EK table name for index 0",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
-      { "op": "ek.ekntab" },
-      { "op": "ek.ektnam", "n": 0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/py-parity-minimal.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ektnam-out-of-range-error",
     "description": "ektnam errors for a table index outside 0..ekntab-1",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
-      { "op": "ek.ektnam", "n": 99 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/py-parity-minimal.ek"
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 99
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ektnam-audit-all-loaded-names",
+    "description": "Compare every actual table name in toolkit enumeration order, with mixed/shared segment names and zero-based first/last indices.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 0
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 1
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 0
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 1
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ektnam-audit-no-loaded-files",
+    "description": "Actual empty-state lookup requires NOLOADEDFILES, distinct from a typed negative-index precondition.",
+    "workflow": [
+      {
+        "op": "ek.ektnam",
+        "n": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
   }
 ]

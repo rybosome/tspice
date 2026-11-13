@@ -1305,7 +1305,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ek.ekopn":
             return StepEkEkopn(
                 op=op,
-                path=_expect_string(step.get("path"), label="ek.ekopn.path"),
+                path=_decode_path_ref(step.get("path"), label="ek.ekopn.path"),
                 ifname=_expect_string(step.get("ifname"), label="ek.ekopn.ifname"),
                 ncomch=_expect_int(step.get("ncomch"), label="ek.ekopn.ncomch"),
                 handleId=_expect_string(step.get("handleId"), label="ek.ekopn.handleId"),
@@ -1314,14 +1314,14 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ek.ekopr":
             return StepEkEkopr(
                 op=op,
-                path=_expect_string(step.get("path"), label="ek.ekopr.path"),
+                path=_decode_path_ref(step.get("path"), label="ek.ekopr.path"),
                 handleId=_expect_string(step.get("handleId"), label="ek.ekopr.handleId"),
             )
 
         case "ek.ekopw":
             return StepEkEkopw(
                 op=op,
-                path=_expect_string(step.get("path"), label="ek.ekopw.path"),
+                path=_decode_path_ref(step.get("path"), label="ek.ekopw.path"),
                 handleId=_expect_string(step.get("handleId"), label="ek.ekopw.handleId"),
             )
 

@@ -10,10 +10,18 @@
         "ncomch": 0,
         "handleId": "H_SEG"
       },
-      { "op": "ek.eknseg", "handleId": "H_SEG" },
-      { "op": "ek.ekcls", "handleId": "H_SEG" }
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_SEG"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_SEG"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-eknseg-closed-handle-error",
@@ -26,9 +34,49 @@
         "ncomch": 0,
         "handleId": "H_SEG"
       },
-      { "op": "ek.ekcls", "handleId": "H_SEG" },
-      { "op": "ek.eknseg", "handleId": "H_SEG" }
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_SEG"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_SEG"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek-eknseg-audit-physical-versus-logical",
+    "description": "Three physical segments spanning two logical tables distinguish eknseg3 from ekntab2.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "r",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-one.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

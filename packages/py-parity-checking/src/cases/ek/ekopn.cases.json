@@ -10,10 +10,18 @@
         "ncomch": 0,
         "handleId": "H_OPEN"
       },
-      { "op": "ek.eknseg", "handleId": "H_OPEN" },
-      { "op": "ek.ekcls", "handleId": "H_OPEN" }
+      {
+        "op": "ek.eknseg",
+        "handleId": "H_OPEN"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_OPEN"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekopn-duplicate-path-error",
@@ -26,7 +34,10 @@
         "ncomch": 0,
         "handleId": "H_FIRST"
       },
-      { "op": "ek.ekcls", "handleId": "H_FIRST" },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_FIRST"
+      },
       {
         "op": "ek.ekopn",
         "path": ".py-parity-ek-ekopn-duplicate.ek",
@@ -35,6 +46,81 @@
         "handleId": "H_SECOND"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ek-ekopn-audit-long-header-and-comment-reservation",
+    "description": "Create with a long internal name and 2050 reserved comment characters, close and reopen a valid empty EK; independent header readback verifies actual 60-character truncation and three comment records.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "header.ek"
+        },
+        "ifname": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "ncomch": 2050
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "header.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekopn-audit-existing-file",
+    "description": "Existing output must reach actual FILEOPENFAIL without losing other cleanup claims.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "existing.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopn",
+        "handleId": "again",
+        "path": {
+          "kind": "scratch",
+          "rel": "existing.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENFAIL"]
+    }
   }
 ]

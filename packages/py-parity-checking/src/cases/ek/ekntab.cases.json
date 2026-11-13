@@ -3,16 +3,135 @@
     "caseId": "ek-ekntab-happy-with-loaded-table",
     "description": "ekntab returns visible table count after loading EK fixtures",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
-      { "op": "ek.ekntab" },
-      { "op": "ek.ektnam", "n": 0 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/py-parity-minimal.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ektnam",
+        "n": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekntab-happy-empty-state",
     "description": "ekntab is observable in an empty kernel state as zero tables",
-    "workflow": [{ "op": "ek.ekntab" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekntab-audit-logical-table-load-state",
+    "description": "Compare logical table counts0,2,3,2,0 across multi-segment files, shared table names, unload and empty state; ekntab has no intrinsic scientific error case.",
+    "workflow": [
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekntab-audit-raw-open-does-not-load",
+    "description": "A populated file opened for read is not loaded for EK querying: physical count1 and logical loaded-table count0 reach assertions.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "not-loaded.ek"
+        },
+        "ifname": "AUTHORED_LIFECYCLE",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "w",
+        "tabnam": "AUDIT_SHARED",
+        "nrows": 1,
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"],
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekacli",
+        "segmentId": "s",
+        "column": "ID",
+        "ivals": [19],
+        "entszs": [1],
+        "nlflgs": [false]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "s"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "w"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "not-loaded.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

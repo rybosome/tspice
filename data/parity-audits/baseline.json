@@ -62,20 +62,20 @@
         "ekaclc_c",
         "ekacld_c",
         "ekacli_c",
-        "ekcls_c",
         "ekffld_c",
         "ekfind_c",
         "ekgc_c",
-        "ekgd_c"
+        "ekgd_c",
+        "ekgi_c"
       ],
-      "dependsOn": [],
+      "dependsOn": ["ek-2"],
       "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "nextAction": "Audit column writing/finalization and query tri-state results after the separate eight-routine EK file/segment lifecycle batch; actual helpers alone do not certify these routines."
     },
     {
       "id": "ek-2",
       "routines": [
-        "ekgi_c",
+        "ekcls_c",
         "ekifld_c",
         "eknseg_c",
         "ekntab_c",
@@ -86,7 +86,7 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "nextAction": "Eight coherent lifecycle routines reviewed and focused repairs implemented on shared handle prerequisite #691, with offline fixture CI prerequisite #693. Finish full local required lanes, source-bound observations and the lifecycle PR; column/query semantics remain ek-1. The ekcls/ekgi assignment swap preserves all162 routines exactly once."
     },
     {
       "id": "ephemeris-1",

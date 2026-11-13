@@ -21,3 +21,13 @@
 The EK fixture is generated once via SpiceyPy tooling and checked in. Tests that exercise file-creation routines may generate scratch DLA/DSK outputs under `fixtures/kernels/generated/`; these are ignored and are not input fixtures.
 
 `kplfrm-minimal.tf` is an existing project-authored synthetic frame definition for `TSPICE_PARITY_TOPO` relative to J2000. It contains an arbitrary test frame ID and fixed rotation angles, with no mission observations or external scientific dataset. The kplfrm audit reuses this unchanged fixture; it introduces no new kernel data.
+
+### Step 7 authored EK lifecycle fixtures
+
+`kernels/audit-tables-one.ek` (32,768 bytes) and
+`kernels/audit-tables-two.ek` (23,552 bytes) are authored MIT synthetic data, generated
+and independently read back by `generate-audit-ek.py` using locked SpiceyPy 6.0.3/
+CSPICE_N0067. Invented scalar integer rows populate three/two physical segments
+with shared AUDIT_SHARED and distinct AUDIT_ALPHA/AUDIT_BETA table names. There
+are no external observations. Duplicate logical table names distinguish segment
+counts from loaded-table counts. Regeneration is documented in the script.

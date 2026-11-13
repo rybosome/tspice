@@ -262,3 +262,46 @@ compiled operation; a successful close invalidates the token, and a failed
 native close retains it for cleanup retry. The alias `dlacls` retains the same
 DAS/DLA ownership checks as `dascls`. File/EK/ephemeris semantic audit status is
 tracked separately from this shared ownership prerequisite.
+
+## Domain: `ek` file and segment lifecycle (`EkApi`)
+
+| Raw method | Actual CSPICE route | Observations                                                                                                        |
+| ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `ekopn`    | `ekopn_c`           | Create, existing-file failure, actual 60-byte internal-name field and comment reservation.                          |
+| `ekopr`    | `ekopr_c`           | Reopen finalized output and retain duplicate read claims with separate opaque tokens.                               |
+| `ekopw`    | `ekopw_c`           | Append/finalize a second segment, close/reopen and independently read all stored rows.                              |
+| `ekcls`    | `ekcls_c`           | Finalize valid output; explicit claims survive kernel clearing and close independently.                             |
+| `eknseg`   | `eknseg_c`          | Physical counts0/1/2/3, distinct from logical tables.                                                               |
+| `ekntab`   | `ekntab_c`          | Logical table deduplication across files/segments, empty state and load/unload transitions.                         |
+| `ektnam`   | `ektnam_c`          | Every loaded name in toolkit enumeration order and zero-based first/last indices.                                   |
+| `ekifld`   | `ekifld_c`          | Actual zero-based segment number and every returned record pointer, used unchanged through finalized data readback. |
+
+Only one fast-write segment may be active. Every column must be added and the
+segment finalized before another EK operation; query selections must be renewed
+afterward. The harness now observes actual workspace values instead of only a
+workflow-local segment label. Structured fixture/scratch paths preserve explicit
+file staging; legacy string EK paths remain scratch-relative.
+
+Both backends enforce the existing 1,000,000-row guardrail and N0067's 100-column
+maximum. Node validates counts before string conversion/padding and bounds packed
+string buffers using the same 256 MiB per-buffer cap as WASM. Tests write/read a
+real 100-column table and reject 101 columns before touching element data. The
+maximum 256 MiB allocation boundary is reviewed arithmetically rather than stress
+allocated in tests. WASM now rejects numeric internal names and non-array column
+inputs before coercion and frees earlier allocations after opener failure; all 23
+lifecycle allocation positions are faulted on an actual WASM heap.
+
+Independent live SpiceyPy readback compares the full DAS header, every segment's
+schema attributes and all rows against another actual writer and literal authored
+values. ctypes enum wrappers are normalized to their scalar values; no fields or
+numeric differences are discarded. Pending actual EK claims close before scratch
+removal in both harnesses, and failed closes retain metadata for retry. Public
+opaque tokens reject foreign/expired/wrong-kind claims even though native
+`ekcls_c` permits unrecognized numeric handles as no-ops.
+
+Named errors include FILEOPENFAIL, FILENOTFOUND, FILEOPENCONFLICT, NOLOADEDFILES,
+INVALIDINDEX, IDSTRINGTOOLONG, INVALIDNAME, BADCOLUMNDECL and DASINVALIDACCESS.
+The pinned N0067 `ektnam_c` header spells one exception INVALDINDEX; actual toolkit
+execution reports INVALIDINDEX and the tests require that observed code. Typed
+preflight errors are explicitly separate from toolkit error-path comparisons.
+Column-value and query-result semantics retain their separate `ek-1` assignment.
