@@ -148,8 +148,8 @@
         "dlacls"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Shared prerequisite found during file-io-1 review: per-registry numeric file IDs accepted another backend's first handle. Publish/validate the focused host-realm token identity repair, then semantically audit this batch; no routine completion is claimed by the shared fix."
+      "prs": ["https://github.com/rybosome/tspice/pull/691"],
+      "nextAction": "The shared file-token prerequisite has both required full local lanes and observed canonical Linux native CI in #691. Reader semantic audit continues in #692; all remaining routine assignments are retained."
     },
     {
       "id": "file-io-2",

@@ -248,6 +248,44 @@
         "kernels-kplfrm-set-too-small-error"
       ],
       "observation": "Both full required local lanes passed after the shared issuer repair. Native required ran all 654 live comparisons (327 per actual backend), all 685 parity-package tests, 26 core tests including all five file kinds, 121 facade tests including four actual native/WASM ownership regressions, 67 WASM tests and 62 native tests with no skips. Inherited real C allocator rollback, 16 capacity cases and all WASM pointer lifetime tests passed. Full JS passed; only its expected native-required guard fixture skipped. The checked-in N0067/emcc3.1.74 WASM binary is unchanged. Initial local setup failures were unstaged platform-addon packaging, a missing new helper JSDoc and an implicit test-handle type; each was corrected before full final passes, with no failed CI retry."
+    },
+    {
+      "id": "ci-file-handles-source-ci-2026-11-13-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16217814b92a0eb3a647144e3de55780de8c5fdeb018960a37d1cbf62e440fbb",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "874db6cfca85e2172bd4539e9dfb53c03cd534b8",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43341633735/job/131611077032",
+      "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics."
+    },
+    {
+      "id": "ci-file-handles-source-ci-2026-11-13-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "16217814b92a0eb3a647144e3de55780de8c5fdeb018960a37d1cbf62e440fbb",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "874db6cfca85e2172bd4539e9dfb53c03cd534b8",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43341633735/job/131611077032",
+      "observation": "Observed canonical Linux Node22 native-required job passed all 654 live comparisons, all 685 parity-package tests, 26 core tests, 121 facade tests including all four actual Node/WASM file-owner regressions, 67 WASM tests and 62 native tests. The production addon guard and CSPICE_N0067 passed; no skips. This observation validates the current shared issuer source and retained audited vector/kplfrm/capacity routines, not unreviewed file/EK/ephemeris semantics."
     }
   ],
   "routines": [
@@ -383,11 +421,15 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-file-handles-2026-11-13-node"]
+          "executions": [
+            "local-file-handles-2026-11-13-node",
+            "ci-file-handles-source-ci-2026-11-13-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -397,14 +439,18 @@
             "verified",
             "reviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-file-handles-2026-11-13-wasm"]
+          "executions": [
+            "local-file-handles-2026-11-13-wasm",
+            "ci-file-handles-source-ci-2026-11-13-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }
