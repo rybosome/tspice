@@ -3,10 +3,57 @@ import type {
   SpiceMatrix6x6,
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
-import { brandMat3RowMajor, invariant } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  brandMat6RowMajor,
+  brandMat3RowMajor,
+  invariant,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
+
+function copyStateMatrix(value: unknown): SpiceMatrix6x6 {
+  const matrix = brandMat6RowMajor(value, { label: "sxform()" });
+  return [
+    matrix[0],
+    matrix[1],
+    matrix[2],
+    matrix[3],
+    matrix[4],
+    matrix[5],
+    matrix[6],
+    matrix[7],
+    matrix[8],
+    matrix[9],
+    matrix[10],
+    matrix[11],
+    matrix[12],
+    matrix[13],
+    matrix[14],
+    matrix[15],
+    matrix[16],
+    matrix[17],
+    matrix[18],
+    matrix[19],
+    matrix[20],
+    matrix[21],
+    matrix[22],
+    matrix[23],
+    matrix[24],
+    matrix[25],
+    matrix[26],
+    matrix[27],
+    matrix[28],
+    matrix[29],
+    matrix[30],
+    matrix[31],
+    matrix[32],
+    matrix[33],
+    matrix[34],
+    matrix[35],
+  ];
+}
 
 const UINT32_MAX = 0xffff_ffff;
 
@@ -59,6 +106,7 @@ export function createFramesApi(
     },
 
     frmnam: (code) => {
+      assertSpiceInt32(code, "frmnam(code)");
       const out = native.frmnam(code);
       if (!out.found) {
         return { found: false };
@@ -71,6 +119,7 @@ export function createFramesApi(
     },
 
     cidfrm: (center) => {
+      assertSpiceInt32(center, "cidfrm(center)");
       const out = native.cidfrm(center);
       if (!out.found) {
         return { found: false };
@@ -103,6 +152,7 @@ export function createFramesApi(
     },
 
     frinfo: (frameId) => {
+      assertSpiceInt32(frameId, "frinfo(frameId)");
       const out = native.frinfo(frameId);
       if (!out.found) {
         return { found: false };
@@ -128,6 +178,8 @@ export function createFramesApi(
     },
 
     ccifrm: (frameClass, classId) => {
+      assertSpiceInt32(frameClass, "ccifrm(frameClass)");
+      assertSpiceInt32(classId, "ccifrm(classId)");
       const out = native.ccifrm(frameClass, classId);
       if (!out.found) {
         return { found: false };
@@ -211,17 +263,21 @@ export function createFramesApi(
     },
 
     pxform: (from, to, et) => {
+      if (!Number.isFinite(et))
+        throw new TypeError("pxform(et) must be finite");
       const m = native.pxform(from, to, et);
       return brandMat3RowMajor(m, { label: "pxform()" });
     },
 
-    sxform: (from, to, et) => {
+    sxform: (from, to, et): SpiceMatrix6x6 => {
+      if (!Number.isFinite(et))
+        throw new TypeError("sxform(et) must be finite");
       const m = native.sxform(from, to, et);
       invariant(
         Array.isArray(m) && m.length === 36,
         "Expected sxform() to return a length-36 array",
       );
-      return m as SpiceMatrix6x6;
+      return copyStateMatrix(m);
     },
   };
 }

@@ -2,13 +2,129 @@
   {
     "caseId": "frames-frinfo-found-success",
     "description": "frinfo resolves built-in J2000 frame metadata",
-    "workflow": [{ "op": "frames.frinfo", "frameId": 1 }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.frinfo",
+        "frameId": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-frinfo-not-found-success",
     "description": "frinfo miss returns found=false",
-    "workflow": [{ "op": "frames.frinfo", "frameId": 123456789 }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.frinfo",
+        "frameId": 123456789
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frinfo-audit-builtins-and-missing",
+    "description": "Compare all center/class/class-ID fields for inertial and body-fixed frames, with a true unknown frame miss.",
+    "workflow": [
+      {
+        "op": "frames.frinfo",
+        "frameId": 1
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": 17
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": 10013
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frinfo-audit-distinct-frame-class-ids",
+    "description": "The negative static frame has center1234567/class4/classID-1800999, distinct from framecode-1800102; dynamic class5 and unload state distinguish every field.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": -1800102
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": 1800101
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": -1800102
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frinfo-audit-invalid-name-dimension",
+    "description": "Actual malformed NAME dimension signals INVALIDDIMENSION, not found:false.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "FRAME_1800191_NAME",
+        "values": ["BAD_A", "BAD_B"]
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": 1800191
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDDIMENSION"]
+    }
+  },
+  {
+    "caseId": "frames-frinfo-audit-missing-center",
+    "description": "Valid name/class/class-ID with missing center reaches actual KERNELVARNOTFOUND.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "FRAME_1800192_NAME",
+        "values": ["BAD_CENTER"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "FRAME_1800192_CLASS",
+        "values": [4]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "FRAME_1800192_CLASS_ID",
+        "values": [1800192]
+      },
+      {
+        "op": "frames.frinfo",
+        "frameId": 1800192
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
   }
 ]

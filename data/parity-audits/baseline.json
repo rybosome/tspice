@@ -178,8 +178,6 @@
     {
       "id": "frames-1",
       "routines": [
-        "ccifrm_c",
-        "cidfrm_c",
         "ckcov_c",
         "ckgp_c",
         "ckgpav_c",
@@ -189,11 +187,13 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Audit six CK pointing/coverage/load/unload routines separately. Inspect and repair pre-try string allocation leaks seen in ckgp/ckgpav/ckcov and oracle found/error ordering; actual CK handle/global state semantics still require primary review. No CK routine is certified by utility helper use."
     },
     {
       "id": "frames-2",
       "routines": [
+        "ccifrm_c",
+        "cidfrm_c",
         "cnmfrm_c",
         "frinfo_c",
         "frmnam_c",
@@ -203,7 +203,7 @@
       ],
       "dependsOn": [],
       "prs": [],
-      "nextAction": "Review NAIF semantics and trace raw implementations and live oracle assertions."
+      "nextAction": "Eight utility routines reviewed/focused repairs passed; run both full required lanes, record source-bound observations and open independent utility PR. Shared KPL cell identity remains needs-repair until separate #684."
     },
     {
       "id": "geometry",

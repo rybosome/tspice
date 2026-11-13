@@ -21,22 +21,52 @@ export type CkCoverageTimeSystem = "SCLK" | "TDB";
 
 /** Backend contract for frame/name lookups, CK access, and frame transformations. */
 export interface FramesApi {
-  /** SPICE `namfrm_c`: look up a frame code by frame name. */
+  /**
+   * Resolve a frame name; case and outer blanks are insignificant.
+   * @param name Frame name; empty strings signal EMPTYSTRING.
+   * @returns Frame code, or found:false for CSPICE's unknown-name code 0 sentinel.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/namfrm_c.html
+   */
   namfrm(name: string): Found<{ code: number }>;
-  /** SPICE `frmnam_c`: look up a frame name by frame code. */
+  /**
+   * Resolve a signed int32 frame code, including loaded kernel definitions.
+   * @returns Complete frame name (up to 32 characters), or found:false for an unknown ID.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frmnam_c.html
+   */
   frmnam(code: number): Found<{ name: string }>;
 
-  /** SPICE `cidfrm_c`: look up frame information for a center body ID. */
+  /**
+   * Resolve a center body's preferred frame, including `OBJECT_<id>_FRAME` overrides.
+   * @param center Signed int32 body ID; unknown centers are normal misses.
+   * @returns Preferred frame code/name, or found:false. The frame code differs from center ID.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cidfrm_c.html
+   */
   cidfrm(center: number): Found<{ frcode: number; frname: string }>;
-  /** SPICE `cnmfrm_c`: look up frame information for a center body name. */
+  /**
+   * Resolve a body name/alias to its preferred frame using current loaded mappings.
+   * @param centerName Body name; case/outer blanks are insignificant. Empty input throws.
+   * @returns Complete preferred frame code/name, or found:false for an unknown body.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cnmfrm_c.html
+   */
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
-  /** SPICE `frinfo_c`: get center + frame class info for a frame ID. */
+  /**
+   * Retrieve frame center, class and class ID for a signed int32 frame code.
+   * @returns All three distinct fields, or found:false for an unknown frame.
+   * Incomplete/malformed loaded definitions throw actual toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frinfo_c.html
+   */
   frinfo(
     frameId: number,
   ): Found<{ center: number; frameClass: number; classId: number }>;
 
-  /** SPICE `ccifrm_c`: map frame class + class ID to a frame code/name/center triple. */
+  /**
+   * Resolve signed int32 class/class-ID into frame code/name/center.
+   * @returns Complete triple, or found:false for an unmatched pair. Class ID can differ
+   * from frame code. Caller must avoid conflicting duplicate class/class-ID definitions.
+   * Malformed matching frame metadata throws actual toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ccifrm_c.html
+   */
   ccifrm(
     frameClass: number,
     classId: number,
@@ -84,9 +114,20 @@ export interface FramesApi {
     cover: SpiceWindow,
   ): void;
 
-  /** Compute a 3x3 frame transformation matrix (row-major). */
+  /**
+   * Map column position vectors from one frame to another at a finite ET.
+   * @param et TDB ephemeris seconds past J2000; negative epochs are valid.
+   * @returns All 9 row-major rotation entries. Unknown frames/missing orientation data throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pxform_c.html
+   */
   pxform(from: string, to: string, et: number): Mat3RowMajor;
 
-  /** Compute a 6x6 state transformation matrix (row-major). */
+  /**
+   * Map position/velocity states from one frame to another at a finite TDB ET.
+   * @param et Ephemeris seconds past J2000; derivative rates are per second.
+   * @returns Mutable 36-element row-major tuple, with blocks [R,0;dR/dt,R].
+   * Unknown frames/missing orientation data throw; every returned component is finite.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sxform_c.html
+   */
   sxform(from: string, to: string, et: number): SpiceMatrix6x6;
 }

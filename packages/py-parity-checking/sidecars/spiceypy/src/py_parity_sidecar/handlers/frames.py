@@ -256,32 +256,32 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
         return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesCidfrm):
-        try:
+        # Keep the actual outer SpiceyPy error check ahead of found handling.
+        # Otherwise a found=False decorator can mask real malformed-frame errors.
+        with sp.no_found_check():
             out = _normalize_frcode_frname(sp.cidfrm(step.center))
-            return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
+        return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesCnmfrm):
-        try:
+        # Keep the actual outer SpiceyPy error check ahead of found handling.
+        # Otherwise a found=False decorator can mask real malformed-frame errors.
+        with sp.no_found_check():
             out = _normalize_frcode_frname(sp.cnmfrm(step.centerName))
-            return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
+        return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesFrinfo):
-        try:
+        # Keep the actual outer SpiceyPy error check ahead of found handling.
+        # Otherwise a found=False decorator can mask real malformed-frame errors.
+        with sp.no_found_check():
             out = _normalize_frinfo(sp.frinfo(step.frameId))
-            return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
+        return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesCcifrm):
-        try:
+        # Keep the actual outer SpiceyPy error check ahead of found handling.
+        # Otherwise a found=False decorator can mask real malformed-frame errors.
+        with sp.no_found_check():
             out = _normalize_ccifrm(sp.ccifrm(step.frameClass, step.classId))
-            return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
+        return StepOutput(op=step.op, value=out)
 
     if isinstance(step, StepFramesCkgp):
         try:

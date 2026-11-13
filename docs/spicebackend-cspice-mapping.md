@@ -243,3 +243,43 @@ Most routines in this domain are **pure math** and require no kernels.
 | `coords-vectors.recgeo(rect, re, f)`          | `recgeo_c`           | `(rect: SpiceVector3, re: number, f: number)`                    | `{ lon: number; lat: number; alt: number }`      | float tolerance; angles radians                | none                                                                                  |
 | `coords-vectors.mxv(m, v)`                    | `mxv_c`              | `(m: Mat3RowMajor, v: SpiceVector3)`                             | `SpiceVector3`                                   | float tolerance                                | none                                                                                  |
 | `coords-vectors.mtxv(m, v)`                   | `mtxv_c`             | `(m: Mat3RowMajor, v: SpiceVector3)`                             | `SpiceVector3`                                   | float tolerance                                | none                                                                                  |
+
+### Step 7 frame lookup and transformation utilities
+
+`frames-2` reviews exactly namfrm_c, frmnam_c, cidfrm_c, cnmfrm_c, frinfo_c,
+ccifrm_c, pxform_c and sxform_c. Moving cidfrm/ccifrm out of the CK batch leaves
+six CK routines and preserves every one of the162 baseline assignments.
+All use actual same-named shared-C/CSPICE operations; code0/empty-name sentinels
+are deliberately normalized to the public Found result.
+
+The authored FK distinguishes frame code, center and class ID, including a
+negative static frame and a three-axis dynamic Euler frame. Cases compare all
+lookup fields, complete32-character names, real misses, load/unload/cache
+transitions and every9/36 row-major transform component. The dynamic state
+matrix has nonzero dR/dt terms. Independent actual-backend tests check literal
+metadata, [R,0;dR/dt,R] blocks and full inverse products. A central position
+finite difference with h=.01s uses a separate5e-11 truncation/roundoff bound;
+the live SpiceyPy comparator remains1e-12 throughout.
+
+Both adapters now reject fractional/overflow/nonfinite frame integer IDs and
+nonfinite ET instead of silently coercing them. Negative valid identifiers and
+epochs remain allowed. WASM string types are checked before encoding. State
+results are validated and copied into an explicit36-element mutable tuple,
+replacing unchecked casts. Five actual WASM allocation-failure positions leaked
+buffers in cnmfrm/pxform/sxform before their try blocks; protected scopes now
+pass all34 fault positions plus a real valid builtin lookup after each failure.
+No shared C or compiled WASM changes are needed for these adapter repairs.
+
+The locked oracle's default found exception could precede its real toolkit
+error check. Scoped no_found_check keeps legitimate misses and actual
+EMPTYSTRING/INVALIDDIMENSION/KERNELVARNOTFOUND/INVALIDFRAMEDEF errors distinct;
+ten failing-before comparisons now pass. UNKNOWNFRAME and FRAMEDATANOTFOUND
+are tested independently of metadata failures. Raw operations and every field
+reach assertions; no harness substitute establishes coverage.
+
+CK pointing/coverage/file state remain separately assigned to frames-1, including
+noticed pre-try allocation and found/error ordering gaps. The independent utility
+branch also retains the known inherited KPL WASM cell-identity finding as open
+until the separate #684 repair is integrated; utility passes do not certify it.
+Maintained frames-2.json records exact cases, human judgments and source-bound
+verification separately from generated scenario counts.

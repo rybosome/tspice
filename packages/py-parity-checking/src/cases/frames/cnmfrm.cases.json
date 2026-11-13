@@ -2,13 +2,91 @@
   {
     "caseId": "frames-cnmfrm-found-success",
     "description": "cnmfrm resolves EARTH center name -> frame mapping",
-    "workflow": [{ "op": "frames.cnmfrm", "centerName": "EARTH" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "EARTH"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-cnmfrm-not-found-success",
     "description": "cnmfrm miss returns found=false",
-    "workflow": [{ "op": "frames.cnmfrm", "centerName": "NOT_A_BODY_NAME" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "NOT_A_BODY_NAME"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cnmfrm-audit-case-blanks-and-misses",
+    "description": "Resolve body-name case/blanks into full preferred frame pair; unknown names return found:false.",
+    "workflow": [
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "  earth  "
+      },
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "MARS"
+      },
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "NOT_A_BODY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cnmfrm-audit-authored-preference-lifecycle",
+    "description": "Authored NAIF body-name mapping and preferred frame load/unload produce real not-found/found/not-found states.",
+    "workflow": [
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "AUDIT_WORLD"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "audit_world"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.cnmfrm",
+        "centerName": "AUDIT_WORLD"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-cnmfrm-audit-empty-name",
+    "description": "Actual EMPTYSTRING must remain a toolkit error; default SpiceyPy found exceptions must not mask it.",
+    "workflow": [
+      {
+        "op": "frames.cnmfrm",
+        "centerName": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
   }
 ]
