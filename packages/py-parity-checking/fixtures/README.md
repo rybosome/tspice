@@ -23,6 +23,7 @@ The EK fixture is generated once via SpiceyPy tooling and checked in. Tests that
 <<<<<<< HEAD
 `kplfrm-minimal.tf` is an existing project-authored synthetic frame definition for `TSPICE_PARITY_TOPO` relative to J2000. It contains an arbitrary test frame ID and fixed rotation angles, with no mission observations or external scientific dataset. The kplfrm audit reuses this unchanged fixture; it introduces no new kernel data.
 =======
+
 Step 7 kernel audit fixtures `audit-empty.tm` and `audit-partial-error.tpc` are
 project-authored synthetic text, distributed under this repository's MIT license.
 The empty meta-kernel has no child files; the malformed PCK deliberately assigns
@@ -33,4 +34,5 @@ claimed values outside the data section. Live cases read all three variables.
 Supplemental meta-kernel tests generate bounded path-symbol templates in scratch
 storage, reusing the unchanged LSK and 25 KiB SPK fixtures, and remove them in
 `finally`. There are no new scientific observations or downloaded datasets.
->>>>>>> 80783153 (Audit kernel loading, metadata and exact keyword extraction)
+
+> > > > > > > 80783153 (Audit kernel loading, metadata and exact keyword extraction)

@@ -132,6 +132,40 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43310416805/job/131504722621",
       "observation": "Observed Linux Node22 production native build/load and native-required sanity assertion. All 638 live parity tests (319 per backend), all 669 parity-package tests passed with no skips; direct Node kernels 7 and WASM kernels 5 tests passed after malformed-handle/class repairs. All 15 jobs in the first-attempt CI run passed. Final restacked native required lane also passed locally with all 638/669 tests.",
       "historical": true
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2a63283422d3c008f1481f257d59d826647dbfa322d0609d45301da3a6890e74",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 on main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 698 live comparisons (349 scenarios per backend), all 735 parity-package tests, 72 WASM, 62 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained, both fixture provenance paragraphs retained and batch assignments merged by stable ID. Reports recomputed from all cases; prior source-bound CI retained as historical. Formatting of the merged fixture README was corrected before final full passes. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64."
+    },
+    {
+      "id": "local-merged-kplfrm-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2a63283422d3c008f1481f257d59d826647dbfa322d0609d45301da3a6890e74",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both required local lanes passed after integrating merged kplfrm #680 on main d9b430dd. Actual production addon rebuilt/loaded, native sanity ran, all 698 live comparisons (349 scenarios per backend), all 735 parity-package tests, 72 WASM, 62 Node, 21 core and 101 facade tests passed without required native skips. Handwritten semantic changes retained, both fixture provenance paragraphs retained and batch assignments merged by stable ID. Reports recomputed from all cases; prior source-bound CI retained as historical. Formatting of the merged fixture README was corrected before final full passes. Node 22.23.4 / pnpm 10.13.1 / CSPICE N0067 / locked SpiceyPy 6.0.3 / Python 3.12.15 / macOS arm64."
     }
   ],
   "routines": [
@@ -251,10 +285,7 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-boundaries-node-2026-11-12",
-            "ci-boundaries-node-43310416805"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-node"]
         },
         "wasm": {
           "history": [
@@ -266,13 +297,10 @@
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-boundaries-wasm-2026-11-12",
-            "ci-boundaries-wasm-43310416805"
-          ]
+          "executions": ["local-merged-kplfrm-2026-11-13-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Prior observations retained as historical after integrating merged kplfrm source. Semantic judgments retained; full required local lanes and canonical current-source CI are pending."
+  "verificationNote": "Both required local lanes passed on the current reviewed source. Prior observations remain historical; observed CI evidence for the current source is pending."
 }
