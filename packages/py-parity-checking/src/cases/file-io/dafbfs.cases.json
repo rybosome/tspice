@@ -3,17 +3,31 @@
     "caseId": "file-io-dafbfs-search-sequence-success",
     "description": "dafbfs initializes DAF search state used by daffna",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
       {
         "op": "file-io.dafopr",
         "path": "kernels/file-io-minimal.bsp",
         "handleId": "daf"
       },
-      { "op": "file-io.dafbfs", "handleId": "daf" },
-      { "op": "file-io.daffna", "handleId": "daf" },
-      { "op": "file-io.dafcls", "handleId": "daf" }
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "daf"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "daf"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dafbfs-kind-mismatch-error",
@@ -21,20 +35,85 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dafbfs-kind-mismatch.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dafbfs-kind-mismatch.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "dla"
       },
-      { "op": "file-io.dlacls", "handleId": "dla" },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "dla"
+      },
       {
         "op": "file-io.dasopr",
-        "path": "kernels/generated/dafbfs-kind-mismatch.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dafbfs-kind-mismatch.dla"
+        },
         "handleId": "das"
       },
-      { "op": "file-io.dafbfs", "handleId": "das" }
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "das"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["kind"]
+    }
+  },
+  {
+    "caseId": "file-io-dafbfs-audit-restart-and-end",
+    "description": "Two authored segments distinguish true/true/false/false, followed by a real restart to true.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

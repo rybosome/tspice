@@ -88,8 +88,8 @@ export function createFileIoApi(
       handle,
       DAS_BACKED,
       (entry) => {
-        // In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c`
-        // is just an alias.
+        // CSPICE dascls_c closes both DAS and DLA handles; tspice dlacls is
+        // an alias, not a separate CSPICE C entrypoint.
         native.dascls(entry.nativeHandle);
       },
       context,

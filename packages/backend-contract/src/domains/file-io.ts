@@ -55,21 +55,44 @@ export interface FileIoKitApi {
 
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
-  /** Returns whether a file exists at `path`. */
+  /**
+   * Return whether a nonempty backend filesystem path exists.
+   * A missing file returns false; this does not load or open a kernel.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/exists_c.html
+   */
   exists(path: string): boolean;
 
-  /** Determine SPICE file architecture + type (see `getfat_c`). */
+  /**
+   * Determine a file's architecture and type, such as DAS/DSK or KPL/LSK.
+   * @param path Nonempty existing backend filesystem path; a missing file throws.
+   * @returns Toolkit architecture/type identifiers (uppercase, including DLA types).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getfat_c.html
+   */
   getfat(path: string): { arch: string; type: string };
 
   // --- DAF -----------------------------------------------------------------
 
-  /** Open a DAF file for read (see `dafopr_c`). */
+  /**
+   * Open a DAF file for read and return a backend-owned opaque token.
+   * Duplicate read opens have separate tokens but share CSPICE's file/cursor.
+   * @param path Existing backend filesystem path (staged virtual ID in WASM).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafopr_c.html
+   */
   dafopr(path: string): SpiceHandle;
 
-  /** Close a DAF file previously opened by `dafopr()`. */
+  /**
+   * Release one DAF read claim and invalidate its opaque token.
+   * Wrong-kind, foreign and already-closed tokens throw at the registry boundary.
+   * @param handle Live token returned by this backend's `dafopr`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcls_c.html
+   */
   dafcls(handle: SpiceHandle): void;
 
-  /** Begin a forward search for arrays in the given DAF file (see `dafbfs_c`). */
+  /**
+   * Start or restart the given DAF file's forward array search.
+   * @param handle Live DAF token; two read claims on one file share its cursor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafbfs_c.html
+   */
   dafbfs(handle: SpiceHandle): void;
 
   /**
@@ -77,27 +100,46 @@ export interface FileIoApi {
    *
    * Backend implementations should select the current DAF via `dafcs_c(handle)`
    * before calling `daffna_c` to support interleaving multiple DAF searches.
+   * @param handle Live DAF token with a search started by `dafbfs`.
+   * @returns True on the next array, false at/after the end of the array list.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daffna_c.html
    */
   daffna(handle: SpiceHandle): boolean;
 
   // --- DAS -----------------------------------------------------------------
 
-  /** Open a DAS file for read (see `dasopr_c`). */
+  /**
+   * Open a DAS-backed file (including DLA/DSK) for read.
+   * @param path Existing backend filesystem path (staged virtual ID in WASM).
+   * @returns Backend-owned opaque token; duplicate opens retain read claims.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasopr_c.html
+   */
   dasopr(path: string): SpiceHandle;
 
   /**
    * Close a DAS-backed file handle.
    *
-   * In CSPICE, `dascls_c` closes both DAS and DLA handles, and `dlacls_c` is an
-   * alias. We mirror that behavior: `dascls` and `dlacls` are interchangeable
+   * CSPICE `dascls_c` closes both DAS and DLA handles. tspice provides `dlacls`
+   * as an alias: `dascls` and `dlacls` are interchangeable
    * and accept handles returned from either `dasopr()` (read) or `dlaopn()`
-   * (write).
+   * (write). The opaque-token contract rejects already-closed tokens even though
+   * CSPICE's numeric close primitive permits unknown handles as no-ops.
+   * @param handle Live DAS/DLA token belonging to this backend.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dascls_c.html
    */
   dascls(handle: SpiceHandle): void;
 
   // --- DLA -----------------------------------------------------------------
 
-  /** Create and open a DLA file for write (see `dlaopn_c`). */
+  /**
+   * Create an empty DLA file and return its backend-owned write token.
+   * Close with `dascls` or `dlacls` to finalize the file before reopening.
+   * @param path New nonempty backend path; an existing file is an error.
+   * @param ftype Nonempty file type; CSPICE retains its first four characters.
+   * @param ifname Nonempty internal filename stored in the DAS header.
+   * @param ncomch Nonnegative int32 number of comment characters to reserve.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlaopn_c.html
+   */
   dlaopn(
     path: string,
     ftype: string,
@@ -110,6 +152,10 @@ export interface FileIoApi {
    *
    * DLA is DAS-backed: `handle` must be a DAS handle to a DLA file, opened via
    * `dasopr()` (read) or `dlaopn()` (write).
+   * @param handle Live DAS-backed DLA token.
+   * @returns A miss for an empty file, or all eight descriptor fields.
+   * Descriptor addresses/sizes are valid only when `found` is true.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlabfs_c.html
    */
   dlabfs(handle: SpiceHandle): FoundDlaDescriptor;
 
@@ -118,23 +164,45 @@ export interface FileIoApi {
    *
    * DLA is DAS-backed: `handle` must be a DAS handle to a DLA file, opened via
    * `dasopr()` (read) or `dlaopn()` (write).
+   * @param descr Valid descriptor obtained from this file's `dlabfs`/`dlafns`.
+   * Malformed integer fields are rejected before FFI; plausible fields alone
+   * cannot establish that a descriptor belongs to the file.
+   * @returns All eight descriptor fields on a hit, or `{ found: false }` at end.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlafns_c.html
    */
   dlafns(handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor;
 
   /**
    * Close a DAS-backed DLA handle.
    *
-   * Provided for parity with CSPICE `dlacls_c`, but implemented as an alias of
-   * `dascls` (same handle compatibility).
+   * This is a tspice alias of `dascls` (same handle compatibility); CSPICE has
+   * no separate `dlacls_c` entrypoint.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dascls_c.html
    */
   dlacls(handle: SpiceHandle): void;
 
   // --- DSK (DAS-backed) ---------------------------------------------------
 
-  /** Create and open a DSK file for write (see `dskopn_c`). */
+  /**
+   * Create an empty DAS-backed DSK file and return its opaque write token.
+   * @param path New nonempty backend path; an existing file is an error.
+   * @param ifname Nonempty internal filename stored in the DAS header.
+   * @param ncomch Nonnegative int32 comment-character reservation.
+   * @returns Token accepted by `dskw02` and finalized with `dascls`/`dlacls`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskopn_c.html
+   */
   dskopn(path: string, ifname: string, ncomch: number): SpiceHandle;
 
-  /** Build the spatial index for a type 2 DSK segment (see `dskmi2_c`). */
+  /**
+   * Build a type-2 DSK spatial index for flattened xyz vertices in km and
+   * flattened triangle vertex numbers (one-based, in [1, nv]).
+   * Array lengths must equal 3*nv and 3*np. Fine/coarse voxel scales follow
+   * CSPICE; `makvtl` controls the optional vertex-to-plate list.
+   * @param worksz Positive workspace size, at most 5,000,000 in this contract.
+   * @param spxisz Positive integer-index capacity, at most 5,000,000.
+   * @returns Ten double values and `spxisz` integers; pass both to `dskw02`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskmi2_c.html
+   */
   dskmi2(
     nv: number,
     vrtces: readonly number[],
@@ -149,7 +217,16 @@ export interface FileIoApi {
     spxisz: number,
   ): { spaixd: number[]; spaixi: number[] };
 
-  /** Write a type 2 segment to a DSK file opened by `dskopn` (see `dskw02_c`). */
+  /**
+   * Append a type-2 DSK segment to a live `dskopn` write token.
+   * Vertices are flattened xyz in km; plates contain one-based vertex numbers.
+   * Bounds use the selected coordinate system's units, and epochs are ET
+   * seconds past J2000. `corpar` has ten elements. Spatial-index components
+   * must come from the same mesh's `dskmi2`; declared active integer spans are
+   * checked before FFI, including vertex pointers when `makvtl` was false.
+   * Close the handle to finalize output before reading it independently.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskw02_c.html
+   */
   dskw02(
     handle: SpiceHandle,
     center: number,

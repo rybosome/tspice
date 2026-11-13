@@ -116,5 +116,203 @@
     "expectation": {
       "kind": "error"
     }
+  },
+  {
+    "caseId": "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+    "description": "All six integer fields, ten coordinate parameters, nonzero asymmetric coordinate bounds and nontrivial ET interval reach full descriptor comparison.",
+    "workflow": [
+      {
+        "op": "dsk.dskopn",
+        "handleId": "WRITE",
+        "path": {
+          "kind": "scratch",
+          "rel": "descriptor-rect.bds"
+        },
+        "ifname": "TSPICE",
+        "ncomch": 0
+      },
+      {
+        "op": "dsk.dskmi2",
+        "spatialIndexId": "IDX",
+        "vrtces": [
+          [1, 2, 3],
+          [4, 2, 3],
+          [1, 6, 3],
+          [1, 2, 8]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 2, 4],
+          [2, 3, 4],
+          [3, 1, 4]
+        ],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000
+      },
+      {
+        "op": "dsk.dskw02",
+        "handleId": "WRITE",
+        "spatialIndexId": "IDX",
+        "center": 499,
+        "surfid": 72,
+        "dclass": 2,
+        "frame": "J2000",
+        "corsys": 3,
+        "corpar": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": 1,
+        "mxcor1": 4,
+        "mncor2": 2,
+        "mxcor2": 6,
+        "mncor3": 3,
+        "mxcor3": 8,
+        "first": -25,
+        "last": 75,
+        "vrtces": [
+          [1, 2, 3],
+          [4, 2, 3],
+          [1, 6, 3],
+          [1, 2, 8]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 2, 4],
+          [2, 3, 4],
+          [3, 1, 4]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "WRITE"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "READ",
+        "path": {
+          "kind": "scratch",
+          "rel": "descriptor-rect.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dskgd",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "READ"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskgd-audit-planetodetic-descriptor",
+    "description": "Planetodetic coordinate code4, nonzero equatorial radius/flattening, radian bounds and a different built-in frame distinguish corpar/layout/frame values.",
+    "workflow": [
+      {
+        "op": "dsk.dskopn",
+        "handleId": "WRITE",
+        "path": {
+          "kind": "scratch",
+          "rel": "descriptor-pdet.bds"
+        },
+        "ifname": "TSPICE",
+        "ncomch": 0
+      },
+      {
+        "op": "dsk.dskmi2",
+        "spatialIndexId": "IDX",
+        "vrtces": [
+          [1, 2, 3],
+          [4, 2, 3],
+          [1, 6, 3],
+          [1, 2, 8]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 2, 4],
+          [2, 3, 4],
+          [3, 1, 4]
+        ],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000
+      },
+      {
+        "op": "dsk.dskw02",
+        "handleId": "WRITE",
+        "spatialIndexId": "IDX",
+        "center": 499,
+        "surfid": 72,
+        "dclass": 2,
+        "frame": "B1950",
+        "corsys": 4,
+        "corpar": [20, 0.125, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": -3.141592653589793,
+        "mxcor1": 3.141592653589793,
+        "mncor2": -1.5707963267948966,
+        "mxcor2": 1.5707963267948966,
+        "mncor3": -15,
+        "mxcor3": 30,
+        "first": -25,
+        "last": 75,
+        "vrtces": [
+          [1, 2, 3],
+          [4, 2, 3],
+          [1, 6, 3],
+          [1, 2, 8]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 2, 4],
+          [2, 3, 4],
+          [3, 1, 4]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "WRITE"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "READ",
+        "path": {
+          "kind": "scratch",
+          "rel": "descriptor-pdet.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dskgd",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "READ"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

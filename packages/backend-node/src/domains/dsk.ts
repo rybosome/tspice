@@ -47,6 +47,8 @@ function assertDlaDescriptor(
         v <= I32_MAX,
       `${context}: expected ${key} to be a 32-bit signed integer`,
     );
+    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
+    invariant(v >= min, `${context}: expected ${key} >= ${min}`);
   }
 }
 
@@ -70,6 +72,40 @@ function assertFiniteNumber(
   );
 }
 
+function readI32(
+  obj: Record<string, unknown>,
+  key: string,
+  context: string,
+): number {
+  const value = obj[key];
+  assertI32(value, `${context}.${key}`);
+  return value;
+}
+function readFinite(
+  obj: Record<string, unknown>,
+  key: string,
+  context: string,
+): number {
+  const value = obj[key];
+  assertFiniteNumber(value, `${context}.${key}`);
+  return value;
+}
+function readFiniteArray(
+  value: unknown,
+  length: number,
+  context: string,
+): number[] {
+  invariant(Array.isArray(value), `${context}: expected an array`);
+  invariant(value.length === length, `${context}: expected length ${length}`);
+  return value.map((item: unknown, i: number) => {
+    assertFiniteNumber(item, `${context}[${i}]`);
+    return item;
+  });
+}
+function readPair(value: unknown, context: string): [number, number] {
+  const pair = readFiniteArray(value, 2, context);
+  return [pair[0]!, pair[1]!];
+}
 function normalizeDskDescriptor(
   value: unknown,
   context: string,
@@ -79,40 +115,24 @@ function normalizeDskDescriptor(
     `${context}: expected an object`,
   );
   const obj = value as Record<string, unknown>;
-
-  for (const k of [
-    "surfce",
-    "center",
-    "dclass",
-    "dtype",
-    "frmcde",
-    "corsys",
-  ] as const) {
-    assertI32(obj[k], `${context}.${k}`);
-  }
-
-  invariant(Array.isArray(obj.corpar), `${context}.corpar: expected an array`);
-  invariant(obj.corpar.length === 10, `${context}.corpar: expected length 10`);
-  for (let i = 0; i < obj.corpar.length; i++) {
-    assertFiniteNumber(obj.corpar[i], `${context}.corpar[${i}]`);
-  }
-
-  for (const k of [
-    "co1min",
-    "co1max",
-    "co2min",
-    "co2max",
-    "co3min",
-    "co3max",
-    "start",
-    "stop",
-  ] as const) {
-    assertFiniteNumber(obj[k], `${context}.${k}`);
-  }
-
-  return obj as unknown as DskDescriptor;
+  return {
+    surfce: readI32(obj, "surfce", context),
+    center: readI32(obj, "center", context),
+    dclass: readI32(obj, "dclass", context),
+    dtype: readI32(obj, "dtype", context),
+    frmcde: readI32(obj, "frmcde", context),
+    corsys: readI32(obj, "corsys", context),
+    corpar: readFiniteArray(obj.corpar, 10, `${context}.corpar`),
+    co1min: readFinite(obj, "co1min", context),
+    co1max: readFinite(obj, "co1max", context),
+    co2min: readFinite(obj, "co2min", context),
+    co2max: readFinite(obj, "co2max", context),
+    co3min: readFinite(obj, "co3min", context),
+    co3max: readFinite(obj, "co3max", context),
+    start: readFinite(obj, "start", context),
+    stop: readFinite(obj, "stop", context),
+  };
 }
-
 function normalizeDskType2Bookkeeping(
   value: unknown,
   context: string,
@@ -122,50 +142,31 @@ function normalizeDskType2Bookkeeping(
     `${context}: expected an object`,
   );
   const obj = value as Record<string, unknown>;
-
-  for (const k of [
-    "nv",
-    "np",
-    "nvxtot",
-    "cgscal",
-    "vtxnpl",
-    "voxnpt",
-    "voxnpl",
-  ] as const) {
-    assertI32(obj[k], `${context}.${k}`);
-  }
-
-  invariant(Array.isArray(obj.vtxbds), `${context}.vtxbds: expected an array`);
-  invariant(obj.vtxbds.length === 3, `${context}.vtxbds: expected length 3`);
-  for (let axis = 0; axis < 3; axis++) {
-    const pair = obj.vtxbds[axis];
-    invariant(
-      Array.isArray(pair),
-      `${context}.vtxbds[${axis}]: expected an array`,
-    );
-    invariant(
-      pair.length === 2,
-      `${context}.vtxbds[${axis}]: expected length 2`,
-    );
-    assertFiniteNumber(pair[0], `${context}.vtxbds[${axis}][0]`);
-    assertFiniteNumber(pair[1], `${context}.vtxbds[${axis}][1]`);
-  }
-
-  assertFiniteNumber(obj.voxsiz, `${context}.voxsiz`);
-
-  invariant(Array.isArray(obj.voxori), `${context}.voxori: expected an array`);
-  invariant(obj.voxori.length === 3, `${context}.voxori: expected length 3`);
-  for (let i = 0; i < 3; i++) {
-    assertFiniteNumber(obj.voxori[i], `${context}.voxori[${i}]`);
-  }
-
-  invariant(Array.isArray(obj.vgrext), `${context}.vgrext: expected an array`);
-  invariant(obj.vgrext.length === 3, `${context}.vgrext: expected length 3`);
-  for (let i = 0; i < 3; i++) {
-    assertI32(obj.vgrext[i], `${context}.vgrext[${i}]`);
-  }
-
-  return obj as unknown as DskType2Bookkeeping;
+  const bounds: unknown = obj.vtxbds;
+  invariant(
+    Array.isArray(bounds) && bounds.length === 3,
+    `${context}.vtxbds: expected three axis pairs`,
+  );
+  const origin = readFiniteArray(obj.voxori, 3, `${context}.voxori`);
+  const extents = readFiniteArray(obj.vgrext, 3, `${context}.vgrext`);
+  for (const extent of extents) assertI32(extent, `${context}.vgrext[]`);
+  return {
+    nv: readI32(obj, "nv", context),
+    np: readI32(obj, "np", context),
+    nvxtot: readI32(obj, "nvxtot", context),
+    cgscal: readI32(obj, "cgscal", context),
+    vtxnpl: readI32(obj, "vtxnpl", context),
+    voxnpt: readI32(obj, "voxnpt", context),
+    voxnpl: readI32(obj, "voxnpl", context),
+    vtxbds: [
+      readPair(bounds[0], `${context}.vtxbds[0]`),
+      readPair(bounds[1], `${context}.vtxbds[1]`),
+      readPair(bounds[2], `${context}.vtxbds[2]`),
+    ],
+    voxsiz: readFinite(obj, "voxsiz", context),
+    voxori: [origin[0]!, origin[1]!, origin[2]!],
+    vgrext: [extents[0]!, extents[1]!, extents[2]!],
+  };
 }
 
 /** Create a {@link DskApi} implementation backed by the native Node addon. */
@@ -178,21 +179,18 @@ export function createDskApi(
 
   return {
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
-      native.dskobj(resolvePath(dsk), bodids as unknown as number);
+      native.dskobj(resolvePath(dsk), bodids);
     },
 
     dsksrf: (dsk: string, bodyid: number, srfids: SpiceIntCell) => {
-      native.dsksrf(resolvePath(dsk), bodyid, srfids as unknown as number);
+      native.dsksrf(resolvePath(dsk), bodyid, srfids);
     },
 
     dskgd: (handle: SpiceHandle, dladsc: DlaDescriptor) => {
       assertDlaDescriptor(dladsc, "dskgd(dladsc)");
       const entry = handles.lookup(handle, DAS_BACKED, "dskgd");
       return normalizeDskDescriptor(
-        native.dskgd(
-          entry.nativeHandle,
-          dladsc as unknown as Record<string, unknown>,
-        ),
+        native.dskgd(entry.nativeHandle, dladsc),
         "dskgd()",
       );
     },
@@ -201,10 +199,7 @@ export function createDskApi(
       assertDlaDescriptor(dladsc, "dskb02(dladsc)");
       const entry = handles.lookup(handle, DAS_BACKED, "dskb02");
       return normalizeDskType2Bookkeeping(
-        native.dskb02(
-          entry.nativeHandle,
-          dladsc as unknown as Record<string, unknown>,
-        ),
+        native.dskb02(entry.nativeHandle, dladsc),
         "dskb02()",
       );
     },

@@ -5,16 +5,47 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dascls-close.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dascls-close.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer"
       },
-      { "op": "file-io.dascls", "handleId": "writer" },
-      { "op": "file-io.exists", "path": "kernels/generated/dascls-close.dla" }
+      {
+        "op": "file-io.dascls",
+        "handleId": "writer"
+      },
+      {
+        "op": "file-io.exists",
+        "path": {
+          "kind": "scratch",
+          "rel": "dascls-close.dla"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "verify",
+        "path": {
+          "kind": "scratch",
+          "rel": "dascls-close.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "verify",
+        "descrId": "empty"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "verify"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dascls-double-close-error",
@@ -22,21 +53,39 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dascls-double-close.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dascls-double-close.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer"
       },
-      { "op": "file-io.dlacls", "handleId": "writer" },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "writer"
+      },
       {
         "op": "file-io.dasopr",
-        "path": "kernels/generated/dascls-double-close.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dascls-double-close.dla"
+        },
         "handleId": "reader"
       },
-      { "op": "file-io.dascls", "handleId": "reader" },
-      { "op": "file-io.dascls", "handleId": "reader" }
+      {
+        "op": "file-io.dascls",
+        "handleId": "reader"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "reader"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["closed"]
+    }
   }
 ]

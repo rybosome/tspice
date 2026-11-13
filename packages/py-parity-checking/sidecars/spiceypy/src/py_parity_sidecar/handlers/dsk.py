@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import os
+import ctypes
 from typing import Any
 
 import spiceypy as sp
+from spiceypy.utils.exceptions import NotFoundError
+from spiceypy.utils import support_types as stypes
+from spiceypy.utils.libspicehelper import libspice
 
 from ..models import (
     StepDskDascls,
@@ -171,18 +175,45 @@ def _normalize_dskb02(value: Any) -> dict[str, Any]:
     }
 
 
+def _query_cell(step: StepDskDskobj | StepDskDsksrf):
+    if not 0 <= step.cellSize <= 2147483647:
+        raise ValueError("DSK fixture cellSize must be a nonnegative int32")
+    if not 1 <= step.repetitions <= 10:
+        raise ValueError("DSK fixture repetitions must be an integer in [1,10]")
+    cell = stypes.SPICEINT_CELL(step.cellSize)
+    for item in step.initial:
+        if not -2147483648 <= item <= 2147483647:
+            raise ValueError("DSK fixture initial ID must be an int32")
+        sp.insrti(item, cell)
+    return cell
+
+
 def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     _ensure_cleanup_finalizer(context)
 
     if isinstance(step, StepDskDskobj):
         path = _resolve_dsk_path(context, step.path)
-        out = [int(v) for v in sp.dskobj(path)]
-        return StepOutput(op=step.op, value={"bodyIds": out})
+        # SpiceyPy6.0.3's convenience wrapper always allocates a new size10000
+        # cell. Use its actual N0067 binding to exercise caller-owned cells.
+        cell = _query_cell(step)
+        snapshots = []
+        for _ in range(step.repetitions):
+            libspice.dskobj_c(stypes.string_to_char_p(path), ctypes.byref(cell))
+            sp.check_for_spice_error(None)
+            snapshots.append([int(v) for v in cell])
+        return StepOutput(op=step.op, value={"bodyIds": [int(v) for v in cell], "snapshots": snapshots})
 
     if isinstance(step, StepDskDsksrf):
         path = _resolve_dsk_path(context, step.path)
-        out = [int(v) for v in sp.dsksrf(path, step.bodyid)]
-        return StepOutput(op=step.op, value={"surfaceIds": out})
+        if not -2147483648 <= step.bodyid <= 2147483647:
+            raise ValueError("dsksrf(bodyid): expected a 32-bit signed integer")
+        cell = _query_cell(step)
+        snapshots = []
+        for _ in range(step.repetitions):
+            libspice.dsksrf_c(stypes.string_to_char_p(path), ctypes.c_int(step.bodyid), ctypes.byref(cell))
+            sp.check_for_spice_error(None)
+            snapshots.append([int(v) for v in cell])
+        return StepOutput(op=step.op, value={"surfaceIds": [int(v) for v in cell], "snapshots": snapshots})
 
     if isinstance(step, StepDskDskopn):
         path = _resolve_dsk_path(context, step.path)
@@ -252,7 +283,12 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
 
     if isinstance(step, StepDskDlabfs):
         tracked = _require_handle(context, step.handleId)
-        found, descr = _coerce_dlabfs(sp.dlabfs(int(tracked["handle"])))
+        try:
+            found, descr = _coerce_dlabfs(sp.dlabfs(int(tracked["handle"])))
+        except NotFoundError:
+            # The Found decorator can run before the outer toolkit-error check.
+            sp.check_for_spice_error(None)
+            found, descr = False, None
         if not found:
             context.state.dsk.dladsc.pop(step.dladscId, None)
             return StepOutput(op=step.op, value={"found": False})

@@ -5,7 +5,10 @@
     "workflow": [
       {
         "op": "file-io.dskopn",
-        "path": "kernels/generated/dskopn-write.bds",
+        "path": {
+          "kind": "scratch",
+          "rel": "dskopn-write.bds"
+        },
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer"
@@ -48,10 +51,21 @@
         "plates": [1, 2, 3],
         "spaixId": "idx0"
       },
-      { "op": "file-io.dascls", "handleId": "writer" },
-      { "op": "file-io.getfat", "path": "kernels/generated/dskopn-write.bds" }
+      {
+        "op": "file-io.dascls",
+        "handleId": "writer"
+      },
+      {
+        "op": "file-io.getfat",
+        "path": {
+          "kind": "scratch",
+          "rel": "dskopn-write.bds"
+        }
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dskopn-negative-ncomch-error",
@@ -59,13 +73,18 @@
     "workflow": [
       {
         "op": "file-io.dskopn",
-        "path": "kernels/generated/dskopn-invalid.bds",
+        "path": {
+          "kind": "scratch",
+          "rel": "dskopn-invalid.bds"
+        },
         "ifname": "TSPICE",
         "ncomch": -1,
         "handleId": "writer"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
   },
   {
     "caseId": "file-io-dskopn-existing-file-error",
@@ -73,20 +92,79 @@
     "workflow": [
       {
         "op": "file-io.dskopn",
-        "path": "kernels/generated/dskopn-existing-file.bds",
+        "path": {
+          "kind": "scratch",
+          "rel": "dskopn-existing-file.bds"
+        },
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer0"
       },
-      { "op": "file-io.dascls", "handleId": "writer0" },
+      {
+        "op": "file-io.dascls",
+        "handleId": "writer0"
+      },
       {
         "op": "file-io.dskopn",
-        "path": "kernels/generated/dskopn-existing-file.bds",
+        "path": {
+          "kind": "scratch",
+          "rel": "dskopn-existing-file.bds"
+        },
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer1"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENFAIL"]
+    }
+  },
+  {
+    "caseId": "file-io-dskopn-audit-empty-file-header",
+    "description": "An empty DSK is still a valid DAS/DSK after close; read its actual type and genuine empty DLA miss.",
+    "workflow": [
+      {
+        "op": "file-io.dskopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "empty.bds"
+        },
+        "ifname": "AUTHORED_EMPTY_DSK",
+        "ncomch": 1
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "w"
+      },
+      {
+        "op": "file-io.getfat",
+        "path": {
+          "kind": "scratch",
+          "rel": "empty.bds"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "empty.bds"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "r",
+        "descrId": "none"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

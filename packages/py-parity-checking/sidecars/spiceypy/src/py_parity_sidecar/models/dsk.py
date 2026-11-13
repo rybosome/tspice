@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal
 
 from .paths import PathRefInput
@@ -13,6 +13,9 @@ IndexTriple = tuple[int, int, int]
 class StepDskDskobj:
     op: Literal["dsk.dskobj"]
     path: PathRefInput
+    cellSize: int = 10000
+    initial: list[int] = field(default_factory=list)
+    repetitions: int = 1
 
 
 @dataclass(frozen=True)
@@ -20,6 +23,9 @@ class StepDskDsksrf:
     op: Literal["dsk.dsksrf"]
     path: PathRefInput
     bodyid: int
+    cellSize: int = 10000
+    initial: list[int] = field(default_factory=list)
+    repetitions: int = 1
 
 
 @dataclass(frozen=True)

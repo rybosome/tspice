@@ -5,22 +5,40 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dasopr-open.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dasopr-open.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer"
       },
-      { "op": "file-io.dlacls", "handleId": "writer" },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "writer"
+      },
       {
         "op": "file-io.dasopr",
-        "path": "kernels/generated/dasopr-open.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dasopr-open.dla"
+        },
         "handleId": "reader"
       },
-      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
-      { "op": "file-io.dascls", "handleId": "reader" }
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "reader",
+        "descrId": "seg0"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "reader"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dasopr-missing-file-error",
@@ -32,6 +50,73 @@
         "handleId": "das"
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "file-io-dasopr-audit-duplicate-read-claims",
+    "description": "Duplicate DAS read claims retain a usable remaining handle after one close; compare the complete descriptor each time.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "b",
+        "path": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "a",
+        "descrId": "seg"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "b",
+        "descrId": "seg"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasopr-audit-wrong-file-format",
+    "description": "Stage then unload the existing kernel before the actual raw reader rejects its wrong on-disk architecture; avoid an already-open-file conflict.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/file-io-minimal.bsp"
+      },
+      {
+        "op": "file-io.dasopr",
+        "path": "kernels/file-io-minimal.bsp",
+        "handleId": "bad"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILARCHMISMATCH"]
+    }
   }
 ]

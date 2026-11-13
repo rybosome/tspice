@@ -28,8 +28,6 @@ from ..models import (
 )
 from ..runtime import FileIoHandleState, FileIoState, SidecarRuntimeContext, resolve_path_ref
 
-SPAIX_HEAD_LIMIT = 8
-
 def _resolve_file_io_path(context: SidecarRuntimeContext, path_value: str) -> str:
     return resolve_path_ref(context.paths, path_value)
 
@@ -102,6 +100,12 @@ def _require_spatial_index(state: FileIoState, spaix_id: str) -> tuple[np.ndarra
     return index
 
 
+def _descriptor_fields(descr: Any) -> dict[str, int]:
+    return {key: int(getattr(descr, key)) for key in (
+        "bwdptr", "fwdptr", "ibase", "isize", "dbase", "dsize", "cbase", "csize"
+    )}
+
+
 def _normalize_dla_result(value: Any) -> tuple[bool, Any | None]:
     if isinstance(value, tuple) and len(value) == 2 and isinstance(value[1], (bool, int)):
         descr, found_raw = value
@@ -133,15 +137,6 @@ def _reshape_plates(flat_plates: list[int], *, np_count: int, label: str) -> np.
         raise ValueError(f"{label}.plates length must be {expected_len}")
 
     return np.asarray(flat_plates, dtype=np.int32).reshape((np_count, 3))
-
-
-def _summarize_spatial_index(spaixd: np.ndarray, spaixi: np.ndarray) -> dict[str, Any]:
-    return {
-        "spaixdLength": int(spaixd.size),
-        "spaixiLength": int(spaixi.size),
-        "spaixdHead": spaixd[:SPAIX_HEAD_LIMIT].astype(float).tolist(),
-        "spaixiHead": spaixi[:SPAIX_HEAD_LIMIT].astype(int).tolist(),
-    }
 
 
 def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
@@ -223,6 +218,9 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         try:
             found, descr = _normalize_dla_result(sp.dlabfs(handle_state.handle))
         except NotFoundError:
+            # The Found decorator runs before SpiceyPy's outer error check.
+            # Preserve actual CSPICE failures rather than treating them as misses.
+            sp.check_for_spice_error(None)
             found = False
             descr = None
 
@@ -231,7 +229,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             return StepOutput(op=step.op, value={"found": False})
 
         state.descriptors[step.descrId] = descr
-        return StepOutput(op=step.op, value={"found": True})
+        return StepOutput(op=step.op, value={"found": True, "descr": _descriptor_fields(descr)})
 
     if isinstance(step, StepFileIoDlafns):
         handle_state = _require_handle(
@@ -244,6 +242,9 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         try:
             found, next_descr = _normalize_dla_result(sp.dlafns(handle_state.handle, descr))
         except NotFoundError:
+            # The Found decorator runs before SpiceyPy's outer error check.
+            # Preserve actual CSPICE failures rather than treating them as misses.
+            sp.check_for_spice_error(None)
             found = False
             next_descr = None
 
@@ -252,7 +253,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             return StepOutput(op=step.op, value={"found": False})
 
         state.descriptors[step.descrId] = next_descr
-        return StepOutput(op=step.op, value={"found": True})
+        return StepOutput(op=step.op, value={"found": True, "descr": _descriptor_fields(next_descr)})
 
     if isinstance(step, StepFileIoDlacls):
         handle_state = _require_handle(
@@ -261,7 +262,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             expected_kind=("DAS", "DLA"),
             require_open=True,
         )
-        # SpiceyPy does not expose dlacls; CSPICE defines it as an alias of dascls.
+        # tspice exposes dlacls as a DAS-close alias; CSPICE has no separate dlacls_c entrypoint.
         sp.dascls(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)
@@ -292,7 +293,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         if step.spaixId is not None:
             state.spatialIndexes[step.spaixId] = (spaixd_arr.copy(), spaixi_arr.copy())
 
-        return StepOutput(op=step.op, value=_summarize_spatial_index(spaixd_arr, spaixi_arr))
+        return StepOutput(op=step.op, value={"spaixd": spaixd_arr.astype(float).tolist(), "spaixi": spaixi_arr.astype(int).tolist()})
 
     if isinstance(step, StepFileIoDskw02):
         handle_state = _require_handle(
