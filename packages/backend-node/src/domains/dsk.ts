@@ -1,3 +1,4 @@
+import { snapshotPlateInput, readPlateResult } from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   DskApi,
@@ -178,6 +179,67 @@ export function createDskApi(
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
 
   return {
+    pltar(vertices, plates) {
+      const verticesData = snapshotPlateInput(vertices, "vertices", 2147483647);
+      const platesData = snapshotPlateInput(plates, "plates", 2147483647);
+      const out = readPlateResult(native.pltar(verticesData, platesData), 1);
+      return out[0]!;
+    },
+    pltexp(iverts, delta) {
+      const ivertsData = snapshotPlateInput(iverts, "iverts", 2147483647);
+      if (!Number.isFinite(delta)) throw new TypeError("Expected finite delta");
+      const out = readPlateResult(native.pltexp(ivertsData, delta), 9);
+      return [
+        out[0]!,
+        out[1]!,
+        out[2]!,
+        out[3]!,
+        out[4]!,
+        out[5]!,
+        out[6]!,
+        out[7]!,
+        out[8]!,
+      ];
+    },
+    pltnp(point, v1, v2, v3) {
+      const pointData = snapshotPlateInput(point, "point", 2147483647);
+      const v1Data = snapshotPlateInput(v1, "v1", 2147483647);
+      const v2Data = snapshotPlateInput(v2, "v2", 2147483647);
+      const v3Data = snapshotPlateInput(v3, "v3", 2147483647);
+      const out = readPlateResult(
+        native.pltnp(pointData, v1Data, v2Data, v3Data),
+        4,
+      );
+      return { pnear: [out[0]!, out[1]!, out[2]!], dist: out[3]! };
+    },
+    pltnrm(v1, v2, v3) {
+      const v1Data = snapshotPlateInput(v1, "v1", 2147483647);
+      const v2Data = snapshotPlateInput(v2, "v2", 2147483647);
+      const v3Data = snapshotPlateInput(v3, "v3", 2147483647);
+      const out = readPlateResult(native.pltnrm(v1Data, v2Data, v3Data), 3);
+      return [out[0]!, out[1]!, out[2]!];
+    },
+    pltvol(vertices, plates) {
+      const verticesData = snapshotPlateInput(vertices, "vertices", 2147483647);
+      const platesData = snapshotPlateInput(plates, "plates", 2147483647);
+      const out = readPlateResult(native.pltvol(verticesData, platesData), 1);
+      return out[0]!;
+    },
+    dskrb2(vertices, plates, corsys, corpar = []) {
+      const verticesData = snapshotPlateInput(vertices, "vertices", 2147483647);
+      const platesData = snapshotPlateInput(plates, "plates", 2147483647);
+      assertI32(corsys, "dskrb2(corsys)");
+      const corparData = snapshotPlateInput(corpar, "corpar", 2147483647);
+      if (corsys === 4 && corparData.length < 2)
+        throw new RangeError(
+          "Planetodetic bounds require equatorial radius and flattening",
+        );
+      const out = readPlateResult(
+        native.dskrb2(verticesData, platesData, corsys, corparData),
+        2,
+      );
+      return { mncor3: out[0]!, mxcor3: out[1]! };
+    },
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
       native.dskobj(resolvePath(dsk), bodids);
     },

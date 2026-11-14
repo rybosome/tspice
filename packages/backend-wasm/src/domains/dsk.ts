@@ -1,3 +1,4 @@
+import { snapshotPlateInput } from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   DskApi,
@@ -8,6 +9,7 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import { invariant, assertSpiceInt32 } from "@rybosome/tspice-core";
 
+import { WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
@@ -263,6 +265,243 @@ export function createDskApi(
   handles: SpiceHandleRegistry,
 ): DskApi {
   return {
+    pltar(vertices, plates) {
+      const verticesData = snapshotPlateInput(
+        vertices,
+        "vertices",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      const platesData = snapshotPlateInput(
+        plates,
+        "plates",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      return withAllocs(
+        module,
+        [
+          Math.max(1, verticesData.length) * 8,
+          Math.max(1, platesData.length) * 4,
+          8,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (verticesPtr, platesPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(verticesData, verticesPtr / 8);
+          module.HEAP32.set(platesData, platesPtr / 4);
+          const code = module._tspice_pltar(
+            verticesData.length / 3,
+            verticesPtr,
+            platesData.length / 3,
+            platesPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          const out = module.HEAPF64.subarray(outPtr / 8, outPtr / 8 + 1);
+          return out[0]!;
+        },
+      );
+    },
+    pltexp(iverts, delta) {
+      const ivertsData = snapshotPlateInput(
+        iverts,
+        "iverts",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      if (!Number.isFinite(delta)) throw new TypeError("Expected finite delta");
+      return withAllocs(
+        module,
+        [Math.max(1, ivertsData.length) * 8, 72, WASM_ERR_MAX_BYTES],
+        (ivertsPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(ivertsData, ivertsPtr / 8);
+          const code = module._tspice_pltexp(
+            ivertsPtr,
+            delta,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          const out = module.HEAPF64.subarray(outPtr / 8, outPtr / 8 + 9);
+          return [
+            out[0]!,
+            out[1]!,
+            out[2]!,
+            out[3]!,
+            out[4]!,
+            out[5]!,
+            out[6]!,
+            out[7]!,
+            out[8]!,
+          ];
+        },
+      );
+    },
+    pltnp(point, v1, v2, v3) {
+      const pointData = snapshotPlateInput(
+        point,
+        "point",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      const v1Data = snapshotPlateInput(v1, "v1", WASM_MAX_ALLOC_BYTES);
+      const v2Data = snapshotPlateInput(v2, "v2", WASM_MAX_ALLOC_BYTES);
+      const v3Data = snapshotPlateInput(v3, "v3", WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [
+          Math.max(1, pointData.length) * 8,
+          Math.max(1, v1Data.length) * 8,
+          Math.max(1, v2Data.length) * 8,
+          Math.max(1, v3Data.length) * 8,
+          32,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (pointPtr, v1Ptr, v2Ptr, v3Ptr, outPtr, errPtr) => {
+          module.HEAPF64.set(pointData, pointPtr / 8);
+          module.HEAPF64.set(v1Data, v1Ptr / 8);
+          module.HEAPF64.set(v2Data, v2Ptr / 8);
+          module.HEAPF64.set(v3Data, v3Ptr / 8);
+          const code = module._tspice_pltnp(
+            pointPtr,
+            v1Ptr,
+            v2Ptr,
+            v3Ptr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          const out = module.HEAPF64.subarray(outPtr / 8, outPtr / 8 + 4);
+          return { pnear: [out[0]!, out[1]!, out[2]!], dist: out[3]! };
+        },
+      );
+    },
+    pltnrm(v1, v2, v3) {
+      const v1Data = snapshotPlateInput(v1, "v1", WASM_MAX_ALLOC_BYTES);
+      const v2Data = snapshotPlateInput(v2, "v2", WASM_MAX_ALLOC_BYTES);
+      const v3Data = snapshotPlateInput(v3, "v3", WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [
+          Math.max(1, v1Data.length) * 8,
+          Math.max(1, v2Data.length) * 8,
+          Math.max(1, v3Data.length) * 8,
+          24,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (v1Ptr, v2Ptr, v3Ptr, outPtr, errPtr) => {
+          module.HEAPF64.set(v1Data, v1Ptr / 8);
+          module.HEAPF64.set(v2Data, v2Ptr / 8);
+          module.HEAPF64.set(v3Data, v3Ptr / 8);
+          const code = module._tspice_pltnrm(
+            v1Ptr,
+            v2Ptr,
+            v3Ptr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          const out = module.HEAPF64.subarray(outPtr / 8, outPtr / 8 + 3);
+          return [out[0]!, out[1]!, out[2]!];
+        },
+      );
+    },
+    pltvol(vertices, plates) {
+      const verticesData = snapshotPlateInput(
+        vertices,
+        "vertices",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      const platesData = snapshotPlateInput(
+        plates,
+        "plates",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      return withAllocs(
+        module,
+        [
+          Math.max(1, verticesData.length) * 8,
+          Math.max(1, platesData.length) * 4,
+          8,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (verticesPtr, platesPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(verticesData, verticesPtr / 8);
+          module.HEAP32.set(platesData, platesPtr / 4);
+          const code = module._tspice_pltvol(
+            verticesData.length / 3,
+            verticesPtr,
+            platesData.length / 3,
+            platesPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          const out = module.HEAPF64.subarray(outPtr / 8, outPtr / 8 + 1);
+          return out[0]!;
+        },
+      );
+    },
+    dskrb2(vertices, plates, corsys, corpar = []) {
+      const verticesData = snapshotPlateInput(
+        vertices,
+        "vertices",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      const platesData = snapshotPlateInput(
+        plates,
+        "plates",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      assertSpiceInt32(corsys, "dskrb2(corsys)");
+      const corparData = snapshotPlateInput(
+        corpar,
+        "corpar",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      if (corsys === 4 && corparData.length < 2)
+        throw new RangeError(
+          "Planetodetic bounds require equatorial radius and flattening",
+        );
+      return withAllocs(
+        module,
+        [
+          Math.max(1, verticesData.length) * 8,
+          Math.max(1, platesData.length) * 4,
+          Math.max(1, corparData.length) * 8,
+          16,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (verticesPtr, platesPtr, corparPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(verticesData, verticesPtr / 8);
+          module.HEAP32.set(platesData, platesPtr / 4);
+          module.HEAPF64.set(corparData, corparPtr / 8);
+          const code = module._tspice_dskrb2(
+            verticesData.length / 3,
+            verticesPtr,
+            platesData.length / 3,
+            platesPtr,
+            corsys,
+            corparData.length,
+            corparPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          const out = module.HEAPF64.subarray(outPtr / 8, outPtr / 8 + 2);
+          return { mncor3: out[0]!, mxcor3: out[1]! };
+        },
+      );
+    },
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
       assertWasmOwnedCellHandle(module, bodids, "dskobj(bodids)");
       tspiceCallDskobj(module, dsk, bodids);

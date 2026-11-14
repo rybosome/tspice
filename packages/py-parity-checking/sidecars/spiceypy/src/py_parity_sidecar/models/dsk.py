@@ -96,6 +96,53 @@ class StepDskDlabfs:
 
 
 @dataclass(frozen=True)
+class StepDskPltar:
+    op: Literal["dsk.pltar"]
+    vertices: list[float]
+    plates: list[int]
+
+
+@dataclass(frozen=True)
+class StepDskPltexp:
+    op: Literal["dsk.pltexp"]
+    iverts: list[float]
+    delta: float
+
+
+@dataclass(frozen=True)
+class StepDskPltnp:
+    op: Literal["dsk.pltnp"]
+    point: tuple[float,float,float]
+    v1: tuple[float,float,float]
+    v2: tuple[float,float,float]
+    v3: tuple[float,float,float]
+
+
+@dataclass(frozen=True)
+class StepDskPltnrm:
+    op: Literal["dsk.pltnrm"]
+    v1: tuple[float,float,float]
+    v2: tuple[float,float,float]
+    v3: tuple[float,float,float]
+
+
+@dataclass(frozen=True)
+class StepDskPltvol:
+    op: Literal["dsk.pltvol"]
+    vertices: list[float]
+    plates: list[int]
+
+
+@dataclass(frozen=True)
+class StepDskDskrb2:
+    op: Literal["dsk.dskrb2"]
+    vertices: list[float]
+    plates: list[int]
+    corsys: int
+    corpar: list[float]
+
+
+@dataclass(frozen=True)
 class StepDskDskgd:
     op: Literal["dsk.dskgd"]
     handleId: str

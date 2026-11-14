@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -58,6 +58,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
 | `dskobj_c` | DSK, get object IDs |
 | `dskopn_c` | DSK, open new file |
+| `dskrb2_c` | DSK, determine range bounds for plate set |
 | `dsksrf_c` | DSK, get surface IDs for body |
 | `dskw02_c` | DSK, write type 2 segment |
 | `dtpool_c` | Data for a kernel pool variable |
@@ -122,6 +123,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
+| `pltar_c` | Compute area of plate set |
+| `pltexp_c` | Plate expander |
+| `pltnp_c` | Nearest point on triangular plate |
+| `pltnrm_c` | DSK, compute outward normal of plate |
+| `pltvol_c` | Compute volume of plate model |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
@@ -306,7 +312,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dski02_c` | DSK, fetch integer type 2 data |
 | `dskn02_c` | DSK, type 2, compute normal vector for plate |
 | `dskp02_c` | DSK, fetch type 2 plate data |
-| `dskrb2_c` | DSK, determine range bounds for plate set |
 | `dskstl_c` | DSK, set tolerance |
 | `dskv02_c` | DSK, fetch type 2 vertex data |
 | `dskx02_c` | DSK, ray-surface intercept, type 2 |
@@ -495,11 +500,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pjelpl_c` | Project ellipse onto plane |
 | `pl2nvp_c` | Plane to normal vector and point |
 | `pl2psv_c` | Plane to point and spanning vectors |
-| `pltar_c` | Compute area of plate set |
-| `pltexp_c` | Plate expander |
-| `pltnp_c` | Nearest point on triangular plate |
-| `pltnrm_c` | DSK, compute outward normal of plate |
-| `pltvol_c` | Compute volume of plate model |
 | `polyds_c` | Compute a Polynomial and its Derivatives |
 | `pos_c` | Position of substring |
 | `posr_c` | Position of substring, reverse search |

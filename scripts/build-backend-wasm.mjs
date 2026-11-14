@@ -415,6 +415,12 @@ const exportedFunctions = [
   "_tspice_dskobj",
   "_tspice_dsksrf",
   "_tspice_dskgd",
+  "_tspice_pltar",
+  "_tspice_pltexp",
+  "_tspice_pltnp",
+  "_tspice_pltnrm",
+  "_tspice_pltvol",
+  "_tspice_dskrb2",
   "_tspice_dskb02",
 
   // --- kernel pool ---

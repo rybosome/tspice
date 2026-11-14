@@ -1,5 +1,8 @@
 #include "dsk.h"
 
+#include <memory>
+#include <new>
+#include <type_traits>
 #include <cmath>
 #include <cstdint>
 #include <limits>
@@ -259,9 +262,207 @@ static Napi::Value Dskb02(const Napi::CallbackInfo& info) {
   return result;
 }
 
+template <typename T>
+static bool ReadPlateArray(Napi::Env env, const Napi::Value& input, size_t exact, bool triples,
+                           std::unique_ptr<T[]>* out, int* count) {
+  if (!input.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a numeric array"));
+    return false;
+  }
+  auto a = input.As<Napi::Array>();
+  const size_t n = a.Length();
+  if (n > INT32_MAX / sizeof(T) || (exact && n != exact) || (triples && n % 3)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid plate buffer length"));
+    return false;
+  }
+  *count = static_cast<int>(n);
+  out->reset(new (std::nothrow) T[n ? n : 1]());
+  if (!*out) {
+    ThrowSpiceError(env, "Plate buffer allocation failed");
+    return false;
+  }
+  for (uint32_t i = 0; i < n; ++i) {
+    auto value = a.Get(i);
+    if (env.IsExceptionPending()) return false;
+    if (!value.IsNumber()) {
+      ThrowSpiceError(env, "Expected numeric plate entry");
+      return false;
+    }
+    double d = value.As<Napi::Number>().DoubleValue();
+    if (!std::isfinite(d) ||
+        (std::is_integral_v<T> && (d < INT32_MIN || d > INT32_MAX || std::floor(d) != d))) {
+      ThrowSpiceError(env, "Invalid plate array entry");
+      return false;
+    }
+    (*out)[i] = static_cast<T>(d);
+  }
+  return true;
+}
+
+static Napi::Value Pltar(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(env, "Invalid argument count for pltar");
+    return env.Undefined();
+  }
+  std::unique_ptr<double[]> vertices;
+  int nvertices;
+  if (!ReadPlateArray(env, info[0], 0, true, &vertices, &nvertices)) return env.Undefined();
+  std::unique_ptr<int[]> plates;
+  int nplates;
+  if (!ReadPlateArray(env, info[1], 0, true, &plates, &nplates)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double out[1] = {};
+  if (tspice_pltar(nvertices / 3, vertices.get(), nplates / 3, plates.get(), out, err,
+                   sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pltar", err, "pltar");
+    return env.Undefined();
+  }
+  return tspice_napi::MakeNumberArray(env, out, 1);
+}
+
+static Napi::Value Pltexp(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(env, "Invalid argument count for pltexp");
+    return env.Undefined();
+  }
+  std::unique_ptr<double[]> iverts;
+  int niverts;
+  if (!ReadPlateArray(env, info[0], 9, false, &iverts, &niverts)) return env.Undefined();
+  if (!info[1].IsNumber()) {
+    ThrowSpiceError(env, "Expected finite delta");
+    return env.Undefined();
+  }
+  double delta = info[1].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(delta)) {
+    ThrowSpiceError(env, "Expected finite delta");
+    return env.Undefined();
+  }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double out[9] = {};
+  if (tspice_pltexp(iverts.get(), delta, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pltexp", err, "pltexp");
+    return env.Undefined();
+  }
+  return tspice_napi::MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Pltnp(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(env, "Invalid argument count for pltnp");
+    return env.Undefined();
+  }
+  std::unique_ptr<double[]> point;
+  int npoint;
+  if (!ReadPlateArray(env, info[0], 3, false, &point, &npoint)) return env.Undefined();
+  std::unique_ptr<double[]> v1;
+  int nv1;
+  if (!ReadPlateArray(env, info[1], 3, false, &v1, &nv1)) return env.Undefined();
+  std::unique_ptr<double[]> v2;
+  int nv2;
+  if (!ReadPlateArray(env, info[2], 3, false, &v2, &nv2)) return env.Undefined();
+  std::unique_ptr<double[]> v3;
+  int nv3;
+  if (!ReadPlateArray(env, info[3], 3, false, &v3, &nv3)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double out[4] = {};
+  if (tspice_pltnp(point.get(), v1.get(), v2.get(), v3.get(), out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pltnp", err, "pltnp");
+    return env.Undefined();
+  }
+  return tspice_napi::MakeNumberArray(env, out, 4);
+}
+
+static Napi::Value Pltnrm(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(env, "Invalid argument count for pltnrm");
+    return env.Undefined();
+  }
+  std::unique_ptr<double[]> v1;
+  int nv1;
+  if (!ReadPlateArray(env, info[0], 3, false, &v1, &nv1)) return env.Undefined();
+  std::unique_ptr<double[]> v2;
+  int nv2;
+  if (!ReadPlateArray(env, info[1], 3, false, &v2, &nv2)) return env.Undefined();
+  std::unique_ptr<double[]> v3;
+  int nv3;
+  if (!ReadPlateArray(env, info[2], 3, false, &v3, &nv3)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double out[3] = {};
+  if (tspice_pltnrm(v1.get(), v2.get(), v3.get(), out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pltnrm", err, "pltnrm");
+    return env.Undefined();
+  }
+  return tspice_napi::MakeNumberArray(env, out, 3);
+}
+
+static Napi::Value Pltvol(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(env, "Invalid argument count for pltvol");
+    return env.Undefined();
+  }
+  std::unique_ptr<double[]> vertices;
+  int nvertices;
+  if (!ReadPlateArray(env, info[0], 0, true, &vertices, &nvertices)) return env.Undefined();
+  std::unique_ptr<int[]> plates;
+  int nplates;
+  if (!ReadPlateArray(env, info[1], 0, true, &plates, &nplates)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double out[1] = {};
+  if (tspice_pltvol(nvertices / 3, vertices.get(), nplates / 3, plates.get(), out, err,
+                    sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pltvol", err, "pltvol");
+    return env.Undefined();
+  }
+  return tspice_napi::MakeNumberArray(env, out, 1);
+}
+
+static Napi::Value Dskrb2(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(env, "Invalid argument count for dskrb2");
+    return env.Undefined();
+  }
+  std::unique_ptr<double[]> vertices;
+  int nvertices;
+  if (!ReadPlateArray(env, info[0], 0, true, &vertices, &nvertices)) return env.Undefined();
+  std::unique_ptr<int[]> plates;
+  int nplates;
+  if (!ReadPlateArray(env, info[1], 0, true, &plates, &nplates)) return env.Undefined();
+  int32_t corsys;
+  if (!ReadInt32Checked(env, info[2], "corsys", &corsys)) return env.Undefined();
+  std::unique_ptr<double[]> corpar;
+  int ncorpar;
+  if (!ReadPlateArray(env, info[3], 0, false, &corpar, &ncorpar)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double out[2] = {};
+  if (tspice_dskrb2(nvertices / 3, vertices.get(), nplates / 3, plates.get(), corsys, ncorpar,
+                    corpar.get(), out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dskrb2", err, "dskrb2");
+    return env.Undefined();
+  }
+  return tspice_napi::MakeNumberArray(env, out, 2);
+}
+
 namespace tspice_backend_node {
 
 void RegisterDsk(Napi::Env env, Napi::Object exports) {
+  SetExportChecked(env, exports, "pltar", Napi::Function::New(env, Pltar), "RegisterDsk");
+  SetExportChecked(env, exports, "pltexp", Napi::Function::New(env, Pltexp), "RegisterDsk");
+  SetExportChecked(env, exports, "pltnp", Napi::Function::New(env, Pltnp), "RegisterDsk");
+  SetExportChecked(env, exports, "pltnrm", Napi::Function::New(env, Pltnrm), "RegisterDsk");
+  SetExportChecked(env, exports, "pltvol", Napi::Function::New(env, Pltvol), "RegisterDsk");
+  SetExportChecked(env, exports, "dskrb2", Napi::Function::New(env, Dskrb2), "RegisterDsk");
   SetExportChecked(env, exports, "dskobj", Napi::Function::New(env, Dskobj), "RegisterDsk");
   SetExportChecked(env, exports, "dsksrf", Napi::Function::New(env, Dsksrf), "RegisterDsk");
   SetExportChecked(env, exports, "dskgd", Napi::Function::New(env, Dskgd), "RegisterDsk");

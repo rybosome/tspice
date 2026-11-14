@@ -2318,6 +2318,24 @@ export function createFakeBackend(
     dskgd: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
       throw new Error("Fake backend: dskgd() is not implemented");
     },
+    pltar: () => {
+      throw new Error("Fake backend: pltar() is not implemented");
+    },
+    pltexp: () => {
+      throw new Error("Fake backend: pltexp() is not implemented");
+    },
+    pltnp: () => {
+      throw new Error("Fake backend: pltnp() is not implemented");
+    },
+    pltnrm: () => {
+      throw new Error("Fake backend: pltnrm() is not implemented");
+    },
+    pltvol: () => {
+      throw new Error("Fake backend: pltvol() is not implemented");
+    },
+    dskrb2: () => {
+      throw new Error("Fake backend: dskrb2() is not implemented");
+    },
     dskb02: (_handle: SpiceHandle, _dladsc: DlaDescriptor) => {
       throw new Error("Fake backend: dskb02() is not implemented");
     },

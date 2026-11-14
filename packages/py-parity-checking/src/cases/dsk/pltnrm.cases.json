@@ -1,0 +1,119 @@
+[
+  {
+    "caseId": "dsk-pltnrm-handedness",
+    "description": "Winding reversal negates the non-unit normal and cyclic reordering preserves it.",
+    "workflow": [
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [0, 3, 0],
+        "v3": [2, 0, 0]
+      },
+      {
+        "op": "dsk.pltnrm",
+        "v1": [2, 0, 0],
+        "v2": [0, 3, 0],
+        "v3": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnrm-oblique-components",
+    "description": "An oblique plate yields signed normal components along all three axes.",
+    "workflow": [
+      {
+        "op": "dsk.pltnrm",
+        "v1": [2, -1, 4],
+        "v2": [5, 2, -3],
+        "v3": [-1, 2, 1]
+      },
+      {
+        "op": "dsk.pltnrm",
+        "v1": [-1, 2, 1],
+        "v2": [5, 2, -3],
+        "v3": [2, -1, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnrm-translation",
+    "description": "An equal translation of all three xyz vertices leaves edge differences and the normal unchanged.",
+    "workflow": [
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnrm",
+        "v1": [11, -7, 5],
+        "v2": [13, -7, 5],
+        "v3": [11, -4, 5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnrm-degenerate",
+    "description": "Pinned normals vanish for coincident vertices and exact collinear edges.",
+    "workflow": [
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [0, 0, 0],
+        "v3": [0, 0, 0]
+      },
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [2, 0, 0]
+      },
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [8, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnrm-quadratic-scale",
+    "description": "Check quadratic scaling at both small and large finite scales.",
+    "workflow": [
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [2e-60, 0, 0],
+        "v3": [0, 3e-60, 0]
+      },
+      {
+        "op": "dsk.pltnrm",
+        "v1": [0, 0, 0],
+        "v2": [2e60, 0, 0],
+        "v3": [0, 3e60, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -233,6 +233,26 @@ export type NativeAddon = {
     handle: number,
     dladsc: Record<string, unknown>,
   ): Record<string, unknown>;
+  pltar(vertices: readonly number[], plates: readonly number[]): unknown;
+  pltexp(iverts: readonly number[], delta: number): unknown;
+  pltnp(
+    point: readonly number[],
+    v1: readonly number[],
+    v2: readonly number[],
+    v3: readonly number[],
+  ): unknown;
+  pltnrm(
+    v1: readonly number[],
+    v2: readonly number[],
+    v3: readonly number[],
+  ): unknown;
+  pltvol(vertices: readonly number[], plates: readonly number[]): unknown;
+  dskrb2(
+    vertices: readonly number[],
+    plates: readonly number[],
+    corsys: number,
+    corpar: readonly number[],
+  ): unknown;
   dskb02(
     handle: number,
     dladsc: Record<string, unknown>,

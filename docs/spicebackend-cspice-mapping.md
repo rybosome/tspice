@@ -480,6 +480,19 @@ oracle traversal now distinguishes a genuine empty miss from a toolkit failure,
 and pending actual DSK claims close before scratch deletion. No C shim or checked-in
 WASM artifacts change in this batch; its writer/bounds prerequisite is #694.
 
+### Kernel-free DSK plate calculations
+
+Vertices and one-based plate IDs use flat triples. The adapters infer counts from array length. All six methods are synchronous or transported through the normal raw clients. [Geometric semantics and N0067 diagnostics](step8-plate-math.md)
+
+| Raw signature                               | Canonical route | Return                        |
+| ------------------------------------------- | --------------- | ----------------------------- |
+| `pltar(vertices, plates)`                   | `pltar_c`       | number                        |
+| `pltexp(iverts, delta)`                     | `pltexp_c`      | nine owned vertex coordinates |
+| `pltnp(point, v1, v2, v3)`                  | `pltnp_c`       | `{pnear, dist}`               |
+| `pltnrm(v1, v2, v3)`                        | `pltnrm_c`      | owned xyz vector              |
+| `pltvol(vertices, plates)`                  | `pltvol_c`      | number                        |
+| `dskrb2(vertices, plates, corsys, corpar?)` | `dskrb2_c`      | `{mncor3, mxcor3}`            |
+
 ## Domain: `ek` file and segment lifecycle (`EkApi`)
 
 | Raw method | Actual CSPICE route | Observations                                                                                                        |

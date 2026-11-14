@@ -1,0 +1,163 @@
+[
+  {
+    "caseId": "dsk-pltar-closed-mesh",
+    "description": "Sum four unequal face areas; reversing winding and translating the tetrahedron preserve area.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4],
+        "plates": [1, 3, 2, 1, 2, 4, 1, 4, 3, 2, 3, 4]
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4],
+        "plates": [1, 2, 3, 1, 4, 2, 1, 3, 4, 2, 4, 3]
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [11, -7, 5, 13, -7, 5, 11, -4, 5, 11, -7, 9],
+        "plates": [1, 3, 2, 1, 2, 4, 1, 4, 3, 2, 3, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltar-open-and-repeated",
+    "description": "Area includes every supplied face, including duplicates and both windings.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "plates": [1, 2, 3]
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "plates": [1, 2, 3, 1, 2, 3]
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "plates": [3, 2, 1, 1, 2, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltar-degenerate",
+    "description": "Zero-area collinear and coincident plates coexist with ordinary faces.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 4, 0, 0],
+        "plates": [1, 2, 3]
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "plates": [1, 1, 1, 1, 2, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltar-oblique-scale",
+    "description": "Check all three cross-product components and the squared scaling of an oblique triangle.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "plates": [1, 2, 3]
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [
+          2e-5, -1e-5, 4e-5, 5e-5, 2e-5, -3.0000000000000004e-5, -1e-5, 2e-5,
+          1e-5
+        ],
+        "plates": [1, 2, 3]
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [
+          200000.0, -100000.0, 400000.0, 500000.0, 200000.0, -300000.0,
+          -100000.0, 200000.0, 100000.0
+        ],
+        "plates": [1, 2, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltar-empty",
+    "description": "Empty plate arrays yield zero, including an empty vertex table.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [],
+        "plates": []
+      },
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4],
+        "plates": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltar-vertex-count",
+    "description": "Nonempty connectivity with fewer than three vertices signals the native vertex error.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0],
+        "plates": [8, 0, -1]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["TOOFEWVERTICES"]
+    }
+  },
+  {
+    "caseId": "dsk-pltar-index-below",
+    "description": "Observe the toolkit one-based index diagnostic for a referenced vertex outside the table.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "plates": [1, 0, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-pltar-index-above",
+    "description": "Observe the toolkit one-based index diagnostic for a referenced vertex outside the table.",
+    "workflow": [
+      {
+        "op": "dsk.pltar",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "plates": [1, 4, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  }
+]

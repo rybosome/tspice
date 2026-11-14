@@ -1,0 +1,198 @@
+[
+  {
+    "caseId": "dsk-pltnp-face-interior",
+    "description": "Interior projections from both sides and a point directly on the plate compare the closest point and distance.",
+    "workflow": [
+      {
+        "op": "dsk.pltnp",
+        "point": [0.5, 0.75, 2],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [0.5, 0.75, -7],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [0.5, 0.75, 0],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnp-edge-projections",
+    "description": "Project onto each distinct edge, with the last case requiring the slanted edge.",
+    "workflow": [
+      {
+        "op": "dsk.pltnp",
+        "point": [0.8, -2, 1],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [-1, 0.5, 2],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [2, 2, 1],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnp-vertex-regions",
+    "description": "Each Voronoi vertex region has a distinct nearest endpoint.",
+    "workflow": [
+      {
+        "op": "dsk.pltnp",
+        "point": [-1, -1, 2],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [5, -1, 2],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [-1, 6, -2],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [0, 3, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnp-oblique-winding",
+    "description": "Compare the full off-axis foot and distance through reversed ordering of translated vertices.",
+    "workflow": [
+      {
+        "op": "dsk.pltnp",
+        "point": [3, 4, 5],
+        "v1": [2, -1, 4],
+        "v2": [5, 2, -3],
+        "v3": [-1, 2, 1]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [3, 4, 5],
+        "v1": [-1, 2, 1],
+        "v2": [5, 2, -3],
+        "v3": [2, -1, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnp-collinear",
+    "description": "For collinear vertices each of the three edge positions can be the longest segment.",
+    "workflow": [
+      {
+        "op": "dsk.pltnp",
+        "point": [3, 5, 0],
+        "v1": [0, 0, 0],
+        "v2": [4, 0, 0],
+        "v3": [1, 0, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [3, 5, 0],
+        "v1": [1, 0, 0],
+        "v2": [0, 0, 0],
+        "v3": [4, 0, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [3, 5, 0],
+        "v1": [4, 0, 0],
+        "v2": [1, 0, 0],
+        "v3": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnp-coincident",
+    "description": "A repeated point and a repeated endpoint follow the pinned degeneracy branches.",
+    "workflow": [
+      {
+        "op": "dsk.pltnp",
+        "point": [1, 4, 9],
+        "v1": [2, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [2, 0, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [0.5, 1, 0],
+        "v1": [0, 0, 0],
+        "v2": [2, 0, 0],
+        "v3": [2, 0, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [0.5, 1, 0],
+        "v1": [2, 0, 0],
+        "v2": [0, 0, 0],
+        "v3": [2, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltnp-coordinate-scale",
+    "description": "Compare scaled distance and nearest coordinates on geometrically similar plates.",
+    "workflow": [
+      {
+        "op": "dsk.pltnp",
+        "point": [5e-7, 7.5e-7, 2e-6],
+        "v1": [0, 0, 0],
+        "v2": [2e-6, 0, 0],
+        "v3": [0, 3e-6, 0]
+      },
+      {
+        "op": "dsk.pltnp",
+        "point": [500000.0, 750000.0, 2000000.0],
+        "v1": [0, 0, 0],
+        "v2": [2000000.0, 0, 0],
+        "v3": [0, 3000000.0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

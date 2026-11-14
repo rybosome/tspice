@@ -280,6 +280,30 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export dskgd(handle, dladsc)",
   );
   invariant(
+    typeof native.pltar === "function",
+    "Expected native addon to export pltar",
+  );
+  invariant(
+    typeof native.pltexp === "function",
+    "Expected native addon to export pltexp",
+  );
+  invariant(
+    typeof native.pltnp === "function",
+    "Expected native addon to export pltnp",
+  );
+  invariant(
+    typeof native.pltnrm === "function",
+    "Expected native addon to export pltnrm",
+  );
+  invariant(
+    typeof native.pltvol === "function",
+    "Expected native addon to export pltvol",
+  );
+  invariant(
+    typeof native.dskrb2 === "function",
+    "Expected native addon to export dskrb2",
+  );
+  invariant(
     typeof native.dskb02 === "function",
     "Expected native addon to export dskb02(handle, dladsc)",
   );

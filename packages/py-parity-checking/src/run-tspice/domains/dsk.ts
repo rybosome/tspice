@@ -13,6 +13,12 @@ import type {
   StepDskDasopr,
   StepDskDlabfs,
   StepDskDskb02,
+  StepDskPltar,
+  StepDskPltexp,
+  StepDskPltnp,
+  StepDskPltnrm,
+  StepDskPltvol,
+  StepDskDskrb2,
   StepDskDskgd,
   StepDskDskmi2,
   StepDskDskobj,
@@ -37,6 +43,12 @@ type DskStep =
   | StepDskDasopr
   | StepDskDascls
   | StepDskDlabfs
+  | StepDskPltar
+  | StepDskPltexp
+  | StepDskPltnp
+  | StepDskPltnrm
+  | StepDskPltvol
+  | StepDskDskrb2
   | StepDskDskgd
   | StepDskDskb02;
 
@@ -388,6 +400,41 @@ export function runDskStep(
       return { op: step.op, value: { found: true } };
     }
 
+    case "dsk.pltar":
+      return {
+        op: step.op,
+        value: context.spice.raw.pltar(step.vertices, step.plates),
+      };
+    case "dsk.pltexp":
+      return {
+        op: step.op,
+        value: context.spice.raw.pltexp(step.iverts, step.delta),
+      };
+    case "dsk.pltnp":
+      return {
+        op: step.op,
+        value: context.spice.raw.pltnp(step.point, step.v1, step.v2, step.v3),
+      };
+    case "dsk.pltnrm":
+      return {
+        op: step.op,
+        value: context.spice.raw.pltnrm(step.v1, step.v2, step.v3),
+      };
+    case "dsk.pltvol":
+      return {
+        op: step.op,
+        value: context.spice.raw.pltvol(step.vertices, step.plates),
+      };
+    case "dsk.dskrb2":
+      return {
+        op: step.op,
+        value: context.spice.raw.dskrb2(
+          step.vertices,
+          step.plates,
+          step.corsys,
+          step.corpar,
+        ),
+      };
     case "dsk.dskgd": {
       const tracked = requireTrackedHandle(context, step.handleId);
       const dladsc = requireDlaDescriptor(context, step.dladscId);

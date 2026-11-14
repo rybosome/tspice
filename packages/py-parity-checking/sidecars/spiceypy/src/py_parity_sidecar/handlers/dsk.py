@@ -9,11 +9,18 @@ from spiceypy.utils.exceptions import NotFoundError
 from spiceypy.utils import support_types as stypes
 from spiceypy.utils.libspicehelper import libspice
 
+from .. import plate_oracle
 from ..models import (
     StepDskDascls,
     StepDskDasopr,
     StepDskDlabfs,
     StepDskDskb02,
+    StepDskPltar,
+    StepDskPltexp,
+    StepDskPltnp,
+    StepDskPltnrm,
+    StepDskPltvol,
+    StepDskDskrb2,
     StepDskDskgd,
     StepDskDskmi2,
     StepDskDskobj,
@@ -295,6 +302,32 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
 
         context.state.dsk.dladsc[step.dladscId] = descr
         return StepOutput(op=step.op, value={"found": True})
+
+    if isinstance(step, StepDskPltar):
+        value = float(plate_oracle.pltar(step.vertices, step.plates))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskPltexp):
+        value = sp.pltexp(plate_oracle.triangle(step.iverts), step.delta).reshape(-1).tolist()
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskPltnp):
+        near, distance = sp.pltnp(step.point, step.v1, step.v2, step.v3)
+        value = {"pnear": near.tolist(), "dist": float(distance)}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskPltnrm):
+        value = sp.pltnrm(step.v1, step.v2, step.v3).tolist()
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskPltvol):
+        value = float(plate_oracle.pltvol(step.vertices, step.plates))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDskrb2):
+        lower, upper = plate_oracle.dskrb2(step.vertices, step.plates, step.corsys, step.corpar)
+        value = {"mncor3": float(lower), "mxcor3": float(upper)}
+        return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepDskDskgd):
         tracked = _require_handle(context, step.handleId)
