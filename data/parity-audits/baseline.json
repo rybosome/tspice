@@ -428,8 +428,8 @@
       "id": "e23-gf-visibility",
       "routines": ["gfoclt_c", "gfrfov_c", "gftfov_c"],
       "dependsOn": ["e15-field-of-view"],
-      "prs": [],
-      "nextAction": "Capture complete source-bound local and canonical CI observations."
+      "prs": ["https://github.com/rybosome/tspice/pull/768"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
