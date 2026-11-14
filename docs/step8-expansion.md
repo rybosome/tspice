@@ -12,47 +12,73 @@ scenarios** at that base. Absence was derived from the ledger's `implementation`
 field and actual contract, not the inventory's `planned` decision. The exclusions
 remain `ftncls_c`, `getcml_c`, and `prompt_c`.
 
-The initial queue has **75 batches**: 35 routines in four active batches and 452
-routines in planned batches. Zero Step 8 routines are recorded as PR-ready,
-landed or blocked. These are scheduling counts, not implementation or scientific
-verification claims. The base's 162 routines and Step 7 repairs are not Step 8
-progress. The working branch's generated implementation count can increase before
-anything lands on main; never report that increase as merged coverage.
+The maintained queue has **75 batches**: **92 routines in eleven in-progress
+batches, 19 routines in two PR-ready batches, and 376 routines in planned batches**.
+Zero Step 8 routines are landed or blocked. PR-ready means reviewed delivery
+with successful required final-head checks; it is not merged coverage. The
+base's 162 routines and Step 7 repairs are not Step 8 progress. Working-branch
+implementation counts can increase before anything lands on main.
 
 ## Active ownership and next deliveries
 
-`Codex Step 8 (/root)` owns all four active batches and their integration. The first
+`Codex Step 8 (/root)` owns all thirteen claimed batches and their integration. The first
 batch uses `/private/tmp/tspice-step8-constants`, branch `codex/expand-constants`.
 The second uses `/private/tmp/tspice-step8-scalar-constants`, branch
 `codex/expand-scalar-constants`. The third uses `/private/tmp/tspice-step8-cylindrical`,
 branch `codex/expand-cylindrical-coordinates`, independently based on `73f3fec8`.
 The fourth uses `/private/tmp/tspice-step8-vector-basics`, branch
-`codex/expand-vector-basics`, also based on `73f3fec8`. The agent
-coordinating Step 7 was notified of the first exact routine list after its merged
+`codex/expand-vector-basics`, also based on `73f3fec8`. The fifth uses
+`/private/tmp/tspice-step8-vector-combinations`, branch
+`codex/expand-vector-combinations`, independently based on the same commit. The sixth
+uses `/private/tmp/tspice-step8-fixed-matrices`, branch
+`codex/expand-fixed-matrices`, also independently based on `73f3fec8`. The seventh
+uses `/private/tmp/tspice-step8-coordinate-conventions`, branch
+`codex/expand-coordinate-conventions`, independently based on the same commit. The eighth uses
+`/private/tmp/tspice-step8-scalar-math`, branch `codex/expand-scalar-math`,
+independently based on `73f3fec8`. The ninth uses
+`/private/tmp/tspice-step8-general-vectors`, branch `codex/expand-general-vectors`,
+also independently based on `73f3fec8`. The tenth uses
+`/private/tmp/tspice-step8-state-derivatives`, branch `codex/expand-state-derivatives`,
+independently based on the same commit. The eleventh uses
+`/private/tmp/tspice-step8-polynomial-expansions`, branch
+`codex/expand-polynomial-expansions`, also based on `73f3fec8`. The twelfth uses
+`/private/tmp/tspice-step8-interpolation`, branch `codex/expand-interpolation`,
+independently based on the same commit. The thirteenth uses
+`/private/tmp/tspice-step8-string-transforms`, branch `codex/expand-string-transforms`,
+on the same base. The agent coordinating Step 7 was notified of the first exact routine list after its merged
 completion was inspected. No open Step 7 PR was found when this work began.
 
-| Batch                       | Exact canonical routines                                                                                        | Public placement                                                                                          | Next action                                                                                                                                                          |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A01-constants               | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                       | Angular constants in `CoordsVectorsApi`; day/epoch constants in `TimeApi`. All remain flat `raw` methods. | [Draft PR #707](https://github.com/rybosome/tspice/pull/707) is open; required CI pending. Inspect results and record source-bound evidence before marking PR-ready. |
-| A02-remaining-constants     | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c` | Epoch/year constants in `TimeApi`; scalar limits and light speed in `CoordsVectorsApi`.                   | [Draft PR #708](https://github.com/rybosome/tspice/pull/708) is open; required CI pending. Inspect results and record source-bound evidence before marking PR-ready. |
-| A05-cylindrical-coordinates | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                  | Existing `CoordsVectorsApi` scalar and Vec3 conventions.                                                  | Compiled implementation; focused 80 live comparisons and 6 public tests passed locally. Full required lanes and CI pending; no verified claim.                       |
-| A08-vector-basics           | `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c`                           | Existing `CoordsVectorsApi` scalar and Vec3 conventions, with explicit multi-output results where needed. | Source implementation active; complete both backend paths, live parity, wrapper checks and required local/CI validation.                                             |
+| Batch                       | Exact canonical routines                                                                                                                                                   | Public placement                                                                                                                          | Next action                                                                                                                                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A01-constants               | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                                                                                  | Angular constants in `CoordsVectorsApi`; day/epoch constants in `TimeApi`. All remain flat `raw` methods.                                 | [PR-ready #707](https://github.com/rybosome/tspice/pull/707): final head `1eee2cff` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                                                |
+| A02-remaining-constants     | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c`                                                            | Epoch/year constants in `TimeApi`; scalar limits and light speed in `CoordsVectorsApi`.                                                   | [PR-ready #708](https://github.com/rybosome/tspice/pull/708): final head `2b59cee8` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                                                |
+| A05-cylindrical-coordinates | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                                                                             | Existing `CoordsVectorsApi` scalar and Vec3 conventions.                                                                                  | [PR #709](https://github.com/rybosome/tspice/pull/709). reccyl now copies the validated rectangular coordinates once. Fresh required validation pending.                                                               |
+| A08-vector-basics           | `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c`                                                                                      | Existing `CoordsVectorsApi` scalar and Vec3 conventions, with explicit multi-output results where needed.                                 | [PR #710](https://github.com/rybosome/tspice/pull/710). Seven vector-input methods now use owned vector snapshots; scalar-input vpack is unchanged. Fresh required validation pending.                                 |
+| A09-vector-combinations     | `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c`                                                                                     | Existing `CoordsVectorsApi` Vec3/Mat3 conventions; distinguish active and passive rotation.                                               | [PR #711](https://github.com/rybosome/tspice/pull/711). All eight methods now snapshot their vector and, for vtmv, matrix inputs. Fresh required validation pending.                                                   |
+| A12-fixed-matrices          | `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c`                                                      | Existing `CoordsVectorsApi`, Mat3RowMajor and an immediately consumed 2x2 shape; numeric result ownership helper preserves CSPICE output. | [PR #712](https://github.com/rybosome/tspice/pull/712). Ten matrix-input methods now snapshot their entries; no-input ident and the result-branding behavior are unchanged. Fresh required validation pending.         |
+| A06-coordinate-conventions  | `azlrec_c`, `recazl_c`, `pgrrec_c`, `recpgr_c`, `radrec_c`, `recrad_c`, `srfrec_c`                                                                                         | Existing `CoordsVectorsApi`; authored body constants support planetographic/surface conventions.                                          | [PR #713](https://github.com/rybosome/tspice/pull/713). recazl, recpgr and recrad now copy the validated rectangular coordinates once. Fresh required validation pending.                                              |
+| A03-scalar-math             | `brcktd_c`, `brckti_c`, `convrt_c`, `sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c`                                                                           | Existing `CoordsVectorsApi`; bounded reductions and independently investigated C variadic oracle route.                                   | [PR #714](https://github.com/rybosome/tspice/pull/714). sumad, sumai, maxd, maxi, mind and mini now validate owned numeric arrays; the sumai prefix check uses the dispatched copy. Fresh required validation pending. |
+| A10-general-vectors         | `vaddg_c`, `vdistg_c`, `vdotg_c`, `vequg_c`, `vhatg_c`, `vlcomg_c`, `vminug_c`, `vnormg_c`, `vprojg_c`, `vrelg_c`, `vsclg_c`, `vsepg_c`, `vsubg_c`, `vzerog_c`, `unormg_c` | Existing `CoordsVectorsApi`; immediately consumed readonly general-vector shapes with reviewed dimensions.                                | [PR #715](https://github.com/rybosome/tspice/pull/715). All fifteen general-vector methods now use stable validated dimensions and owned vector inputs. Fresh required validation pending.                             |
+| A11-state-derivatives       | `ducrss_c`, `dvcrss_c`, `dvdot_c`, `dvhat_c`, `dvnorm_c`, `dvsep_c`                                                                                                        | Existing `CoordsVectorsApi`; immediately consumed readonly six-component state inputs.                                                    | [PR #716](https://github.com/rybosome/tspice/pull/716). All six state-derivative methods now use stable six-component state inputs. Fresh required validation pending.                                                 |
+| A16-polynomial-expansions   | `chbder_c`, `chbigr_c`, `chbint_c`, `chbval_c`, `polyds_c`, `rquad_c`                                                                                                      | Existing `CoordsVectorsApi`; immediately consumed bounded polynomial inputs/results.                                                      | Five array-bearing polynomial methods now snapshot coefficients and transformations; scalar rquad and its documented upstream diagnostic are unchanged. Fresh required validation pending.                             |
+| A17-interpolation           | `hrmesp_c`, `hrmint_c`, `lgresp_c`, `lgrind_c`, `lgrint_c`, `qderiv_c`                                                                                                     | Existing `CoordsVectorsApi`; immediate interpolation inputs/workspaces.                                                                   | Six direct paths; 53 scenarios / 132 calls. Corrected native copies use validated counts; compiled focused and required source-bound evidence tracked separately.                                                      |
+| A18-string-transform        | `cmprss_c`, `eqstr_c`, `iswhsp_c`, `lastnb_c`, `lcase_c`, `ucase_c`, `matchi_c`, `matchw_c`                                                                                | Immediately consumed raw strings API; placement, byte and blank semantics under source review.                                            | Assigned, no verification or delivery claim.                                                                                                                                                                           |
 
-The two constant batches are kernel-free and have source wrappers in locked SpiceyPy 6.0.3. The epoch
-constants return Julian dates, not seconds past J2000. Zero-argument constants
-need real value comparisons and public-path tests, but no fabricated invalid
-input or resource-lifecycle scenarios. No kernel/data fixture is introduced.
+Only A01 and A02 are PR-ready. Each exact final head passed all 15 CI jobs and an
+explicit after-CI REST rebaseability check against `73f3fec8`. Neither was merged.
 
-The focused A05 results above are an integration-owner progress observation,
-not source-bound audit certification; its full lanes remain pending. All four
-active batches remain in progress, and open draft PRs are not PR-ready or landed
-coverage.
+Review identified repeated reads of caller arrays in nine earlier batches:
+A05, A08, A09, A12, A06, A03, A10, A11 and A16. Their adapters now use stable
+input snapshots with corresponding boundary regressions. Fresh source-bound
+validation is required. Earlier execution records still document the source that ran.
+Readiness for #709 and #710 was withdrawn; earlier successful final checks do
+not establish the corrected source. The JSON queue retains their historical
+readiness evidence. No change to the canonical roster or exclusions follows.
 
-After these deliveries, the next independent candidate is `A09-vector-combinations`
-(`vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`,
-`vtmv_c`). It fits existing Vec3/Mat3 types and has locked source wrappers.
-Refresh main, inspect active ownership, and complete primary-semantic review
-before taking it.
+A17 has 53 registered scenarios / 132 actual calls, including 11 genuine errors.
+Its native paired-input repair copies exactly the validated counts. All six
+independent Python wrappers call the locked library; required corrected-source
+backend and CI evidence must be recorded separately. A18 is owned and in progress; A14 remains prepared but unclaimed/planned. Refresh main and ownership before taking more work.
 
 ## Reading and maintaining the queue
 
@@ -116,10 +142,12 @@ inspected module:
 - Legacy plate geometry: `illum_pl02`, `illum_plid_pl02`, `limb_pl02`,
   `llgrid_pl02`, `subpt_pl02`, `subsol_pl02`, `term_pl02`.
 
-Their batches require investigation of the actual locked library and pinned
-N0067 ABI for a minimal independent live-oracle route. No such route is claimed
-as established by this queue. If it cannot be established, request a concrete
-maintainer decision while delivering independent routines. Do not compare tspice
+These initial wrapper-availability gaps require an actual locked-library and
+pinned N0067 ABI route. A03 now references the independent max/min variadic
+investigation in PR #707; its earlier live validation is recorded in PR #714. The adapter correction still requires fresh evidence.
+The other listed gaps retain their investigation prerequisites. If a route cannot
+be established, request a concrete maintainer decision while delivering independent
+routines. Do not compare tspice
 against its own shim, silently omit parity, or add exclusions. Supported routines
 in a mixed batch can be split out rather than waiting on unrelated wrapper gaps.
 
@@ -133,7 +161,3 @@ can satisfy a batch.
 No PR may be merged without explicit authorization. Step 9 reconciliation and
 release decisions remain separate; this queue authorizes no version choice,
 publishing or deployment.
-
-## A08 source validation checkpoint
-
-Both complete required local lanes passed on source `6fe56303286e8ec567f3f5463a3df6cf5fb6418a`: 2,282 live comparisons and 2,505 parity-package tests in the native-required lane with zero skips and the production-addon guard executed. The [inspected source Linux Node 22 native CI job](https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410) passed with the same uncached execution counts. Nine source-matrix jobs had passed while remaining macOS jobs were queued when this evidence was recorded. Current source-bound local and CI judgments are verified, with the documented ucrss conditioning limitation and historical observations preserved. This evidence-only commit supersedes the incomplete source matrix; its full required matrix and explicit GitHub rebaseability must pass before PR #710 is marked ready. No Step 8 routines are landed.

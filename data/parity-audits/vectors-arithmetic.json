@@ -2083,7 +2083,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes."
+      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes.",
+      "historical": true
     },
     {
       "id": "local-a08-6fe56303-wasm",
@@ -2114,7 +2115,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes."
+      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes.",
+      "historical": true
     },
     {
       "id": "ci-a08-6fe56303-node",
@@ -2147,7 +2149,8 @@
       ],
       "commit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410",
-      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately."
+      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately.",
+      "historical": true
     },
     {
       "id": "ci-a08-6fe56303-wasm",
@@ -2180,7 +2183,8 @@
       ],
       "commit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410",
-      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately."
+      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately.",
+      "historical": true
     }
   ],
   "routines": [
@@ -2237,11 +2241,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2260,11 +2265,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     },
@@ -2329,11 +2335,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2352,11 +2359,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     },
@@ -2413,11 +2421,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2436,11 +2445,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     },
@@ -2505,11 +2515,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2528,11 +2539,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     },
@@ -2589,11 +2601,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2612,11 +2625,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     },
@@ -2681,11 +2695,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2704,11 +2719,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     },
@@ -2765,11 +2781,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2788,11 +2805,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     },
@@ -2849,11 +2867,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-a08-6fe56303-node", "ci-a08-6fe56303-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2872,14 +2891,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-a08-6fe56303-wasm", "ci-a08-6fe56303-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }

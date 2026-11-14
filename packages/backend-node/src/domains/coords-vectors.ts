@@ -23,13 +23,16 @@ function assertBasicScalar(
     throw new TypeError(`${label} must be a finite number`);
 }
 
-function assertBasicVector(
-  value: unknown,
-  label: string,
-): asserts value is Readonly<SpiceVector3> {
+function copyBasicVector(value: unknown, label: string): SpiceVector3 {
   if (!Array.isArray(value) || value.length !== 3)
     throw new TypeError(`${label} must contain exactly three finite numbers`);
-  for (let i = 0; i < 3; i++) assertBasicScalar(value[i], `${label}[${i}]`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertBasicScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2)];
 }
 
 function basicOutputNumber(value: unknown, label: string): number {
@@ -53,14 +56,14 @@ function basicOutputVector(value: unknown, label: string): SpiceVector3 {
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
     vdist: (a, b) => {
-      assertBasicVector(a, "vdist(a)");
-      assertBasicVector(b, "vdist(b)");
-      const out = native.vdist(a, b);
+      const aCopy = copyBasicVector(a, "vdist(a)");
+      const bCopy = copyBasicVector(b, "vdist(b)");
+      const out = native.vdist(aCopy, bCopy);
       return basicOutputNumber(out, "vdist result");
     },
     vequ: (v) => {
-      assertBasicVector(v, "vequ(v)");
-      const out = native.vequ(v);
+      const vCopy = copyBasicVector(v, "vequ(v)");
+      const out = native.vequ(vCopy);
       return basicOutputVector(out, "vequ result");
     },
     vpack: (x, y, z) => {
@@ -71,8 +74,8 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       return basicOutputVector(out, "vpack result");
     },
     vupack: (v) => {
-      assertBasicVector(v, "vupack(v)");
-      const out = native.vupack(v);
+      const vCopy = copyBasicVector(v, "vupack(v)");
+      const out = native.vupack(vCopy);
       if (!isPlainObject(out))
         throw new TypeError("vupack result must be an object");
       return {
@@ -82,15 +85,15 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       };
     },
     vzero: (v) => {
-      assertBasicVector(v, "vzero(v)");
-      const out = native.vzero(v);
+      const vCopy = copyBasicVector(v, "vzero(v)");
+      const out = native.vzero(vCopy);
       if (typeof out !== "boolean")
         throw new TypeError("vzero result must be a boolean");
       return out;
     },
     unorm: (v) => {
-      assertBasicVector(v, "unorm(v)");
-      const out = native.unorm(v);
+      const vCopy = copyBasicVector(v, "unorm(v)");
+      const out = native.unorm(vCopy);
       if (!isPlainObject(out))
         throw new TypeError("unorm result must be an object");
       return {
@@ -99,15 +102,15 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       };
     },
     ucrss: (a, b) => {
-      assertBasicVector(a, "ucrss(a)");
-      assertBasicVector(b, "ucrss(b)");
-      const out = native.ucrss(a, b);
+      const aCopy = copyBasicVector(a, "ucrss(a)");
+      const bCopy = copyBasicVector(b, "ucrss(b)");
+      const out = native.ucrss(aCopy, bCopy);
       return basicOutputVector(out, "ucrss result");
     },
     vsep: (a, b) => {
-      assertBasicVector(a, "vsep(a)");
-      assertBasicVector(b, "vsep(b)");
-      const out = native.vsep(a, b);
+      const aCopy = copyBasicVector(a, "vsep(a)");
+      const bCopy = copyBasicVector(b, "vsep(b)");
+      const out = native.vsep(aCopy, bCopy);
       return basicOutputNumber(out, "vsep result");
     },
     reclat: (rect) => {

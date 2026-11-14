@@ -782,13 +782,16 @@ function assertBasicScalar(
     throw new TypeError(`${label} must be a finite number`);
 }
 
-function assertBasicVector(
-  value: unknown,
-  label: string,
-): asserts value is Readonly<SpiceVector3> {
+function copyBasicVector(value: unknown, label: string): SpiceVector3 {
   if (!Array.isArray(value) || value.length !== 3)
     throw new TypeError(`${label} must contain exactly three finite numbers`);
-  for (let i = 0; i < 3; i++) assertBasicScalar(value[i], `${label}[${i}]`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertBasicScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2)];
 }
 
 function readBasicVector(module: EmscriptenModule, ptr: number): SpiceVector3 {
@@ -803,14 +806,14 @@ export function createCoordsVectorsApi(
 ): CoordsVectorsApi {
   return {
     vdist: (a, b) => {
-      assertBasicVector(a, "vdist(a)");
-      assertBasicVector(b, "vdist(b)");
+      const aCopy = copyBasicVector(a, "vdist(a)");
+      const bCopy = copyBasicVector(b, "vdist(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 8],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_vdist(
             aPtr,
             bPtr,
@@ -825,12 +828,12 @@ export function createCoordsVectorsApi(
       );
     },
     vequ: (v) => {
-      assertBasicVector(v, "vequ(v)");
+      const vCopy = copyBasicVector(v, "vequ(v)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24],
         (errPtr, vPtr, outPtr) => {
-          module.HEAPF64.set(v, vPtr >> 3);
+          module.HEAPF64.set(vCopy, vPtr >> 3);
           const status = module._tspice_vequ(
             vPtr,
             outPtr,
@@ -862,12 +865,12 @@ export function createCoordsVectorsApi(
       });
     },
     vupack: (v) => {
-      assertBasicVector(v, "vupack(v)");
+      const vCopy = copyBasicVector(v, "vupack(v)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24],
         (errPtr, vPtr, outPtr) => {
-          module.HEAPF64.set(v, vPtr >> 3);
+          module.HEAPF64.set(vCopy, vPtr >> 3);
           const status = module._tspice_vupack(
             vPtr,
             outPtr,
@@ -882,12 +885,12 @@ export function createCoordsVectorsApi(
       );
     },
     vzero: (v) => {
-      assertBasicVector(v, "vzero(v)");
+      const vCopy = copyBasicVector(v, "vzero(v)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 4],
         (errPtr, vPtr, outPtr) => {
-          module.HEAPF64.set(v, vPtr >> 3);
+          module.HEAPF64.set(vCopy, vPtr >> 3);
           const status = module._tspice_vzero(
             vPtr,
             outPtr,
@@ -901,12 +904,12 @@ export function createCoordsVectorsApi(
       );
     },
     unorm: (v) => {
-      assertBasicVector(v, "unorm(v)");
+      const vCopy = copyBasicVector(v, "unorm(v)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 8],
         (errPtr, vPtr, outPtr, normPtr) => {
-          module.HEAPF64.set(v, vPtr >> 3);
+          module.HEAPF64.set(vCopy, vPtr >> 3);
           const status = module._tspice_unorm(
             vPtr,
             outPtr,
@@ -924,14 +927,14 @@ export function createCoordsVectorsApi(
       );
     },
     ucrss: (a, b) => {
-      assertBasicVector(a, "ucrss(a)");
-      assertBasicVector(b, "ucrss(b)");
+      const aCopy = copyBasicVector(a, "ucrss(a)");
+      const bCopy = copyBasicVector(b, "ucrss(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 24],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_ucrss(
             aPtr,
             bPtr,
@@ -946,14 +949,14 @@ export function createCoordsVectorsApi(
       );
     },
     vsep: (a, b) => {
-      assertBasicVector(a, "vsep(a)");
-      assertBasicVector(b, "vsep(b)");
+      const aCopy = copyBasicVector(a, "vsep(a)");
+      const bCopy = copyBasicVector(b, "vsep(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 8],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_vsep(
             aPtr,
             bPtr,
