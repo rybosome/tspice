@@ -323,3 +323,53 @@ describe("actual native general-vector boundary", () => {
     },
   );
 });
+
+it("all general-vector methods delegate owned snapshots with exactly one read per input component", () => {
+  for (const spec of calls) {
+    const args = [...spec.args];
+    const vectors = spec.vectors.map((position, j) => {
+      const values = j === 0 ? first : second;
+      const input: number[] = [];
+      for (const [i, value] of values.entries()) {
+        let read = false;
+        Object.defineProperty(input, i, {
+          configurable: true,
+          get() {
+            if (read) throw new Error("component read twice");
+            read = true;
+            return value;
+          },
+        });
+      }
+      args[position] = input;
+      return { position, input, values };
+    });
+    const call = vi.fn((...received: unknown[]) => {
+      for (const { position, input, values } of vectors) {
+        expect(received[position]).not.toBe(input);
+        input.length = 0;
+        expect(received[position]).toEqual(values);
+      }
+      return resultFor(spec.output);
+    });
+    const api = apiFor({ [spec.name]: call });
+    expect(Reflect.apply(api[spec.name], undefined, args)).toEqual(
+      resultFor(spec.output),
+    );
+    expect(call).toHaveBeenCalledOnce();
+  }
+});
+
+it("rejects a paired input that loses entries during capture, before native delegation", () => {
+  const a = [1, 2];
+  const b = [3, 4];
+  Object.defineProperty(a, 0, {
+    get() {
+      b.length = 0;
+      return 1;
+    },
+  });
+  const vaddg = vi.fn();
+  expect(() => apiFor({ vaddg }).vaddg(a, b)).toThrow(/finite number/);
+  expect(vaddg).not.toHaveBeenCalled();
+});
