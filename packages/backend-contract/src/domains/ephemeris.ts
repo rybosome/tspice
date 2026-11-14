@@ -47,8 +47,61 @@ export type SpkUnpackedDescriptor = {
   eaddr: number;
 };
 
-/** Backend contract for SPK/ephemeris computations (positions, states, segment inspection). */
+/** Ten canonical elements returned by GETELM and consumed by EVSGP4. */
+export type TleElements = readonly [
+  ndt20: number,
+  ndd60: number,
+  bstar: number,
+  inclination: number,
+  node: number,
+  eccentricity: number,
+  argument: number,
+  anomaly: number,
+  motion: number,
+  epoch: number,
+];
+/** Earth geophysical constants in the order expected by EVSGP4. */
+export type Sgp4Geophysics = readonly [
+  j2: number,
+  j3: number,
+  j4: number,
+  ke: number,
+  qo: number,
+  so: number,
+  er: number,
+  ae: number,
+];
+
+/** Backend contract for SPK/ephemeris computations. */
 export interface EphemerisApi {
+  /**
+   * Parse two fixed-column ASCII element lines using the loaded leap-seconds kernel.
+   * The two-digit year is expanded relative to firstYear. Return TDB seconds past
+   * J2000 and ten elements in SPICE order (rates in rad/min², rad/min³ and
+   * rad/min, angles in radians). The last element repeats the epoch. CSPICE
+   * accepts 68 or 69 nonblank columns and does not verify the checksum.
+   * Supported calendar inputs keep signed day-number arithmetic representable.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getelm_c.html
+   */
+  getelm(
+    firstYear: number,
+    lines: readonly [string, string],
+  ): { epoch: number; elems: TleElements };
+  /**
+   * Evaluate a parsed element set at TDB seconds past J2000. Return TEME
+   * position in km and velocity in km/s. Requires a loaded leap-seconds kernel
+   * to convert the elements epoch to UTC during each initialization. Supply
+   * the eight Earth constants in J2, J3, J4, KE, QO, SO, ER, AE order.
+   * The absolute elements epoch is bounded at 1.6e14 TDB seconds for signed
+   * day conversion. Deep-space resonances are limited to fewer than one million
+   * 720-minute integration steps; nonresonant calls avoid that integration.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/evsgp4_c.html
+   */
+  evsgp4(
+    et: number,
+    geophs: Sgp4Geophysics,
+    elems: TleElements,
+  ): SpiceStateVector;
   /**
    * Compute state relative to observer using loaded kernels (see `spkezr_c`).
    *

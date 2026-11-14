@@ -379,6 +379,15 @@ export type NativeAddon = {
     lit: boolean;
   };
 
+  getelm(
+    firstYear: number,
+    lines: readonly [string, string],
+  ): { epoch: number; elems: number[] };
+  evsgp4(
+    et: number,
+    geophs: readonly number[],
+    elems: readonly number[],
+  ): number[];
   spkssb(target: number, et: number, ref: string): number[];
 
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;

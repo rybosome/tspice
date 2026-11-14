@@ -4,6 +4,9 @@
 
 #include "../handle_validation.h"
 
+#include <math.h>
+#include <stdlib.h>
+#include "SpiceZfc.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -65,6 +68,104 @@ static int tspice_spice_int_to_int_checked(
   }
 
   *out = v;
+  return 0;
+}
+
+// The calendar converter uses signed integer day counts. A rejected large epoch
+// still gets the toolkit's own syntax and kernel diagnostics on a safe surrogate.
+int tspice_getelm(int firstYear, int stride, const char *lines, double *epoch, double *elems, char *err,
+                  int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!lines || !epoch || !elems || stride < 8 || stride > 134217728)
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Invalid TLE row storage");
+  const char *row2 = lines + stride;
+  const char *end1 = memchr(lines, 0, (size_t)stride);
+  const char *end2 = memchr(row2, 0, (size_t)stride);
+  if (!end1 || !end2 || (end1 - lines < 7 && end2 - row2 < 7))
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes,
+                                        "TLE records require a terminator and space for the ID");
+  int unsafeYear = firstYear < -5000000 || firstYear > 5000000;
+  int unsafeDay = 0;
+  if (end1 - lines >= 32) {
+    SpiceDouble day = 0;
+    SpiceInt pos = 0;
+    char field[12], diagnostic[160];
+    memcpy(field, lines + 20, sizeof(field));
+    nparsd_(field, &day, diagnostic, &pos, 12, 160);
+    // At either year bound the absolute Gregorian day count is <1.83e9.
+    // This allowance also leaves headroom for epoch reference-day subtraction.
+    unsafeDay = diagnostic[0] == ' ' && (!isfinite(day) || fabs(day) > 300000000.0);
+  }
+  char *safeLines = NULL;
+  if (unsafeDay) {
+    safeLines = malloc((size_t)stride * 2);
+    if (!safeLines)
+      return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Unable to allocate TLE validation rows");
+    memcpy(safeLines, lines, (size_t)stride * 2);
+    memcpy(safeLines + 20, "001.00000000", 12);
+  }
+  getelm_c(unsafeYear ? 2000 : firstYear, stride, safeLines ? safeLines : lines, epoch, elems);
+  free(safeLines);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  if (unsafeYear || unsafeDay)
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes,
+                                        "TLE epoch exceeds the supported signed calendar day range");
+  return 0;
+}
+
+int tspice_evsgp4(double et, const double *geophs, const double *elems, double *state, char *err,
+                  int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!geophs || !elems || !state || !isfinite(et))
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Invalid SGP4 arguments");
+  for (int i = 0; i < 8; i++)
+    if (!isfinite(geophs[i]))
+      return tspice_ephemeris_invalid_arg(err, errMaxBytes, "SGP4 constants must be finite");
+  for (int i = 0; i < 10; i++)
+    if (!isfinite(elems[i]))
+      return tspice_ephemeris_invalid_arg(err, errMaxBytes, "SGP4 elements must be finite");
+  if (fabs(elems[9]) > 1.6e14)
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes,
+                                        "SGP4 epoch exceeds the supported signed calendar day range");
+  // Only resonant deep-space orbits use the unbounded 720-minute integration
+  // loop. ZZINIL supplies the same corrected motion as the propagator.
+  // Its epoch affects only sidereal time; that output is unused in this check.
+  if (fabs(et - elems[9]) >= 43200000000.0) {
+    SpiceInt mode = 2;
+    SpiceDouble epoch = 0, ecc = elems[5], incl = elems[3], motion = elems[8], aux[13] = {0};
+    zzinil_((SpiceDouble *)geophs, &mode, &ecc, &epoch, &incl, &motion, &aux[0], &aux[1], &aux[2], &aux[3],
+            &aux[4], &aux[5], &aux[6], &aux[7], &aux[8], &aux[9], &aux[10], &aux[11], &aux[12]);
+    if (failed_c()) {
+      tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+      return 1;
+    }
+    const int resonant = (motion > .0034906585 && motion < .0052359877) ||
+                         (motion >= .00826 && motion <= .00924 && ecc >= .5);
+    if (resonant) {
+      // Enter the canonical trace frames and run only EVSGP4's initialization
+      // stage. Its errors precede any propagation work in the public routine.
+      SpiceInt actualMode = 1;
+      chkin_c("evsgp4_c");
+      chkin_c("EVSGP4");
+      xxsgp4i_((SpiceDouble *)geophs, (SpiceDouble *)elems, &actualMode);
+      chkout_c("EVSGP4");
+      chkout_c("evsgp4_c");
+      if (failed_c()) {
+        tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+        return 1;
+      }
+      return tspice_ephemeris_invalid_arg(err, errMaxBytes,
+                                          "SGP4 resonant interval reaches one million integration steps");
+    }
+  }
+  evsgp4_c(et, geophs, elems, state);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
   return 0;
 }
 

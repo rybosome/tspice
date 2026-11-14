@@ -800,6 +800,10 @@ int tspice_illumf(
     char *err,
     int errMaxBytes);
 
+// Public fixed-size two-line element parser and TEME propagator.
+int tspice_getelm(int firstYear, int stride, const char *lines, double *epoch, double *elems, char *err, int errMaxBytes);
+int tspice_evsgp4(double et, const double *geophs, const double *elems, double *state, char *err, int errMaxBytes);
+
 // spkssb_c: compute state (6 doubles) of target body relative to SSB.
 int tspice_spkssb(
     int target,

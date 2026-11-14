@@ -514,6 +514,14 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export wnvald(size, n, window)",
   );
   invariant(
+    typeof native.getelm === "function",
+    "Expected native addon to export getelm",
+  );
+  invariant(
+    typeof native.evsgp4 === "function",
+    "Expected native addon to export evsgp4",
+  );
+  invariant(
     typeof native.spkezr === "function",
     "Expected native addon to export spkezr(target, et, ref, abcorr, observer)",
   );

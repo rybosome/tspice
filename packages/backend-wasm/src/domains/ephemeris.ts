@@ -15,6 +15,8 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copyTleLines,
+  copyTleTuple,
   assertSpiceInt32,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
@@ -854,6 +856,74 @@ export function createEphemerisApi(
   const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
 
   return {
+    getelm: (firstYear, lines) => {
+      assertSpiceInt32(firstYear, "firstYear");
+      const rows = copyTleLines(lines);
+      const stride = Math.max(8, rows[0].length + 1, rows[1].length + 1);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, stride * 2, 8, 80],
+        (err, table, epoch, out) => {
+          for (let i = 0; i < 2; i++) {
+            const row = rows[i]!;
+            const ptr = table + i * stride;
+            module.HEAPU8.fill(32, ptr, ptr + 7);
+            for (let j = 0; j < row.length; j++)
+              module.HEAPU8[ptr + j] = row.charCodeAt(j);
+            module.HEAPU8[ptr + Math.max(7, row.length)] = 0;
+          }
+          const status = module._tspice_getelm(
+            firstYear,
+            stride,
+            table,
+            epoch,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return {
+            epoch: module.HEAPF64[epoch >>> 3]!,
+            elems: copyTleTuple(
+              module.HEAPF64.subarray(out >>> 3, (out >>> 3) + 10),
+              10,
+              "elems",
+              false,
+            ),
+          };
+        },
+      );
+    },
+    evsgp4: (et, geophs, elems) => {
+      requireSpkNumber(et, "et");
+      const constants = copyTleTuple(geophs, 8, "geophs", true),
+        elements = copyTleTuple(elems, 10, "elems", true);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 64, 80, 48],
+        (err, g, e, s) => {
+          module.HEAPF64.set(constants, g >>> 3);
+          module.HEAPF64.set(elements, e >>> 3);
+          const status = module._tspice_evsgp4(
+            et,
+            g,
+            e,
+            s,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return copyTleTuple(
+            module.HEAPF64.subarray(s >>> 3, (s >>> 3) + 6),
+            6,
+            "TEME state",
+            false,
+          );
+        },
+      );
+    },
     spkezr: (
       target: string,
       et: number,

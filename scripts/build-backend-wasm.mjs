@@ -483,6 +483,8 @@ const exportedFunctions = [
   "_tspice_spkezp",
   "_tspice_spkgeo",
   "_tspice_spkgps",
+  "_tspice_getelm",
+  "_tspice_evsgp4",
   "_tspice_spkssb",
   "_tspice_spkcov",
   "_tspice_spkobj",

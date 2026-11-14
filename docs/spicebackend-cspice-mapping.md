@@ -206,6 +206,13 @@ Notes:
 
 ## Domain: `ephemeris` (`EphemerisApi`)
 
+| Raw method                  | Canonical scientific call | Result and state                                                                                 |
+| --------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------ |
+| `getelm(firstYear, lines)`  | `getelm_c`                | TDB epoch and ten canonical elements from two owned ASCII rows; UTC conversion requires an LSK.  |
+| `evsgp4(et, geophs, elems)` | `evsgp4_c`                | Six TEME components (km and km/s); the initializer converts the element epoch with a loaded LSK. |
+
+The raw adapters retain complete numeric outputs and toolkit errors. The shared shim bounds signed calendar-day arithmetic and checks the pinned resonance classification only for exceptionally long evaluation intervals. [Two-line element contracts and evidence](step8-tle-propagation.md)
+
 | domain.method                                         | CSPICE entrypoint(s) | Args (TS shape)                                                                                       | Returns (TS shape)                        | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                               |
 | ----------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ephemeris.spkezr(target, et, ref, abcorr, observer)` | `spkezr_c`           | `(target: string, et: number, ref: string, abcorr: AbCorr \| string, observer: string): SpkezrResult` | `{ state: [x,y,z,vx,vy,vz], lt: number }` | float tolerance on each component + `lt`   | **stateful**: requires SPK (`*.bsp`); may also require FK/PCK/CK depending on `ref`; aberration correction must match CSPICE `abcorr` parsing |

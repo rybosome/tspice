@@ -581,6 +581,30 @@ export type StepEphemerisSpkezr = {
   observer: string;
 };
 
+export type StepEphemerisGetelm = {
+  op: "ephemeris.getelm";
+  captureError?: boolean;
+  firstYear: number;
+  lines: [string, string];
+};
+export type StepEphemerisEvsgp4 = {
+  op: "ephemeris.evsgp4";
+  captureError?: boolean;
+  et: number;
+  geophs: [number, number, number, number, number, number, number, number];
+  elems: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ];
+};
 export type StepEphemerisSpkgeo = {
   op: "ephemeris.spkgeo";
   target: number;
@@ -1369,6 +1393,8 @@ export type WorkflowStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisGetelm
+  | StepEphemerisEvsgp4
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -1626,6 +1652,11 @@ export type StepOutput =
         lt: number;
       };
     }
+  | {
+      op: "ephemeris.getelm";
+      value: { epoch: number; elems: readonly number[] } | { short: string };
+    }
+  | { op: "ephemeris.evsgp4"; value: readonly number[] | { short: string } }
   | {
       op: "ephemeris.spkgeo";
       value: {

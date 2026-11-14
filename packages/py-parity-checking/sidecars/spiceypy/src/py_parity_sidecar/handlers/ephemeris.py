@@ -6,6 +6,8 @@ from typing import Any
 
 import spiceypy as sp
 from spiceypy.utils.exceptions import SpiceyError
+
+from ..tle_oracle import parse_tle, propagate_tle
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
 
 from ..models import (
@@ -14,6 +16,8 @@ from ..models import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisGetelm,
+    StepEphemerisEvsgp4,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -221,6 +225,16 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             label="spkezr",
         )
         return StepOutput(op=step.op, value={"state": state, "lt": lt})
+
+    if isinstance(step, (StepEphemerisGetelm, StepEphemerisEvsgp4)):
+        try:
+            value = (parse_tle(step.firstYear, step.lines) if isinstance(step, StepEphemerisGetelm)
+                     else propagate_tle(step.et, step.geophs, step.elems))
+            return StepOutput(op=step.op, value=value)
+        except SpiceyError as error:
+            if not step.captureError:
+                raise
+            return StepOutput(op=step.op, value={"short": error.short})
 
     if isinstance(step, StepEphemerisSpkgeo):
         state, lt = _normalize_state_lt(
