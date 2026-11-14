@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 1,
+  "batch": "a21-string-numeric",
+  "traceFiles": [
+    "docs/step8-string-numbers.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/strings.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/addon_common.h",
+    "packages/backend-node/native/src/domains/strings.cc",
+    "packages/backend-node/native/src/domains/strings.h",
+    "packages/backend-node/src/domains/strings.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/string-numbers-domain.test.ts",
+    "packages/backend-node/test/strings-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/strings.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/strings.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/string-numbers-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/strings.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/strings.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/numeric_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/string_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/strings.ts",
+    "packages/py-parity-checking/test/string-numbers.test.ts",
+    "packages/tspice/src/transport/rpc/protocol.ts",
+    "packages/tspice/src/transport/rpc/taskScheduling.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/worker/browser/spiceWorkerEntry.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/tspice/test/_helpers/fakeWorker.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "dp2hx_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dp2hx_c.html",
+      "semantics": "Encode a finite binary64 number in CSPICE normalized hex with its complete pre-truncation size.",
+      "scenarios": [
+        {
+          "caseId": "strings-dp2hx-normalized",
+          "coverage": ["success", "edge"],
+          "observes": "Compare normalized hexadecimal mantissa/exponent and true encoded length for positive, negative, zero and dyadic fractional inputs. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-dp2hx-binary-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every text byte of smallest subnormal, smallest normal and largest normal binary64 encodings. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-dp2hx-truncation",
+          "coverage": ["success", "edge"],
+          "observes": "Check independent truncation including a one-byte payload while full encoded length remains visible. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-dp2hx-invalid-room-1",
+          "coverage": ["error", "edge"],
+          "observes": "Too-small room signals the canonical toolkit error. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-dp2hx-invalid-room-1neg",
+          "coverage": ["error", "edge"],
+          "observes": "Too-small room signals the canonical toolkit error. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Authored cases: normalized, binary-limits, truncation, invalid-room-1, invalid-room-1neg. Supplemental checks compare exact complete binary64 round trips including subnormals, maximum values and zero normalization.",
+      "errorAssessment": "Registered true CSPICE errors include STRINGTOOSHORT. Small positive capacities may truncate the encoding while preserving its full length. Nonfinite numeric input is rejected at the adapter boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dp2hx → StringsApi serialized native addon → tspice_dp2hx → dp2hx_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dp2hx → StringsApi WASM adapter with owned call-scoped buffers → tspice_dp2hx → dp2hx_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "hx2dp_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/hx2dp_c.html",
+      "semantics": "Parse a normalized hexadecimal mantissa and base-16 exponent, preserving the scientific conversion flag, full returned error prefix and successful numeric value.",
+      "scenarios": [
+        {
+          "caseId": "strings-hx2dp-normalized",
+          "coverage": ["success", "edge"],
+          "observes": "Read leading/trailing blanks, signs, lower-case mantissas and signed base-16 exponents. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-hx2dp-returned-diagnostics",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish returned conversion errors from successful zero, including blank, missing, illegal and overlong mantissas. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-hx2dp-exponent-range",
+          "coverage": ["success", "edge"],
+          "observes": "Independent canonical outputs at signed exponent parse overflow and defined binary64 exponent boundaries. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-hx2dp-message-room",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve diagnostic prefix truncation and successful empty message for ordinary scientific output. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-hx2dp-empty",
+          "coverage": ["error", "edge"],
+          "observes": "C string validation runs before the Fortran conversion. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-hx2dp-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Canonical fixed-minimum diagnostic buffer validation. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Authored cases: normalized, returned-diagnostics, exponent-range, message-room, empty, capacity. Supplemental checks compare exact complete binary64 round trips including subnormals, maximum values and zero normalization.",
+      "errorAssessment": "Registered true CSPICE errors include EMPTYSTRING; STRINGTOOSHORT. Malformed mantissas, exponent errors and numeric overflow return the exact error flag/message pair without signaling. A representation error can arise if a raw byte diagnostic cuts UTF-8.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [
+        {
+          "id": "hx2dp-integer-exponent-loops",
+          "status": "repaired",
+          "summary": "The translated HX2DP routine negates a signed minimum exponent and increments through signed maximum on an inclusive scaling loop. Magnitudes near these extremes can require billions of multiplications.",
+          "repair": "Only syntactically valid exponents in signed32 outside ±1024 are mapped to the same-sign binary64 saturation exponent before canonical HX2DP. The sidecar avoids original extreme calls. Public checks compare guarded results against actual safe canonical inputs; malformed integer exponents still reach CSPICE.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/strings.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/numeric_oracle.py",
+            "packages/py-parity-checking/test/string-numbers.test.ts",
+            "docs/step8-string-numbers.md"
+          ],
+          "caseIds": ["strings-hx2dp-exponent-range"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.hx2dp → StringsApi serialized native addon → tspice_hx2dp → hx2dp_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.hx2dp → StringsApi WASM adapter with owned call-scoped buffers → tspice_hx2dp → hx2dp_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "prsdp_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/prsdp_c.html",
+      "semantics": "Parse the CSPICE decimal grammar and PI mnemonic as a double.",
+      "scenarios": [
+        {
+          "caseId": "strings-prsdp-grammar",
+          "coverage": ["success", "edge"],
+          "observes": "Check decimal punctuation, exponent notation and implicit mantissa, including signed results. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-prsdp-pi",
+          "coverage": ["success", "edge"],
+          "observes": "Check mixed-case PI mnemonic and signed forms. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-prsdp-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve defined numeric behavior at source-relevant magnitude limits. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-prsdp-invalid",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-prsdp-range",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-prsdp-blank",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-prsdp-empty",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Authored cases: grammar, pi, limits, invalid, range, blank, empty. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include EMPTYSTRING; NOTADPNUMBER. Invalid syntax and out-of-range numeric conversions exercise actual checked toolkit error channels.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.prsdp → StringsApi serialized native addon → tspice_prsdp → prsdp_c. Independent locked library checked high-level wrapper.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.prsdp → StringsApi WASM adapter with owned call-scoped buffers → tspice_prsdp → prsdp_c. Independent locked library checked high-level wrapper.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "prsint_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/prsint_c.html",
+      "semantics": "Parse the CSPICE decimal grammar and truncate the result toward zero into a signed integer.",
+      "scenarios": [
+        {
+          "caseId": "strings-prsint-grammar",
+          "coverage": ["success", "edge"],
+          "observes": "Check decimal punctuation, exponent notation and implicit mantissa, including signed results. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-prsint-pi",
+          "coverage": ["success", "edge"],
+          "observes": "Check mixed-case PI mnemonic and signed forms. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-prsint-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve defined numeric behavior at source-relevant magnitude limits. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-prsint-invalid",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-prsint-range",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-prsint-blank",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-prsint-empty",
+          "coverage": ["error", "edge"],
+          "observes": "Check the actual parser diagnostic and traced scientific failure. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-prsint-bounds",
+          "coverage": ["error", "edge"],
+          "observes": "Truncation outside the representable integer range is an error. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Authored cases: grammar, pi, limits, invalid, range, blank, empty, bounds. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include EMPTYSTRING; NOTANINTEGER. Invalid syntax and out-of-range numeric conversions exercise actual checked toolkit error channels.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.prsint → StringsApi serialized native addon → tspice_prsint → prsint_c. Independent locked library checked high-level wrapper.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.prsint → StringsApi WASM adapter with owned call-scoped buffers → tspice_prsint → prsint_c. Independent locked library checked high-level wrapper.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "repmc_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/repmc_c.html",
+      "semantics": "Replace the first marker with a character value, trimming only significant ASCII-space padding in the scientific string operation.",
+      "scenarios": [
+        {
+          "caseId": "strings-repmc-first-marker",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmc-miss-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmc-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmc-bad-room",
+          "coverage": ["error", "edge"],
+          "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-repmc-values",
+          "coverage": ["success", "edge"],
+          "observes": "Leading/trailing ASCII padding removed from replacement, one blank retained for an empty or blank replacement; UTF-8 and tab values preserved. Compare each returned field with the independent library."
+        }
+      ],
+      "edgeAssessment": "Authored cases: first-marker, miss-and-blank, capacity, bad-room, values. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include STRINGTOOSHORT. An absent marker produces the toolkit’s ordinary returned input text. Capacities and selectors retain per-routine scientific validation order.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmc → StringsApi serialized native addon → tspice_repmc → repmc_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmc → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmc → repmc_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "repmct_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/repmct_c.html",
+      "semantics": "Replace the first marker with English cardinal words for a signed integer, preserving requested case.",
+      "scenarios": [
+        {
+          "caseId": "strings-repmct-first-marker",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmct-miss-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmct-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmct-bad-room",
+          "coverage": ["error", "edge"],
+          "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-repmct-case-folding",
+          "coverage": ["success", "edge"],
+          "observes": "Compare U/L/C forms, lower-case case selectors, signed words or logical forms and full longest-value output. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmct-invalid-case",
+          "coverage": ["error", "edge"],
+          "observes": "The invalid case code signals even when the marker would not match. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Authored cases: first-marker, miss-and-blank, capacity, bad-room, case-folding, invalid-case. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include INVALIDCASE; STRINGTOOSHORT. An absent marker produces the toolkit’s ordinary returned input text. Capacities and selectors retain per-routine scientific validation order.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [
+        {
+          "id": "repmct-minimum-word-domain",
+          "status": "repaired",
+          "summary": "The private cardinal word formatter negates its argument. INT32_MIN cannot be negated as a signed SpiceInt.",
+          "repair": "Guard only minimum integer conversions that actually reach the word formatter. Retain genuine invalid-case errors, missing markers, short output and normal signed word conversion. The unguarded formatter is never tested on a minimum input.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/strings.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/numeric_oracle.py",
+            "packages/py-parity-checking/test/string-numbers.test.ts",
+            "docs/step8-string-numbers.md"
+          ],
+          "caseIds": [
+            "strings-repmct-miss-and-blank",
+            "strings-repmct-invalid-case"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmct → StringsApi serialized native addon → tspice_repmct → repmct_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmct → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmct → repmct_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "repmd_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/repmd_c.html",
+      "semantics": "Replace the first marker with a scientific-formatted double, honoring the pinned significant-digit range.",
+      "scenarios": [
+        {
+          "caseId": "strings-repmd-first-marker",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmd-miss-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmd-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmd-bad-room",
+          "coverage": ["error", "edge"],
+          "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-repmd-digits",
+          "coverage": ["success", "edge"],
+          "observes": "Compare clamped low/high significant digits and signs across signed 32-bit bounds. Compare each returned field with the independent library."
+        }
+      ],
+      "edgeAssessment": "Authored cases: first-marker, miss-and-blank, capacity, bad-room, digits. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include STRINGTOOSHORT. An absent marker produces the toolkit’s ordinary returned input text. Capacities and selectors retain per-routine scientific validation order.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmd → StringsApi serialized native addon → tspice_repmd → repmd_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmd → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmd → repmd_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "repmf_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/repmf_c.html",
+      "semantics": "Replace the first marker with a scientific or fixed representation, retaining pinned formatting and scoped 56-byte internal width.",
+      "scenarios": [
+        {
+          "caseId": "strings-repmf-first-marker",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmf-miss-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmf-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmf-bad-room",
+          "coverage": ["error", "edge"],
+          "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-repmf-digits",
+          "coverage": ["success", "edge"],
+          "observes": "Compare clamped low/high significant digits and signs across signed 32-bit bounds. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmf-format",
+          "coverage": ["success", "edge"],
+          "observes": "Compare upper/lower scientific and fixed forms and the pinned fixed-format default for unknown single-byte selectors. Compare each returned field with the independent library."
+        }
+      ],
+      "edgeAssessment": "Authored cases: first-marker, miss-and-blank, capacity, bad-room, digits, format. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include STRINGTOOSHORT. An absent marker produces the toolkit’s ordinary returned input text. Capacities and selectors retain per-routine scientific validation order.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmf → StringsApi serialized native addon → tspice_repmf → repmf_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmf → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmf → repmf_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "repmi_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/repmi_c.html",
+      "semantics": "Replace the first marker with signed decimal integer text, including exact endpoints.",
+      "scenarios": [
+        {
+          "caseId": "strings-repmi-first-marker",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmi-miss-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmi-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmi-bad-room",
+          "coverage": ["error", "edge"],
+          "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-repmi-integer-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect full signed decimal text, signs and both 32-bit boundaries. Compare each returned field with the independent library."
+        }
+      ],
+      "edgeAssessment": "Authored cases: first-marker, miss-and-blank, capacity, bad-room, integer-endpoints. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include STRINGTOOSHORT. An absent marker produces the toolkit’s ordinary returned input text. Capacities and selectors retain per-routine scientific validation order.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmi → StringsApi serialized native addon → tspice_repmi → repmi_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmi → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmi → repmi_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "repml_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/repml_c.html",
+      "semantics": "Replace the first marker with a logical value in upper, lower or initial-capital case.",
+      "scenarios": [
+        {
+          "caseId": "strings-repml-first-marker",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repml-miss-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repml-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repml-bad-room",
+          "coverage": ["error", "edge"],
+          "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-repml-case-folding",
+          "coverage": ["success", "edge"],
+          "observes": "Compare U/L/C forms, lower-case case selectors, signed words or logical forms and full longest-value output. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repml-invalid-case",
+          "coverage": ["error", "edge"],
+          "observes": "The invalid case code signals even when the marker would not match. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Authored cases: first-marker, miss-and-blank, capacity, bad-room, case-folding, invalid-case. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include INVALIDCASE; STRINGTOOSHORT. An absent marker produces the toolkit’s ordinary returned input text. Capacities and selectors retain per-routine scientific validation order.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [
+        {
+          "id": "repml-independent-symbol",
+          "status": "repaired",
+          "summary": "The locked SpiceyPy Python module has no repml top-level wrapper.",
+          "repair": "Bind the separately loaded locked libspice repml_c symbol using explicit string, SpiceBoolean, signed capacity, one-byte selector and caller-owned output declarations. Propagate genuine CSPICE failures and compare complete returned bytes.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/numeric_oracle.py",
+            "packages/py-parity-checking/test/string-numbers.test.ts",
+            "docs/step8-string-numbers.md"
+          ],
+          "caseIds": [
+            "strings-repml-case-folding",
+            "strings-repml-invalid-case"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repml → StringsApi serialized native addon → tspice_repml → repml_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repml → StringsApi WASM adapter with owned call-scoped buffers → tspice_repml → repml_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "repmot_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/repmot_c.html",
+      "semantics": "Replace the first marker with English ordinal words for a signed integer, preserving hyphenation and case.",
+      "scenarios": [
+        {
+          "caseId": "strings-repmot-first-marker",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmot-miss-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmot-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmot-bad-room",
+          "coverage": ["error", "edge"],
+          "observes": "The actual canonical routine receives insufficient caller room. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "strings-repmot-case-folding",
+          "coverage": ["success", "edge"],
+          "observes": "Compare U/L/C forms, lower-case case selectors, signed words or logical forms and full longest-value output. Compare each returned field with the independent library."
+        },
+        {
+          "caseId": "strings-repmot-invalid-case",
+          "coverage": ["error", "edge"],
+          "observes": "The invalid case code signals even when the marker would not match. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Authored cases: first-marker, miss-and-blank, capacity, bad-room, case-folding, invalid-case. Observe all defined result fields and distinguish expected successful values from genuine toolkit errors.",
+      "errorAssessment": "Registered true CSPICE errors include INVALIDCASE; STRINGTOOSHORT. An absent marker produces the toolkit’s ordinary returned input text. Capacities and selectors retain per-routine scientific validation order.",
+      "fixtures": [],
+      "fixtureRationale": "Authored byte strings, scalar values, selectors, numeric boundaries and output capacities require no kernels or external scientific datasets.",
+      "cleanup": "Native handlers take the process-wide CSPICE mutex through toolkit calls and error extraction. WASM releases all input, output and error buffers on every exit. The sidecar checks scientific error status before inspecting C results; live public clients dispose after each sequence.",
+      "tolerance": "Byte strings, booleans, lengths, integer results and short error codes compare exactly. Registered floating values use the unchanged comparator; supplemental full hexadecimal round trips assert exact binary64 equality apart from documented zero normalization.",
+      "findings": [
+        {
+          "id": "repmot-minimum-word-domain",
+          "status": "repaired",
+          "summary": "The private cardinal word formatter negates its argument. INT32_MIN cannot be negated as a signed SpiceInt.",
+          "repair": "Guard only minimum integer conversions that actually reach the word formatter. Retain genuine invalid-case errors, missing markers, short output and normal signed word conversion. The unguarded formatter is never tested on a minimum input.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/strings.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/numeric_oracle.py",
+            "packages/py-parity-checking/test/string-numbers.test.ts",
+            "docs/step8-string-numbers.md"
+          ],
+          "caseIds": [
+            "strings-repmot-miss-and-blank",
+            "strings-repmot-invalid-case"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmot → StringsApi serialized native addon → tspice_repmot → repmot_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.repmot → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmot → repmot_c. Independent locked library canonical typed C symbol.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused compiled, independent oracle and actual Chrome runs passed. Full source-local and canonical CI observations are required separately for each backend."
+}

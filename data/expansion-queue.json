@@ -187,12 +187,19 @@
         "note": "Top-level wrappers remain absent for max/min; pinned symbols and ctypes varargs were investigated independently. A03 must wire and validate that route without substituting tspice output."
       },
       "prs": ["https://github.com/rybosome/tspice/pull/714"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "evidence-head-checkpoint",
+          "commit": "fd64e4b0a9301c819c988e82eb937b78bc74b0e4",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43553617925",
+          "result": "CI pending at this checkpoint."
+        }
+      ],
+      "nextAction": "Observe the complete final-head matrix and recheck explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-scalar-math",
       "branch": "codex/expand-scalar-math",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #714 at 891d04fe8386f2f369b31581b41842226f98f0aa. Source CI 43550309021. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #714 evidence head fd64e4b0a9301c819c988e82eb937b78bc74b0e4, CI 43553617925, awaiting canonical final-head evidence.",
       "priorCheckpoint": "Draft PR #714 source02544981 passed both required local lanes and inspected Linux22 CI job132293815854:2312 live comparisons/2538 parity tests without skips. All171 source audit reviews freshly verified. Final metadata9c1c1e2f pushed; final CI43546459881 pending.",
       "sourceCheckpoint": {
         "commit": "891d04fe8386f2f369b31581b41842226f98f0aa",
@@ -224,7 +231,7 @@
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "independent-route-investigation-required",
+        "status": "independent-locked-symbols-reviewed",
         "missingTopLevelWrappers": [
           "clearc_c",
           "cleard_c",
@@ -234,13 +241,25 @@
           "moved_c"
         ]
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Resolve output and size semantics against pinned source and independent canonical ABI, then implement both backends and run required validation.",
+      "prs": ["https://github.com/rybosome/tspice/pull/720"],
+      "validationEvidence": [
+        {
+          "kind": "evidence-head-checkpoint",
+          "commit": "411d40f57d7437fc0d8fb46bfbd87e9aca87e60e",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554243805",
+          "result": "CI pending at this checkpoint."
+        }
+      ],
+      "nextAction": "Observe the complete final-head matrix and recheck explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-array-storage",
       "branch": "codex/expand-array-storage",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Parity and primary source investigation assigned. Six exact array-storage routines require canonical locked-library bindings, bounded array/count semantics, error/ownership checks and both real backends."
+      "progressNote": "Draft #720 evidence head 411d40f57d7437fc0d8fb46bfbd87e9aca87e60e, CI 43554243805, awaiting canonical final-head evidence.",
+      "sourceCheckpoint": {
+        "commit": "dd9e6ebab37e8cfa06acced90e23d9ea3057fc67",
+        "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552572404",
+        "status": "draft-source-under-validation"
+      }
     },
     {
       "id": "A05-cylindrical-coordinates",
@@ -281,19 +300,33 @@
           "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #709 data/parity-audits; this queue checkpoint is not a replacement.",
           "historical": true,
           "supersededReason": "Readiness reopened for adapter input snapshot correction."
+        },
+        {
+          "kind": "corrected-source-verification",
+          "testedCommit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+          "sourceDigest": "70b01a714d1b47a35fec423f0d252419363a08554dbda479ce16a9ecf846f7b4",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550193944",
+          "job": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+          "localCommands": [
+            "pnpm run check:js:required",
+            "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required"
+          ],
+          "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical. Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
         }
       ],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "nextAction": "Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge.",
       "worktree": "/private/tmp/tspice-step8-cylindrical",
       "branch": "codex/expand-cylindrical-coordinates",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Corrected owned-input source passed both complete required local lanes and canonical Linux Node 22 native-required CI. Final metadata SHA a9905a0a is in CI; this branch remains in progress until its full matrix and rebaseability are confirmed.",
+      "progressNote": "Owned input correction is verified on source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e after both required local lanes and inspected canonical CI on Linux Node 22. 2,298 live comparisons and 2,521 parity tests passed without native-required skips. All 170 current routines have source-bound verification. Final metadata head still requires its complete CI matrix and explicit rebaseability review. Final evidence head a9905a0a awaits CI run 43551517332 and explicit rebaseability review.",
       "deliveryNote": "Final-head checks and explicit rebaseability passed; draft removed and body updated. PR-ready, not landed.",
       "priorCheckpoint": "Integration owner reports final head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 passed all 15 jobs in CI run 43540344076; after-CI REST explicitly reported rebaseable:true against main 73f3. Draft removed and body updated; no merge.",
       "sourceCheckpoint": {
         "commit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
         "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550193944",
-        "status": "draft-source-under-validation"
+        "status": "corrected-source-verified",
+        "evidenceHead": "a9905a0ae12e43d8f19cd994a8d4f16198e35859",
+        "finalCiRun": "https://github.com/rybosome/tspice/actions/runs/43551517332"
       }
     },
     {
@@ -325,12 +358,18 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/713"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "ci-run-reference",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552434453",
+          "result": "Final-head validation pending."
+        }
+      ],
+      "nextAction": "Wait for the complete final-head matrix and check explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-coordinate-conventions",
       "branch": "codex/expand-coordinate-conventions",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #713 at 933b912b5820d38b52efa4854b532ad39f15be41. Source CI 43550279093. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #713, evidence head a118bad37749cff0a8efee9a9fdc9c97ba480189 and CI 43552434453. Corrected source evidence is recorded in the metadata commit.",
       "priorCheckpoint": "Draft PR #713 final metadata commit 232ee6ef pushed; canonical final-head CI run 43545867313 pending. Both required local lanes and inspected source Linux22 job132291465391 passed 2332 live comparisons and 2559 parity tests without skips; all169 source-bound audit reviews verified. Final-head readiness still pending.",
       "sourceCheckpoint": {
         "commit": "933b912b5820d38b52efa4854b532ad39f15be41",
@@ -420,13 +459,15 @@
       "worktree": "/private/tmp/tspice-step8-vector-basics",
       "branch": "codex/expand-vector-basics",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #710 at d82a5d992da38e301b6d09ac3a44303de802a6e7. Source CI 43550198267. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #710. Fresh local and observed canonical source CI evidence recorded. Final evidence head 2e382e85d19cf87f049072823c8fc666debb0f47 awaits CI 43552258168 and explicit rebaseability review.",
       "deliveryNote": "Final-head checks passed, explicit rebaseability observed and draft removed. Not merged.",
       "priorCheckpoint": "Exact final head f3d2cb4fe7c69de6e3bec925f89c4938a9de0108 passed all15 jobs in CI43541137087. Integration owner observed REST rebaseable:true and mergeable:true againstmain73f3, updated body and removed draft. Eight routines PR-ready, not landed.",
       "sourceCheckpoint": {
         "commit": "d82a5d992da38e301b6d09ac3a44303de802a6e7",
         "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550198267",
-        "status": "draft-source-under-validation"
+        "status": "source-verified-final-head-under-validation",
+        "evidenceHead": "2e382e85d19cf87f049072823c8fc666debb0f47",
+        "finalCiRun": "https://github.com/rybosome/tspice/actions/runs/43552258168"
       }
     },
     {
@@ -459,12 +500,18 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/711"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "ci-run-reference",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43553237186",
+          "result": "Final-head validation pending."
+        }
+      ],
+      "nextAction": "Wait for the complete final-head matrix and check explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-vector-combinations",
       "branch": "codex/expand-vector-combinations",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #711 at bdb51dc6536adef891bde221f3caad79bea6ef7d. Source CI 43550204344. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #711, evidence head a25e7a8464d30dedee3f21ec97d6333c8b954bc9 and CI 43553237186. Both corrected full local lanes and uncached Linux Node 22 job 132310685814 at source bdb51dc6 passed, with 2,294 live comparisons and 2,517 parity tests and no native-required skips.",
       "priorCheckpoint": "Integration owner reports both required locals and inspected Linux Node 22 source CI job 132280923832 passed 2294 live / 2517 parity-package tests without skips, and all 170 source-bound routine audits have fresh verification. Final metadata head 0f13f395e86ada615031221fc87fc01ef1587f8c awaits CI run 43542362965 and readiness review. Draft PR #711 remains in-progress.",
       "sourceCheckpoint": {
         "commit": "bdb51dc6536adef891bde221f3caad79bea6ef7d",
@@ -509,12 +556,24 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/715"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "ci-run-reference",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552435937",
+          "result": "Final-head validation pending."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "78297004a553e6a0c756fc65b78d8c4cd09bcc01",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550267694/job/132310887727",
+          "result": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the complete final-head matrix and check explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-general-vectors",
       "branch": "codex/expand-general-vectors",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #715 at 78297004a553e6a0c756fc65b78d8c4cd09bcc01. Source CI 43550267694. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #715, evidence head fb98c999a8a9f5cb7729a0bb7984e1fd6819287a and CI 43552435937. Corrected source evidence is recorded in the metadata commit.",
       "priorCheckpoint": "Draft PR #715: both required locals and inspected Linux22 source CI132299443961 passed2382 live/2610 parity without native-required skips; fresh source-bound verification recorded. Final metadata dcbb65af31f3077405561dd3b06930a683ed872e pushed; final CI43548212298 pending. No PR-ready transition.",
       "sourceCheckpoint": {
         "commit": "78297004a553e6a0c756fc65b78d8c4cd09bcc01",
@@ -550,12 +609,19 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/716"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "evidence-head-checkpoint",
+          "commit": "f859992fccd652745678b0f7ff592c71702da726",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43553619030",
+          "result": "CI pending at this checkpoint."
+        }
+      ],
+      "nextAction": "Observe the complete final-head matrix and recheck explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-state-derivatives",
       "branch": "codex/expand-state-derivatives",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #716 at 7ffccbc529e65fe58844fc4917bacc0d41a694f9. Source CI 43550316080. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #716 evidence head f859992fccd652745678b0f7ff592c71702da726, CI 43553619030, awaiting canonical final-head evidence.",
       "priorCheckpoint": "Draft PR #716 source b20b81724550fe5cfa6b215afc78991b0dc5f76b; source CI43547433026 pending. All39 ledger/format/lint/typecheck/docs/generation checks passed. Full JS passed2296 live comparisons/2521 parity passes plus expected guard skip; native-required lane running. Focused78 live/10 public/3 extremes-oracle/31 WASM/32 native passed; source verification/readiness pending.",
       "sourceCheckpoint": {
         "commit": "7ffccbc529e65fe58844fc4917bacc0d41a694f9",
@@ -596,12 +662,31 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/712"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "source-ci-checkpoint",
+          "testedCommit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
+          "job": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
+          "result": "2,318 live / 2,543 parity, no native-required skips; full local pair passed."
+        },
+        {
+          "kind": "corrected-source-verification",
+          "testedCommit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
+          "sourceDigest": "bf8ee681b67066c59829cbadda7c332c11877c976369889de78cea03ad406ead",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550210805",
+          "job": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
+          "localCommands": [
+            "pnpm run check:js:required",
+            "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required"
+          ],
+          "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical. Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+        }
+      ],
+      "nextAction": "Wait for the full final-head CI matrix and check explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-fixed-matrices",
       "branch": "codex/expand-fixed-matrices",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #712 at 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Source CI 43550210805. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #712, corrected source 279dc29b verified by both required local lanes and uncached Linux Node 22 source job 132310706167 at 2,318 live and 2,543 parity tests without native-required skips. Evidence head a1127d866930e7e3be177d4fceee94a3a220b5c0, final CI 43554113908 pending.",
       "priorCheckpoint": "Integration owner reports both required locals and inspected source Linux Node 22 CI job 132286223439 passed 2318 live / 2543 parity tests without skips; all 173 source-bound routine audits have fresh verification. Final metadata f3289ac90d299bc0ef782ba576e9efd2173a8e25 pushed to draft PR #712; final-head CI/readiness pending.",
       "sourceCheckpoint": {
         "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
@@ -624,9 +709,9 @@
         "xposeg_c"
       ],
       "domain": "coords-vectors",
-      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "apiPlacement": "Existing CoordsVectorsApi and A10 owned general-vector snapshots. Each raw method accepts flat row-major storage and explicit CSPICE dimensions.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": ["A10-general-vectors"],
       "prerequisiteReview": "Reuse bounded dynamic-array policy from A10; establish explicit rows/columns and row-major layout with nonsquare distinguishing inputs and checked dimension products.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -638,9 +723,18 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/731"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "120 actual registered comparisons, 11 public/oracle, 19 native and 42 WASM focused tests passed. A real headless Chrome inline worker followed the normal facade build and fetched the WASM module, exercising all eight methods, degenerate dimensions, validation and recovery. Full source-bound verification is separate."
+        }
+      ],
+      "nextAction": "Record full required local and canonical CI evidence on the combined A10/A13 source, then confirm complete final-head CI and rebaseability.",
+      "branch": "codex/expand-general-matrices",
+      "worktree": "/private/tmp/tspice-step8-general-matrices",
+      "baseCommit": "fb98c999a8a9f5cb7729a0bb7984e1fd6819287a",
+      "progressNote": "Stacked on A10 #715 at fb98c999. All 60 registered cases (132 calls) and their 120 compiled live comparisons passed. Also passed 11 public/oracle, 19 native, 42 WASM tests and a real headless Chrome inline Web Worker check. Draft PR #731 has source head 022e25afb0b643067998f42735247c59dcd9b289."
     },
     {
       "id": "A14-rotation-representations",
@@ -657,10 +751,10 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
-      "dependsOn": [],
-      "prerequisiteReview": "Immediate quaternion four-number representation; verify scalar-first ordering, axes, angle ranges and nonrotation/degenerate cases.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": ["A12-fixed-matrices"],
+      "prerequisiteReview": "Immediate quaternion four-number representation; verify scalar-first ordering, axes, angle ranges and nonrotation/degenerate cases. The locked q2m route on finite 1e200 quaternion components can produce NaN matrix entries. Reuse the owned, nonfinite-preserving Mat3 result helper introduced in A12 PR #712.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "coords-vectors",
@@ -670,9 +764,36 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/725"],
+      "validationEvidence": [
+        {
+          "kind": "focused-runtime",
+          "result": "Corrected EUL2M alias source passed 82 registered comparisons, 22 native, 58 WASM and 6 public/oracle tests."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "ade1137c994fa0b109304417807cdc099b0ce234",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43556467747/job/132330319914",
+          "result": "Both complete required lanes passed locally on ade1137c994fa0b109304417807cdc099b0ce234. JavaScript: 2,630 parity tests and one expected guard skip. Native-required: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132330319914 on ade1137c994fa0b109304417807cdc099b0ce234: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "ade1137c994fa0b109304417807cdc099b0ce234",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43556467747",
+          "result": "Draft PR #725, implementation source ade1137c; final matrix and explicit rebaseability required."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "69a3e2fea23c85f1a65cdfbd1073606283ae0fd5",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43557788094",
+          "result": "Draft #725, final evidence head 69a3e2fe, CI 43557788094. Readiness requires final-head inspection and explicit rebaseability."
+        }
+      ],
+      "nextAction": "Inspect source-bound required lanes and complete final-head CI matrix, then confirm rebaseability.",
+      "branch": "codex/expand-rotation-representations",
+      "worktree": "/private/tmp/tspice-step8-rotation-representations",
+      "baseCommit": "a1127d866930e7e3be177d4fceee94a3a220b5c0",
+      "progressNote": "Draft #725, final evidence head 69a3e2fe, CI 43557788094. Readiness requires final-head inspection and explicit rebaseability."
     },
     {
       "id": "A15-frame-algebra",
@@ -689,24 +810,37 @@
         "invstm_c",
         "xpose6_c"
       ],
-      "domain": "coords-vectors",
-      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
-      "dependsOn": [],
-      "prerequisiteReview": "Reuse existing Mat3/Mat6/Vec6 representations and define multi-output types. Establish handedness, derivative units, singular axes and state-transform layout.",
+      "domain": "frames",
+      "apiPlacement": "Existing FramesApi alongside pxform and sxform, with their source-to-destination and flat row-major state transform conventions. All nine use flat canonical raw names.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": ["A12-fixed-matrices"],
+      "prerequisiteReview": "Reuses the existing 36-entry state transform and A12 matrix result branding. N0067 has three checked error routes using the same linked numerical routines.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
-        "domain": "coords-vectors",
+        "domain": "frames",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
+        "status": "independent-locked-library-route-established",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/736"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "47 workflows / 129 calls / 17 expected errors. 94 registered backend comparisons, four public, 30 native and 45 WASM tests passed. Real Chrome exercised all nine methods. The collinearity fixtures use exact Cartesian-axis inputs to avoid cross-build residuals after normalization."
+        },
+        {
+          "kind": "source-ci-reference",
+          "result": "PR #736, source 3fb46545, canonical run 43566084618. Refer to its branch for matched evidence."
+        }
+      ],
+      "nextAction": "Record the combined A12/A15 full required local executions and inspected native-required source CI, then review the final matrix and rebaseability.",
+      "branch": "codex/expand-frame-algebra",
+      "worktree": "/private/tmp/tspice-step8-frame-algebra",
+      "baseCommit": "a1127d866930e7e3be177d4fceee94a3a220b5c0",
+      "progressNote": "47 workflows / 129 calls / 17 expected errors. 94 registered backend comparisons, four public, 30 native and 45 WASM tests passed. Real Chrome exercised all nine methods. The collinearity fixtures use exact Cartesian-axis inputs to avoid cross-build residuals after normalization."
     },
     {
       "id": "A16-polynomial-expansions",
@@ -741,12 +875,14 @@
       "worktree": "/private/tmp/tspice-step8-polynomial-expansions",
       "branch": "codex/expand-polynomial-expansions",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #717 at af3d8fd56795fc32a895088a9c145078e82dbc58. Source CI 43550197101. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #717. Fresh local and observed canonical source CI evidence recorded. Final evidence head e053c2378a77c55719f38b5fdf71407ffbbc3bf9 awaits CI 43551854495 and explicit rebaseability review.",
       "priorCheckpoint": "Six-routine source/audit frozen at46 scenarios/131 calls with5 genuine errors. Compiled focused92 live/12 public/3 extremes-oracle/35 WASM/31 native/2 RPC plus3 rquad diagnostic/caller-stack regressions passed. A narrow test-helper optional-empty representation correction leaves production unchanged. Upstream rquad checkout typo/device-dependent diagnostic remains documented; primary error/reset/stack recovery verified in focused tests. Full required local lanes and canonical CI pending; judgments reviewed, not verified.",
       "sourceCheckpoint": {
         "commit": "af3d8fd56795fc32a895088a9c145078e82dbc58",
         "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550197101",
-        "status": "draft-source-under-validation"
+        "status": "source-verified-final-head-under-validation",
+        "evidenceHead": "e053c2378a77c55719f38b5fdf71407ffbbc3bf9",
+        "finalCiRun": "https://github.com/rybosome/tspice/actions/runs/43551854495"
       }
     },
     {
@@ -782,11 +918,13 @@
       "worktree": "/private/tmp/tspice-step8-interpolation",
       "branch": "codex/expand-interpolation",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #718 at 909e5968a7bc4bd30da55743a3165bf255ce9732. Source CI 43550203706. Fresh required evidence and final-head readiness pending.",
+      "progressNote": "Draft #718. Fresh local and observed canonical source CI evidence recorded. Final evidence head ff210e628e7f32974dac6358c98108327bcf9e28 awaits CI 43551857857 and explicit rebaseability review.",
       "sourceCheckpoint": {
         "commit": "909e5968a7bc4bd30da55743a3165bf255ce9732",
         "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550203706",
-        "status": "draft-source-under-validation"
+        "status": "source-verified-final-head-under-validation",
+        "evidenceHead": "ff210e628e7f32974dac6358c98108327bcf9e28",
+        "finalCiRun": "https://github.com/rybosome/tspice/actions/runs/43551857857"
       }
     },
     {
@@ -821,18 +959,28 @@
       "prs": ["https://github.com/rybosome/tspice/pull/719"],
       "validationEvidence": [
         {
+          "kind": "evidence-head-checkpoint",
+          "commit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554062008",
+          "result": "CI pending at this checkpoint."
+        },
+        {
           "kind": "source-bound-required-lanes",
           "testedCommit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
           "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
           "result": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
         }
       ],
-      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "nextAction": "Observe the complete final-head matrix and recheck explicit rebaseability after CI.",
       "worktree": "/private/tmp/tspice-step8-string-transforms",
       "branch": "codex/expand-string-transforms",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 572a9d29. 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
-      "priorCheckpoint": "Eight direct methods and 64 scenarios / 274 canonical calls, including 12 genuine SPICE errors. Focused actual Node/WASM checks passed 128 registered comparisons, 11 public/independent-oracle tests, 38 WASM allocation/encoding checks and 37 native tests. Fresh required local and canonical CI verification remains pending. Final worker channel test passed after waiting for asynchronous endpoint closure. A separate real Chrome run loaded the bundled client, inline blob worker and WASM over localhost; all eight calls and EMPTYSTRING recovery passed."
+      "progressNote": "Draft #719 evidence head 92b3050e86d486d3cc445239355e2d89562dc8ad, CI 43554062008, awaiting canonical final-head evidence.",
+      "sourceCheckpoint": {
+        "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+        "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552166699",
+        "status": "draft-source-under-validation"
+      }
     },
     {
       "id": "A19-string-search",
@@ -848,9 +996,9 @@
         "esrchc_c"
       ],
       "domain": "strings",
-      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
-      "owner": null,
-      "status": "planned",
+      "apiPlacement": "Existing A18 StringsApi, exposed on raw.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": ["A18-string-transform"],
       "prerequisiteReview": "Reuse string boundary policy; verify forward/reverse starting indices, legitimate -1 absence, blanks and byte versus JS character indexing.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -862,9 +1010,40 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/726"],
+      "validationEvidence": [
+        {
+          "kind": "source-and-focused-runtime",
+          "result": "All 56 independently executed locked oracle cases passed. Node passed all 28 A19 tests and 37 inherited A18 tests. WASM passed 38 A19 tests and 38 inherited A18 tests on regenerated N0067 binary f61d922bbc403cd75fecb661d772fc62924c42e441ee06a3b2dd7afaed89c815."
+        },
+        {
+          "kind": "focused-public-and-browser",
+          "result": "112 registered Node/WASM and 7 focused public/oracle tests passed. Actual Chrome public client, inline worker and localhost WASM returned the expected byte indices, maximum signed-start behavior, and blank or empty row results."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+          "result": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43557194435",
+          "result": "Draft PR #726, source head a2b5705a, CI 43557194435. Final matrix and explicit rebaseability review pending."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "b7340ff7790f8b54d2f13cc57cc7c3a0457d3a2e",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43558485387",
+          "result": "Final evidence head on #726. Verify required final-head jobs and rebaseability before readiness."
+        }
+      ],
+      "nextAction": "Inspect source-bound required lanes and complete final-head CI matrix, then confirm rebaseability.",
+      "branch": "codex/expand-string-search",
+      "worktree": "/private/tmp/tspice-step8-string-search",
+      "baseCommit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
+      "progressNote": "Draft #726, source head a2b5705a, CI 43557194435. Readiness requires final-head inspection and explicit rebaseability."
     },
     {
       "id": "A20-string-tokenize",
@@ -882,23 +1061,37 @@
         "lxqstr_c"
       ],
       "domain": "strings",
-      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
-      "owner": null,
-      "status": "planned",
+      "apiPlacement": "Existing StringsApi on the A18 prerequisite. Flat raw calls retain exact strings, list rows, byte offsets, inclusive indexes and separate consumed counts.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": ["A18-string-transform"],
-      "prerequisiteReview": "Resolve nextwd/nthwd oracle gaps independently. Establish empty token handling, delimiter sets, scan indices and bounded output list storage; split gaps if needed.",
+      "prerequisiteReview": "Typed independent NEXTWD and NTHWD bindings use the locked library. LPARSE/LPARSM use exact C-buffer decoding and explicit widths. Empty LX4UNS supplies initialized outputs. Signed-leading-dot lexer counts are preserved.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "strings",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "independent-route-investigation-required",
+        "status": "independent-locked-library-route-established",
         "missingTopLevelWrappers": ["nextwd_c", "nthwd_c"]
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+      "prs": ["https://github.com/rybosome/tspice/pull/735"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "124 live registered comparisons and four public tests passed. 21 Node tests and 49 WASM tests passed. The real Chrome inline worker exercised all nine. See docs/step8-string-tokenization.md for exact byte results and the Node-only adapter repair."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "4d4f03cd111409d7993311854d0f1132c654140d",
+          "result": "Corrected source on draft #735."
+        }
+      ],
+      "nextAction": "Run the required combined-source native and uncached lanes, inspect canonical CI and verify final-head rebaseability.",
+      "branch": "codex/expand-string-tokenization",
+      "worktree": "/private/tmp/tspice-step8-string-tokenization",
+      "baseCommit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
+      "progressNote": "62 workflows contain 330 targeted calls and eight genuine capacity errors. A valid signed-leading-dot token exposed an overly strict Node result check; both compiled backends pass the corrected registered lane. Corrected source on draft #735. Head 4d4f03cd."
     },
     {
       "id": "A21-string-numeric",
@@ -918,9 +1111,9 @@
         "repmot_c"
       ],
       "domain": "strings",
-      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
-      "owner": null,
-      "status": "planned",
+      "apiPlacement": "A18 StringsApi, with a tagged HX2DP conversion result, full hexadecimal encoding length and optional caller output capacities.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": ["A18-string-transform"],
       "prerequisiteReview": "Resolve repml oracle gap. Verify numeric errors, width/precision, ordinal/cardinal English text and replacement count without trimming significant output.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -933,8 +1126,21 @@
         "missingTopLevelWrappers": ["repml_c"]
       },
       "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "65 registered workflows, 225 calls, 23 terminal toolkit errors; 130 actual Node/WASM comparisons, seven independent/public tests, 15 native and 54 real-WASM tests, non-DOM fixture and all eleven through real Chrome."
+        },
+        {
+          "kind": "source-and-abi",
+          "result": "REPML independent canonical typed C symbol; HX2DP bounded scientific-equivalent exponent gate and unchanged-error sentinel; INTTXT minimum gate only for performed word conversion. WASM SHA-256 76c3236935cb0becc673efa64cfa2b11ca436ec5096267210c765279cb05a33c."
+        }
+      ],
+      "nextAction": "Run full required lanes on A18+A21 and obtain canonical CI, then confirm final head and rebaseability.",
+      "branch": "codex/expand-string-numbers",
+      "worktree": "/private/tmp/tspice-step8-string-numbers",
+      "baseCommit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
+      "progressNote": "All eleven matching shared calls, independent evidence and browser smoke complete. Full local and canonical CI need the final combined source."
     },
     {
       "id": "A22-array-search",
@@ -952,9 +1158,9 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
-      "dependsOn": [],
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": ["A24-sorted-bounds"],
       "prerequisiteReview": "Immediate shared numeric/character array encoding. Verify sorted-order preconditions, zero-based indices, order-vector mapping and legitimate -1 result.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -965,9 +1171,24 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/732"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "Stacked on A24 #721 at 3b2485cb. All 55 workflows with 351 canonical calls and 110 actual backend comparisons passed, plus two exact public/oracle tests, 36 native, 40 WASM, 54 inherited sorted-bound tests and all eight in Chrome."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "47423c2e62ac98ffcae9939fa37f5dfb52ee3ecb",
+          "result": "Final metadata on draft #732. Final-head CI and explicit readiness review remain pending.",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43564692504"
+        }
+      ],
+      "nextAction": "Record source-bound full local and canonical CI observations for both backends on the combined A24/A22 source, then inspect complete final-head CI and explicit rebaseability.",
+      "worktree": "/private/tmp/tspice-step8-array-search",
+      "branch": "codex/expand-array-search",
+      "baseCommit": "3b2485cb708f2a718bf8d130217d2119f59cc9cc",
+      "progressNote": "PR #732 source faad4659; full verification and final readiness tracked on that branch. Final metadata on draft #732. Final-head CI and explicit readiness review remain pending. Head 47423c2e."
     },
     {
       "id": "A23-array-order",
@@ -1032,13 +1253,31 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Complete implementation and verify scientific parity, bounds, storage and browser/native behavior.",
+      "prs": ["https://github.com/rybosome/tspice/pull/721"],
+      "validationEvidence": [
+        {
+          "kind": "ci-run-reference",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552968834",
+          "result": "Source CI pending."
+        },
+        {
+          "kind": "evidence-head-checkpoint",
+          "commit": "3b2485cb708f2a718bf8d130217d2119f59cc9cc",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554247102",
+          "result": "CI pending at this checkpoint."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "6c47568546269a4648e9d9784a7da548beda00fd",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552968834/job/132319359971",
+          "result": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Observe the complete final-head matrix and recheck explicit rebaseability after CI.",
       "branch": "codex/expand-sorted-bounds",
       "worktree": "/private/tmp/tspice-step8-sorted-bounds",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "The fresh-main ledger confirms all six routines are absent. Pinned APIs compare sorted numeric values or Fortran-style byte strings; use blank-padded fixed-width rows followed by NUL. Independent oracle observes duplicate boundaries, controls and UTF-8 ordering. No kernel fixture or dependency on the string transforms branch."
+      "progressNote": "Draft #721 evidence head 3b2485cb708f2a718bf8d130217d2119f59cc9cc, CI 43554247102, awaiting canonical final-head evidence."
     },
     {
       "id": "B01-cell-arrays",
@@ -1054,11 +1293,11 @@
         "elemi_c"
       ],
       "domain": "cells-windows",
-      "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
-      "dependsOn": [],
-      "prerequisiteReview": "Reuse Step 7 owner-local cell handles/capacity guards; verify character widths, cardinality, sorted-set flags, source/destination ownership and failed allocation cleanup.",
+      "apiPlacement": "Existing CellsWindowsApi on the B03 owner registry, exposed on raw. Existing kit allocators own ordinary char, double and integer cells.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": ["B03-window-algebra"],
+      "prerequisiteReview": "Reuse B03 ordinary-cell vs window identity and lifetime. Bind the pinned copy_c on existing caller-owned oracle cells to observe failure state, set flags and character widths.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "cells-windows",
@@ -1068,9 +1307,30 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/728"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "Both compiled backends passed 136 registered live comparisons plus eight public tests. The 22 native and 21 WASM domain tests passed, with a real headless Chrome inline Web Worker run on all seven operations. Required source CI is separate."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "4ab87429d709c4d30eb90552ad95f98ddd8c9c0f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43561148351",
+          "result": "Draft #728, source head 4ab87429 and CI 43561148351. Final-head matrix inspection and explicit rebaseability govern readiness."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "85fd07af39fb3cb2d11a80282e8f17adc75f04ff",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43562556413",
+          "result": "Final evidence head queued for final matrix and explicit rebaseability review."
+        }
+      ],
+      "nextAction": "Inspect the complete final-head matrix and explicit rebaseability before reporting PR readiness.",
+      "worktree": "/private/tmp/tspice-step8-cell-arrays",
+      "branch": "codex/expand-cell-arrays",
+      "baseCommit": "7d575af94f73a786eb514f489cdb70dc88825f23",
+      "progressNote": "Final evidence head 85fd07af on draft PR #728. Inspect the final matrix and explicit rebaseability."
     },
     {
       "id": "B02-set-algebra",
@@ -1129,8 +1389,8 @@
       ],
       "domain": "cells-windows",
       "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse window handles, capacity checks and complete endpoint observations. Verify closed endpoints, gaps, degenerate intervals, output aliasing and summary indices.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -1139,12 +1399,35 @@
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
-        "missingTopLevelWrappers": []
+        "status": "source-and-live-probes-reviewed",
+        "missingTopLevelWrappers": [],
+        "assessment": "SpiceyPy 6.0.3 provides all thirteen wrappers. The independent sidecar uses typed calls to the locked library for four explicit result-cell capacities and a single-byte selector when the high-level wnextd wrapper preempts canonical behavior. Ordinary remaining calls use the locked wrappers."
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/722"],
+      "validationEvidence": [
+        {
+          "kind": "focused-runtime",
+          "result": "156 registered actual Node/WASM comparisons, 45 native, 11 public/oracle and 37 WASM allocation/ownership tests passed.",
+          "scope": "Focused compiled window algebra only; the source-bound full required lanes and canonical CI must still be recorded."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "b664f15909c03adc55c4434523438742e1f3a5e7",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
+          "result": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "7d575af94f73a786eb514f489cdb70dc88825f23",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43555556784",
+          "result": "Draft PR #722, evidence 7d575af9; final matrix and explicit rebaseability required."
+        }
+      ],
+      "nextAction": "Record both required full local lanes and observed canonical source CI, then check the complete final-head matrix and explicit rebaseability.",
+      "worktree": "/private/tmp/tspice-step8-window-algebra",
+      "branch": "codex/expand-window-algebra",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Draft PR #722, evidence 7d575af9; final matrix and explicit rebaseability required."
     },
     {
       "id": "B04-string-set",
@@ -1186,12 +1469,12 @@
         "szpool_c"
       ],
       "domain": "kernel-pool",
-      "apiPlacement": "packages/backend-contract/src/domains/kernel-pool.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "apiPlacement": "Existing KernelPoolApi. All nine expose matching canonical direct calls; byte-backed direct loads use private call-scoped storage.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Preserve Step 7 watch-notification/state conventions and actual found/error distinction. Verify explicit output capacity, string continuation, pool limits and interaction with loaded-kernel bookkeeping.",
-      "fixtures": "Authored pool text and in-memory variables; existing LSK/body fixtures only where needed.",
+      "fixtures": "Project-authored audit-pool-operations.tpc and existing audit-partial-error.tpc; other assignments are constructed in memory.",
       "expectedChanges": {
         "domain": "kernel-pool",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
@@ -1200,9 +1483,32 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/733"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "69 workflows, 289 total steps, 164 new method calls and 32 genuine terminal errors. Both compiled backends passed 138 registered comparisons, eight supplemental public/oracle tests, 19 Node and 34 WASM focused tests. Real Chrome exercised all nine. Source-local and CI verification are separate."
+        },
+        {
+          "kind": "source-and-abi",
+          "result": "Pinned numeric output bound MAXVAL 400000 and character output bound MAXLIN × MAXCHR + 1 = 1200001 bytes. Source-derived visited-component and body hash guards preserve the defined call domains. Generated WASM SHA-256 c923aff5e333c387f4d5d54497708ddd9ab3943223b4569b442b1b5ece429ec2."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "2b1e2fc58371f7cb324252947d956cc128571e3a",
+          "result": "Corrected source on draft #734.",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43565521263"
+        },
+        {
+          "kind": "source-ci-reference",
+          "result": "PR #733, source a2689f58, canonical run 43565795548. Refer to its branch for matched evidence."
+        }
+      ],
+      "nextAction": "Run full required local lanes, capture canonical CI and inspect final checks and rebaseability.",
+      "worktree": "/private/tmp/tspice-step8-kernel-pool",
+      "branch": "codex/expand-kernel-pool",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Nine direct calls and source-derived STPOOL and BODVRD repairs reviewed. Direct text-kernel loading preserves KEEPER inventory. Full source-matched evidence pending. Corrected source on draft #734. Head 2b1e2fc5."
     },
     {
       "id": "B06-error-observation",
@@ -1276,8 +1582,8 @@
       ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse DAF opaque owner handles and Step 7 reader fixtures. Establish current-search state, complete packed summaries, names and writable handle lifecycle.",
       "fixtures": "Existing authored multi-segment DAF/SPK fixtures and independently generated scratch copies.",
@@ -1286,12 +1592,44 @@
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
-        "missingTopLevelWrappers": []
+        "status": "source-and-live-probes-reviewed",
+        "missingTopLevelWrappers": [],
+        "assessment": "Owner-local labels derive from actual returned handles. The locked N0067 library supplies exact initialized DAFFPA via a separate binding, DAFGN via an initialized C string buffer and DAFGS as complete native-order bytes from its ordinary wrapper. Other five operations use their directly inspected public wrappers."
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/727"],
+      "validationEvidence": [
+        {
+          "kind": "focused-runtime",
+          "result": "After case-local scratch isolation, compiled Node and WASM passed all 90 registered comparisons across 45 workflows. Native 10, WASM 27, worker RPC 2, public fixture 2 and workflow-normalization 15 tests passed. Isolated Chrome WASM worker exercised eight real operations, 40 exact bytes including the signed integer pair, trailing tab, exhaustion and disposal."
+        },
+        {
+          "kind": "independent-oracle",
+          "result": "45 workflows, 399 steps and 218 target invocations. Fifteen terminal SPICE errors plus two captured errors in a recovery workflow. Independently restarted public and directly bound DAFFPA agree on every position and exhaustion."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43558380270",
+          "result": "Draft #727, source head 09dbf1e7, CI 43558380270. Readiness requires final-head inspection and explicit rebaseability."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43558380270",
+          "result": "Source local and canonical required checks passed, including 2,308 live comparisons and 2,524 parity-package tests. Final evidence-head jobs and rebaseability are separate checks."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "b291e105b924ddca36840896746f0ae5b3f6e1e6",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43561069205",
+          "result": "Draft #727, final evidence head b291e105 and CI 43561069205. Final-head matrix inspection and explicit rebaseability govern readiness."
+        }
+      ],
+      "nextAction": "Inspect the complete final-head matrix and explicit rebaseability before reporting PR readiness.",
+      "worktree": "/private/tmp/tspice-step8-daf-navigation",
+      "branch": "codex/expand-daf-navigation",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Draft #727, final evidence head b291e105 and CI 43561069205. Final-head matrix inspection and explicit rebaseability govern readiness."
     },
     {
       "id": "C02-daf-records",
@@ -1307,8 +1645,8 @@
       ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": ["C01-daf-navigation"],
       "prerequisiteReview": "Preserve opaque packed integer bytes using existing SPK descriptor lessons; immediate general DAF summary type. Verify 1-based on-disk addresses, architecture/endian data and complete record fields.",
       "fixtures": "Authored DAF files from independent oracle; pinned small record-address fixtures.",
@@ -1322,7 +1660,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Inspect DAF record and summary APIs on the C01 prerequisite, then implement and validate their raw representations and independent file workflows.",
+      "branch": "codex/expand-daf-records",
+      "worktree": "/private/tmp/tspice-step8-daf-records",
+      "baseCommit": "b291e105b924ddca36840896746f0ae5b3f6e1e6",
+      "progressNote": "Claimed for source and independent scientific validation on C01 #727."
     },
     {
       "id": "C03-daf-mutation",
@@ -1704,8 +2046,8 @@
       "routines": ["sce2t_c", "scfmt_c", "scpart_c", "sctiks_c"],
       "domain": "time",
       "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse synthetic two-partition SCLK and signed ID checks. Observe all partition endpoints, rounded ticks, field formats and absent-kernel errors.",
       "fixtures": "Existing authored two-partition SCLK/LSK fixtures with recorded provenance.",
@@ -1714,12 +2056,34 @@
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
-        "missingTopLevelWrappers": []
+        "status": "source-and-live-probes-reviewed",
+        "missingTopLevelWrappers": [],
+        "assessment": "All four installed wrappers were inspected. SCE2T successful public values are compared to initialized linked SPICELIB output; early failures use the independently loaded ABI with matching trace. SCFMT uses a guarded canonical buffer call for nonpositive lengths and otherwise the locked wrapper. SCPART and SCTIKS use the locked wrappers."
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/724"],
+      "validationEvidence": [
+        {
+          "kind": "focused-runtime",
+          "result": "Corrected source passed 98 registered actual Node/WASM comparisons, 7 public/oracle, 22 native and 17 WASM allocation/boundary tests."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "09d17ed130821551b86d2e1df7a01137af37b49f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43556126707",
+          "result": "Draft PR #724, implementation source 09d17ed1; final matrix and explicit rebaseability required."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "dd2add2bea229673947ce014d7f1d5bf80582ce6",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43557132757",
+          "result": "Draft PR #724, evidence head dd2add2b, CI 43557132757. Final matrix and explicit rebaseability review pending."
+        }
+      ],
+      "nextAction": "Validate the sce2t_ symbol/ABI and exact source path, separate safe locked public success from independent defined error probes, and review formatted field and partition capacities before verification.",
+      "branch": "codex/expand-sclk-additions",
+      "worktree": "/private/tmp/tspice-step8-sclk",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Draft PR #724, evidence head dd2add2b, CI 43557132757. Final matrix and explicit rebaseability review pending."
     },
     {
       "id": "D03-frame-additions",
@@ -1759,8 +2123,8 @@
       "routines": ["srfc2s_c", "srfcss_c", "srfs2c_c", "srfscc_c"],
       "domain": "ids-names",
       "apiPlacement": "packages/backend-contract/src/domains/ids-names.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse found/pool conventions and signed SpiceInt validation; verify body-qualified collisions, numeric fallbacks and unmatched names.",
       "fixtures": "Authored NAIF_SURFACE_* kernel-pool variables with final restoration.",
@@ -1769,12 +2133,34 @@
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
-        "missingTopLevelWrappers": []
+        "status": "source-and-live-probes-reviewed",
+        "missingTopLevelWrappers": [],
+        "assessment": "Four locked bindings inspected. Code-to-name byte output and isName are read through a typed caller-owned C buffer. Name-to-code uses locked SpiceyPy wrappers with scoped found handling. The undefined signed surface hash is rejected before translation in both independent routes."
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/723"],
+      "validationEvidence": [
+        {
+          "kind": "focused-runtime",
+          "result": "92 actual registered Node/WASM comparisons, 7 public/oracle, 28 native, 24 WASM tests passed with the hash guard."
+        },
+        {
+          "kind": "source-head-checkpoint",
+          "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554777847",
+          "result": "CI pending at this checkpoint."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "b82a929dc3b141bd1b891d166c053a25da3ac13f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43556097249",
+          "result": "Draft PR #723, evidence b82a929d; final matrix and explicit rebaseability required."
+        }
+      ],
+      "nextAction": "Run both required full local lanes and inspect the uncached canonical source CI, then regenerate source-bound evidence and check the final head.",
+      "branch": "codex/expand-surface-names",
+      "worktree": "/private/tmp/tspice-step8-surface-names",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Draft PR #723, evidence b82a929d; final matrix and explicit rebaseability required."
     },
     {
       "id": "E01-orbital-elements",
@@ -1783,11 +2169,11 @@
       "routines": ["conics_c", "eqncpv_c", "oscelt_c", "oscltx_c", "prop2b_c"],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Define directly consumed element tuples with explicit units/epochs; test circular/equatorial/elliptic/hyperbolic limits and invalid gravitational parameters.",
-      "fixtures": "Authored analytic two-body states and elements; no mission observations.",
+      "fixtures": "Project-authored numeric states, element tuples, epochs, pole angles, elapsed times and central GM. No external files or kernels.",
       "expectedChanges": {
         "domain": "ephemeris",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
@@ -1796,9 +2182,26 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/730"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "51 registered workflows with 105 calls and 22 expected scientific errors passed on the independent locked oracle. Both compiled backends passed 102 live comparisons plus four public tests. All 17 Node and 22 WASM domain tests and the no-DOM fixture passed. Real Chrome exercised all five methods."
+        },
+        {
+          "kind": "source-and-abi",
+          "result": "Actual N0067 OSCLTX receives all 20 allocated doubles and publishes the eleven defined fields. The independent pinned wrapper requires an explicit CSPICE failure check. EQNCPV zero mean-longitude rate compares NaN/finite classifications across all six coordinates. Generated WASM SHA-256 ef97340873af4818c45ae04ed4a515d561fcc57c0561e7ea38d9334429944744."
+        },
+        {
+          "kind": "canonical-ci",
+          "result": "Final PR source a0f8b154, run 43563465883. See the source branch for its source-matched records."
+        }
+      ],
+      "nextAction": "Run both required local lanes and capture source-matched canonical CI on the new PR. Check final-head jobs and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-orbital-elements",
+      "branch": "codex/expand-orbital-elements",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Five direct canonical routes and the locked-oracle OSCLTX status repair are reviewed. Full local and CI verification remains independent of the focused results. Draft PR #730 has source head b72ef2e9b9015fb011159ceb1dcf2ef695a09981."
     },
     {
       "id": "E02-tle-propagation",
@@ -1807,8 +2210,8 @@
       "routines": ["evsgp4_c", "getelm_c"],
       "domain": "ephemeris",
       "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Review epoch expansion, geophysical constants and parser/checksum behavior; establish explicit element types.",
       "fixtures": "Use publicly redistributable documented TLE examples only after provenance review, or author deterministic synthetic lines and independent oracle outputs.",
@@ -1822,7 +2225,12 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Complete the TLE parser and propagation source review, implementation and independent scientific evidence on the current-main branch.",
+      "branch": "codex/expand-tle-propagation",
+      "worktree": "/private/tmp/tspice-step8-tle-propagation",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Claimed for implementation on main. Source-bound verification pending.",
+      "sourceOwner": "Codex Step 8 (/root/constant_parity)"
     },
     {
       "id": "E03-spk-lowlevel",
@@ -2017,11 +2425,11 @@
       ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse SpicePlane and Vec3; define legitimate miss/infinite intersection results accurately. Verify normalization, parallel lines and singular inverse projections.",
-      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "fixtures": "Project-authored finite vector, plane and distance inputs. All eight routines are kernel-independent.",
       "expectedChanges": {
         "domain": "geometry",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
@@ -2030,9 +2438,28 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/729"],
+      "validationEvidence": [
+        {
+          "kind": "focused-public-and-browser",
+          "result": "39 registered workflows/99 calls with 8 expected scientific errors passed on the independent oracle and on each compiled backend (78 live comparisons). Eight public, 20 Node adapter/native and 49 WASM allocation/boundary tests passed. Chrome inline-worker/local WASM exercised all eight with exact classifications and recovery; three single-hit coordinates used 1e-12."
+        },
+        {
+          "kind": "source-and-focused-runtime",
+          "result": "Canonical N0067 C entry points; locked SpiceyPy 6.0.3 wrappers compared all flags and numbers. Twelve binary64 inverse threshold observations and ten complete finite/IEEE observations per backend. Generated WASM SHA-256 2c46f7825c4804f3a586fb01d55f8dda33f9b000651a1028dfb44caac4c1f0ca."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "111ab2996d6861bc90249f0868c89e1cc753c4b5",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43561458721",
+          "result": "Draft #729, source head 111ab299 and CI 43561458721. Final-head matrix inspection and explicit rebaseability govern readiness."
+        }
+      ],
+      "nextAction": "Inspect the complete final-head matrix and explicit rebaseability before reporting readiness.",
+      "worktree": "/private/tmp/tspice-step8-plane-geometry",
+      "branch": "codex/expand-plane-geometry",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Draft #729 source verified. Final evidence head e41e264b98646d6c96daf6f8e1893331f5cd8af7 awaits final matrix and explicit rebaseability."
     },
     {
       "id": "E11-ellipse-geometry",
@@ -2049,9 +2476,9 @@
       ],
       "domain": "geometry",
       "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
-      "dependsOn": [],
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": ["E10-plane-geometry"],
       "prerequisiteReview": "Introduce directly consumed center/semimajor/semiminor ellipse representation. Verify orthogonality/degeneracy, complete intersection outputs and miss semantics.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -2062,9 +2489,23 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": ["https://github.com/rybosome/tspice/pull/733"],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "All 78 registered compiled comparisons, four public geometry checks, 19 native and 43 WASM tests passed, plus 69 inherited E10 tests and all seven methods in an actual Chrome inline worker."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "c42a217026abe7273b69195023f7808bf90f2279",
+          "result": "Required local lanes and uncached canonical Linux Node 22 passed: 2,374 registered live comparisons and 2,599 parity tests without native-required skips, 105 native, 692 WASM, 28 core and 150 facade. Final metadata and final-head gates pending."
+        }
+      ],
+      "nextAction": "Record source-bound combined E10/E11 full local and inspected canonical CI executions, then inspect complete final-head CI and explicit rebaseability.",
+      "worktree": "/private/tmp/tspice-step8-ellipse-geometry",
+      "branch": "codex/expand-ellipse-geometry",
+      "baseCommit": "e41e264b98646d6c96daf6f8e1893331f5cd8af7",
+      "progressNote": "All 78 registered compiled comparisons, four public geometry checks, 19 native and 43 WASM tests passed, plus 69 inherited E10 tests and all seven methods in an actual Chrome inline worker. Draft #733 opened at c42a2170. Required local lanes and uncached canonical Linux Node 22 passed: 2,374 registered live comparisons and 2,599 parity tests without native-required skips, 105 native, 692 WASM, 28 core and 150 facade. Final metadata and final-head gates pending. Head c42a2170."
     },
     {
       "id": "E12-ellipsoid-geometry",

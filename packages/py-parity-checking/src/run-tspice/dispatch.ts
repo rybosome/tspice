@@ -22,6 +22,17 @@ export function dispatchStep(
   step: WorkflowStep,
 ): StepOutput {
   switch (step.op) {
+    case "strings.dp2hx":
+    case "strings.hx2dp":
+    case "strings.prsdp":
+    case "strings.prsint":
+    case "strings.repmc":
+    case "strings.repmct":
+    case "strings.repmd":
+    case "strings.repmf":
+    case "strings.repmi":
+    case "strings.repml":
+    case "strings.repmot":
     case "strings.cmprss":
     case "strings.eqstr":
     case "strings.iswhsp":

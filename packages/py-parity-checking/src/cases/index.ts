@@ -18,6 +18,17 @@ import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" wit
 import coordsVectorsMtxvCasesRaw from "./coords-vectors/mtxv.cases.json" with { type: "json" };
 import coordsVectorsMxmCasesRaw from "./coords-vectors/mxm.cases.json" with { type: "json" };
 import coordsVectorsMxvCasesRaw from "./coords-vectors/mxv.cases.json" with { type: "json" };
+import stringDp2hxCases from "./strings/dp2hx.cases.json" with { type: "json" };
+import stringHx2dpCases from "./strings/hx2dp.cases.json" with { type: "json" };
+import stringPrsdpCases from "./strings/prsdp.cases.json" with { type: "json" };
+import stringPrsintCases from "./strings/prsint.cases.json" with { type: "json" };
+import stringRepmcCases from "./strings/repmc.cases.json" with { type: "json" };
+import stringRepmctCases from "./strings/repmct.cases.json" with { type: "json" };
+import stringRepmdCases from "./strings/repmd.cases.json" with { type: "json" };
+import stringRepmfCases from "./strings/repmf.cases.json" with { type: "json" };
+import stringRepmiCases from "./strings/repmi.cases.json" with { type: "json" };
+import stringRepmlCases from "./strings/repml.cases.json" with { type: "json" };
+import stringRepmotCases from "./strings/repmot.cases.json" with { type: "json" };
 import stringCmprssCases from "./strings/cmprss.cases.json" with { type: "json" };
 import stringEqstrCases from "./strings/eqstr.cases.json" with { type: "json" };
 import stringIswhspCases from "./strings/iswhsp.cases.json" with { type: "json" };
@@ -294,6 +305,17 @@ export const geometryGfCases: ParityCase[] = [
 ];
 
 export const stringsCases: ParityCase[] = [
+  ...(stringDp2hxCases as ParityCase[]),
+  ...(stringHx2dpCases as ParityCase[]),
+  ...(stringPrsdpCases as ParityCase[]),
+  ...(stringPrsintCases as ParityCase[]),
+  ...(stringRepmcCases as ParityCase[]),
+  ...(stringRepmctCases as ParityCase[]),
+  ...(stringRepmdCases as ParityCase[]),
+  ...(stringRepmfCases as ParityCase[]),
+  ...(stringRepmiCases as ParityCase[]),
+  ...(stringRepmlCases as ParityCase[]),
+  ...(stringRepmotCases as ParityCase[]),
   ...(stringCmprssCases as ParityCase[]),
   ...(stringEqstrCases as ParityCase[]),
   ...(stringIswhspCases as ParityCase[]),

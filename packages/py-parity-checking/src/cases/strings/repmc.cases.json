@@ -1,0 +1,162 @@
+[
+  {
+    "caseId": "strings-repmc-first-marker",
+    "description": "Only the first matching marker is replaced after trimming ASCII marker blanks; leading literal whitespace is observable.",
+    "workflow": [
+      {
+        "op": "strings.repmc",
+        "input": "  A # #  ",
+        "marker": " # ",
+        "value": "  replacement  "
+      },
+      {
+        "op": "strings.repmc",
+        "input": "X#Y#Z",
+        "marker": "#",
+        "value": "  replacement  "
+      },
+      {
+        "op": "strings.repmc",
+        "input": "Étape à#\t",
+        "marker": "#",
+        "value": "  replacement  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmc-miss-and-blank",
+    "description": "Genuine empty input, missing marker, empty and whitespace-only marker, and input containing a literal tab.",
+    "workflow": [
+      {
+        "op": "strings.repmc",
+        "input": "",
+        "marker": "#",
+        "value": "  replacement  "
+      },
+      {
+        "op": "strings.repmc",
+        "input": "unmarked",
+        "marker": "!",
+        "value": "  replacement  "
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a b",
+        "marker": "",
+        "value": "  replacement  "
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a b",
+        "marker": "  ",
+        "value": "  replacement  "
+      },
+      {
+        "op": "strings.repmc",
+        "input": "t\t",
+        "marker": "#",
+        "value": "  replacement  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmc-capacity",
+    "description": "Truncate the complete replacement string at explicit UTF-8 byte capacities, including the minimum accepted room and signed maximum.",
+    "workflow": [
+      {
+        "op": "strings.repmc",
+        "input": "a#z",
+        "marker": "#",
+        "value": "  replacement  ",
+        "lenout": 1
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a#z",
+        "marker": "#",
+        "value": "  replacement  ",
+        "lenout": 2
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a#z",
+        "marker": "#",
+        "value": "  replacement  ",
+        "lenout": 3
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a#z",
+        "marker": "#",
+        "value": "  replacement  ",
+        "lenout": 7
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a#z",
+        "marker": "#",
+        "value": "  replacement  ",
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-repmc-bad-room",
+    "description": "The actual canonical routine receives insufficient caller room.",
+    "workflow": [
+      {
+        "op": "strings.repmc",
+        "input": "#",
+        "marker": "#",
+        "value": "  replacement  ",
+        "lenout": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-repmc-values",
+    "description": "Leading/trailing ASCII padding removed from replacement, one blank retained for an empty or blank replacement; UTF-8 and tab values preserved.",
+    "workflow": [
+      {
+        "op": "strings.repmc",
+        "input": "a#b",
+        "marker": "#",
+        "value": ""
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a#b",
+        "marker": "#",
+        "value": "  "
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a#b",
+        "marker": "#",
+        "value": "café"
+      },
+      {
+        "op": "strings.repmc",
+        "input": "a#b",
+        "marker": "#",
+        "value": "  α\t  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
