@@ -22,6 +22,15 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsBrcktd,
+    StepCoordsVectorsBrckti,
+    StepCoordsVectorsConvrt,
+    StepCoordsVectorsSumad,
+    StepCoordsVectorsSumai,
+    StepCoordsVectorsMaxd,
+    StepCoordsVectorsMaxi,
+    StepCoordsVectorsMind,
+    StepCoordsVectorsMini,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +503,66 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.brcktd":
+            return StepCoordsVectorsBrcktd(
+                op=op,
+                value=_expect_number(step.get("value"), label="coords-vectors.brcktd.value"),
+                end1=_expect_number(step.get("end1"), label="coords-vectors.brcktd.end1"),
+                end2=_expect_number(step.get("end2"), label="coords-vectors.brcktd.end2"),
+            )
+
+        case "coords-vectors.brckti":
+            return StepCoordsVectorsBrckti(
+                op=op,
+                value=_expect_int(step.get("value"), label="coords-vectors.brckti.value"),
+                end1=_expect_int(step.get("end1"), label="coords-vectors.brckti.end1"),
+                end2=_expect_int(step.get("end2"), label="coords-vectors.brckti.end2"),
+            )
+
+        case "coords-vectors.convrt":
+            return StepCoordsVectorsConvrt(
+                op=op,
+                value=_expect_number(step.get("value"), label="coords-vectors.convrt.value"),
+                inUnit=_expect_string(step.get("inUnit"), label="coords-vectors.convrt.inUnit"),
+                outUnit=_expect_string(step.get("outUnit"), label="coords-vectors.convrt.outUnit"),
+            )
+
+        case "coords-vectors.sumad":
+            return StepCoordsVectorsSumad(
+                op=op,
+                values=_expect_number_list(step.get("values"), label="coords-vectors.sumad.values"),
+            )
+
+        case "coords-vectors.sumai":
+            return StepCoordsVectorsSumai(
+                op=op,
+                values=_expect_int_list(step.get("values"), label="coords-vectors.sumai.values"),
+            )
+
+        case "coords-vectors.maxd":
+            return StepCoordsVectorsMaxd(
+                op=op,
+                values=_expect_number_list(step.get("values"), label="coords-vectors.maxd.values"),
+            )
+
+        case "coords-vectors.maxi":
+            return StepCoordsVectorsMaxi(
+                op=op,
+                values=_expect_int_list(step.get("values"), label="coords-vectors.maxi.values"),
+            )
+
+        case "coords-vectors.mind":
+            return StepCoordsVectorsMind(
+                op=op,
+                values=_expect_number_list(step.get("values"), label="coords-vectors.mind.values"),
+            )
+
+        case "coords-vectors.mini":
+            return StepCoordsVectorsMini(
+                op=op,
+                values=_expect_int_list(step.get("values"), label="coords-vectors.mini.values"),
             )
 
         case "coords-vectors.reclat":

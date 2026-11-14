@@ -172,6 +172,57 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsBrcktd = {
+  op: "coords-vectors.brcktd";
+  value: number;
+  end1: number;
+  end2: number;
+};
+
+export type StepCoordsVectorsBrckti = {
+  op: "coords-vectors.brckti";
+  value: number;
+  end1: number;
+  end2: number;
+};
+
+export type StepCoordsVectorsConvrt = {
+  op: "coords-vectors.convrt";
+  value: number;
+  inUnit: string;
+  outUnit: string;
+};
+
+export type StepCoordsVectorsSumad = {
+  op: "coords-vectors.sumad";
+  values: number[];
+};
+
+export type StepCoordsVectorsSumai = {
+  op: "coords-vectors.sumai";
+  values: number[];
+};
+
+export type StepCoordsVectorsMaxd = {
+  op: "coords-vectors.maxd";
+  values: number[];
+};
+
+export type StepCoordsVectorsMaxi = {
+  op: "coords-vectors.maxi";
+  values: number[];
+};
+
+export type StepCoordsVectorsMind = {
+  op: "coords-vectors.mind";
+  values: number[];
+};
+
+export type StepCoordsVectorsMini = {
+  op: "coords-vectors.mini";
+  values: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1364,15 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsBrcktd
+  | StepCoordsVectorsBrckti
+  | StepCoordsVectorsConvrt
+  | StepCoordsVectorsSumad
+  | StepCoordsVectorsSumai
+  | StepCoordsVectorsMaxd
+  | StepCoordsVectorsMaxi
+  | StepCoordsVectorsMind
+  | StepCoordsVectorsMini
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1544,15 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.brcktd"; value: number }
+  | { op: "coords-vectors.brckti"; value: number }
+  | { op: "coords-vectors.convrt"; value: number }
+  | { op: "coords-vectors.sumad"; value: number }
+  | { op: "coords-vectors.sumai"; value: number }
+  | { op: "coords-vectors.maxd"; value: number }
+  | { op: "coords-vectors.maxi"; value: number }
+  | { op: "coords-vectors.mind"; value: number }
+  | { op: "coords-vectors.mini"; value: number }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

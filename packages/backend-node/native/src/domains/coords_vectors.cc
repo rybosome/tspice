@@ -1,5 +1,8 @@
 #include "coords_vectors.h"
 
+#include <cmath>
+#include <vector>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +10,289 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadScalarMathDouble(Napi::Env env, const Napi::Value& value, double* out, const char* label) {
+  if (!value.IsNumber() || !std::isfinite(value.As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a finite number"));
+    return false;
+  }
+  *out = value.As<Napi::Number>().DoubleValue();
+  return true;
+}
+
+static bool ReadScalarMathInt(Napi::Env env, const Napi::Value& value, int* out, const char* label) {
+  double number = 0.0;
+  if (!ReadScalarMathDouble(env, value, &number, label)) return false;
+  if (std::trunc(number) != number) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be an integer"));
+    return false;
+  }
+  if (number < -2147483648.0 || number > 2147483647.0) {
+    ThrowSpiceError(Napi::RangeError::New(env, std::string(label) + " must be a 32-bit signed integer"));
+    return false;
+  }
+  *out = static_cast<int>(number);
+  return true;
+}
+
+static bool ReadScalarMathString(Napi::Env env, const Napi::Value& value, std::string* out, const char* label) {
+  if (!value.IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a string"));
+    return false;
+  }
+  *out = value.As<Napi::String>().Utf8Value();
+  if (out->find('\0') != std::string::npos) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must not contain embedded NUL"));
+    return false;
+  }
+  return true;
+}
+
+static bool CheckScalarMathArrayLength(Napi::Env env, const Napi::Value& value, uint32_t maximum, const char* label) {
+  if (!value.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be an array"));
+    return false;
+  }
+  if (value.As<Napi::Array>().Length() > maximum) {
+    ThrowSpiceError(Napi::RangeError::New(env, std::string(label) + " exceeds the supported element count"));
+    return false;
+  }
+  return true;
+}
+
+static Napi::Number Brcktd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "brcktd() expects 3 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double value = 0;
+  if (!ReadScalarMathDouble(env, info[0], &value, "brcktd(value)")) return Napi::Number::New(env, 0);
+  double end1 = 0;
+  if (!ReadScalarMathDouble(env, info[1], &end1, "brcktd(end1)")) return Napi::Number::New(env, 0);
+  double end2 = 0;
+  if (!ReadScalarMathDouble(env, info[2], &end2, "brcktd(end2)")) return Napi::Number::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  const int status = tspice_brcktd(value, end1, end2, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling brcktd", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Brckti(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "brckti() expects 3 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  int value = 0;
+  if (!ReadScalarMathInt(env, info[0], &value, "brckti(value)")) return Napi::Number::New(env, 0);
+  int end1 = 0;
+  if (!ReadScalarMathInt(env, info[1], &end1, "brckti(end1)")) return Napi::Number::New(env, 0);
+  int end2 = 0;
+  if (!ReadScalarMathInt(env, info[2], &end2, "brckti(end2)")) return Napi::Number::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = 0;
+  const int status = tspice_brckti(value, end1, end2, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling brckti", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Convrt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "convrt() expects 3 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double value = 0;
+  if (!ReadScalarMathDouble(env, info[0], &value, "convrt(value)")) return Napi::Number::New(env, 0);
+  std::string inUnit;
+  if (!ReadScalarMathString(env, info[1], &inUnit, "convrt(inUnit)")) return Napi::Number::New(env, 0);
+  std::string outUnit;
+  if (!ReadScalarMathString(env, info[2], &outUnit, "convrt(outUnit)")) return Napi::Number::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  const int status = tspice_convrt(value, inUnit.c_str(), outUnit.c_str(), &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling convrt", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Sumad(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sumad() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  if (!CheckScalarMathArrayLength(env, info[0], 2147483647U, "sumad(values)")) return Napi::Number::New(env, 0);
+  const Napi::Array input = info[0].As<Napi::Array>();
+  std::vector<double> values;
+  values.reserve(input.Length());
+  for (uint32_t i = 0; i < input.Length(); i++) {
+    double item = 0;
+    if (!ReadScalarMathDouble(env, input.Get(i), &item, "sumad values")) return Napi::Number::New(env, 0);
+    values.push_back(item);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  const int status = tspice_sumad(values.data(), static_cast<int>(values.size()), &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sumad", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Sumai(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sumai() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  if (!CheckScalarMathArrayLength(env, info[0], 2147483647U, "sumai(values)")) return Napi::Number::New(env, 0);
+  const Napi::Array input = info[0].As<Napi::Array>();
+  std::vector<int> values;
+  values.reserve(input.Length());
+  for (uint32_t i = 0; i < input.Length(); i++) {
+    int item = 0;
+    if (!ReadScalarMathInt(env, input.Get(i), &item, "sumai values")) return Napi::Number::New(env, 0);
+    values.push_back(item);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = 0;
+  const int status = tspice_sumai(values.data(), static_cast<int>(values.size()), &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sumai", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Maxd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "maxd() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  if (!CheckScalarMathArrayLength(env, info[0], 30U, "maxd(values)")) return Napi::Number::New(env, 0);
+  const Napi::Array input = info[0].As<Napi::Array>();
+  std::vector<double> values;
+  values.reserve(input.Length());
+  for (uint32_t i = 0; i < input.Length(); i++) {
+    double item = 0;
+    if (!ReadScalarMathDouble(env, input.Get(i), &item, "maxd values")) return Napi::Number::New(env, 0);
+    values.push_back(item);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  const int status = tspice_maxd(values.data(), static_cast<int>(values.size()), &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling maxd", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Maxi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "maxi() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  if (!CheckScalarMathArrayLength(env, info[0], 30U, "maxi(values)")) return Napi::Number::New(env, 0);
+  const Napi::Array input = info[0].As<Napi::Array>();
+  std::vector<int> values;
+  values.reserve(input.Length());
+  for (uint32_t i = 0; i < input.Length(); i++) {
+    int item = 0;
+    if (!ReadScalarMathInt(env, input.Get(i), &item, "maxi values")) return Napi::Number::New(env, 0);
+    values.push_back(item);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = 0;
+  const int status = tspice_maxi(values.data(), static_cast<int>(values.size()), &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling maxi", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Mind(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mind() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  if (!CheckScalarMathArrayLength(env, info[0], 30U, "mind(values)")) return Napi::Number::New(env, 0);
+  const Napi::Array input = info[0].As<Napi::Array>();
+  std::vector<double> values;
+  values.reserve(input.Length());
+  for (uint32_t i = 0; i < input.Length(); i++) {
+    double item = 0;
+    if (!ReadScalarMathDouble(env, input.Get(i), &item, "mind values")) return Napi::Number::New(env, 0);
+    values.push_back(item);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  const int status = tspice_mind(values.data(), static_cast<int>(values.size()), &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling mind", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Mini(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mini() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  if (!CheckScalarMathArrayLength(env, info[0], 30U, "mini(values)")) return Napi::Number::New(env, 0);
+  const Napi::Array input = info[0].As<Napi::Array>();
+  std::vector<int> values;
+  values.reserve(input.Length());
+  for (uint32_t i = 0; i < input.Length(); i++) {
+    int item = 0;
+    if (!ReadScalarMathInt(env, input.Get(i), &item, "mini values")) return Napi::Number::New(env, 0);
+    values.push_back(item);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = 0;
+  const int status = tspice_mini(values.data(), static_cast<int>(values.size()), &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling mini", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +858,15 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "brcktd", Napi::Function::New(env, Brcktd), __func__)) return;
+  if (!SetExportChecked(env, exports, "brckti", Napi::Function::New(env, Brckti), __func__)) return;
+  if (!SetExportChecked(env, exports, "convrt", Napi::Function::New(env, Convrt), __func__)) return;
+  if (!SetExportChecked(env, exports, "sumad", Napi::Function::New(env, Sumad), __func__)) return;
+  if (!SetExportChecked(env, exports, "sumai", Napi::Function::New(env, Sumai), __func__)) return;
+  if (!SetExportChecked(env, exports, "maxd", Napi::Function::New(env, Maxd), __func__)) return;
+  if (!SetExportChecked(env, exports, "maxi", Napi::Function::New(env, Maxi), __func__)) return;
+  if (!SetExportChecked(env, exports, "mind", Napi::Function::New(env, Mind), __func__)) return;
+  if (!SetExportChecked(env, exports, "mini", Napi::Function::New(env, Mini), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

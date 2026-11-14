@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs, WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,261 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertScalarMathDouble(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertScalarMathString(
+  value: unknown,
+  label: string,
+): asserts value is string {
+  if (typeof value !== "string" || value.includes("\0"))
+    throw new TypeError(`${label} must be a string without embedded NUL`);
+}
+
+function assertScalarMathArray(
+  value: unknown,
+  label: string,
+  integers: boolean,
+  maxCount: number,
+): asserts value is readonly number[] {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  if (value.length > maxCount)
+    throw new RangeError(`${label} must contain at most ${maxCount} values`);
+  // Reject an oversized buffer before inspecting entries or acquiring memory.
+  scalarMathBufferBytes(value.length, integers ? 4 : 8);
+  for (let i = 0; i < value.length; i++) {
+    if (integers) assertSpiceInt32(value[i], `${label}[${i}]`);
+    else assertScalarMathDouble(value[i], `${label}[${i}]`);
+  }
+}
+
+function assertSumaiPrefixes(values: readonly number[]): void {
+  // Validation only: the returned sum must still come from actual sumai_c.
+  // Each addition is exact here because the previous prefix and next input
+  // are both signed32, so their sum fits exactly in a JavaScript number.
+  let prefix = 0;
+  for (const value of values) {
+    prefix += value;
+    if (prefix < -2147483648 || prefix > 2147483647)
+      throw new RangeError(
+        "sumai(values) prefix sums must fit signed 32-bit integers",
+      );
+  }
+}
+
+function scalarMathBufferBytes(count: number, width: number): number {
+  // Check byte counts before allocating anything; no bitwise size conversion.
+  const bytes = Math.max(1, count) * width;
+  if (!Number.isSafeInteger(bytes) || bytes > WASM_MAX_ALLOC_BYTES)
+    throw new RangeError(
+      `Scalar math input buffer exceeds ${WASM_MAX_ALLOC_BYTES} bytes`,
+    );
+  return bytes;
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    brcktd: (value, end1, end2) => {
+      assertScalarMathDouble(value, "brcktd(value)");
+      assertScalarMathDouble(end1, "brcktd(end1)");
+      assertScalarMathDouble(end2, "brcktd(end2)");
+      return withAllocs(module, [ERR_MAX_BYTES, 8], (errPtr, outPtr) => {
+        const status = module._tspice_brcktd(
+          value,
+          end1,
+          end2,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return module.HEAPF64[outPtr >>> 3]!;
+      });
+    },
+    brckti: (value, end1, end2) => {
+      assertSpiceInt32(value, "brckti(value)");
+      assertSpiceInt32(end1, "brckti(end1)");
+      assertSpiceInt32(end2, "brckti(end2)");
+      return withAllocs(module, [ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_brckti(
+          value,
+          end1,
+          end2,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return module.HEAP32[outPtr >>> 2]!;
+      });
+    },
+    convrt: (value, inUnit, outUnit) => {
+      assertScalarMathDouble(value, "convrt(value)");
+      assertScalarMathString(inUnit, "convrt(inUnit)");
+      assertScalarMathString(outUnit, "convrt(outUnit)");
+      const inUnitBytes = new TextEncoder().encode(inUnit);
+      const inUnitSize = scalarMathBufferBytes(inUnitBytes.length + 1, 1);
+      const outUnitBytes = new TextEncoder().encode(outUnit);
+      const outUnitSize = scalarMathBufferBytes(outUnitBytes.length + 1, 1);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, inUnitSize, outUnitSize, 8],
+        (errPtr, inUnitPtr, outUnitPtr, outPtr) => {
+          module.HEAPU8.set(inUnitBytes, inUnitPtr);
+          module.HEAPU8[inUnitPtr + inUnitBytes.length] = 0;
+          module.HEAPU8.set(outUnitBytes, outUnitPtr);
+          module.HEAPU8[outUnitPtr + outUnitBytes.length] = 0;
+          const status = module._tspice_convrt(
+            value,
+            inUnitPtr,
+            outUnitPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    sumad: (values) => {
+      assertScalarMathArray(values, "sumad(values)", false, 2147483647);
+      const valuesBytes = scalarMathBufferBytes(values.length, 8);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, valuesBytes, 8],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAPF64.set(values, valuesPtr >>> 3);
+          const status = module._tspice_sumad(
+            valuesPtr,
+            values.length,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    sumai: (values) => {
+      assertScalarMathArray(values, "sumai(values)", true, 2147483647);
+      assertSumaiPrefixes(values);
+      const valuesBytes = scalarMathBufferBytes(values.length, 4);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, valuesBytes, 4],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAP32.set(values, valuesPtr >>> 2);
+          const status = module._tspice_sumai(
+            valuesPtr,
+            values.length,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >>> 2]!;
+        },
+      );
+    },
+    maxd: (values) => {
+      assertScalarMathArray(values, "maxd(values)", false, 30);
+      const valuesBytes = scalarMathBufferBytes(values.length, 8);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, valuesBytes, 8],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAPF64.set(values, valuesPtr >>> 3);
+          const status = module._tspice_maxd(
+            valuesPtr,
+            values.length,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    maxi: (values) => {
+      assertScalarMathArray(values, "maxi(values)", true, 30);
+      const valuesBytes = scalarMathBufferBytes(values.length, 4);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, valuesBytes, 4],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAP32.set(values, valuesPtr >>> 2);
+          const status = module._tspice_maxi(
+            valuesPtr,
+            values.length,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >>> 2]!;
+        },
+      );
+    },
+    mind: (values) => {
+      assertScalarMathArray(values, "mind(values)", false, 30);
+      const valuesBytes = scalarMathBufferBytes(values.length, 8);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, valuesBytes, 8],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAPF64.set(values, valuesPtr >>> 3);
+          const status = module._tspice_mind(
+            valuesPtr,
+            values.length,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    mini: (values) => {
+      assertScalarMathArray(values, "mini(values)", true, 30);
+      const valuesBytes = scalarMathBufferBytes(values.length, 4);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, valuesBytes, 4],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAP32.set(values, valuesPtr >>> 2);
+          const status = module._tspice_mini(
+            valuesPtr,
+            values.length,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >>> 2]!;
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

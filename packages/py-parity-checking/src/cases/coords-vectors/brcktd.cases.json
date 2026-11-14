@@ -1,0 +1,167 @@
+[
+  {
+    "caseId": "coords-vectors-brcktd-ordered-bounds",
+    "description": "brcktd: ordered-bounds; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.brcktd",
+        "value": -7,
+        "end1": -2,
+        "end2": 3
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": -2,
+        "end1": -2,
+        "end2": 3
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 0,
+        "end1": -2,
+        "end2": 3
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 3,
+        "end1": -2,
+        "end2": 3
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 8,
+        "end1": -2,
+        "end2": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-brcktd-reversed-bounds",
+    "description": "brcktd: reversed-bounds; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.brcktd",
+        "value": -7,
+        "end1": 3,
+        "end2": -2
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": -2,
+        "end1": 3,
+        "end2": -2
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 0,
+        "end1": 3,
+        "end2": -2
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 3,
+        "end1": 3,
+        "end2": -2
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 8,
+        "end1": 3,
+        "end2": -2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-brcktd-collapsed-interval",
+    "description": "brcktd: collapsed-interval; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.brcktd",
+        "value": -7,
+        "end1": 2,
+        "end2": 2
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 2,
+        "end1": 2,
+        "end2": 2
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 8,
+        "end1": 2,
+        "end2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-brcktd-finite-extrema",
+    "description": "brcktd: finite-extrema; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.brcktd",
+        "value": -1.7976931348623157e308,
+        "end1": -1.7976931348623157e308,
+        "end2": 1.7976931348623157e308
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 1.7976931348623157e308,
+        "end1": 1.7976931348623157e308,
+        "end2": -1.7976931348623157e308
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 5e-324,
+        "end1": -1,
+        "end2": 1
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 1e-200,
+        "end1": -1e-199,
+        "end2": 1e-199
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-brcktd-fractional-bounds",
+    "description": "brcktd: fractional-bounds; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.brcktd",
+        "value": -1.5,
+        "end1": -0.75,
+        "end2": 1.25
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 0.125,
+        "end1": -0.75,
+        "end2": 1.25
+      },
+      {
+        "op": "coords-vectors.brcktd",
+        "value": 2.5,
+        "end1": -0.75,
+        "end2": 1.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

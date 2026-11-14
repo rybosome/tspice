@@ -8,6 +8,117 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Bracket value within the closed interval bounded by end1 and end2.
+   *
+   * The endpoint order is immaterial. Values inside the interval are returned
+   * unchanged; otherwise CSPICE returns the nearer endpoint. All arguments
+   * must be finite numbers. No kernels are needed.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/brcktd_c.html
+   */
+  brcktd(value: number, end1: number, end2: number): number;
+
+  /**
+   * Bracket an integer value within the closed interval bounded by end1 and end2.
+   *
+   * The endpoint order is immaterial. Values inside the interval are returned
+   * unchanged; otherwise CSPICE returns the nearer endpoint. All three inputs
+   * must be signed 32-bit integers; fractional or out-of-range values throw
+   * before CSPICE. No kernels are needed.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/brckti_c.html
+   */
+  brckti(value: number, end1: number, end2: number): number;
+
+  /**
+   * Convert a finite measurement value from inUnit to outUnit.
+   *
+   * Unit names are case-insensitive and use CSPICE's supported angle, distance
+   * or time names and aliases. Strings are passed unchanged; embedded NUL is
+   * rejected. Empty, unrecognized or incompatible units raise CSPICE errors.
+   * No kernels are needed. The conversion uses the pinned toolkit's constants,
+   * including its historical estimates for AU, parsecs and tropical years.
+   * Overflow is not checked by CSPICE; nonfinite output from finite input is
+   * preserved, so choose units and magnitudes within the desired numeric range.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/convrt_c.html
+   */
+  convrt(value: number, inUnit: string, outUnit: string): number;
+
+  /**
+   * Return CSPICE's ordered sum of all values, starting from zero.
+   *
+   * values must be a dense readonly array of finite numbers; the element count
+   * must fit a signed 32-bit integer. An empty array returns zero. The input
+   * is not modified. CSPICE's ordinary double-precision accumulation retains
+   * rounding, cancellation and overflow, including nonfinite results. No
+   * kernels are needed. WASM additionally limits the input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sumad_c.html
+   */
+  sumad(values: readonly number[]): number;
+
+  /**
+   * Return CSPICE's ordered sum of all signed 32-bit integer values.
+   *
+   * values must be a dense readonly array whose length fits a signed 32-bit
+   * integer. An empty array returns zero; the input is not modified. Every
+   * prefix sum, starting from zero, must remain within [-2147483648, 2147483647].
+   * Otherwise a RangeError is raised before calling CSPICE, even when the final
+   * mathematical sum would fit. This guard excludes undefined C signed-overflow
+   * behavior; it does not supply wraparound or replace the CSPICE result.
+   * No kernels are needed. WASM additionally limits the input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sumai_c.html
+   */
+  sumai(values: readonly number[]): number;
+
+  /**
+   * Return the maximum of values using the actual variadic CSPICE routine.
+   *
+   * values must be a dense readonly array of finite numbers containing
+   * 0 to 30 elements, CSPICE's documented portable argument limit. An empty
+   * array returns zero. The array length supplies the C argument count and
+   * the input is not modified. Invalid values or longer arrays throw before
+   * CSPICE. No kernels are needed.
+   * Equal extrema retain the first occurrence, including its signed zero.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/maxd_c.html
+   */
+  maxd(values: readonly number[]): number;
+
+  /**
+   * Return the maximum of values using the actual variadic CSPICE routine.
+   *
+   * values must be a dense readonly array of signed 32-bit integers containing
+   * 0 to 30 elements, CSPICE's documented portable argument limit. An empty
+   * array returns zero. The array length supplies the C argument count and
+   * the input is not modified. Invalid values or longer arrays throw before
+   * CSPICE. No kernels are needed.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/maxi_c.html
+   */
+  maxi(values: readonly number[]): number;
+
+  /**
+   * Return the minimum of values using the actual variadic CSPICE routine.
+   *
+   * values must be a dense readonly array of finite numbers containing
+   * 0 to 30 elements, CSPICE's documented portable argument limit. An empty
+   * array returns zero. The array length supplies the C argument count and
+   * the input is not modified. Invalid values or longer arrays throw before
+   * CSPICE. No kernels are needed.
+   * Equal extrema retain the last occurrence, including its signed zero.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mind_c.html
+   */
+  mind(values: readonly number[]): number;
+
+  /**
+   * Return the minimum of values using the actual variadic CSPICE routine.
+   *
+   * values must be a dense readonly array of signed 32-bit integers containing
+   * 0 to 30 elements, CSPICE's documented portable argument limit. An empty
+   * array returns zero. The array length supplies the C argument count and
+   * the input is not modified. Invalid values or longer arrays throw before
+   * CSPICE. No kernels are needed.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mini_c.html
+   */
+  mini(values: readonly number[]): number;
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */

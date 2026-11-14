@@ -8,6 +8,66 @@ Matrix3x3: TypeAlias = list[list[float]]
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsBrcktd:
+    op: Literal["coords-vectors.brcktd"]
+    value: float
+    end1: float
+    end2: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsBrckti:
+    op: Literal["coords-vectors.brckti"]
+    value: int
+    end1: int
+    end2: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsConvrt:
+    op: Literal["coords-vectors.convrt"]
+    value: float
+    inUnit: str
+    outUnit: str
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsSumad:
+    op: Literal["coords-vectors.sumad"]
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsSumai:
+    op: Literal["coords-vectors.sumai"]
+    values: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMaxd:
+    op: Literal["coords-vectors.maxd"]
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMaxi:
+    op: Literal["coords-vectors.maxi"]
+    values: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMind:
+    op: Literal["coords-vectors.mind"]
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsMini:
+    op: Literal["coords-vectors.mini"]
+    values: list[int]
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3
