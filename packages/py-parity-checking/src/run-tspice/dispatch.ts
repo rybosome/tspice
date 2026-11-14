@@ -90,6 +90,7 @@ export function dispatchStep(
       return runCoordsVectorsStep(context, step);
 
     case "cells-windows.card":
+    case "cells-windows.lparss":
     case "cells-windows.insrtc":
     case "cells-windows.insrtd":
     case "cells-windows.insrti":

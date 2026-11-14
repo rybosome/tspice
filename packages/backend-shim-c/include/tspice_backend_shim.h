@@ -1363,6 +1363,7 @@ int tspice_valid(int size, int n, uintptr_t cell, char *err, int errMaxBytes);
 
 int tspice_insrti(int item, uintptr_t cell, char *err, int errMaxBytes);
 int tspice_insrtd(double item, uintptr_t cell, char *err, int errMaxBytes);
+int tspice_lparss(const char *list, const char *delims, uintptr_t handle, char *err, int errMaxBytes);
 int tspice_insrtc(const char *item, uintptr_t cell, char *err, int errMaxBytes);
 
 int tspice_cell_geti(uintptr_t cell, int index, int *outItem, char *err, int errMaxBytes);

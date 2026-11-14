@@ -1268,6 +1268,13 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_lparss(
+    list: number,
+    delims: number,
+    set: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_insrtc(
     itemPtr: number,
     cell: number,
@@ -2356,6 +2363,13 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_lparss(
+    list: number,
+    delims: number,
+    set: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_insrtc(
     itemPtr: number,
     cell: number,
@@ -2621,6 +2635,7 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_valid",
   "_tspice_insrti",
   "_tspice_insrtd",
+  "_tspice_lparss",
   "_tspice_insrtc",
   "_tspice_cell_geti",
   "_tspice_cell_getd",

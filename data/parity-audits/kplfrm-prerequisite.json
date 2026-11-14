@@ -1330,7 +1330,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a20-4d4f03cd-wasm",
@@ -1347,7 +1348,8 @@
         "kernels-kplfrm-invalid-class-error",
         "kernels-kplfrm-set-too-small-error"
       ],
-      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a20-4d4f03cd-node",
@@ -1366,7 +1368,8 @@
       ],
       "commit": "4d4f03cd111409d7993311854d0f1132c654140d",
       "url": "https://github.com/rybosome/tspice/actions/runs/43565592056/job/132358618309",
-      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a20-4d4f03cd-wasm",
@@ -1385,7 +1388,80 @@
       ],
       "commit": "4d4f03cd111409d7993311854d0f1132c654140d",
       "url": "https://github.com/rybosome/tspice/actions/runs/43565592056/job/132358618309",
-      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-b04-1aa35005-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb655cf84d06dfdb1555ae56e0442efb804d14764a3c22d4c5cf5b29b3a7a62d",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 1aa35005d77652f38251c1d2fd7c93a6a5c83087. JavaScript: 2,737 parity tests and one expected guard skip. Native-required: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "local-b04-1aa35005-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb655cf84d06dfdb1555ae56e0442efb804d14764a3c22d4c5cf5b29b3a7a62d",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 1aa35005d77652f38251c1d2fd7c93a6a5c83087. JavaScript: 2,737 parity tests and one expected guard skip. Native-required: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-b04-1aa35005-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb655cf84d06dfdb1555ae56e0442efb804d14764a3c22d4c5cf5b29b3a7a62d",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "1aa35005d77652f38251c1d2fd7c93a6a5c83087",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
+      "observation": "Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-b04-1aa35005-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb655cf84d06dfdb1555ae56e0442efb804d14764a3c22d4c5cf5b29b3a7a62d",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "1aa35005d77652f38251c1d2fd7c93a6a5c83087",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
+      "observation": "Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
     }
   ],
   "routines": [
@@ -1532,11 +1608,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": ["local-b04-1aa35005-node", "ci-b04-1aa35005-node"]
         },
         "wasm": {
           "history": [
@@ -1557,11 +1635,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": ["local-b04-1aa35005-wasm", "ci-b04-1aa35005-wasm"]
         }
       }
     }

@@ -7,6 +7,7 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  spiceStringByteLength,
   issueOpaqueSpiceHandle,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
@@ -18,6 +19,8 @@ import * as emscriptenExports from "../lowlevel/exports.js";
 import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
+
+const listEncoder = new TextEncoder();
 
 function tspiceCallNewIntCell(module: EmscriptenModule, size: number): number {
   return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outCellPtr) => {
@@ -594,6 +597,33 @@ export function createCellsWindowsApi(
   }
 
   return {
+    lparss: (list, delims, set) => {
+      const listBytes = spiceStringByteLength(list, "lparss(list)", 2147483645);
+      const delimBytes = spiceStringByteLength(delims, "lparss(delims)");
+      const cell = wasmCellPointer(module, set, "lparss()");
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, listBytes + 1, delimBytes + 1],
+        (err, input, sep) => {
+          const heap = module.HEAPU8;
+          const p = input >>> 0,
+            q = sep >>> 0;
+          listEncoder.encodeInto(list, heap.subarray(p, p + listBytes));
+          listEncoder.encodeInto(delims, heap.subarray(q, q + delimBytes));
+          heap[p + listBytes] = 0;
+          heap[q + delimBytes] = 0;
+          const status = module._tspice_lparss(
+            input,
+            sep,
+            cell,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
     ssize: (size, cell) => {
       assertSpiceInt32NonNegative(size, "ssize(size)");
       assertKnownCellOrWindow(cell, "ssize()");

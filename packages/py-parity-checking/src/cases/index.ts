@@ -1,6 +1,7 @@
 import type { ParityCase } from "../case-types.js";
 
 import cellsWindowsCardCasesRaw from "./cells-windows/card.cases.json" with { type: "json" };
+import cellsWindowsLparssCasesRaw from "./cells-windows/lparss.cases.json" with { type: "json" };
 import cellsWindowsInsrtcCasesRaw from "./cells-windows/insrtc.cases.json" with { type: "json" };
 import cellsWindowsInsrtdCasesRaw from "./cells-windows/insrtd.cases.json" with { type: "json" };
 import cellsWindowsInsrtiCasesRaw from "./cells-windows/insrti.cases.json" with { type: "json" };
@@ -195,6 +196,7 @@ export const coordsVectorsCases: ParityCase[] = [
 ];
 export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsCardCasesRaw as ParityCase[]),
+  ...(cellsWindowsLparssCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtcCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtdCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtiCasesRaw as ParityCase[]),

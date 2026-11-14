@@ -538,6 +538,10 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export insrtd(item, cell)",
   );
   invariant(
+    typeof native.lparss === "function",
+    "Expected native addon to export lparss",
+  );
+  invariant(
     typeof native.insrtc === "function",
     "Expected native addon to export insrtc(item, cell)",
   );

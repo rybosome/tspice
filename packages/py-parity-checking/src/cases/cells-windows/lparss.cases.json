@@ -1,0 +1,386 @@
+[
+  {
+    "caseId": "cells-windows-lparss-mixed",
+    "description": "Sort bytewise and remove repeated items before returning the full caller cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "Zulu,Alpha,zulu,Alpha,zulu,Beta,42,alpha",
+        "delims": ","
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-separator-rules",
+    "description": "Repeated blanks and adjacent nonblank separators follow different rules.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "  A , B  C::D  :,E  ",
+        "delims": ",: "
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": " , A ,  B , ",
+        "delims": ", "
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": " ,;;, ",
+        "delims": ";, "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-mixed-delimiter-order",
+    "description": "The order and multiplicity of delimiter bytes do not change the resulting set.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "d:cc,b|A:cc",
+        "delims": "|,:"
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "d:cc,b|A:cc",
+        "delims": ":,:,||"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-empty-and-blank",
+    "description": "An empty input inserts an empty member; an all-blank list replaces the old set.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "result",
+        "item": "SEED"
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "",
+        "delims": ""
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "",
+        "delims": ","
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": " ",
+        "delims": ","
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-replace",
+    "description": "Observe replacement, sorting, duplicates and a subsequent insertion on the same nonempty caller-owned set.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "result",
+        "item": "ZZZ"
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": " B,A,A,D ",
+        "delims": ","
+      },
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "result",
+        "item": "C"
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": ",,,,",
+        "delims": ","
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-capacity-after-dedup",
+    "description": "Repeated items may exceed the item count before deduplication while the actual set fits.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "A,B,A,B,A,B",
+        "delims": ",",
+        "maxCardinality": 2,
+        "length": 8
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "B,B,A,B,A",
+        "delims": ",",
+        "maxCardinality": 2,
+        "length": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-width-collision",
+    "description": "Rows of width eight retain seven content bytes; equal truncated prefixes collapse.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "1234567A,1234567B,1234568C,short",
+        "delims": ",",
+        "length": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-utf8",
+    "description": "UTF-8 scalar sequences and a BOM are retained inside nontruncated rows.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "λ,é,α,é,Aé,ß",
+        "delims": ",",
+        "length": 12
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "﻿X,a\tb,c\u000bd",
+        "delims": ",",
+        "length": 16
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-nonblank-whitespace",
+    "description": "Embedded tab and vertical tab are ordinary bytes unless explicitly designated delimiters.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "a\tb;c\u000bd\te",
+        "delims": ";"
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "a\tb;c\u000bd\te",
+        "delims": ";\t"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-no-delimiter",
+    "description": "Absence of a delimiter yields one trimmed or width-limited item.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": " a,b c ",
+        "delims": "."
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "aaaaa bbbbb",
+        "delims": ".",
+        "length": 32
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-split-full",
+    "description": "Trailing and leading delimiters share the same empty member.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": ",,A,B,,",
+        "delims": ",",
+        "maxCardinality": 3,
+        "length": 8
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": ",,A,,A,,",
+        "delims": ",",
+        "maxCardinality": 3,
+        "length": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-empty-full",
+    "description": "An empty C list on a full cell inserts through INSRTC and reports capacity exhaustion.",
+    "workflow": [
+      {
+        "op": "cells-windows.insrtc",
+        "cellId": "result",
+        "item": "Q",
+        "maxCardinality": 1,
+        "length": 8
+      },
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "",
+        "delims": "",
+        "maxCardinality": 1,
+        "length": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-nonempty-delims-required",
+    "description": "A nonempty list with zero-length delimiter string returns the CSPICE diagnostic.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "A",
+        "delims": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-blank-delims-required",
+    "description": "An all-blank nonempty list still checks the delimiter length.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": " ",
+        "delims": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-late-excess",
+    "description": "A full destination receives distinct tokens past capacity after an early duplicate.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "B,A,B,C",
+        "delims": ",",
+        "maxCardinality": 2,
+        "length": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-zero-capacity",
+    "description": "A zero-capacity cell cannot accommodate the one blank member.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": " ",
+        "delims": ",",
+        "maxCardinality": 0,
+        "length": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-control-length",
+    "description": "The translated character control words need sufficient width.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "B,A",
+        "delims": ",",
+        "length": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INSUFFLEN"]
+    }
+  },
+  {
+    "caseId": "cells-windows-lparss-narrow-empty-bypass",
+    "description": "The C empty-list branch inserts directly and bypasses translated cell controls.",
+    "workflow": [
+      {
+        "op": "cells-windows.lparss",
+        "cellId": "result",
+        "list": "",
+        "delims": "",
+        "length": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

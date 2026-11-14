@@ -88,3 +88,19 @@ export async function tokenConsumer(
   ];
   void [next, nth, single, multiple, spans];
 }
+
+async function charSetParser(spice: Spice, worker: SpiceAsync): Promise<void> {
+  const output = spice.kit.newCharCell(4, 16);
+  try {
+    spice.raw.lparss("blue,red,blue", ",", output);
+  } finally {
+    spice.kit.freeCell(output);
+  }
+  const remote = await worker.kit.newCharCell(4, 16);
+  try {
+    await worker.raw.lparss("blue,red,blue", ",", remote);
+  } finally {
+    await worker.kit.freeCell(remote);
+  }
+}
+void charSetParser;
