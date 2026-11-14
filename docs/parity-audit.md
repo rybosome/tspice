@@ -63,3 +63,7 @@ The Step 7 baseline remains 162 routines. E10 adds eight in the additive expansi
 ## Ellipse geometry
 
 E11 consumes E10's plane representation and adds seven direct raw methods with 39 independently registered workflows, 93 canonical calls and eight expected terminal errors. The audit tracks stored ellipse orientation, found and intersection counts, output ownership, the guarded plane distortion step and numerical conditioning in degenerate cases. [Ellipse geometry](step8-ellipse-geometry.md) [Per-routine audit](../data/parity-audits/e11-ellipse-geometry.json)
+
+## Triaxial ellipsoid geometry
+
+E12 builds on the E11 ellipse results and adds seven numerical routines with 49 registered workflows and 100 target invocations. Tests cover all components, ordinary misses, true toolkit errors, source-defined nested error paths and the numerical range of the transformations. [Ellipsoid geometry](step8-ellipsoid-geometry.md) [Routine audits](../data/parity-audits/e12-ellipsoid-geometry.json)

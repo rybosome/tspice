@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 177
-- Planned (not yet implemented): 472
+- Implemented now (SpiceRawBackend): 184
+- Planned (not yet implemented): 465
 - Excluded: 3
 
 ## Implemented now
@@ -62,6 +62,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dsksrf_c` | DSK, get surface IDs for body |
 | `dskw02_c` | DSK, write type 2 segment |
 | `dtpool_c` | Data for a kernel pool variable |
+| `edlimb_c` | Ellipsoid Limb |
+| `ednmpt_c` | Ellipsoid normal vector to surface point |
+| `edpnt_c` | Ellipsoid point |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
@@ -121,6 +124,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
+| `nearpt_c` | Nearest point on an ellipsoid |
+| `npedln_c` | Nearest point on ellipsoid to line |
 | `npelpt_c` | Nearest point on ellipse to point |
 | `nplnpt_c` | Nearest point on line to point |
 | `nvc2pl_c` | Normal vector and constant to plane |
@@ -174,6 +179,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
+| `surfnm_c` | Surface normal vector on an ellipsoid |
+| `surfpt_c` | Surface point on an ellipsoid |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
 | `timdef_c` | Time Software Defaults |
@@ -335,9 +342,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dvnorm_c` | Derivative of vector norm |
 | `dvpool_c` | Delete a variable from the kernel pool |
 | `dvsep_c` | Time derivative of separation angle |
-| `edlimb_c` | Ellipsoid Limb |
-| `ednmpt_c` | Ellipsoid normal vector to surface point |
-| `edpnt_c` | Ellipsoid point |
 | `edterm_c` | Ellipsoid terminator |
 | `ekacec_c` | EK, add character data to column |
 | `ekaced_c` | EK, add d.p. data to column |
@@ -477,9 +481,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `mxvg_c` | Matrix times vector, general dimension |
 | `ncpos_c` | NOT Character position |
 | `ncposr_c` | Character position, reverse |
-| `nearpt_c` | Nearest point on an ellipsoid |
 | `nextwd_c` | Next word in a character string |
-| `npedln_c` | Nearest point on ellipsoid to line |
 | `nthwd_c` | n'th word in a character string |
 | `ordc_c` | The ordinal position of an element in a set |
 | `ordd_c` | The ordinal position of an element in a set |
@@ -598,8 +600,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `subsol_pl02` | Sub-solar point using DSK type 2 plate model |
 | `sumad_c` | Sum of a double precision array |
 | `sumai_c` | Sum of an integer array |
-| `surfnm_c` | Surface normal vector on an ellipsoid |
-| `surfpt_c` | Surface point on an ellipsoid |
 | `surfpv_c` | Surface point and velocity |
 | `szpool_c` | Get size limitations of the kernel pool |
 | `tangpt_c` | Ray-ellipsoid tangent point |

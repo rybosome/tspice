@@ -1259,6 +1259,57 @@ export type StepGeometryNpelpt = {
   point: Vec3;
   ellipse: Ellipse;
 };
+export type StepGeometryNearpt = {
+  op: "geometry.nearpt";
+  position: Vec3;
+  a: number;
+  b: number;
+  c: number;
+};
+export type StepGeometryNpedln = {
+  op: "geometry.npedln";
+  a: number;
+  b: number;
+  c: number;
+  linept: Vec3;
+  linedr: Vec3;
+};
+export type StepGeometryEdlimb = {
+  op: "geometry.edlimb";
+  a: number;
+  b: number;
+  c: number;
+  viewpt: Vec3;
+};
+export type StepGeometryEdnmpt = {
+  op: "geometry.ednmpt";
+  a: number;
+  b: number;
+  c: number;
+  normal: Vec3;
+};
+export type StepGeometryEdpnt = {
+  op: "geometry.edpnt";
+  point: Vec3;
+  a: number;
+  b: number;
+  c: number;
+};
+export type StepGeometrySurfnm = {
+  op: "geometry.surfnm";
+  a: number;
+  b: number;
+  c: number;
+  point: Vec3;
+};
+export type StepGeometrySurfpt = {
+  op: "geometry.surfpt";
+  position: Vec3;
+  direction: Vec3;
+  a: number;
+  b: number;
+  c: number;
+};
 export type StepGeometryNvc2pl = {
   op: "geometry.nvc2pl";
   normal: Vec3;
@@ -1525,6 +1576,13 @@ export type WorkflowStep =
   | StepGeometryInelpl
   | StepGeometryInedpl
   | StepGeometryNpelpt
+  | StepGeometryNearpt
+  | StepGeometryNpedln
+  | StepGeometryEdlimb
+  | StepGeometryEdnmpt
+  | StepGeometryEdpnt
+  | StepGeometrySurfnm
+  | StepGeometrySurfpt
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc
   | StepGeometryGfGfsstp
@@ -1991,6 +2049,16 @@ export type StepOutput =
       value: { found: false } | { found: true; ellipse: Ellipse };
     }
   | { op: "geometry.npelpt"; value: { pnear: Vec3; dist: number } }
+  | { op: "geometry.nearpt"; value: { npoint: Vec3; alt: number } }
+  | { op: "geometry.npedln"; value: { pnear: Vec3; dist: number } }
+  | { op: "geometry.edlimb"; value: Ellipse }
+  | { op: "geometry.ednmpt"; value: Vec3 }
+  | { op: "geometry.edpnt"; value: Vec3 }
+  | { op: "geometry.surfnm"; value: Vec3 }
+  | {
+      op: "geometry.surfpt";
+      value: { found: false } | { found: true; point: Vec3 };
+    }
   | { op: "geometry.nvc2pl"; value: SpicePlane }
   | {
       op: "geometry.pl2nvc";

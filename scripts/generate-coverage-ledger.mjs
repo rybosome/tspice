@@ -445,11 +445,13 @@ export function buildLedger(root = defaultRoot, options = {}) {
       const key = `${fromFile}:${symbol}`;
       if (seen.has(key)) return;
       seen.add(key);
-      if (symbol.endsWith("_c")) {
+      const definition = shim.resolve(symbol, fromFile);
+      // N0067's public SURFPT wrapper calls this external SPICELIB operation.
+      // A same-named local helper cannot satisfy the explicit mapping policy.
+      if (symbol.endsWith("_c") || (symbol === "surfpt_" && !definition)) {
         result.add(symbol);
         return;
       }
-      const definition = shim.resolve(symbol, fromFile);
       for (const call of definition?.calls ?? [])
         visit(call, definition.evidence.file);
     }

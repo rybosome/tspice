@@ -92,6 +92,16 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "surfpt": {
+      "node": {
+        "reason": "The N0067 surfpt_c wrapper copies an undefined private logical on early errors. Invoke the same external SURFPT implementation with an initialized logical under the exact outer trace, then consume coordinates only for a successful hit.",
+        "expectedEntrypoints": ["surfpt_", "chkin_c", "chkout_c"]
+      },
+      "wasm": {
+        "reason": "The N0067 surfpt_c wrapper copies an undefined private logical on early errors. Invoke the same external SURFPT implementation with an initialized logical under the exact outer trace, then consume coordinates only for a successful hit.",
+        "expectedEntrypoints": ["surfpt_", "chkin_c", "chkout_c"]
+      }
     }
   }
 }

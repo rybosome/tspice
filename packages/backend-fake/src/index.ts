@@ -1883,6 +1883,27 @@ export function createFakeBackend(
     npelpt: () => {
       throw new Error("Fake backend does not model npelpt()");
     },
+    nearpt: () => {
+      throw new Error("Fake backend does not model nearpt()");
+    },
+    npedln: () => {
+      throw new Error("Fake backend does not model npedln()");
+    },
+    edlimb: () => {
+      throw new Error("Fake backend does not model edlimb()");
+    },
+    ednmpt: () => {
+      throw new Error("Fake backend does not model ednmpt()");
+    },
+    edpnt: () => {
+      throw new Error("Fake backend does not model edpnt()");
+    },
+    surfnm: () => {
+      throw new Error("Fake backend does not model surfnm()");
+    },
+    surfpt: () => {
+      throw new Error("Fake backend does not model surfpt()");
+    },
     nvp2pl: () => {
       throw new Error("Fake backend: nvp2pl() is not implemented");
     },

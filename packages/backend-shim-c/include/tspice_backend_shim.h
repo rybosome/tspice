@@ -827,6 +827,21 @@ int tspice_inelpl(
 int tspice_npelpt(
     const double *point, const double *ellipse, double *outPnear, double *outDist, char *err, int errMaxBytes);
 
+int tspice_nearpt(
+    const double *position, double a, double b, double c, double *outNpoint, double *outAlt, char *err, int errMaxBytes);
+int tspice_npedln(
+    double a, double b, double c, const double *linept, const double *linedr, double *outPnear, double *outDist, char *err, int errMaxBytes);
+int tspice_edlimb(
+    double a, double b, double c, const double *viewpt, double *outLimb, char *err, int errMaxBytes);
+int tspice_ednmpt(
+    double a, double b, double c, const double *normal, double *outPoint, char *err, int errMaxBytes);
+int tspice_edpnt(
+    const double *point, double a, double b, double c, double *outSurface, char *err, int errMaxBytes);
+int tspice_surfnm(
+    double a, double b, double c, const double *point, double *outNormal, char *err, int errMaxBytes);
+int tspice_surfpt(
+    const double *position, const double *direction, double a, double b, double c, double *outPoint, int *outFound, char *err, int errMaxBytes);
+
 int tspice_nvp2pl(
     const double *normal,
     const double *point,

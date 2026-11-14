@@ -215,6 +215,18 @@ Notes:
 
 ## Domain: `geometry` (`GeometryApi`)
 
+The following ellipsoid operations accept finite readonly vectors and scalar semiaxes. All point and ellipse fields are owned. [Geometry, error semantics and independent evidence](step8-ellipsoid-geometry.md)
+
+| Raw method                         | Toolkit route                                                    | Returned result               |
+| ---------------------------------- | ---------------------------------------------------------------- | ----------------------------- |
+| `nearpt(position,a,b,c)`           | `nearpt_c`                                                       | `{npoint,alt}`                |
+| `npedln(a,b,c,linept,linedr)`      | `npedln_c`                                                       | `{pnear,dist}`                |
+| `edlimb(a,b,c,viewpt)`             | `edlimb_c`                                                       | `SpiceEllipse`                |
+| `ednmpt(a,b,c,normal)`             | `ednmpt_c`                                                       | `SpiceVector3`                |
+| `edpnt(point,a,b,c)`               | `edpnt_c`                                                        | `SpiceVector3`                |
+| `surfnm(a,b,c,point)`              | `surfnm_c`                                                       | `SpiceVector3`                |
+| `surfpt(position,direction,a,b,c)` | `surfpt_` with initialized output and preserved `surfpt_c` trace | `Found<{point:SpiceVector3}>` |
+
 Seven direct raw routines accept an owned three-vector ellipse representation. Inputs also accept readonly tuples. No kernels are required. [Ellipse fields and conditional outputs](step8-ellipse-geometry.md)
 
 | Method                     | Native entrypoint | Return shape                                         |

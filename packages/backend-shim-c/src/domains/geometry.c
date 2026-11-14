@@ -2,6 +2,7 @@
 
 #include "tspice_error.h"
 #include "SpiceUsr.h"
+#include "SpiceZfc.h"
 
 #include <math.h>
 #include <string.h>
@@ -460,9 +461,8 @@ static void ellipse_to_components(const SpiceEllipse *ellipse, double out[9]) {
 // N0067 INEDPL continues with its private distorted plane after PSV2PL signals
 // an error, although its constant has not been initialized. Check the same
 // intermediate under the genuine outer traceback before entering that path.
-static int check_inedpl_distortion(double a, double b, double c, const SpicePlane *plane,
-                                    char *err, int errMaxBytes) {
-  if (a <= 0 || b <= 0 || c <= 0) return 0;  // INEDPL diagnoses these before distortion.
+static void probe_inedpl_distortion(double a, double b, double c, const SpicePlane *plane) {
+  if (a <= 0 || b <= 0 || c <= 0) return;  // INEDPL diagnoses these before distortion.
   double point[3], span1[3], span2[3];
   SpicePlane distorted = {{0}, 0};
   chkin_c("inedpl_c");
@@ -478,7 +478,6 @@ static int check_inedpl_distortion(double a, double b, double c, const SpicePlan
     psv2pl_c(point, span1, span2, &distorted);
   }
   chkout_c("inedpl_c");
-  return plane_call_status(err, errMaxBytes);
 }
 
 int tspice_cgv2el(
@@ -554,7 +553,8 @@ int tspice_inedpl(
   if (!plane || !outEllipse || !outFound)
     return tspice_return_error(err, errMaxBytes, "Missing inedpl storage");
   SpicePlane planeValue = plane_from_components(plane);
-  if (check_inedpl_distortion(a, b, c, &planeValue, err, errMaxBytes)) return 1;
+  probe_inedpl_distortion(a, b, c, &planeValue);
+  if (plane_call_status(err, errMaxBytes)) return 1;
   SpiceEllipse ellipse = {{0}, {0}, {0}};
   SpiceBoolean found = 0;
   inedpl_c(a, b, c, &planeValue, &ellipse, &found);
@@ -600,6 +600,204 @@ int tspice_npelpt(
   if (plane_call_status(err, errMaxBytes)) return 1;
   memcpy(outPnear, pnear, sizeof(pnear));
   *outDist = dist;
+  return 0;
+}
+
+// SURFPT_C copies a private logical after early errors, before it was assigned
+// by SURFPT. Use the linked implementation and the public wrapper's trace frame.
+static void checked_surfpt(const double position[3], const double direction[3],
+                           double a, double b, double c, double point[3], SpiceBoolean *found) {
+  logical hit = 0;
+  chkin_c("surfpt_c");
+  surfpt_((doublereal *)position, (doublereal *)direction, &a, &b, &c, point, &hit);
+  chkout_c("surfpt_c");
+  if (!failed_c()) *found = hit != 0;
+}
+
+// NPEDLN and EDLIMB continue reading private plane/ellipse storage after some
+// nested errors. Probe the same fallible intermediate constructors into
+// initialized storage, preserving the canonical outer trace and error order.
+static int check_edlimb_path(double a, double b, double c, const double view[3],
+                             char *err, int cap) {
+  if (a <= 0 || b <= 0 || c <= 0) return 0;
+  const double scale = fmax(a, fmax(b,c));
+  const double radii[3] = {a/scale,b/scale,c/scale};
+  double normal[3], v[3], squares[3];
+  vscl_c(1.0/scale,view,v);
+  for (int i=0; i<3; ++i) {
+    squares[i]=radii[i]*radii[i];
+    if (squares[i]==0) return 0;
+    normal[i]=v[i]/squares[i];
+  }
+  const double level=v[0]*v[0]/squares[0]+v[1]*v[1]/squares[1]+v[2]*v[2]/squares[2];
+  if (level<1) return 0;
+  SpicePlane limbPlane={{0},0};
+  chkin_c("edlimb_c");
+  nvc2pl_c(normal,1.0,&limbPlane);
+  if (!failed_c()) probe_inedpl_distortion(radii[0],radii[1],radii[2],&limbPlane);
+  chkout_c("edlimb_c");
+  return plane_call_status(err,cap);
+}
+
+static int check_npedln_path(double a, double b, double c, const double point[3],
+                             const double direction[3], char *err, int cap) {
+  double unit[3], magnitude;
+  unorm_c(direction,unit,&magnitude);
+  if (magnitude==0 || a<=0 || b<=0 || c<=0) return 0;
+  const double scale=fmax(a,fmax(b,c));
+  const double radii[3]={a/scale,b/scale,c/scale};
+  double scaled[3], normal[3], opposite[3], hit[3]={0};
+  for (int i=0; i<3; ++i) {
+    const double square=radii[i]*radii[i];
+    if (square==0) return 0;
+    scaled[i]=point[i]/scale;
+    normal[i]=unit[i]/square;
+  }
+  chkin_c("npedln_c");
+  SpiceBoolean found=0;
+  checked_surfpt(scaled,unit,radii[0],radii[1],radii[2],hit,&found);
+  if (!failed_c() && !found) {
+    vminus_c(unit,opposite);
+    checked_surfpt(scaled,opposite,radii[0],radii[1],radii[2],hit,&found);
+  }
+  if (!failed_c() && !found) {
+    SpicePlane candidatePlane={{0},0}, projection={{0},0};
+    SpiceEllipse candidate={{0},{0},{0}}, projected={{0},{0},{0}};
+    nvc2pl_c(normal,0.0,&candidatePlane);
+    if (!failed_c()) probe_inedpl_distortion(radii[0],radii[1],radii[2],&candidatePlane);
+    if (!failed_c()) inedpl_c(radii[0],radii[1],radii[2],&candidatePlane,&candidate,&found);
+    if (!failed_c() && found) {
+      double projectedPoint[3]={0}, nearest[3]={0}, distance=0;
+      nvc2pl_c(unit,0.0,&projection);
+      if (!failed_c()) pjelpl_c(&candidate,&projection,&projected);
+      if (!failed_c()) vprjp_c(scaled,&projection,projectedPoint);
+      if (!failed_c()) {
+        // The following call uses a private NEARPT solution. Its documented
+        // domain requires a representable translation and scale.
+        const double major=vnorm_c(projected.semiMajor);
+        const double minor=vnorm_c(projected.semiMinor);
+        if (major!=0 && minor!=0) {
+          double local[3];
+          vsub_c(projectedPoint,projected.center,local);
+          vscl_c(1.0/major,local,local);
+          if (!isfinite(major) || !isfinite(minor) || !isfinite(1.0/major) ||
+              !isfinite(local[0]) || !isfinite(local[1]) || !isfinite(local[2])) {
+            chkout_c("npedln_c");
+            return tspice_return_error(err,cap,"npedln: projected nearest-point coordinates exceed finite workspace");
+          }
+        }
+        npelpt_c(projectedPoint,&projected,nearest,&distance);
+      }
+    }
+  }
+  chkout_c("npedln_c");
+  return plane_call_status(err,cap);
+}
+
+int tspice_nearpt(
+    const double *position, double a, double b, double c, double *outNpoint, double *outAlt, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!position || !outNpoint || !outAlt)
+    return tspice_return_error(err, errMaxBytes, "Missing nearpt storage");
+  SpiceDouble npoint[3] = {0};
+  SpiceDouble alt = 0;
+  nearpt_c(position, a, b, c, npoint, &alt);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outNpoint, npoint, sizeof(npoint));
+  *outAlt = alt;
+  return 0;
+}
+
+int tspice_npedln(
+    double a, double b, double c, const double *linept, const double *linedr, double *outPnear, double *outDist, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!linept || !linedr || !outPnear || !outDist)
+    return tspice_return_error(err, errMaxBytes, "Missing npedln storage");
+  if (check_npedln_path(a,b,c,linept,linedr,err,errMaxBytes)) return 1;
+  SpiceDouble pnear[3] = {0};
+  SpiceDouble dist = 0;
+  npedln_c(a, b, c, linept, linedr, pnear, &dist);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outPnear, pnear, sizeof(pnear));
+  *outDist = dist;
+  return 0;
+}
+
+int tspice_edlimb(
+    double a, double b, double c, const double *viewpt, double *outLimb, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!viewpt || !outLimb)
+    return tspice_return_error(err, errMaxBytes, "Missing edlimb storage");
+  if (check_edlimb_path(a,b,c,viewpt,err,errMaxBytes)) return 1;
+  SpiceEllipse limb = {{0}, {0}, {0}};
+  edlimb_c(a, b, c, viewpt, &limb);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  ellipse_to_components(&limb, outLimb);
+  return 0;
+}
+
+int tspice_ednmpt(
+    double a, double b, double c, const double *normal, double *outPoint, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!normal || !outPoint)
+    return tspice_return_error(err, errMaxBytes, "Missing ednmpt storage");
+  SpiceDouble point[3] = {0};
+  ednmpt_c(a, b, c, normal, point);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outPoint, point, sizeof(point));
+  return 0;
+}
+
+int tspice_edpnt(
+    const double *point, double a, double b, double c, double *outSurface, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!point || !outSurface)
+    return tspice_return_error(err, errMaxBytes, "Missing edpnt storage");
+  SpiceDouble surface[3] = {0};
+  edpnt_c(point, a, b, c, surface);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outSurface, surface, sizeof(surface));
+  return 0;
+}
+
+int tspice_surfnm(
+    double a, double b, double c, const double *point, double *outNormal, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!point || !outNormal)
+    return tspice_return_error(err, errMaxBytes, "Missing surfnm storage");
+  SpiceDouble normal[3] = {0};
+  surfnm_c(a, b, c, point, normal);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outNormal, normal, sizeof(normal));
+  return 0;
+}
+
+int tspice_surfpt(
+    const double *position, const double *direction, double a, double b, double c, double *outPoint, int *outFound, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!position || !direction || !outPoint || !outFound)
+    return tspice_return_error(err, errMaxBytes, "Missing surfpt storage");
+  SpiceDouble point[3] = {0};
+  SpiceBoolean found = 0;
+  checked_surfpt(position, direction, a, b, c, point, &found);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  *outFound = found != SPICEFALSE;
+  if (!found) return 0;
+  memcpy(outPoint, point, sizeof(point));
   return 0;
 }
 

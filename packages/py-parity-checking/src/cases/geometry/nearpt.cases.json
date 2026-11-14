@@ -1,0 +1,166 @@
+[
+  {
+    "caseId": "geometry-nearpt-axis-heights",
+    "description": "Compare both complete output fields for exterior, interior and exact surface positions.",
+    "workflow": [
+      {
+        "op": "geometry.nearpt",
+        "position": [6, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.nearpt",
+        "position": [0, 0, -0.25],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.nearpt",
+        "position": [0, -2, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nearpt-triaxial-oblique",
+    "description": "Unequal axes and mixed-coordinate exterior vectors distinguish radial from perpendicular distance.",
+    "workflow": [
+      {
+        "op": "geometry.nearpt",
+        "position": [4, -3, 2],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.nearpt",
+        "position": [-4, 3, -2],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.nearpt",
+        "position": [3.1, 2.8, -1.9],
+        "a": 2,
+        "b": 3,
+        "c": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nearpt-origin-and-interior",
+    "description": "Check the actual returned minimizer inside triaxial and spherical figures, including nonunique center solutions.",
+    "workflow": [
+      {
+        "op": "geometry.nearpt",
+        "position": [0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.nearpt",
+        "position": [0.2, -0.1, 0.3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.nearpt",
+        "position": [0, 0, 0],
+        "a": 3,
+        "b": 3,
+        "c": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nearpt-metric-scale",
+    "description": "Check both point and signed altitude across corresponding uniform scales.",
+    "workflow": [
+      {
+        "op": "geometry.nearpt",
+        "position": [4e-9, -3e-9, 2e-9],
+        "a": 3e-9,
+        "b": 2e-9,
+        "c": 1e-9
+      },
+      {
+        "op": "geometry.nearpt",
+        "position": [4000000000.0, -3000000000.0, 2000000000.0],
+        "a": 3000000000.0,
+        "b": 2000000000.0,
+        "c": 1000000000.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nearpt-nonpositive-radius",
+    "description": "Preserve the canonical invalid-axis error.",
+    "workflow": [
+      {
+        "op": "geometry.nearpt",
+        "position": [4, 2, 1],
+        "a": 0,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISLENGTH"]
+    }
+  },
+  {
+    "caseId": "geometry-nearpt-extreme-ratio",
+    "description": "The canonical scaled-axis square guard rejects this positive ratio.",
+    "workflow": [
+      {
+        "op": "geometry.nearpt",
+        "position": [1, 0, 0],
+        "a": 1e155,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISLENGTH"]
+    }
+  },
+  {
+    "caseId": "geometry-nearpt-excessive-point",
+    "description": "The product of a scaled coordinate and its axis exceeds the pinned admissible domain.",
+    "workflow": [
+      {
+        "op": "geometry.nearpt",
+        "position": [1e307, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INPUTSTOOLARGE"]
+    }
+  }
+]

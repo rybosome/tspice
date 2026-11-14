@@ -208,6 +208,71 @@ class StepGeometryNpelpt:
 
 
 @dataclass(frozen=True)
+class StepGeometryNearpt:
+    op: Literal["geometry.nearpt"]
+    position: tuple[float, float, float]
+    a: float
+    b: float
+    c: float
+
+
+@dataclass(frozen=True)
+class StepGeometryNpedln:
+    op: Literal["geometry.npedln"]
+    a: float
+    b: float
+    c: float
+    linept: tuple[float, float, float]
+    linedr: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryEdlimb:
+    op: Literal["geometry.edlimb"]
+    a: float
+    b: float
+    c: float
+    viewpt: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryEdnmpt:
+    op: Literal["geometry.ednmpt"]
+    a: float
+    b: float
+    c: float
+    normal: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryEdpnt:
+    op: Literal["geometry.edpnt"]
+    point: tuple[float, float, float]
+    a: float
+    b: float
+    c: float
+
+
+@dataclass(frozen=True)
+class StepGeometrySurfnm:
+    op: Literal["geometry.surfnm"]
+    a: float
+    b: float
+    c: float
+    point: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometrySurfpt:
+    op: Literal["geometry.surfpt"]
+    position: tuple[float, float, float]
+    direction: tuple[float, float, float]
+    a: float
+    b: float
+    c: float
+
+
+@dataclass(frozen=True)
 class StepGeometryNvc2pl:
     op: Literal["geometry.nvc2pl"]
     normal: tuple[float, float, float]

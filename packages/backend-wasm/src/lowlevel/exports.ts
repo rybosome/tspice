@@ -689,6 +689,74 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_nearpt(
+    positionPtr: number,
+    a: number,
+    b: number,
+    c: number,
+    npointPtr: number,
+    altPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_npedln(
+    a: number,
+    b: number,
+    c: number,
+    lineptPtr: number,
+    linedrPtr: number,
+    pnearPtr: number,
+    distPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_edlimb(
+    a: number,
+    b: number,
+    c: number,
+    viewptPtr: number,
+    limbPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ednmpt(
+    a: number,
+    b: number,
+    c: number,
+    normalPtr: number,
+    pointPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_edpnt(
+    pointPtr: number,
+    a: number,
+    b: number,
+    c: number,
+    surfacePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_surfnm(
+    a: number,
+    b: number,
+    c: number,
+    pointPtr: number,
+    normalPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_surfpt(
+    positionPtr: number,
+    directionPtr: number,
+    a: number,
+    b: number,
+    c: number,
+    pointPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_nvp2pl(
     normalPtr: number,
     pointPtr: number,
@@ -1872,6 +1940,74 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_nearpt(
+    positionPtr: number,
+    a: number,
+    b: number,
+    c: number,
+    npointPtr: number,
+    altPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_npedln(
+    a: number,
+    b: number,
+    c: number,
+    lineptPtr: number,
+    linedrPtr: number,
+    pnearPtr: number,
+    distPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_edlimb(
+    a: number,
+    b: number,
+    c: number,
+    viewptPtr: number,
+    limbPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ednmpt(
+    a: number,
+    b: number,
+    c: number,
+    normalPtr: number,
+    pointPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_edpnt(
+    pointPtr: number,
+    a: number,
+    b: number,
+    c: number,
+    surfacePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_surfnm(
+    a: number,
+    b: number,
+    c: number,
+    pointPtr: number,
+    normalPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_surfpt(
+    positionPtr: number,
+    directionPtr: number,
+    a: number,
+    b: number,
+    c: number,
+    pointPtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_nvp2pl(
     normalPtr: number,
     pointPtr: number,
@@ -2487,6 +2623,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_inedpl",
   "_tspice_inelpl",
   "_tspice_npelpt",
+  "_tspice_nearpt",
+  "_tspice_npedln",
+  "_tspice_edlimb",
+  "_tspice_ednmpt",
+  "_tspice_edpnt",
+  "_tspice_surfnm",
+  "_tspice_surfpt",
   "_tspice_nvp2pl",
   "_tspice_pl2nvp",
   "_tspice_pl2psv",

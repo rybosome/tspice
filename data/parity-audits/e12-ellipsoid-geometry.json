@@ -1,0 +1,559 @@
+{
+  "schemaVersion": 1,
+  "batch": "e12-ellipsoid-geometry",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-ellipse-geometry.md",
+    "docs/step8-ellipsoid-geometry.md",
+    "docs/step8-plane-geometry.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/ellipse-geometry-domain.test.ts",
+    "packages/backend-node/test/ellipsoid-geometry-domain.test.ts",
+    "packages/backend-node/test/plane-geometry-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/ellipse-geometry-allocations.test.ts",
+    "packages/backend-wasm/test/ellipsoid-geometry-allocations.test.ts",
+    "packages/backend-wasm/test/plane-geometry-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/plane-geometry.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ellipsoid_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/ellipse-geometry-public.test.ts",
+    "packages/py-parity-checking/test/ellipsoid-geometry.test.ts",
+    "packages/py-parity-checking/test/plane-geometry.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "nearpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nearpt_c.html",
+      "semantics": "Find a nearest surface point on the origin-centered ellipsoid and signed altitude. Altitude is negative inside and zero on the surface. A nonunique interior solution follows CSPICE. Nonpositive or disproportionately scaled radii can signal BADAXISLENGTH, and excessive scaled coordinates can signal INPUTSTOOLARGE.",
+      "scenarios": [
+        {
+          "caseId": "geometry-nearpt-axis-heights",
+          "coverage": ["success", "edge"],
+          "observes": "Compare both complete output fields for exterior, interior and exact surface positions."
+        },
+        {
+          "caseId": "geometry-nearpt-triaxial-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Unequal axes and mixed-coordinate exterior vectors distinguish radial from perpendicular distance."
+        },
+        {
+          "caseId": "geometry-nearpt-origin-and-interior",
+          "coverage": ["success", "edge"],
+          "observes": "Check the actual returned minimizer inside triaxial and spherical figures, including nonunique center solutions."
+        },
+        {
+          "caseId": "geometry-nearpt-metric-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Check both point and signed altitude across corresponding uniform scales."
+        },
+        {
+          "caseId": "geometry-nearpt-nonpositive-radius",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve the canonical invalid-axis error."
+        },
+        {
+          "caseId": "geometry-nearpt-extreme-ratio",
+          "coverage": ["error", "edge"],
+          "observes": "The canonical scaled-axis square guard rejects this positive ratio."
+        },
+        {
+          "caseId": "geometry-nearpt-excessive-point",
+          "coverage": ["error", "edge"],
+          "observes": "The product of a scaled coordinate and its axis exceeds the pinned admissible domain."
+        }
+      ],
+      "edgeAssessment": "Check signed inside altitude, exact boundary, exterior oblique perpendicular foot, and actual minimizer at the origin including nonunique interior geometry. Scale probe recomputes point and altitude after factoring out 1e−12 or 1e12.",
+      "errorAssessment": "Check true BADAXISLENGTH for nonpositive radius and excessive normalized ratio, and INPUTSTOOLARGE for excessive scaled coordinate product. Each error occurs before an output is exposed.",
+      "fixtures": [],
+      "fixtureRationale": "All input semiaxes, coordinates and rays are project-authored numerical examples. No external kernels, files or clock/frame state are needed.",
+      "cleanup": "Both adapters capture each caller vector once, validate finite fixed-size inputs and publish owned scalar/vector or ellipse fields after the shim status succeeds. Native holds the global mutex for the complete operation. WASM frees every allocation after completion or failure, including structured errors; focused clients dispose after use.",
+      "tolerance": "Use the existing geometric array comparator for registered finite outputs. Dedicated checks compare triaxial invariants and scaled quantities at meaningful magnitudes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.nearpt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_nearpt -> nearpt_c. Independent locked SpiceyPy 6.0.3 sp.nearpt invokes its own library and returns all scientific components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.nearpt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_nearpt -> nearpt_c. Independent locked SpiceyPy 6.0.3 sp.nearpt invokes its own library and returns all scientific components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "npedln_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/npedln_c.html",
+      "semantics": "Find a nearest ellipsoid point to an infinite line and its nonnegative distance. An intersection gives zero distance. CSPICE tries the forward ray first, then the reverse ray. A zero direction takes precedence over nonpositive axes. Numerical degeneracy can prevent a projection or inverse projection.",
+      "scenarios": [
+        {
+          "caseId": "geometry-npedln-line-intersections",
+          "coverage": ["success", "edge"],
+          "observes": "Forward then reverse rays find the line intercept, including a location behind the input direction."
+        },
+        {
+          "caseId": "geometry-npedln-tangent-and-separated",
+          "coverage": ["success", "edge"],
+          "observes": "Compare both the nearest point and distance for a tangent, and two separated axis-parallel lines."
+        },
+        {
+          "caseId": "geometry-npedln-oblique-separated",
+          "coverage": ["success", "edge"],
+          "observes": "Project uneven-axis ellipsoids along non-coordinate line directions and measure the actual distance."
+        },
+        {
+          "caseId": "geometry-npedln-direction-and-origin",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve a complete nearest-point result through shifts along the line and sign or scale changes of its direction."
+        },
+        {
+          "caseId": "geometry-npedln-zero-direction-precedence",
+          "coverage": ["error", "edge"],
+          "observes": "Zero line direction takes precedence over invalid axis length."
+        },
+        {
+          "caseId": "geometry-npedln-nonpositive-axis",
+          "coverage": ["error", "edge"],
+          "observes": "A valid direction and nonpositive radius signal the line routine’s distinct axis error."
+        },
+        {
+          "caseId": "geometry-npedln-axis-square-underflow",
+          "coverage": ["error", "edge"],
+          "observes": "A scaled axis square that underflows prevents the candidate ellipse."
+        },
+        {
+          "caseId": "geometry-npedln-unrepresentable-unit-direction",
+          "coverage": ["error", "edge"],
+          "observes": "Two maximum direction components make the norm infinite and the unit vector zero. The nested ray routine provides the early diagnostic with initialized output."
+        }
+      ],
+      "edgeAssessment": "Compare intersection in each ray direction, sign changes from an interior point, exact tangency, genuine separated lines, translation along and orientation changes of the same line. Supplemental checks surface level, line orthogonality and measured Euclidean distance.",
+      "errorAssessment": "Check ZEROVECTOR before invalid radii, INVALIDAXISLENGTH for a valid direction, and scaled-square DEGENERATECASE. The zero unit direction caused by norm overflow is safely diagnosed under the actual nested SURFPT trace. Unrepresentable projected nearest-point workspace is a pre-dispatch range guard.",
+      "fixtures": [],
+      "fixtureRationale": "All input semiaxes, coordinates and rays are project-authored numerical examples. No external kernels, files or clock/frame state are needed.",
+      "cleanup": "Both adapters capture each caller vector once, validate finite fixed-size inputs and publish owned scalar/vector or ellipse fields after the shim status succeeds. Native holds the global mutex for the complete operation. WASM frees every allocation after completion or failure, including structured errors; focused clients dispose after use.",
+      "tolerance": "Use the existing geometric array comparator for registered finite outputs. Dedicated checks compare triaxial invariants and scaled quantities at meaningful magnitudes.",
+      "findings": [
+        {
+          "id": "initialized-nested-geometry-status",
+          "status": "repaired",
+          "summary": "The pinned public C code continues through private geometry or found flags after some fallible component calls.",
+          "repair": "Retain the canonical public call for defined computations. Check its fallible intermediate constructors in initialized storage with the scoped public trace before entering the affected branch, and propagate toolkit error before consuming any output.",
+          "caseIds": ["geometry-npedln-unrepresentable-unit-direction"],
+          "evidence": [
+            "docs/step8-ellipsoid-geometry.md",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ellipsoid_oracle.py",
+            "packages/py-parity-checking/test/ellipsoid-geometry.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.npedln -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_npedln -> npedln_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.npedln -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_npedln -> npedln_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "edlimb_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/edlimb_c.html",
+      "semantics": "Compute the apparent limb seen from an external point as an owned center and two semi-axis vectors. On-surface views can produce a point ellipse. N0067 reports DEGENERATECASE for nonpositive radii, an interior viewpoint, or unrepresentable scaled axes.",
+      "scenarios": [
+        {
+          "caseId": "geometry-edlimb-triaxial-axis-views",
+          "coverage": ["success", "edge"],
+          "observes": "Observe nine ellipse components from outside each coordinate axis."
+        },
+        {
+          "caseId": "geometry-edlimb-oblique-view",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve named center and signed semi-axes for multi-component exterior views."
+        },
+        {
+          "caseId": "geometry-edlimb-surface-point-limb",
+          "coverage": ["success", "edge"],
+          "observes": "An exact surface observer yields a point limb in the pinned C implementation."
+        },
+        {
+          "caseId": "geometry-edlimb-sphere-and-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Compare limb orientation, center and length for a sphere and scaled triaxial figures."
+        },
+        {
+          "caseId": "geometry-edlimb-inside",
+          "coverage": ["error", "edge"],
+          "observes": "The actual C limb routine signals its geometric degeneracy inside the body."
+        },
+        {
+          "caseId": "geometry-edlimb-nonpositive-radius",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the actual N0067 zero-radius diagnostic."
+        },
+        {
+          "caseId": "geometry-edlimb-axis-underflow",
+          "coverage": ["error", "edge"],
+          "observes": "Disproportionate axes whose scaled square rounds to zero fail before plane construction."
+        }
+      ],
+      "edgeAssessment": "Compare all nine ellipse components for three axis views, oblique views, an exact boundary view, a sphere, and uniformly rescaled axes. Sampled points on the returned limb have unit ellipsoid level and zero sightline dot surface normal.",
+      "errorAssessment": "Actual N0067 EDLIMB_C signals DEGENERATECASE for interior view, nonpositive radius and loss of scaled-axis square. The intermediate limb plane and distortion are checked before the routine can read private outputs after a failure.",
+      "fixtures": [],
+      "fixtureRationale": "All input semiaxes, coordinates and rays are project-authored numerical examples. No external kernels, files or clock/frame state are needed.",
+      "cleanup": "Both adapters capture each caller vector once, validate finite fixed-size inputs and publish owned scalar/vector or ellipse fields after the shim status succeeds. Native holds the global mutex for the complete operation. WASM frees every allocation after completion or failure, including structured errors; focused clients dispose after use.",
+      "tolerance": "Use the existing geometric array comparator for registered finite outputs. Dedicated checks compare triaxial invariants and scaled quantities at meaningful magnitudes.",
+      "findings": [
+        {
+          "id": "initialized-nested-geometry-status",
+          "status": "repaired",
+          "summary": "The pinned public C code continues through private geometry or found flags after some fallible component calls.",
+          "repair": "Retain the canonical public call for defined computations. Check its fallible intermediate constructors in initialized storage with the scoped public trace before entering the affected branch, and propagate toolkit error before consuming any output.",
+          "caseIds": [
+            "geometry-edlimb-axis-underflow",
+            "geometry-edlimb-oblique-view"
+          ],
+          "evidence": [
+            "docs/step8-ellipsoid-geometry.md",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ellipsoid_oracle.py",
+            "packages/py-parity-checking/test/ellipsoid-geometry.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.edlimb -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_edlimb -> edlimb_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.edlimb -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_edlimb -> edlimb_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ednmpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ednmpt_c.html",
+      "semantics": "Return the surface point with the specified outward normal direction. A zero normal, invalid axes or a lost scaled axis signals a toolkit error. The normal need not have unit length.",
+      "scenarios": [
+        {
+          "caseId": "geometry-ednmpt-axis-normals",
+          "coverage": ["success", "edge"],
+          "observes": "Signed and nonunit axis normals select the corresponding signed semiaxis endpoint."
+        },
+        {
+          "caseId": "geometry-ednmpt-oblique-normals",
+          "coverage": ["success", "edge"],
+          "observes": "Unequal and permuted radii distinguish surface-normal inversion from radial intersection."
+        },
+        {
+          "caseId": "geometry-ednmpt-normal-magnitude",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the inverse normal map across moderate and very small scaling of one direction."
+        },
+        {
+          "caseId": "geometry-ednmpt-sphere",
+          "coverage": ["success", "edge"],
+          "observes": "Compute the surface points of a sphere with mixed-direction normals."
+        },
+        {
+          "caseId": "geometry-ednmpt-bad-axis",
+          "coverage": ["error", "edge"],
+          "observes": "Nonpositive radii are diagnosed before a zero normal."
+        },
+        {
+          "caseId": "geometry-ednmpt-axis-underflow",
+          "coverage": ["error", "edge"],
+          "observes": "A positive axis lost in normalization gives the pinned AXISUNDERFLOW."
+        },
+        {
+          "caseId": "geometry-ednmpt-zero-normal",
+          "coverage": ["error", "edge"],
+          "observes": "An actual zero normal is distinct from a nonzero underflowing normal."
+        },
+        {
+          "caseId": "geometry-ednmpt-normal-underflow",
+          "coverage": ["error", "edge"],
+          "observes": "Squaring a tiny nonzero normal leads to an unrepresentable positive scale."
+        }
+      ],
+      "edgeAssessment": "Check signed coordinate axes, mixed normals, permuted semiaxes and positive scaling. Compose the outward surface-normal routine with its inverse and observe all three recovered coordinates. The tagged test verifies a finite-input case with three signed infinite outputs.",
+      "errorAssessment": "BADAXISLENGTH precedes zero-normal validation. A scaled axis that vanishes gives AXISUNDERFLOW, a zero normal ZEROVECTOR, and a nonzero normal with unrepresentable squared normal scale DEGENERATECASE.",
+      "fixtures": [],
+      "fixtureRationale": "All input semiaxes, coordinates and rays are project-authored numerical examples. No external kernels, files or clock/frame state are needed.",
+      "cleanup": "Both adapters capture each caller vector once, validate finite fixed-size inputs and publish owned scalar/vector or ellipse fields after the shim status succeeds. Native holds the global mutex for the complete operation. WASM frees every allocation after completion or failure, including structured errors; focused clients dispose after use.",
+      "tolerance": "Use the existing geometric array comparator for registered finite outputs. Dedicated checks compare triaxial invariants and scaled quantities at meaningful magnitudes. The additional tagged live check distinguishes IEEE nonfinite categories and the sign of zero.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ednmpt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_ednmpt -> ednmpt_c. Independent locked SpiceyPy 6.0.3 sp.ednmpt invokes its own library and returns all scientific components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ednmpt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_ednmpt -> ednmpt_c. Independent locked SpiceyPy 6.0.3 sp.ednmpt invokes its own library and returns all scientific components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "edpnt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/edpnt_c.html",
+      "semantics": "Scale a nonzero vector radially onto the ellipsoid. N0067 reports INVALIDRADII for nonpositive axes, ZEROVECTOR for the origin and POINTTOOSMALL when the squared level underflows.",
+      "scenarios": [
+        {
+          "caseId": "geometry-edpnt-axis-radial",
+          "coverage": ["success", "edge"],
+          "observes": "Scale exterior, interior and on-surface axis vectors to the boundary."
+        },
+        {
+          "caseId": "geometry-edpnt-mixed-octants",
+          "coverage": ["success", "edge"],
+          "observes": "All coordinates follow the input ray, including sign, under the triaxial radial map."
+        },
+        {
+          "caseId": "geometry-edpnt-radial-scale",
+          "coverage": ["success", "edge"],
+          "observes": "The same ray at different positive distances returns the same boundary point."
+        },
+        {
+          "caseId": "geometry-edpnt-sphere",
+          "coverage": ["success", "edge"],
+          "observes": "A spherical radial map has a directly distinguishable analytic boundary."
+        },
+        {
+          "caseId": "geometry-edpnt-bad-radii-precede-zero",
+          "coverage": ["error", "edge"],
+          "observes": "Observe actual INVALIDRADII before the zero point test."
+        },
+        {
+          "caseId": "geometry-edpnt-zero-point",
+          "coverage": ["error", "edge"],
+          "observes": "A zero direction cannot define a radial projection."
+        },
+        {
+          "caseId": "geometry-edpnt-level-underflow",
+          "coverage": ["error", "edge"],
+          "observes": "A nonzero vector whose squared level is zero gives POINTTOOSMALL."
+        }
+      ],
+      "edgeAssessment": "Compare exterior, interior and on-surface positions, opposite octants, direction scaling and a sphere. The triaxial supplemental distinguishes its radial point from NEARPT’s perpendicular foot. Largest finite coordinates can yield signed zero due to the squared level.",
+      "errorAssessment": "The actual BAD-radii error mnemonic is INVALIDRADII. ZEROVECTOR and POINTTOOSMALL distinguish the origin from a tiny nonzero point whose squared level underflows.",
+      "fixtures": [],
+      "fixtureRationale": "All input semiaxes, coordinates and rays are project-authored numerical examples. No external kernels, files or clock/frame state are needed.",
+      "cleanup": "Both adapters capture each caller vector once, validate finite fixed-size inputs and publish owned scalar/vector or ellipse fields after the shim status succeeds. Native holds the global mutex for the complete operation. WASM frees every allocation after completion or failure, including structured errors; focused clients dispose after use.",
+      "tolerance": "Use the existing geometric array comparator for registered finite outputs. Dedicated checks compare triaxial invariants and scaled quantities at meaningful magnitudes. The additional tagged live check distinguishes IEEE nonfinite categories and the sign of zero.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.edpnt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_edpnt -> edpnt_c. Independent locked SpiceyPy 6.0.3 sp.edpnt invokes its own library and returns all scientific components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.edpnt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_edpnt -> edpnt_c. Independent locked SpiceyPy 6.0.3 sp.edpnt invokes its own library and returns all scientific components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "surfnm_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/surfnm_c.html",
+      "semantics": "Compute the outward unit normal at a surface point using the axis-scaled direction. Supply a point on the ellipsoid for a geometric surface normal. The pinned calculation at the origin returns the zero vector. Nonpositive axes signal BADAXISLENGTH.",
+      "scenarios": [
+        {
+          "caseId": "geometry-surfnm-axis-and-origin",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the three axis normals and the computed zero vector at the origin."
+        },
+        {
+          "caseId": "geometry-surfnm-triaxial-surface",
+          "coverage": ["success", "edge"],
+          "observes": "Different semiaxes change normal direction on a non-axis surface point."
+        },
+        {
+          "caseId": "geometry-surfnm-level-set-direction",
+          "coverage": ["success", "edge"],
+          "observes": "Check normalized directions for positive rescalings of the same level-set point."
+        },
+        {
+          "caseId": "geometry-surfnm-sphere",
+          "coverage": ["success", "edge"],
+          "observes": "On a spherical surface the outward normal follows the unit radius."
+        },
+        {
+          "caseId": "geometry-surfnm-nonpositive-axes",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve the actual surface normal error for invalid axis lengths."
+        }
+      ],
+      "edgeAssessment": "Check all axes, oblique known surface points, positive radial scaling, sphere, and computed zero at the origin. Inverse-normal and limb tests use all three components. Tagged live values check signed zero after extreme normalization.",
+      "errorAssessment": "BADAXISLENGTH is a true toolkit error for invalid semiaxes. The origin, although unsuitable as a geometric surface point, returns a zero vector without signaling an error in N0067.",
+      "fixtures": [],
+      "fixtureRationale": "All input semiaxes, coordinates and rays are project-authored numerical examples. No external kernels, files or clock/frame state are needed.",
+      "cleanup": "Both adapters capture each caller vector once, validate finite fixed-size inputs and publish owned scalar/vector or ellipse fields after the shim status succeeds. Native holds the global mutex for the complete operation. WASM frees every allocation after completion or failure, including structured errors; focused clients dispose after use.",
+      "tolerance": "Use the existing geometric array comparator for registered finite outputs. Dedicated checks compare triaxial invariants and scaled quantities at meaningful magnitudes. The additional tagged live check distinguishes IEEE nonfinite categories and the sign of zero.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.surfnm -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_surfnm -> surfnm_c. Independent locked SpiceyPy 6.0.3 sp.surfnm invokes its own library and returns all scientific components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.surfnm -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_surfnm -> surfnm_c. Independent locked SpiceyPy 6.0.3 sp.surfnm invokes its own library and returns all scientific components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "surfpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/surfpt_c.html",
+      "semantics": "Return the first intersection of a forward ray and an origin-centered ellipsoid. A miss returns found=false without a point. The surface vertex, when exactly recognized, is its own first intersection. A zero direction or nonpositive axis signals a toolkit error.",
+      "scenarios": [
+        {
+          "caseId": "geometry-surfpt-forward-ray-and-miss",
+          "coverage": ["success", "edge"],
+          "observes": "Outside the body, reversing the direction interchanges the near-ray hit and an ordinary miss."
+        },
+        {
+          "caseId": "geometry-surfpt-inside-and-surface",
+          "coverage": ["success", "edge"],
+          "observes": "Ray origins inside hit toward the given direction. An exact boundary origin is its own first intercept."
+        },
+        {
+          "caseId": "geometry-surfpt-tangent-and-offset",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish an exact tangent from outside and inside offsets."
+        },
+        {
+          "caseId": "geometry-surfpt-oblique-and-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete signed hit components on asymmetric rays under direction scaling."
+        },
+        {
+          "caseId": "geometry-surfpt-zero-direction",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve the inner toolkit zero-vector error using initialized storage."
+        },
+        {
+          "caseId": "geometry-surfpt-bad-axes",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the specific bad-axis report with multiple invalid semiaxes."
+        },
+        {
+          "caseId": "geometry-surfpt-zero-precedence",
+          "coverage": ["error", "edge"],
+          "observes": "The ray direction is checked before all axes."
+        }
+      ],
+      "edgeAssessment": "Check opposite exterior rays, interior and boundary starts, exact tangent and both nearby offsets, and all three coordinates of oblique hits. Miss records omit coordinates. Ordinary wrapper and independent initialized symbol are compared on each defined success.",
+      "errorAssessment": "A genuine search miss returns found=false. A zero ray at invalid axes signals ZEROVECTOR first. Invalid axes at a nonzero ray signal BADAXISLENGTH. Exact short, long and branch trace, caller frame preservation and subsequent recovery are compared.",
+      "fixtures": [],
+      "fixtureRationale": "All input semiaxes, coordinates and rays are project-authored numerical examples. No external kernels, files or clock/frame state are needed.",
+      "cleanup": "Both adapters capture each caller vector once, validate finite fixed-size inputs and publish owned scalar/vector or ellipse fields after the shim status succeeds. Native holds the global mutex for the complete operation. WASM frees every allocation after completion or failure, including structured errors; focused clients dispose after use.",
+      "tolerance": "Use the existing geometric array comparator for registered finite outputs. Dedicated checks compare triaxial invariants and scaled quantities at meaningful magnitudes. The found discriminator is exact and no absent coordinates are normalized or compared.",
+      "findings": [
+        {
+          "id": "initialized-intercept-logical",
+          "status": "repaired",
+          "summary": "SURFPT_C unconditionally copies its private logical from a callee that returns before assigning it on zero-direction or invalid-axis errors.",
+          "repair": "Call the exact external SURFPT with initialized logical and coordinates under its original public trace, publish the flag after successful status, and omit missed coordinates. Independent valid/miss calls compare against the ordinary wrapper; independent error calls use a privately declared initialized ABI.",
+          "caseIds": [
+            "geometry-surfpt-zero-direction",
+            "geometry-surfpt-bad-axes"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ellipsoid_oracle.py",
+            "packages/py-parity-checking/test/ellipsoid-geometry.test.ts",
+            "packages/backend-node/test/ellipsoid-geometry-domain.test.ts",
+            "packages/backend-wasm/test/ellipsoid-geometry-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "composed",
+          "trace": "raw.surfpt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_surfpt -> external surfpt_ under chkin_c/chkout_c; reading the hit point is conditional. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "composed",
+          "trace": "raw.surfpt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_surfpt -> external surfpt_ under chkin_c/chkout_c; reading the hit point is conditional. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "49 registered workflows, 98 live comparisons, eight public/oracle, 16 native, 35 WASM and real Chrome observed. Both backend reviews await fresh full required local and source CI executions."
+}

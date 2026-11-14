@@ -1,0 +1,198 @@
+[
+  {
+    "caseId": "geometry-npedln-line-intersections",
+    "description": "Forward then reverse rays find the line intercept, including a location behind the input direction.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [5, 0, 0],
+        "linedr": [1, 0, 0]
+      },
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [5, 0, 0],
+        "linedr": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [0, 0, 0],
+        "linedr": [0, -2, 0]
+      },
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [0, 0, 0],
+        "linedr": [0, 2, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-npedln-tangent-and-separated",
+    "description": "Compare both the nearest point and distance for a tangent, and two separated axis-parallel lines.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [5, 2, 0],
+        "linedr": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [0, 4, 0],
+        "linedr": [1, 0, 0]
+      },
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [0, 0, -3],
+        "linedr": [0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-npedln-oblique-separated",
+    "description": "Project uneven-axis ellipsoids along non-coordinate line directions and measure the actual distance.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [5, 4, 3],
+        "linedr": [1, -2, 3]
+      },
+      {
+        "op": "geometry.npedln",
+        "a": 7,
+        "b": 4,
+        "c": 2,
+        "linept": [-8, 6, 7],
+        "linedr": [-2, 3, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-npedln-direction-and-origin",
+    "description": "Preserve a complete nearest-point result through shifts along the line and sign or scale changes of its direction.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [5, 4, 3],
+        "linedr": [1, -2, 3]
+      },
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [7, 0, 9],
+        "linedr": [-2, 4, -6]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-npedln-zero-direction-precedence",
+    "description": "Zero line direction takes precedence over invalid axis length.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 0,
+        "b": 2,
+        "c": 1,
+        "linept": [0, 0, 0],
+        "linedr": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  },
+  {
+    "caseId": "geometry-npedln-nonpositive-axis",
+    "description": "A valid direction and nonpositive radius signal the line routine’s distinct axis error.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": -2,
+        "c": 1,
+        "linept": [0, 0, 0],
+        "linedr": [0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDAXISLENGTH"]
+    }
+  },
+  {
+    "caseId": "geometry-npedln-axis-square-underflow",
+    "description": "A scaled axis square that underflows prevents the candidate ellipse.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 1e-200,
+        "b": 2,
+        "c": 3,
+        "linept": [0, 1, 0],
+        "linedr": [1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-npedln-unrepresentable-unit-direction",
+    "description": "Two maximum direction components make the norm infinite and the unit vector zero. The nested ray routine provides the early diagnostic with initialized output.",
+    "workflow": [
+      {
+        "op": "geometry.npedln",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "linept": [0, 4, 0],
+        "linedr": [1.7976931348623157e308, 1.7976931348623157e308, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  }
+]

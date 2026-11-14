@@ -1,0 +1,196 @@
+[
+  {
+    "caseId": "geometry-surfpt-forward-ray-and-miss",
+    "description": "Outside the body, reversing the direction interchanges the near-ray hit and an ordinary miss.",
+    "workflow": [
+      {
+        "op": "geometry.surfpt",
+        "position": [5, 0, 0],
+        "direction": [-1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [5, 0, 0],
+        "direction": [1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [-5, 0, 0],
+        "direction": [1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpt-inside-and-surface",
+    "description": "Ray origins inside hit toward the given direction. An exact boundary origin is its own first intercept.",
+    "workflow": [
+      {
+        "op": "geometry.surfpt",
+        "position": [0, 0, 0],
+        "direction": [0, 1, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [0, 0, 0],
+        "direction": [0, 0, -1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [3, 0, 0],
+        "direction": [1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [3, 0, 0],
+        "direction": [-1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpt-tangent-and-offset",
+    "description": "Distinguish an exact tangent from outside and inside offsets.",
+    "workflow": [
+      {
+        "op": "geometry.surfpt",
+        "position": [5, 2, 0],
+        "direction": [-1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [5, 2.000001, 0],
+        "direction": [-1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [5, 1.999999, 0],
+        "direction": [-1, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpt-oblique-and-scale",
+    "description": "Compare complete signed hit components on asymmetric rays under direction scaling.",
+    "workflow": [
+      {
+        "op": "geometry.surfpt",
+        "position": [6, 4, -2],
+        "direction": [-6, -4, 2],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [6, 4, -2],
+        "direction": [-12, -8, 4],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpt",
+        "position": [6, 4, -2],
+        "direction": [1, -2, 7],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpt-zero-direction",
+    "description": "Preserve the inner toolkit zero-vector error using initialized storage.",
+    "workflow": [
+      {
+        "op": "geometry.surfpt",
+        "position": [5, 0, 0],
+        "direction": [0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  },
+  {
+    "caseId": "geometry-surfpt-bad-axes",
+    "description": "Observe the specific bad-axis report with multiple invalid semiaxes.",
+    "workflow": [
+      {
+        "op": "geometry.surfpt",
+        "position": [1, 2, 3],
+        "direction": [1, 0, 0],
+        "a": 3,
+        "b": 0,
+        "c": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISLENGTH"]
+    }
+  },
+  {
+    "caseId": "geometry-surfpt-zero-precedence",
+    "description": "The ray direction is checked before all axes.",
+    "workflow": [
+      {
+        "op": "geometry.surfpt",
+        "position": [0, 0, 0],
+        "direction": [0, 0, 0],
+        "a": 0,
+        "b": 0,
+        "c": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  }
+]
