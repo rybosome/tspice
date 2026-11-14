@@ -53,6 +53,80 @@ class StepEphemerisSpkezr:
 
 
 @dataclass(frozen=True)
+class StepEphemerisSpkacs:
+    op: Literal["ephemeris.spkacs"]
+    target: int
+    et: float
+    ref: str
+    abcorr: str
+    observer: int
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkapo:
+    op: Literal["ephemeris.spkapo"]
+    target: int
+    et: float
+    ref: str
+    observerState: list[float]
+    abcorr: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkapp:
+    op: Literal["ephemeris.spkapp"]
+    target: int
+    et: float
+    ref: str
+    observerState: list[float]
+    abcorr: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkaps:
+    op: Literal["ephemeris.spkaps"]
+    target: int
+    et: float
+    ref: str
+    abcorr: str
+    observerState: list[float]
+    observerAcceleration: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkltc:
+    op: Literal["ephemeris.spkltc"]
+    target: int
+    et: float
+    ref: str
+    abcorr: str
+    observerState: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisStelab:
+    op: Literal["ephemeris.stelab"]
+    position: list[float]
+    observerVelocity: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisStlabx:
+    op: Literal["ephemeris.stlabx"]
+    position: list[float]
+    observerVelocity: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisLtime:
+    op: Literal["ephemeris.ltime"]
+    etobs: float
+    observer: int
+    dir: str
+    target: int
+
+
+@dataclass(frozen=True)
 class StepEphemerisSpkgeo:
     op: Literal["ephemeris.spkgeo"]
     target: int

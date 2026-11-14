@@ -527,6 +527,80 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_spkacs(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkapo(
+    target: number,
+    et: number,
+    refPtr: number,
+    observerStatePtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkapp(
+    target: number,
+    et: number,
+    refPtr: number,
+    observerStatePtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkaps(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observerStatePtr: number,
+    observerAccelerationPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkltc(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observerStatePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_stelab(
+    positionPtr: number,
+    observerVelocityPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_stlabx(
+    positionPtr: number,
+    observerVelocityPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ltime(
+    etobs: number,
+    observer: number,
+    dirPtr: number,
+    target: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_spkezr(
     targetPtr: number,
     et: number,
@@ -1588,6 +1662,80 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_spkacs(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observer: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkapo(
+    target: number,
+    et: number,
+    refPtr: number,
+    observerStatePtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkapp(
+    target: number,
+    et: number,
+    refPtr: number,
+    observerStatePtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkaps(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observerStatePtr: number,
+    observerAccelerationPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_spkltc(
+    target: number,
+    et: number,
+    refPtr: number,
+    abcorrPtr: number,
+    observerStatePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_stelab(
+    positionPtr: number,
+    observerVelocityPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_stlabx(
+    positionPtr: number,
+    observerVelocityPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ltime(
+    etobs: number,
+    observer: number,
+    dirPtr: number,
+    target: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_spkezr(
     targetPtr: number,
     et: number,
@@ -2228,6 +2376,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ckcov",
   "_tspice_pxform",
   "_tspice_sxform",
+  "_tspice_spkacs",
+  "_tspice_spkapo",
+  "_tspice_spkapp",
+  "_tspice_spkaps",
+  "_tspice_spkltc",
+  "_tspice_stelab",
+  "_tspice_stlabx",
+  "_tspice_ltime",
   "_tspice_spkezr",
   "_tspice_spkpos",
   "_tspice_spkez",

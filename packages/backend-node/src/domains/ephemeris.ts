@@ -10,6 +10,9 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  validateCorrectionString,
+  copyCorrectionInput,
+  decodeCorrectionResult,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
   invariant,
@@ -113,6 +116,123 @@ export function createEphemerisApi(
   const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
 
   return {
+    spkacs: (target, et, ref, abcorr, observer) => {
+      assertSpiceInt32(target, "spkacs(target)");
+      requireSpkNumber(et, "spkacs(et)");
+      validateCorrectionString(ref, "spkacs(ref)");
+      validateCorrectionString(abcorr, "spkacs(abcorr)");
+      assertSpiceInt32(observer, "spkacs(observer)");
+      return decodeCorrectionResult(
+        native.spkacs(target, et, ref, abcorr, observer),
+        8,
+      );
+    },
+    spkapo: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapo(target)");
+      requireSpkNumber(et, "spkapo(et)");
+      validateCorrectionString(ref, "spkapo(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapo(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapo(abcorr)");
+      return decodeCorrectionResult(
+        native.spkapo(target, et, ref, observerStateCopy, abcorr),
+        4,
+      );
+    },
+    spkapp: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapp(target)");
+      requireSpkNumber(et, "spkapp(et)");
+      validateCorrectionString(ref, "spkapp(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapp(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapp(abcorr)");
+      return decodeCorrectionResult(
+        native.spkapp(target, et, ref, observerStateCopy, abcorr),
+        7,
+      );
+    },
+    spkaps: (target, et, ref, abcorr, observerState, observerAcceleration) => {
+      assertSpiceInt32(target, "spkaps(target)");
+      requireSpkNumber(et, "spkaps(et)");
+      validateCorrectionString(ref, "spkaps(ref)");
+      validateCorrectionString(abcorr, "spkaps(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkaps(observerState)",
+      );
+      const observerAccelerationCopy = copyCorrectionInput(
+        observerAcceleration,
+        3,
+        "spkaps(observerAcceleration)",
+      );
+      return decodeCorrectionResult(
+        native.spkaps(
+          target,
+          et,
+          ref,
+          abcorr,
+          observerStateCopy,
+          observerAccelerationCopy,
+        ),
+        8,
+      );
+    },
+    spkltc: (target, et, ref, abcorr, observerState) => {
+      assertSpiceInt32(target, "spkltc(target)");
+      requireSpkNumber(et, "spkltc(et)");
+      validateCorrectionString(ref, "spkltc(ref)");
+      validateCorrectionString(abcorr, "spkltc(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkltc(observerState)",
+      );
+      return decodeCorrectionResult(
+        native.spkltc(target, et, ref, abcorr, observerStateCopy),
+        8,
+      );
+    },
+    stelab: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stelab(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stelab(observerVelocity)",
+      );
+      return decodeCorrectionResult(
+        native.stelab(positionCopy, observerVelocityCopy),
+        3,
+      );
+    },
+    stlabx: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stlabx(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stlabx(observerVelocity)",
+      );
+      return decodeCorrectionResult(
+        native.stlabx(positionCopy, observerVelocityCopy),
+        3,
+      );
+    },
+    ltime: (etobs, observer, dir, target) => {
+      requireSpkNumber(etobs, "ltime(etobs)");
+      assertSpiceInt32(observer, "ltime(observer)");
+      validateCorrectionString(dir, "ltime(dir)");
+      assertSpiceInt32(target, "ltime(target)");
+      return decodeCorrectionResult(
+        native.ltime(etobs, observer, dir, target),
+        2,
+      );
+    },
     spkezr: (target, et, ref, abcorr, observer) => {
       requireSpkNumber(et, "spkezr(et)");
       requireSpkString(ref, "spkezr(ref)");

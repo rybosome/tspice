@@ -468,7 +468,8 @@
         "ek-ektnam-happy-first-table",
         "ek-ektnam-out-of-range-error"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "local-706-main-c5f0b058-wasm",
@@ -515,7 +516,8 @@
         "ek-ektnam-happy-first-table",
         "ek-ektnam-out-of-range-error"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-node",
@@ -564,7 +566,8 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-wasm",
@@ -613,7 +616,8 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
     }
   ],
   "routines": [
@@ -700,14 +704,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> Node typed adapter -> registered N-API handler -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -718,14 +720,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopn -> WASM typed helper -> configured compiled _tspice_ekopn export -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -792,14 +792,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> Node typed adapter -> registered N-API handler -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -810,14 +808,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopr -> WASM typed helper -> configured compiled _tspice_ekopr export -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -892,14 +888,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> Node typed adapter -> registered N-API handler -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -910,14 +904,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekopw -> WASM typed helper -> configured compiled _tspice_ekopw export -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1010,14 +1002,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> Node typed adapter -> registered N-API handler -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1028,14 +1018,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekcls -> WASM typed helper -> configured compiled _tspice_ekcls export -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1110,14 +1098,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> Node typed adapter -> registered N-API handler -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1128,14 +1114,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekntab -> WASM typed helper -> configured compiled _tspice_ekntab export -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1210,14 +1194,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> Node typed adapter -> registered N-API handler -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1228,14 +1210,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ektnam -> WASM typed helper -> configured compiled _tspice_ektnam export -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1302,14 +1282,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> Node typed adapter -> registered N-API handler -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1320,14 +1298,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.eknseg -> WASM typed helper -> configured compiled _tspice_eknseg export -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1455,14 +1431,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> Node typed adapter -> registered N-API handler -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1473,17 +1447,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekifld -> WASM typed helper -> configured compiled _tspice_ekifld export -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Existing Step 7 observations retain their historical fingerprints. The expanded source requires fresh full local and canonical CI observations."
 }

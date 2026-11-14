@@ -10,6 +10,13 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",
+  // Each correction reads the active SPK set, including its priority order.
+  "raw.spkacs",
+  "raw.spkapo",
+  "raw.spkapp",
+  "raw.spkaps",
+  "raw.spkltc",
+  "raw.ltime",
 ]) satisfies readonly string[];
 
 const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> =
