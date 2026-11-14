@@ -9,6 +9,14 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsVlcom,
+    StepCoordsVectorsVlcom3,
+    StepCoordsVectorsVperp,
+    StepCoordsVectorsVproj,
+    StepCoordsVectorsVrel,
+    StepCoordsVectorsVrotv,
+    StepCoordsVectorsRotvec,
+    StepCoordsVectorsVtmv,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -51,6 +59,38 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsVlcom):
+        out = sp.vlcom(step.a, step.v1, step.b, step.v2)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVlcom3):
+        out = sp.vlcom3(step.a, step.v1, step.b, step.v2, step.c, step.v3)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVperp):
+        out = sp.vperp(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVproj):
+        out = sp.vproj(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVrel):
+        out = sp.vrel(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsVrotv):
+        out = sp.vrotv(step.v, step.axis, step.theta)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsRotvec):
+        out = sp.rotvec(step.v, step.angle, step.axis)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVtmv):
+        out = sp.vtmv(step.v1, step.matrix, step.v2)
+        return StepOutput(op=step.op, value=float(out))
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

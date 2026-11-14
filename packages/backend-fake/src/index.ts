@@ -2392,6 +2392,40 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    // Toy vector combinations for facade tests, not a CSPICE numerical oracle.
+    vlcom: (a, v1, b, v2) => [
+      a * v1[0] + b * v2[0],
+      a * v1[1] + b * v2[1],
+      a * v1[2] + b * v2[2],
+    ],
+    vlcom3: (a, v1, b, v2, c, v3) => [
+      a * v1[0] + b * v2[0] + c * v3[0],
+      a * v1[1] + b * v2[1] + c * v3[1],
+      a * v1[2] + b * v2[2] + c * v3[2],
+    ],
+    vperp: (a, b) => {
+      const denominator = vdot([...b], [...b]);
+      if (denominator === 0) return [0, 0, 0];
+      return vsub([...a], vscale(vdot([...a], [...b]) / denominator, [...b]));
+    },
+    vproj: (a, b) => {
+      const denominator = vdot([...b], [...b]);
+      if (denominator === 0) return [0, 0, 0];
+      return vscale(vdot([...a], [...b]) / denominator, [...b]);
+    },
+    vrel: (a, b) => {
+      const denominator = Math.max(vnorm([...a]), vnorm([...b]));
+      return denominator === 0 ? 0 : vnorm(vsub([...a], [...b])) / denominator;
+    },
+    vrotv: (v, axis, theta) =>
+      mxv(axisAngleToRotationRowMajor([...axis], theta), [...v]),
+    rotvec: (v, angle, axis) => {
+      assertSpiceInt32(axis, "rotvec(axis)");
+      // The fake's helper builds an active matrix; negate for coordinate rotation.
+      return mxv(rotateRowMajor(-angle, axis), [...v]);
+    },
+    vtmv: (v1, matrix, v2) => vdot([...v1], mxv(matrix, [...v2])),
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

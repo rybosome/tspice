@@ -349,6 +349,38 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export sxform(from, to, et)",
   );
   invariant(
+    typeof native.vlcom === "function",
+    "Expected native addon to export vlcom()",
+  );
+  invariant(
+    typeof native.vlcom3 === "function",
+    "Expected native addon to export vlcom3()",
+  );
+  invariant(
+    typeof native.vperp === "function",
+    "Expected native addon to export vperp()",
+  );
+  invariant(
+    typeof native.vproj === "function",
+    "Expected native addon to export vproj()",
+  );
+  invariant(
+    typeof native.vrel === "function",
+    "Expected native addon to export vrel()",
+  );
+  invariant(
+    typeof native.vrotv === "function",
+    "Expected native addon to export vrotv()",
+  );
+  invariant(
+    typeof native.rotvec === "function",
+    "Expected native addon to export rotvec()",
+  );
+  invariant(
+    typeof native.vtmv === "function",
+    "Expected native addon to export vtmv()",
+  );
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );

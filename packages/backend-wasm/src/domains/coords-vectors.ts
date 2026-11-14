@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,233 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertCombinationScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertCombinationVector(
+  value: unknown,
+  label: string,
+): asserts value is Readonly<SpiceVector3> {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  for (let i = 0; i < 3; i++)
+    assertCombinationScalar(value[i], `${label}[${i}]`);
+}
+
+function readCombinationVector(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceVector3 {
+  const i = ptr >> 3;
+  const heap = module.HEAPF64;
+  return [heap[i]!, heap[i + 1]!, heap[i + 2]!];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    vlcom: (a, v1, b, v2) => {
+      assertCombinationScalar(a, "vlcom(a)");
+      assertCombinationVector(v1, "vlcom(v1)");
+      assertCombinationScalar(b, "vlcom(b)");
+      assertCombinationVector(v2, "vlcom(v2)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, v1Ptr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(v1, v1Ptr >> 3);
+          module.HEAPF64.set(v2, v2Ptr >> 3);
+          const status = module._tspice_vlcom(
+            a,
+            v1Ptr,
+            b,
+            v2Ptr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vlcom3: (a, v1, b, v2, c, v3) => {
+      assertCombinationScalar(a, "vlcom3(a)");
+      assertCombinationVector(v1, "vlcom3(v1)");
+      assertCombinationScalar(b, "vlcom3(b)");
+      assertCombinationVector(v2, "vlcom3(v2)");
+      assertCombinationScalar(c, "vlcom3(c)");
+      assertCombinationVector(v3, "vlcom3(v3)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24, 24],
+        (errPtr, v1Ptr, v2Ptr, v3Ptr, outPtr) => {
+          module.HEAPF64.set(v1, v1Ptr >> 3);
+          module.HEAPF64.set(v2, v2Ptr >> 3);
+          module.HEAPF64.set(v3, v3Ptr >> 3);
+          const status = module._tspice_vlcom3(
+            a,
+            v1Ptr,
+            b,
+            v2Ptr,
+            c,
+            v3Ptr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vperp: (a, b) => {
+      assertCombinationVector(a, "vperp(a)");
+      assertCombinationVector(b, "vperp(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >> 3);
+          module.HEAPF64.set(b, bPtr >> 3);
+          const status = module._tspice_vperp(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vproj: (a, b) => {
+      assertCombinationVector(a, "vproj(a)");
+      assertCombinationVector(b, "vproj(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >> 3);
+          module.HEAPF64.set(b, bPtr >> 3);
+          const status = module._tspice_vproj(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vrel: (a, b) => {
+      assertCombinationVector(a, "vrel(a)");
+      assertCombinationVector(b, "vrel(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >> 3);
+          module.HEAPF64.set(b, bPtr >> 3);
+          const status = module._tspice_vrel(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
+    vrotv: (v, axis, theta) => {
+      assertCombinationVector(v, "vrotv(v)");
+      assertCombinationVector(axis, "vrotv(axis)");
+      assertCombinationScalar(theta, "vrotv(theta)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, vPtr, axisPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >> 3);
+          module.HEAPF64.set(axis, axisPtr >> 3);
+          const status = module._tspice_vrotv(
+            vPtr,
+            axisPtr,
+            theta,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    rotvec: (v, angle, axis) => {
+      assertCombinationVector(v, "rotvec(v)");
+      assertCombinationScalar(angle, "rotvec(angle)");
+      assertSpiceInt32(axis, "rotvec(axis)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >> 3);
+          const status = module._tspice_rotvec(
+            vPtr,
+            angle,
+            axis,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vtmv: (v1, matrix, v2) => {
+      assertCombinationVector(v1, "vtmv(v1)");
+      assertMat3ArrayLike9(matrix, { label: "vtmv(matrix)" });
+      assertCombinationVector(v2, "vtmv(v2)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 72, 24, 8],
+        (errPtr, v1Ptr, matrixPtr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(v1, v1Ptr >> 3);
+          module.HEAPF64.set(matrix, matrixPtr >> 3);
+          module.HEAPF64.set(v2, v2Ptr >> 3);
+          const status = module._tspice_vtmv(
+            v1Ptr,
+            matrixPtr,
+            v2Ptr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

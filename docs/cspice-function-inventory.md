@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -129,6 +129,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
+| `rotvec_c` | Transform a vector via a rotation |
 | `scard_c` | Set the cardinality of a cell |
 | `scdecd_c` | Decode spacecraft clock |
 | `sce2c_c` | ET to continuous SCLK ticks |
@@ -175,10 +176,17 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vcrss_c` | Vector cross product, 3 dimensions |
 | `vdot_c` | Vector dot product, 3 dimensions |
 | `vhat_c` | "V-Hat", unit vector along V, 3 dimensions |
+| `vlcom_c` | Vector linear combination, 3 dimensions |
+| `vlcom3_c` | Vector linear combination, 3 dimensions |
 | `vminus_c` | Negate vector, "-v", 3 dimensions |
 | `vnorm_c` | Vector norm, 3 dimensions |
+| `vperp_c` | Perpendicular component of a 3-vector |
+| `vproj_c` | Vector projection, 3 dimensions |
+| `vrel_c` | Vector relative difference, 3 dimensions |
+| `vrotv_c` | Vector rotation about an axis |
 | `vscl_c` | Vector scaling, 3 dimensions |
 | `vsub_c` | Vector subtraction, 3 dimensions |
+| `vtmv_c` | Vector transpose times matrix times vector, 3 dim |
 | `wncard_c` | Cardinality of a double precision window |
 | `wnfetd_c` | Fetch an interval from a DP window |
 | `wninsd_c` | Insert an interval into a DP window |
@@ -537,7 +545,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `repml_c` | Replace marker with logical value text |
 | `repmot_c` | Replace marker with ordinal text |
 | `return_c` | Immediate Return Indicator |
-| `rotvec_c` | Transform a vector via a rotation |
 | `rpd_c` | Radians per degree |
 | `rquad_c` | Roots of a quadratic equation |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
@@ -633,25 +640,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vequ_c` | Vector equality, 3 dimensions |
 | `vequg_c` | Vector equality, general dimension |
 | `vhatg_c` | "V-Hat", unit vector along V, general dimension |
-| `vlcom_c` | Vector linear combination, 3 dimensions |
-| `vlcom3_c` | Vector linear combination, 3 dimensions |
 | `vlcomg_c` | Vector linear combination, general dimension |
 | `vminug_c` | Negate vector, "-v", general dimension |
 | `vnormg_c` | Vector norm, general dimension |
 | `vpack_c` | Pack three scalar components into a vector |
-| `vperp_c` | Perpendicular component of a 3-vector |
 | `vprjp_c` | Vector projection onto plane |
 | `vprjpi_c` | Vector projection onto plane, inverted |
-| `vproj_c` | Vector projection, 3 dimensions |
 | `vprojg_c` | Vector projection, general dimension |
-| `vrel_c` | Vector relative difference, 3 dimensions |
 | `vrelg_c` | Vector relative difference, general dimension |
-| `vrotv_c` | Vector rotation about an axis |
 | `vsclg_c` | Vector scaling, general dimension |
 | `vsep_c` | Angular separation of vectors, 3 dimensions |
 | `vsepg_c` | Angular separation of vectors, general dimension |
 | `vsubg_c` | Vector subtraction, general dimension |
-| `vtmv_c` | Vector transpose times matrix times vector, 3 dim |
 | `vtmvg_c` | Vector transpose times matrix times vector |
 | `vupack_c` | Unpack three scalar components from a vector |
 | `vzero_c` | Is a vector the zero vector? |

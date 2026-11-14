@@ -15,9 +15,101 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertCombinationScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertCombinationVector(
+  value: unknown,
+  label: string,
+): asserts value is Readonly<SpiceVector3> {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  for (let i = 0; i < 3; i++)
+    assertCombinationScalar(value[i], `${label}[${i}]`);
+}
+
+function combinationOutputNumber(value: unknown, label: string): number {
+  // Finite inputs can produce IEEE-754 nonfinite outputs in CSPICE.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function combinationOutputVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must have length three`);
+  return [
+    combinationOutputNumber(value[0], label),
+    combinationOutputNumber(value[1], label),
+    combinationOutputNumber(value[2], label),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    vlcom: (a, v1, b, v2) => {
+      assertCombinationScalar(a, "vlcom(a)");
+      assertCombinationVector(v1, "vlcom(v1)");
+      assertCombinationScalar(b, "vlcom(b)");
+      assertCombinationVector(v2, "vlcom(v2)");
+      const out = native.vlcom(a, v1, b, v2);
+      return combinationOutputVector(out, "vlcom result");
+    },
+    vlcom3: (a, v1, b, v2, c, v3) => {
+      assertCombinationScalar(a, "vlcom3(a)");
+      assertCombinationVector(v1, "vlcom3(v1)");
+      assertCombinationScalar(b, "vlcom3(b)");
+      assertCombinationVector(v2, "vlcom3(v2)");
+      assertCombinationScalar(c, "vlcom3(c)");
+      assertCombinationVector(v3, "vlcom3(v3)");
+      const out = native.vlcom3(a, v1, b, v2, c, v3);
+      return combinationOutputVector(out, "vlcom3 result");
+    },
+    vperp: (a, b) => {
+      assertCombinationVector(a, "vperp(a)");
+      assertCombinationVector(b, "vperp(b)");
+      const out = native.vperp(a, b);
+      return combinationOutputVector(out, "vperp result");
+    },
+    vproj: (a, b) => {
+      assertCombinationVector(a, "vproj(a)");
+      assertCombinationVector(b, "vproj(b)");
+      const out = native.vproj(a, b);
+      return combinationOutputVector(out, "vproj result");
+    },
+    vrel: (a, b) => {
+      assertCombinationVector(a, "vrel(a)");
+      assertCombinationVector(b, "vrel(b)");
+      const out = native.vrel(a, b);
+      return combinationOutputNumber(out, "vrel result");
+    },
+    vrotv: (v, axis, theta) => {
+      assertCombinationVector(v, "vrotv(v)");
+      assertCombinationVector(axis, "vrotv(axis)");
+      assertCombinationScalar(theta, "vrotv(theta)");
+      const out = native.vrotv(v, axis, theta);
+      return combinationOutputVector(out, "vrotv result");
+    },
+    rotvec: (v, angle, axis) => {
+      assertCombinationVector(v, "rotvec(v)");
+      assertCombinationScalar(angle, "rotvec(angle)");
+      assertSpiceInt32(axis, "rotvec(axis)");
+      const out = native.rotvec(v, angle, axis);
+      return combinationOutputVector(out, "rotvec result");
+    },
+    vtmv: (v1, matrix, v2) => {
+      assertCombinationVector(v1, "vtmv(v1)");
+      assertMat3ArrayLike9(matrix, { label: "vtmv(matrix)" });
+      assertCombinationVector(v2, "vtmv(v2)");
+      const out = native.vtmv(v1, Array.from(matrix), v2);
+      return combinationOutputNumber(out, "vtmv result");
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

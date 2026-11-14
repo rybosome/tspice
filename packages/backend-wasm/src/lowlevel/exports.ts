@@ -895,6 +895,72 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_vlcom(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcom3(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    c: number,
+    v3Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vperp(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vproj(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrel(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrotv(
+    vPtr: number,
+    axisPtr: number,
+    theta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rotvec(
+    vPtr: number,
+    angle: number,
+    axis: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vtmv(
+    v1Ptr: number,
+    matrixPtr: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1843,6 +1909,72 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_vlcom(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcom3(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    c: number,
+    v3Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vperp(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vproj(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrel(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrotv(
+    vPtr: number,
+    axisPtr: number,
+    theta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rotvec(
+    vPtr: number,
+    angle: number,
+    axis: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vtmv(
+    v1Ptr: number,
+    matrixPtr: number,
+    v2Ptr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2262,6 +2394,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_vlcom",
+  "_tspice_vlcom3",
+  "_tspice_vperp",
+  "_tspice_vproj",
+  "_tspice_vrel",
+  "_tspice_vrotv",
+  "_tspice_rotvec",
+  "_tspice_vtmv",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

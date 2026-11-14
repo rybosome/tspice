@@ -1,0 +1,146 @@
+[
+  {
+    "caseId": "coords-vectors-vrotv-right-handed-basis",
+    "description": "vrotv: right-handed-basis; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, 0, 0],
+        "axis": [0, 0, 1],
+        "theta": 1.5707963267948966
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, 0, 0],
+        "axis": [0, 1, 0],
+        "theta": 1.5707963267948966
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [0, 1, 0],
+        "axis": [1, 0, 0],
+        "theta": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrotv-mixed-axis-and-reversed-angle",
+    "description": "vrotv: mixed-axis-and-reversed-angle; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [2, -3, 5],
+        "theta": 0.7
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [2, -3, 5],
+        "theta": -0.7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrotv-zero-vector-and-zero-axis",
+    "description": "vrotv: zero-vector-and-zero-axis; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [0, 0, 0],
+        "axis": [2, -3, 5],
+        "theta": 1.25
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [0.125, -2.5, 8],
+        "axis": [0, 0, 0],
+        "theta": 1.25
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1.7976931348623157e308, -1.7976931348623157e308, 5e-324],
+        "axis": [0, 0, 0],
+        "theta": 7.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrotv-axis-scale-and-sign",
+    "description": "vrotv: axis-scale-and-sign; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [2e200, -3e200, 5e200],
+        "theta": 0.7
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [2e-200, -3e-200, 5e-200],
+        "theta": 0.7
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [-2, 3, -5],
+        "theta": 0.7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrotv-zero-and-unwrapped-angle",
+    "description": "vrotv: zero-and-unwrapped-angle; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [2, -3, 5],
+        "theta": 0
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [0, 0, 1],
+        "theta": 6.533185307179586
+      },
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, -2, 4],
+        "axis": [0, 0, 1],
+        "theta": -6.533185307179586
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrotv-parallel-axis",
+    "description": "vrotv: parallel-axis; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrotv",
+        "v": [1, 2, 4],
+        "axis": [2, 4, 8],
+        "theta": 0.75
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

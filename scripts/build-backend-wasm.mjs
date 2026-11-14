@@ -511,6 +511,14 @@ const exportedFunctions = [
   "_tspice_gfdist",
 
   // --- coords/vectors ---
+  "_tspice_vlcom",
+  "_tspice_vlcom3",
+  "_tspice_vperp",
+  "_tspice_vproj",
+  "_tspice_vrel",
+  "_tspice_vrotv",
+  "_tspice_rotvec",
+  "_tspice_vtmv",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

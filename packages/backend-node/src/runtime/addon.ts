@@ -529,6 +529,31 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  vlcom(
+    a: number,
+    v1: readonly number[],
+    b: number,
+    v2: readonly number[],
+  ): number[];
+  vlcom3(
+    a: number,
+    v1: readonly number[],
+    b: number,
+    v2: readonly number[],
+    c: number,
+    v3: readonly number[],
+  ): number[];
+  vperp(a: readonly number[], b: readonly number[]): number[];
+  vproj(a: readonly number[], b: readonly number[]): number[];
+  vrel(a: readonly number[], b: readonly number[]): number;
+  vrotv(v: readonly number[], axis: readonly number[], theta: number): number[];
+  rotvec(v: readonly number[], angle: number, axis: number): number[];
+  vtmv(
+    v1: readonly number[],
+    matrix: readonly number[],
+    v2: readonly number[],
+  ): number;
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 1,
+  "batch": "a09-vector-combinations",
+  "traceFiles": [
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/utils/matrix.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/vector-combinations.test.ts",
+    "packages/py-parity-checking/test/vector-combinations-overflow.test.ts",
+    "packages/backend-wasm/test/vector-combinations-allocations.test.ts",
+    "packages/backend-node/test/vector-combinations-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-vector-combinations-numerics.md"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "vlcom_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vlcom_c.html",
+      "semantics": "raw.vlcom(a,v1,b,v2) alternates two finite scalar coefficients with readonly finite three-component vectors and returns an independently owned a*v1+b*v2 vector. Corresponding components retain their order and units. The actual CSPICE arithmetic is used, including overflow, underflow and cancellation effects; finite inputs can yield nonfinite results. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vlcom-distinct-coefficients",
+          "coverage": ["success"],
+          "observes": "Observe all three signed components for unequal coefficients and vectors; fractional/negative coefficients distinguish swapped or omitted arguments. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vlcom-zero-and-identity-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both-zero output and each separate identity coefficient, distinguishing which vector is selected. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vlcom-dyadic-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact cancellation with exactly representable coefficients/products; this is not a universal cancellation claim across compiler builds. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vlcom-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all components for 1e200 and 1e-200 vector magnitudes with the same mixed coefficients; focused scale-normalized checks distinguish tiny nonzero outputs from zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "Unequal/fractional/negative coefficients, each identity slot, zero coefficients, dyadic cancellation and scaled magnitudes are registered. Focused component/scale assertions distinguish tiny nonzero output, and scoped live overflow probes retain positive/negative infinity plus the ordinary remaining component.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls vlcom_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 4 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "Every component uses the unchanged shared 1e-12 absolute-or-relative comparator. Ordinary unequal coefficients produce distinguishing outputs; tiny results are separately multiplied by the inverse input scale before full component comparisons to live oracle results. Dyadic cancellation avoids claiming universal equality for ill-conditioned arbitrary cancellations. Scoped nonfinite output classification preserves all components without rounding.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vlcom -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vlcom shared C shim -> vlcom_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vlcom -> WASM typed adapter -> configured _tspice_vlcom export -> tspice_vlcom shared C shim -> vlcom_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "vlcom3_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vlcom3_c.html",
+      "semantics": "raw.vlcom3(a,v1,b,v2,c,v3) alternates three finite scalar coefficients with readonly finite three-component vectors and returns an independently owned a*v1+b*v2+c*v3 vector. Each coefficient applies to its corresponding vector. CSPICE arithmetic, including overflow, underflow and cancellation, is preserved rather than reimplemented in TypeScript. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vlcom3-distinct-coefficients",
+          "coverage": ["success"],
+          "observes": "Observe every component of a three-term combination with unequal coefficients and all three distinct vectors; omitting or mispairing the third term changes the result. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vlcom3-each-coefficient-slot",
+          "coverage": ["success", "edge"],
+          "observes": "Select each of the three vector arguments separately through unit/zero coefficients. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vlcom3-zero-and-dyadic-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both all-zero coefficients and a three-term cancellation with exactly representable products; no universal cross-build cancellation equality is claimed. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vlcom3-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe each output component at tiny/huge input scales; focused per-component scale-normalized assertions supplement the ordinary comparator. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "Distinct three-term coefficients, each isolated vector slot, all-zero coefficients, dyadic cancellation and scaled magnitudes are registered. Focused component/scale assertions prevent small-output blindness; scoped live overflow probes retain all three components and a finite third-component control.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls vlcom3_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 5 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "Every component uses the unchanged shared 1e-12 absolute-or-relative comparator. Distinct third-term and isolated-slot cases detect dropped or mispaired arguments. Tiny results receive separate per-component scale-normalized checks. Exact cancellation is limited to the registered dyadic products. Scoped live nonfinite classification keeps every output component.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vlcom3 -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vlcom3 shared C shim -> vlcom3_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vlcom3 -> WASM typed adapter -> configured _tspice_vlcom3 export -> tspice_vlcom3 shared C shim -> vlcom3_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "vperp_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vperp_c.html",
+      "semantics": "raw.vperp(a,b) returns an independently owned component of a perpendicular to b for ordinary nonzero finite vectors in the same frame. Inputs are readonly three-component tuples. The pinned N0067 body returns [0,0,0] if either input is zero; the locked live oracle agrees, despite the primary reference prose saying zero b returns a. Actual reciprocal scaling and cancellation behavior is retained, including nonfinite extreme results. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vperp-mixed-and-reversed",
+          "coverage": ["success"],
+          "observes": "Observe all components of a perpendicular to b and b perpendicular to a; asymmetric signed vectors distinguish reversed arguments. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vperp-zero-input-and-zero-reference",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual zero result for a zero source, a nonzero source with zero reference, and two zero vectors. The zero-reference result agrees with the pinned source and live oracle, and its conflict with NAIF prose is documented. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vperp-parallel-opposed-orthogonal",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero for dyadic parallel/opposed vectors and the unchanged ordinary perpendicular component for an orthogonal pair. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vperp-reference-scale-and-sign",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full result when the reference is huge, tiny or sign-reversed; this checks direction rather than a required unit-length reference. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vperp-input-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe large/tiny perpendicular components with a fixed mixed reference; focused scale-normalized checks prevent absolute tolerance from hiding tiny output. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "Both operand orders, source/reference zeros, dyadic parallel/opposed and orthogonal pairs, reference scaling/sign and source tiny/huge magnitudes are registered. Focused scaled component checks strengthen tiny results. The scoped independent live test covers minimum-subnormal reciprocal scaling; a separate direct oracle observation of large parallel inputs is retained in the numerical note. The source/header discrepancy remains explicitly documented.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls vperp_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 4 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "Every component uses the unchanged shared tolerance. Tiny-source outputs receive separate component/scale assertions. Registered zero and orthogonal cases distinguish the pinned behavior; the zero-reference discrepancy is resolved by direct source/oracle evidence rather than a tolerance exception. Extreme NaN/finite classes remain visible in the scoped live probe.",
+      "findings": [
+        {
+          "id": "vperp-zero-reference-prose-discrepancy",
+          "status": "repaired",
+          "summary": "Primary NAIF prose says a zero reference b returns a, but the pinned N0067 body zeros the output if either input is zero. The fingerprinted independent SpiceyPy oracle returns [0,0,0] for nonzero a and zero b. Treating the prose as the executable behavior would misstate raw semantics.",
+          "repair": "Documented the source/header discrepancy and direct oracle observation in the numerical note and public contract, preserving the direct compiled routine. Registered zero-source/reference workflows and focused literal assertions observe the pinned zero result. No scientific workaround, oracle substitution, tolerance change or new exclusion is introduced; backend and CI verification remain separate.",
+          "evidence": [
+            "docs/step8-vector-combinations-numerics.md",
+            "packages/backend-contract/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/src/cases/coords-vectors/vperp.cases.json",
+            "packages/py-parity-checking/test/vector-combinations.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-vperp-zero-input-and-zero-reference",
+            "coords-vectors-vperp-mixed-and-reversed"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vperp -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vperp shared C shim -> vperp_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vperp -> WASM typed adapter -> configured _tspice_vperp export -> tspice_vperp shared C shim -> vperp_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "vproj_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vproj_c.html",
+      "semantics": "raw.vproj(a,b) projects a onto b, preserving operand order and returning an independently owned three-component vector. Inputs are readonly finite tuples in the same frame. Either zero input returns zero. The conceptual dot(a,b)/dot(b,b)*b expression is not substituted for the actual scaled CSPICE algorithm; its nonfinite extreme results are retained. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vproj-mixed-and-reversed",
+          "coverage": ["success"],
+          "observes": "Observe all components of projecting a onto b and b onto a; unequal signed vectors distinguish direction and argument order. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vproj-zero-input-and-zero-reference",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the zero output when source or receiving reference is zero, including both-zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vproj-parallel-opposed-orthogonal",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full projection for parallel/opposed directions and zero for the orthogonal pair. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vproj-reference-scale-and-sign",
+          "coverage": ["success", "edge"],
+          "observes": "Observe projection invariance to the tested finite magnitude/sign changes of the receiving reference, without imposing a unit-vector precondition. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vproj-input-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all large/tiny projection components; focused scale-normalized checks distinguish small nonzero projections. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "Both operand orders, source/reference zeros, parallel/opposed/orthogonal directions and independent source/reference scaling are registered. Focused scaled component checks supplement tiny values. Scoped live probes retain all NaN/infinity/finite components at minimum-subnormal and maximum finite extremes.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls vproj_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 4 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "Every component uses the unchanged shared tolerance. Mixed operands and scale/sign changes distinguish projection semantics; tiny outputs receive separate component/scale assertions to prevent zero passing due to absolute tolerance. The extreme live comparison preserves all nonfinite classes and ordinary controls.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vproj -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vproj shared C shim -> vproj_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vproj -> WASM typed adapter -> configured _tspice_vproj export -> tspice_vproj shared C shim -> vproj_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "vrel_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vrel_c.html",
+      "semantics": "raw.vrel(a,b) returns the dimensionless relative difference norm(a-b)/max(norm(a),norm(b)) for readonly finite three-component vectors in the same frame. Equal vectors, including two zeros, return zero. The nominal mathematical range is [0,2], but intermediate CSPICE overflow/underflow and nonfinite output are preserved, not clamped. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vrel-mixed-and-reversed",
+          "coverage": ["success"],
+          "observes": "Observe the scalar relative difference for unequal signed vectors in both orders. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrel-zero-and-identical",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero for both-zero and equal nonzero inputs, and one when exactly one ordinary input is zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrel-parallel-and-opposed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe unequal parallel magnitudes and equal-magnitude opposition, distinguishing relative scale from separation angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrel-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the dimensionless ratio for matching tiny/huge scalings of the same unequal vectors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrel-nearby-large-components",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a small nonzero relative difference between vectors near 1e15; a focused result-times-1e15 assertion separately prevents zero passing the shared absolute tolerance. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "Both operand orders, both/either zero, identical vectors, unequal parallel magnitudes, equal opposition, scaling and nearby large vectors are registered. The tiny relative difference gets an explicit scaled observation. The independent extreme probe compares the real nonfinite result for opposed maximum components and requires later valid-call recovery.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls vrel_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 4 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "The unchanged shared tolerance applies to the full scalar. Ordinary ratios are order one. The nearby-large-components result is below the shared absolute threshold of 1e-12, so its focused assertion multiplies by 1e15 before a distinguishing comparison; generic absolute-tolerance parity alone is not credited for that small difference. Scoped live nonfinite classification preserves overflow output.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vrel -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vrel shared C shim -> vrel_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vrel -> WASM typed adapter -> configured _tspice_vrel export -> tspice_vrel shared C shim -> vrel_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "vrotv_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vrotv_c.html",
+      "semantics": "raw.vrotv(v,axis,theta) actively rotates v about the axis in the right-handed sense by theta radians. Vector arguments are readonly finite three-component tuples; theta is finite. CSPICE normalizes the axis. A zero axis returns an owned copy of v. Positive pi/2 about +Z takes +X toward +Y. The matching C entry delegates to its SPICELIB routine; no TypeScript rotation formula or angle wrapping is substituted. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vrotv-right-handed-basis",
+          "coverage": ["success"],
+          "observes": "Observe rotations about all three positive coordinate axes at pi/2; component signs distinguish active from passive rotation. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrotv-mixed-axis-and-reversed-angle",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all components for a nonunit mixed axis and opposite signed angles. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrotv-zero-vector-and-zero-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero-vector rotation and owned input copies for zero axis, including maximum and subnormal components; exact focused comparison preserves all copy values. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrotv-axis-scale-and-sign",
+          "coverage": ["success", "edge"],
+          "observes": "Observe normalization of tiny/huge axes and reversed axis direction at fixed angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrotv-zero-and-unwrapped-angle",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero angle and signed angles outside a full turn without replacing the CSPICE angle input. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vrotv-parallel-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a dyadic vector aligned with its axis under a nonzero rotation angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "All basis directions, mixed axes, signed angles, axis magnitude/sign, zero vector, zero axis, zero angle, unwrapped angles and a parallel axis are registered. Focused exact zero-axis comparison observes maximum/subnormal copy values. The scoped live probe compares every field of an overflowing rotation, preserving finite and nonfinite components together.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls vrotv_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 4 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "All three components use the unchanged shared tolerance, with basis signs and mixed rotations distinguishing convention/axis/angle errors. The zero-axis extreme copy receives a separate exact literal comparison to the input, including a minimum subnormal and signed-zero check. The registered live workflow retains all three output components under the shared comparator; it is not claimed as exact subnormal or signed-zero oracle evidence. Finite and nonfinite overflow components are all preserved in the scoped live comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vrotv -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vrotv shared C shim -> vrotv_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vrotv -> WASM typed adapter -> configured _tspice_vrotv export -> tspice_vrotv shared C shim -> vrotv_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "rotvec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rotvec_c.html",
+      "semantics": "raw.rotvec(v,angle,axis) expresses readonly finite vector v in a coordinate system rotated by angle radians. Positive pi/2 about axis 3 takes +X toward -Y, opposite the active vrotv convention. CSPICE reduces signed 32-bit integer axis values modulo three, including zero and negative values. Wrappers reject nonintegral/out-of-range axes before conversion. Results are owned copies and preserve CSPICE floating-point behavior. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-rotvec-coordinate-rotation-basis",
+          "coverage": ["success"],
+          "observes": "Observe all vector components under each of the three coordinate rotations; positive angle signs distinguish the passive convention. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-rotvec-mixed-negative-angle",
+          "coverage": ["success", "edge"],
+          "observes": "Observe mixed vector components and signed angles on distinct axes. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-rotvec-wrapped-axis-indices",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero, positive wrapped, negative wrapped and signed-int32 endpoint axes through actual CSPICE modulo mapping. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-rotvec-zero-vector-and-zero-angle",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero input and an unchanged mixed input at zero angle. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-rotvec-unwrapped-angle",
+          "coverage": ["success", "edge"],
+          "observes": "Observe signed angles beyond one full revolution without pre-wrapping them in the adapter. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "All coordinate axes, signed and unwrapped angles, zero input/angle and modulo axes including int32 endpoints are registered. Focused public assertions distinguish passive rotation and test malformed/range axes with same-client recovery. The independent overflow probe retains the unchanged axis component as well as the finite/nonfinite rotated components.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error. Nonintegral and out-of-int32-range axis rejection prevents lossy integer conversion; valid zero/negative/modulo axes remain supported.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls rotvec_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 3 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "All components use the unchanged shared tolerance. Mixed vectors and positive/negative basis rotations distinguish signs; modulo-axis outputs are compared directly rather than normalized to a rotational invariant. Extreme live comparison keeps finite components and unchanged axis component alongside nonfinite values.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.rotvec -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_rotvec shared C shim -> rotvec_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.rotvec -> WASM typed adapter -> configured _tspice_rotvec export -> tspice_rotvec shared C shim -> rotvec_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "vtmv_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vtmv_c.html",
+      "semantics": "raw.vtmv(v1,matrix,v2) returns the scalar transpose(v1)*matrix*v2. Vectors are readonly finite three-component tuples; matrix is the existing flat nine-number finite Mat3RowMajor representation. The shim populates C matrix rows in that order; the independent oracle receives the corresponding nested rows. No transpose or symmetry assumption is applied. The actual CSPICE summation, including nonfinite extreme results, is preserved. No kernel, file, handle, variable dimension or caller-selected output capacity is needed.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vtmv-nonsymmetric-matrix",
+          "coverage": ["success"],
+          "observes": "Observe the scalar for a nonsymmetric matrix, swapped unequal vectors and the explicitly transposed matrix; transpose/order defects produce distinguishable values. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vtmv-row-column-basis",
+          "coverage": ["success", "edge"],
+          "observes": "Select distinct off-diagonal row/column entries through basis vectors to expose matrix flattening or transpose errors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vtmv-zero-and-identity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe each zero vector and the identity-matrix product without requiring a symmetric general matrix. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        },
+        {
+          "caseId": "coords-vectors-vtmv-balanced-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an ordinary-sized scalar with reciprocal 1e200 and 1e-200 vector magnitudes in either position; no norm-only surrogate is compared. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; every output field is retained."
+        }
+      ],
+      "edgeAssessment": "Nonsymmetric matrices, reversed vectors, explicit transpose, off-diagonal basis selectors, either zero vector, identity and reciprocal magnitude inputs are registered. Independent live overflow retains the actual scalar result; malformed matrix shape/elements and same-client recovery are wrapper boundary tests.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Strict finite scalar/vector/matrix validation and allocation failures are wrapper behavior; focused public and native adapter tests cover malformed inputs and recovery. Finite-input numerical overflow/nonfinite output is compared independently and is not converted into an invented SPICE error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coefficients, vectors, matrices and angles only; no scientific kernels, downloaded data, file handles or fixture-distribution change. Locked SpiceyPy 6.0.3 wrapper and ctypes source were inspected; each calls the matching libspice routine independently of tspice.",
+      "cleanup": "The shared shim initializes outputs, calls vtmv_c using fixed local storage and publishes results after SPICE status checking with the existing capture/reset policy. Native serializes CSPICE access and copies results into JS. WASM owns 5 temporary allocations through withAllocs; fault tests cover each allocation position and success cleanup, with genuine same-module recovery. Returned values are copied before freeing heap storage. Public parity clients dispose in finally and workflows clear/reset state. Assertion execution is pending fresh recorded evidence.",
+      "tolerance": "The full scalar uses the unchanged shared tolerance. A nonsymmetric matrix, unequal vectors and individual off-diagonal selectors expose transpose/order/layout errors. Reciprocal vector scales keep distinguishing outputs at ordinary magnitude. Nonfinite overflow is tagged before oracle JSON and compared without a global tolerance change.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vtmv -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vtmv shared C shim -> vtmv_c; complete scalar/vector result copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vtmv -> WASM typed adapter -> configured _tspice_vtmv export -> tspice_vtmv shared C shim -> vtmv_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Primary semantics, actual implementation paths and assertion source reviewed. Direct oracle observations are documented separately. Fresh focused/full local backend execution and observed canonical CI remain pending; no verified or landed claim."
+}
