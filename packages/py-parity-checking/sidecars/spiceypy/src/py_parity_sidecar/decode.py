@@ -22,6 +22,13 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsEul2m,
+    StepCoordsVectorsM2eul,
+    StepCoordsVectorsM2q,
+    StepCoordsVectorsQ2m,
+    StepCoordsVectorsQxq,
+    StepCoordsVectorsQdq2av,
+    StepCoordsVectorsRaxisa,
     StepCoordsVectorsDet,
     StepCoordsVectorsDiags2,
     StepCoordsVectorsIdent,
@@ -507,6 +514,51 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
             )
 
+        case "coords-vectors.eul2m":
+            return StepCoordsVectorsEul2m(
+                op=op,
+                angle3=_expect_number(step.get("angle3"), label="coords-vectors.eul2m.angle3"),
+                angle2=_expect_number(step.get("angle2"), label="coords-vectors.eul2m.angle2"),
+                angle1=_expect_number(step.get("angle1"), label="coords-vectors.eul2m.angle1"),
+                axis3=_expect_int(step.get("axis3"), label="coords-vectors.eul2m.axis3"),
+                axis2=_expect_int(step.get("axis2"), label="coords-vectors.eul2m.axis2"),
+                axis1=_expect_int(step.get("axis1"), label="coords-vectors.eul2m.axis1"),
+            )
+        case "coords-vectors.m2eul":
+            return StepCoordsVectorsM2eul(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.m2eul.m"),
+                axis3=_expect_int(step.get("axis3"), label="coords-vectors.m2eul.axis3"),
+                axis2=_expect_int(step.get("axis2"), label="coords-vectors.m2eul.axis2"),
+                axis1=_expect_int(step.get("axis1"), label="coords-vectors.m2eul.axis1"),
+            )
+        case "coords-vectors.m2q":
+            return StepCoordsVectorsM2q(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.m2q.m"),
+            )
+        case "coords-vectors.q2m":
+            return StepCoordsVectorsQ2m(
+                op=op,
+                q=_expect_vec4(step.get("q"), label="coords-vectors.q2m.q"),
+            )
+        case "coords-vectors.qxq":
+            return StepCoordsVectorsQxq(
+                op=op,
+                q1=_expect_vec4(step.get("q1"), label="coords-vectors.qxq.q1"),
+                q2=_expect_vec4(step.get("q2"), label="coords-vectors.qxq.q2"),
+            )
+        case "coords-vectors.qdq2av":
+            return StepCoordsVectorsQdq2av(
+                op=op,
+                q=_expect_vec4(step.get("q"), label="coords-vectors.qdq2av.q"),
+                dq=_expect_vec4(step.get("dq"), label="coords-vectors.qdq2av.dq"),
+            )
+        case "coords-vectors.raxisa":
+            return StepCoordsVectorsRaxisa(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.raxisa.m"),
+            )
         case "coords-vectors.det":
             return StepCoordsVectorsDet(
                 op=op,

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 173
-- Planned (not yet implemented): 476
+- Implemented now (SpiceRawBackend): 180
+- Planned (not yet implemented): 469
 - Excluded: 3
 
 ## Implemented now
@@ -80,6 +80,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
 | `et2utc_c` | Ephemeris Time to UTC |
+| `eul2m_c` | Euler angles to matrix |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
@@ -118,6 +119,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `m2eul_c` | Matrix to Euler angles |
+| `m2q_c` | Matrix to quaternion |
 | `mequ_c` | Matrix equal to another, 3x3 |
 | `mtxm_c` | Matrix transpose times matrix, 3x3 |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
@@ -132,6 +135,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
+| `q2m_c` | Quaternion to matrix |
+| `qdq2av_c` | Quaternion and quaternion derivative to a.v. |
+| `qxq_c` | Quaternion times quaternion |
+| `raxisa_c` | Rotation axis of a matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
@@ -370,7 +377,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `esrchc_c` | Equivalence search, character |
 | `et2lst_c` | ET to Local Solar Time |
 | `etcal_c` | Convert ET to Calendar format |
-| `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
 | `evsgp4_c` | Evaluate "two-line" element data |
 | `filld_c` | Fill a double precision array |
@@ -452,8 +458,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `lx4sgn_c` | Scan for signed integer |
 | `lx4uns_c` | Scan for unsigned integer |
 | `lxqstr_c` | Lex quoted string |
-| `m2eul_c` | Matrix to Euler angles |
-| `m2q_c` | Matrix to quaternion |
 | `matchi_c` | Match string against wildcard template |
 | `matchw_c` | Match string against wildcard template |
 | `maxd_c` | Maximum of a set of double precision values |
@@ -511,14 +515,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `psv2pl_c` | Point and spanning vectors to plane |
 | `putcml_c` | Get the command line |
 | `pxfrm2_c` | Position Transform Matrix, Different Epochs |
-| `q2m_c` | Quaternion to matrix |
 | `qcktrc_c` | Get Quick Traceback |
 | `qderiv_c` | Quadratic derivative |
-| `qdq2av_c` | Quaternion and quaternion derivative to a.v. |
-| `qxq_c` | Quaternion times quaternion |
 | `radrec_c` | Range, RA and DEC to rectangular coordinates |
 | `rav2xf_c` | Rotation and angular velocity to transform |
-| `raxisa_c` | Rotation axis of a matrix |
 | `rdtext_c` | Read a line from a text file |
 | `recazl_c` | Rectangular coordinates to AZ/EL |
 | `reccyl_c` | Rectangular to cylindrical coordinates |

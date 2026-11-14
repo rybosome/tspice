@@ -227,6 +227,24 @@ Notes:
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
+The seven rotation conversions use finite row-major `Mat3RowMajor`
+inputs, radian angles, numbered axes and scalar-first SPICE quaternions.
+
+| Raw call                                             | Scientific route                                  | Result                                                      |
+| ---------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------- |
+| `eul2m(angle3, angle2, angle1, axis3, axis2, axis1)` | Traced SPICELIB `eul2m_` with initialized storage | Owned row-major matrix.                                     |
+| `m2eul(m, axis3, axis2, axis1)`                      | `m2eul_c`                                         | `{angle3, angle2, angle1}`.                                 |
+| `m2q(m)`                                             | `m2q_c`                                           | Owned scalar-first quaternion.                              |
+| `q2m(q)`                                             | `q2m_c`                                           | Owned row-major matrix, including exceptional IEEE entries. |
+| `qxq(q1, q2)`                                        | `qxq_c`                                           | Owned Hamilton product in input order.                      |
+| `qdq2av(q, dq)`                                      | `qdq2av_c`                                        | Angular velocity vector.                                    |
+| `raxisa(m)`                                          | `raxisa_c`                                        | `{axis, angle}` with radians.                               |
+
+The lower-level Euler entrypoint preserves the original scientific
+implementation and public trace on success and error. See the source
+review for orientation, singular angle selection and exceptional values.
+[Rotation representation review](step8-rotation-representations.md)
+
 `rotate` and `rotmat` preserve CSPICE's modulo-three axis mapping (including zero/negative integers); their typed adapters reject fractional, non-finite, or overflowing JS axes before conversion. Matrices are row-major. `rotate`/`rotmat` use passive coordinate rotation, while `axisar` returns an active vector rotation. The audit includes noncommuting matrix products, both vector multiplication directions, coordinate poles/zero inputs, and oblate/prolate geodetic conversions.
 
 Most routines in this domain are **pure math** and require no kernels.

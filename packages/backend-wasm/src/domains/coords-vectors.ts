@@ -845,11 +845,210 @@ function readFixedMatrix2(
   return [heap[i]!, heap[i + 1]!, heap[i + 2]!, heap[i + 3]!];
 }
 
+function rotationQuaternion(
+  value: unknown,
+  label: string,
+  requireFinite: boolean,
+): [number, number, number, number] {
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(label + " must contain four quaternion components");
+  const entry = (i: number) => {
+    const x: unknown = value[i];
+    if (typeof x !== "number" || (requireFinite && !Number.isFinite(x)))
+      throw new TypeError(label + " contains an invalid component");
+    return x;
+  };
+  return [entry(0), entry(1), entry(2), entry(3)];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    eul2m: (angle3, angle2, angle1, axis3, axis2, axis1) => {
+      assertFixedMatrixScalar(angle3, "eul2m(angle3)");
+      assertFixedMatrixScalar(angle2, "eul2m(angle2)");
+      assertFixedMatrixScalar(angle1, "eul2m(angle1)");
+      assertSpiceInt32(axis3, "eul2m(axis3)");
+      assertSpiceInt32(axis2, "eul2m(axis2)");
+      assertSpiceInt32(axis1, "eul2m(axis1)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, rPtr) => {
+        const status = module._tspice_eul2m(
+          angle3,
+          angle2,
+          angle1,
+          axis3,
+          axis2,
+          axis1,
+          rPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        const rAt = rPtr >>> 3;
+        return brandMat3RowMajorResult(module.HEAPF64.subarray(rAt, rAt + 9), {
+          label: "eul2m result",
+        });
+      });
+    },
+    m2eul: (m, axis3, axis2, axis1) => {
+      const mCopy = copyMatrixInput(m, "m2eul(m)");
+      assertSpiceInt32(axis3, "m2eul(axis3)");
+      assertSpiceInt32(axis2, "m2eul(axis2)");
+      assertSpiceInt32(axis1, "m2eul(axis1)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 8, 8, 8],
+        (errPtr, mPtr, angle3Ptr, angle2Ptr, angle1Ptr) => {
+          module.HEAPF64.set(mCopy, mPtr >>> 3);
+          const status = module._tspice_m2eul(
+            mPtr,
+            axis3,
+            axis2,
+            axis1,
+            angle3Ptr,
+            angle2Ptr,
+            angle1Ptr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const angle3At = angle3Ptr >>> 3;
+          const angle2At = angle2Ptr >>> 3;
+          const angle1At = angle1Ptr >>> 3;
+          return {
+            angle3: module.HEAPF64[angle3At + 0]!,
+            angle2: module.HEAPF64[angle2At + 0]!,
+            angle1: module.HEAPF64[angle1At + 0]!,
+          };
+        },
+      );
+    },
+    m2q: (m) => {
+      const mCopy = copyMatrixInput(m, "m2q(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 32],
+        (errPtr, mPtr, qPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >>> 3);
+          const status = module._tspice_m2q(mPtr, qPtr, errPtr, ERR_MAX_BYTES);
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const qAt = qPtr >>> 3;
+          return [
+            module.HEAPF64[qAt + 0]!,
+            module.HEAPF64[qAt + 1]!,
+            module.HEAPF64[qAt + 2]!,
+            module.HEAPF64[qAt + 3]!,
+          ];
+        },
+      );
+    },
+    q2m: (q) => {
+      const qCopy = rotationQuaternion(q, "q2m(q)", true);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 32, 72],
+        (errPtr, qPtr, rPtr) => {
+          module.HEAPF64.set(qCopy, qPtr >>> 3);
+          const status = module._tspice_q2m(qPtr, rPtr, errPtr, ERR_MAX_BYTES);
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const rAt = rPtr >>> 3;
+          return brandMat3RowMajorResult(
+            module.HEAPF64.subarray(rAt, rAt + 9),
+            { label: "q2m result" },
+          );
+        },
+      );
+    },
+    qxq: (q1, q2) => {
+      const q1Copy = rotationQuaternion(q1, "qxq(q1)", true);
+      const q2Copy = rotationQuaternion(q2, "qxq(q2)", true);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 32, 32, 32],
+        (errPtr, q1Ptr, q2Ptr, qoutPtr) => {
+          module.HEAPF64.set(q1Copy, q1Ptr >>> 3);
+          module.HEAPF64.set(q2Copy, q2Ptr >>> 3);
+          const status = module._tspice_qxq(
+            q1Ptr,
+            q2Ptr,
+            qoutPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const qoutAt = qoutPtr >>> 3;
+          return [
+            module.HEAPF64[qoutAt + 0]!,
+            module.HEAPF64[qoutAt + 1]!,
+            module.HEAPF64[qoutAt + 2]!,
+            module.HEAPF64[qoutAt + 3]!,
+          ];
+        },
+      );
+    },
+    qdq2av: (q, dq) => {
+      const qCopy = rotationQuaternion(q, "qdq2av(q)", true);
+      const dqCopy = rotationQuaternion(dq, "qdq2av(dq)", true);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 32, 32, 24],
+        (errPtr, qPtr, dqPtr, avPtr) => {
+          module.HEAPF64.set(qCopy, qPtr >>> 3);
+          module.HEAPF64.set(dqCopy, dqPtr >>> 3);
+          const status = module._tspice_qdq2av(
+            qPtr,
+            dqPtr,
+            avPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const avAt = avPtr >>> 3;
+          return [
+            module.HEAPF64[avAt + 0]!,
+            module.HEAPF64[avAt + 1]!,
+            module.HEAPF64[avAt + 2]!,
+          ];
+        },
+      );
+    },
+    raxisa: (m) => {
+      const mCopy = copyMatrixInput(m, "raxisa(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 24, 8],
+        (errPtr, mPtr, axisPtr, anglePtr) => {
+          module.HEAPF64.set(mCopy, mPtr >>> 3);
+          const status = module._tspice_raxisa(
+            mPtr,
+            axisPtr,
+            anglePtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const axisAt = axisPtr >>> 3;
+          const angleAt = anglePtr >>> 3;
+          return {
+            axis: [
+              module.HEAPF64[axisAt + 0]!,
+              module.HEAPF64[axisAt + 1]!,
+              module.HEAPF64[axisAt + 2]!,
+            ],
+            angle: module.HEAPF64[angleAt + 0]!,
+          };
+        },
+      );
+    },
     det: (m) => {
       const mCopy = copyMatrixInput(m, "det(m)");
       return withAllocs(

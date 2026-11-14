@@ -108,3 +108,11 @@ Regression evidence: [fixed-matrices-domain.test.ts](../packages/backend-node/te
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
+
+## Rotation representations
+
+A14 adds seven scientific methods on the exact A12 matrix branch. The
+two expansion assignments remain separate. The combined source requires
+new full validation records for each backend. The Euler constructor uses
+the actual linked SPICELIB implementation with defined error handling.
+[Matrix, quaternion, Euler and axis conventions](step8-rotation-representations.md)

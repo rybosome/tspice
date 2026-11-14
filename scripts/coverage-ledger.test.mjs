@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 173,
-    planned: 476,
+    implemented: 180,
+    planned: 469,
     excluded: 3,
-    caseFiles: 173,
-    scenarios: 1159,
+    caseFiles: 180,
+    scenarios: 1200,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -314,6 +314,39 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
 });
 
+test("the EUL2M route retains its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "eul2m_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    for (const symbol of ["eul2m_", "chkin_c", "chkout_c"])
+      assert.ok(mapping.cspiceEntrypoints.includes(symbol));
+    assert.ok(!mapping.cspiceEntrypoints.includes("eul2m_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/coords_vectors.c";
+  const invocation =
+    "eul2m_(&angles[0], &angles[1], &angles[2], &axes[0], &axes[1], &axes[2], result);";
+  for (const replacement of [
+    "/* " + invocation + " */",
+    invocation.replace("eul2m_", "eul2xf_"),
+    invocation.replace("eul2m_", "eul2m_c"),
+  ]) {
+    f.edit(source, invocation, replacement);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.eul2m/);
+    f.edit(source, replacement, invocation);
+  }
+  for (const traceCall of ['chkin_c("eul2m_c");', 'chkout_c("eul2m_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.eul2m/);
+    f.edit(source, comment, traceCall);
+  }
+});
+
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "turbo.json");
@@ -446,7 +479,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 11);
+  assert.equal(ledger.audit.expansionRoutines, 18);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

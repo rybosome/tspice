@@ -8,6 +8,58 @@ Matrix3x3: TypeAlias = list[list[float]]
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsEul2m:
+    op: Literal["coords-vectors.eul2m"]
+    angle3: float
+    angle2: float
+    angle1: float
+    axis3: int
+    axis2: int
+    axis1: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsM2eul:
+    op: Literal["coords-vectors.m2eul"]
+    m: Matrix3x3
+    axis3: int
+    axis2: int
+    axis1: int
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsM2q:
+    op: Literal["coords-vectors.m2q"]
+    m: Matrix3x3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsQ2m:
+    op: Literal["coords-vectors.q2m"]
+    q: tuple[float,float,float,float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsQxq:
+    op: Literal["coords-vectors.qxq"]
+    q1: tuple[float,float,float,float]
+    q2: tuple[float,float,float,float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsQdq2av:
+    op: Literal["coords-vectors.qdq2av"]
+    q: tuple[float,float,float,float]
+    dq: tuple[float,float,float,float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsRaxisa:
+    op: Literal["coords-vectors.raxisa"]
+    m: Matrix3x3
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsDet:
     op: Literal["coords-vectors.det"]
     m: Matrix3x3

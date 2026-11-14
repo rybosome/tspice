@@ -155,6 +155,7 @@ export type StepIdsNamesBodvar = {
   item: string;
 };
 
+export type Quaternion = readonly [number, number, number, number];
 export type Matrix3x3 = [
   [number, number, number],
   [number, number, number],
@@ -174,6 +175,38 @@ export type Vector3 = [number, number, number];
 
 export type Matrix2RowMajor = [number, number, number, number];
 
+export type StepCoordsVectorsEul2m = {
+  op: "coords-vectors.eul2m";
+  angle3: number;
+  angle2: number;
+  angle1: number;
+  axis3: number;
+  axis2: number;
+  axis1: number;
+};
+export type StepCoordsVectorsM2eul = {
+  op: "coords-vectors.m2eul";
+  m: Matrix3x3;
+  axis3: number;
+  axis2: number;
+  axis1: number;
+};
+export type StepCoordsVectorsM2q = { op: "coords-vectors.m2q"; m: Matrix3x3 };
+export type StepCoordsVectorsQ2m = { op: "coords-vectors.q2m"; q: Quaternion };
+export type StepCoordsVectorsQxq = {
+  op: "coords-vectors.qxq";
+  q1: Quaternion;
+  q2: Quaternion;
+};
+export type StepCoordsVectorsQdq2av = {
+  op: "coords-vectors.qdq2av";
+  q: Quaternion;
+  dq: Quaternion;
+};
+export type StepCoordsVectorsRaxisa = {
+  op: "coords-vectors.raxisa";
+  m: Matrix3x3;
+};
 export type StepCoordsVectorsDet = {
   op: "coords-vectors.det";
   m: Matrix3x3;
@@ -1373,6 +1406,13 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsEul2m
+  | StepCoordsVectorsM2eul
+  | StepCoordsVectorsM2q
+  | StepCoordsVectorsQ2m
+  | StepCoordsVectorsQxq
+  | StepCoordsVectorsQdq2av
+  | StepCoordsVectorsRaxisa
   | StepCoordsVectorsDet
   | StepCoordsVectorsDiags2
   | StepCoordsVectorsIdent
@@ -1555,6 +1595,16 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.eul2m"; value: Matrix3x3 }
+  | {
+      op: "coords-vectors.m2eul";
+      value: { angle3: number; angle2: number; angle1: number };
+    }
+  | { op: "coords-vectors.m2q"; value: Quaternion }
+  | { op: "coords-vectors.q2m"; value: Matrix3x3 }
+  | { op: "coords-vectors.qxq"; value: Quaternion }
+  | { op: "coords-vectors.qdq2av"; value: Vector3 }
+  | { op: "coords-vectors.raxisa"; value: { axis: Vector3; angle: number } }
   | { op: "coords-vectors.det"; value: number }
   | {
       op: "coords-vectors.diags2";

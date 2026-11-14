@@ -21,6 +21,129 @@ static bool ReadFixedMatrix(Napi::Env env, const Napi::Value& value, size_t leng
   return true;
 }
 
+static Napi::Value Eul2m(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 6) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m: incorrect argument count")); return env.Undefined(); }
+  if (!info[0].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(angle3) must be numeric")); return env.Undefined(); }
+  const double angle3 = info[0].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(angle3)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(angle3)")); return env.Undefined(); }
+  if (!info[1].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(angle2) must be numeric")); return env.Undefined(); }
+  const double angle2 = info[1].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(angle2)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(angle2)")); return env.Undefined(); }
+  if (!info[2].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(angle1) must be numeric")); return env.Undefined(); }
+  const double angle1 = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(angle1)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(angle1)")); return env.Undefined(); }
+  if (!info[3].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(axis3) must be numeric")); return env.Undefined(); }
+  const double axis3 = info[3].As<Napi::Number>().DoubleValue();
+  if (!(axis3 >= INT32_MIN && axis3 <= INT32_MAX && std::trunc(axis3) == axis3)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(axis3)")); return env.Undefined(); }
+  if (!info[4].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(axis2) must be numeric")); return env.Undefined(); }
+  const double axis2 = info[4].As<Napi::Number>().DoubleValue();
+  if (!(axis2 >= INT32_MIN && axis2 <= INT32_MAX && std::trunc(axis2) == axis2)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(axis2)")); return env.Undefined(); }
+  if (!info[5].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(axis1) must be numeric")); return env.Undefined(); }
+  const double axis1 = info[5].As<Napi::Number>().DoubleValue();
+  if (!(axis1 >= INT32_MIN && axis1 <= INT32_MAX && std::trunc(axis1) == axis1)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(axis1)")); return env.Undefined(); }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double r[9] = {};
+  if (tspice_eul2m(angle3, angle2, angle1, static_cast<int>(axis3), static_cast<int>(axis2), static_cast<int>(axis1), r, err, sizeof(err))) { ThrowSpiceError(env,"eul2m",err); return env.Undefined(); }
+  return MakeNumberArray(env,r,9);
+}
+
+static Napi::Value M2eul(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 4) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul: incorrect argument count")); return env.Undefined(); }
+  double m[9];
+  if (!ReadFixedMatrix(env, info[0], 9, m, "m2eul(m)")) return env.Undefined();
+  if (!info[1].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul(axis3) must be numeric")); return env.Undefined(); }
+  const double axis3 = info[1].As<Napi::Number>().DoubleValue();
+  if (!(axis3 >= INT32_MIN && axis3 <= INT32_MAX && std::trunc(axis3) == axis3)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid m2eul(axis3)")); return env.Undefined(); }
+  if (!info[2].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul(axis2) must be numeric")); return env.Undefined(); }
+  const double axis2 = info[2].As<Napi::Number>().DoubleValue();
+  if (!(axis2 >= INT32_MIN && axis2 <= INT32_MAX && std::trunc(axis2) == axis2)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid m2eul(axis2)")); return env.Undefined(); }
+  if (!info[3].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul(axis1) must be numeric")); return env.Undefined(); }
+  const double axis1 = info[3].As<Napi::Number>().DoubleValue();
+  if (!(axis1 >= INT32_MIN && axis1 <= INT32_MAX && std::trunc(axis1) == axis1)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid m2eul(axis1)")); return env.Undefined(); }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double angle3[1] = {};
+  double angle2[1] = {};
+  double angle1[1] = {};
+  if (tspice_m2eul(m, static_cast<int>(axis3), static_cast<int>(axis2), static_cast<int>(axis1), angle3, angle2, angle1, err, sizeof(err))) { ThrowSpiceError(env,"m2eul",err); return env.Undefined(); }
+  auto result=Napi::Object::New(env);
+  result.Set("angle3",Napi::Number::New(env,angle3[0]));
+  result.Set("angle2",Napi::Number::New(env,angle2[0]));
+  result.Set("angle1",Napi::Number::New(env,angle1[0]));
+  return result;
+}
+
+static Napi::Value M2q(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 1) { ThrowSpiceError(Napi::TypeError::New(env,"m2q: incorrect argument count")); return env.Undefined(); }
+  double m[9];
+  if (!ReadFixedMatrix(env, info[0], 9, m, "m2q(m)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double q[4] = {};
+  if (tspice_m2q(m, q, err, sizeof(err))) { ThrowSpiceError(env,"m2q",err); return env.Undefined(); }
+  return MakeNumberArray(env,q,4);
+}
+
+static Napi::Value Q2m(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 1) { ThrowSpiceError(Napi::TypeError::New(env,"q2m: incorrect argument count")); return env.Undefined(); }
+  double q[4];
+  if (!ReadFixedMatrix(env, info[0], 4, q, "q2m(q)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double r[9] = {};
+  if (tspice_q2m(q, r, err, sizeof(err))) { ThrowSpiceError(env,"q2m",err); return env.Undefined(); }
+  return MakeNumberArray(env,r,9);
+}
+
+static Napi::Value Qxq(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 2) { ThrowSpiceError(Napi::TypeError::New(env,"qxq: incorrect argument count")); return env.Undefined(); }
+  double q1[4];
+  if (!ReadFixedMatrix(env, info[0], 4, q1, "qxq(q1)")) return env.Undefined();
+  double q2[4];
+  if (!ReadFixedMatrix(env, info[1], 4, q2, "qxq(q2)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double qout[4] = {};
+  if (tspice_qxq(q1, q2, qout, err, sizeof(err))) { ThrowSpiceError(env,"qxq",err); return env.Undefined(); }
+  return MakeNumberArray(env,qout,4);
+}
+
+static Napi::Value Qdq2av(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 2) { ThrowSpiceError(Napi::TypeError::New(env,"qdq2av: incorrect argument count")); return env.Undefined(); }
+  double q[4];
+  if (!ReadFixedMatrix(env, info[0], 4, q, "qdq2av(q)")) return env.Undefined();
+  double dq[4];
+  if (!ReadFixedMatrix(env, info[1], 4, dq, "qdq2av(dq)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double av[3] = {};
+  if (tspice_qdq2av(q, dq, av, err, sizeof(err))) { ThrowSpiceError(env,"qdq2av",err); return env.Undefined(); }
+  return MakeNumberArray(env,av,3);
+}
+
+static Napi::Value Raxisa(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 1) { ThrowSpiceError(Napi::TypeError::New(env,"raxisa: incorrect argument count")); return env.Undefined(); }
+  double m[9];
+  if (!ReadFixedMatrix(env, info[0], 9, m, "raxisa(m)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double axis[3] = {};
+  double angle[1] = {};
+  if (tspice_raxisa(m, axis, angle, err, sizeof(err))) { ThrowSpiceError(env,"raxisa",err); return env.Undefined(); }
+  auto result=Napi::Object::New(env);
+  result.Set("axis",MakeNumberArray(env,axis,3));
+  result.Set("angle",Napi::Number::New(env,angle[0]));
+  return result;
+}
+
 static Napi::Number Det(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   if (info.Length() != 1) {
@@ -821,6 +944,13 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "eul2m", Napi::Function::New(env,Eul2m), __func__)) return;
+  if (!SetExportChecked(env, exports, "m2eul", Napi::Function::New(env,M2eul), __func__)) return;
+  if (!SetExportChecked(env, exports, "m2q", Napi::Function::New(env,M2q), __func__)) return;
+  if (!SetExportChecked(env, exports, "q2m", Napi::Function::New(env,Q2m), __func__)) return;
+  if (!SetExportChecked(env, exports, "qxq", Napi::Function::New(env,Qxq), __func__)) return;
+  if (!SetExportChecked(env, exports, "qdq2av", Napi::Function::New(env,Qdq2av), __func__)) return;
+  if (!SetExportChecked(env, exports, "raxisa", Napi::Function::New(env,Raxisa), __func__)) return;
   if (!SetExportChecked(env, exports, "det", Napi::Function::New(env, Det), __func__)) return;
   if (!SetExportChecked(env, exports, "diags2", Napi::Function::New(env, Diags2), __func__)) return;
   if (!SetExportChecked(env, exports, "ident", Napi::Function::New(env, Ident), __func__)) return;
