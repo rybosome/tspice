@@ -75,3 +75,12 @@ and every interval through the public API and independent oracle. The audit
 also checks handle lifetimes, output capacity, closed boundaries, genuine
 errors and source-specific summary indices.
 [Window semantics and evidence](step8-window-algebra.md)
+
+## Ordinary cell arrays
+
+B01 extends the B03 cell registry with append and membership for three cell
+types and an order-preserving copy into an existing destination. The 68
+registered workflows compare actual contents, member booleans, recovered
+set state and errors. The supplemental public tests distinguish the C
+descriptor from translated control cardinality after a failed numeric copy.
+[Cell-array semantics and evidence](step8-cell-arrays.md)

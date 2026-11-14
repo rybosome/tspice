@@ -7,6 +7,7 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  spiceStringByteLength,
   assertWindowScalar,
   windowSideByte,
   windowOperatorBytes,
@@ -43,6 +44,50 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
       assertSpiceInt32NonNegative(size, "valid(size)");
       assertSpiceInt32NonNegative(n, "valid(n)");
       native.valid(size, n, cell);
+    },
+    appndc: (item, cell) => {
+      spiceStringByteLength(item, "appndc(item)");
+      native.appndc(item, cell);
+    },
+    appndd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("appndd(item) must be an ordered number");
+      native.appndd(item, cell);
+    },
+    appndi: (item, cell) => {
+      assertSpiceInt32(item, "appndi(item)");
+      native.appndi(item, cell);
+    },
+    elemc: (item, cell) => {
+      spiceStringByteLength(item, "elemc(item)");
+      const result = native.elemc(item, cell);
+      invariant(
+        typeof result === "boolean",
+        "Expected elemc() to return a boolean",
+      );
+      return result;
+    },
+    elemd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("elemd(item) must be an ordered number");
+      const result = native.elemd(item, cell);
+      invariant(
+        typeof result === "boolean",
+        "Expected elemd() to return a boolean",
+      );
+      return result;
+    },
+    elemi: (item, cell) => {
+      assertSpiceInt32(item, "elemi(item)");
+      const result = native.elemi(item, cell);
+      invariant(
+        typeof result === "boolean",
+        "Expected elemi() to return a boolean",
+      );
+      return result;
+    },
+    copy: (source, destination) => {
+      native.copy(source, destination);
     },
     insrti: (item, cell) => {
       assertSpiceInt32(item, "insrti(item)");

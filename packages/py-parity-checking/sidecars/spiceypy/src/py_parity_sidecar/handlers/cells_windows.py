@@ -5,9 +5,17 @@ from typing import Any
 import spiceypy as sp
 from spiceypy.utils.support_types import SPICECHAR_CELL, SPICEDOUBLE_CELL, SPICEINT_CELL, SpiceCell
 
+from .. import cell_array_oracle
 from .. import window_algebra_oracle
 from ..models import (
     StepCellsWindowsCard,
+    StepCellsWindowsAppndc,
+    StepCellsWindowsAppndd,
+    StepCellsWindowsAppndi,
+    StepCellsWindowsCopy,
+    StepCellsWindowsElemc,
+    StepCellsWindowsElemd,
+    StepCellsWindowsElemi,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -189,6 +197,51 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
     if isinstance(step, StepCellsWindowsCard):
         target = _require_target(context, step.targetKind, step.targetId)
         return StepOutput(op=step.op, value=int(sp.card(target)))
+
+    if isinstance(step, StepCellsWindowsAppndc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell, append=True)
+        sp.appndc(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsAppndd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        sp.appndd(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsAppndi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        sp.appndi(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsCopy):
+        source = _require_target(context, step.kind, step.sourceId)
+        cap = 8 if step.maxCardinality is None else step.maxCardinality
+        if step.kind == "int":
+            target = _get_or_create_int_cell(context, step.resultId, max_cardinality=cap)
+        elif step.kind == "double":
+            target = _get_or_create_double_cell(context, step.resultId, max_cardinality=cap)
+        else:
+            target = _get_or_create_char_cell(context, step.resultId, max_cardinality=cap, length=32 if step.length is None else step.length)
+        cell_array_oracle.copy_cell(source, target)
+        return StepOutput(op=step.op, value=list(target))
+
+    if isinstance(step, StepCellsWindowsElemc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell)
+        return StepOutput(op=step.op, value=bool(sp.elemc(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsElemd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        return StepOutput(op=step.op, value=bool(sp.elemd(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsElemi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        return StepOutput(op=step.op, value=bool(sp.elemi(step.item, cell)))
 
     if isinstance(step, StepCellsWindowsInsrtc):
         cell = _get_or_create_char_cell(

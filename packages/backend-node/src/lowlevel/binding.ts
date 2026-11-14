@@ -482,6 +482,22 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export insrtd(item, cell)",
   );
   invariant(
+    typeof native.appndc === "function",
+    "Native addon missing appndc()",
+  );
+  invariant(
+    typeof native.appndd === "function",
+    "Native addon missing appndd()",
+  );
+  invariant(
+    typeof native.appndi === "function",
+    "Native addon missing appndi()",
+  );
+  invariant(typeof native.elemc === "function", "Native addon missing elemc()");
+  invariant(typeof native.elemd === "function", "Native addon missing elemd()");
+  invariant(typeof native.elemi === "function", "Native addon missing elemi()");
+  invariant(typeof native.copy === "function", "Native addon missing copy()");
+  invariant(
     typeof native.insrtc === "function",
     "Expected native addon to export insrtc(item, cell)",
   );

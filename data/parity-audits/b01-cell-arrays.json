@@ -1,0 +1,654 @@
+{
+  "schemaVersion": 1,
+  "batch": "b01-cell-arrays",
+  "traceFiles": [
+    "docs/step8-cell-arrays.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/cells-windows.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/cell_handles.cc",
+    "packages/backend-node/native/src/domains/cells_windows.cc",
+    "packages/backend-node/src/domains/cells-windows.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/spice-handles.ts",
+    "packages/backend-node/test/cell-arrays-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/cells_windows.c",
+    "packages/backend-shim-c/src/handle_validation.c",
+    "packages/backend-shim-c/src/handle_validation.h",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/cells-windows.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/spice-handles.ts",
+    "packages/backend-wasm/test/cell-arrays-allocations.test.ts",
+    "packages/backend-wasm/test/cell-handle-ownership.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/core/src/spice-runtime/domains/window-algebra.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/cell_array_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/cell-array-behavior.test.ts",
+    "packages/tspice/test/cells-lifecycle-recovery.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "appndc_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/appndc_c.html",
+      "semantics": "Append to the next character row and increment cardinality. Compare the untruncated key with the preceding stored row using case-sensitive Fortran blank padding before truncation to width minus one UTF-8 bytes. A key that compares equal or lower clears the existing set flag.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-appndc-ordered-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ordered cell; inspect each new value and each membership result."
+        },
+        {
+          "caseId": "cells-windows-appndc-independent-handles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
+        },
+        {
+          "caseId": "cells-windows-appndc-equal-repeat",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-appndc-descending-then-valid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Revalidate unsorted appended data and duplicates before testing membership."
+        },
+        {
+          "caseId": "cells-windows-appndc-exact-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use every storage slot, inspect ordered and repeated physical values."
+        },
+        {
+          "caseId": "cells-windows-appndc-full",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-appndc-zero-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-appndc-complete-bytes",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership."
+        },
+        {
+          "caseId": "cells-windows-appndc-terminal-tab",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell."
+        },
+        {
+          "caseId": "cells-windows-appndc-fortran-blanks",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A padded item compares equal in orderedness, clearing set status on duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        }
+      ],
+      "edgeAssessment": "Empty, full and independent cells; sorted and out-of-order additions and duplicates; observe complete contents, the actual membership predicate and recovery with valid. Distinguish a significant trailing tab from an insignificant trailing ASCII space through membership. Character display helpers can trim both.",
+      "errorAssessment": "A full cell (including zero capacity) raises CELLTOOSMALL before writing. A successful duplicate or out-of-order append can cause a subsequent membership call to signal NOTASET.",
+      "fixtures": [],
+      "fixtureRationale": "Literal values, capacities and fixed character widths declared in source-owned scenarios and focused tests. The operations allocate real cells locally and require no kernels or external files.",
+      "cleanup": "The caller owns each ordinary cell. Workflow finalizers free all created cells, including after scientific errors; focused clients free tracked cells and dispose. Opaque tokens are bound to live owners. Node holds its native mutex through lookup and operation, and WASM releases scoped allocations and structured diagnostics on error.",
+      "tolerance": "Membership booleans and error codes compare exactly. Read back every visible element after append/copy. The existing finite 1e−12 absolute/relative comparator distinguishes adjacent signed32 integer values. Focused tests compare exact full rows and explicitly tag signed zero and infinities where normal JSON cannot preserve them.",
+      "findings": [
+        {
+          "id": "appndc-representable-row",
+          "status": "repaired",
+          "summary": "CSPICE truncates row bytes after comparing the original argument. A truncation could split a UTF-8 character that the public character API could not losslessly read.",
+          "repair": "Count and validate encoded text. Where an append will write, reject only a cut through a scalar before mutation. At full capacity the canonical routine reports CELLTOOSMALL without writing. Use actual membership to distinguish stored tab/blank behavior.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-arrays-domain.test.ts",
+            "packages/backend-wasm/test/cell-arrays-allocations.test.ts",
+            "docs/step8-cell-arrays.md"
+          ],
+          "caseIds": [
+            "cells-windows-appndc-complete-bytes",
+            "cells-windows-appndc-terminal-tab"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.appndc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.appndc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "appndd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/appndd_c.html",
+      "semantics": "Append an ordered binary64 value without sorting or deduplication and increment cardinality. Descending or numerically equal values clear the set flag. Infinities are valid and both signs of zero compare equal.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-appndd-ordered-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ordered cell; inspect each new value and each membership result."
+        },
+        {
+          "caseId": "cells-windows-appndd-independent-handles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
+        },
+        {
+          "caseId": "cells-windows-appndd-equal-repeat",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-appndd-descending-then-valid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Revalidate unsorted appended data and duplicates before testing membership."
+        },
+        {
+          "caseId": "cells-windows-appndd-exact-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use every storage slot, inspect ordered and repeated physical values."
+        },
+        {
+          "caseId": "cells-windows-appndd-full",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-appndd-zero-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-appndd-signed-zero",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation."
+        }
+      ],
+      "edgeAssessment": "Empty, full and independent cells; sorted and out-of-order additions and duplicates; observe complete contents, the actual membership predicate and recovery with valid. Focused independent comparisons explicitly tag positive and negative infinity and negative zero.",
+      "errorAssessment": "A full cell (including zero capacity) raises CELLTOOSMALL before writing. A successful duplicate or out-of-order append can cause a subsequent membership call to signal NOTASET. NaN is an excluded unordered wrapper input. Both infinities are accepted.",
+      "fixtures": [],
+      "fixtureRationale": "Literal values, capacities and fixed character widths declared in source-owned scenarios and focused tests. The operations allocate real cells locally and require no kernels or external files.",
+      "cleanup": "The caller owns each ordinary cell. Workflow finalizers free all created cells, including after scientific errors; focused clients free tracked cells and dispose. Opaque tokens are bound to live owners. Node holds its native mutex through lookup and operation, and WASM releases scoped allocations and structured diagnostics on error.",
+      "tolerance": "Membership booleans and error codes compare exactly. Read back every visible element after append/copy. The existing finite 1e−12 absolute/relative comparator distinguishes adjacent signed32 integer values. Focused tests compare exact full rows and explicitly tag signed zero and infinities where normal JSON cannot preserve them.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.appndd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.appndd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "appndi_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/appndi_c.html",
+      "semantics": "Append a signed32 integer without sorting or deduplication and increment cardinality. A duplicate or descending item clears the set flag. A successful append updates the Fortran controls.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-appndi-ordered-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ordered cell; inspect each new value and each membership result."
+        },
+        {
+          "caseId": "cells-windows-appndi-independent-handles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
+        },
+        {
+          "caseId": "cells-windows-appndi-equal-repeat",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-appndi-descending-then-valid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Revalidate unsorted appended data and duplicates before testing membership."
+        },
+        {
+          "caseId": "cells-windows-appndi-exact-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use every storage slot, inspect ordered and repeated physical values."
+        },
+        {
+          "caseId": "cells-windows-appndi-full",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Overflow after successful mutation reports the toolkit capacity error. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-appndi-zero-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An ordinary zero-capacity cell cannot accept an element. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        }
+      ],
+      "edgeAssessment": "Empty, full and independent cells; sorted and out-of-order additions and duplicates; observe complete contents, the actual membership predicate and recovery with valid.",
+      "errorAssessment": "A full cell (including zero capacity) raises CELLTOOSMALL before writing. A successful duplicate or out-of-order append can cause a subsequent membership call to signal NOTASET.",
+      "fixtures": [],
+      "fixtureRationale": "Literal values, capacities and fixed character widths declared in source-owned scenarios and focused tests. The operations allocate real cells locally and require no kernels or external files.",
+      "cleanup": "The caller owns each ordinary cell. Workflow finalizers free all created cells, including after scientific errors; focused clients free tracked cells and dispose. Opaque tokens are bound to live owners. Node holds its native mutex through lookup and operation, and WASM releases scoped allocations and structured diagnostics on error.",
+      "tolerance": "Membership booleans and error codes compare exactly. Read back every visible element after append/copy. The existing finite 1e−12 absolute/relative comparator distinguishes adjacent signed32 integer values. Focused tests compare exact full rows and explicitly tag signed zero and infinities where normal JSON cannot preserve them.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.appndi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.appndi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "copy_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/copy_c.html",
+      "semantics": "Copy the source data in order into a caller-owned same-kind cell, preserving the destination logical capacity and set flag. The operation accepts self-copy. Character staging removes trailing ASCII blanks on successful copy. A failed numeric copy can expose a bounded prefix through the independent translated control cardinality.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-copy-char-overwrite",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
+        },
+        {
+          "caseId": "cells-windows-copy-char-self",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Self-copy on initialized data retains canonical contents and membership."
+        },
+        {
+          "caseId": "cells-windows-copy-char-small",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-copy-char-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty source clears the target cardinality without changing its capacity."
+        },
+        {
+          "caseId": "cells-windows-copy-char-target-not-a-set",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-copy-double-overwrite",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
+        },
+        {
+          "caseId": "cells-windows-copy-double-self",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Self-copy on initialized data retains canonical contents and membership."
+        },
+        {
+          "caseId": "cells-windows-copy-double-small",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-copy-double-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty source clears the target cardinality without changing its capacity."
+        },
+        {
+          "caseId": "cells-windows-copy-double-target-not-a-set",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-copy-int-overwrite",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Copy replaces the destination contents but retains its capacity; both cells remain independent."
+        },
+        {
+          "caseId": "cells-windows-copy-int-self",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Self-copy on initialized data retains canonical contents and membership."
+        },
+        {
+          "caseId": "cells-windows-copy-int-small",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Target cannot hold all source values. Observe the actual toolkit diagnostic SPICE(CELLTOOSMALL)."
+        },
+        {
+          "caseId": "cells-windows-copy-int-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty source clears the target cardinality without changing its capacity."
+        },
+        {
+          "caseId": "cells-windows-copy-int-target-not-a-set",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Target set flag remains false even when source data was sorted. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-copy-char-short-row",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Widths differ and significant source data cannot fit. Observe the actual toolkit diagnostic SPICE(ELEMENTSTOOSHORT)."
+        },
+        {
+          "caseId": "cells-windows-copy-char-small-control-width",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Fortran character-cell controls require five physical text characters; a four-byte C row cannot represent them. Observe the actual toolkit diagnostic SPICE(INSUFFLEN)."
+        },
+        {
+          "caseId": "cells-windows-copy-char-blank-tail",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A narrower target can still represent significant bytes when remaining bytes are only spaces."
+        }
+      ],
+      "edgeAssessment": "All three cell types, empty sources, self-copy, prepopulated callers, too-small capacity, usable and unusable row widths, unchanged destination set flag, independent cells and actual partial-state reuse. Distinguish a significant trailing tab from an insignificant trailing ASCII space through membership. Character display helpers can trim both. Focused independent comparisons explicitly tag positive and negative infinity and negative zero.",
+      "errorAssessment": "Too few rows signal CELLTOOSMALL. Character ENCHAR controls require a five-byte payload; inadequate control width signals INSUFFLEN, while losing significant row characters can signal ELEMENTSTOOSHORT. Wrong ordinary cell types signal TYPEMISMATCH in CSPICE. The typed public signature pairs matching kinds.",
+      "fixtures": [],
+      "fixtureRationale": "Literal values, capacities and fixed character widths declared in source-owned scenarios and focused tests. The operations allocate real cells locally and require no kernels or external files.",
+      "cleanup": "The caller owns each ordinary cell. Workflow finalizers free all created cells, including after scientific errors; focused clients free tracked cells and dispose. Opaque tokens are bound to live owners. Node holds its native mutex through lookup and operation, and WASM releases scoped allocations and structured diagnostics on error.",
+      "tolerance": "Membership booleans and error codes compare exactly. Read back every visible element after append/copy. The existing finite 1e−12 absolute/relative comparator distinguishes adjacent signed32 integer values. Focused tests compare exact full rows and explicitly tag signed zero and infinities where normal JSON cannot preserve them.",
+      "findings": [
+        {
+          "id": "copy-owned-destination-observability",
+          "status": "repaired",
+          "summary": "The high-level locked copy wrapper creates its own destination. Its allocation hides differences in caller size, set flag, row widths and numeric controls after a partial write.",
+          "repair": "Bind independent copy_c with pointers to the actual already-allocated cells. Preserve valid partial numeric state and bounded controls, compare a second copy and explicit cardinality promotion, observe both destination flags and characterize character errors on unchanged seeded rows. Compare the ordinary wrapper on successful equivalent inputs.",
+          "evidence": [
+            "packages/py-parity-checking/test/cell-array-behavior.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/cell_array_oracle.py",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "packages/backend-node/test/cell-arrays-domain.test.ts",
+            "packages/backend-wasm/test/cell-arrays-allocations.test.ts",
+            "docs/step8-cell-arrays.md"
+          ],
+          "caseIds": [
+            "cells-windows-copy-char-small-control-width",
+            "cells-windows-copy-int-small",
+            "cells-windows-copy-double-small",
+            "cells-windows-copy-char-short-row",
+            "cells-windows-copy-char-target-not-a-set"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.copy -> Node local handle lookup and mutex-serialized native addon -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.copy -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "elemc_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/elemc_c.html",
+      "semantics": "Return a boolean for exact case-sensitive membership of the entire UTF-8 key in a sorted, set-flagged character cell. Ignore right-hand ASCII blanks, retaining leading blanks and trailing tabs. An empty set returns false.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-elemc-ordered-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ordered cell; inspect each new value and each membership result."
+        },
+        {
+          "caseId": "cells-windows-elemc-independent-handles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
+        },
+        {
+          "caseId": "cells-windows-elemc-equal-repeat",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-elemc-descending-then-valid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Revalidate unsorted appended data and duplicates before testing membership."
+        },
+        {
+          "caseId": "cells-windows-elemc-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Legitimate absence on an empty allocated cell with no insert."
+        },
+        {
+          "caseId": "cells-windows-elemc-descending-reject",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-elemc-singleton",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare equal, smaller and greater values on a single element."
+        },
+        {
+          "caseId": "cells-windows-elemc-complete-bytes",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership."
+        },
+        {
+          "caseId": "cells-windows-elemc-terminal-tab",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell."
+        },
+        {
+          "caseId": "cells-windows-elemc-fortran-blanks",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A padded item compares equal in orderedness, clearing set status on duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        }
+      ],
+      "edgeAssessment": "Empty and singleton sets, exact members and misses on distinct handles, duplicate and descending nonsets, and successful membership after explicit validation. Distinguish a significant trailing tab from an insignificant trailing ASCII space through membership. Character display helpers can trim both.",
+      "errorAssessment": "A miss in a set returns false. A cleared set flag signals NOTASET; invalid caller representations and ownership are distinct from this diagnostic.",
+      "fixtures": [],
+      "fixtureRationale": "Literal values, capacities and fixed character widths declared in source-owned scenarios and focused tests. The operations allocate real cells locally and require no kernels or external files.",
+      "cleanup": "The caller owns each ordinary cell. Workflow finalizers free all created cells, including after scientific errors; focused clients free tracked cells and dispose. Opaque tokens are bound to live owners. Node holds its native mutex through lookup and operation, and WASM releases scoped allocations and structured diagnostics on error.",
+      "tolerance": "Membership booleans and error codes compare exactly. Read back every visible element after append/copy. The existing finite 1e−12 absolute/relative comparator distinguishes adjacent signed32 integer values. Focused tests compare exact full rows and explicitly tag signed zero and infinities where normal JSON cannot preserve them.",
+      "findings": [
+        {
+          "id": "elemc-complete-row-membership",
+          "status": "repaired",
+          "summary": "The existing return-string helpers right-trim whitespace, which can make a stored terminal tab and an absent shorter key look alike.",
+          "repair": "Compare the full key through actual raw membership on both backends and the independent SpiceyPy call. Confirm the difference before and after character copy, including self-copy.",
+          "evidence": [
+            "packages/py-parity-checking/test/cell-array-behavior.test.ts",
+            "packages/backend-node/test/cell-arrays-domain.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/cell_array_oracle.py",
+            "docs/step8-cell-arrays.md"
+          ],
+          "caseIds": [
+            "cells-windows-elemc-terminal-tab",
+            "cells-windows-elemc-complete-bytes"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.elemc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.elemc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "elemd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/elemd_c.html",
+      "semantics": "Return exact numeric set membership on a sorted, set-flagged binary64 cell. Both infinities participate, and positive and negative zero compare equal. An empty set returns false.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-elemd-ordered-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ordered cell; inspect each new value and each membership result."
+        },
+        {
+          "caseId": "cells-windows-elemd-independent-handles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
+        },
+        {
+          "caseId": "cells-windows-elemd-equal-repeat",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-elemd-descending-then-valid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Revalidate unsorted appended data and duplicates before testing membership."
+        },
+        {
+          "caseId": "cells-windows-elemd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Legitimate absence on an empty allocated cell with no insert."
+        },
+        {
+          "caseId": "cells-windows-elemd-descending-reject",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-elemd-singleton",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare equal, smaller and greater values on a single element."
+        },
+        {
+          "caseId": "cells-windows-elemd-signed-zero",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Toolkit equality treats signed zero values as duplicates; observation follows revalidation."
+        }
+      ],
+      "edgeAssessment": "Empty and singleton sets, exact members and misses on distinct handles, duplicate and descending nonsets, and successful membership after explicit validation. Focused independent comparisons explicitly tag positive and negative infinity and negative zero.",
+      "errorAssessment": "A miss in a set returns false. A cleared set flag signals NOTASET; invalid caller representations and ownership are distinct from this diagnostic. NaN is an excluded unordered wrapper input. Both infinities are accepted.",
+      "fixtures": [],
+      "fixtureRationale": "Literal values, capacities and fixed character widths declared in source-owned scenarios and focused tests. The operations allocate real cells locally and require no kernels or external files.",
+      "cleanup": "The caller owns each ordinary cell. Workflow finalizers free all created cells, including after scientific errors; focused clients free tracked cells and dispose. Opaque tokens are bound to live owners. Node holds its native mutex through lookup and operation, and WASM releases scoped allocations and structured diagnostics on error.",
+      "tolerance": "Membership booleans and error codes compare exactly. Read back every visible element after append/copy. The existing finite 1e−12 absolute/relative comparator distinguishes adjacent signed32 integer values. Focused tests compare exact full rows and explicitly tag signed zero and infinities where normal JSON cannot preserve them.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.elemd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.elemd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "elemi_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/elemi_c.html",
+      "semantics": "Return exact signed32 set membership on a sorted, set-flagged integer cell. Empty sets return false. The input handle and stored data are preserved.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-elemi-ordered-and-missing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ordered cell; inspect each new value and each membership result."
+        },
+        {
+          "caseId": "cells-windows-elemi-independent-handles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleave two independent typed cells; queries must honor the addressed storage."
+        },
+        {
+          "caseId": "cells-windows-elemi-equal-repeat",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve duplicate data but signal NOTASET when membership requires a set. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-elemi-descending-then-valid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Revalidate unsorted appended data and duplicates before testing membership."
+        },
+        {
+          "caseId": "cells-windows-elemi-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Legitimate absence on an empty allocated cell with no insert."
+        },
+        {
+          "caseId": "cells-windows-elemi-descending-reject",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Distinct out-of-order values clear the flag even without a duplicate. Observe the actual toolkit diagnostic SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-elemi-singleton",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare equal, smaller and greater values on a single element."
+        }
+      ],
+      "edgeAssessment": "Empty and singleton sets, exact members and misses on distinct handles, duplicate and descending nonsets, and successful membership after explicit validation.",
+      "errorAssessment": "A miss in a set returns false. A cleared set flag signals NOTASET; invalid caller representations and ownership are distinct from this diagnostic.",
+      "fixtures": [],
+      "fixtureRationale": "Literal values, capacities and fixed character widths declared in source-owned scenarios and focused tests. The operations allocate real cells locally and require no kernels or external files.",
+      "cleanup": "The caller owns each ordinary cell. Workflow finalizers free all created cells, including after scientific errors; focused clients free tracked cells and dispose. Opaque tokens are bound to live owners. Node holds its native mutex through lookup and operation, and WASM releases scoped allocations and structured diagnostics on error.",
+      "tolerance": "Membership booleans and error codes compare exactly. Read back every visible element after append/copy. The existing finite 1e−12 absolute/relative comparator distinguishes adjacent signed32 integer values. Focused tests compare exact full rows and explicitly tag signed zero and infinities where normal JSON cannot preserve them.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.elemi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.elemi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused local Node/WASM, locked oracle and headless Chrome inline Web Worker observations are supplemental. Required combined-source executions and canonical CI observations must be recorded separately."
+}

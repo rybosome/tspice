@@ -936,7 +936,8 @@
         "kernels-unload-empty-path-error",
         "kernels-unload-removes-loaded-kernel-success"
       ],
-      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-b03-b664f159-wasm",
@@ -988,7 +989,8 @@
         "kernels-unload-empty-path-error",
         "kernels-unload-removes-loaded-kernel-success"
       ],
-      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b03-b664f159-node",
@@ -1042,7 +1044,8 @@
       ],
       "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
-      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b03-b664f159-wasm",
@@ -1096,7 +1099,8 @@
       ],
       "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
-      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1226,11 +1230,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> Node typed adapter/stager -> native registered furnsh -> tspice_furnsh shared C shim -> furnsh_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1245,11 +1250,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_furnsh -> shared C shim -> furnsh_c; outputs read before finally frees allocations.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1346,11 +1352,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unload -> Node typed adapter/stager -> native registered unload -> tspice_unload shared C shim -> unload_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1365,11 +1372,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unload -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_unload -> shared C shim -> unload_c; outputs read before finally frees allocations.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1454,11 +1462,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kclear -> Node typed adapter/stager -> native registered kclear -> tspice_kclear shared C shim -> kclear_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1473,11 +1482,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kclear -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kclear -> shared C shim -> kclear_c; outputs read before finally frees allocations.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1572,11 +1582,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kdata -> Node typed adapter/stager -> native registered kdata -> tspice_kdata shared C shim -> kdata_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1591,11 +1602,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kdata -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kdata -> shared C shim -> kdata_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1674,11 +1686,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kinfo -> Node typed adapter/stager -> native registered kinfo -> tspice_kinfo shared C shim -> kinfo_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1693,11 +1706,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "composed",
           "trace": "raw.kinfo -> filename-keyed cache built from actual _tspice_ktotal/_tspice_kdata -> shared shim/CSPICE. Clear cache before furnsh/unload/kclear; live meta child-source/duplicate and mutation tests validate composed semantics.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1792,11 +1806,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> Node typed adapter/stager -> native registered ktotal -> tspice_ktotal shared C shim -> ktotal_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1811,11 +1826,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_ktotal -> shared C shim -> ktotal_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1973,11 +1989,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kxtrct -> Node typed adapter/stager -> native registered kxtrct -> tspice_kxtrct shared C shim -> kxtrct_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1992,14 +2009,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "javascript",
           "trace": "raw.kxtrct -> shared kxtrctJs; no WASM substitute in the parity handler. Independent oracle calls actual locked SpiceyPy libspice.kxtrct_c and reads exact buffers; supported adapter normalization/UTF-8 size limits are explicit.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "The recorded executions retain their original fingerprints and observations. This combined B03/B01 source requires fresh source-bound local and canonical CI evidence on both backends."
 }

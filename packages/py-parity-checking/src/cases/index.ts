@@ -1,6 +1,13 @@
 import type { ParityCase } from "../case-types.js";
 
 import cellsWindowsCardCasesRaw from "./cells-windows/card.cases.json" with { type: "json" };
+import cellsWindowsAppndcCasesRaw from "./cells-windows/appndc.cases.json" with { type: "json" };
+import cellsWindowsAppnddCasesRaw from "./cells-windows/appndd.cases.json" with { type: "json" };
+import cellsWindowsAppndiCasesRaw from "./cells-windows/appndi.cases.json" with { type: "json" };
+import cellsWindowsCopyCasesRaw from "./cells-windows/copy.cases.json" with { type: "json" };
+import cellsWindowsElemcCasesRaw from "./cells-windows/elemc.cases.json" with { type: "json" };
+import cellsWindowsElemdCasesRaw from "./cells-windows/elemd.cases.json" with { type: "json" };
+import cellsWindowsElemiCasesRaw from "./cells-windows/elemi.cases.json" with { type: "json" };
 import cellsWindowsInsrtcCasesRaw from "./cells-windows/insrtc.cases.json" with { type: "json" };
 import cellsWindowsInsrtdCasesRaw from "./cells-windows/insrtd.cases.json" with { type: "json" };
 import cellsWindowsInsrtiCasesRaw from "./cells-windows/insrti.cases.json" with { type: "json" };
@@ -191,6 +198,13 @@ export const coordsVectorsCases: ParityCase[] = [
 ];
 export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsCardCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppndcCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppnddCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppndiCasesRaw as ParityCase[]),
+  ...(cellsWindowsCopyCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemcCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemdCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemiCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtcCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtdCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtiCasesRaw as ParityCase[]),

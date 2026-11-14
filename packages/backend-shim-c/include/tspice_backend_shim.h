@@ -1347,6 +1347,14 @@ int tspice_insrti(int item, uintptr_t cell, char *err, int errMaxBytes);
 int tspice_insrtd(double item, uintptr_t cell, char *err, int errMaxBytes);
 int tspice_insrtc(const char *item, uintptr_t cell, char *err, int errMaxBytes);
 
+int tspice_appndc(const char *item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_appndd(double item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_appndi(int item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_elemc(const char *item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_elemd(double item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_elemi(int item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_copy(uintptr_t sourceHandle, uintptr_t destinationHandle, char *err, int errMaxBytes);
+
 int tspice_cell_geti(uintptr_t cell, int index, int *outItem, char *err, int errMaxBytes);
 int tspice_cell_getd(uintptr_t cell, int index, double *outItem, char *err, int errMaxBytes);
 int tspice_cell_getc(

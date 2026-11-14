@@ -499,7 +499,7 @@ static Napi::String CellGetc(const Napi::CallbackInfo& info) {
   return Napi::String::New(env, out.c_str());
 }
 
-static bool ReadWindowOp(Napi::Env env, const Napi::Value& value, std::string* text) {
+static bool ReadCellString(Napi::Env env, const Napi::Value& value, std::string* text) {
   if (!value.IsString()) {
     ThrowSpiceError(Napi::TypeError::New(env, "Expected a string"));
     return false;
@@ -529,6 +529,176 @@ static bool ReadWindowOp(Napi::Env env, const Napi::Value& value, std::string* t
   }
   *text = input.Utf8Value();
   return true;
+}
+
+static bool ReadCellInteger(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double n = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(n) && std::trunc(n) == n && n >= INT32_MIN && n <= INT32_MAX) {
+      *out = static_cast<int>(n);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a signed 32-bit cell item"));
+  return false;
+}
+
+static Napi::Value Appndc(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "appndc() expects two arguments"));
+    return env.Undefined();
+  }
+  std::string item;
+  if (!ReadCellString(env, info[0], &item)) return env.Undefined();
+  uint32_t cellHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "cell", &cellHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t cell = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, "appndc", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_appndc(item.c_str(), cell, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling appndc", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Appndd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "appndd() expects two arguments"));
+    return env.Undefined();
+  }
+  if (!info[0].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a numeric cell item"));
+    return env.Undefined();
+  }
+  const double item = info[0].As<Napi::Number>().DoubleValue();
+  uint32_t cellHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "cell", &cellHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t cell = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, "appndd", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_appndd(item, cell, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling appndd", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Appndi(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "appndi() expects two arguments"));
+    return env.Undefined();
+  }
+  int item;
+  if (!ReadCellInteger(env, info[0], &item)) return env.Undefined();
+  uint32_t cellHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "cell", &cellHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t cell = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, "appndi", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_appndi(item, cell, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling appndi", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Elemc(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "elemc() expects two arguments"));
+    return env.Undefined();
+  }
+  std::string item;
+  if (!ReadCellString(env, info[0], &item)) return env.Undefined();
+  uint32_t cellHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "cell", &cellHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t cell = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, "elemc", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_elemc(item.c_str(), cell, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling elemc", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Value Elemd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "elemd() expects two arguments"));
+    return env.Undefined();
+  }
+  if (!info[0].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a numeric cell item"));
+    return env.Undefined();
+  }
+  const double item = info[0].As<Napi::Number>().DoubleValue();
+  uint32_t cellHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "cell", &cellHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t cell = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, "elemd", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_elemd(item, cell, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling elemd", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Value Elemi(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "elemi() expects two arguments"));
+    return env.Undefined();
+  }
+  int item;
+  if (!ReadCellInteger(env, info[0], &item)) return env.Undefined();
+  uint32_t cellHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "cell", &cellHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t cell = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, cellHandle, "elemi", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_elemi(item, cell, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling elemi", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Value Copy(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "copy() expects two arguments"));
+    return env.Undefined();
+  }
+  uint32_t sourceHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[0], "source", &sourceHandle)) return env.Undefined();
+  uint32_t destinationHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "destination", &destinationHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t source = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, sourceHandle, "copy", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t destination = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, destinationHandle, "copy", "cell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_copy(source, destination, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling copy", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
 }
 
 static bool ReadWindowSide(Napi::Env env, const Napi::Value& value, int* out) {
@@ -795,7 +965,7 @@ static Napi::Value Wnreld(const Napi::CallbackInfo& info) {
   uint32_t aHandle = 0;
   if (!tspice_backend_node::ReadCellHandleArg(env, info[0], "window", &aHandle)) return env.Undefined();
   std::string op;
-  if (!ReadWindowOp(env, info[1], &op)) return env.Undefined();
+  if (!ReadCellString(env, info[1], &op)) return env.Undefined();
   uint32_t bHandle = 0;
   if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &bHandle)) return env.Undefined();
   tspice_backend_node::CspiceLock lock;
@@ -1027,6 +1197,14 @@ void RegisterCellsWindows(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "insrtc", Napi::Function::New(env, Insrtc), __func__)) {
     return;
   }
+
+  if (!SetExportChecked(env, exports, "appndc", Napi::Function::New(env, Appndc), __func__)) return;
+  if (!SetExportChecked(env, exports, "appndd", Napi::Function::New(env, Appndd), __func__)) return;
+  if (!SetExportChecked(env, exports, "appndi", Napi::Function::New(env, Appndi), __func__)) return;
+  if (!SetExportChecked(env, exports, "elemc", Napi::Function::New(env, Elemc), __func__)) return;
+  if (!SetExportChecked(env, exports, "elemd", Napi::Function::New(env, Elemd), __func__)) return;
+  if (!SetExportChecked(env, exports, "elemi", Napi::Function::New(env, Elemi), __func__)) return;
+  if (!SetExportChecked(env, exports, "copy", Napi::Function::New(env, Copy), __func__)) return;
 
   if (!SetExportChecked(env, exports, "cellGeti", Napi::Function::New(env, CellGeti), __func__)) {
     return;

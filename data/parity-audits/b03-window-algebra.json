@@ -137,7 +137,8 @@
         "cells-windows-wnunid-touching-and-singletons",
         "cells-windows-wnunid-undersized-result"
       ],
-      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-b03-b664f159-wasm",
@@ -227,7 +228,8 @@
         "cells-windows-wnunid-touching-and-singletons",
         "cells-windows-wnunid-undersized-result"
       ],
-      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b03-b664f159-node",
@@ -319,7 +321,8 @@
       ],
       "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
-      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b03-b664f159-wasm",
@@ -411,7 +414,8 @@
       ],
       "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
-      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -482,16 +486,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wncomd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wncomd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -536,16 +552,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wncond -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wncond -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -616,16 +632,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wndifd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wndifd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -665,16 +693,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnelmd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnelmd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -719,16 +747,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnexpd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnexpd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -794,16 +822,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnextd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnextd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -848,16 +888,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnfild -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnfild -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -902,16 +942,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnfltd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnfltd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -951,16 +991,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnincd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnincd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1031,16 +1071,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnintd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnintd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1100,16 +1152,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnreld -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.wnreld -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1181,16 +1233,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnsumd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnsumd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     },
@@ -1278,19 +1342,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnunid -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.wnunid -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "The recorded executions retain their original fingerprints and observations. This combined B03/B01 source requires fresh source-bound local and canonical CI evidence on both backends."
 }
