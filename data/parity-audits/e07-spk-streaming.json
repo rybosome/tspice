@@ -54,7 +54,192 @@
     "packages/tspice/src/transport/caching/policy.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-e07-90107a0e-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e07-90107a0e-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-90107a0e-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-90107a0e-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "spk14b_c",
@@ -160,16 +345,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "Public spk14b -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14b -> spk14b_c. Locked sidecar invokes actual SpiceyPy spk14b and a separate DAF reader inspects independently emitted files.",
-          "executions": []
+          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "Public spk14b -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14b -> spk14b_c. Locked sidecar invokes actual SpiceyPy spk14b and a separate DAF reader inspects independently emitted files.",
-          "executions": []
+          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
         }
       }
     },
@@ -277,16 +462,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "Public spk14a -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14a -> spk14a_c. Locked sidecar invokes actual SpiceyPy spk14a and a separate DAF reader inspects independently emitted files.",
-          "executions": []
+          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "Public spk14a -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14a -> spk14a_c. Locked sidecar invokes actual SpiceyPy spk14a and a separate DAF reader inspects independently emitted files.",
-          "executions": []
+          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
         }
       }
     },
@@ -354,19 +539,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "Public spk14e -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14e -> spk14e_c. Locked sidecar invokes actual SpiceyPy spk14e and a separate DAF reader inspects independently emitted files.",
-          "executions": []
+          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "Public spk14e -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14e -> spk14e_c. Locked sidecar invokes actual SpiceyPy spk14e and a separate DAF reader inspects independently emitted files.",
-          "executions": []
+          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Combined #763/E07 focused Node/WASM, independent reciprocal files and real Chrome passed. Chrome observed four mixed-writer guard/recovery checks, both complete reloaded states and clear final error state. Full source-bound local and canonical CI observations are pending."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
