@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 171
+- Planned (not yet implemented): 478
 - Excluded: 3
 
 ## Implemented now
@@ -47,7 +47,16 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `daffna_c` | DAF, find next array |
 | `dafopr_c` | DAF, open for read |
 | `dascls_c` | DAS, close file |
+| `dashfn_c` | DAS, handle to file name |
+| `dashfs_c` | DAS, handle to file summary |
+| `daslla_c` | DAS, last logical addresses |
+| `dasllc_c` | DAS, low-level close |
+| `dasonw_c` | DAS, open new file |
 | `dasopr_c` | DAS, open for read |
+| `dasops_c` | DAS, open scratch |
+| `dasopw_c` | DAS, open for write |
+| `dasrfr_c` | DAS, read file record |
+| `daswbr_c` | DAS, write buffered records |
 | `deltet_c` | Delta ET, ET - UTC |
 | `dlabfs_c` | DLA, begin forward search |
 | `dlacls` | Close a DAS-backed DLA handle |
@@ -262,21 +271,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dasadi_c` | DAS, add data, integer |
 | `dasdc_c` | DAS, delete comments |
 | `dasec_c` | DAS extract comments |
-| `dashfn_c` | DAS, handle to file name |
-| `dashfs_c` | DAS, handle to file summary |
-| `daslla_c` | DAS, last logical addresses |
-| `dasllc_c` | DAS, low-level close |
-| `dasonw_c` | DAS, open new file |
-| `dasops_c` | DAS, open scratch |
-| `dasopw_c` | DAS, open for write |
 | `dasrdc_c` | DAS, read data, character |
 | `dasrdd_c` | DAS, read data, double precision |
 | `dasrdi_c` | DAS, read data, integer |
-| `dasrfr_c` | DAS, read file record |
 | `dasudc_c` | DAS, update data, character |
 | `dasudd_c` | DAS, update data, double precision |
 | `dasudi_c` | DAS, update data, integer |
-| `daswbr_c` | DAS, write buffered records |
 | `dazldr_c` | Derivative of AZ/EL w.r.t. rectangular |
 | `dcyldr_c` | Derivative of cylindrical w.r.t. rectangular |
 | `det_c` | Determinant of a double precision 3x3 matrix |

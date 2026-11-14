@@ -128,6 +128,20 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes);
 
 // --- DAS -------------------------------------------------------------------
 
+// Full N0067 DAS name/header byte capacities, including the C terminator.
+#define TSPICE_DAS_PATH_BYTES 256
+#define TSPICE_DAS_ID_BYTES 9
+#define TSPICE_DAS_IFNAME_BYTES 61
+int tspice_dasonw(const char *path, const char *ftype, const char *ifname, int ncomr, int *out, char *err, int errMaxBytes);
+int tspice_dasops(int *out, char *err, int errMaxBytes);
+int tspice_dasopw(const char *path, int *out, char *err, int errMaxBytes);
+int tspice_dashfn(int handle, int namlen, char *name, char *err, int errMaxBytes);
+int tspice_dashfs(int handle, int *out, char *err, int errMaxBytes);
+int tspice_daslla(int handle, int *out, char *err, int errMaxBytes);
+int tspice_dasllc(int handle, char *err, int errMaxBytes);
+int tspice_dasrfr(int handle, int idwlen, int ifnlen, char *idword, char *ifname, int *out, char *err, int errMaxBytes);
+int tspice_daswbr(int handle, char *err, int errMaxBytes);
+
 int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dascls(int handle, char *err, int errMaxBytes);
 

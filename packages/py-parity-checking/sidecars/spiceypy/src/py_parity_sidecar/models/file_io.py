@@ -51,6 +51,68 @@ class StepFileIoDasopr:
 
 
 @dataclass(frozen=True)
+class StepFileIoDasonw:
+    op: Literal["file-io.dasonw"]
+    handleId: str
+    path: PathRefInput
+    ftype: str
+    ifname: str
+    ncomr: int
+
+
+@dataclass(frozen=True)
+class StepFileIoDasops:
+    op: Literal["file-io.dasops"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDasopw:
+    op: Literal["file-io.dasopw"]
+    handleId: str
+    path: PathRefInput
+
+
+@dataclass(frozen=True)
+class StepFileIoDashfn:
+    op: Literal["file-io.dashfn"]
+    handleId: str
+    namlen: int = 256
+
+
+@dataclass(frozen=True)
+class StepFileIoDashfs:
+    op: Literal["file-io.dashfs"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDaslla:
+    op: Literal["file-io.daslla"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDasllc:
+    op: Literal["file-io.dasllc"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDasrfr:
+    op: Literal["file-io.dasrfr"]
+    handleId: str
+    idwlen: int = 9
+    ifnlen: int = 61
+
+
+@dataclass(frozen=True)
+class StepFileIoDaswbr:
+    op: Literal["file-io.daswbr"]
+    handleId: str
+
+
+@dataclass(frozen=True)
 class StepFileIoDascls:
     op: Literal["file-io.dascls"]
     handleId: str

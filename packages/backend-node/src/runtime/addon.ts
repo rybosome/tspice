@@ -101,6 +101,19 @@ export type NativeAddon = {
   dafbfs(handle: number): void;
   daffna(handle: number): boolean;
 
+  dasonw(path: string, ftype: string, ifname: string, ncomr: number): number;
+  dasops(): number;
+  dasopw(path: string): number;
+  dashfn(handle: number, namlen: number): string;
+  dashfs(handle: number): number[];
+  daslla(handle: number): number[];
+  dasllc(handle: number): void;
+  dasrfr(
+    handle: number,
+    idwlen: number,
+    ifnlen: number,
+  ): { idword: string; ifname: string; counts: number[] };
+  daswbr(handle: number): void;
   dasopr(path: string): number;
   dascls(handle: number): void;
 

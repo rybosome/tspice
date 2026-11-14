@@ -1,5 +1,7 @@
 #include "file_io.h"
 
+#include <algorithm>
+#include <cstring>
 #include <string>
 #include <cmath>
 #include <cstdint>
@@ -235,6 +237,220 @@ static Napi::Boolean Daffna(const Napi::CallbackInfo& info) {
   }
 
   return Napi::Boolean::New(env, found != 0);
+}
+
+static bool DasText(Napi::Env env, const Napi::Value& value, std::string& out) {
+  if (value.IsString()) {
+    out = value.As<Napi::String>().Utf8Value();
+    if (out.size() < INT32_MAX && out.find('\0') == std::string::npos) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a NUL-free DAS string"));
+  return false;
+}
+
+template <size_t N>
+static Napi::Value DasStringResult(Napi::Env env, const char (&out)[N]) {
+  const char *end = std::find(out, out + N, '\0');
+  if (end == out + N) {
+    ThrowSpiceError(Napi::Error::New(env, "Unterminated DAS output string"));
+    return env.Undefined();
+  }
+  const size_t length = static_cast<size_t>(end - out);
+  const auto result = Napi::String::New(env, out, length);
+  const std::string decoded = result.Utf8Value();
+  if (decoded.size() != length || std::memcmp(out, decoded.data(), length) != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "DAS result is not valid UTF-8"));
+    return env.Undefined();
+  }
+  return result;
+}
+
+static Napi::Array DasInts(Napi::Env env, const int* ints, size_t count) {
+  auto result = Napi::Array::New(env, count);
+  for (size_t i = 0; i < count; ++i) result.Set(i, Napi::Number::New(env, ints[i]));
+  return result;
+}
+
+static Napi::Value Dasonw(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasonw expects 4 arguments"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!DasText(env, info[0], path)) return env.Undefined();
+  std::string ftype;
+  if (!DasText(env, info[1], ftype)) return env.Undefined();
+  std::string ifname;
+  if (!DasText(env, info[2], ifname)) return env.Undefined();
+  int32_t ncomr = 0;
+  if (!ReadInt32Checked(env, info[3], "ncomr", &ncomr)) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dasonw(path.c_str(), ftype.c_str(), ifname.c_str(), ncomr, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dasonw", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Dasops(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasops expects 0 arguments"));
+    return env.Undefined();
+  }
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dasops(&out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dasops", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Dasopw(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasopw expects 1 arguments"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!DasText(env, info[0], path)) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dasopw(path.c_str(), &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dasopw", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Dashfn(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dashfn expects 2 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t namlen = 0;
+  if (!ReadInt32Checked(env, info[1], "namlen", &namlen)) return env.Undefined();
+  char name[TSPICE_DAS_PATH_BYTES] = {0};
+  namlen = std::min(namlen, TSPICE_DAS_PATH_BYTES);
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dashfn(handle, namlen, name, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dashfn", err);
+    return env.Undefined();
+  }
+  return DasStringResult(env, name);
+}
+
+static Napi::Value Dashfs(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dashfs expects 1 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int out[14] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dashfs(handle, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dashfs", err);
+    return env.Undefined();
+  }
+  return DasInts(env, out, 14);
+}
+
+static Napi::Value Daslla(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "daslla expects 1 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int out[3] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_daslla(handle, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling daslla", err);
+    return env.Undefined();
+  }
+  return DasInts(env, out, 3);
+}
+
+static Napi::Value Dasllc(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasllc expects 1 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dasllc(handle, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dasllc", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Dasrfr(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasrfr expects 3 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t idwlen = 0;
+  if (!ReadInt32Checked(env, info[1], "idwlen", &idwlen)) return env.Undefined();
+  int32_t ifnlen = 0;
+  if (!ReadInt32Checked(env, info[2], "ifnlen", &ifnlen)) return env.Undefined();
+  char idword[TSPICE_DAS_ID_BYTES] = {0}, ifname[TSPICE_DAS_IFNAME_BYTES] = {0};
+  idwlen = std::min(idwlen, TSPICE_DAS_ID_BYTES);
+  ifnlen = std::min(ifnlen, TSPICE_DAS_IFNAME_BYTES);
+  int out[4] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dasrfr(handle, idwlen, ifnlen, idword, ifname, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dasrfr", err);
+    return env.Undefined();
+  }
+  auto id = DasStringResult(env, idword);
+  if (env.IsExceptionPending()) return env.Undefined();
+  auto name = DasStringResult(env, ifname);
+  if (env.IsExceptionPending()) return env.Undefined();
+  auto record = Napi::Object::New(env);
+  record.Set("idword", id);
+  record.Set("ifname", name);
+  record.Set("counts", DasInts(env, out, 4));
+  return record;
+}
+
+static Napi::Value Daswbr(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "daswbr expects 1 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_daswbr(handle, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling daswbr", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
 }
 
 static Napi::Number Dasopr(const Napi::CallbackInfo& info) {
@@ -879,6 +1095,15 @@ void RegisterFileIo(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "dafbfs", Napi::Function::New(env, Dafbfs), __func__)) return;
   if (!SetExportChecked(env, exports, "daffna", Napi::Function::New(env, Daffna), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "dasonw", Napi::Function::New(env, Dasonw), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasops", Napi::Function::New(env, Dasops), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasopw", Napi::Function::New(env, Dasopw), __func__)) return;
+  if (!SetExportChecked(env, exports, "dashfn", Napi::Function::New(env, Dashfn), __func__)) return;
+  if (!SetExportChecked(env, exports, "dashfs", Napi::Function::New(env, Dashfs), __func__)) return;
+  if (!SetExportChecked(env, exports, "daslla", Napi::Function::New(env, Daslla), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasllc", Napi::Function::New(env, Dasllc), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasrfr", Napi::Function::New(env, Dasrfr), __func__)) return;
+  if (!SetExportChecked(env, exports, "daswbr", Napi::Function::New(env, Daswbr), __func__)) return;
   if (!SetExportChecked(env, exports, "dasopr", Napi::Function::New(env, Dasopr), __func__)) return;
   if (!SetExportChecked(env, exports, "dascls", Napi::Function::New(env, Dascls), __func__)) return;
 

@@ -1,3 +1,10 @@
+import {
+  dasFileTarget,
+  dasText,
+  decodeDasSummary,
+  decodeDasAddresses,
+  decodeDasFileRecord,
+} from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   FileIoApi,
@@ -6,7 +13,7 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { assertSpiceInt32, invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
@@ -80,8 +87,40 @@ export function createFileIoApi(
   native: NativeAddon,
   handles: SpiceHandleRegistry,
   stager: Pick<KernelStager, "resolvePathForSpice">,
+  outputs: VirtualOutputStager,
 ): FileIoApi {
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+
+  const knownDasOutputs = new Map<string, VirtualOutput>();
+  const dasOutputs = new Map<SpiceHandle, VirtualOutput>();
+  const dasHandle = (handle: SpiceHandle, method: string) =>
+    handles.lookup(handle, DAS_BACKED, method).nativeHandle;
+  function registerDas(
+    nativeHandle: number,
+    output?: VirtualOutput,
+  ): SpiceHandle {
+    try {
+      const handle = handles.register("DAS", nativeHandle);
+      if (output !== undefined) {
+        try {
+          outputs.markOpen(output);
+          dasOutputs.set(handle, output);
+        } catch (error) {
+          handles.close(
+            handle,
+            DAS_BACKED,
+            () => {},
+            "DAS registration rollback",
+          );
+          throw error;
+        }
+      }
+      return handle;
+    } catch (error) {
+      native.dasllc(nativeHandle);
+      throw error;
+    }
+  }
 
   function closeDasBacked(handle: SpiceHandle, context: string): void {
     handles.close(
@@ -90,10 +129,16 @@ export function createFileIoApi(
       (entry) => {
         // CSPICE dascls_c closes both DAS and DLA handles; tspice dlacls is
         // an alias, not a separate CSPICE C entrypoint.
-        native.dascls(entry.nativeHandle);
+        if (context === "dasllc") native.dasllc(entry.nativeHandle);
+        else native.dascls(entry.nativeHandle);
       },
       context,
     );
+    const output = dasOutputs.get(handle);
+    if (output !== undefined) {
+      outputs.markClosed(output);
+      dasOutputs.delete(handle);
+    }
   }
 
   const api = {
@@ -146,6 +191,67 @@ export function createFileIoApi(
       return found;
     },
 
+    dasonw: (
+      file: string | VirtualOutput,
+      ftype: string,
+      ifname: string,
+      ncomr: number,
+    ) => {
+      const target = dasFileTarget(file);
+      assertSpiceInt32(ncomr, "dasonw(ncomr)");
+      const path =
+        typeof target === "string"
+          ? resolvePath(target)
+          : outputs.resolvePathForSpice(target);
+      const output =
+        typeof target === "string" ? knownDasOutputs.get(path) : target;
+      const handle = registerDas(
+        native.dasonw(path, dasText(ftype), dasText(ifname), ncomr),
+        output,
+      );
+      if (output) knownDasOutputs.set(path, output);
+      return handle;
+    },
+    dasops: () => registerDas(native.dasops()),
+    dasopw: (file: string | VirtualOutput) => {
+      const target = dasFileTarget(file);
+      const path =
+        typeof target === "string"
+          ? resolvePath(target)
+          : outputs.resolvePathForSpice(target);
+      const output = knownDasOutputs.get(path);
+      if (typeof target !== "string" && !output)
+        throw new RangeError(
+          "dasopw requires a VirtualOutput created by dasonw on this backend",
+        );
+      return registerDas(native.dasopw(path), output);
+    },
+    dashfn: (handle: SpiceHandle, namlen = 256) => {
+      assertSpiceInt32(namlen, "dashfn(namlen)");
+      const value = native.dashfn(
+        dasHandle(handle, "dashfn"),
+        Math.min(256, namlen),
+      );
+      if (typeof value !== "string")
+        throw new TypeError("Invalid DASHFN result");
+      return value;
+    },
+    dashfs: (handle: SpiceHandle) =>
+      decodeDasSummary(native.dashfs(dasHandle(handle, "dashfs"))),
+    daslla: (handle: SpiceHandle) =>
+      decodeDasAddresses(native.daslla(dasHandle(handle, "daslla"))),
+    dasllc: (handle: SpiceHandle) => closeDasBacked(handle, "dasllc"),
+    dasrfr: (handle: SpiceHandle, idwlen = 9, ifnlen = 61) => {
+      assertSpiceInt32(idwlen, "dasrfr(idwlen)");
+      assertSpiceInt32(ifnlen, "dasrfr(ifnlen)");
+      const record = native.dasrfr(
+        dasHandle(handle, "dasrfr"),
+        Math.min(9, idwlen),
+        Math.min(61, ifnlen),
+      );
+      return decodeDasFileRecord(record.idword, record.ifname, record.counts);
+    },
+    daswbr: (handle: SpiceHandle) => native.daswbr(dasHandle(handle, "daswbr")),
     dasopr: (path: string) =>
       handles.register("DAS", native.dasopr(resolvePath(path))),
     dascls: (handle: SpiceHandle) => closeDasBacked(handle, "dascls"),

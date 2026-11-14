@@ -2151,6 +2151,33 @@ export function createFakeBackend(
     daffna: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: daffna() is not implemented");
     },
+    dasonw: () => {
+      throw new Error("Fake backend does not model dasonw");
+    },
+    dasops: () => {
+      throw new Error("Fake backend does not model dasops");
+    },
+    dasopw: () => {
+      throw new Error("Fake backend does not model dasopw");
+    },
+    dashfn: () => {
+      throw new Error("Fake backend does not model dashfn");
+    },
+    dashfs: () => {
+      throw new Error("Fake backend does not model dashfs");
+    },
+    daslla: () => {
+      throw new Error("Fake backend does not model daslla");
+    },
+    dasllc: () => {
+      throw new Error("Fake backend does not model dasllc");
+    },
+    dasrfr: () => {
+      throw new Error("Fake backend does not model dasrfr");
+    },
+    daswbr: () => {
+      throw new Error("Fake backend does not model daswbr");
+    },
     dasopr: (_path: string) => {
       throw new Error("Fake backend: dasopr() is not implemented");
     },
