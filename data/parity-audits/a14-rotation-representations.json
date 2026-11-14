@@ -40,7 +40,224 @@
     "scripts/coverage-ledger.test.mjs",
     "scripts/generate-coverage-ledger.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a14-ade1137c-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "58f4c898c9507a3e1bdf9c439f17706871cbfbda6134843f65e68da00ff9cf46",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "observation": "Both complete required lanes passed locally on ade1137c994fa0b109304417807cdc099b0ce234. JavaScript: 2,630 parity tests and one expected guard skip. Native-required: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a14-ade1137c-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "58f4c898c9507a3e1bdf9c439f17706871cbfbda6134843f65e68da00ff9cf46",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "observation": "Both complete required lanes passed locally on ade1137c994fa0b109304417807cdc099b0ce234. JavaScript: 2,630 parity tests and one expected guard skip. Native-required: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a14-ade1137c-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "58f4c898c9507a3e1bdf9c439f17706871cbfbda6134843f65e68da00ff9cf46",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "commit": "ade1137c994fa0b109304417807cdc099b0ce234",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43556467747/job/132330319914",
+      "observation": "Inspected successful Linux Node 22 native-required job 132330319914 on ade1137c994fa0b109304417807cdc099b0ce234: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a14-ade1137c-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "58f4c898c9507a3e1bdf9c439f17706871cbfbda6134843f65e68da00ff9cf46",
+      "caseIds": [
+        "coords-vectors-eul2m-all-axis-families",
+        "coords-vectors-eul2m-invalid-axis-0",
+        "coords-vectors-eul2m-invalid-axis-1",
+        "coords-vectors-eul2m-invalid-axis-2",
+        "coords-vectors-eul2m-repeated-axes",
+        "coords-vectors-eul2m-signed-quarter-turns",
+        "coords-vectors-eul2m-wrapped-and-small",
+        "coords-vectors-m2eul-all-axis-families",
+        "coords-vectors-m2eul-bad-axes-021",
+        "coords-vectors-m2eul-bad-axes-122",
+        "coords-vectors-m2eul-bad-axes-331",
+        "coords-vectors-m2eul-reflection",
+        "coords-vectors-m2eul-sign-of-rotation",
+        "coords-vectors-m2eul-singular-angle-choices",
+        "coords-vectors-m2q-half-turn",
+        "coords-vectors-m2q-identity",
+        "coords-vectors-m2q-mixed-axis",
+        "coords-vectors-m2q-reflection",
+        "coords-vectors-m2q-signed-quarter-turns",
+        "coords-vectors-m2q-zero",
+        "coords-vectors-q2m-identity-and-zero",
+        "coords-vectors-q2m-off-diagonal-orientation",
+        "coords-vectors-q2m-principal-half-turns",
+        "coords-vectors-q2m-sign-and-scale",
+        "coords-vectors-q2m-small-and-large-products",
+        "coords-vectors-qdq2av-complex-components",
+        "coords-vectors-qdq2av-degenerate",
+        "coords-vectors-qdq2av-order",
+        "coords-vectors-qdq2av-scale-and-sign",
+        "coords-vectors-qdq2av-scaled-products",
+        "coords-vectors-qxq-complex-components",
+        "coords-vectors-qxq-degenerate",
+        "coords-vectors-qxq-order",
+        "coords-vectors-qxq-scale-and-sign",
+        "coords-vectors-qxq-scaled-products",
+        "coords-vectors-raxisa-half-turn",
+        "coords-vectors-raxisa-identity",
+        "coords-vectors-raxisa-mixed-axis",
+        "coords-vectors-raxisa-reflection",
+        "coords-vectors-raxisa-signed-quarter-turns",
+        "coords-vectors-raxisa-zero"
+      ],
+      "commit": "ade1137c994fa0b109304417807cdc099b0ce234",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43556467747/job/132330319914",
+      "observation": "Inspected successful Linux Node 22 native-required job 132330319914 on ade1137c994fa0b109304417807cdc099b0ce234: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "eul2m_c",
@@ -89,7 +306,7 @@
       "fixtures": [],
       "fixtureRationale": "Project-authored coordinate axes, radians, quaternions and row-major matrices. No kernels, observations or external files are needed.",
       "cleanup": "The adapters capture validated fixed inputs and return owned matrices, quaternions, vectors or named output objects. Native serializes dispatch. WASM frees allocated input, output and error temporaries on success and failure. Scientific errors are captured and reset before reuse.",
-      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e\u221212. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
+      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e−12. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
       "findings": [
         {
           "id": "safe-linked-eul2m-matrix",
@@ -113,16 +330,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "alias",
           "trace": "raw.eul2m -> Node wrapper -> native addon -> shared tspice_eul2m -> trace frame plus external eul2m_ via declared SpiceZfc.h ABI, initialized oriented matrix and success-only transpose; independent locked SPICELIB error path and ordinary public success comparisons.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-node", "ci-a14-ade1137c-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "alias",
           "trace": "raw.eul2m -> WASM wrapper -> exported bounded shim -> shared tspice_eul2m -> trace frame plus external eul2m_ via declared SpiceZfc.h ABI, initialized oriented matrix and success-only transpose; independent locked SPICELIB error path and ordinary public success comparisons.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-wasm", "ci-a14-ade1137c-wasm"]
         }
       }
     },
@@ -130,7 +347,7 @@
       "routine": "m2eul_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/m2eul_c.html",
-      "semantics": "Factor a row-major rotation into angle3, angle2 and angle1 in radians for the requested axis3/axis2/axis1. The middle axis must differ from both neighbors. The outer angles lie in (\u2212\u03c0,\u03c0]. The middle range is [0,\u03c0] for repeated outside axes or [\u2212\u03c0/2,\u03c0/2] for distinct axes. At a nonunique decomposition the pinned convention sets angle3 to zero.",
+      "semantics": "Factor a row-major rotation into angle3, angle2 and angle1 in radians for the requested axis3/axis2/axis1. The middle axis must differ from both neighbors. The outer angles lie in (−π,π]. The middle range is [0,π] for repeated outside axes or [−π/2,π/2] for distinct axes. At a nonunique decomposition the pinned convention sets angle3 to zero.",
       "scenarios": [
         {
           "caseId": "coords-vectors-m2eul-all-axis-families",
@@ -173,20 +390,20 @@
       "fixtures": [],
       "fixtureRationale": "Project-authored coordinate axes, radians, quaternions and row-major matrices. No kernels, observations or external files are needed.",
       "cleanup": "The adapters capture validated fixed inputs and return owned matrices, quaternions, vectors or named output objects. Native serializes dispatch. WASM frees allocated input, output and error temporaries on success and failure. Scientific errors are captured and reset before reuse.",
-      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e\u221212. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
+      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e−12. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.m2eul -> Node wrapper -> native addon -> shared tspice_m2eul -> m2eul_c; independent locked SpiceyPy m2eul wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-node", "ci-a14-ade1137c-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.m2eul -> WASM wrapper -> exported bounded shim -> shared tspice_m2eul -> m2eul_c; independent locked SpiceyPy m2eul wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-wasm", "ci-a14-ade1137c-wasm"]
         }
       }
     },
@@ -232,20 +449,20 @@
       "fixtures": [],
       "fixtureRationale": "Project-authored coordinate axes, radians, quaternions and row-major matrices. No kernels, observations or external files are needed.",
       "cleanup": "The adapters capture validated fixed inputs and return owned matrices, quaternions, vectors or named output objects. Native serializes dispatch. WASM frees allocated input, output and error temporaries on success and failure. Scientific errors are captured and reset before reuse.",
-      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e\u221212. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
+      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e−12. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.m2q -> Node wrapper -> native addon -> shared tspice_m2q -> m2q_c; independent locked SpiceyPy m2q wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-node", "ci-a14-ade1137c-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.m2q -> WASM wrapper -> exported bounded shim -> shared tspice_m2q -> m2q_c; independent locked SpiceyPy m2q wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-wasm", "ci-a14-ade1137c-wasm"]
         }
       }
     },
@@ -253,7 +470,7 @@
       "routine": "q2m_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/q2m_c.html",
-      "semantics": "Return the row-major rotation matrix for a scalar-first SPICE quaternion. A zero quaternion yields identity. Ordinary q, \u2212q and safe nonzero multiples describe the same rotation. N0067 forms unscaled products and norms, so finite extreme magnitudes can produce identity or NaN entries. Preserve every raw double from the scientific result.",
+      "semantics": "Return the row-major rotation matrix for a scalar-first SPICE quaternion. A zero quaternion yields identity. Ordinary q, −q and safe nonzero multiples describe the same rotation. N0067 forms unscaled products and norms, so finite extreme magnitudes can produce identity or NaN entries. Preserve every raw double from the scientific result.",
       "scenarios": [
         {
           "caseId": "coords-vectors-q2m-identity-and-zero",
@@ -286,13 +503,13 @@
       "fixtures": [],
       "fixtureRationale": "Project-authored coordinate axes, radians, quaternions and row-major matrices. No kernels, observations or external files are needed.",
       "cleanup": "The adapters capture validated fixed inputs and return owned matrices, quaternions, vectors or named output objects. Native serializes dispatch. WASM frees allocated input, output and error temporaries on success and failure. Scientific errors are captured and reset before reuse.",
-      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e\u221212. Compare full oriented output shapes. Preserve exceptional IEEE fields and use focused tagged comparisons for finite inputs producing exceptional arithmetic.",
+      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e−12. Compare full oriented output shapes. Preserve exceptional IEEE fields and use focused tagged comparisons for finite inputs producing exceptional arithmetic.",
       "findings": [
         {
           "id": "owned-nonfinite-quaternion-matrix",
           "status": "repaired",
-          "summary": "Finite extreme quaternion components can overflow N0067\u2019s pre-normalization products, yielding nonfinite entries in a successful raw matrix.",
-          "repair": "Use A12\u2019s existing owned result-branding helper to preserve all nine returned values. Keep finite matrix input validation and the actual canonical calculation. Compare signed/exceptional outputs via a focused independently tagged route.",
+          "summary": "Finite extreme quaternion components can overflow N0067’s pre-normalization products, yielding nonfinite entries in a successful raw matrix.",
+          "repair": "Use A12’s existing owned result-branding helper to preserve all nine returned values. Keep finite matrix input validation and the actual canonical calculation. Compare signed/exceptional outputs via a focused independently tagged route.",
           "evidence": [
             "packages/py-parity-checking/src/cases/coords-vectors/q2m.cases.json",
             "packages/core/src/spice-runtime/shared/mat3.ts",
@@ -305,16 +522,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.q2m -> Node wrapper -> native addon -> shared tspice_q2m -> q2m_c; independent locked SpiceyPy q2m wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-node", "ci-a14-ade1137c-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.q2m -> WASM wrapper -> exported bounded shim -> shared tspice_q2m -> q2m_c; independent locked SpiceyPy q2m wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-wasm", "ci-a14-ade1137c-wasm"]
         }
       }
     },
@@ -355,20 +572,20 @@
       "fixtures": [],
       "fixtureRationale": "Project-authored coordinate axes, radians, quaternions and row-major matrices. No kernels, observations or external files are needed.",
       "cleanup": "The adapters capture validated fixed inputs and return owned matrices, quaternions, vectors or named output objects. Native serializes dispatch. WASM frees allocated input, output and error temporaries on success and failure. Scientific errors are captured and reset before reuse.",
-      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e\u221212. Compare full oriented output shapes. Preserve exceptional IEEE fields and use focused tagged comparisons for finite inputs producing exceptional arithmetic.",
+      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e−12. Compare full oriented output shapes. Preserve exceptional IEEE fields and use focused tagged comparisons for finite inputs producing exceptional arithmetic.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.qxq -> Node wrapper -> native addon -> shared tspice_qxq -> qxq_c; independent locked SpiceyPy qxq wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-node", "ci-a14-ade1137c-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.qxq -> WASM wrapper -> exported bounded shim -> shared tspice_qxq -> qxq_c; independent locked SpiceyPy qxq wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-wasm", "ci-a14-ade1137c-wasm"]
         }
       }
     },
@@ -376,7 +593,7 @@
       "routine": "qdq2av_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/qdq2av_c.html",
-      "semantics": "Compute angular velocity from the SPICE quaternion and its derivative in radians per derivative-time unit. Normalize q, conjugate that unit quaternion, multiply by dq and return \u22122 times the resulting vector part. The derivative retains its scale and component order.",
+      "semantics": "Compute angular velocity from the SPICE quaternion and its derivative in radians per derivative-time unit. Normalize q, conjugate that unit quaternion, multiply by dq and return −2 times the resulting vector part. The derivative retains its scale and component order.",
       "scenarios": [
         {
           "caseId": "coords-vectors-qdq2av-order",
@@ -409,20 +626,20 @@
       "fixtures": [],
       "fixtureRationale": "Project-authored coordinate axes, radians, quaternions and row-major matrices. No kernels, observations or external files are needed.",
       "cleanup": "The adapters capture validated fixed inputs and return owned matrices, quaternions, vectors or named output objects. Native serializes dispatch. WASM frees allocated input, output and error temporaries on success and failure. Scientific errors are captured and reset before reuse.",
-      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e\u221212. Compare full oriented output shapes. Preserve exceptional IEEE fields and use focused tagged comparisons for finite inputs producing exceptional arithmetic.",
+      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e−12. Compare full oriented output shapes. Preserve exceptional IEEE fields and use focused tagged comparisons for finite inputs producing exceptional arithmetic.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.qdq2av -> Node wrapper -> native addon -> shared tspice_qdq2av -> qdq2av_c; independent locked SpiceyPy qdq2av wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-node", "ci-a14-ade1137c-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.qdq2av -> WASM wrapper -> exported bounded shim -> shared tspice_qdq2av -> qdq2av_c; independent locked SpiceyPy qdq2av wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-wasm", "ci-a14-ade1137c-wasm"]
         }
       }
     },
@@ -430,7 +647,7 @@
       "routine": "raxisa_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/raxisa_c.html",
-      "semantics": "Return a unit axis and principal angle [0,\u03c0] radians for a rotation matrix. Identity yields positive z and angle zero. At \u03c0, the axis sign is mathematically ambiguous and the actual pinned representative is observable. Matrices rejected by the toolkit signal NOTAROTATION.",
+      "semantics": "Return a unit axis and principal angle [0,π] radians for a rotation matrix. Identity yields positive z and angle zero. At π, the axis sign is mathematically ambiguous and the actual pinned representative is observable. Matrices rejected by the toolkit signal NOTAROTATION.",
       "scenarios": [
         {
           "caseId": "coords-vectors-raxisa-identity",
@@ -463,28 +680,28 @@
           "observes": "Rejected nonrotation raises true CSPICE error. Observe SPICE(NOTAROTATION)."
         }
       ],
-      "edgeAssessment": "Compare identity\u2019s canonical axis, oriented quarter turns, principal half-turn sign choice, mixed axes and rejection of reflection and zero matrices.",
+      "edgeAssessment": "Compare identity’s canonical axis, oriented quarter turns, principal half-turn sign choice, mixed axes and rejection of reflection and zero matrices.",
       "errorAssessment": "Rejected rotation matrices signal SPICE(NOTAROTATION). Finite input representation, fixed shapes and types are checked independently before scientific dispatch.",
       "fixtures": [],
       "fixtureRationale": "Project-authored coordinate axes, radians, quaternions and row-major matrices. No kernels, observations or external files are needed.",
       "cleanup": "The adapters capture validated fixed inputs and return owned matrices, quaternions, vectors or named output objects. Native serializes dispatch. WASM frees allocated input, output and error temporaries on success and failure. Scientific errors are captured and reset before reuse.",
-      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e\u221212. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
+      "tolerance": "Registered finite values retain the unchanged absolute-or-relative tolerance 1e−12. Compare full oriented output shapes. Check the selected representative and reconstituted orientation on singular or nonunique cases using separately focused public checks.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.raxisa -> Node wrapper -> native addon -> shared tspice_raxisa -> raxisa_c; independent locked SpiceyPy raxisa wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-node", "ci-a14-ade1137c-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.raxisa -> WASM wrapper -> exported bounded shim -> shared tspice_raxisa -> raxisa_c; independent locked SpiceyPy raxisa wrapper.",
-          "executions": []
+          "executions": ["local-a14-ade1137c-wasm", "ci-a14-ade1137c-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Reviewed current scientific source and independent locked-library routes. Combined A12/A14 source and binary require both complete local lanes and observed canonical CI. All earlier executions are historical on their original fingerprints."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

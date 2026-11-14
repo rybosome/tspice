@@ -441,8 +441,8 @@
         "raxisa_c"
       ],
       "dependsOn": ["a12-fixed-matrices"],
-      "prs": [],
-      "nextAction": "Source-review all rotation methods, singularities and exceptional matrix or quaternion outputs. Record both required local lanes and observed source CI on the combined A12/A14 branch."
+      "prs": ["https://github.com/rybosome/tspice/pull/725"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

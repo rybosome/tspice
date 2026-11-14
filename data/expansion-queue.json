@@ -738,18 +738,25 @@
         "missingTopLevelWrappers": [],
         "assessment": "All seven locked high-level wrappers are installed. EUL2M uses the independently typed linked routine for defined diagnostics and a paired valid-success comparison with its public wrapper. The remaining six use the locked high-level wrapper. Tagged tests retain exceptional matrix/vector output components."
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/725"],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
           "result": "Corrected EUL2M alias source passed 82 registered comparisons, 22 native, 58 WASM and 6 public/oracle tests."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "ade1137c994fa0b109304417807cdc099b0ce234",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43556467747/job/132330319914",
+          "result": "Both complete required lanes passed locally on ade1137c994fa0b109304417807cdc099b0ce234. JavaScript: 2,630 parity tests and one expected guard skip. Native-required: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132330319914 on ade1137c994fa0b109304417807cdc099b0ce234: 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed."
         }
       ],
-      "nextAction": "Record full local lanes and inspect an uncached, native-required canonical CI job for both expansion assignments and the inherited baseline at the combined source. Then check final CI and explicit rebaseability on the intended parent.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-rotation-representations",
       "worktree": "/private/tmp/tspice-step8-rotation-representations",
       "baseCommit": "a1127d866930e7e3be177d4fceee94a3a220b5c0",
-      "progressNote": "On corrected Euler source all 82 registered actual Node/WASM comparisons passed with 22 native, 58 WASM and 6 public/oracle tests. The seven routines have 41 workflows / 124 calls and 11 genuine errors. A12 remains independently assigned. On this combined branch 24 inherited audit digests have changed, and previous 664 execution observations are retained historically pending fresh full evidence."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source ade1137c. 2,400 registered Node/WASM live comparisons; 2,631 parity-package tests with no skips, including the native-required guard; 143 native wrapper, 705 WASM, 34 core and 152 facade tests passed.",
+      "priorCheckpoint": "On corrected Euler source all 82 registered actual Node/WASM comparisons passed with 22 native, 58 WASM and 6 public/oracle tests. The seven routines have 41 workflows / 124 calls and 11 genuine errors. A12 remains independently assigned. On this combined branch 24 inherited audit digests have changed, and previous 664 execution observations are retained historically pending fresh full evidence."
     },
     {
       "id": "A15-frame-algebra",
