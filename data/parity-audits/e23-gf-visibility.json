@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "batch": "e23-gf-visibility",
+  "traceFiles": [
+    "docs/spicebackend-cspice-mapping.md",
+    "docs/step8-gf-visibility.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry-gf.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/native/src/domains/geometry_gf.cc",
+    "packages/backend-node/native/src/domains/geometry_text.h",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/geometry-gf.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/gf-visibility-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-shim-c/src/domains/geometry_gf.c",
+    "packages/backend-shim-c/src/geometry_names.h",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry-gf.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/gf-visibility-allocations.test.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-ck.py",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-gf-ray.tf",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry-gf.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/test/gf-visibility.test.ts",
+    "packages/tspice/src/index.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "gfoclt_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfoclt_c.html",
+      "semantics": "Find complete occultation windows for the named front/back bodies and observer.",
+      "edgeAssessment": "Finite disk and point combinations, reversal, DSK plates, disjoint confinement, partial/full/annular/any, corrected geometric state and insufficient capacity.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(BADMETHODSYNTAX), SPICE(BADTYPESHAPECOMBO), SPICE(BODIESNOTDISTINCT), SPICE(IDCODENOTFOUND), SPICE(INVALIDFRAME), SPICE(INVALIDOCCTYPE), SPICE(INVALIDOPTION), SPICE(INVALIDSHAPECOMBO), SPICE(INVALIDSTEP), SPICE(WINDOWEXCESS). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfoclt-types-large",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every boundary of full, annular, partial and any occultation for this finite disk."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-types-small",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every boundary of full, annular, partial and any occultation for this finite disk."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-point",
+          "coverage": ["success", "edge"],
+          "observes": "Compare an ellipsoid occulting a point through both contact epochs and a reversed-order miss."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Search with geometric, converged reception and transmission ephemerides."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-dsk",
+          "coverage": ["success", "edge"],
+          "observes": "Use the authored octahedral DSK for the front target against a point."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Keep all confinement intervals, replace prepopulated output, and observe the global search step."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-point-confinement",
+          "coverage": ["success", "edge"],
+          "observes": "Compare included and excluded singleton times and a finite interval."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-tolerance",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full time boundaries before and after changing the search convergence tolerance."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-reload",
+          "coverage": ["success", "edge"],
+          "observes": "Search again after clearing and reloading the stateful fixtures."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-negative-step",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for negative-step."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for bad-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-bad-type",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for bad-type."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-two-points",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for two-points."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-point-full",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for point-full."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-unknown-front",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for unknown-front."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-wrong-frame",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for wrong-frame."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-same",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for same."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-bad-shape",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for bad-shape."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-no-dsk",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for no-dsk."
+        },
+        {
+          "caseId": "geometry-gf-gfoclt-small-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint visible intervals exceed a one-interval output window."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+          "provenance": "Repository-authored asymmetric circular, elliptic, polygonal and rectangular instrument kernels.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Independent SpiceyPy-generated triangular test surface.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, body-fixed frames, instrument fields and attitude allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a visibility workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfoclt -> serialized N-API binding -> tspice_gfoclt -> gfoclt_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfoclt -> scoped WASM adapter and compiled export -> tspice_gfoclt -> gfoclt_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfoclt-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-visibility.md",
+            "packages/py-parity-checking/test/gf-visibility.test.ts",
+            "packages/backend-node/test/gf-visibility-domain.test.ts",
+            "packages/backend-wasm/test/gf-visibility-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfoclt-types-small"]
+        }
+      ]
+    },
+    {
+      "routine": "gfrfov_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfrfov_c.html",
+      "semantics": "Find all intervals over which the supplied framed ray lies inside the instrument field.",
+      "edgeAssessment": "Moving CK boresight, rotated ray frame, stellar reception/transmission, multiple detector geometries, spacecraft clock coverage and unconfigured instruments.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(EMPTYSTRING), SPICE(IDCODENOTFOUND), SPICE(INVALIDFRAME), SPICE(INVALIDOPTION), SPICE(INVALIDSTEP), SPICE(NOFRAMECONNECT), SPICE(WINDOWEXCESS), SPICE(ZEROVECTOR). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfrfov-cone",
+          "coverage": ["success", "edge"],
+          "observes": "A scaled direction leaves full intervals unchanged; a direction just beyond the boundary yields a miss."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-moving-frame",
+          "coverage": ["success", "edge"],
+          "observes": "Resolve two crossings of a fixed inertial ray through a moving CK-based cone, including the complete intermediate visibility interval."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-ray-frame",
+          "coverage": ["success", "edge"],
+          "observes": "The boresight remains visible when the input ray co-rotates in the camera frame."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-stellar",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, reception stellar and transmission stellar ray windows."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-elliptic-polygon",
+          "coverage": ["success", "edge"],
+          "observes": "Compare distinct shapes and reference frames with asymmetric directions."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Keep all confinement intervals, replace prepopulated output, and observe the global search step."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-point-confinement",
+          "coverage": ["success", "edge"],
+          "observes": "Compare included and excluded singleton times and a finite interval."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-tolerance",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full time boundaries before and after changing the search convergence tolerance."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-reload",
+          "coverage": ["success", "edge"],
+          "observes": "Search again after clearing and reloading the stateful fixtures."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-negative-step",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for negative-step."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for bad-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-zero-ray",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for zero-ray."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-light-time",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for light-time."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-unknown-camera",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for unknown-camera."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-unknown-observer",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for unknown-observer."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-missing-frame",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for missing-frame."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-empty-frame",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for empty-frame."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-missing-attitude",
+          "coverage": ["error"],
+          "observes": "A CK-defined camera outside its covered arcs signals a real pointing error."
+        },
+        {
+          "caseId": "geometry-gf-gfrfov-small-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint visible intervals exceed a one-interval output window."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "Synthetic clock for CK sample times.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+          "provenance": "Repository-authored asymmetric circular, elliptic, polygonal and rectangular instrument kernels.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-gf-ray.tf",
+          "provenance": "Repository-authored narrow CK-based instrument, using the +X boresight and a transverse/axial boundary ratio of 0.005.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Independently generated synthetic time-dependent pointing.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, body-fixed frames, instrument fields and attitude allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a visibility workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfrfov -> serialized N-API binding -> tspice_gfrfov -> gfrfov_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfrfov -> scoped WASM adapter and compiled export -> tspice_gfrfov -> gfrfov_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfrfov-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-visibility.md",
+            "packages/py-parity-checking/test/gf-visibility.test.ts",
+            "packages/backend-node/test/gf-visibility-domain.test.ts",
+            "packages/backend-wasm/test/gf-visibility-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfrfov-moving-frame"]
+        }
+      ]
+    },
+    {
+      "routine": "gftfov_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gftfov_c.html",
+      "semantics": "Find all intervals over which the target center or apparent limb is visible.",
+      "edgeAssessment": "Moving target center and limb, corrections, differing radii, multiple cameras, result replacement, error recovery and mutable body names.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(IDCODENOTFOUND), SPICE(INVALIDFRAME), SPICE(INVALIDOPTION), SPICE(INVALIDSHAPE), SPICE(INVALIDSTEP), SPICE(SPKINSUFFDATA), SPICE(WINDOWEXCESS). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gftfov-center-limb",
+          "coverage": ["success", "edge"],
+          "observes": "Observe different full entry and exit intervals for the moving center and finite ellipsoid."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare both finite-body and center intervals for reception and transmission corrections."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-cameras",
+          "coverage": ["success", "edge"],
+          "observes": "Compare circle, rectangle, ellipse and rotated polygon visibility with the same target."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-radii",
+          "coverage": ["success", "edge"],
+          "observes": "Increasing the target size changes both finite-limb crossings."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Keep all confinement intervals, replace prepopulated output, and observe the global search step."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-point-confinement",
+          "coverage": ["success", "edge"],
+          "observes": "Compare included and excluded singleton times and a finite interval."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-tolerance",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full time boundaries before and after changing the search convergence tolerance."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-reload",
+          "coverage": ["success", "edge"],
+          "observes": "Search again after clearing and reloading the stateful fixtures."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-negative-step",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for negative-step."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for bad-correction."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-bad-shape",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for bad-shape."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-ray-target",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for ray-target."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-unknown-target",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for unknown-target."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-unknown-camera",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for unknown-camera."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-wrong-frame",
+          "coverage": ["error"],
+          "observes": "Observe the complete canonical failure for wrong-frame."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-outside-ephemeris",
+          "coverage": ["error"],
+          "observes": "The target and observer must have ephemeris coverage at the search epochs."
+        },
+        {
+          "caseId": "geometry-gf-gftfov-small-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint visible intervals exceed a one-interval output window."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+          "provenance": "Repository-authored asymmetric circular, elliptic, polygonal and rectangular instrument kernels.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, body-fixed frames, instrument fields and attitude allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a visibility workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gftfov -> serialized N-API binding -> tspice_gftfov -> gftfov_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gftfov -> scoped WASM adapter and compiled export -> tspice_gftfov -> gftfov_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gftfov-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-visibility.md",
+            "packages/py-parity-checking/test/gf-visibility.test.ts",
+            "packages/backend-node/test/gf-visibility-domain.test.ts",
+            "packages/backend-wasm/test/gf-visibility-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gftfov-center-limb"]
+        }
+      ]
+    }
+  ],
+  "verificationNote": "Compiled workflow, instrumentation and real browser observations are recorded in the scientific notes. Complete required local and Linux CI evidence binds separately."
+}

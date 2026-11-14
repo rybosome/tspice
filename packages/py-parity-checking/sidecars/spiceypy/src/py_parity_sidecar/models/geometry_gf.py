@@ -45,6 +45,53 @@ class StepGeometryGfGfrepf:
 
 
 @dataclass(frozen=True)
+class StepGeometryGfGfoclt:
+    op: Literal["geometry-gf.gfoclt"]
+    occtyp: str
+    front: str
+    fshape: str
+    fframe: str
+    back: str
+    bshape: str
+    bframe: str
+    abcorr: str
+    obsrvr: str
+    step: float
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfrfov:
+    op: Literal["geometry-gf.gfrfov"]
+    inst: str
+    raydir: tuple[float, float, float]
+    rframe: str
+    abcorr: str
+    obsrvr: str
+    step: float
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGftfov:
+    op: Literal["geometry-gf.gftfov"]
+    inst: str
+    target: str
+    tshape: str
+    tframe: str
+    abcorr: str
+    obsrvr: str
+    step: float
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
 class StepGeometryGfGfsep:
     op: Literal["geometry-gf.gfsep"]
     targ1: str

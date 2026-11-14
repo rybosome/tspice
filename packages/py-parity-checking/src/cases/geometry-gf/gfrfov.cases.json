@@ -1,0 +1,998 @@
+[
+  {
+    "caseId": "geometry-gf-gfrfov-cone",
+    "description": "A scaled direction leaves full intervals unchanged; a direction just beyond the boundary yields a miss.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.24999, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [10, 2.4999, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.25001, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [-1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-moving-frame",
+    "description": "Resolve two crossings of a fixed inertial ray through a moving CK-based cone, including the complete intermediate visibility interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-gf-ray.tf"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 10,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_GF_CAMERA",
+        "raydir": [
+          0.9557383148938767, -0.2377815600796298, 0.17327493508846098
+        ],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 0.5,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_GF_CAMERA",
+        "raydir": [2.8672149446816304, -0.7133446802388894, 0.5198248052653829],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 0.5,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-ray-frame",
+    "description": "The boresight remains visible when the input ray co-rotates in the camera frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-gf-ray.tf"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 10,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_GF_CAMERA",
+        "raydir": [1, 0, 0],
+        "rframe": "AUDIT_GF_CAMERA",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 1,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_GF_CAMERA",
+        "raydir": [1, 0.01, 0],
+        "rframe": "AUDIT_GF_CAMERA",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 1,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-stellar",
+    "description": "Compare geometric, reception stellar and transmission stellar ray windows.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "S",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "XS",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-elliptic-polygon",
+    "description": "Compare distinct shapes and reference frames with asymmetric directions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_ELLIPSE",
+        "raydir": [0.1, 0, 1],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_RECT",
+        "raydir": [1, 0.15, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_POLYGON",
+        "raydir": [-1, 0, 0],
+        "rframe": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-disjoint",
+    "description": "Keep all confinement intervals, replace prepopulated output, and observe the global search step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -190,
+        "right": -30,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 20,
+        "right": 27,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 36,
+        "right": 130,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 999,
+        "right": 1001,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 1.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 22
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-point-confinement",
+    "description": "Compare included and excluded singleton times and a finite interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -120,
+        "right": -120,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 10,
+        "right": 25,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 178,
+        "right": 178,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-tolerance",
+    "description": "Observe full time boundaries before and after changing the search convergence tolerance.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 0.0001
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 4.3,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 4.3,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-reload",
+    "description": "Search again after clearing and reloading the stateful fixtures.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-negative-step",
+    "description": "Observe the complete canonical failure for negative-step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": -1,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSTEP)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-bad-correction",
+    "description": "Observe the complete canonical failure for bad-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NOT A CORRECTION",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-zero-ray",
+    "description": "Observe the complete canonical failure for zero-ray.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [0, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ZEROVECTOR)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-light-time",
+    "description": "Observe the complete canonical failure for light-time.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "LT+S",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-unknown-camera",
+    "description": "Observe the complete canonical failure for unknown-camera.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "NO CAMERA",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-unknown-observer",
+    "description": "Observe the complete canonical failure for unknown-observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "NO OBSERVER",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-missing-frame",
+    "description": "Observe the complete canonical failure for missing-frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "UNKNOWN FRAME",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-empty-frame",
+    "description": "Observe the complete canonical failure for empty-frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-missing-attitude",
+    "description": "A CK-defined camera outside its covered arcs signals a real pointing error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-gf-ray.tf"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 12,
+        "right": 16,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_GF_CAMERA",
+        "raydir": [
+          0.9557383148938767, -0.2377815600796298, 0.17327493508846098
+        ],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAMECONNECT)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrfov-small-result",
+    "description": "Three disjoint visible intervals exceed a one-interval output window.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -5,
+        "right": -4,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 4,
+        "right": 5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfrfov",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(WINDOWEXCESS)"]
+    }
+  }
+]

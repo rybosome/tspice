@@ -701,3 +701,7 @@ orientation is ignored, with nonempty C strings still required.
 ### Instrument geometry
 
 `getfov`, `getfvn`, `fovray` and `fovtrg` use their same-named public C routines on the serialized native and compiled WASM paths. Both lookup methods preserve complete ordered vectors and the caller's string capacities. A missing instrument name takes the initialized translation path with the original GETFVN diagnostic. The two visibility predicates compare the actual toolkit booleans. [Field-of-view semantics and evidence](step8-field-of-view.md)
+
+### Visibility search windows
+
+`gfoclt`, `gfrfov` and `gftfov` dispatch to their same-named CSPICE entry points on native Node and WASM. Each replaces a distinct result window with the complete intervals for the selected occultation, ray visibility or apparent target visibility. [Search semantics, limitations and evidence](step8-gf-visibility.md)

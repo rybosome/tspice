@@ -1,6 +1,7 @@
 #include "tspice_backend_shim.h"
 
 #include "SpiceUsr.h"
+#include "../geometry_names.h"
 
 #include "SpiceZfc.h"
 
@@ -577,7 +578,7 @@ static int check_geometry_arguments(double et, const char *const *strings, size_
 }
 // ZZBODKER builds the ID hash from paired name/code mappings. N0067
 // ZZHASHI takes signed abs(code), which has no representation for INT_MIN.
-static int check_body_mapping_codes(char *err, int errMaxBytes) {
+int tspice_check_body_mapping_codes(char *err, int errMaxBytes) {
   SpiceBoolean found = SPICEFALSE;
   SpiceInt names = 0, codes = 0;
   SpiceChar type[2] = {0};
@@ -666,7 +667,7 @@ int tspice_phaseq(double et, const char *target, const char *illmn, const char *
   const char *strings[] = {target, illmn, observer, abcorr};
   if (check_geometry_arguments(et, strings, 4, out, err, errMaxBytes)) return 1;
   if (*target && *illmn && *observer && *abcorr) {
-    if (check_body_mapping_codes(err, errMaxBytes)) return 1;
+    if (tspice_check_body_mapping_codes(err, errMaxBytes)) return 1;
     const char *roles[] = {"target", "illuminator", "observer"};
     int unsupported = 0;
     chkin_c("phaseq_c"); chkin_c("PHASEQ");
@@ -691,7 +692,7 @@ int tspice_trgsep(double et, const char *targ1, const char *shape1, const char *
   int allNonempty = 1;
   for (size_t i = 0; i < 8; ++i) if (!*strings[i]) allNonempty = 0;
   if (allNonempty) {
-    if (check_body_mapping_codes(err, errMaxBytes)) return 1;
+    if (tspice_check_body_mapping_codes(err, errMaxBytes)) return 1;
     const char *bodies[] = {targ1, targ2, observer};
     int unsupported = 0;
     chkin_c("trgsep_c"); chkin_c("TRGSEP"); chkin_c("ZZSPIN");
@@ -715,7 +716,7 @@ int tspice_lspcn(const char *body, double et, const char *abcorr, double *out, c
   if (check_geometry_arguments(et, strings, 2, out, err, errMaxBytes)) return 1;
   // The native string guard returns before any translated orientation work.
   if (!*body) { *out = lspcn_c(body, et, abcorr); return geometry_status(err, errMaxBytes); }
-  if (check_body_mapping_codes(err, errMaxBytes)) return 1;
+  if (tspice_check_body_mapping_codes(err, errMaxBytes)) return 1;
   chkin_c("lspcn_c"); chkin_c("LSPCN");
   SpiceInt id = 0, sun = 10, z = 3, y = 2;
   logical found;
@@ -788,7 +789,7 @@ int tspice_getfvn(const char* inst, int room, int shapelen, int framelen, char* 
   if (!inst || strlen(inst) >= INT_MAX)
     return geometry_input_error(err, errMaxBytes, "Invalid instrument string");
   if (*inst && shapelen >= 2 && framelen >= 2) {
-    if (check_body_mapping_codes(err, errMaxBytes)) return 1;
+    if (tspice_check_body_mapping_codes(err, errMaxBytes)) return 1;
     // GETFVN's ZZBODS2C caches the caller's uninitialized local code on a miss.
     // Resolve into owned storage first and preserve the original message and trace.
     SpiceInt code = 0;
@@ -825,7 +826,7 @@ int tspice_fovray(const char* inst, const double* dir, const char* rframe, const
       return geometry_input_error(err, errMaxBytes, "Invalid FOV text");
   if (!dir || !isfinite(dir[0]) || !isfinite(dir[1]) || !isfinite(dir[2]))
     return geometry_input_error(err, errMaxBytes, "Invalid ray direction");
-  if (*inst && *rframe && *abcorr && *observer && check_body_mapping_codes(err, errMaxBytes))
+  if (*inst && *rframe && *abcorr && *observer && tspice_check_body_mapping_codes(err, errMaxBytes))
     return 1;
   SpiceBoolean result = SPICEFALSE;
   fovray_c(inst, dir, rframe, abcorr, observer, &et, &result);
@@ -845,7 +846,7 @@ int tspice_fovtrg(const char* inst, const char* target, const char* tshape, cons
     if (!strings[i] || strlen(strings[i]) >= INT_MAX)
       return geometry_input_error(err, errMaxBytes, "Invalid FOV text");
   if (*inst && *target && *tshape && *abcorr && *observer && !eqstr_c(tshape, "RAY") &&
-      check_body_mapping_codes(err, errMaxBytes))
+      tspice_check_body_mapping_codes(err, errMaxBytes))
     return 1;
   SpiceBoolean result = SPICEFALSE;
   fovtrg_c(inst, target, tshape, tframe, abcorr, observer, &et, &result);

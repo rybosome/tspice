@@ -941,6 +941,47 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
   _tspice_gfrepf(errPtr: number, errMaxBytes: number): number;
+  _tspice_gfoclt(
+    occtyp: number,
+    front: number,
+    fshape: number,
+    fframe: number,
+    back: number,
+    bshape: number,
+    bframe: number,
+    abcorr: number,
+    obsrvr: number,
+    step: number,
+    cnfine: number,
+    result: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_gfrfov(
+    inst: number,
+    raydir: number,
+    rframe: number,
+    abcorr: number,
+    obsrvr: number,
+    step: number,
+    cnfine: number,
+    result: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_gftfov(
+    inst: number,
+    target: number,
+    tshape: number,
+    tframe: number,
+    abcorr: number,
+    obsrvr: number,
+    step: number,
+    cnfine: number,
+    result: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_gfsep(
     targ1Ptr: number,
     shape1Ptr: number,
@@ -2380,6 +2421,9 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrefn",
   "_tspice_gfrepi",
   "_tspice_gfrepf",
+  "_tspice_gfoclt",
+  "_tspice_gfrfov",
+  "_tspice_gftfov",
   "_tspice_gfsep",
   "_tspice_gfdist",
   "_tspice_reclat",

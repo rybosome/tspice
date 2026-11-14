@@ -2118,6 +2118,15 @@ export function createFakeBackend(
     gfrepf: () => {
       throw new Error("Fake backend: gfrepf() is not implemented");
     },
+    gfoclt: () => {
+      throw new Error("Fake backend: gfoclt requires a scientific backend");
+    },
+    gfrfov: () => {
+      throw new Error("Fake backend: gfrfov requires a scientific backend");
+    },
+    gftfov: () => {
+      throw new Error("Fake backend: gftfov requires a scientific backend");
+    },
     gfsep: (
       _targ1: string,
       _shape1: string,

@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 169,
-    planned: 480,
+    implemented: 172,
+    planned: 477,
     excluded: 3,
-    caseFiles: 169,
-    scenarios: 1231,
+    caseFiles: 172,
+    scenarios: 1287,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -472,7 +472,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 7);
+  assert.equal(ledger.audit.expansionRoutines, 10);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -755,4 +755,17 @@ test("historical executions remain visible but cannot establish current verifica
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.throws(f.build, /missing local live verification/);
+});
+
+test("each visibility search has a compiled export and two same-named CSPICE routes", (t) => {
+  const { routines } = fixture(t).build();
+  for (const method of ["gfoclt", "gfrfov", "gftfov"]) {
+    const row = routines.find((entry) => entry.routine === method + "_c");
+    assert.equal(
+      row.mapping.node.classification,
+      "same-named-cspice-entrypoint",
+    );
+    assert.equal(row.backends.wasm.status, "source-and-binary-route-present");
+    assert.ok(row.backends.wasm.shimSymbols.includes("tspice_" + method));
+  }
 });

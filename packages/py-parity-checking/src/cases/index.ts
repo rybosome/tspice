@@ -74,6 +74,9 @@ import geometryGfGfdistCasesRaw from "./geometry-gf/gfdist.cases.json" with { ty
 import geometryGfGfrefnCasesRaw from "./geometry-gf/gfrefn.cases.json" with { type: "json" };
 import geometryGfGfrepfCasesRaw from "./geometry-gf/gfrepf.cases.json" with { type: "json" };
 import geometryGfGfrepiCasesRaw from "./geometry-gf/gfrepi.cases.json" with { type: "json" };
+import geometryGfGfocltCasesRaw from "./geometry-gf/gfoclt.cases.json" with { type: "json" };
+import geometryGfGfrfovCasesRaw from "./geometry-gf/gfrfov.cases.json" with { type: "json" };
+import geometryGfGftfovCasesRaw from "./geometry-gf/gftfov.cases.json" with { type: "json" };
 import geometryGfGfsepCasesRaw from "./geometry-gf/gfsep.cases.json" with { type: "json" };
 import geometryGfGfsstpCasesRaw from "./geometry-gf/gfsstp.cases.json" with { type: "json" };
 import geometryGfGfstepCasesRaw from "./geometry-gf/gfstep.cases.json" with { type: "json" };
@@ -283,6 +286,9 @@ export const geometryGfGfdistCases = geometryGfGfdistCasesRaw as ParityCase[];
 export const geometryGfGfrefnCases = geometryGfGfrefnCasesRaw as ParityCase[];
 export const geometryGfGfrepfCases = geometryGfGfrepfCasesRaw as ParityCase[];
 export const geometryGfGfrepiCases = geometryGfGfrepiCasesRaw as ParityCase[];
+export const geometryGfGfocltCases = geometryGfGfocltCasesRaw as ParityCase[];
+export const geometryGfGfrfovCases = geometryGfGfrfovCasesRaw as ParityCase[];
+export const geometryGfGftfovCases = geometryGfGftfovCasesRaw as ParityCase[];
 export const geometryGfGfsepCases = geometryGfGfsepCasesRaw as ParityCase[];
 export const geometryGfGfsstpCases = geometryGfGfsstpCasesRaw as ParityCase[];
 export const geometryGfGfstepCases = geometryGfGfstepCasesRaw as ParityCase[];
@@ -295,6 +301,9 @@ export const geometryGfCases: ParityCase[] = [
   ...geometryGfGfrefnCases,
   ...geometryGfGfrepfCases,
   ...geometryGfGfrepiCases,
+  ...geometryGfGfocltCases,
+  ...geometryGfGfrfovCases,
+  ...geometryGfGftfovCases,
   ...geometryGfGfsepCases,
   ...geometryGfGfdistCases,
 ];

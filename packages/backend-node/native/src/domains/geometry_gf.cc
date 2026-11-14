@@ -1,4 +1,6 @@
 #include "geometry_gf.h"
+#include "geometry_text.h"
+#include <cmath>
 
 #include <string>
 
@@ -141,6 +143,121 @@ static void Gfrepf(const Napi::CallbackInfo& info) {
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling gfrepf", err);
   }
+}
+
+static bool VisibilityWindowPointers(const tspice_backend_node::CspiceLock& lock, const Napi::CallbackInfo& info,
+                                     size_t index, uintptr_t *cnfine, uintptr_t *result) {
+  Napi::Env env = info.Env();
+  uint32_t in=0,out=0;
+  if (!tspice_backend_node::ReadCellHandleArg(env,info[index],"cnfine",&in) ||
+      !tspice_backend_node::ReadCellHandleArg(env,info[index+1],"result",&out)) return false;
+  *cnfine=tspice_backend_node::GetCellHandlePtrOrThrow(lock,env,in,SPICE_DP,"visibility(cnfine)","SpiceWindow");
+  if (env.IsExceptionPending()) return false;
+  *result=tspice_backend_node::GetCellHandlePtrOrThrow(lock,env,out,SPICE_DP,"visibility(result)","SpiceWindow");
+  return !env.IsExceptionPending();
+}
+
+static void Gfoclt(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  if (info.Length() != 12 || !info[9].IsNumber()) {
+    ThrowSpiceError(
+        Napi::TypeError::New(env, "gfoclt: invalid argument count or step"));
+    return;
+  }
+  std::string occtyp, front, fshape, fframe, back, bshape, bframe, abcorr,
+      obsrvr;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &occtyp))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &front))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &fshape))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &fframe))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &back))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[5], &bshape))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[6], &bframe))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[7], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[8], &obsrvr))
+    return;
+  const double step = info[9].As<Napi::Number>().DoubleValue();
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!VisibilityWindowPointers(lock, info, 10, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfoclt(occtyp.c_str(), front.c_str(), fshape.c_str(),
+                    fframe.c_str(), back.c_str(), bshape.c_str(),
+                    bframe.c_str(), abcorr.c_str(), obsrvr.c_str(), step,
+                    cnfine, result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfoclt", err);
+}
+
+static void Gfrfov(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  if (info.Length() != 8 || !info[5].IsNumber()) {
+    ThrowSpiceError(
+        Napi::TypeError::New(env, "gfrfov: invalid argument count or step"));
+    return;
+  }
+  std::string inst, rframe, abcorr, obsrvr;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &inst))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &rframe))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &obsrvr))
+    return;
+  double raydir[3] = {0};
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, info[1], 3, raydir,
+                                                 "raydir"))
+    return;
+  const double step = info[5].As<Napi::Number>().DoubleValue();
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!VisibilityWindowPointers(lock, info, 6, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfrfov(inst.c_str(), raydir, rframe.c_str(), abcorr.c_str(),
+                    obsrvr.c_str(), step, cnfine, result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfrfov", err);
+}
+
+static void Gftfov(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  if (info.Length() != 9 || !info[6].IsNumber()) {
+    ThrowSpiceError(
+        Napi::TypeError::New(env, "gftfov: invalid argument count or step"));
+    return;
+  }
+  std::string inst, target, tshape, tframe, abcorr, obsrvr;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &inst))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &target))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &tshape))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &tframe))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[5], &obsrvr))
+    return;
+  const double step = info[6].As<Napi::Number>().DoubleValue();
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!VisibilityWindowPointers(lock, info, 7, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gftfov(inst.c_str(), target.c_str(), tshape.c_str(),
+                    tframe.c_str(), abcorr.c_str(), obsrvr.c_str(), step,
+                    cnfine, result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gftfov", err);
 }
 
 static void Gfsep(const Napi::CallbackInfo& info) {
@@ -306,6 +423,15 @@ void RegisterGeometryGf(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "gfrefn", Napi::Function::New(env, Gfrefn), __func__)) return;
   if (!SetExportChecked(env, exports, "gfrepi", Napi::Function::New(env, Gfrepi), __func__)) return;
   if (!SetExportChecked(env, exports, "gfrepf", Napi::Function::New(env, Gfrepf), __func__)) return;
+  if (!SetExportChecked(env, exports, "gfoclt",
+                        Napi::Function::New(env, Gfoclt), __func__))
+    return;
+  if (!SetExportChecked(env, exports, "gfrfov",
+                        Napi::Function::New(env, Gfrfov), __func__))
+    return;
+  if (!SetExportChecked(env, exports, "gftfov",
+                        Napi::Function::New(env, Gftfov), __func__))
+    return;
   if (!SetExportChecked(env, exports, "gfsep", Napi::Function::New(env, Gfsep), __func__)) return;
   if (!SetExportChecked(env, exports, "gfdist", Napi::Function::New(env, Gfdist), __func__)) return;
 }

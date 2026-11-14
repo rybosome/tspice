@@ -124,7 +124,8 @@
         "geometry-getfvn-unknown-name",
         "geometry-getfvn-unknown-shape"
       ],
-      "observation": "Both complete required lanes passed locally on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6. JavaScript: 2,692 parity tests and one expected guard skip. Native-required: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6. JavaScript: 2,692 parity tests and one expected guard skip. Native-required: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e15-6dbffeef-wasm",
@@ -204,7 +205,8 @@
         "geometry-getfvn-unknown-name",
         "geometry-getfvn-unknown-shape"
       ],
-      "observation": "Both complete required lanes passed locally on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6. JavaScript: 2,692 parity tests and one expected guard skip. Native-required: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6. JavaScript: 2,692 parity tests and one expected guard skip. Native-required: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e15-6dbffeef-node",
@@ -286,7 +288,8 @@
       ],
       "commit": "6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43577821227/job/132395839514",
-      "observation": "Inspected successful Linux Node 22 native-required job 132395839514 on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132395839514 on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e15-6dbffeef-wasm",
@@ -368,7 +371,8 @@
       ],
       "commit": "6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43577821227/job/132395839514",
-      "observation": "Inspected successful Linux Node 22 native-required job 132395839514 on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132395839514 on 6dbffeefdd4c2c24dcd4626c3ef0f5263150cde6: 2,462 registered Node/WASM live comparisons; 2,693 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 630 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -483,16 +487,28 @@
       "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.getfov -> serialized N-API handler -> tspice_getfov -> getfov_c.",
-          "executions": ["local-e15-6dbffeef-node", "ci-e15-6dbffeef-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.getfov -> scoped WASM adapter and real module export -> tspice_getfov -> getfov_c.",
-          "executions": ["local-e15-6dbffeef-wasm", "ci-e15-6dbffeef-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -638,16 +654,28 @@
       "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.getfvn -> serialized N-API handler -> tspice_getfvn -> getfvn_c.",
-          "executions": ["local-e15-6dbffeef-node", "ci-e15-6dbffeef-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.getfvn -> scoped WASM adapter and real module export -> tspice_getfvn -> getfvn_c.",
-          "executions": ["local-e15-6dbffeef-wasm", "ci-e15-6dbffeef-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -768,16 +796,28 @@
       "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.fovray -> serialized N-API handler -> tspice_fovray -> fovray_c.",
-          "executions": ["local-e15-6dbffeef-node", "ci-e15-6dbffeef-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.fovray -> scoped WASM adapter and real module export -> tspice_fovray -> fovray_c.",
-          "executions": ["local-e15-6dbffeef-wasm", "ci-e15-6dbffeef-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -903,16 +943,28 @@
       "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.fovtrg -> serialized N-API handler -> tspice_fovtrg -> fovtrg_c.",
-          "executions": ["local-e15-6dbffeef-node", "ci-e15-6dbffeef-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.fovtrg -> scoped WASM adapter and real module export -> tspice_fovtrg -> fovtrg_c.",
-          "executions": ["local-e15-6dbffeef-wasm", "ci-e15-6dbffeef-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -933,5 +985,5 @@
       ]
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Prior observations are historical. Complete local and canonical CI executions will bind reviews to this expanded source."
 }
