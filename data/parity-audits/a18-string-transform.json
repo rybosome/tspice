@@ -1,0 +1,647 @@
+{
+  "schemaVersion": 1,
+  "batch": "a18-string-transform",
+  "traceFiles": [
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/strings.h",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-node/test/strings-domain.test.ts",
+    "packages/backend-wasm/test/string-transforms-allocations.test.ts",
+    "packages/py-parity-checking/test/string-transforms.test.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/strings.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/strings.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/strings.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/string_oracle.py",
+    "packages/backend-shim-c/src/errors.c",
+    "docs/step8-string-transforms.md",
+    "packages/tspice/test/string-transforms-worker.test.ts",
+    "packages/tspice/test/_helpers/fakeWorker.ts",
+    "packages/tspice/src/worker/browser/spiceWorkerEntry.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/tspice/src/transport/rpc/protocol.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/transport/rpc/taskScheduling.ts"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "cmprss_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cmprss_c.html",
+      "semantics": "raw.cmprss(delim,n,input,lenout?) limits each consecutive run of the given ASCII delimiter to at most n bytes. Nonpositive n removes delimiter bytes. The default capacity fits the entire result. Explicit capacity includes NUL and can truncate on the right. Minimum capacity is 1, so capacity 1 on a valid call yields empty text. NUL delimiter is a legal by-value byte. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-cmprss-delimiter-run-lengths",
+          "coverage": ["success", "edge"],
+          "observes": "Compare full output for short/long, separated and boundary runs under several retained-count limits."
+        },
+        {
+          "caseId": "strings-cmprss-whitespace-delimiters",
+          "coverage": ["success", "edge"],
+          "observes": "Use space and control whitespace as distinct single-byte delimiters and retain all other whitespace exactly."
+        },
+        {
+          "caseId": "strings-cmprss-empty-all-delimiter-or-absent",
+          "coverage": ["success", "edge"],
+          "observes": "Observe empty input, exhausted delimiter-only input and unchanged absent-delimiter input."
+        },
+        {
+          "caseId": "strings-cmprss-utf8-and-bom",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact UTF-8 text including initial BOM, multibyte characters and trailing whitespace."
+        },
+        {
+          "caseId": "strings-cmprss-capacity-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Truncate the compressed stream to the available bytes plus terminator, observing where runs occur relative to the truncation."
+        },
+        {
+          "caseId": "strings-cmprss-complete-utf8-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Use capacities terminating on complete multibyte boundaries and preserve every resulting character."
+        },
+        {
+          "caseId": "strings-cmprss-zero-capacity-error",
+          "coverage": ["error"],
+          "observes": "Compare actual STRINGTOOSHORT for zero output capacity and require subsequent recovery."
+        },
+        {
+          "caseId": "strings-cmprss-negative-capacity-error",
+          "coverage": ["error"],
+          "observes": "Pass a negative signed32 capacity to actual CSPICE with valid sentinel storage and compare STRINGTOOSHORT."
+        },
+        {
+          "caseId": "strings-cmprss-nul-delimiter",
+          "coverage": ["success", "edge"],
+          "observes": "Pass NUL as a scalar delimiter. Complete non-NUL text and its spaces remain observable."
+        },
+        {
+          "caseId": "strings-cmprss-int32-capacity-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use a very large valid signed32 capacity on a bounded input and observe the complete output using sufficient actual storage."
+        }
+      ],
+      "edgeAssessment": "Run lengths, nonpositive and signed32 counts, absent/NUL delimiters, empty/all-delimiter text and whitespace delimiters expose compression order. Buffer capacities from terminator-only through exact UTF-8 boundaries, BOM and MAX_INT distinguish truncation from trimming.",
+      "errorAssessment": "Actual below-minimum signed32 capacities signal STRINGTOOSHORT. Independent focused checks compare genuine errors, reset and a successful subsequent call. A capacity ending inside a UTF-8 scalar is a successful C call followed by a typed output-representation error. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [
+        {
+          "id": "exact-c-string-output",
+          "status": "repaired",
+          "summary": "The locked convenience conversion ignores invalid UTF-8 prefixes and strips trailing whitespace after the correct canonical symbol returns.",
+          "repair": "Bind the actual symbol from the library loaded by SpiceyPy and inspect every returned byte up to NUL. Strictly decode complete prefixes, preserve a leading BOM and terminal whitespace, and expose split multibyte prefixes as a distinct wrapper encoding error. Independent byte probes compare the raw bytes and the convenience conversion.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/string_oracle.py",
+            "packages/py-parity-checking/test/string-transforms.test.ts",
+            "docs/step8-string-transforms.md"
+          ],
+          "caseIds": ["strings-cmprss-utf8-and-bom"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cmprss -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cmprss -> typed WASM domain -> checked transactional buffers -> exported _tspice_cmprss -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "eqstr_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eqstr_c.html",
+      "semantics": "raw.eqstr(a,b) compares nonempty inputs after skipping C whitespace throughout and folding ASCII letter case. Two empty strings compare equal. Exactly one empty string compares unequal even if the other contains only whitespace. Outside portable ASCII whitespace the process C locale determines classification. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-eqstr-case-and-punctuation",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact equality outcomes for ASCII case variants, punctuation, reordered and changed characters."
+        },
+        {
+          "caseId": "strings-eqstr-internal-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Observe skipped whitespace occurring between significant bytes as well as changes to significant contents."
+        },
+        {
+          "caseId": "strings-eqstr-all-c-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise portable C whitespace bytes individually and together and compare exact equality outcomes."
+        },
+        {
+          "caseId": "strings-eqstr-empty-and-nonempty",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise empty text and nonempty text including whitespace-only inputs. Preserve the canonical result for each combination."
+        },
+        {
+          "caseId": "strings-eqstr-leading-and-trailing",
+          "coverage": ["success", "edge"],
+          "observes": "Vary whitespace on either side of the significant text and observe both equivalent and unequal pairs."
+        },
+        {
+          "caseId": "strings-eqstr-utf8-byte-comparison",
+          "coverage": ["success", "edge"],
+          "observes": "Compare multibyte text without Unicode case-folding or normalization. Preserve changed/same byte-sequence outcomes."
+        }
+      ],
+      "edgeAssessment": "Observe both truth values with letter-case changes, punctuation, whitespace between letters and at endpoints, each C whitespace byte, one versus two empty inputs and UTF-8 comparisons.",
+      "errorAssessment": "All representable well-formed text, including empty text, receives the canonical boolean/index result. A null C pointer is outside the typed API. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.eqstr -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.eqstr -> typed WASM domain -> checked transactional buffers -> exported _tspice_eqstr -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "iswhsp_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/iswhsp_c.html",
+      "semantics": "raw.iswhsp(input) checks each unsigned byte with C isspace and returns true for an empty string. The portable C whitespace set includes space, tab, newline, vertical tab, form feed and carriage return. Locale can affect classification outside this set. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-iswhsp-empty-and-control-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Observe true for empty input and each portable C whitespace/control combination."
+        },
+        {
+          "caseId": "strings-iswhsp-nonwhite-controls",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual false results when bytes outside the whitespace set occur."
+        },
+        {
+          "caseId": "strings-iswhsp-visible-amid-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Place a visible byte among surrounding whitespace; exact false distinguishes checking the complete text."
+        },
+        {
+          "caseId": "strings-iswhsp-nonascii-space-and-visible",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual byte classification for UTF-8 space-like characters, BOM and visible text in the test locale."
+        }
+      ],
+      "edgeAssessment": "Compare empty input, each whitespace/control byte, nonwhite control or visible bytes mixed with whitespace, UTF-8 spaces and graphic characters. The boolean result retains the observed C-locale classification.",
+      "errorAssessment": "All representable well-formed text, including empty text, receives the canonical boolean/index result. A null C pointer is outside the typed API. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.iswhsp -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.iswhsp -> typed WASM domain -> checked transactional buffers -> exported _tspice_iswhsp -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "lastnb_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lastnb_c.html",
+      "semantics": "raw.lastnb(input) returns the zero-based byte index of the last byte other than ASCII space. An empty or all-space input yields \u22121. Tabs, other controls and the last byte of a UTF-8 scalar are significant. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-lastnb-zero-based-or-minus-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact \u22121 for empty/all-space and exact zero-based indices at several positions."
+        },
+        {
+          "caseId": "strings-lastnb-blank-versus-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish terminal ASCII spaces from tabs and other control bytes in the returned index."
+        },
+        {
+          "caseId": "strings-lastnb-mixed-leading-interior-and-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Retain leading/interior positions when scanning only the terminal run of ASCII spaces."
+        },
+        {
+          "caseId": "strings-lastnb-utf8-byte-indices",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact last significant byte offsets for multibyte and supplementary text independently from JavaScript UTF-16 indices."
+        }
+      ],
+      "edgeAssessment": "Compare empty/space-only \u22121, first and final positions, tabs and controls, embedded/trailing spaces, and multi-byte endings with exact byte offsets including supplementary characters.",
+      "errorAssessment": "All representable well-formed text, including empty text, receives the canonical boolean/index result. A null C pointer is outside the typed API. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lastnb -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lastnb -> typed WASM domain -> checked transactional buffers -> exported _tspice_lastnb -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "lcase_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lcase_c.html",
+      "semantics": "raw.lcase(input,lenout?) maps ASCII A\u2013Z to lowercase and copies every remaining byte including terminal whitespace. Capacity includes the NUL terminator, the default fits the entire result and the minimum is 2. An output ending inside a UTF-8 scalar raises a wrapper TypeError. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-lcase-ascii-letter-range",
+          "coverage": ["success", "edge"],
+          "observes": "Compare ASCII endpoints, mixed letters, punctuation and numeric characters, retaining all unchanged bytes."
+        },
+        {
+          "caseId": "strings-lcase-preserved-terminal-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact terminal spaces, tabs, newlines and carriage returns directly from the canonical output buffer."
+        },
+        {
+          "caseId": "strings-lcase-empty-and-nonempty",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise empty text and nonempty text including whitespace-only inputs. Preserve the canonical result for each combination."
+        },
+        {
+          "caseId": "strings-lcase-utf8-and-bom",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact UTF-8 text including initial BOM, multibyte characters and trailing whitespace."
+        },
+        {
+          "caseId": "strings-lcase-capacity-includes-nul",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual transformed right prefix at lenout boundaries; one byte of capacity is reserved for NUL."
+        },
+        {
+          "caseId": "strings-lcase-utf8-byte-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Use capacities ending on complete UTF-8 boundaries, with leading BOM and multibyte values retained."
+        },
+        {
+          "caseId": "strings-lcase-one-capacity-error",
+          "coverage": ["error"],
+          "observes": "Observe actual STRINGTOOSHORT when only a NUL fits and the canonical case conversion requires capacity 2."
+        },
+        {
+          "caseId": "strings-lcase-zero-capacity-error",
+          "coverage": ["error"],
+          "observes": "Compare actual STRINGTOOSHORT for zero output capacity and require subsequent recovery."
+        },
+        {
+          "caseId": "strings-lcase-negative-capacity-error",
+          "coverage": ["error"],
+          "observes": "Pass a negative signed32 capacity to actual CSPICE with valid sentinel storage and compare STRINGTOOSHORT."
+        },
+        {
+          "caseId": "strings-lcase-int32-capacity-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use a very large valid signed32 capacity on a bounded input and observe the complete output using sufficient actual storage."
+        }
+      ],
+      "edgeAssessment": "Observe every ASCII letter boundary, empty and multibyte strings, punctuation, control bytes, terminal whitespace, BOM and complete encoding boundaries. Bounded byte probes exercise split UTF-8 prefixes and independently retain all original C bytes.",
+      "errorAssessment": "Actual below-minimum signed32 capacities signal STRINGTOOSHORT. Independent focused checks compare genuine errors, reset and a successful subsequent call. A capacity ending inside a UTF-8 scalar is a successful C call followed by a typed output-representation error. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [
+        {
+          "id": "exact-c-string-output",
+          "status": "repaired",
+          "summary": "The locked convenience conversion ignores invalid UTF-8 prefixes and strips trailing whitespace after the correct canonical symbol returns.",
+          "repair": "Bind the actual symbol from the library loaded by SpiceyPy and inspect every returned byte up to NUL. Strictly decode complete prefixes, preserve a leading BOM and terminal whitespace, and expose split multibyte prefixes as a distinct wrapper encoding error. Independent byte probes compare the raw bytes and the convenience conversion.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/string_oracle.py",
+            "packages/py-parity-checking/test/string-transforms.test.ts",
+            "docs/step8-string-transforms.md"
+          ],
+          "caseIds": [
+            "strings-lcase-preserved-terminal-whitespace",
+            "strings-lcase-utf8-and-bom"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lcase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lcase -> typed WASM domain -> checked transactional buffers -> exported _tspice_lcase -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ucase_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ucase_c.html",
+      "semantics": "raw.ucase(input,lenout?) maps ASCII a\u2013z to uppercase and copies every remaining byte including terminal whitespace. Capacity includes the NUL terminator, the default fits the entire result and the minimum is 2. An output ending inside a UTF-8 scalar raises a wrapper TypeError. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-ucase-ascii-letter-range",
+          "coverage": ["success", "edge"],
+          "observes": "Compare ASCII endpoints, mixed letters, punctuation and numeric characters, retaining all unchanged bytes."
+        },
+        {
+          "caseId": "strings-ucase-preserved-terminal-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact terminal spaces, tabs, newlines and carriage returns directly from the canonical output buffer."
+        },
+        {
+          "caseId": "strings-ucase-empty-and-nonempty",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise empty text and nonempty text including whitespace-only inputs. Preserve the canonical result for each combination."
+        },
+        {
+          "caseId": "strings-ucase-utf8-and-bom",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact UTF-8 text including initial BOM, multibyte characters and trailing whitespace."
+        },
+        {
+          "caseId": "strings-ucase-capacity-includes-nul",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual transformed right prefix at lenout boundaries; one byte of capacity is reserved for NUL."
+        },
+        {
+          "caseId": "strings-ucase-utf8-byte-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Use capacities ending on complete UTF-8 boundaries, with leading BOM and multibyte values retained."
+        },
+        {
+          "caseId": "strings-ucase-one-capacity-error",
+          "coverage": ["error"],
+          "observes": "Observe actual STRINGTOOSHORT when only a NUL fits and the canonical case conversion requires capacity 2."
+        },
+        {
+          "caseId": "strings-ucase-zero-capacity-error",
+          "coverage": ["error"],
+          "observes": "Compare actual STRINGTOOSHORT for zero output capacity and require subsequent recovery."
+        },
+        {
+          "caseId": "strings-ucase-negative-capacity-error",
+          "coverage": ["error"],
+          "observes": "Pass a negative signed32 capacity to actual CSPICE with valid sentinel storage and compare STRINGTOOSHORT."
+        },
+        {
+          "caseId": "strings-ucase-int32-capacity-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use a very large valid signed32 capacity on a bounded input and observe the complete output using sufficient actual storage."
+        }
+      ],
+      "edgeAssessment": "Observe every ASCII letter boundary, empty and multibyte strings, punctuation, control bytes, terminal whitespace, BOM and complete encoding boundaries. Bounded byte probes exercise split UTF-8 prefixes and independently retain all original C bytes.",
+      "errorAssessment": "Actual below-minimum signed32 capacities signal STRINGTOOSHORT. Independent focused checks compare genuine errors, reset and a successful subsequent call. A capacity ending inside a UTF-8 scalar is a successful C call followed by a typed output-representation error. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [
+        {
+          "id": "exact-c-string-output",
+          "status": "repaired",
+          "summary": "The locked convenience conversion ignores invalid UTF-8 prefixes and strips trailing whitespace after the correct canonical symbol returns.",
+          "repair": "Bind the actual symbol from the library loaded by SpiceyPy and inspect every returned byte up to NUL. Strictly decode complete prefixes, preserve a leading BOM and terminal whitespace, and expose split multibyte prefixes as a distinct wrapper encoding error. Independent byte probes compare the raw bytes and the convenience conversion.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/string_oracle.py",
+            "packages/py-parity-checking/test/string-transforms.test.ts",
+            "docs/step8-string-transforms.md"
+          ],
+          "caseIds": [
+            "strings-ucase-preserved-terminal-whitespace",
+            "strings-ucase-utf8-and-bom"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ucase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ucase -> typed WASM domain -> checked transactional buffers -> exported _tspice_ucase -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "matchi_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/matchi_c.html",
+      "semantics": "raw.matchi(input,templ,wstr,wchr) compares literals with ASCII case folding and recognizes wildcard tokens by their exact byte. wstr consumes zero or more bytes. wchr consumes exactly one. The canonical matcher removes outer ASCII spaces from both strings and considers internal spaces and controls. NUL scalar disables the corresponding wildcard because the input/template text cannot contain that byte. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-matchi-literal-case-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Compare full-string literal matching, changed case and reordered or additional literal bytes."
+        },
+        {
+          "caseId": "strings-matchi-zero-or-many-versus-one",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish zero/multiple-byte string-wildcard matches from the exactly-one-byte character wildcard."
+        },
+        {
+          "caseId": "strings-matchi-multiple-wildcards-and-anchors",
+          "coverage": ["success", "edge"],
+          "observes": "Observe adjacent and separated wildcard runs with anchored initial/trailing literals and both truth values."
+        },
+        {
+          "caseId": "strings-matchi-blanks-and-controls",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all-space, outer-space and internal/control-whitespace inputs and preserve the exact blank-padding rules."
+        },
+        {
+          "caseId": "strings-matchi-custom-wildcards",
+          "coverage": ["success", "edge"],
+          "observes": "Observe user-selected wildcard bytes, including case-sensitive alphabetic token recognition."
+        },
+        {
+          "caseId": "strings-matchi-coincident-wildcards",
+          "coverage": ["success", "edge"],
+          "observes": "Supply the same wildcard byte for both roles and observe the canonical matching order on multiple lengths."
+        },
+        {
+          "caseId": "strings-matchi-empty-input-error",
+          "coverage": ["error"],
+          "observes": "Observe actual EMPTYSTRING from the empty input argument with the template supplied."
+        },
+        {
+          "caseId": "strings-matchi-empty-template-error",
+          "coverage": ["error"],
+          "observes": "Observe actual EMPTYSTRING from an empty template with nonempty input."
+        },
+        {
+          "caseId": "strings-matchi-utf8-single-byte-wildcard",
+          "coverage": ["success", "edge"],
+          "observes": "Compare multi-byte scalar inputs against templates with differing numbers of one-byte wildcard tokens."
+        },
+        {
+          "caseId": "strings-matchi-nul-wildcards",
+          "coverage": ["success", "edge"],
+          "observes": "Pass NUL as a scalar wildcard to disable the corresponding token and observe remaining literal/wildcard behavior."
+        }
+      ],
+      "edgeAssessment": "Anchored literal matches, ASCII-insensitive letters, zero/many/one bytes, custom/colliding/disabled tokens, outer versus internal blanks and multi-byte UTF-8 observe both truth values. Case-sensitive token recognition remains distinct from case-folded literals.",
+      "errorAssessment": "Empty input or empty template produces actual EMPTYSTRING. Nonempty all-space inputs reach the matcher. Focused checks compare oracle/backend errors and recovery. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.matchi -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.matchi -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchi -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "matchw_c",
+      "contract": "packages/backend-contract/src/domains/strings.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/matchw_c.html",
+      "semantics": "raw.matchw(input,templ,wstr,wchr) compares literals and wildcard tokens by their exact byte. wstr consumes zero or more bytes. wchr consumes exactly one. The canonical matcher removes outer ASCII spaces from both strings and considers internal spaces and controls. NUL scalar disables the corresponding wildcard because the input/template text cannot contain that byte. Text is well-formed UTF-8 without embedded NUL. Encoded input and terminator fit signed32. WASM caps each buffer at 256 MiB.",
+      "scenarios": [
+        {
+          "caseId": "strings-matchw-literal-case-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Compare full-string literal matching, changed case and reordered or additional literal bytes."
+        },
+        {
+          "caseId": "strings-matchw-zero-or-many-versus-one",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish zero/multiple-byte string-wildcard matches from the exactly-one-byte character wildcard."
+        },
+        {
+          "caseId": "strings-matchw-multiple-wildcards-and-anchors",
+          "coverage": ["success", "edge"],
+          "observes": "Observe adjacent and separated wildcard runs with anchored initial/trailing literals and both truth values."
+        },
+        {
+          "caseId": "strings-matchw-blanks-and-controls",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all-space, outer-space and internal/control-whitespace inputs and preserve the exact blank-padding rules."
+        },
+        {
+          "caseId": "strings-matchw-custom-wildcards",
+          "coverage": ["success", "edge"],
+          "observes": "Observe user-selected wildcard bytes, including case-sensitive alphabetic token recognition."
+        },
+        {
+          "caseId": "strings-matchw-coincident-wildcards",
+          "coverage": ["success", "edge"],
+          "observes": "Supply the same wildcard byte for both roles and observe the canonical matching order on multiple lengths."
+        },
+        {
+          "caseId": "strings-matchw-empty-input-error",
+          "coverage": ["error"],
+          "observes": "Observe actual EMPTYSTRING from the empty input argument with the template supplied."
+        },
+        {
+          "caseId": "strings-matchw-empty-template-error",
+          "coverage": ["error"],
+          "observes": "Observe actual EMPTYSTRING from an empty template with nonempty input."
+        },
+        {
+          "caseId": "strings-matchw-utf8-single-byte-wildcard",
+          "coverage": ["success", "edge"],
+          "observes": "Compare multi-byte scalar inputs against templates with differing numbers of one-byte wildcard tokens."
+        },
+        {
+          "caseId": "strings-matchw-nul-wildcards",
+          "coverage": ["success", "edge"],
+          "observes": "Pass NUL as a scalar wildcard to disable the corresponding token and observe remaining literal/wildcard behavior."
+        }
+      ],
+      "edgeAssessment": "Anchored case-sensitive literals, zero/many/one bytes, custom/colliding/disabled tokens, outer versus internal blanks and multi-byte UTF-8 observe both truth values. Changed literal case can change the match.",
+      "errorAssessment": "Empty input or empty template produces actual EMPTYSTRING. Nonempty all-space inputs reach the matcher. Focused checks compare oracle/backend errors and recovery. Malformed/non-string text, embedded NUL, unpaired surrogates, invalid integer arguments where applicable and unsafe buffers are separate wrapper guards.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored text, byte capacities, wildcard tokens and control characters. No external datasets or kernels.",
+      "cleanup": "Native owns its inputs and result storage during calls. Shared C validates pointers and byte ranges, calls the actual canonical symbol and captures/resets SPICE errors. WASM releases all transaction allocations after success, toolkit error or output conversion exception. Public checks dispose clients and verify subsequent valid calls.",
+      "tolerance": "Exact string, boolean or signed index comparison as appropriate. No floating tolerance applies. String-result byte probes independently compare trailing whitespace, BOM, truncation and incomplete UTF-8 bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.matchw -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.matchw -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchw -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Pinned N0067 implementations, typed API boundaries and locked independent oracle outputs reviewed. Final source-bound verification requires both full local lanes and observed canonical CI. Earlier Step 7 executions are historical."
+}

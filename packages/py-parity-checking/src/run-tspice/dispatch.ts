@@ -13,6 +13,7 @@ import { runGeometryGfStep } from "./domains/geometry-gf.js";
 import { runIdsNamesStep } from "./domains/ids-names.js";
 import { runKernelPoolStep } from "./domains/kernel-pool.js";
 import { runKernelsStep } from "./domains/kernels.js";
+import { runStringsStep } from "./domains/strings.js";
 import { runTimeStep } from "./domains/time.js";
 
 /** Dispatch one workflow step to its corresponding tspice domain handler. */
@@ -21,6 +22,16 @@ export function dispatchStep(
   step: WorkflowStep,
 ): StepOutput {
   switch (step.op) {
+    case "strings.cmprss":
+    case "strings.eqstr":
+    case "strings.iswhsp":
+    case "strings.lastnb":
+    case "strings.lcase":
+    case "strings.ucase":
+    case "strings.matchi":
+    case "strings.matchw":
+      return runStringsStep(context, step);
+
     case "time.str2et":
     case "time.et2utc":
     case "time.tkvrsn":

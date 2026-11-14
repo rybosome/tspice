@@ -895,6 +895,67 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_cmprss(
+    delim: number,
+    n: number,
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eqstr(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_iswhsp(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lastnb(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lcase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ucase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchi(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchw(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1843,6 +1904,67 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_cmprss(
+    delim: number,
+    n: number,
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eqstr(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_iswhsp(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lastnb(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lcase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ucase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchi(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchw(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2262,6 +2384,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_cmprss",
+  "_tspice_eqstr",
+  "_tspice_iswhsp",
+  "_tspice_lastnb",
+  "_tspice_lcase",
+  "_tspice_ucase",
+  "_tspice_matchi",
+  "_tspice_matchw",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

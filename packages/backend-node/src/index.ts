@@ -12,6 +12,7 @@ import { createKernelStager } from "./runtime/kernel-staging.js";
 import { createVirtualOutputStager } from "./runtime/virtual-output-staging.js";
 import { createSpiceHandleRegistry } from "./runtime/spice-handles.js";
 
+import { createStringsApi } from "./domains/strings.js";
 import { createCoordsVectorsApi } from "./domains/coords-vectors.js";
 import { createEphemerisApi } from "./domains/ephemeris.js";
 import { createFramesApi } from "./domains/frames.js";
@@ -60,6 +61,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
+      ...createStringsApi(native),
       ...createCoordsVectorsApi(native),
       ...fileIoApi,
       ...createErrorApi(native),

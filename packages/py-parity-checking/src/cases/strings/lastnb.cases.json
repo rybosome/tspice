@@ -1,0 +1,126 @@
+[
+  {
+    "caseId": "strings-lastnb-zero-based-or-minus-one",
+    "description": "Report the zero-based last non-space byte or minus one.",
+    "workflow": [
+      {
+        "op": "strings.lastnb",
+        "input": ""
+      },
+      {
+        "op": "strings.lastnb",
+        "input": " "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "     "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "A"
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "A "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": " A"
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "  abc   "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lastnb-blank-versus-whitespace",
+    "description": "Only ASCII space is blank. Tabs and the other C whitespace characters retain their own byte indices.",
+    "workflow": [
+      {
+        "op": "strings.lastnb",
+        "input": "\t  "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "A\t  "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "\n\r  "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "A\u000b"
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "A\f "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": " A  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lastnb-mixed-leading-interior-and-tail",
+    "description": "Leading and internal blanks count toward the returned index.",
+    "workflow": [
+      {
+        "op": "strings.lastnb",
+        "input": "    A B    "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "a  b   c"
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "9  -  "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": " \t\r  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lastnb-utf8-byte-indices",
+    "description": "The index includes every UTF-8 byte and differs from Unicode code point and JavaScript UTF-16 indices.",
+    "workflow": [
+      {
+        "op": "strings.lastnb",
+        "input": "\u00e9 "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "A\ud83d\ude00  "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "\ud800\udc00B "
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "\u96ea\u00e9"
+      },
+      {
+        "op": "strings.lastnb",
+        "input": "\ufeff  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

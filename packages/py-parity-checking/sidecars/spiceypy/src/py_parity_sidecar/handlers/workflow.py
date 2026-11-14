@@ -15,6 +15,7 @@ from .geometry_gf import run_geometry_gf_step
 from .ids_names import run_ids_names_step
 from .kernel_pool import run_kernel_pool_step
 from .kernels import run_kernels_step
+from .strings import run_strings_step
 from .time import run_time_step
 
 
@@ -22,6 +23,10 @@ def _run_step(
     step: WorkflowStep,
     context: SidecarRuntimeContext,
 ) -> StepOutput:
+    out = run_strings_step(step)
+    if out is not None:
+        return out
+
     out = run_time_step(step, context)
     if out is not None:
         return out

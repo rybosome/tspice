@@ -1079,6 +1079,15 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+int tspice_cmprss(int delim, int n, const char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_eqstr(const char *a, const char *b, int *out, char *err, int errMaxBytes);
+int tspice_iswhsp(const char *input, int *out, char *err, int errMaxBytes);
+int tspice_lastnb(const char *input, int *out, char *err, int errMaxBytes);
+int tspice_lcase(char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_ucase(char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_matchi(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
+int tspice_matchw(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,
