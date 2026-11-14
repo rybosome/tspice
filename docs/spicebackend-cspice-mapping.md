@@ -386,6 +386,17 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+| Raw call                         | CSPICE entry | Result                                                           |
+| -------------------------------- | ------------ | ---------------------------------------------------------------- |
+| `dafps(nd,ni,dc,ic)`             | `dafps_c`    | Native-order packed `Uint8Array`                                 |
+| `dafus(summary,nd,ni)`           | `dafus_c`    | Owned `{dc,ic}` arrays                                           |
+| `dafgsr(handle,recno,begin,end)` | `dafgsr_c`   | `{found:false}` or `{found:true,data:Uint8Array}`                |
+| `dafrfr(handle,ifnlen?)`         | `dafrfr_c`   | `{nd,ni,ifname,fward,bward,free}`                                |
+| `dafrda(handle,begin,end)`       | `dafrda_c`   | Native-format physical words as `Uint8Array`                     |
+| `dafgda(handle,begin,end)`       | `dafgda_c`   | Numeric data as `number[]`, including translated non-native DAFs |
+
+All four file operations use live DAF handles issued to the calling backend. Word positions, record numbers and addresses are one-based. [Boundary and byte semantics](step8-daf-records.md)
+
 | Raw method               | Actual CSPICE route                  | Semantic observations                                                                                                |
 | ------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
 | `dafopr(path)`           | `dafopr_c`                           | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |

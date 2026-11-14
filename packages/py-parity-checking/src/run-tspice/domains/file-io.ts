@@ -16,6 +16,12 @@ import type {
   StepFileIoDafgs,
   StepFileIoDafhsf,
   StepFileIoDafopw,
+  StepFileIoDafps,
+  StepFileIoDafus,
+  StepFileIoDafgsr,
+  StepFileIoDafrfr,
+  StepFileIoDafrda,
+  StepFileIoDafgda,
   StepFileIoDafopr,
   StepFileIoDascls,
   StepFileIoDasopr,
@@ -48,6 +54,12 @@ type FileIoStep =
   | StepFileIoDafgs
   | StepFileIoDafhsf
   | StepFileIoDafopw
+  | StepFileIoDafps
+  | StepFileIoDafus
+  | StepFileIoDafgsr
+  | StepFileIoDafrfr
+  | StepFileIoDafrda
+  | StepFileIoDafgda
   | StepFileIoDafopr
   | StepFileIoDafcls
   | StepFileIoDafbfs
@@ -207,6 +219,48 @@ export function runFileIoStep(
       if (step.captureError)
         throw new Error("DAFGN did not raise the expected toolkit error");
       return { op: step.op, value };
+    }
+    case "file-io.dafps": {
+      const out = context.spice.raw.dafps(step.nd, step.ni, step.dc, step.ic);
+      return { op: step.op, value: Array.from(out) };
+    }
+    case "file-io.dafus": {
+      const out = context.spice.raw.dafus(
+        Uint8Array.from(step.summary),
+        step.nd,
+        step.ni,
+      );
+      return { op: step.op, value: out };
+    }
+    case "file-io.dafgsr": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafgsr(
+        handle,
+        step.recno,
+        step.begin,
+        step.end,
+      );
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, data: Array.from(out.data) }
+          : { found: false },
+      };
+    }
+    case "file-io.dafrfr": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafrfr(handle, step.ifnlen);
+      return { op: step.op, value: out };
+    }
+    case "file-io.dafrda": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafrda(handle, step.begin, step.end);
+      return { op: step.op, value: Array.from(out) };
+    }
+    case "file-io.dafgda": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafgda(handle, step.begin, step.end);
+      return { op: step.op, value: out };
     }
     case "file-io.dafgs":
       return {

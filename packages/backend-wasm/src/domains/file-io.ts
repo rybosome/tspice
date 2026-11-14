@@ -7,6 +7,12 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
   DAF_MAX_SUMMARY_BYTES,
   dafPathByteLength,
   dafSummaryFormat,
@@ -287,6 +293,179 @@ export function createFileIoApi(
       }
     },
 
+    dafps: (nd, ni, dc, ic) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const doubles = dafComponents(dc, n, false),
+        ints = dafComponents(ic, m, true);
+      return withAllocs(
+        module,
+        [
+          Math.max(8, 8 * n),
+          Math.max(4, 4 * m),
+          Math.max(8, bytes),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (d, i, out, e) => {
+          module.HEAPF64.set(doubles, d / 8);
+          module.HEAP32.set(ints, i / 4);
+          const rc = module._tspice_dafps(
+            nd,
+            ni,
+            d,
+            n,
+            i,
+            m,
+            out,
+            bytes,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return module.HEAPU8.slice(out, out + bytes);
+        },
+      );
+    },
+    dafus: (summary, nd, ni) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni),
+        input = dafBytes(summary, bytes);
+      return withAllocs(
+        module,
+        [
+          Math.max(8, bytes),
+          Math.max(8, 8 * n),
+          Math.max(4, 4 * m),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (s, d, i, e) => {
+          module.HEAPU8.set(input, s);
+          const rc = module._tspice_dafus(
+            s,
+            bytes,
+            nd,
+            ni,
+            d,
+            n,
+            i,
+            m,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return {
+            dc: Array.from(module.HEAPF64.subarray(d / 8, d / 8 + n)),
+            ic: Array.from(module.HEAP32.subarray(i / 4, i / 4 + m)),
+          };
+        },
+      );
+    },
+    dafgsr: (handle, recno, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgsr").nativeHandle;
+      const bytes = dafRecordBytes(recno, begin, end, 2097152);
+      return withAllocs(
+        module,
+        [Math.max(8, bytes), 4, WASM_ERR_MAX_BYTES],
+        (out, f, e) => {
+          const rc = module._tspice_dafgsr(
+            h,
+            recno,
+            begin,
+            end,
+            out,
+            bytes,
+            f,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          const found = module.HEAP32[f / 4];
+          if (found === 0) return { found: false };
+          if (found !== 1) throw new TypeError("Invalid DAFGSR found flag");
+          return { found: true, data: module.HEAPU8.slice(out, out + bytes) };
+        },
+      );
+    },
+    dafrfr: (handle, ifnlen = 61) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrfr").nativeHandle;
+      const cap = dafFileNameCapacity(ifnlen);
+      return withAllocs(
+        module,
+        [cap, 20, WASM_ERR_MAX_BYTES],
+        (name, fields, e) => {
+          const rc = module._tspice_dafrfr(
+            h,
+            cap,
+            name,
+            cap,
+            fields,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          const bytes = module.HEAPU8.subarray(name, name + cap),
+            end = bytes.indexOf(0);
+          if (end < 0) throw new TypeError("Missing DAFRFR name terminator");
+          const field = (i: number) =>
+            readHeapI32(
+              module,
+              heap32IndexFromPtr(fields, "dafrfr") + i,
+              "dafrfr",
+            );
+          return {
+            nd: field(0),
+            ni: field(1),
+            ifname: new TextDecoder("utf-8", {
+              fatal: true,
+              ignoreBOM: true,
+            }).decode(bytes.subarray(0, end)),
+            fward: field(2),
+            bward: field(3),
+            free: field(4),
+          };
+        },
+      );
+    },
+    dafrda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrda").nativeHandle;
+      const words = dafAddressWords(begin, end, 268435456);
+      return withAllocs(
+        module,
+        [Math.max(8, 8 * words), WASM_ERR_MAX_BYTES],
+        (out, e) => {
+          const rc = module._tspice_dafrda(
+            h,
+            begin,
+            end,
+            out,
+            words,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return module.HEAPU8.slice(out, out + 8 * words);
+        },
+      );
+    },
+    dafgda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgda").nativeHandle;
+      const words = dafAddressWords(begin, end, 268435456);
+      return withAllocs(
+        module,
+        [Math.max(8, 8 * words), WASM_ERR_MAX_BYTES],
+        (out, e) => {
+          const rc = module._tspice_dafgda(
+            h,
+            begin,
+            end,
+            out,
+            words,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return Array.from(module.HEAPF64.subarray(out / 8, out / 8 + words));
+        },
+      );
+    },
     dafbbs: (handle: SpiceHandle) =>
       callVoidHandle(
         module,

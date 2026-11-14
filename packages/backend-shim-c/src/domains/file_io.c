@@ -6,6 +6,8 @@
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
 
+#include <limits.h>
+#include <math.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -112,6 +114,164 @@ static int DafStatus(char *err, int room) {
   if (!failed_c()) return 0;
   tspice_get_spice_error_message_and_reset(err, room);
   return 1;
+}
+
+// DAFPS and DAFUS copy one equivalenced word even when the effective
+// integer count is zero. With ND=125 this requires a private 126th word.
+static void summary_layout(int nd, int ni, int *n, int *m, int *bytes) {
+  *n = nd < 0 ? 0 : nd > 125 ? 125 : nd;
+  const int maxInts = 250 - 2 * *n;
+  *m = ni < 0 ? 0 : ni > maxInts ? maxInts : ni;
+  *bytes = 8 * (*n + (*m + 1) / 2);
+}
+
+int tspice_dafps(int nd, int ni, const double *dc, int dcCount, const int *ic, int icCount,
+                 unsigned char *out, int room, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  int n, m, bytes;
+  summary_layout(nd, ni, &n, &m, &bytes);
+  if (!dc || !ic || !out || dcCount < n || icCount < m || room < bytes)
+    return tspice_return_error(err, errMaxBytes, "Insufficient DAFPS storage");
+  SpiceDouble words[126] = {0};
+  dafps_c(nd, ni, dc, ic, words);
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  memcpy(out, words, (size_t)bytes);
+  // The unused last integer slot belongs to toolkit scratch from prior calls.
+  if (m % 2)
+    memset(out + bytes - 4, 0, 4);
+  return 0;
+}
+
+int tspice_dafus(const unsigned char *summary, int size, int nd, int ni, double *dc, int dcRoom,
+                 int *ic, int icRoom, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  int n, m, bytes;
+  summary_layout(nd, ni, &n, &m, &bytes);
+  if (!summary || !dc || !ic || size < bytes || dcRoom < n || icRoom < m)
+    return tspice_return_error(err, errMaxBytes, "Insufficient DAFUS storage");
+  SpiceDouble words[126] = {0};
+  memcpy(words, summary, (size_t)bytes);
+  dafus_c(words, nd, ni, dc, ic);
+  return DafStatus(err, errMaxBytes);
+}
+
+// Non-native ZZDAFGSR translates the record's third word into a loop bound
+// before it has checked whether the summaries fit. Inspect that control word
+// through the uncached numeric record reader, leaving the DAF record cache
+// untouched. The caller still supplies a real summary record or an EOF probe.
+static int check_summary_record(int handle, int recno, char *err, int errMaxBytes) {
+  logical native = SPICEFALSE, known = SPICEFALSE;
+  zzddhisn_(&handle, &native, &known);
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (!known || native)
+    return 0;
+  SpiceDouble control[128] = {0};
+  logical found = SPICEFALSE;
+  zzdafgdr_(&handle, &recno, control, &found);
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (!found)
+    return 0;
+  SpiceInt nd = 0, ni = 0;
+  dafhsf_c(handle, &nd, &ni);
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (nd < 0 || nd > 124 || ni < 2 || ni > 250 || nd + (ni + 1) / 2 > 125)
+    return tspice_return_error(err, errMaxBytes, "Invalid DAF summary file format");
+  const double count = control[2];
+  if (!isfinite(count) || count < 0 || count > 125 / (nd + (ni + 1) / 2) || trunc(count) != count)
+    return tspice_return_error(err, errMaxBytes, "Invalid non-native DAF summary record count");
+  return 0;
+}
+
+int tspice_dafgsr(int handle, int recno, int begin, int end, unsigned char *out, int room,
+                  int *outFound, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (recno > 0 && (int64_t)(recno - 1) * 1024 > LONG_MAX)
+    return tspice_return_error(err, errMaxBytes, "DAF record exceeds platform seek range");
+  int first = begin < 1 ? 1 : begin;
+  int last = end > 128 ? 128 : end;
+  // DAFRWD forms its source pointer even for an empty slice. Use a valid
+  // first word and an empty interval, keeping the actual record lookup.
+  if (first > last) {
+    first = 1;
+    last = 0;
+  }
+  const int bytes = (last - first + 1) * 8;
+  if (!out || !outFound || room < bytes)
+    return tspice_return_error(err, errMaxBytes, "Insufficient DAFGSR storage");
+  if (check_summary_record(handle, recno, err, errMaxBytes))
+    return 1;
+  SpiceDouble words[128] = {0};
+  SpiceBoolean found = SPICEFALSE;
+  dafgsr_c(handle, recno, first, last, words, &found);
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  *outFound = found != SPICEFALSE;
+  if (*outFound)
+    memcpy(out, words, (size_t)bytes);
+  return 0;
+}
+
+int tspice_dafrfr(int handle, int ifnlen, char *ifname, int room, int *fields, char *err,
+                  int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  const int length = ifnlen > 61 ? 61 : ifnlen;
+  if (!ifname || !fields || length < 1 || room < length)
+    return tspice_return_error(err, errMaxBytes, "Invalid DAFRFR name capacity");
+  memset(ifname, 0, (size_t)length);
+  dafrfr_c(handle, length, &fields[0], &fields[1], ifname, &fields[2], &fields[3], &fields[4]);
+  return DafStatus(err, errMaxBytes);
+}
+
+static int check_address_storage(int begin, int end, int room, char *err, int errMaxBytes) {
+  // Invalid address ordering is diagnosed by the actual CSPICE routine.
+  if (begin <= 0 || end < begin)
+    return 0;
+  const int64_t words = (int64_t)end - begin + 1;
+  if ((int64_t)((end - 1) / 128) * 1024 > LONG_MAX)
+    return tspice_return_error(err, errMaxBytes, "DAF address exceeds platform seek range");
+  if (words > 33554432 || words > room)
+    return tspice_return_error(err, errMaxBytes, "Insufficient DAF address output storage");
+  return 0;
+}
+
+int tspice_dafrda(int handle, int begin, int end, double *words, int room, char *err,
+                  int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (!words)
+    return tspice_return_error(err, errMaxBytes, "Missing DAFRDA output storage");
+  int bad = check_address_storage(begin, end, room, err, errMaxBytes);
+  if (bad)
+    return bad;
+  dafrda_c(handle, begin, end, words);
+  return DafStatus(err, errMaxBytes);
+}
+
+int tspice_dafgda(int handle, int begin, int end, double *words, int room, char *err,
+                  int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (!words)
+    return tspice_return_error(err, errMaxBytes, "Missing DAFGDA output storage");
+  int bad = check_address_storage(begin, end, room, err, errMaxBytes);
+  if (bad)
+    return bad;
+  dafgda_c(handle, begin, end, words);
+  return DafStatus(err, errMaxBytes);
 }
 
 int tspice_dafbbs(int handle, char *err, int errMaxBytes) {

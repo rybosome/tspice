@@ -163,6 +163,12 @@ export {
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
 
 export {
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
   DAF_MAX_SUMMARY_BYTES,
   dafPathByteLength,
   dafSummaryFormat,

@@ -7,6 +7,55 @@ from .paths import PathRefInput
 
 
 @dataclass(frozen=True)
+class StepFileIoDafps:
+    op: Literal["file-io.dafps"]
+    nd: int
+    ni: int
+    dc: list[float]
+    ic: list[int]
+
+
+@dataclass(frozen=True)
+class StepFileIoDafus:
+    op: Literal["file-io.dafus"]
+    summary: list[int]
+    nd: int
+    ni: int
+
+
+@dataclass(frozen=True)
+class StepFileIoDafgsr:
+    op: Literal["file-io.dafgsr"]
+    handleId: str
+    recno: int
+    begin: int
+    end: int
+
+
+@dataclass(frozen=True)
+class StepFileIoDafrfr:
+    op: Literal["file-io.dafrfr"]
+    handleId: str
+    ifnlen: int = 61
+
+
+@dataclass(frozen=True)
+class StepFileIoDafrda:
+    op: Literal["file-io.dafrda"]
+    handleId: str
+    begin: int
+    end: int
+
+
+@dataclass(frozen=True)
+class StepFileIoDafgda:
+    op: Literal["file-io.dafgda"]
+    handleId: str
+    begin: int
+    end: int
+
+
+@dataclass(frozen=True)
 class StepFileIoDafbbs:
     op: Literal["file-io.dafbbs"]
     handleId: str

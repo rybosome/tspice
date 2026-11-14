@@ -96,6 +96,36 @@ export type NativeAddon = {
   exists(path: string): boolean;
   getfat(path: string): { arch: string; type: string };
 
+  dafps(
+    nd: number,
+    ni: number,
+    dc: readonly number[],
+    ic: readonly number[],
+  ): Uint8Array;
+  dafus(
+    summary: Uint8Array,
+    nd: number,
+    ni: number,
+  ): { dc: number[]; ic: number[] };
+  dafgsr(
+    handle: number,
+    recno: number,
+    begin: number,
+    end: number,
+  ): { found: false } | { found: true; data: Uint8Array };
+  dafrfr(
+    handle: number,
+    ifnlen: number,
+  ): {
+    nd: number;
+    ni: number;
+    ifname: Uint8Array;
+    fward: number;
+    bward: number;
+    free: number;
+  };
+  dafrda(handle: number, begin: number, end: number): Uint8Array;
+  dafgda(handle: number, begin: number, end: number): number[];
   dafbbs(handle: number): void;
   dafcs(handle: number): void;
   daffpa(handle: number): boolean;

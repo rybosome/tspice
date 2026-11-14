@@ -424,7 +424,21 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/727"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+      "nextAction": "Revalidate navigation on this combined C01/C02 source. PR #727 retains the prior independent source results."
+    },
+    {
+      "id": "c02-daf-records",
+      "routines": [
+        "dafps_c",
+        "dafus_c",
+        "dafgsr_c",
+        "dafrfr_c",
+        "dafrda_c",
+        "dafgda_c"
+      ],
+      "dependsOn": ["c01-daf-navigation"],
+      "prs": [],
+      "nextAction": "Record the full required local and inspected canonical executions, then verify the final matrix and rebaseability."
     }
   ]
 }

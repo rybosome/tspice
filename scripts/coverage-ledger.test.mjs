@@ -94,13 +94,45 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 170,
-    planned: 479,
+    implemented: 176,
+    planned: 473,
     excluded: 3,
-    caseFiles: 170,
-    scenarios: 1154,
+    caseFiles: 176,
+    scenarios: 1196,
     wasmRawUnsupported: 0,
   });
+  for (const name of [
+    "dafps",
+    "dafus",
+    "dafgsr",
+    "dafrfr",
+    "dafrda",
+    "dafgda",
+  ]) {
+    const routine = ledger.routines.find(
+      (entry) => entry.routine === name + "_c",
+    );
+    for (const backend of ["node", "wasm"])
+      assert.ok(
+        routine.mapping[backend].cspiceEntrypoints.includes(name + "_c"),
+      );
+  }
+  const functions = cFunctions(
+    cTokens(
+      fs.readFileSync(
+        path.join(f.root, "packages/backend-shim-c/src/domains/file_io.c"),
+        "utf8",
+      ),
+    ),
+  );
+  assert.ok(
+    cCalls(functions.get("tspice_dafgsr").body).includes(
+      "check_summary_record",
+    ),
+  );
+  const foreignChecks = cCalls(functions.get("check_summary_record").body);
+  for (const fn of ["zzddhisn_", "zzdafgdr_", "dafhsf_c"])
+    assert.ok(foreignChecks.includes(fn));
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
   assert.equal(kplfrm.inventoryDecision, "planned");
   assert.equal(kplfrm.implementation, "contract-present");
@@ -489,7 +521,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 8);
+  assert.equal(ledger.audit.expansionRoutines, 14);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

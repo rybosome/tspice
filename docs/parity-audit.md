@@ -74,3 +74,7 @@ array names, binary summaries, file dimensions and write-open access. The
 independent oracle follows the same pinned SPICELIB operation for DAFFPA and
 reads exact CSPICE bytes for DAFGN. Each backend judgment is source-bound.
 [DAF routes, state, fixtures and focused evidence](step8-daf-navigation.md)
+
+## DAF records
+
+C02 adds summary packing and unpacking, physical summary records, file headers and two address-read routines. The 42 registered workflows contain 198 steps and 103 calls to these routines. Five expected errors come from CSPICE and four from closed-handle checks. [DAF records and format restrictions](step8-daf-records.md) [Routine audit](../data/parity-audits/c02-daf-records.json)
