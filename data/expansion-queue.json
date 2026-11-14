@@ -2798,18 +2798,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/777"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "54 registered comparisons over 27 scenarios, 13 public, 2 native and 12 WASM checks passed. Actual Chrome inline worker verified all four methods and the closed physical subset, then restored the original source on unload."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+          "result": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
         }
       ],
-      "nextAction": "Run the combined required local and canonical GitHub lanes on final E03 source, then verify final PR checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-spk-lowlevel",
       "branch": "codex/expand-spk-lowlevel",
       "baseCommit": "a44387fd58874de62a4a5e5b0852ac186ba54727",
-      "progressNote": "Four direct methods, real one-/two-way subset file checks, SPKBSR/KEEPER claim lifetime, physical coefficient and type-10 extrapolation."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source b9cd0f5a. 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed.",
+      "priorCheckpoint": "Four direct methods, real one-/two-way subset file checks, SPKBSR/KEEPER claim lifetime, physical coefficient and type-10 extrapolation."
     },
     {
       "id": "E04-spk-chebyshev",

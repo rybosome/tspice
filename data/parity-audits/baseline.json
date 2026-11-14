@@ -444,8 +444,8 @@
       "id": "e03-spk-lowlevel",
       "routines": ["spklef_c", "spkuef_c", "spkpvn_c", "spksub_c"],
       "dependsOn": ["c01-daf-navigation", "c02-daf-records"],
-      "prs": [],
-      "nextAction": "Run the combined required local and canonical GitHub lanes on final E03 source, then verify final PR checks and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/777"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

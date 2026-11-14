@@ -63,7 +63,168 @@
     "scripts/coverage-ledger.test.mjs",
     "scripts/generate-coverage-ledger.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-e03-b9cd0f5a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-e03-b9cd0f5a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "spklef_c",
@@ -137,16 +298,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spklef -> mutex-serialized native addon -> tspice_spklef -> spklef_c. Register a physical SPK without a KEEPER entry and promote it to highest SPKBSR priority. Repeated direct loads share a per-client token until unload.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spklef -> scoped WASM allocations and required export -> tspice_spklef -> spklef_c. Register a physical SPK without a KEEPER entry and promote it to highest SPKBSR priority. Repeated direct loads share a per-client token until unload.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     },
@@ -222,16 +383,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spkuef -> mutex-serialized native addon -> tspice_spkuef -> spkuef_c. Remove an owned direct SPK registration, invalidating prior direct and borrowed observations across the shared toolkit, while preserving other files and any later registration.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spkuef -> scoped WASM allocations and required export -> tspice_spkuef -> spkuef_c. Remove an owned direct SPK registration, invalidating prior direct and borrowed observations across the shared toolkit, while preserving other files and any later registration.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     },
@@ -312,16 +473,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spkpvn -> mutex-serialized native addon -> tspice_spkpvn -> spkpvn_c. Authenticate the exact packed descriptor against its readable source, evaluate the requested finite TDB epoch and return the complete native frame, position (km), velocity (km/s) and center.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spkpvn -> scoped WASM allocations and required export -> tspice_spkpvn -> spkpvn_c. Authenticate the exact packed descriptor against its readable source, evaluate the requested finite TDB epoch and return the complete native frame, position (km), velocity (km/s) and center.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     },
@@ -412,19 +573,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spksub -> mutex-serialized native addon -> tspice_spksub -> spksub_c. Append a real physical subset to a separate open SPK writer using the original file, actual packed descriptor, segment ID and inclusive TDB epochs.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EphemerisApi.spksub -> scoped WASM allocations and required export -> tspice_spksub -> spksub_c. Append a real physical subset to a separate open SPK writer using the original file, actual packed descriptor, segment ID and inclusive TDB epochs.",
-          "executions": []
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Run the combined required local and canonical GitHub lanes on final E03 source, then verify final PR checks and rebaseability."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
