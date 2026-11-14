@@ -423,8 +423,8 @@
         "dafopw_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Verify actual native/WASM ownership, packed summary bytes, DAF state, and source-bound required executions."
+      "prs": ["https://github.com/rybosome/tspice/pull/727"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
