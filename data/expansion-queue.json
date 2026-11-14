@@ -2664,18 +2664,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/757"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "53 workflows / 323 steps / 91 target calls; 35 real toolkit errors. Focused: 106 registered Node/WASM, 5 public/oracle (including two-way physical SPKs), 6 native, 18 WASM allocation/guard checks, and real Chrome all three."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "7bdb04414f982fde1d52f584cd7f150fcce7c71a",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43578704714/job/132398570734",
+          "result": "Both complete required lanes passed locally on 7bdb04414f982fde1d52f584cd7f150fcce7c71a. JavaScript: 2,541 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132398570734 on 7bdb04414f982fde1d52f584cd7f150fcce7c71a: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both complete required local lanes and inspect source CI before final-head readiness checks.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-spk-chebyshev",
       "branch": "codex/expand-spk-chebyshev",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "53 workflows / 323 steps / 91 target calls; 35 real toolkit errors. Focused: 106 registered Node/WASM, 5 public/oracle (including two-way physical SPKs), 6 native, 18 WASM allocation/guard checks, and real Chrome all three."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 7bdb0441. 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "53 workflows / 323 steps / 91 target calls; 35 real toolkit errors. Focused: 106 registered Node/WASM, 5 public/oracle (including two-way physical SPKs), 6 native, 18 WASM allocation/guard checks, and real Chrome all three."
     },
     {
       "id": "E05-spk-interpolation",

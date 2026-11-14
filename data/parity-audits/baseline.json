@@ -414,8 +414,8 @@
       "id": "e04-spk-chebyshev",
       "routines": ["spkw02_c", "spkw03_c", "spkw20_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Run full required local lanes, inspect canonical source CI and confirm final-head checks and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/757"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
