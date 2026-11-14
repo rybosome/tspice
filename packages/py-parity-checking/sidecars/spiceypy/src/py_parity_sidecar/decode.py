@@ -74,6 +74,11 @@ from .models import (
     StepEkEkifld,
     StepEkEknseg,
     StepEkEkntab,
+    StepEkEkops,
+    StepEkEkbseg,
+    StepEkEkappr,
+    StepEkEkinsr,
+    StepEkEkdelr,
     StepEkEkopn,
     StepEkEkopr,
     StepEkEkopw,
@@ -1309,6 +1314,39 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ek.ekfind":
             return StepEkEkfind(op=op, query=_expect_string(step.get("query"), label="ek.ekfind.query"))
 
+        case "ek.ekops":
+            return StepEkEkops(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekops.handleId"),
+            )
+        case "ek.ekbseg":
+            return StepEkEkbseg(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekbseg.handleId"),
+                tabnam=_expect_string(step.get("tabnam"), label="ek.ekbseg.tabnam"),
+                cnames=_expect_string_list(step.get("cnames"), label="ek.ekbseg.cnames"),
+                decls=_expect_string_list(step.get("decls"), label="ek.ekbseg.decls"),
+            )
+        case "ek.ekappr":
+            return StepEkEkappr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekappr.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekappr.segno"),
+            )
+        case "ek.ekinsr":
+            return StepEkEkinsr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekinsr.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekinsr.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekinsr.recno"),
+            )
+        case "ek.ekdelr":
+            return StepEkEkdelr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekdelr.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekdelr.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekdelr.recno"),
+            )
         case "ek.ekopn":
             return StepEkEkopn(
                 op=op,

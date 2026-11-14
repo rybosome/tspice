@@ -47,6 +47,51 @@ export type EkGetResult<T> =
 /** Backend contract for EK (Events Kernel) file/query operations. */
 export interface EkApi {
   /**
+   * Open an unnamed scratch EK writer. The returned token belongs to this backend. Close with
+   * ekcls to release the scratch file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekops_c.html
+   */
+  ekops(): SpiceHandle;
+
+  /**
+   * Begin an EK segment for row-oriented writing. Return its zero-based segment number.
+   * Supply one to 100 column names and matching declaration strings. The caller owns the
+   * schema arrays. No fast load may be in progress. Fixed-count schemas can be created but
+   * accept no individual record edits.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekbseg_c.html
+   */
+  ekbseg(
+    handle: SpiceHandle,
+    tabnam: string,
+    cnames: readonly string[],
+    decls: readonly string[],
+  ): number;
+
+  /**
+   * Append an empty record to a variable-count segment and return its zero-based record
+   * number. Each new entry must be populated before querying the file. An unfinished record
+   * may be deleted. Finish any active fast write first.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekappr_c.html
+   */
+  ekappr(handle: SpiceHandle, segno: number): number;
+
+  /**
+   * Insert an empty record before the zero-based recno in the variable-count segment. recno
+   * equal to the current row count appends. Later record numbers shift upwards. Populate its
+   * entries before querying, or delete the unfinished record.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekinsr_c.html
+   */
+  ekinsr(handle: SpiceHandle, segno: number, recno: number): void;
+
+  /**
+   * Delete the zero-based record and its entries from a variable-count segment. Later record
+   * numbers shift down by one. Indexed entries are removed from their indexes. Use an EK
+   * writer after completing any fast write.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekdelr_c.html
+   */
+  ekdelr(handle: SpiceHandle, segno: number, recno: number): void;
+
+  /**
    * Open an existing EK for read and return a backend-owned opaque token.
    * Duplicate read opens retain separate claims; close each explicitly.
    * Opening a file does not load its tables for queries.

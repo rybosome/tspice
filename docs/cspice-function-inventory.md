@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 167
+- Planned (not yet implemented): 482
 - Excluded: 3
 
 ## Implemented now
@@ -64,17 +64,22 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
+| `ekappr_c` | EK, append record onto segment |
+| `ekbseg_c` | EK, start new segment |
 | `ekcls_c` | EK, close file |
+| `ekdelr_c` | EK, delete record from segment |
 | `ekffld_c` | EK, finish fast write |
 | `ekfind_c` | EK, find data |
 | `ekgc_c` | EK, get event data, character |
 | `ekgd_c` | EK, get event data, double precision |
 | `ekgi_c` | EK, get event data, integer |
 | `ekifld_c` | EK, initialize segment for fast write |
+| `ekinsr_c` | EK, insert record into segment |
 | `eknseg_c` | EK, number of segments in file |
 | `ekntab_c` | EK, return number of loaded tables |
 | `ekopn_c` | EK, open new file |
 | `ekopr_c` | EK, open file for reading |
+| `ekops_c` | EK, open scratch file |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
 | `et2utc_c` | Ephemeris Time to UTC |
@@ -328,15 +333,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekacec_c` | EK, add character data to column |
 | `ekaced_c` | EK, add d.p. data to column |
 | `ekacei_c` | EK, add integer data to column |
-| `ekappr_c` | EK, append record onto segment |
-| `ekbseg_c` | EK, start new segment |
 | `ekccnt_c` | EK, column count |
 | `ekcii_c` | EK, column info by index |
-| `ekdelr_c` | EK, delete record from segment |
-| `ekinsr_c` | EK, insert record into segment |
 | `eklef_c` | EK, load event file |
 | `eknelt_c` | EK, get number of elements in column entry |
-| `ekops_c` | EK, open scratch file |
 | `ekpsel_c` | EK, parse SELECT clause |
 | `ekrcec_c` | EK, read column entry element, character |
 | `ekrced_c` | EK, read column entry element, d.p. |

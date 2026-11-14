@@ -3,6 +3,8 @@ import {
   type SpiceHandle,
 } from "@rybosome/tspice-backend-contract";
 import {
+  checkEkRecordIndex,
+  packEkRecordSchema,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
   invariant,
@@ -32,6 +34,11 @@ type NativeEkDeps = Pick<
   | "ekgc"
   | "ekgd"
   | "ekgi"
+  | "ekops"
+  | "ekbseg"
+  | "ekappr"
+  | "ekinsr"
+  | "ekdelr"
   | "ekifld"
   | "ekacli"
   | "ekacld"
@@ -76,6 +83,54 @@ export function createEkApi<
   };
 
   const api = {
+    ekops: () => {
+      const h = native.ekops();
+      try {
+        return registerEkHandle(h, "ekops()");
+      } catch (error) {
+        native.ekcls(h);
+        throw error;
+      }
+    },
+    ekbseg: (
+      handle: SpiceHandle,
+      tabnam: string,
+      cnames: readonly string[],
+      decls: readonly string[],
+    ) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekbseg").nativeHandle;
+      const schema = packEkRecordSchema(tabnam, cnames, decls);
+      const output = native.ekbseg(
+        id,
+        schema.table,
+        schema.count,
+        schema.names.width,
+        schema.names.bytes,
+        schema.decls.width,
+        schema.decls.bytes,
+      );
+      assertSpiceInt32NonNegative(output, "ekbseg returned ordinal");
+      return output;
+    },
+    ekappr: (handle: SpiceHandle, segno: number) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekappr").nativeHandle;
+      checkEkRecordIndex(segno, "ekappr(segno)");
+      const output = native.ekappr(id, segno);
+      assertSpiceInt32NonNegative(output, "ekappr returned ordinal");
+      return output;
+    },
+    ekinsr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekinsr").nativeHandle;
+      checkEkRecordIndex(segno, "ekinsr(segno)");
+      checkEkRecordIndex(recno, "ekinsr(recno)");
+      native.ekinsr(id, segno, recno);
+    },
+    ekdelr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = handles.lookup(handle, EK_ONLY, "ekdelr").nativeHandle;
+      checkEkRecordIndex(segno, "ekdelr(segno)");
+      checkEkRecordIndex(recno, "ekdelr(recno)");
+      native.ekdelr(id, segno, recno);
+    },
     ekopr: (path: string) =>
       registerEkHandle(native.ekopr(resolvePath(path)), "ekopr(path)"),
     ekopw: (path: string) =>

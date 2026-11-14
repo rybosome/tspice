@@ -3,6 +3,8 @@
 #include "SpiceUsr.h"
 #include "SpiceEK.h"
 
+#include "SpiceZfc.h"
+#include <limits.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,6 +39,101 @@ static int tspice_ek_invalid_arg(char *err, int errMaxBytes, const char *msg) {
   return 1;
 }
 
+
+
+// CSPICE permits one fast-load operation in the process. Keep the new
+// record writers from interrupting it, even through a different EK handle.
+static int tspice_ek_fast_open = 0;
+static int tspice_ek_fast_handle = 0;
+static int tspice_ek_fast_segment = 0;
+
+static int begin_ek_record_call(char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (tspice_ek_fast_open) return tspice_ek_invalid_arg(err, errMaxBytes,
+      "Finish the active EK fast write before a record operation");
+  return 0;
+}
+
+static int finish_ek_record_call(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+static int ek_record_segment(int handle, int segment, int grows,
+                             char *err, int errMaxBytes) {
+  if (segment == INT_MAX) return tspice_ek_invalid_arg(err, errMaxBytes,
+      "EK segment index exceeds the N0067 one-based conversion");
+  // Both read-only and invalid handles fail in the canonical writer's
+  // first operation, before any metadata is read or mutated. In that case
+  // let it report its own complete diagnostic and call trace.
+  zzekpgch_(&handle, "WRITE", (ftnlen)5);
+  if (failed_c()) {
+    reset_c();
+    return 0;
+  }
+  SpiceInt nseg = eknseg_c(handle);
+  if (failed_c()) return finish_ek_record_call(err, errMaxBytes);
+  if (segment < 0 || segment >= nseg) return 0;
+  SpiceEKSegSum summary;
+  ekssum_c(handle, segment, &summary);
+  if (failed_c()) return finish_ek_record_call(err, errMaxBytes);
+  if (grows && summary.nrows == INT_MAX)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "EK row count exceeds the N0067 index range");
+  for (int i = 0; i < summary.ncols; ++i)
+    if (summary.cdescrs[i].cclass < 1 || summary.cdescrs[i].cclass > 6)
+      return tspice_ek_invalid_arg(err, errMaxBytes, "EK row edits require a variable-count segment");
+  return 0;
+}
+
+int tspice_ekops(int *out, char *err, int errMaxBytes) {
+  if (begin_ek_record_call(err, errMaxBytes)) return 1;
+  if (!out) return tspice_ek_invalid_arg(err, errMaxBytes, "Expected an EK result pointer");
+  *out = 0;
+  ekops_c(out);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekbseg(int handle, const char *table, int count, int nameWidth, const char *names, int declWidth, const char *decls, int *out, char *err, int errMaxBytes) {
+  if (begin_ek_record_call(err, errMaxBytes)) return 1;
+  if (!out) return tspice_ek_invalid_arg(err, errMaxBytes, "Expected an EK result pointer");
+  *out = 0;
+  if (!table || !names || !decls || count < 1 || count > SPICE_EK_MXCLSG ||
+      nameWidth < 2 || declWidth < 2 || nameWidth > (256*1024*1024)/count ||
+      declWidth > (256*1024*1024)/count)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Invalid EK schema dimensions");
+  for (int i = 0; i < count; ++i)
+    if (!memchr(names + i*nameWidth, 0, nameWidth) || !memchr(decls + i*declWidth, 0, declWidth))
+      return tspice_ek_invalid_arg(err, errMaxBytes, "Unterminated EK schema row");
+  ekbseg_c(handle, table, count, nameWidth, names, declWidth, decls, out);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekappr(int handle, int segment, int *out, char *err, int errMaxBytes) {
+  if (begin_ek_record_call(err, errMaxBytes)) return 1;
+  if (!out) return tspice_ek_invalid_arg(err, errMaxBytes, "Expected an EK result pointer");
+  *out = 0;
+  if (ek_record_segment(handle, segment, 1, err, errMaxBytes)) return 1;
+  ekappr_c(handle, segment, out);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekinsr(int handle, int segment, int row, char *err, int errMaxBytes) {
+  if (begin_ek_record_call(err, errMaxBytes)) return 1;
+  if (row == INT_MAX) return tspice_ek_invalid_arg(err, errMaxBytes, "EK record index exceeds the N0067 one-based conversion");
+  if (ek_record_segment(handle, segment, 1, err, errMaxBytes)) return 1;
+  ekinsr_c(handle, segment, row);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekdelr(int handle, int segment, int row, char *err, int errMaxBytes) {
+  if (begin_ek_record_call(err, errMaxBytes)) return 1;
+  if (row == INT_MAX) return tspice_ek_invalid_arg(err, errMaxBytes, "EK record index exceeds the N0067 one-based conversion");
+  if (ek_record_segment(handle, segment, 0, err, errMaxBytes)) return 1;
+  ekdelr_c(handle, segment, row);
+  return finish_ek_record_call(err, errMaxBytes);
+}
 
 int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
@@ -145,6 +242,7 @@ int tspice_ekcls(int handle, char *err, int errMaxBytes) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  if (tspice_ek_fast_handle == handle) tspice_ek_fast_open = 0;
   return 0;
 }
 
@@ -607,6 +705,9 @@ int tspice_ekifld(
     return 1;
   }
 
+  tspice_ek_fast_open = 1;
+  tspice_ek_fast_handle = handle;
+  tspice_ek_fast_segment = (int)segnoC;
   *outSegno = (int)segnoC;
   return 0;
 }
@@ -1056,5 +1157,6 @@ int tspice_ekffld(int handle, int segno, int nrows, int *rcptrs, char *err, int 
     return 1;
   }
 
+  if (tspice_ek_fast_handle == handle && tspice_ek_fast_segment == segno) tspice_ek_fast_open = 0;
   return 0;
 }

@@ -18,6 +18,11 @@ type EkNativeDeps = Pick<
   | "ekgc"
   | "ekgd"
   | "ekgi"
+  | "ekops"
+  | "ekbseg"
+  | "ekappr"
+  | "ekinsr"
+  | "ekdelr"
   | "ekifld"
   | "ekacli"
   | "ekacld"
@@ -44,6 +49,11 @@ function makeNativeDeps(overrides: Partial<EkNativeDeps>): EkNativeDeps {
     ekgc: notImplemented("ekgc"),
     ekgd: notImplemented("ekgd"),
     ekgi: notImplemented("ekgi"),
+    ekops: notImplemented("ekops"),
+    ekbseg: notImplemented("ekbseg"),
+    ekappr: notImplemented("ekappr"),
+    ekinsr: notImplemented("ekinsr"),
+    ekdelr: notImplemented("ekdelr"),
     ekifld: notImplemented("ekifld"),
     ekacli: notImplemented("ekacli"),
     ekacld: notImplemented("ekacld"),

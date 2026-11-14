@@ -1,5 +1,7 @@
 import type { EkApi, SpiceHandle } from "@rybosome/tspice-backend-contract";
 import {
+  checkEkRecordIndex,
+  packEkRecordSchema,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
@@ -208,6 +210,109 @@ export function createEkApi(
   const TABLE_NAME_MAX_BYTES = 256;
 
   const api = {
+    ekops: () => {
+      const h = withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_ekops(out, err, WASM_ERR_MAX_BYTES);
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return readHeapI32(module, (out >>> 0) / 4, "ekops result");
+      });
+      try {
+        return spiceHandles.register("EK", h);
+      } catch (error) {
+        callVoidHandle(module, module._tspice_ekcls, h);
+        throw error;
+      }
+    },
+    ekbseg: (
+      handle: SpiceHandle,
+      tabnam: string,
+      cnames: readonly string[],
+      decls: readonly string[],
+    ) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekbseg").nativeHandle;
+      const schema = packEkRecordSchema(tabnam, cnames, decls);
+      const text = UTF8_ENCODER.encode(schema.table);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          text.length + 1,
+          schema.names.bytes.length,
+          schema.decls.bytes.length,
+          4,
+        ],
+        (err, table, cnamesPtr, declsPtr, out) => {
+          module.HEAPU8.set(text, table >>> 0);
+          module.HEAPU8[(table >>> 0) + text.length] = 0;
+          module.HEAPU8.set(schema.names.bytes, cnamesPtr >>> 0);
+          module.HEAPU8.set(schema.decls.bytes, declsPtr >>> 0);
+          const code = module._tspice_ekbseg(
+            id,
+            table,
+            schema.count,
+            schema.names.width,
+            cnamesPtr,
+            schema.decls.width,
+            declsPtr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          return readHeapI32(module, (out >>> 0) / 4, "ekbseg result");
+        },
+      );
+    },
+    ekappr: (handle: SpiceHandle, segno: number) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekappr").nativeHandle;
+      checkEkRecordIndex(segno, "ekappr(segno)");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_ekappr(
+          id,
+          segno,
+          out,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return readHeapI32(module, (out >>> 0) / 4, "ekappr result");
+      });
+    },
+    ekinsr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekinsr").nativeHandle;
+      checkEkRecordIndex(segno, "ekinsr(segno)");
+      checkEkRecordIndex(recno, "ekinsr(recno)");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+        const code = module._tspice_ekinsr(
+          id,
+          segno,
+          recno,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      });
+    },
+    ekdelr: (handle: SpiceHandle, segno: number, recno: number) => {
+      const id = spiceHandles.lookup(handle, EK_ONLY, "ekdelr").nativeHandle;
+      checkEkRecordIndex(segno, "ekdelr(segno)");
+      checkEkRecordIndex(recno, "ekdelr(recno)");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+        const code = module._tspice_ekdelr(
+          id,
+          segno,
+          recno,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code !== 0)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      });
+    },
     ekopr: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);

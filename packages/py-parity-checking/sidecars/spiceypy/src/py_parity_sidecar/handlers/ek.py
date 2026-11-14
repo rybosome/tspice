@@ -7,6 +7,7 @@ import spiceypy as sp
 from spiceypy.utils import support_types as stypes
 from spiceypy.utils.libspicehelper import libspice
 
+from ..ek_record_oracle import record_schema, edit_record
 from ..models import (
     PathRef,
     StepEkEkaclc,
@@ -21,6 +22,11 @@ from ..models import (
     StepEkEkifld,
     StepEkEknseg,
     StepEkEkntab,
+    StepEkEkops,
+    StepEkEkbseg,
+    StepEkEkappr,
+    StepEkEkinsr,
+    StepEkEkdelr,
     StepEkEkopn,
     StepEkEkopr,
     StepEkEkopw,
@@ -150,6 +156,40 @@ def _resolve_ek_path(context: SidecarRuntimeContext, raw_path: PathRef | str) ->
 
 
 def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepEkEkops):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        _register_handle(context, step.handleId, sp.ekops())
+        return StepOutput(op=step.op,value={"handleId":step.handleId})
+
+    if isinstance(step, StepEkEkbseg):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        h = _require_handle(context, step.handleId)
+        value = record_schema(h, step.tabnam, step.cnames, step.decls)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkappr):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        h = _require_handle(context, step.handleId)
+        value = edit_record(sp.ekappr, h, step.segno)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkinsr):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        h = _require_handle(context, step.handleId)
+        value = edit_record(sp.ekinsr, h, step.segno, step.recno)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkdelr):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        h = _require_handle(context, step.handleId)
+        value = edit_record(sp.ekdelr, h, step.segno, step.recno)
+        return StepOutput(op=step.op, value=value)
+
     if isinstance(step, StepEkEkopn):
         resolved_path = _resolve_ek_path(context, step.path)
         Path(resolved_path).parent.mkdir(parents=True, exist_ok=True)
@@ -168,7 +208,10 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         return StepOutput(op=step.op, value={"handleId": step.handleId})
 
     if isinstance(step, StepEkEkcls):
+        h = _require_handle(context, step.handleId)
         _close_handle(context, step.handleId)
+        if context.state.ek.activeFast and context.state.ek.activeFast[0] == h:
+            context.state.ek.activeFast = None
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEkEkntab):
@@ -221,6 +264,7 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
             _declen(step.decls),
             step.decls,
         )
+        context.state.ek.activeFast = (handle, int(segno))
         _register_segment(
             context,
             step.segmentId,
@@ -311,6 +355,8 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
         segment = _require_segment(context, step.segmentId)
         handle = _require_handle(context, segment.handleId)
         sp.ekffld(handle, segment.segno, segment.rcptrs)
+        if context.state.ek.activeFast == (handle, segment.segno):
+            context.state.ek.activeFast = None
         return StepOutput(op=step.op, value=None)
 
     return None

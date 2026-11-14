@@ -1,0 +1,169 @@
+[
+  {
+    "caseId": "ek-ekops-empty",
+    "description": "A scratch file starts with zero segments and ordinary explicit close releases its claim.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekops-independent",
+    "description": "Two scratch writers retain different schema counts when one closes.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekops",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "ORDERS",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "b",
+        "tabnam": "SECOND",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekops-scratch-vs-named",
+    "description": "The named file and the scratch file can both create segment zero and close independently.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c08.ek"
+        },
+        "ifname": "ORDERS",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekops",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "ORDERS",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "b",
+        "tabnam": "ORDERS",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "b",
+        "tabnam": "SECOND",
+        "cnames": ["ID"],
+        "decls": ["DATATYPE=INTEGER"]
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c08.ek"
+        }
+      },
+      {
+        "op": "ek.eknseg",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekops-cleanup-on-scientific-error",
+    "description": "A genuine bad segment on a temporary writer leaves an owned claim for the workflow finalizer.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  }
+]

@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 162,
-    planned: 487,
+    implemented: 167,
+    planned: 482,
     excluded: 3,
-    caseFiles: 162,
-    scenarios: 1109,
+    caseFiles: 167,
+    scenarios: 1147,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -445,7 +445,12 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
-  assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
+  assert.equal(ledger.audit.baselineRoutines, 162);
+  assert.equal(ledger.audit.expansionRoutines, 5);
+  assert.equal(
+    ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
+    ledger.summary.implemented,
+  );
   for (const backend of ["node", "wasm"]) {
     assert.ok(ledger.audit.counts[backend].reviewed >= 8);
     assert.equal(ledger.audit.counts[backend].verified, 0);
@@ -470,7 +475,21 @@ test("baseline rejects duplicate, removed, and omitted routines", (t) => {
   ]) {
     const f = fixture(t);
     editAudit(f, mutation, "baseline.json");
-    assert.throws(f.build, /duplicate|unknown\/removed|missing from baseline/);
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
+  }
+});
+
+test("expansion assignments cannot omit routines, duplicate baseline, or plan absent APIs", (t) => {
+  for (const mutation of [
+    (r) => {
+      r.expansionBatches = [];
+    },
+    (r) => r.expansionBatches[0].routines.push(r.batches[0].routines[0]),
+    (r) => r.expansionBatches[0].routines.push("clight_c"),
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation, "baseline.json");
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
   }
 });
 

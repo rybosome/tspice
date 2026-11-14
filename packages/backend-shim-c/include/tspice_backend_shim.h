@@ -158,6 +158,12 @@ int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
 // --- EK --------------------------------------------------------------------
 
+int tspice_ekops(int *out, char *err, int errMaxBytes);
+int tspice_ekbseg(int handle, const char *table, int count, int nameWidth, const char *names, int declWidth, const char *decls, int *out, char *err, int errMaxBytes);
+int tspice_ekappr(int handle, int segment, int *out, char *err, int errMaxBytes);
+int tspice_ekinsr(int handle, int segment, int row, char *err, int errMaxBytes);
+int tspice_ekdelr(int handle, int segment, int row, char *err, int errMaxBytes);
+
 int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes);
 

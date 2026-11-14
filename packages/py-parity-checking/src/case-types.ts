@@ -956,6 +956,34 @@ export type StepEkEkgi = {
   elment: number;
 };
 
+export type StepEkEkops = {
+  op: "ek.ekops";
+  handleId: string;
+};
+export type StepEkEkbseg = {
+  op: "ek.ekbseg";
+  handleId: string;
+  tabnam: string;
+  cnames: string[];
+  decls: string[];
+};
+export type StepEkEkappr = {
+  op: "ek.ekappr";
+  handleId: string;
+  segno: number;
+};
+export type StepEkEkinsr = {
+  op: "ek.ekinsr";
+  handleId: string;
+  segno: number;
+  recno: number;
+};
+export type StepEkEkdelr = {
+  op: "ek.ekdelr";
+  handleId: string;
+  segno: number;
+  recno: number;
+};
 export type StepEkEkopn = {
   op: "ek.ekopn";
   path: PathRefLike;
@@ -1416,6 +1444,11 @@ export type WorkflowStep =
   | StepFramesCkcov
   | StepFramesPxform
   | StepFramesSxform
+  | StepEkEkops
+  | StepEkEkbseg
+  | StepEkEkappr
+  | StepEkEkinsr
+  | StepEkEkdelr
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -1767,6 +1800,11 @@ export type StepOutput =
     }
   | { op: "frames.pxform"; value: Matrix3x3 }
   | { op: "frames.sxform"; value: Matrix6x6 }
+  | { op: "ek.ekops"; value: { handleId: string } }
+  | { op: "ek.ekbseg"; value: number }
+  | { op: "ek.ekappr"; value: number }
+  | { op: "ek.ekinsr"; value: null }
+  | { op: "ek.ekdelr"; value: null }
   | {
       op: "ek.ekopn";
       value: { handleId: string };

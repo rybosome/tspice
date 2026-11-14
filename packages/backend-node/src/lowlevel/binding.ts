@@ -232,6 +232,11 @@ export function getNodeBinding(): NativeAddon {
     typeof native.ekgi === "function",
     "Expected native addon to export ekgi(selidx, row, elment)",
   );
+  invariant(typeof native.ekops === "function", "Expected native ekops");
+  invariant(typeof native.ekbseg === "function", "Expected native ekbseg");
+  invariant(typeof native.ekappr === "function", "Expected native ekappr");
+  invariant(typeof native.ekinsr === "function", "Expected native ekinsr");
+  invariant(typeof native.ekdelr === "function", "Expected native ekdelr");
   invariant(
     typeof native.ekifld === "function",
     "Expected native addon to export ekifld(handle, tabnam, nrows, cnames, decls)",

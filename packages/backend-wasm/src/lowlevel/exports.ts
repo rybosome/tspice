@@ -235,6 +235,40 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_ekops(out: number, err: number, errBytes: number): number;
+  _tspice_ekbseg(
+    handle: number,
+    table: number,
+    count: number,
+    nameWidth: number,
+    names: number,
+    declWidth: number,
+    decls: number,
+    out: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekappr(
+    handle: number,
+    segno: number,
+    out: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekinsr(
+    handle: number,
+    segno: number,
+    recno: number,
+    err: number,
+    errBytes: number,
+  ): number;
+  _tspice_ekdelr(
+    handle: number,
+    segno: number,
+    recno: number,
+    err: number,
+    errBytes: number,
+  ): number;
   _tspice_ekifld(
     handle: number,
     tabnamPtr: number,
@@ -2295,6 +2329,11 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ekgc",
   "_tspice_ekgd",
   "_tspice_ekgi",
+  "_tspice_ekops",
+  "_tspice_ekbseg",
+  "_tspice_ekappr",
+  "_tspice_ekinsr",
+  "_tspice_ekdelr",
   "_tspice_ekifld",
   "_tspice_ekacli",
   "_tspice_ekacld",
