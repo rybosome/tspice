@@ -1596,6 +1596,114 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
       "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
       "historical": true
+    },
+    {
+      "id": "local-a05-snapshot-43a71924-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5924a561674a68710577a847beb2d551ceb2dc8d7409170897dd3fe136f2a7ad",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "local-a05-snapshot-43a71924-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5924a561674a68710577a847beb2d551ceb2dc8d7409170897dd3fe136f2a7ad",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "ci-a05-snapshot-43a71924-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5924a561674a68710577a847beb2d551ceb2dc8d7409170897dd3fe136f2a7ad",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
+    },
+    {
+      "id": "ci-a05-snapshot-43a71924-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5924a561674a68710577a847beb2d551ceb2dc8d7409170897dd3fe136f2a7ad",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
     }
   ],
   "routines": [
@@ -1707,11 +1815,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1727,11 +1839,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -1890,11 +2006,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1910,11 +2030,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -2062,11 +2186,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -2082,14 +2210,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

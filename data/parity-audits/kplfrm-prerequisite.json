@@ -1314,6 +1314,78 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
       "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
       "historical": true
+    },
+    {
+      "id": "local-a05-snapshot-43a71924-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "463c2078c0bbd30fe332629e530e0233396bd0901862ce8de9f172cbd0b00db6",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "local-a05-snapshot-43a71924-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "463c2078c0bbd30fe332629e530e0233396bd0901862ce8de9f172cbd0b00db6",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "ci-a05-snapshot-43a71924-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "463c2078c0bbd30fe332629e530e0233396bd0901862ce8de9f172cbd0b00db6",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
+    },
+    {
+      "id": "ci-a05-snapshot-43a71924-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "463c2078c0bbd30fe332629e530e0233396bd0901862ce8de9f172cbd0b00db6",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
     }
   ],
   "routines": [
@@ -1459,11 +1531,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1483,14 +1559,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

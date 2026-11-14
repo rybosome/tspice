@@ -883,6 +883,174 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
       "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
       "historical": true
+    },
+    {
+      "id": "local-a05-snapshot-43a71924-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "22150e2f27a66f1d3f2cff18213b5c54e1830194df38c08196b03414a1afd432",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "local-a05-snapshot-43a71924-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "22150e2f27a66f1d3f2cff18213b5c54e1830194df38c08196b03414a1afd432",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "ci-a05-snapshot-43a71924-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "22150e2f27a66f1d3f2cff18213b5c54e1830194df38c08196b03414a1afd432",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
+    },
+    {
+      "id": "ci-a05-snapshot-43a71924-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "22150e2f27a66f1d3f2cff18213b5c54e1830194df38c08196b03414a1afd432",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
     }
   ],
   "routines": [
@@ -960,11 +1128,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -980,11 +1152,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -1073,11 +1249,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1093,11 +1273,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -1160,11 +1344,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1179,11 +1367,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -1236,11 +1428,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1255,11 +1451,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "cached",
           "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -1326,11 +1526,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1346,11 +1550,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -1402,11 +1610,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1421,11 +1633,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     },
@@ -1500,11 +1716,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-node",
+            "ci-a05-snapshot-43a71924-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1520,14 +1740,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": []
+          "executions": [
+            "local-a05-snapshot-43a71924-wasm",
+            "ci-a05-snapshot-43a71924-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

@@ -272,13 +272,25 @@
           "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #709 data/parity-audits; this queue checkpoint is not a replacement.",
           "historical": true,
           "supersededReason": "Readiness reopened for adapter input snapshot correction."
+        },
+        {
+          "kind": "corrected-source-verification",
+          "testedCommit": "43a7192412f763bc5f4d734b3de5a3f4546d0d8e",
+          "sourceDigest": "70b01a714d1b47a35fec423f0d252419363a08554dbda479ce16a9ecf846f7b4",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550193944",
+          "job": "https://github.com/rybosome/tspice/actions/runs/43550193944/job/132310653323",
+          "localCommands": [
+            "pnpm run check:js:required",
+            "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required"
+          ],
+          "observation": "Corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. JS-required passed 2,298 registered comparisons and 2,520 parity tests with 1 expected native-required guard skip. Native-required passed 2,298 live comparisons, 2,521 parity tests, 91 native, 625 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical. Inspected successful Linux Node 22 native-required job 132310653323 on corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Its uncached parity package ran 2,298 registered comparisons and passed 2,521 parity tests without skips. Final-head readiness remains pending."
         }
       ],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "nextAction": "Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge.",
       "worktree": "/private/tmp/tspice-step8-cylindrical",
       "branch": "codex/expand-cylindrical-coordinates",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "reccyl now copies the validated rectangular coordinates once. Focused regression evidence is distinct from scientific parity. Earlier source records remain historical; fresh required local and observed canonical CI evidence for the corrected source is pending.",
+      "progressNote": "Owned input correction is verified on source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e after both required local lanes and inspected canonical CI on Linux Node 22. 2,298 live comparisons and 2,521 parity tests passed without native-required skips. All 170 current routines have source-bound verification. Final metadata head still requires its complete CI matrix and explicit rebaseability review.",
       "deliveryNote": "Final-head checks and explicit rebaseability passed; draft removed and body updated. PR-ready, not landed.",
       "priorCheckpoint": "Integration owner reports final head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 passed all 15 jobs in CI run 43540344076; after-CI REST explicitly reported rebaseable:true against main 73f3. Draft removed and body updated; no merge."
     },
