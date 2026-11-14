@@ -88,3 +88,68 @@ export function dasFileTarget(
     throw new TypeError("Expected a DAS path or VirtualOutput");
   return { kind: "virtual-output", path: dasText(value.path) };
 }
+
+const dasTransferBytes = 256 * 1024 * 1024;
+
+function checkDasCount(count: number, width: number): void {
+  if (
+    !Number.isSafeInteger(count) ||
+    count < 0 ||
+    count > dasTransferBytes / width
+  )
+    throw new RangeError("DAS transfer exceeds the 256 MiB buffer limit");
+}
+
+/** Bound owned storage before reading any array entries. Doubles retain their IEEE bit categories. */
+export function copyDasValues(
+  value: unknown,
+  kind: "double" | "integer",
+): number[] {
+  if (!Array.isArray(value)) throw new TypeError("Expected a DAS number array");
+  const count = value.length;
+  checkDasCount(count, kind === "double" ? 8 : 4);
+  const result: number[] = [];
+  for (let i = 0; i < count; i++) {
+    const word: unknown = value[i];
+    if (typeof word !== "number")
+      throw new TypeError("Expected a number in DAS data");
+    if (kind === "integer") assertSpiceInt32(word, "DAS integer data");
+    result.push(word);
+  }
+  return result;
+}
+
+/** Copy a rectangular table of arbitrary DAS bytes, including NUL and invalid UTF-8. */
+export function copyDasBytes(value: unknown): Uint8Array {
+  if (!(value instanceof Uint8Array))
+    throw new TypeError("Expected a DAS Uint8Array");
+  // Use the typed array's internal length, including for Uint8Array subclasses.
+  const getLength = Object.getOwnPropertyDescriptor(
+    Object.getPrototypeOf(Uint8Array.prototype),
+    "length",
+  )?.get;
+  if (!getLength)
+    throw new TypeError("Typed array length accessor unavailable");
+  const length: unknown = getLength.call(value);
+  if (typeof length !== "number")
+    throw new TypeError("Invalid DAS byte length");
+  checkDasCount(length, 1);
+  const result = new Uint8Array(length);
+  // set reads the source typed array by its internal slots and rejects a grow
+  // beyond the captured length before copying any elements.
+  result.set(value);
+  return result;
+}
+
+/** Bound allocation of a DAS numeric destination; reversed ranges have no output elements. */
+export function dasReadCount(
+  first: number,
+  last: number,
+  width: 4 | 8,
+): number {
+  assertSpiceInt32(first, "DAS first");
+  assertSpiceInt32(last, "DAS last");
+  const count = Math.max(0, last - first + 1);
+  checkDasCount(count, width);
+  return count;
+}

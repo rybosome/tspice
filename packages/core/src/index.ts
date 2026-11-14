@@ -1,4 +1,7 @@
 export {
+  copyDasBytes,
+  copyDasValues,
+  dasReadCount,
   dasFileTarget,
   dasText,
   decodeDasSummary,

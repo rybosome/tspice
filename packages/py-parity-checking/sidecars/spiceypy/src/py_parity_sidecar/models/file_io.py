@@ -51,6 +51,91 @@ class StepFileIoDasopr:
 
 
 @dataclass(frozen=True)
+class StepFileIoDasadc:
+    op: Literal["file-io.dasadc"]
+    handleId: str
+    n: int
+    bpos: int
+    epos: int
+    datlen: int
+    data: list[int]
+
+
+@dataclass(frozen=True)
+class StepFileIoDasadd:
+    op: Literal["file-io.dasadd"]
+    handleId: str
+    n: int
+    data: list[float]
+
+
+@dataclass(frozen=True)
+class StepFileIoDasadi:
+    op: Literal["file-io.dasadi"]
+    handleId: str
+    n: int
+    data: list[int]
+
+
+@dataclass(frozen=True)
+class StepFileIoDasrdc:
+    op: Literal["file-io.dasrdc"]
+    handleId: str
+    first: int
+    last: int
+    bpos: int
+    epos: int
+    datlen: int
+    data: list[int]
+
+
+@dataclass(frozen=True)
+class StepFileIoDasrdd:
+    op: Literal["file-io.dasrdd"]
+    handleId: str
+    first: int
+    last: int
+
+
+@dataclass(frozen=True)
+class StepFileIoDasrdi:
+    op: Literal["file-io.dasrdi"]
+    handleId: str
+    first: int
+    last: int
+
+
+@dataclass(frozen=True)
+class StepFileIoDasudc:
+    op: Literal["file-io.dasudc"]
+    handleId: str
+    first: int
+    last: int
+    bpos: int
+    epos: int
+    datlen: int
+    data: list[int]
+
+
+@dataclass(frozen=True)
+class StepFileIoDasudd:
+    op: Literal["file-io.dasudd"]
+    handleId: str
+    first: int
+    last: int
+    data: list[float]
+
+
+@dataclass(frozen=True)
+class StepFileIoDasudi:
+    op: Literal["file-io.dasudi"]
+    handleId: str
+    first: int
+    last: int
+    data: list[int]
+
+
+@dataclass(frozen=True)
 class StepFileIoDasonw:
     op: Literal["file-io.dasonw"]
     handleId: str

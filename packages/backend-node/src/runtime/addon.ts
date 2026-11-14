@@ -101,6 +101,48 @@ export type NativeAddon = {
   dafbfs(handle: number): void;
   daffna(handle: number): boolean;
 
+  dasadc(
+    handle: number,
+    n: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+  dasadd(handle: number, n: number, data: readonly number[]): void;
+  dasadi(handle: number, n: number, data: readonly number[]): void;
+  dasrdc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): Uint8Array;
+  dasrdd(handle: number, first: number, last: number): number[];
+  dasrdi(handle: number, first: number, last: number): number[];
+  dasudc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+  dasudd(
+    handle: number,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
+  dasudi(
+    handle: number,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
   dasonw(path: string, ftype: string, ifname: string, ncomr: number): number;
   dasops(): number;
   dasopw(path: string): number;

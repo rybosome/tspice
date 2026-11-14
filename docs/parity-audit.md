@@ -59,3 +59,7 @@ Both backends reset signaled errors before throwing. A persistent true failure f
 ## DAS creation and file state
 
 C04 adds nine raw DAS operations to the original 162-routine surface. The reviewed scientific coverage includes 46 workflows, 133 new-method calls and 13 expected diagnostic exits. [Lifecycle and data persistence](step8-das-lifecycle.md) [Per-routine record](../data/parity-audits/c04-das-lifecycle.json)
+
+## DAS typed data transfers
+
+C05 adds nine routines on the C04 file lifecycle. All 54 registered workflows compare actual logical data and diagnostics through the locked oracle. Public cross-reads also inspect independently authored persisted files on both backends. [Binary data, address boundaries and physical padding](step8-das-data.md) [Per-routine record](../data/parity-audits/c05-das-data.json)

@@ -82,6 +82,15 @@ from .models import (
     StepFileIoDafcls,
     StepFileIoDaffna,
     StepFileIoDafopr,
+    StepFileIoDasadc,
+    StepFileIoDasadd,
+    StepFileIoDasadi,
+    StepFileIoDasrdc,
+    StepFileIoDasrdd,
+    StepFileIoDasrdi,
+    StepFileIoDasudc,
+    StepFileIoDasudd,
+    StepFileIoDasudi,
     StepFileIoDasonw,
     StepFileIoDasops,
     StepFileIoDasopw,
@@ -1080,6 +1089,82 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 handleId=_expect_string(step.get("handleId"), label="file-io.dasopr.handleId"),
             )
 
+        case "file-io.dasadc":
+            return StepFileIoDasadc(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasadc.handleId"),
+                n=_expect_int(step.get("n"), label="file-io.dasadc.n"),
+                bpos=_expect_int(step.get("bpos"), label="file-io.dasadc.bpos"),
+                epos=_expect_int(step.get("epos"), label="file-io.dasadc.epos"),
+                datlen=_expect_int(step.get("datlen"), label="file-io.dasadc.datlen"),
+                data=_expect_int_list(step.get("data"), label="file-io.dasadc.data"),
+            )
+        case "file-io.dasadd":
+            return StepFileIoDasadd(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasadd.handleId"),
+                n=_expect_int(step.get("n"), label="file-io.dasadd.n"),
+                data=_expect_number_list(step.get("data"), label="file-io.dasadd.data"),
+            )
+        case "file-io.dasadi":
+            return StepFileIoDasadi(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasadi.handleId"),
+                n=_expect_int(step.get("n"), label="file-io.dasadi.n"),
+                data=_expect_int_list(step.get("data"), label="file-io.dasadi.data"),
+            )
+        case "file-io.dasrdc":
+            return StepFileIoDasrdc(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasrdc.handleId"),
+                first=_expect_int(step.get("first"), label="file-io.dasrdc.first"),
+                last=_expect_int(step.get("last"), label="file-io.dasrdc.last"),
+                bpos=_expect_int(step.get("bpos"), label="file-io.dasrdc.bpos"),
+                epos=_expect_int(step.get("epos"), label="file-io.dasrdc.epos"),
+                datlen=_expect_int(step.get("datlen"), label="file-io.dasrdc.datlen"),
+                data=_expect_int_list(step.get("data"), label="file-io.dasrdc.data"),
+            )
+        case "file-io.dasrdd":
+            return StepFileIoDasrdd(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasrdd.handleId"),
+                first=_expect_int(step.get("first"), label="file-io.dasrdd.first"),
+                last=_expect_int(step.get("last"), label="file-io.dasrdd.last"),
+            )
+        case "file-io.dasrdi":
+            return StepFileIoDasrdi(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasrdi.handleId"),
+                first=_expect_int(step.get("first"), label="file-io.dasrdi.first"),
+                last=_expect_int(step.get("last"), label="file-io.dasrdi.last"),
+            )
+        case "file-io.dasudc":
+            return StepFileIoDasudc(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasudc.handleId"),
+                first=_expect_int(step.get("first"), label="file-io.dasudc.first"),
+                last=_expect_int(step.get("last"), label="file-io.dasudc.last"),
+                bpos=_expect_int(step.get("bpos"), label="file-io.dasudc.bpos"),
+                epos=_expect_int(step.get("epos"), label="file-io.dasudc.epos"),
+                datlen=_expect_int(step.get("datlen"), label="file-io.dasudc.datlen"),
+                data=_expect_int_list(step.get("data"), label="file-io.dasudc.data"),
+            )
+        case "file-io.dasudd":
+            return StepFileIoDasudd(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasudd.handleId"),
+                first=_expect_int(step.get("first"), label="file-io.dasudd.first"),
+                last=_expect_int(step.get("last"), label="file-io.dasudd.last"),
+                data=_expect_number_list(step.get("data"), label="file-io.dasudd.data"),
+            )
+        case "file-io.dasudi":
+            return StepFileIoDasudi(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasudi.handleId"),
+                first=_expect_int(step.get("first"), label="file-io.dasudi.first"),
+                last=_expect_int(step.get("last"), label="file-io.dasudi.last"),
+                data=_expect_int_list(step.get("data"), label="file-io.dasudi.data"),
+            )
         case "file-io.dasonw":
             return StepFileIoDasonw(
                 op=op,

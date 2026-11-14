@@ -1,0 +1,433 @@
+[
+  {
+    "caseId": "file-io-dasrdc-endpoints",
+    "description": "Read the beginning, interior and final address separately and preserve signed values and binary bytes.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 7,
+        "data": [0, 255, 32, 9, 128, 65, 126],
+        "bpos": 0,
+        "epos": 6,
+        "datlen": 7
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 1,
+        "last": 1,
+        "bpos": 0,
+        "epos": 0,
+        "datlen": 1,
+        "data": [173]
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 2,
+        "last": 5,
+        "bpos": 0,
+        "epos": 3,
+        "datlen": 4,
+        "data": [173, 173, 173, 173]
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 7,
+        "last": 7,
+        "bpos": 0,
+        "epos": 0,
+        "datlen": 1,
+        "data": [173]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-persisted-read-claims",
+    "description": "Flush and reopen the file twice, close the original token and use the surviving independent read claim.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        },
+        "ftype": "DATA",
+        "ifname": "DAS DATA",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 7,
+        "data": [0, 255, 32, 9, 128, 65, 126],
+        "bpos": 0,
+        "epos": 6,
+        "datlen": 7
+      },
+      {
+        "op": "file-io.daswbr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "other",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        }
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "other",
+        "first": 1,
+        "last": 7,
+        "bpos": 0,
+        "epos": 6,
+        "datlen": 7,
+        "data": [173, 173, 173, 173, 173, 173, 173]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-noncontiguous-records",
+    "description": "Read logical addresses spanning two typed records separated by another physical data type.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 1024,
+        "data": [
+          3, 20, 37, 54, 71, 88, 105, 122, 139, 156, 173, 190, 207, 224, 241, 7,
+          24, 41, 58, 75, 92, 109, 126, 143, 160, 177, 194, 211, 228, 245, 11,
+          28, 45, 62, 79, 96, 113, 130, 147, 164, 181, 198, 215, 232, 249, 15,
+          32, 49, 66, 83, 100, 117, 134, 151, 168, 185, 202, 219, 236, 2, 19,
+          36, 53, 70, 87, 104, 121, 138, 155, 172, 189, 206, 223, 240, 6, 23,
+          40, 57, 74, 91, 108, 125, 142, 159, 176, 193, 210, 227, 244, 10, 27,
+          44, 61, 78, 95, 112, 129, 146, 163, 180, 197, 214, 231, 248, 14, 31,
+          48, 65, 82, 99, 116, 133, 150, 167, 184, 201, 218, 235, 1, 18, 35, 52,
+          69, 86, 103, 120, 137, 154, 171, 188, 205, 222, 239, 5, 22, 39, 56,
+          73, 90, 107, 124, 141, 158, 175, 192, 209, 226, 243, 9, 26, 43, 60,
+          77, 94, 111, 128, 145, 162, 179, 196, 213, 230, 247, 13, 30, 47, 64,
+          81, 98, 115, 132, 149, 166, 183, 200, 217, 234, 0, 17, 34, 51, 68, 85,
+          102, 119, 136, 153, 170, 187, 204, 221, 238, 4, 21, 38, 55, 72, 89,
+          106, 123, 140, 157, 174, 191, 208, 225, 242, 8, 25, 42, 59, 76, 93,
+          110, 127, 144, 161, 178, 195, 212, 229, 246, 12, 29, 46, 63, 80, 97,
+          114, 131, 148, 165, 182, 199, 216, 233, 250, 16, 33, 50, 67, 84, 101,
+          118, 135, 152, 169, 186, 203, 220, 237, 3, 20, 37, 54, 71, 88, 105,
+          122, 139, 156, 173, 190, 207, 224, 241, 7, 24, 41, 58, 75, 92, 109,
+          126, 143, 160, 177, 194, 211, 228, 245, 11, 28, 45, 62, 79, 96, 113,
+          130, 147, 164, 181, 198, 215, 232, 249, 15, 32, 49, 66, 83, 100, 117,
+          134, 151, 168, 185, 202, 219, 236, 2, 19, 36, 53, 70, 87, 104, 121,
+          138, 155, 172, 189, 206, 223, 240, 6, 23, 40, 57, 74, 91, 108, 125,
+          142, 159, 176, 193, 210, 227, 244, 10, 27, 44, 61, 78, 95, 112, 129,
+          146, 163, 180, 197, 214, 231, 248, 14, 31, 48, 65, 82, 99, 116, 133,
+          150, 167, 184, 201, 218, 235, 1, 18, 35, 52, 69, 86, 103, 120, 137,
+          154, 171, 188, 205, 222, 239, 5, 22, 39, 56, 73, 90, 107, 124, 141,
+          158, 175, 192, 209, 226, 243, 9, 26, 43, 60, 77, 94, 111, 128, 145,
+          162, 179, 196, 213, 230, 247, 13, 30, 47, 64, 81, 98, 115, 132, 149,
+          166, 183, 200, 217, 234, 0, 17, 34, 51, 68, 85, 102, 119, 136, 153,
+          170, 187, 204, 221, 238, 4, 21, 38, 55, 72, 89, 106, 123, 140, 157,
+          174, 191, 208, 225, 242, 8, 25, 42, 59, 76, 93, 110, 127, 144, 161,
+          178, 195, 212, 229, 246, 12, 29, 46, 63, 80, 97, 114, 131, 148, 165,
+          182, 199, 216, 233, 250, 16, 33, 50, 67, 84, 101, 118, 135, 152, 169,
+          186, 203, 220, 237, 3, 20, 37, 54, 71, 88, 105, 122, 139, 156, 173,
+          190, 207, 224, 241, 7, 24, 41, 58, 75, 92, 109, 126, 143, 160, 177,
+          194, 211, 228, 245, 11, 28, 45, 62, 79, 96, 113, 130, 147, 164, 181,
+          198, 215, 232, 249, 15, 32, 49, 66, 83, 100, 117, 134, 151, 168, 185,
+          202, 219, 236, 2, 19, 36, 53, 70, 87, 104, 121, 138, 155, 172, 189,
+          206, 223, 240, 6, 23, 40, 57, 74, 91, 108, 125, 142, 159, 176, 193,
+          210, 227, 244, 10, 27, 44, 61, 78, 95, 112, 129, 146, 163, 180, 197,
+          214, 231, 248, 14, 31, 48, 65, 82, 99, 116, 133, 150, 167, 184, 201,
+          218, 235, 1, 18, 35, 52, 69, 86, 103, 120, 137, 154, 171, 188, 205,
+          222, 239, 5, 22, 39, 56, 73, 90, 107, 124, 141, 158, 175, 192, 209,
+          226, 243, 9, 26, 43, 60, 77, 94, 111, 128, 145, 162, 179, 196, 213,
+          230, 247, 13, 30, 47, 64, 81, 98, 115, 132, 149, 166, 183, 200, 217,
+          234, 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221,
+          238, 4, 21, 38, 55, 72, 89, 106, 123, 140, 157, 174, 191, 208, 225,
+          242, 8, 25, 42, 59, 76, 93, 110, 127, 144, 161, 178, 195, 212, 229,
+          246, 12, 29, 46, 63, 80, 97, 114, 131, 148, 165, 182, 199, 216, 233,
+          250, 16, 33, 50, 67, 84, 101, 118, 135, 152, 169, 186, 203, 220, 237,
+          3, 20, 37, 54, 71, 88, 105, 122, 139, 156, 173, 190, 207, 224, 241, 7,
+          24, 41, 58, 75, 92, 109, 126, 143, 160, 177, 194, 211, 228, 245, 11,
+          28, 45, 62, 79, 96, 113, 130, 147, 164, 181, 198, 215, 232, 249, 15,
+          32, 49, 66, 83, 100, 117, 134, 151, 168, 185, 202, 219, 236, 2, 19,
+          36, 53, 70, 87, 104, 121, 138, 155, 172, 189, 206, 223, 240, 6, 23,
+          40, 57, 74, 91, 108, 125, 142, 159, 176, 193, 210, 227, 244, 10, 27,
+          44, 61, 78, 95, 112, 129, 146, 163, 180, 197, 214, 231, 248, 14, 31,
+          48, 65, 82, 99, 116, 133, 150, 167, 184, 201, 218, 235, 1, 18, 35, 52,
+          69, 86, 103, 120, 137, 154, 171, 188, 205, 222, 239, 5, 22, 39, 56,
+          73, 90, 107, 124, 141, 158, 175, 192, 209, 226, 243, 9, 26, 43, 60,
+          77, 94, 111, 128, 145, 162, 179, 196, 213, 230, 247, 13, 30, 47, 64,
+          81, 98, 115, 132, 149, 166, 183, 200, 217, 234, 0, 17, 34, 51, 68, 85,
+          102, 119, 136, 153, 170, 187, 204, 221, 238, 4, 21, 38, 55, 72, 89,
+          106, 123, 140, 157, 174, 191, 208, 225, 242, 8, 25, 42, 59, 76, 93,
+          110, 127, 144, 161, 178, 195, 212, 229, 246, 12, 29, 46, 63, 80, 97,
+          114, 131, 148, 165, 182, 199, 216, 233, 250, 16, 33, 50, 67, 84, 101,
+          118, 135, 152, 169, 186, 203, 220, 237, 3, 20, 37, 54, 71, 88, 105,
+          122, 139, 156, 173, 190, 207, 224, 241, 7, 24, 41, 58, 75
+        ],
+        "bpos": 0,
+        "epos": 1023,
+        "datlen": 1024
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 1,
+        "data": [85]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 5,
+        "data": [92, 109, 126, 143, 160],
+        "bpos": 0,
+        "epos": 4,
+        "datlen": 5
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 1021,
+        "last": 1028,
+        "bpos": 0,
+        "epos": 7,
+        "datlen": 8,
+        "data": [173, 173, 173, 173, 173, 173, 173, 173]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-reversed",
+    "description": "Two valid endpoints in the same record with first greater than last leave the destination untouched.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 7,
+        "data": [0, 255, 32, 9, 128, 65, 126],
+        "bpos": 0,
+        "epos": 6,
+        "datlen": 7
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 4,
+        "last": 2,
+        "bpos": 0,
+        "epos": 0,
+        "datlen": 1,
+        "data": [99, 98, 97]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-before-first",
+    "description": "Check each logical endpoint before reading typed record storage.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 7,
+        "data": [0, 255, 32, 9, 128, 65, 126],
+        "bpos": 0,
+        "epos": 6,
+        "datlen": 7
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 0,
+        "last": 1,
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2,
+        "data": [173, 173]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASNOSUCHADDRESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-past-logical-end",
+    "description": "Check each logical endpoint before reading typed record storage.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 7,
+        "data": [0, 255, 32, 9, 128, 65, 126],
+        "bpos": 0,
+        "epos": 6,
+        "datlen": 7
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 3,
+        "last": 8,
+        "bpos": 0,
+        "epos": 5,
+        "datlen": 6,
+        "data": [173, 173, 173, 173, 173, 173]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASNOSUCHADDRESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-destination-sentinels",
+    "description": "Select two bytes per row in a larger initialized buffer with an untouched suffix and partial final row.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 5,
+        "data": [0, 255, 32, 9, 128],
+        "bpos": 0,
+        "epos": 4,
+        "datlen": 5
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 1,
+        "last": 5,
+        "bpos": 1,
+        "epos": 2,
+        "datlen": 4,
+        "data": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-zero-stride",
+    "description": "Canonical wrapper diagnoses a nonpositive row width before processing a binary row.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [1, 2],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 1,
+        "last": 1,
+        "bpos": 0,
+        "epos": 0,
+        "datlen": 0,
+        "data": [10, 11, 12]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOROOMFORDATA"]
+    }
+  },
+  {
+    "caseId": "file-io-dasrdc-invalid-bounds",
+    "description": "The source diagnoses out-of-order substring columns before copying row bytes.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [1, 2],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 1,
+        "last": 1,
+        "bpos": 2,
+        "epos": 1,
+        "datlen": 3,
+        "data": [10, 11, 12]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADSUBSTRINGBOUNDS"]
+    }
+  }
+]

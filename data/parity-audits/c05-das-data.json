@@ -1,0 +1,1057 @@
+{
+  "schemaVersion": 1,
+  "batch": "c05-das-data",
+  "traceFiles": [
+    "docs/step8-das-data.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/das-data-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/das-data-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/das-files.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/das-data-public.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c05-c0937973-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b602a191f818fb27d49a07e9581116cd3a3bbb4a60098aca1af3257218e65efa",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "observation": "Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c05-c0937973-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b602a191f818fb27d49a07e9581116cd3a3bbb4a60098aca1af3257218e65efa",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "observation": "Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c05-c0937973-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b602a191f818fb27d49a07e9581116cd3a3bbb4a60098aca1af3257218e65efa",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "commit": "c0937973e0bd4a910c12056e5ad16197eb2ea15e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43574808718/job/132386644376",
+      "observation": "Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c05-c0937973-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b602a191f818fb27d49a07e9581116cd3a3bbb4a60098aca1af3257218e65efa",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "commit": "c0937973e0bd4a910c12056e5ad16197eb2ea15e",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43574808718/job/132386644376",
+      "observation": "Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dasadc_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasadc_c.html",
+      "semantics": "Append n binary bytes from inclusive zero-based columns in full-stride rows. NUL, high bytes and incomplete final slices are preserved.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasadc-independent-address-streams",
+          "coverage": ["success", "edge"],
+          "observes": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadc-empty-and-negative",
+          "coverage": ["success", "edge"],
+          "observes": "Transfer zero and negative counts before and after a positive append and inspect logical data. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadc-physical-boundary",
+          "coverage": ["success", "edge"],
+          "observes": "Append across the end of a typed data record after another data type creates an intervening cluster. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadc-write-access",
+          "coverage": ["error", "edge"],
+          "observes": "A read-only handle rejects a positive append. Require DASINVALIDACCESS."
+        },
+        {
+          "caseId": "file-io-dasadc-row-slices",
+          "coverage": ["success", "edge"],
+          "observes": "Full stride exceeds substring width; NUL, high bytes, trailing blank and final partial row survive. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadc-zero-stride",
+          "coverage": ["error", "edge"],
+          "observes": "Canonical wrapper diagnoses a nonpositive row width before processing a binary row. Require NODATA."
+        },
+        {
+          "caseId": "file-io-dasadc-invalid-bounds",
+          "coverage": ["error", "edge"],
+          "observes": "The source diagnoses out-of-order substring columns before copying row bytes. Require BADSUBSTRINGBOUNDS."
+        }
+      ],
+      "edgeAssessment": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Transfer zero and negative counts before and after a positive append and inspect logical data. Append across the end of a typed data record after another data type creates an intervening cluster. Full stride exceeds substring width; NUL, high bytes, trailing blank and final partial row survive.",
+      "errorAssessment": "Exercise BADSUBSTRINGBOUNDS, DASINVALIDACCESS, NODATA via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [
+        {
+          "id": "dasadc-unused-physical-tail",
+          "status": "repaired",
+          "summary": "New partial N0067 records are written from static work storage. Logical contents alone do not establish deterministic unused physical padding.",
+          "repair": "Use the same buffered typed-record update to zero only unused words of a newly allocated partial record. Locate them independently by the last logical address in authored outputs.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasadc.cases.json"
+          ],
+          "caseIds": ["file-io-dasadc-physical-boundary"]
+        },
+        {
+          "id": "dasadc-binary-row-oracle",
+          "status": "repaired",
+          "summary": "The locked Python character wrappers do not expose the required complete fixed-stride binary operation.",
+          "repair": "Independently bind the public library C symbol with c_int coordinates and non-null, initialized byte storage. Retain every destination byte.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasadc.cases.json"
+          ],
+          "caseIds": ["file-io-dasadc-row-slices"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasadc -> owner registry, serialized native addon -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasadc -> owner registry, scoped WASM buffers and required export -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasadd_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasadd_c.html",
+      "semantics": "Append the first n IEEE doubles in caller order to the independent double address stream.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasadd-independent-address-streams",
+          "coverage": ["success", "edge"],
+          "observes": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadd-empty-and-negative",
+          "coverage": ["success", "edge"],
+          "observes": "Transfer zero and negative counts before and after a positive append and inspect logical data. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadd-physical-boundary",
+          "coverage": ["success", "edge"],
+          "observes": "Append across the end of a typed data record after another data type creates an intervening cluster. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadd-write-access",
+          "coverage": ["error", "edge"],
+          "observes": "A read-only handle rejects a positive append. Require DASINVALIDACCESS."
+        }
+      ],
+      "edgeAssessment": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Transfer zero and negative counts before and after a positive append and inspect logical data. Append across the end of a typed data record after another data type creates an intervening cluster.",
+      "errorAssessment": "Exercise DASINVALIDACCESS via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [
+        {
+          "id": "dasadd-unused-physical-tail",
+          "status": "repaired",
+          "summary": "New partial N0067 records are written from static work storage. Logical contents alone do not establish deterministic unused physical padding.",
+          "repair": "Use the same buffered typed-record update to zero only unused words of a newly allocated partial record. Locate them independently by the last logical address in authored outputs.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasadd.cases.json"
+          ],
+          "caseIds": ["file-io-dasadd-physical-boundary"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasadd -> owner registry, serialized native addon -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasadd -> owner registry, scoped WASM buffers and required export -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasadi_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasadi_c.html",
+      "semantics": "Append the first n signed 32-bit integers to the independent integer address stream.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasadi-independent-address-streams",
+          "coverage": ["success", "edge"],
+          "observes": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadi-empty-and-negative",
+          "coverage": ["success", "edge"],
+          "observes": "Transfer zero and negative counts before and after a positive append and inspect logical data. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadi-physical-boundary",
+          "coverage": ["success", "edge"],
+          "observes": "Append across the end of a typed data record after another data type creates an intervening cluster. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasadi-write-access",
+          "coverage": ["error", "edge"],
+          "observes": "A read-only handle rejects a positive append. Require DASINVALIDACCESS."
+        }
+      ],
+      "edgeAssessment": "Interleave character, double and integer appends; observe independent addresses and read each selected prefix. Transfer zero and negative counts before and after a positive append and inspect logical data. Append across the end of a typed data record after another data type creates an intervening cluster.",
+      "errorAssessment": "Exercise DASINVALIDACCESS via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [
+        {
+          "id": "dasadi-unused-physical-tail",
+          "status": "repaired",
+          "summary": "New partial N0067 records are written from static work storage. Logical contents alone do not establish deterministic unused physical padding.",
+          "repair": "Use the same buffered typed-record update to zero only unused words of a newly allocated partial record. Locate them independently by the last logical address in authored outputs.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasadi.cases.json"
+          ],
+          "caseIds": ["file-io-dasadi-physical-boundary"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasadi -> owner registry, serialized native addon -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasadi -> owner registry, scoped WASM buffers and required export -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasrdc_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrdc_c.html",
+      "semantics": "Read inclusive one-based character addresses into selected columns of initialized rows. Return a full independent destination with every unselected byte preserved.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasrdc-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdc-persisted-read-claims",
+          "coverage": ["success", "edge"],
+          "observes": "Flush and reopen the file twice, close the original token and use the surviving independent read claim. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdc-noncontiguous-records",
+          "coverage": ["success", "edge"],
+          "observes": "Read logical addresses spanning two typed records separated by another physical data type. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdc-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "Two valid endpoints in the same record with first greater than last leave the destination untouched. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdc-before-first",
+          "coverage": ["error", "edge"],
+          "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
+        },
+        {
+          "caseId": "file-io-dasrdc-past-logical-end",
+          "coverage": ["error", "edge"],
+          "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
+        },
+        {
+          "caseId": "file-io-dasrdc-destination-sentinels",
+          "coverage": ["success", "edge"],
+          "observes": "Select two bytes per row in a larger initialized buffer with an untouched suffix and partial final row. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdc-zero-stride",
+          "coverage": ["error", "edge"],
+          "observes": "Canonical wrapper diagnoses a nonpositive row width before processing a binary row. Require NOROOMFORDATA."
+        },
+        {
+          "caseId": "file-io-dasrdc-invalid-bounds",
+          "coverage": ["error", "edge"],
+          "observes": "The source diagnoses out-of-order substring columns before copying row bytes. Require BADSUBSTRINGBOUNDS."
+        }
+      ],
+      "edgeAssessment": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Flush and reopen the file twice, close the original token and use the surviving independent read claim. Read logical addresses spanning two typed records separated by another physical data type. Two valid endpoints in the same record with first greater than last leave the destination untouched. Select two bytes per row in a larger initialized buffer with an untouched suffix and partial final row.",
+      "errorAssessment": "Exercise BADSUBSTRINGBOUNDS, DASNOSUCHADDRESS, NOROOMFORDATA via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [
+        {
+          "id": "dasrdc-logical-bounds",
+          "status": "repaired",
+          "summary": "The canonical reader translates FIRST and may reach unallocated logical words inside an existing physical record when LAST exceeds the high address.",
+          "repair": "Check both endpoints using actual file metadata. An invalid endpoint is translated separately to obtain the toolkit address diagnostic before any physical read.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasrdc.cases.json"
+          ],
+          "caseIds": [
+            "file-io-dasrdc-past-logical-end",
+            "file-io-dasrdc-before-first"
+          ]
+        },
+        {
+          "id": "dasrdc-binary-row-oracle",
+          "status": "repaired",
+          "summary": "The locked Python character wrappers do not expose the required complete fixed-stride binary operation.",
+          "repair": "Independently bind the public library C symbol with c_int coordinates and non-null, initialized byte storage. Retain every destination byte.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasrdc.cases.json"
+          ],
+          "caseIds": ["file-io-dasrdc-destination-sentinels"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrdc -> owner registry, serialized native addon -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrdc -> owner registry, scoped WASM buffers and required export -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasrdd_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrdd_c.html",
+      "semantics": "Read inclusive one-based double addresses into an independent number array, retaining signed zero, infinities and NaN.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasrdd-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdd-persisted-read-claims",
+          "coverage": ["success", "edge"],
+          "observes": "Flush and reopen the file twice, close the original token and use the surviving independent read claim. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdd-noncontiguous-records",
+          "coverage": ["success", "edge"],
+          "observes": "Read logical addresses spanning two typed records separated by another physical data type. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdd-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "Two valid endpoints in the same record with first greater than last leave the destination untouched. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdd-before-first",
+          "coverage": ["error", "edge"],
+          "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
+        },
+        {
+          "caseId": "file-io-dasrdd-past-logical-end",
+          "coverage": ["error", "edge"],
+          "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
+        }
+      ],
+      "edgeAssessment": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Flush and reopen the file twice, close the original token and use the surviving independent read claim. Read logical addresses spanning two typed records separated by another physical data type. Two valid endpoints in the same record with first greater than last leave the destination untouched.",
+      "errorAssessment": "Exercise DASNOSUCHADDRESS via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [
+        {
+          "id": "dasrdd-logical-bounds",
+          "status": "repaired",
+          "summary": "The canonical reader translates FIRST and may reach unallocated logical words inside an existing physical record when LAST exceeds the high address.",
+          "repair": "Check both endpoints using actual file metadata. An invalid endpoint is translated separately to obtain the toolkit address diagnostic before any physical read.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasrdd.cases.json"
+          ],
+          "caseIds": [
+            "file-io-dasrdd-past-logical-end",
+            "file-io-dasrdd-before-first"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrdd -> owner registry, serialized native addon -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrdd -> owner registry, scoped WASM buffers and required export -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasrdi_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrdi_c.html",
+      "semantics": "Read inclusive one-based integer addresses into an independent number array, including both signed 32-bit endpoints.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasrdi-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdi-persisted-read-claims",
+          "coverage": ["success", "edge"],
+          "observes": "Flush and reopen the file twice, close the original token and use the surviving independent read claim. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdi-noncontiguous-records",
+          "coverage": ["success", "edge"],
+          "observes": "Read logical addresses spanning two typed records separated by another physical data type. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdi-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "Two valid endpoints in the same record with first greater than last leave the destination untouched. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasrdi-before-first",
+          "coverage": ["error", "edge"],
+          "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
+        },
+        {
+          "caseId": "file-io-dasrdi-past-logical-end",
+          "coverage": ["error", "edge"],
+          "observes": "Check each logical endpoint before reading typed record storage. Require DASNOSUCHADDRESS."
+        }
+      ],
+      "edgeAssessment": "Read the beginning, interior and final address separately and preserve signed values and binary bytes. Flush and reopen the file twice, close the original token and use the surviving independent read claim. Read logical addresses spanning two typed records separated by another physical data type. Two valid endpoints in the same record with first greater than last leave the destination untouched.",
+      "errorAssessment": "Exercise DASNOSUCHADDRESS via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [
+        {
+          "id": "dasrdi-logical-bounds",
+          "status": "repaired",
+          "summary": "The canonical reader translates FIRST and may reach unallocated logical words inside an existing physical record when LAST exceeds the high address.",
+          "repair": "Check both endpoints using actual file metadata. An invalid endpoint is translated separately to obtain the toolkit address diagnostic before any physical read.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasrdi.cases.json"
+          ],
+          "caseIds": [
+            "file-io-dasrdi-past-logical-end",
+            "file-io-dasrdi-before-first"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrdi -> owner registry, serialized native addon -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrdi -> owner registry, scoped WASM buffers and required export -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasudc_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasudc_c.html",
+      "semantics": "Replace an inclusive character range from selected byte columns; guard the actual N0067 source cursor when continuing in another physical record.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasudc-middle-sentinels",
+          "coverage": ["success", "edge"],
+          "observes": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudc-cross-record",
+          "coverage": ["success", "edge"],
+          "observes": "Update and read through a typed record transition; logical neighbors on both sides remain observable. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudc-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "A valid reversed address interval leaves initialized data untouched. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudc-bad-address",
+          "coverage": ["error", "edge"],
+          "observes": "An update beyond the last allocated logical address reports the canonical update error. Require INVALIDADDRESS."
+        },
+        {
+          "caseId": "file-io-dasudc-read-only",
+          "coverage": ["error", "edge"],
+          "observes": "A valid addressed update on a reader takes the toolkit access error. Require DASINVALIDACCESS."
+        },
+        {
+          "caseId": "file-io-dasudc-nonzero-column-record-cursor",
+          "coverage": ["success", "edge"],
+          "observes": "N0067 tests the continued column against substring width across a physical record. Distinct extra source rows expose the cursor. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudc-zero-stride",
+          "coverage": ["error", "edge"],
+          "observes": "Canonical wrapper diagnoses a nonpositive row width before processing a binary row. Require NODATA."
+        },
+        {
+          "caseId": "file-io-dasudc-invalid-bounds",
+          "coverage": ["error", "edge"],
+          "observes": "The source diagnoses out-of-order substring columns before copying row bytes. Require INDICESOUTOFORDER."
+        }
+      ],
+      "edgeAssessment": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Update and read through a typed record transition; logical neighbors on both sides remain observable. A valid reversed address interval leaves initialized data untouched. N0067 tests the continued column against substring width across a physical record. Distinct extra source rows expose the cursor.",
+      "errorAssessment": "Exercise DASINVALIDACCESS, INDICESOUTOFORDER, INVALIDADDRESS, NODATA via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [
+        {
+          "id": "dasudc-continued-source-row",
+          "status": "repaired",
+          "summary": "N0067 compares the next column with substring width in subsequent physical records, which may require a further source row.",
+          "repair": "Check the actual cursor against complete initialized rows and retain the actual C selection. Compare distinct rows at address 1024 with nonzero bpos.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasudc.cases.json"
+          ],
+          "caseIds": ["file-io-dasudc-nonzero-column-record-cursor"]
+        },
+        {
+          "id": "dasudc-binary-row-oracle",
+          "status": "repaired",
+          "summary": "The locked Python character wrappers do not expose the required complete fixed-stride binary operation.",
+          "repair": "Independently bind the public library C symbol with c_int coordinates and non-null, initialized byte storage. Retain every destination byte.",
+          "evidence": [
+            "docs/step8-das-data.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_data_oracle.py",
+            "packages/py-parity-checking/test/das-data-public.test.ts",
+            "packages/py-parity-checking/src/cases/file-io/dasudc.cases.json"
+          ],
+          "caseIds": ["file-io-dasudc-nonzero-column-record-cursor"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasudc -> owner registry, serialized native addon -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasudc -> owner registry, scoped WASM buffers and required export -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasudd_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasudd_c.html",
+      "semantics": "Replace an inclusive allocated double address range from a validated owned numeric array.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasudd-middle-sentinels",
+          "coverage": ["success", "edge"],
+          "observes": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudd-cross-record",
+          "coverage": ["success", "edge"],
+          "observes": "Update and read through a typed record transition; logical neighbors on both sides remain observable. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudd-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "A valid reversed address interval leaves initialized data untouched. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudd-bad-address",
+          "coverage": ["error", "edge"],
+          "observes": "An update beyond the last allocated logical address reports the canonical update error. Require INVALIDADDRESS."
+        },
+        {
+          "caseId": "file-io-dasudd-read-only",
+          "coverage": ["error", "edge"],
+          "observes": "A valid addressed update on a reader takes the toolkit access error. Require DASINVALIDACCESS."
+        }
+      ],
+      "edgeAssessment": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Update and read through a typed record transition; logical neighbors on both sides remain observable. A valid reversed address interval leaves initialized data untouched.",
+      "errorAssessment": "Exercise DASINVALIDACCESS, INVALIDADDRESS via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasudd -> owner registry, serialized native addon -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasudd -> owner registry, scoped WASM buffers and required export -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasudi_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasudi_c.html",
+      "semantics": "Replace an inclusive allocated integer address range from a validated owned signed 32-bit array.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasudi-middle-sentinels",
+          "coverage": ["success", "edge"],
+          "observes": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudi-cross-record",
+          "coverage": ["success", "edge"],
+          "observes": "Update and read through a typed record transition; logical neighbors on both sides remain observable. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudi-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "A valid reversed address interval leaves initialized data untouched. Compare all selected values and neighbors against the independent file."
+        },
+        {
+          "caseId": "file-io-dasudi-bad-address",
+          "coverage": ["error", "edge"],
+          "observes": "An update beyond the last allocated logical address reports the canonical update error. Require INVALIDADDRESS."
+        },
+        {
+          "caseId": "file-io-dasudi-read-only",
+          "coverage": ["error", "edge"],
+          "observes": "A valid addressed update on a reader takes the toolkit access error. Require DASINVALIDACCESS."
+        }
+      ],
+      "edgeAssessment": "Overwrite an interior range with a longer source, observe both neighbors and all selected values. Update and read through a typed record transition; logical neighbors on both sides remain observable. A valid reversed address interval leaves initialized data untouched.",
+      "errorAssessment": "Exercise DASINVALIDACCESS, INVALIDADDRESS via defined calls with sufficient physical backing. Stale/foreign handle checks, representational bounds and allocator failures are separate adapter obligations.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Project-authored synthetic DSK, copied into a temporary file by SpiceyPy. Appended DAS words remain outside the referenced segment.",
+          "distribution": "Repository fixture SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "Registered cases create independent named or scratch DAS files at runtime. The public cross-reader additionally uses the existing synthetic DSK for ordinary byte staging.",
+      "cleanup": "Close named and scratch writer claims normally. Close each duplicate reader exactly once. Temporary oracle directories and public client disposals isolate persistent files.",
+      "tolerance": "Compare every numeric word and byte. Dyadic finite inputs have exact independent expected values. Supplementary binary transfers compare signed zero and both infinities and classify NaN explicitly.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasudi -> owner registry, serialized native addon -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
+          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FileIoApi.dasudi -> owner registry, scoped WASM buffers and required export -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
+          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

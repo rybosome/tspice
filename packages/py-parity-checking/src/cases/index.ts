@@ -82,6 +82,15 @@ import fileIoDafbfsCasesRaw from "./file-io/dafbfs.cases.json" with { type: "jso
 import fileIoDafclsCasesRaw from "./file-io/dafcls.cases.json" with { type: "json" };
 import fileIoDaffnaCasesRaw from "./file-io/daffna.cases.json" with { type: "json" };
 import fileIoDafoprCasesRaw from "./file-io/dafopr.cases.json" with { type: "json" };
+import fileIoDasadcCasesRaw from "./file-io/dasadc.cases.json" with { type: "json" };
+import fileIoDasaddCasesRaw from "./file-io/dasadd.cases.json" with { type: "json" };
+import fileIoDasadiCasesRaw from "./file-io/dasadi.cases.json" with { type: "json" };
+import fileIoDasrdcCasesRaw from "./file-io/dasrdc.cases.json" with { type: "json" };
+import fileIoDasrddCasesRaw from "./file-io/dasrdd.cases.json" with { type: "json" };
+import fileIoDasrdiCasesRaw from "./file-io/dasrdi.cases.json" with { type: "json" };
+import fileIoDasudcCasesRaw from "./file-io/dasudc.cases.json" with { type: "json" };
+import fileIoDasuddCasesRaw from "./file-io/dasudd.cases.json" with { type: "json" };
+import fileIoDasudiCasesRaw from "./file-io/dasudi.cases.json" with { type: "json" };
 import fileIoDasonwCasesRaw from "./file-io/dasonw.cases.json" with { type: "json" };
 import fileIoDasopsCasesRaw from "./file-io/dasops.cases.json" with { type: "json" };
 import fileIoDasopwCasesRaw from "./file-io/dasopw.cases.json" with { type: "json" };
@@ -205,6 +214,15 @@ export const fileIoCases: ParityCase[] = [
   ...(fileIoDafclsCasesRaw as ParityCase[]),
   ...(fileIoDaffnaCasesRaw as ParityCase[]),
   ...(fileIoDafoprCasesRaw as ParityCase[]),
+  ...(fileIoDasadcCasesRaw as ParityCase[]),
+  ...(fileIoDasaddCasesRaw as ParityCase[]),
+  ...(fileIoDasadiCasesRaw as ParityCase[]),
+  ...(fileIoDasrdcCasesRaw as ParityCase[]),
+  ...(fileIoDasrddCasesRaw as ParityCase[]),
+  ...(fileIoDasrdiCasesRaw as ParityCase[]),
+  ...(fileIoDasudcCasesRaw as ParityCase[]),
+  ...(fileIoDasuddCasesRaw as ParityCase[]),
+  ...(fileIoDasudiCasesRaw as ParityCase[]),
   ...(fileIoDasonwCasesRaw as ParityCase[]),
   ...(fileIoDasopsCasesRaw as ParityCase[]),
   ...(fileIoDasopwCasesRaw as ParityCase[]),

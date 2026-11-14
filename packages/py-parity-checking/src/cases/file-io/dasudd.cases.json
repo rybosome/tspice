@@ -1,0 +1,188 @@
+[
+  {
+    "caseId": "file-io-dasudd-middle-sentinels",
+    "description": "Overwrite an interior range with a longer source, observe both neighbors and all selected values.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasudd",
+        "handleId": "h",
+        "first": 3,
+        "last": 5,
+        "data": [0.125, -0.5, 8192, -91.75]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 7
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasudd-cross-record",
+    "description": "Update and read through a typed record transition; logical neighbors on both sides remain observable.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 133,
+        "data": [
+          -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5,
+          2.75, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5, -1.25, -1.0, -0.75, -0.5,
+          -0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5
+        ]
+      },
+      {
+        "op": "file-io.dasudd",
+        "handleId": "h",
+        "first": 127,
+        "last": 130,
+        "data": [0.125, -0.5, 8192, -91.75]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 126,
+        "last": 131
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasudd-reversed",
+    "description": "A valid reversed address interval leaves initialized data untouched.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasudd",
+        "handleId": "h",
+        "first": 5,
+        "last": 2,
+        "data": []
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasudd-bad-address",
+    "description": "An update beyond the last allocated logical address reports the canonical update error.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dasudd",
+        "handleId": "h",
+        "first": 7,
+        "last": 8,
+        "data": [0.125, -0.5]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDADDRESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dasudd-read-only",
+    "description": "A valid addressed update on a reader takes the toolkit access error.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        },
+        "ftype": "DATA",
+        "ifname": "DAS DATA",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 7,
+        "data": [0.125, -0.5, 8192, -91.75, 1.25, 0.015625, 4.5]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "observed/data.das"
+        }
+      },
+      {
+        "op": "file-io.dasudd",
+        "handleId": "h",
+        "first": 2,
+        "last": 2,
+        "data": [0.125]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  }
+]

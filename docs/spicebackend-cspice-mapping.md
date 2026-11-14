@@ -386,6 +386,20 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+C05 adds typed binary DAS transfers through all nine canonical C entry points. [Address ranges, file persistence and record padding](step8-das-data.md)
+
+| Raw method | CSPICE     | Result or effect                                                                                                                                                    |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dasadc`   | `dasadc_c` | Append n binary bytes from inclusive zero-based columns in full-stride rows. NUL, high bytes and incomplete final slices are preserved.                             |
+| `dasadd`   | `dasadd_c` | Append the first n IEEE doubles in caller order to the independent double address stream.                                                                           |
+| `dasadi`   | `dasadi_c` | Append the first n signed 32-bit integers to the independent integer address stream.                                                                                |
+| `dasrdc`   | `dasrdc_c` | Read inclusive one-based character addresses into selected columns of initialized rows. Return a full independent destination with every unselected byte preserved. |
+| `dasrdd`   | `dasrdd_c` | Read inclusive one-based double addresses into an independent number array, retaining signed zero, infinities and NaN.                                              |
+| `dasrdi`   | `dasrdi_c` | Read inclusive one-based integer addresses into an independent number array, including both signed 32-bit endpoints.                                                |
+| `dasudc`   | `dasudc_c` | Replace an inclusive character range from selected byte columns; guard the actual N0067 source cursor when continuing in another physical record.                   |
+| `dasudd`   | `dasudd_c` | Replace an inclusive allocated double address range from a validated owned numeric array.                                                                           |
+| `dasudi`   | `dasudi_c` | Replace an inclusive allocated integer address range from a validated owned signed 32-bit array.                                                                    |
+
 C04 exposes actual DAS writer, scratch and metadata routes. [Named/scratch DAS lifecycle, field widths and low-close behavior](step8-das-lifecycle.md)
 
 | Raw method | CSPICE     | Result or effect                                                                                                                                           |

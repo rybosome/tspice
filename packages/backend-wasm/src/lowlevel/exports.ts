@@ -111,6 +111,93 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dasadc(
+    handle: number,
+    n: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasadd(
+    handle: number,
+    n: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasadi(
+    handle: number,
+    n: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasrdc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasrdd(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasrdi(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasudc(
+    handle: number,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasudd(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasudi(
+    handle: number,
+    first: number,
+    last: number,
+    ptr: number,
+    length: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_dasonw(
     path: number,
     ftype: number,
@@ -2219,6 +2306,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dafcls",
   "_tspice_dafbfs",
   "_tspice_daffna",
+  "_tspice_dasadc",
+  "_tspice_dasadd",
+  "_tspice_dasadi",
+  "_tspice_dasrdc",
+  "_tspice_dasrdd",
+  "_tspice_dasrdi",
+  "_tspice_dasudc",
+  "_tspice_dasudd",
+  "_tspice_dasudi",
   "_tspice_dasonw",
   "_tspice_dasops",
   "_tspice_dasopw",

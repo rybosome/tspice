@@ -717,6 +717,82 @@ export type StepFileIoDasopr = {
   handleId: string;
 };
 
+export type StepFileIoDasadc = {
+  op: "file-io.dasadc";
+  handleId: string;
+  n: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasadd = {
+  op: "file-io.dasadd";
+  handleId: string;
+  n: number;
+  data: number[];
+};
+
+export type StepFileIoDasadi = {
+  op: "file-io.dasadi";
+  handleId: string;
+  n: number;
+  data: number[];
+};
+
+export type StepFileIoDasrdc = {
+  op: "file-io.dasrdc";
+  handleId: string;
+  first: number;
+  last: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasrdd = {
+  op: "file-io.dasrdd";
+  handleId: string;
+  first: number;
+  last: number;
+};
+
+export type StepFileIoDasrdi = {
+  op: "file-io.dasrdi";
+  handleId: string;
+  first: number;
+  last: number;
+};
+
+export type StepFileIoDasudc = {
+  op: "file-io.dasudc";
+  handleId: string;
+  first: number;
+  last: number;
+  bpos: number;
+  epos: number;
+  datlen: number;
+  data: number[];
+};
+
+export type StepFileIoDasudd = {
+  op: "file-io.dasudd";
+  handleId: string;
+  first: number;
+  last: number;
+  data: number[];
+};
+
+export type StepFileIoDasudi = {
+  op: "file-io.dasudi";
+  handleId: string;
+  first: number;
+  last: number;
+  data: number[];
+};
+
 export type StepFileIoDasonw = {
   op: "file-io.dasonw";
   handleId: string;
@@ -1441,6 +1517,15 @@ export type WorkflowStep =
   | StepFileIoDafbfs
   | StepFileIoDaffna
   | StepFileIoDasopr
+  | StepFileIoDasadc
+  | StepFileIoDasadd
+  | StepFileIoDasadi
+  | StepFileIoDasrdc
+  | StepFileIoDasrdd
+  | StepFileIoDasrdi
+  | StepFileIoDasudc
+  | StepFileIoDasudd
+  | StepFileIoDasudi
   | StepFileIoDasonw
   | StepFileIoDasops
   | StepFileIoDasopw
@@ -1746,6 +1831,15 @@ export type StepOutput =
   | { op: "file-io.dafbfs"; value: null }
   | { op: "file-io.daffna"; value: boolean }
   | { op: "file-io.dasopr"; value: null }
+  | { op: "file-io.dasadc"; value: null }
+  | { op: "file-io.dasadd"; value: null }
+  | { op: "file-io.dasadi"; value: null }
+  | { op: "file-io.dasrdc"; value: number[] }
+  | { op: "file-io.dasrdd"; value: number[] }
+  | { op: "file-io.dasrdi"; value: number[] }
+  | { op: "file-io.dasudc"; value: null }
+  | { op: "file-io.dasudd"; value: null }
+  | { op: "file-io.dasudi"; value: null }
   | { op: "file-io.dasonw"; value: null }
   | { op: "file-io.dasops"; value: null }
   | { op: "file-io.dasopw"; value: null }
