@@ -72,3 +72,25 @@ export async function typecheckDasData() {
     await dispose();
   }
 }
+
+/** Build and walk a DLA segment using the normal facade without DOM declarations. */
+export async function typecheckDlaSegments() {
+  const {
+    spice: { raw },
+    dispose,
+  } = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const handle = raw.dlaopn("segments.dla", "DLA", "generic data", 0);
+    try {
+      raw.dlabns(handle);
+      raw.dasadi(handle, 2, [10, 20]);
+      raw.dlaens(handle);
+      const tail = raw.dlabbs(handle);
+      return tail.found ? raw.dlafps(handle, tail.descr) : tail;
+    } finally {
+      raw.dascls(handle);
+    }
+  } finally {
+    await dispose();
+  }
+}

@@ -3,6 +3,7 @@ import {
   copyDasValues,
   dasReadCount,
   dasFileTarget,
+  copyDlaDescriptor,
   dasText,
   decodeDasSummary,
   decodeDasAddresses,
@@ -38,8 +39,6 @@ import {
 } from "../runtime/virtual-outputs.js";
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
-const I32_MIN = -2147483648;
-const I32_MAX = 2147483647;
 
 // Fixed-size portion of the DSK type 2 spatial index double component.
 //
@@ -49,17 +48,6 @@ const DSK02_IXDFIX = 10;
 // Hard cap for DSK spatial index scratch sizes (worksz/spxisz).
 // Matches native-addon validation.
 const DSKMI2_MAX_SIZE = 5_000_000;
-
-const DESCR_KEYS = [
-  "bwdptr",
-  "fwdptr",
-  "ibase",
-  "isize",
-  "dbase",
-  "dsize",
-  "cbase",
-  "csize",
-] as const;
 
 function readHeapI32(
   module: EmscriptenModule,
@@ -145,34 +133,6 @@ function readDlaDescr8(module: EmscriptenModule, ptr: number): DlaDescriptor {
     cbase: heap[base + 6]!,
     csize: heap[base + 7]!,
   };
-}
-
-function assertDlaDescriptor(
-  value: unknown,
-  context: string,
-): asserts value is DlaDescriptor {
-  if (typeof value !== "object" || value === null) {
-    throw new Error(`${context}: expected an object`);
-  }
-  const obj = value as Record<string, unknown>;
-  for (const key of DESCR_KEYS) {
-    const v = obj[key];
-    if (
-      typeof v !== "number" ||
-      !Number.isInteger(v) ||
-      v < I32_MIN ||
-      v > I32_MAX
-    ) {
-      throw new Error(
-        `${context}: expected ${key} to be a 32-bit signed integer`,
-      );
-    }
-
-    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
-    if (v < min) {
-      throw new Error(`${context}: expected ${key} to be >= ${min}`);
-    }
-  }
 }
 
 function callVoidHandle(
@@ -996,7 +956,7 @@ export function createFileIoApi(
     },
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
-      assertDlaDescriptor(descr, "dlafns(descr)");
+      const owned = copyDlaDescriptor(descr, "dlafns(descr)");
       const nativeHandle = handles.lookup(
         handle,
         DAS_BACKED,
@@ -1007,7 +967,7 @@ export function createFileIoApi(
         module,
         [32, 32, 4, WASM_ERR_MAX_BYTES],
         (inDescr8Ptr, outNextDescr8Ptr, outFoundPtr, errPtr) => {
-          writeDlaDescr8(module, inDescr8Ptr, descr);
+          writeDlaDescr8(module, inDescr8Ptr, owned);
           module.HEAP32[outFoundPtr >> 2] = 0;
 
           const code = module._tspice_dlafns(
@@ -1036,6 +996,93 @@ export function createFileIoApi(
       );
     },
 
+    dlabbs: (handle: SpiceHandle): FoundDlaDescriptor => {
+      const nativeHandle = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "dlabbs",
+      ).nativeHandle;
+      return withAllocs(
+        module,
+        [32, 4, WASM_ERR_MAX_BYTES],
+        (outDescr8Ptr, outFoundPtr, errPtr) => {
+          module.HEAP32[outFoundPtr >> 2] = 0;
+
+          const code = module._tspice_dlabbs(
+            nativeHandle,
+            outDescr8Ptr,
+            outFoundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "dlabbs(outFoundPtr)") !== 0;
+          if (!found) {
+            return { found: false };
+          }
+
+          return { found: true, descr: readDlaDescr8(module, outDescr8Ptr) };
+        },
+      );
+    },
+
+    dlafps: (handle: SpiceHandle, descr: DlaDescriptor): FoundDlaDescriptor => {
+      const owned = copyDlaDescriptor(descr, "dlafps(descr)");
+      const nativeHandle = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "dlafps",
+      ).nativeHandle;
+
+      return withAllocs(
+        module,
+        [32, 32, 4, WASM_ERR_MAX_BYTES],
+        (inDescr8Ptr, outNextDescr8Ptr, outFoundPtr, errPtr) => {
+          writeDlaDescr8(module, inDescr8Ptr, owned);
+          module.HEAP32[outFoundPtr >> 2] = 0;
+
+          const code = module._tspice_dlafps(
+            nativeHandle,
+            inDescr8Ptr,
+            outNextDescr8Ptr,
+            outFoundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0) {
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          }
+
+          const found =
+            readHeapI32(module, outFoundPtr >> 2, "dlafps(outFoundPtr)") !== 0;
+          if (!found) {
+            return { found: false };
+          }
+
+          return {
+            found: true,
+            descr: readDlaDescr8(module, outNextDescr8Ptr),
+          };
+        },
+      );
+    },
+
+    dlabns: (handle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dlabns,
+        handles.lookup(handle, DAS_BACKED, "dlabns").nativeHandle,
+      ),
+    dlaens: (handle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dlaens,
+        handles.lookup(handle, DAS_BACKED, "dlaens").nativeHandle,
+      ),
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
 
     dskopn: (path: string, ifname: string, ncomch: number) => {

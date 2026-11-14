@@ -1333,6 +1333,102 @@ static void Dskw02(const Napi::CallbackInfo& info) {
   }
 }
 
+static Napi::Object Dlabbs(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dlabbs(handle: number) expects exactly one numeric handle"));
+    return Napi::Object::New(env);
+  }
+
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int32_t descr8[8] = {0};
+  int32_t found = 0;
+  const int code = tspice_dlabbs(handle, descr8, &found, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, std::string("CSPICE failed while calling dlabbs(handle=") + std::to_string(handle) + ")", err);
+    return Napi::Object::New(env);
+  }
+
+  if (!found) {
+    return MakeNotFound(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("descr", MakeDlaDescriptor(env, descr8));
+  return result;
+}
+
+static Napi::Object Dlafps(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dlafps(handle: number, descr: object) expects a handle and descriptor"));
+    return Napi::Object::New(env);
+  }
+
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) {
+    return Napi::Object::New(env);
+  }
+  int32_t descr8[8] = {0};
+  if (!ReadDlaDescriptor(env, info[1], descr8)) {
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int32_t previousDescr8[8] = {0};
+  int32_t found = 0;
+  const int code = tspice_dlafps(handle, descr8, previousDescr8, &found, err, (int)sizeof(err));
+  if (code != 0) {
+    ThrowSpiceError(env, std::string("CSPICE failed while calling dlafps(handle=") + std::to_string(handle) + ")", err);
+    return Napi::Object::New(env);
+  }
+
+  if (!found) {
+    return MakeNotFound(env);
+  }
+
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("found", Napi::Boolean::New(env, true));
+  result.Set("descr", MakeDlaDescriptor(env, previousDescr8));
+  return result;
+}
+
+static void Dlabns(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dlabns requires a numeric handle"));
+    return;
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_dlabns(handle, err, sizeof(err))) ThrowSpiceError(env, "dlabns failed", err);
+}
+
+static void Dlaens(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dlaens requires a numeric handle"));
+    return;
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_dlaens(handle, err, sizeof(err))) ThrowSpiceError(env, "dlaens failed", err);
+}
+
 static Napi::Object Dlabfs(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -1438,6 +1534,10 @@ void RegisterFileIo(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "dlacls", Napi::Function::New(env, Dlacls), __func__)) return;
 
   if (!SetExportChecked(env, exports, "dlaopn", Napi::Function::New(env, Dlaopn), __func__)) return;
+  if (!SetExportChecked(env, exports, "dlabbs", Napi::Function::New(env, Dlabbs), __func__)) return;
+  if (!SetExportChecked(env, exports, "dlabns", Napi::Function::New(env, Dlabns), __func__)) return;
+  if (!SetExportChecked(env, exports, "dlaens", Napi::Function::New(env, Dlaens), __func__)) return;
+  if (!SetExportChecked(env, exports, "dlafps", Napi::Function::New(env, Dlafps), __func__)) return;
   if (!SetExportChecked(env, exports, "dlabfs", Napi::Function::New(env, Dlabfs), __func__)) return;
   if (!SetExportChecked(env, exports, "dlafns", Napi::Function::New(env, Dlafns), __func__)) return;
 

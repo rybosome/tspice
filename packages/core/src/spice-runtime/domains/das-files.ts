@@ -153,3 +153,35 @@ export function dasReadCount(
   checkDasCount(count, width);
   return count;
 }
+
+/** Snapshot all eight signed descriptor words. A segment under construction has size −1. */
+export function copyDlaDescriptor(value: unknown, context: string) {
+  if (typeof value !== "object" || value === null)
+    throw new TypeError(context + ": expected a DLA descriptor object");
+  const obj = value;
+  function word(key: string, min: number): number {
+    const v: unknown = Reflect.get(obj, key);
+    if (
+      typeof v !== "number" ||
+      !Number.isInteger(v) ||
+      v < -2147483648 ||
+      v > 2147483647
+    )
+      throw new TypeError(
+        context + ": expected " + key + " to be a 32-bit signed integer",
+      );
+    if (v < min)
+      throw new RangeError(context + ": expected " + key + " to be >= " + min);
+    return v;
+  }
+  return {
+    bwdptr: word("bwdptr", -1),
+    fwdptr: word("fwdptr", -1),
+    ibase: word("ibase", 0),
+    isize: word("isize", -1),
+    dbase: word("dbase", 0),
+    dsize: word("dsize", -1),
+    cbase: word("cbase", 0),
+    csize: word("csize", -1),
+  };
+}

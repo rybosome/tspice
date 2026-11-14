@@ -1,0 +1,650 @@
+[
+  {
+    "caseId": "file-io-dlabns-first-word-state",
+    "description": "Separate begin from finalization. Observe real control words, descriptor storage, all pending sizes and last addresses.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 3
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 11
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 11
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-successive-links",
+    "description": "Observe the old and new forward/backward links when beginning a subsequent segment.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 3
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 4,
+        "last": 11
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 14,
+        "last": 21
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-character-only",
+    "description": "Append arbitrary binary bytes in a generic DLA segment and retain them beyond close/reopen.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 5,
+        "data": [0, 10, 128, 255, 32],
+        "bpos": 0,
+        "epos": 4,
+        "datlen": 5
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 1,
+        "last": 5,
+        "bpos": 0,
+        "epos": 4,
+        "datlen": 5,
+        "data": [0, 0, 0, 0, 0]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-integer-only",
+    "description": "Append signed integer extrema to the segment following the real descriptor.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 3,
+        "data": [-2147483648, 7, 2147483647]
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 12,
+        "last": 14
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-double-only",
+    "description": "Append signed and fractional double words independent of character or integer payloads.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 3,
+        "data": [-0.125, 6.25, -8000]
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 3
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-reopened-writer",
+    "description": "Continue a previously finalized file with DASOPW; observe its old descriptor link and appended component.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 3,
+        "data": [-2147483648, 0, 2147483647]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 2,
+        "data": [-12.5, 260.75]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [128, 9],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 3
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-physical-crossing",
+    "description": "Begin after 245 payload integers so the descriptor crosses the 256-word physical integer record.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 245,
+        "data": [
+          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
+          37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
+          54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+          71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
+          88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,
+          104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+          118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131,
+          132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+          146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
+          160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
+          174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187,
+          188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201,
+          202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215,
+          216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
+          230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
+          244
+        ]
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 1,
+        "data": [-9]
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 3
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 257,
+        "last": 265
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-read-only",
+    "description": "The original DASSIH access check rejects an append to a read-only DLA.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dlabns-without-header",
+    "description": "A writable plain DAS lacks the DLA header pointers read by DLABNS.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASNOSUCHADDRESS"]
+    }
+  }
+]

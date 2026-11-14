@@ -404,6 +404,10 @@ const exportedFunctions = [
 
   // --- DLA (DAS-backed) ---
   "_tspice_dlaopn",
+  "_tspice_dlabbs",
+  "_tspice_dlabns",
+  "_tspice_dlaens",
+  "_tspice_dlafps",
   "_tspice_dlabfs",
   "_tspice_dlafns",
   "_tspice_dlacls",

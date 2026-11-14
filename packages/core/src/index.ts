@@ -3,6 +3,7 @@ export {
   copyDasValues,
   dasReadCount,
   dasFileTarget,
+  copyDlaDescriptor,
   dasText,
   decodeDasSummary,
   decodeDasAddresses,

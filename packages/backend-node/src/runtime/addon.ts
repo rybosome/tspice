@@ -160,6 +160,13 @@ export type NativeAddon = {
   dascls(handle: number): void;
 
   dlaopn(path: string, ftype: string, ifname: string, ncomch: number): number;
+  dlabbs(handle: number): { found: boolean; descr?: Record<string, unknown> };
+  dlafps(
+    handle: number,
+    descr: Record<string, unknown>,
+  ): { found: boolean; descr?: Record<string, unknown> };
+  dlabns(handle: number): void;
+  dlaens(handle: number): void;
   dlabfs(handle: number): { found: boolean; descr?: Record<string, unknown> };
   dlafns(
     handle: number,

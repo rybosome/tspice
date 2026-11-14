@@ -111,6 +111,10 @@ from .file_io import (
     StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
+    StepFileIoDlabbs,
+    StepFileIoDlabns,
+    StepFileIoDlaens,
+    StepFileIoDlafps,
     StepFileIoDlabfs,
     StepFileIoDlacls,
     StepFileIoDlafns,
@@ -336,6 +340,10 @@ WorkflowStep: TypeAlias = (
     | StepFileIoDaswbr
     | StepFileIoDascls
     | StepFileIoDlaopn
+    | StepFileIoDlabbs
+    | StepFileIoDlabns
+    | StepFileIoDlaens
+    | StepFileIoDlafps
     | StepFileIoDlabfs
     | StepFileIoDlafns
     | StepFileIoDlacls

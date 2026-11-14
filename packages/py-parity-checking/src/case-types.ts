@@ -861,6 +861,18 @@ export type StepFileIoDlaopn = {
   handleId: string;
 };
 
+export type StepFileIoDlabbs = {
+  op: "file-io.dlabbs";
+  handleId: string;
+  descrId: string;
+};
+export type StepFileIoDlabns = { op: "file-io.dlabns"; handleId: string };
+export type StepFileIoDlaens = { op: "file-io.dlaens"; handleId: string };
+export type StepFileIoDlafps = {
+  op: "file-io.dlafps";
+  handleId: string;
+  descrId: string;
+};
 export type StepFileIoDlabfs = {
   op: "file-io.dlabfs";
   handleId: string;
@@ -1537,6 +1549,10 @@ export type WorkflowStep =
   | StepFileIoDaswbr
   | StepFileIoDascls
   | StepFileIoDlaopn
+  | StepFileIoDlabbs
+  | StepFileIoDlabns
+  | StepFileIoDlaens
+  | StepFileIoDlafps
   | StepFileIoDlabfs
   | StepFileIoDlafns
   | StepFileIoDlacls
@@ -1851,6 +1867,10 @@ export type StepOutput =
   | { op: "file-io.daswbr"; value: null }
   | { op: "file-io.dascls"; value: null }
   | { op: "file-io.dlaopn"; value: null }
+  | { op: "file-io.dlabbs"; value: FoundDlaDescriptor }
+  | { op: "file-io.dlabns"; value: null }
+  | { op: "file-io.dlaens"; value: null }
+  | { op: "file-io.dlafps"; value: FoundDlaDescriptor }
   | { op: "file-io.dlabfs"; value: FoundDlaDescriptor }
   | { op: "file-io.dlafns"; value: FoundDlaDescriptor }
   | { op: "file-io.dlacls"; value: null }

@@ -2219,6 +2219,18 @@ export function createFakeBackend(
     ) => {
       throw new Error("Fake backend: dlaopn() is not implemented");
     },
+    dlabbs: () => {
+      throw new Error("Fake backend: dlabbs() is not implemented");
+    },
+    dlabns: () => {
+      throw new Error("Fake backend: dlabns() is not implemented");
+    },
+    dlaens: () => {
+      throw new Error("Fake backend: dlaens() is not implemented");
+    },
+    dlafps: () => {
+      throw new Error("Fake backend: dlafps() is not implemented");
+    },
     dlabfs: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: dlabfs() is not implemented");
     },

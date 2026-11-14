@@ -7,6 +7,7 @@ import numpy as np
 import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError
 
+from .. import dla_segment_oracle
 from .. import das_data_oracle
 from ..das_file_oracle import file_record, file_name
 from ..models import (
@@ -34,6 +35,10 @@ from ..models import (
     StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
+    StepFileIoDlabbs,
+    StepFileIoDlabns,
+    StepFileIoDlaens,
+    StepFileIoDlafps,
     StepFileIoDlabfs,
     StepFileIoDlacls,
     StepFileIoDlafns,
@@ -317,6 +322,26 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         _prepare_output_path(_resolve_file_io_path(context, step.path))
         handle = int(sp.dlaopn(_resolve_file_io_path(context, step.path), step.ftype, step.ifname, step.ncomch))
         _register_handle(state, step.handleId, handle, kind="DLA", close_with="dascls")
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, (StepFileIoDlabbs, StepFileIoDlafps)):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        if isinstance(step, StepFileIoDlabbs):
+            descriptor, found = dla_segment_oracle.last(h)
+        else:
+            descriptor, found = dla_segment_oracle.previous(h, _require_descriptor(state, step.descrId))
+        if not found:
+            state.descriptors.pop(step.descrId, None)
+            return StepOutput(op=step.op, value={"found": False})
+        state.descriptors[step.descrId] = descriptor
+        return StepOutput(op=step.op, value={"found": True, "descr": _descriptor_fields(descriptor)})
+
+    if isinstance(step, (StepFileIoDlabns, StepFileIoDlaens)):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        if isinstance(step, StepFileIoDlabns):
+            dla_segment_oracle.begin(h)
+        else:
+            dla_segment_oracle.end(h)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepFileIoDlabfs):

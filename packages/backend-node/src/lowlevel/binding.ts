@@ -251,6 +251,22 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export dlaopn(path, ftype, ifname, ncomch)",
   );
   invariant(
+    typeof native.dlabbs === "function",
+    "Expected native addon to export dlabbs",
+  );
+  invariant(
+    typeof native.dlabns === "function",
+    "Expected native addon to export dlabns",
+  );
+  invariant(
+    typeof native.dlaens === "function",
+    "Expected native addon to export dlaens",
+  );
+  invariant(
+    typeof native.dlafps === "function",
+    "Expected native addon to export dlafps",
+  );
+  invariant(
     typeof native.dlabfs === "function",
     "Expected native addon to export dlabfs(handle)",
   );

@@ -29,6 +29,10 @@ import type {
   StepFileIoDaswbr,
   StepFileIoDascls,
   StepFileIoDasopr,
+  StepFileIoDlabbs,
+  StepFileIoDlabns,
+  StepFileIoDlaens,
+  StepFileIoDlafps,
   StepFileIoDlabfs,
   StepFileIoDlacls,
   StepFileIoDlafns,
@@ -71,6 +75,10 @@ type FileIoStep =
   | StepFileIoDaswbr
   | StepFileIoDascls
   | StepFileIoDlaopn
+  | StepFileIoDlabbs
+  | StepFileIoDlabns
+  | StepFileIoDlaens
+  | StepFileIoDlafps
   | StepFileIoDlabfs
   | StepFileIoDlafns
   | StepFileIoDlacls
@@ -354,6 +362,43 @@ export function runFileIoStep(
       return { op: step.op, value: null };
     }
 
+    case "file-io.dlabbs": {
+      const state = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dlabbs(state.handle);
+      if (!out.found) {
+        context.state.fileIo.descriptors.delete(step.descrId);
+        return { op: step.op, value: { found: false } };
+      }
+
+      context.state.fileIo.descriptors.set(step.descrId, out.descr);
+      return { op: step.op, value: { found: true, descr: out.descr } };
+    }
+
+    case "file-io.dlafps": {
+      const state = requireHandleState(context, step.handleId);
+      const descr = requireDescriptor(context, step.descrId);
+      const out = context.spice.raw.dlafps(state.handle, descr);
+      if (!out.found) {
+        context.state.fileIo.descriptors.delete(step.descrId);
+        return { op: step.op, value: { found: false } };
+      }
+
+      context.state.fileIo.descriptors.set(step.descrId, out.descr);
+      return { op: step.op, value: { found: true, descr: out.descr } };
+    }
+
+    case "file-io.dlabns": {
+      context.spice.raw.dlabns(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    }
+    case "file-io.dlaens": {
+      context.spice.raw.dlaens(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    }
     case "file-io.dlabfs": {
       const state = requireHandleState(context, step.handleId);
       const out = context.spice.raw.dlabfs(state.handle);

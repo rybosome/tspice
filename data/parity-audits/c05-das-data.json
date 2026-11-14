@@ -115,7 +115,8 @@
         "file-io-dasudi-read-only",
         "file-io-dasudi-reversed"
       ],
-      "observation": "Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c05-c0937973-wasm",
@@ -181,7 +182,8 @@
         "file-io-dasudi-read-only",
         "file-io-dasudi-reversed"
       ],
-      "observation": "Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c05-c0937973-node",
@@ -249,7 +251,8 @@
       ],
       "commit": "c0937973e0bd4a910c12056e5ad16197eb2ea15e",
       "url": "https://github.com/rybosome/tspice/actions/runs/43574808718/job/132386644376",
-      "observation": "Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c05-c0937973-wasm",
@@ -317,7 +320,8 @@
       ],
       "commit": "c0937973e0bd4a910c12056e5ad16197eb2ea15e",
       "url": "https://github.com/rybosome/tspice/actions/runs/43574808718/job/132386644376",
-      "observation": "Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -405,16 +409,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasadc -> owner registry, serialized native addon -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasadc -> owner registry, scoped WASM buffers and required export -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -474,16 +478,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasadd -> owner registry, serialized native addon -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasadd -> owner registry, scoped WASM buffers and required export -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -543,16 +547,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasadi -> owner registry, serialized native addon -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasadi -> owner registry, scoped WASM buffers and required export -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -653,16 +657,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasrdc -> owner registry, serialized native addon -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasrdc -> owner registry, scoped WASM buffers and required export -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -735,16 +739,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasrdd -> owner registry, serialized native addon -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasrdd -> owner registry, scoped WASM buffers and required export -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -817,16 +821,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasrdi -> owner registry, serialized native addon -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasrdi -> owner registry, scoped WASM buffers and required export -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -919,16 +923,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasudc -> owner registry, serialized native addon -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasudc -> owner registry, scoped WASM buffers and required export -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -979,16 +983,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasudd -> owner registry, serialized native addon -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasudd -> owner registry, scoped WASM buffers and required export -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     },
@@ -1039,19 +1043,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasudi -> owner registry, serialized native addon -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
-          "executions": ["local-c05-c0937973-node", "ci-c05-c0937973-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "FileIoApi.dasudi -> owner registry, scoped WASM buffers and required export -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
-          "executions": ["local-c05-c0937973-wasm", "ci-c05-c0937973-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Retain the previous source-linked executions as historical. The combined DLA creation, typed DAS data and segment traversal source requires fresh complete local and canonical runs."
 }
