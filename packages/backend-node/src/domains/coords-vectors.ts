@@ -15,9 +15,143 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertScalarMathDouble(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertScalarMathString(
+  value: unknown,
+  label: string,
+): asserts value is string {
+  if (typeof value !== "string" || value.includes("\0"))
+    throw new TypeError(`${label} must be a string without embedded NUL`);
+}
+
+function copyScalarMathArray(
+  value: unknown,
+  label: string,
+  integers: boolean,
+  maxCount: number,
+): number[] {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  const count = value.length;
+  if (!Number.isSafeInteger(count) || count < 0 || count > maxCount)
+    throw new RangeError(`${label} must contain at most ${maxCount} values`);
+  const copy: number[] = [];
+  for (let i = 0; i < count; i++) {
+    const entry: unknown = value[i];
+    assertScalarMathDouble(entry, `${label}[${i}]`);
+    if (integers) assertSpiceInt32(entry, `${label}[${i}]`);
+    copy.push(entry);
+  }
+  return copy;
+}
+
+function assertSumaiPrefixes(values: readonly number[]): void {
+  // Validation only: the returned sum must still come from actual sumai_c.
+  // Each addition is exact here because the previous prefix and next input
+  // are both signed32, so their sum fits exactly in a JavaScript number.
+  let prefix = 0;
+  for (const value of values) {
+    prefix += value;
+    if (prefix < -2147483648 || prefix > 2147483647)
+      throw new RangeError(
+        "sumai(values) prefix sums must fit signed 32-bit integers",
+      );
+  }
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    brcktd: (value, end1, end2) => {
+      assertScalarMathDouble(value, "brcktd(value)");
+      assertScalarMathDouble(end1, "brcktd(end1)");
+      assertScalarMathDouble(end2, "brcktd(end2)");
+      const out: unknown = native.brcktd(value, end1, end2);
+      invariant(
+        typeof out === "number",
+        "Expected brcktd() to return a number",
+      );
+      return out;
+    },
+    brckti: (value, end1, end2) => {
+      assertSpiceInt32(value, "brckti(value)");
+      assertSpiceInt32(end1, "brckti(end1)");
+      assertSpiceInt32(end2, "brckti(end2)");
+      const out: unknown = native.brckti(value, end1, end2);
+      invariant(
+        typeof out === "number",
+        "Expected brckti() to return a number",
+      );
+      assertSpiceInt32(out, "brckti result");
+      return out;
+    },
+    convrt: (value, inUnit, outUnit) => {
+      assertScalarMathDouble(value, "convrt(value)");
+      assertScalarMathString(inUnit, "convrt(inUnit)");
+      assertScalarMathString(outUnit, "convrt(outUnit)");
+      const out: unknown = native.convrt(value, inUnit, outUnit);
+      invariant(
+        typeof out === "number",
+        "Expected convrt() to return a number",
+      );
+      return out;
+    },
+    sumad: (values) => {
+      const valuesCopy = copyScalarMathArray(
+        values,
+        "sumad(values)",
+        false,
+        2147483647,
+      );
+      const out: unknown = native.sumad(valuesCopy);
+      invariant(typeof out === "number", "Expected sumad() to return a number");
+      return out;
+    },
+    sumai: (values) => {
+      const valuesCopy = copyScalarMathArray(
+        values,
+        "sumai(values)",
+        true,
+        2147483647,
+      );
+      assertSumaiPrefixes(valuesCopy);
+      const out: unknown = native.sumai(valuesCopy);
+      invariant(typeof out === "number", "Expected sumai() to return a number");
+      assertSpiceInt32(out, "sumai result");
+      return out;
+    },
+    maxd: (values) => {
+      const valuesCopy = copyScalarMathArray(values, "maxd(values)", false, 30);
+      const out: unknown = native.maxd(valuesCopy);
+      invariant(typeof out === "number", "Expected maxd() to return a number");
+      return out;
+    },
+    maxi: (values) => {
+      const valuesCopy = copyScalarMathArray(values, "maxi(values)", true, 30);
+      const out: unknown = native.maxi(valuesCopy);
+      invariant(typeof out === "number", "Expected maxi() to return a number");
+      assertSpiceInt32(out, "maxi result");
+      return out;
+    },
+    mind: (values) => {
+      const valuesCopy = copyScalarMathArray(values, "mind(values)", false, 30);
+      const out: unknown = native.mind(valuesCopy);
+      invariant(typeof out === "number", "Expected mind() to return a number");
+      return out;
+    },
+    mini: (values) => {
+      const valuesCopy = copyScalarMathArray(values, "mini(values)", true, 30);
+      const out: unknown = native.mini(valuesCopy);
+      invariant(typeof out === "number", "Expected mini() to return a number");
+      assertSpiceInt32(out, "mini result");
+      return out;
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

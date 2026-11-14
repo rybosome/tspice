@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import scalar_math_oracle
+
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -9,6 +11,15 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsBrcktd,
+    StepCoordsVectorsBrckti,
+    StepCoordsVectorsConvrt,
+    StepCoordsVectorsSumad,
+    StepCoordsVectorsSumai,
+    StepCoordsVectorsMaxd,
+    StepCoordsVectorsMaxi,
+    StepCoordsVectorsMind,
+    StepCoordsVectorsMini,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -51,6 +62,42 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsBrcktd):
+        out = sp.brcktd(step.value, step.end1, step.end2)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsBrckti):
+        out = sp.brckti(step.value, step.end1, step.end2)
+        return StepOutput(op=step.op, value=int(out))
+
+    if isinstance(step, StepCoordsVectorsConvrt):
+        out = sp.convrt(step.value, step.inUnit, step.outUnit)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsSumad):
+        out = sp.sumad(step.values)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsSumai):
+        out = scalar_math_oracle.sumai(step.values)
+        return StepOutput(op=step.op, value=int(out))
+
+    if isinstance(step, StepCoordsVectorsMaxd):
+        out = scalar_math_oracle.maxd(step.values)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsMaxi):
+        out = scalar_math_oracle.maxi(step.values)
+        return StepOutput(op=step.op, value=int(out))
+
+    if isinstance(step, StepCoordsVectorsMind):
+        out = scalar_math_oracle.mind(step.values)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsMini):
+        out = scalar_math_oracle.mini(step.values)
+        return StepOutput(op=step.op, value=int(out))
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

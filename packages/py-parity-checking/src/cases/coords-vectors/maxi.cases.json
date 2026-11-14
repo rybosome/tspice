@@ -1,0 +1,413 @@
+[
+  {
+    "caseId": "coords-vectors-maxi-empty-singleton-and-mixed",
+    "description": "maxi: empty-singleton-and-mixed; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.maxi",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [7]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-8, 2, 1, 17]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [8, -2, -1, -17]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-maxi-all-portable-arities",
+    "description": "maxi: all-portable-arities; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.maxi",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, -10, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9, -8]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, -10, -9, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9, -8, -7]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, -10, -9, -8, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9, -8, -7, -6]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, -10, -9, -8, -7, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, -10, -9, -8, -7, -6, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, 100]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 100
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          100, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 100
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-maxi-signed32-extrema",
+    "description": "maxi: signed32-extrema; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.maxi",
+        "values": [2147483647, -2147483648, 0]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [-2147483648, -2147483647]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [2147483646, 2147483647]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-maxi-repeated-values",
+    "description": "maxi: repeated-values; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+          2, 2, 2, 2, 2, 2, 2
+        ]
+      },
+      {
+        "op": "coords-vectors.maxi",
+        "values": [
+          -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2,
+          -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -12,6 +12,15 @@ import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with 
 import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
 import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
 import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
+import coordsVectorsBrcktdCasesRaw from "./coords-vectors/brcktd.cases.json" with { type: "json" };
+import coordsVectorsBrcktiCasesRaw from "./coords-vectors/brckti.cases.json" with { type: "json" };
+import coordsVectorsConvrtCasesRaw from "./coords-vectors/convrt.cases.json" with { type: "json" };
+import coordsVectorsSumadCasesRaw from "./coords-vectors/sumad.cases.json" with { type: "json" };
+import coordsVectorsSumaiCasesRaw from "./coords-vectors/sumai.cases.json" with { type: "json" };
+import coordsVectorsMaxdCasesRaw from "./coords-vectors/maxd.cases.json" with { type: "json" };
+import coordsVectorsMaxiCasesRaw from "./coords-vectors/maxi.cases.json" with { type: "json" };
+import coordsVectorsMindCasesRaw from "./coords-vectors/mind.cases.json" with { type: "json" };
+import coordsVectorsMiniCasesRaw from "./coords-vectors/mini.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -155,6 +164,16 @@ export const idsNamesCases: ParityCase[] = [
   ...(idsNamesBodvarCasesRaw as ParityCase[]),
 ];
 export const coordsVectorsCases: ParityCase[] = [
+  ...(coordsVectorsBrcktdCasesRaw as ParityCase[]),
+  ...(coordsVectorsBrcktiCasesRaw as ParityCase[]),
+  ...(coordsVectorsConvrtCasesRaw as ParityCase[]),
+  ...(coordsVectorsSumadCasesRaw as ParityCase[]),
+  ...(coordsVectorsSumaiCasesRaw as ParityCase[]),
+  ...(coordsVectorsMaxdCasesRaw as ParityCase[]),
+  ...(coordsVectorsMaxiCasesRaw as ParityCase[]),
+  ...(coordsVectorsMindCasesRaw as ParityCase[]),
+  ...(coordsVectorsMiniCasesRaw as ParityCase[]),
+
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),
   ...(coordsVectorsRecsphCasesRaw as ParityCase[]),

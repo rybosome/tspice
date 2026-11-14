@@ -579,7 +579,8 @@
         "time-unitim-happy-et-to-tai",
         "time-unitim-missing-lsk-error"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "local-706-main-c5f0b058-wasm",
@@ -620,7 +621,8 @@
         "time-unitim-happy-et-to-tai",
         "time-unitim-missing-lsk-error"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-node",
@@ -663,7 +665,8 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-wasm",
@@ -706,7 +709,348 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
+    },
+    {
+      "id": "local-a03-02544981-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a03-02544981-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending.",
+      "historical": true
+    },
+    {
+      "id": "ci-a03-02544981-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "02544981cbbfd1005bdfee94ca453620aea819e2",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43544898708/job/132293815854",
+      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "ci-a03-02544981-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "02544981cbbfd1005bdfee94ca453620aea819e2",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43544898708/job/132293815854",
+      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "local-a03-891d04fe-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 891d04fe8386f2f369b31581b41842226f98f0aa. JavaScript: 2,539 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a03-891d04fe-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 891d04fe8386f2f369b31581b41842226f98f0aa. JavaScript: 2,539 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a03-891d04fe-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "891d04fe8386f2f369b31581b41842226f98f0aa",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550309021/job/132311018401",
+      "observation": "Inspected successful Linux Node 22 native-required job 132311018401 on 891d04fe8386f2f369b31581b41842226f98f0aa: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a03-891d04fe-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e3fde7652b2b71ab0eef0ed406300573e626f89a9f986721eb08ff8ddd9e906c",
+      "caseIds": [
+        "time-str2et-audit-invalid-day",
+        "time-str2et-audit-missing-leap-information",
+        "time-str2et-audit-utc-leap-boundary-and-formats",
+        "time-str2et-happy-j2000",
+        "time-str2et-invalid-time-error",
+        "time-timdef-audit-calendar-zone-system-effects",
+        "time-timdef-audit-early-error-after-mutation",
+        "time-timdef-invalid-system-value-error",
+        "time-timdef-stateful-get-set",
+        "time-timout-audit-internal-picture-boundary",
+        "time-timout-audit-missing-leap-information",
+        "time-timout-audit-signed-epochs-systems-and-precision",
+        "time-timout-empty-picture-error",
+        "time-timout-happy-tdb-picture",
+        "time-tkvrsn-audit-stable-through-kernel-pool-state",
+        "time-tkvrsn-happy-toolkit",
+        "time-tkvrsn-unsupported-item-error",
+        "time-tparse-audit-formal-days-and-fractions",
+        "time-tparse-audit-time-system-not-supported",
+        "time-tparse-happy-utc-iso",
+        "time-tparse-invalid-string-error",
+        "time-tpictr-audit-sample-driven-independent-of-template",
+        "time-tpictr-audit-unrecognized-sample",
+        "time-tpictr-empty-sample-error",
+        "time-tpictr-happy-sample-derived-picture",
+        "time-unitim-audit-bad-system",
+        "time-unitim-audit-systems-julian-days-and-fractions",
+        "time-unitim-happy-et-to-tai",
+        "time-unitim-missing-lsk-error"
+      ],
+      "commit": "891d04fe8386f2f369b31581b41842226f98f0aa",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550309021/job/132311018401",
+      "observation": "Inspected successful Linux Node 22 native-required job 132311018401 on 891d04fe8386f2f369b31581b41842226f98f0aa: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -781,14 +1125,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> Node adapter -> serialized native str2et handler -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
         },
         "wasm": {
           "history": [
@@ -801,14 +1146,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.str2et -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual str2et_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
         }
       }
     },
@@ -894,14 +1240,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> Node adapter -> serialized native timdef handler -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
         },
         "wasm": {
           "history": [
@@ -914,14 +1261,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timdef -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timdef_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
         }
       }
     },
@@ -981,14 +1329,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> Node adapter -> serialized native timout handler -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
         },
         "wasm": {
           "history": [
@@ -1000,14 +1349,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.timout -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual timout_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
         }
       }
     },
@@ -1057,14 +1407,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tkvrsn -> Node adapter -> serialized native spiceVersion handler -> shared time shim -> actual tkvrsn_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
         },
         "wasm": {
           "history": [
@@ -1076,14 +1427,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "cached",
           "trace": "WASM factory -> getToolkitVersion -> compiled tspice_tkvrsn_toolkit -> actual tkvrsn_c(TOOLKIT), then module-local immutable cached raw result. Live oracle calls actual sp.tkvrsn.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
         }
       }
     },
@@ -1147,14 +1499,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> Node adapter -> serialized native tparse handler -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
         },
         "wasm": {
           "history": [
@@ -1167,14 +1520,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tparse -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tparse_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
         }
       }
     },
@@ -1223,14 +1577,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> Node adapter -> serialized native tpictr handler -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
         },
         "wasm": {
           "history": [
@@ -1242,14 +1597,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.tpictr -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual tpictr_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
         }
       }
     },
@@ -1321,14 +1677,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> Node adapter -> serialized native unitim handler -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
         },
         "wasm": {
           "history": [
@@ -1341,17 +1698,18 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.unitim -> WASM adapter/owned buffers -> required compiled export -> shared time shim -> actual unitim_c. Oracle calls actual matching SpiceyPy routine; tparse/tpictr diagnostic returns are checked, not substituted.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

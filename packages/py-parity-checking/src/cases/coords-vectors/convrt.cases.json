@@ -1,0 +1,366 @@
+[
+  {
+    "caseId": "coords-vectors-convrt-angular-units",
+    "description": "convrt: angular-units; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 180,
+        "inUnit": "DEGREES",
+        "outUnit": "RADIANS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "HOURANGLE",
+        "outUnit": "DEGREES"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 60,
+        "inUnit": "ARCSECONDS",
+        "outUnit": "DEGREES"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "MINUTEANGLE",
+        "outUnit": "DEGREES"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "SECONDANGLE",
+        "outUnit": "ARCSECONDS"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-metric-aliases",
+    "description": "convrt: metric-aliases; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "KM",
+        "outUnit": "M"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "METERS",
+        "outUnit": "CM"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "CM",
+        "outUnit": "MM"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": -1.25,
+        "inUnit": "KILOMETERS",
+        "outUnit": "MILLIMETERS"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-english-distances",
+    "description": "convrt: english-distances; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "FEET",
+        "outUnit": "METERS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 12,
+        "inUnit": "INCHES",
+        "outUnit": "FEET"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "YARDS",
+        "outUnit": "FEET"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "STATUTE_MILES",
+        "outUnit": "KM"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "NAUTICAL_MILES",
+        "outUnit": "KM"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-astrometric-table",
+    "description": "convrt: astrometric-table; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "AU",
+        "outUnit": "KM"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "PARSECS",
+        "outUnit": "LIGHTYEARS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "LIGHTSECS",
+        "outUnit": "KM"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "LIGHTYEARS",
+        "outUnit": "KM"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-time-units",
+    "description": "convrt: time-units; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "DAYS",
+        "outUnit": "SECONDS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "YEARS",
+        "outUnit": "DAYS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "JULIAN_YEARS",
+        "outUnit": "SECONDS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "TROPICAL_YEARS",
+        "outUnit": "SECONDS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": -2,
+        "inUnit": "HOURS",
+        "outUnit": "MINUTES"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-case-and-trailing-blanks",
+    "description": "convrt: case-and-trailing-blanks; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "kIlOmEtErS",
+        "outUnit": "mEtErS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "KM ",
+        "outUnit": "M "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-zero-and-finite-identity",
+    "description": "convrt: zero-and-finite-identity; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 0,
+        "inUnit": "DEGREES",
+        "outUnit": "RADIANS"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": -0.125,
+        "inUnit": "M",
+        "outUnit": "M"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1.7976931348623157e308,
+        "inUnit": "M",
+        "outUnit": "M"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-scaled-magnitudes",
+    "description": "convrt: scaled-magnitudes; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1e200,
+        "inUnit": "KM",
+        "outUnit": "M"
+      },
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1e-200,
+        "inUnit": "KM",
+        "outUnit": "M"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-unknown-input-error",
+    "description": "convrt: unknown-input-error; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "FURLONGS",
+        "outUnit": "M"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNITSNOTREC"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-unknown-output-error",
+    "description": "convrt: unknown-output-error; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "M",
+        "outUnit": "FURLONGS"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNITSNOTREC"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-leading-blank-error",
+    "description": "convrt: leading-blank-error; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": " KM",
+        "outUnit": "M"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNITSNOTREC"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-unsupported-singular-error",
+    "description": "convrt: unsupported-singular-error; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "METER",
+        "outUnit": "KM"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNITSNOTREC"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-incompatible-error",
+    "description": "convrt: incompatible-error; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "KM",
+        "outUnit": "SECONDS"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INCOMPATIBLEUNITS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-empty-input-error",
+    "description": "convrt: empty-input-error; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "",
+        "outUnit": "M"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-convrt-empty-output-error",
+    "description": "convrt: empty-output-error; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.convrt",
+        "value": 1,
+        "inUnit": "M",
+        "outUnit": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

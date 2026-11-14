@@ -511,6 +511,15 @@ const exportedFunctions = [
   "_tspice_gfdist",
 
   // --- coords/vectors ---
+  "_tspice_brcktd",
+  "_tspice_brckti",
+  "_tspice_convrt",
+  "_tspice_sumad",
+  "_tspice_sumai",
+  "_tspice_maxd",
+  "_tspice_maxi",
+  "_tspice_mind",
+  "_tspice_mini",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

@@ -2392,6 +2392,75 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    // Toy scalar operations for facade tests, not CSPICE numerical oracles.
+    brcktd: (value, end1, end2) =>
+      Math.max(Math.min(end1, end2), Math.min(Math.max(end1, end2), value)),
+    brckti: (value, end1, end2) => {
+      assertSpiceInt32(value, "brckti(value)");
+      assertSpiceInt32(end1, "brckti(end1)");
+      assertSpiceInt32(end2, "brckti(end2)");
+      return Math.max(
+        Math.min(end1, end2),
+        Math.min(Math.max(end1, end2), value),
+      );
+    },
+    convrt: (value, inUnit, outUnit) => {
+      // Deliberately small, exact unit subset; do not copy scientific constants.
+      const units: Readonly<Record<string, readonly [string, number]>> = {
+        M: ["distance", 1],
+        METERS: ["distance", 1],
+        KM: ["distance", 1000],
+        KILOMETERS: ["distance", 1000],
+        SECONDS: ["time", 1],
+        MINUTES: ["time", 60],
+        HOURS: ["time", 3600],
+        DAYS: ["time", 86400],
+        RADIANS: ["angle", 1],
+        DEGREES: ["angle", Math.PI / 180],
+      };
+      const inName = inUnit.toUpperCase();
+      const outName = outUnit.toUpperCase();
+      const source = Object.hasOwn(units, inName) ? units[inName] : undefined;
+      const target = Object.hasOwn(units, outName) ? units[outName] : undefined;
+      if (!source || !target || source[0] !== target[0])
+        throw new Error(
+          "Fake backend: unsupported or incompatible conversion units",
+        );
+      return (value * source[1]) / target[1];
+    },
+    sumad: (values) => values.reduce((sum, value) => sum + value, 0),
+    sumai: (values) => {
+      let sum = 0;
+      for (const value of values) {
+        assertSpiceInt32(value, "sumai value");
+        sum += value;
+        assertSpiceInt32(sum, "sumai prefix sum");
+      }
+      return sum;
+    },
+    maxd: (values) => {
+      if (values.length > 30)
+        throw new RangeError("maxd accepts at most 30 values");
+      return values.length === 0 ? 0 : Math.max(...values);
+    },
+    maxi: (values) => {
+      if (values.length > 30)
+        throw new RangeError("maxi accepts at most 30 values");
+      for (const value of values) assertSpiceInt32(value, "maxi value");
+      return values.length === 0 ? 0 : Math.max(...values);
+    },
+    mind: (values) => {
+      if (values.length > 30)
+        throw new RangeError("mind accepts at most 30 values");
+      return values.length === 0 ? 0 : Math.min(...values);
+    },
+    mini: (values) => {
+      if (values.length > 30)
+        throw new RangeError("mini accepts at most 30 values");
+      for (const value of values) assertSpiceInt32(value, "mini value");
+      return values.length === 0 ? 0 : Math.min(...values);
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

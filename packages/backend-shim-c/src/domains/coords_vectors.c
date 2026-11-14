@@ -3,6 +3,7 @@
 #include "SpiceUsr.h"
 
 #include <string.h>
+#include <stdint.h>
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   int i;
@@ -20,6 +21,290 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
       out[i][j] = (SpiceDouble)m3x3[i * 3 + j];
     }
   }
+}
+
+static int tspice_scalar_math_invalid_arg(const char *message, char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, message, (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_brcktd(double value, double end1, double end2, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_scalar_math_invalid_arg("brcktd() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  const double result = brcktd_c(value, end1, end2);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = result;
+  return 0;
+}
+
+int tspice_brckti(int value, int end1, int end2, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_scalar_math_invalid_arg("brckti() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  const int result = brckti_c(value, end1, end2);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = result;
+  return 0;
+}
+
+int tspice_convrt(double value, const char *inUnit, const char *outUnit, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out || !inUnit || !outUnit) return tspice_scalar_math_invalid_arg("convrt() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  SpiceDouble converted = 0.0;
+  convrt_c(value, inUnit, outUnit, &converted);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = converted;
+  return 0;
+}
+
+int tspice_sumad(const double *values, int count, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out || count < 0 || (count > 0 && !values)) return tspice_scalar_math_invalid_arg("sumad() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  const double result = sumad_c(values, (SpiceInt)count);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = result;
+  return 0;
+}
+
+int tspice_sumai(const int *values, int count, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out || count < 0 || (count > 0 && !values)) return tspice_scalar_math_invalid_arg("sumai() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  // The pinned implementation accumulates in SpiceInt; do not invoke it
+  // when any ordered prefix would have undefined signed-overflow behavior.
+  int64_t prefix = 0;
+  for (int i = 0; i < count; i++) {
+    prefix += values[i];
+    if (prefix < INT32_MIN || prefix > INT32_MAX)
+      return tspice_scalar_math_invalid_arg("sumai(values) prefix sums must fit signed 32-bit integers", err, errMaxBytes);
+  }
+  const int result = sumai_c(values, (SpiceInt)count);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = result;
+  return 0;
+}
+
+int tspice_maxd(const double *values, int count, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out || count < 0 || (count > 0 && !values) || count > 30) return tspice_scalar_math_invalid_arg("maxd() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  double value = 0;
+  // Call the actual variadic routine with exactly count typed scalars.
+  switch (count) {
+    case 0: value = maxd_c(0); break;
+    case 1: value = maxd_c(1, values[0]); break;
+    case 2: value = maxd_c(2, values[0], values[1]); break;
+    case 3: value = maxd_c(3, values[0], values[1], values[2]); break;
+    case 4: value = maxd_c(4, values[0], values[1], values[2], values[3]); break;
+    case 5: value = maxd_c(5, values[0], values[1], values[2], values[3], values[4]); break;
+    case 6: value = maxd_c(6, values[0], values[1], values[2], values[3], values[4], values[5]); break;
+    case 7: value = maxd_c(7, values[0], values[1], values[2], values[3], values[4], values[5], values[6]); break;
+    case 8: value = maxd_c(8, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]); break;
+    case 9: value = maxd_c(9, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]); break;
+    case 10: value = maxd_c(10, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]); break;
+    case 11: value = maxd_c(11, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10]); break;
+    case 12: value = maxd_c(12, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11]); break;
+    case 13: value = maxd_c(13, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12]); break;
+    case 14: value = maxd_c(14, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13]); break;
+    case 15: value = maxd_c(15, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14]); break;
+    case 16: value = maxd_c(16, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]); break;
+    case 17: value = maxd_c(17, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16]); break;
+    case 18: value = maxd_c(18, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17]); break;
+    case 19: value = maxd_c(19, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18]); break;
+    case 20: value = maxd_c(20, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19]); break;
+    case 21: value = maxd_c(21, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20]); break;
+    case 22: value = maxd_c(22, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21]); break;
+    case 23: value = maxd_c(23, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22]); break;
+    case 24: value = maxd_c(24, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23]); break;
+    case 25: value = maxd_c(25, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24]); break;
+    case 26: value = maxd_c(26, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25]); break;
+    case 27: value = maxd_c(27, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26]); break;
+    case 28: value = maxd_c(28, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27]); break;
+    case 29: value = maxd_c(29, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28]); break;
+    case 30: value = maxd_c(30, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28], values[29]); break;
+    default: return tspice_scalar_math_invalid_arg("unsupported variadic count", err, errMaxBytes);
+  }
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_maxi(const int *values, int count, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out || count < 0 || (count > 0 && !values) || count > 30) return tspice_scalar_math_invalid_arg("maxi() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  int value = 0;
+  // Call the actual variadic routine with exactly count typed scalars.
+  switch (count) {
+    case 0: value = maxi_c(0); break;
+    case 1: value = maxi_c(1, values[0]); break;
+    case 2: value = maxi_c(2, values[0], values[1]); break;
+    case 3: value = maxi_c(3, values[0], values[1], values[2]); break;
+    case 4: value = maxi_c(4, values[0], values[1], values[2], values[3]); break;
+    case 5: value = maxi_c(5, values[0], values[1], values[2], values[3], values[4]); break;
+    case 6: value = maxi_c(6, values[0], values[1], values[2], values[3], values[4], values[5]); break;
+    case 7: value = maxi_c(7, values[0], values[1], values[2], values[3], values[4], values[5], values[6]); break;
+    case 8: value = maxi_c(8, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]); break;
+    case 9: value = maxi_c(9, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]); break;
+    case 10: value = maxi_c(10, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]); break;
+    case 11: value = maxi_c(11, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10]); break;
+    case 12: value = maxi_c(12, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11]); break;
+    case 13: value = maxi_c(13, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12]); break;
+    case 14: value = maxi_c(14, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13]); break;
+    case 15: value = maxi_c(15, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14]); break;
+    case 16: value = maxi_c(16, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]); break;
+    case 17: value = maxi_c(17, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16]); break;
+    case 18: value = maxi_c(18, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17]); break;
+    case 19: value = maxi_c(19, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18]); break;
+    case 20: value = maxi_c(20, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19]); break;
+    case 21: value = maxi_c(21, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20]); break;
+    case 22: value = maxi_c(22, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21]); break;
+    case 23: value = maxi_c(23, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22]); break;
+    case 24: value = maxi_c(24, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23]); break;
+    case 25: value = maxi_c(25, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24]); break;
+    case 26: value = maxi_c(26, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25]); break;
+    case 27: value = maxi_c(27, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26]); break;
+    case 28: value = maxi_c(28, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27]); break;
+    case 29: value = maxi_c(29, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28]); break;
+    case 30: value = maxi_c(30, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28], values[29]); break;
+    default: return tspice_scalar_math_invalid_arg("unsupported variadic count", err, errMaxBytes);
+  }
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_mind(const double *values, int count, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out || count < 0 || (count > 0 && !values) || count > 30) return tspice_scalar_math_invalid_arg("mind() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  double value = 0;
+  // Call the actual variadic routine with exactly count typed scalars.
+  switch (count) {
+    case 0: value = mind_c(0); break;
+    case 1: value = mind_c(1, values[0]); break;
+    case 2: value = mind_c(2, values[0], values[1]); break;
+    case 3: value = mind_c(3, values[0], values[1], values[2]); break;
+    case 4: value = mind_c(4, values[0], values[1], values[2], values[3]); break;
+    case 5: value = mind_c(5, values[0], values[1], values[2], values[3], values[4]); break;
+    case 6: value = mind_c(6, values[0], values[1], values[2], values[3], values[4], values[5]); break;
+    case 7: value = mind_c(7, values[0], values[1], values[2], values[3], values[4], values[5], values[6]); break;
+    case 8: value = mind_c(8, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]); break;
+    case 9: value = mind_c(9, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]); break;
+    case 10: value = mind_c(10, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]); break;
+    case 11: value = mind_c(11, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10]); break;
+    case 12: value = mind_c(12, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11]); break;
+    case 13: value = mind_c(13, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12]); break;
+    case 14: value = mind_c(14, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13]); break;
+    case 15: value = mind_c(15, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14]); break;
+    case 16: value = mind_c(16, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]); break;
+    case 17: value = mind_c(17, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16]); break;
+    case 18: value = mind_c(18, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17]); break;
+    case 19: value = mind_c(19, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18]); break;
+    case 20: value = mind_c(20, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19]); break;
+    case 21: value = mind_c(21, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20]); break;
+    case 22: value = mind_c(22, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21]); break;
+    case 23: value = mind_c(23, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22]); break;
+    case 24: value = mind_c(24, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23]); break;
+    case 25: value = mind_c(25, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24]); break;
+    case 26: value = mind_c(26, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25]); break;
+    case 27: value = mind_c(27, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26]); break;
+    case 28: value = mind_c(28, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27]); break;
+    case 29: value = mind_c(29, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28]); break;
+    case 30: value = mind_c(30, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28], values[29]); break;
+    default: return tspice_scalar_math_invalid_arg("unsupported variadic count", err, errMaxBytes);
+  }
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_mini(const int *values, int count, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out || count < 0 || (count > 0 && !values) || count > 30) return tspice_scalar_math_invalid_arg("mini() invalid buffer or count", err, errMaxBytes);
+  *out = 0;
+  int value = 0;
+  // Call the actual variadic routine with exactly count typed scalars.
+  switch (count) {
+    case 0: value = mini_c(0); break;
+    case 1: value = mini_c(1, values[0]); break;
+    case 2: value = mini_c(2, values[0], values[1]); break;
+    case 3: value = mini_c(3, values[0], values[1], values[2]); break;
+    case 4: value = mini_c(4, values[0], values[1], values[2], values[3]); break;
+    case 5: value = mini_c(5, values[0], values[1], values[2], values[3], values[4]); break;
+    case 6: value = mini_c(6, values[0], values[1], values[2], values[3], values[4], values[5]); break;
+    case 7: value = mini_c(7, values[0], values[1], values[2], values[3], values[4], values[5], values[6]); break;
+    case 8: value = mini_c(8, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]); break;
+    case 9: value = mini_c(9, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8]); break;
+    case 10: value = mini_c(10, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]); break;
+    case 11: value = mini_c(11, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10]); break;
+    case 12: value = mini_c(12, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11]); break;
+    case 13: value = mini_c(13, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12]); break;
+    case 14: value = mini_c(14, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13]); break;
+    case 15: value = mini_c(15, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14]); break;
+    case 16: value = mini_c(16, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15]); break;
+    case 17: value = mini_c(17, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16]); break;
+    case 18: value = mini_c(18, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17]); break;
+    case 19: value = mini_c(19, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18]); break;
+    case 20: value = mini_c(20, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19]); break;
+    case 21: value = mini_c(21, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20]); break;
+    case 22: value = mini_c(22, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21]); break;
+    case 23: value = mini_c(23, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22]); break;
+    case 24: value = mini_c(24, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23]); break;
+    case 25: value = mini_c(25, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24]); break;
+    case 26: value = mini_c(26, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25]); break;
+    case 27: value = mini_c(27, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26]); break;
+    case 28: value = mini_c(28, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27]); break;
+    case 29: value = mini_c(29, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28]); break;
+    case 30: value = mini_c(30, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15], values[16], values[17], values[18], values[19], values[20], values[21], values[22], values[23], values[24], values[25], values[26], values[27], values[28], values[29]); break;
+    default: return tspice_scalar_math_invalid_arg("unsupported variadic count", err, errMaxBytes);
+  }
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
 }
 
 int tspice_reclat(

@@ -10,6 +10,36 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## Scalar math expansion
+
+A03 adds nine routines alongside the unchanged original 162-routine baseline.
+Its 47 registered scenarios contain 373 actual routine calls, including seven
+genuine conversion errors. Four min/max functions have no top-level SpiceyPy
+wrappers; the new independent ctypes binding calls the actual locked library's
+canonical symbols with exact fixed-count/scalar-varargs ABI. Every supported
+arity 0..30 is exercised. Defined-input `sumai` results still come from CSPICE;
+unsafe signed prefixes are separate wrapper-safety checks, never oracle calls
+into undefined C behavior.
+
+The [scalar review](step8-scalar-math.md) records exact source/ABI evidence,
+conversion-table restrictions, ordered floating arithmetic, signed-zero probes,
+and allocation/count boundaries. The
+[batch audit](../data/parity-audits/a03-scalar-math.json) traces actual raw paths,
+independent oracle handlers, models/decoder, and focused tests. Old executions
+remain historical until fresh source-bound required local and canonical CI
+observations are recorded; review alone is not verification.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -55,3 +85,13 @@ This reuses the #684 cell identity mechanism; no C/WASM regeneration is needed.
 Error workflows can set `capture: true` on the existing `error.sigerr` step. This calls actual `raw.sigerr`, requires a structured SPICE exception, and compares its complete short/long/trace fields plus `raw.failed()` after the backend's automatic reset. No-op signaling and unrelated exceptions fail capture. The oracle calls actual `sp.sigerr`, reads full-size CSPICE buffers, and explicitly resets in `finally` to model the documented shim policy. Other steps continue normally, so stack changes, prepared messages, reset and repeated recovery have observable effects. This internal workflow option does not change public raw semantics.
 
 Both backends reset signaled errors before throwing. A persistent true failure flag cannot be reached through these raw operations alone; the audit records that limitation instead of injecting an artificial flag or claiming a constant-false implementation is fully distinguished by live workflows. The case handlers track caller-managed traceback entries and unwind remaining names in reverse order on success/error; reset alone does not remove them. Leading diagnostic blanks are significant; only trailing CSPICE padding is removed.
+
+## Validated input snapshots
+
+`sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c` now marshal the same entries that the typed adapters validated.
+Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts). These adapter checks do not replace
+the independent scientific workflows. Earlier executions remain historical on
+their recorded fingerprints; both required local lanes and observed canonical CI
+must run on the corrected source before current verification.
