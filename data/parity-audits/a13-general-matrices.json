@@ -1,0 +1,703 @@
+{
+  "schemaVersion": 1,
+  "batch": "a13-general-matrices",
+  "traceFiles": [
+    "docs/step8-general-matrices.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/coords-vectors.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/general-matrices-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/include/tspice_matrix_shapes.h",
+    "packages/backend-shim-c/src/domains/coords_vectors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/general-matrices-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/general-matrices.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/general-matrices.test.ts",
+    "packages/py-parity-checking/test/general-matrix-public.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger/source-analysis.mjs",
+    "scripts/coverage-ledger.test.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "mequg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mequg_c.html",
+      "semantics": "Copy exactly nr×nc doubles in input order into a new owned array. Finite input values, including signed zero, are preserved. Supported nonnegative signed dimensions include any zero-area shape.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mequg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Read every row-major element of asymmetric 2×3 and 3×2 inputs backed by the same six values."
+        },
+        {
+          "caseId": "coords-vectors-mequg-row-column-scalar",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise separately allocated singletons, one row, one column and a strongly nonsymmetric square."
+        },
+        {
+          "caseId": "coords-vectors-mequg-stride-and-interior-cycles",
+          "coverage": ["success", "edge"],
+          "observes": "A 3×5 rectangle with unique interior values distinguishes row stride and transpose cycles."
+        },
+        {
+          "caseId": "coords-vectors-mequg-growing-and-shrinking",
+          "coverage": ["success", "edge"],
+          "observes": "Alternate sizes including empty to detect retained results from prior calls."
+        },
+        {
+          "caseId": "coords-vectors-mequg-empty-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Call the real routine for zero rows, zero columns and both zero with initialized sentinel storage."
+        },
+        {
+          "caseId": "coords-vectors-mequg-small-and-large",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve complete tiny, large and ordinary entries when copying or transposing."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape. A zero-area shape can retain an unused positive dimension of INT32_MAX without allocating a giant matrix.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. MEQUG uses a signed dimension product as a memmove count. Negative dimensions are rejected before evaluation by CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "mequg-explicit-shape-oracle",
+          "summary": "SpiceyPy 6.0.3 swaps nr and nc in its MEQUG call. Their product preserves ordinary copy length, hiding the ordering issue. Its nested NumPy signature also does not retain the full exposed rectangular empty-shape domain.",
+          "repair": "Call the reviewed independent mequg_c ABI in C argument order with owned non-null storage. Separately compare a positive nonsquare call with the ordinary wrapper byte for byte, including negative zero.",
+          "status": "repaired",
+          "caseIds": ["coords-vectors-mequg-empty-axes"],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mequg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mequg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mtxmg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mtxmg_c.html",
+      "semantics": "Compute transpose(m1) times m2. Both input row counts equal nr1r2. Their column counts are nc1 and nc2, respectively. Return all nc1×nc2 elements in row-major order. A nonpositive signed contraction gives zeros for every output element.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mtxmg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-scalar-row-and-column",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-row-selection",
+          "coverage": ["success", "edge"],
+          "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-scaled-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-zero-contraction",
+          "coverage": ["success", "edge"],
+          "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-zero-outer",
+          "coverage": ["success", "edge"],
+          "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-zero-columns",
+          "coverage": ["success", "edge"],
+          "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
+        },
+        {
+          "caseId": "coords-vectors-mtxmg-negative-inner",
+          "coverage": ["success", "edge"],
+          "observes": "The pinned routine performs an empty contraction for a negative inner dimension, writing exact zeros for all output rows and columns."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape. Also exercise two negative contractions, including INT32_MIN, with empty operands and a nonempty output.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. The canonical routine allocates its own temporary and can signal MALLOCFAILED. The tests fault each adapter allocation independently and permit the toolkit to report its actual status. No resource-exhaustion scientific fixture or simulated canonical MALLOCFAILED is counted.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "mtxmg-explicit-shape-oracle",
+          "summary": "The locked convenience wrapper uses nested matrices and inferred extents. On degenerate shapes the parity driver must preserve the caller’s declared dimensions and independently provide and inspect the physical storage for logical empty buffers.",
+          "repair": "Call locked sp.mtxmg on ordinary positive shapes. For the supported degenerate dimensions, invoke the separately bound canonical mtxmg_c on caller-sized output and non-null input storage, forwarding the original signed dimensions.",
+          "status": "repaired",
+          "caseIds": [
+            "coords-vectors-mtxmg-zero-contraction",
+            "coords-vectors-mtxmg-zero-outer",
+            "coords-vectors-mtxmg-negative-inner"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mtxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mtxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mtxvg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mtxvg_c.html",
+      "semantics": "Multiply the transpose of an nr1r2×nc1 matrix by a vector of length nr1r2. Return nc1 components, including a complete zero-filled result for a zero contraction.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mtxvg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
+        },
+        {
+          "caseId": "coords-vectors-mtxvg-scalar-row-and-column",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
+        },
+        {
+          "caseId": "coords-vectors-mtxvg-row-selection",
+          "coverage": ["success", "edge"],
+          "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
+        },
+        {
+          "caseId": "coords-vectors-mtxvg-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
+        },
+        {
+          "caseId": "coords-vectors-mtxvg-scaled-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
+        },
+        {
+          "caseId": "coords-vectors-mtxvg-zero-contraction",
+          "coverage": ["success", "edge"],
+          "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
+        },
+        {
+          "caseId": "coords-vectors-mtxvg-zero-outer",
+          "coverage": ["success", "edge"],
+          "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. The canonical routine allocates its own temporary and can signal MALLOCFAILED. The tests fault each adapter allocation independently and permit the toolkit to report its actual status. No resource-exhaustion scientific fixture or simulated canonical MALLOCFAILED is counted.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "mtxvg-explicit-shape-oracle",
+          "summary": "The locked convenience wrapper uses nested matrices and inferred extents. On degenerate shapes the parity driver must preserve the caller’s declared dimensions and independently provide and inspect the physical storage for logical empty buffers.",
+          "repair": "Call locked sp.mtxvg on ordinary positive shapes. For the supported degenerate dimensions, invoke the separately bound canonical mtxvg_c on caller-sized output and non-null input storage, forwarding the original signed dimensions.",
+          "status": "repaired",
+          "caseIds": [
+            "coords-vectors-mtxvg-zero-contraction",
+            "coords-vectors-mtxvg-zero-outer"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mtxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mtxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mxmg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxmg_c.html",
+      "semantics": "Multiply an nr1×nc1r2 matrix by an nc1r2×nc2 matrix and return all nr1×nc2 components in row-major order. A nonpositive signed contraction gives zeros for every output element.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mxmg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-scalar-row-and-column",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-row-selection",
+          "coverage": ["success", "edge"],
+          "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-scaled-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-zero-contraction",
+          "coverage": ["success", "edge"],
+          "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-zero-outer",
+          "coverage": ["success", "edge"],
+          "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-zero-columns",
+          "coverage": ["success", "edge"],
+          "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
+        },
+        {
+          "caseId": "coords-vectors-mxmg-negative-inner",
+          "coverage": ["success", "edge"],
+          "observes": "The pinned routine performs an empty contraction for a negative inner dimension, writing exact zeros for all output rows and columns."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape. Also exercise two negative contractions, including INT32_MIN, with empty operands and a nonempty output.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. The canonical routine allocates its own temporary and can signal MALLOCFAILED. The tests fault each adapter allocation independently and permit the toolkit to report its actual status. No resource-exhaustion scientific fixture or simulated canonical MALLOCFAILED is counted.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "mxmg-explicit-shape-oracle",
+          "summary": "The locked convenience wrapper uses nested matrices and inferred extents. On degenerate shapes the parity driver must preserve the caller’s declared dimensions and independently provide and inspect the physical storage for logical empty buffers.",
+          "repair": "Call locked sp.mxmg on ordinary positive shapes. For the supported degenerate dimensions, invoke the separately bound canonical mxmg_c on caller-sized output and non-null input storage, forwarding the original signed dimensions.",
+          "status": "repaired",
+          "caseIds": [
+            "coords-vectors-mxmg-zero-contraction",
+            "coords-vectors-mxmg-zero-outer",
+            "coords-vectors-mxmg-negative-inner"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mxmtg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxmtg_c.html",
+      "semantics": "Multiply m1 by the transpose of m2. Both have nc1c2 columns, with nr1 and nr2 rows respectively. Return a flat nr1×nr2 product, including zeros when nc1c2 is zero.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mxmtg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
+        },
+        {
+          "caseId": "coords-vectors-mxmtg-scalar-row-and-column",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
+        },
+        {
+          "caseId": "coords-vectors-mxmtg-row-selection",
+          "coverage": ["success", "edge"],
+          "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
+        },
+        {
+          "caseId": "coords-vectors-mxmtg-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
+        },
+        {
+          "caseId": "coords-vectors-mxmtg-scaled-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
+        },
+        {
+          "caseId": "coords-vectors-mxmtg-zero-contraction",
+          "coverage": ["success", "edge"],
+          "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
+        },
+        {
+          "caseId": "coords-vectors-mxmtg-zero-outer",
+          "coverage": ["success", "edge"],
+          "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
+        },
+        {
+          "caseId": "coords-vectors-mxmtg-zero-columns",
+          "coverage": ["success", "edge"],
+          "observes": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. The canonical routine allocates its own temporary and can signal MALLOCFAILED. The tests fault each adapter allocation independently and permit the toolkit to report its actual status. No resource-exhaustion scientific fixture or simulated canonical MALLOCFAILED is counted.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "mxmtg-explicit-shape-oracle",
+          "summary": "The locked convenience wrapper uses nested matrices and inferred extents. On degenerate shapes the parity driver must preserve the caller’s declared dimensions and independently provide and inspect the physical storage for logical empty buffers.",
+          "repair": "Call locked sp.mxmtg on ordinary positive shapes. For the supported degenerate dimensions, invoke the separately bound canonical mxmtg_c on caller-sized output and non-null input storage, forwarding the original signed dimensions.",
+          "status": "repaired",
+          "caseIds": [
+            "coords-vectors-mxmtg-zero-contraction",
+            "coords-vectors-mxmtg-zero-outer"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxmtg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxmtg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mxvg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxvg_c.html",
+      "semantics": "Multiply an nr1×nc1r2 matrix by a length-nc1r2 column vector and return nr1 components. A zero contraction returns the complete zero-filled output.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mxvg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
+        },
+        {
+          "caseId": "coords-vectors-mxvg-scalar-row-and-column",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
+        },
+        {
+          "caseId": "coords-vectors-mxvg-row-selection",
+          "coverage": ["success", "edge"],
+          "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
+        },
+        {
+          "caseId": "coords-vectors-mxvg-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
+        },
+        {
+          "caseId": "coords-vectors-mxvg-scaled-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
+        },
+        {
+          "caseId": "coords-vectors-mxvg-zero-contraction",
+          "coverage": ["success", "edge"],
+          "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
+        },
+        {
+          "caseId": "coords-vectors-mxvg-zero-outer",
+          "coverage": ["success", "edge"],
+          "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. The canonical routine allocates its own temporary and can signal MALLOCFAILED. The tests fault each adapter allocation independently and permit the toolkit to report its actual status. No resource-exhaustion scientific fixture or simulated canonical MALLOCFAILED is counted.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "mxvg-explicit-shape-oracle",
+          "summary": "The locked convenience wrapper uses nested matrices and inferred extents. On degenerate shapes the parity driver must preserve the caller’s declared dimensions and independently provide and inspect the physical storage for logical empty buffers.",
+          "repair": "Call locked sp.mxvg on ordinary positive shapes. For the supported degenerate dimensions, invoke the separately bound canonical mxvg_c on caller-sized output and non-null input storage, forwarding the original signed dimensions.",
+          "status": "repaired",
+          "caseIds": [
+            "coords-vectors-mxvg-zero-contraction",
+            "coords-vectors-mxvg-zero-outer"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "vtmvg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vtmvg_c.html",
+      "semantics": "Return the scalar v1ᵀ matrix v2. v1 has nrow components, the matrix has nrow×ncol components, and v2 has ncol components. A zero row or column extent gives zero. Pinned arithmetic order can overflow the first multiplication before a subsequent zero factor.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vtmvg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides."
+        },
+        {
+          "caseId": "coords-vectors-vtmvg-scalar-row-and-column",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs."
+        },
+        {
+          "caseId": "coords-vectors-vtmvg-row-selection",
+          "coverage": ["success", "edge"],
+          "observes": "Sparse and permuted basis rows isolate two indices of the input independently."
+        },
+        {
+          "caseId": "coords-vectors-vtmvg-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum."
+        },
+        {
+          "caseId": "coords-vectors-vtmvg-scaled-fractions",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation."
+        },
+        {
+          "caseId": "coords-vectors-vtmvg-zero-contraction",
+          "coverage": ["success", "edge"],
+          "observes": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels."
+        },
+        {
+          "caseId": "coords-vectors-vtmvg-zero-outer",
+          "coverage": ["success", "edge"],
+          "observes": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. The pinned routine has no signaled scientific error for the covered finite supported calls. Its numerical result is observed directly.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "vtmvg-explicit-shape-oracle",
+          "summary": "The locked convenience wrapper uses nested matrices and inferred extents. On degenerate shapes the parity driver must preserve the caller’s declared dimensions and independently provide and inspect the physical storage for logical empty buffers.",
+          "repair": "Call locked sp.vtmvg on ordinary positive shapes. For the supported degenerate dimensions, invoke the separately bound canonical vtmvg_c on caller-sized output and non-null input storage, forwarding the original signed dimensions.",
+          "status": "repaired",
+          "caseIds": [
+            "coords-vectors-vtmvg-zero-contraction",
+            "coords-vectors-vtmvg-zero-outer"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vtmvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.vtmvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "xposeg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xposeg_c.html",
+      "semantics": "Transpose an nrow×ncol matrix to an independently owned ncol×nrow flat row-major array. A nonpositive signed dimension causes an actual no-write call and returns empty.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-xposeg-unequal-rectangles",
+          "coverage": ["success", "edge"],
+          "observes": "Read every row-major element of asymmetric 2×3 and 3×2 inputs backed by the same six values."
+        },
+        {
+          "caseId": "coords-vectors-xposeg-row-column-scalar",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise separately allocated singletons, one row, one column and a strongly nonsymmetric square."
+        },
+        {
+          "caseId": "coords-vectors-xposeg-stride-and-interior-cycles",
+          "coverage": ["success", "edge"],
+          "observes": "A 3×5 rectangle with unique interior values distinguishes row stride and transpose cycles."
+        },
+        {
+          "caseId": "coords-vectors-xposeg-growing-and-shrinking",
+          "coverage": ["success", "edge"],
+          "observes": "Alternate sizes including empty to detect retained results from prior calls."
+        },
+        {
+          "caseId": "coords-vectors-xposeg-empty-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Call the real routine for zero rows, zero columns and both zero with initialized sentinel storage."
+        },
+        {
+          "caseId": "coords-vectors-xposeg-small-and-large",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve complete tiny, large and ordinary entries when copying or transposing."
+        },
+        {
+          "caseId": "coords-vectors-xposeg-nonpositive-no-write",
+          "coverage": ["success", "edge"],
+          "observes": "Pinned XPOSEG returns without writing if either dimension is nonpositive, including signed-minimum."
+        }
+      ],
+      "edgeAssessment": "Observe each row-major output on nonsquare shapes, singleton/row/column cases, scaled data and distinct axes. Verified empty calls use an allocated sentinel and forward the logical shape. A zero-area shape can retain an unused positive dimension of INT32_MAX without allocating a giant matrix.",
+      "errorAssessment": "Guard signed32 dimensions, exact finite operand lengths, all input/output extents and supported signs before C. The pinned routine has no signaled scientific error for the covered finite supported calls. Its numerical result is observed directly.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored dimension triples, rows and vector components are contained in each workflow. No kernel, file or external dataset is required.",
+      "cleanup": "Node snapshots caller input into owned storage under its native boundary. WASM releases each acquired temporary on success or failure and copies output before freeing storage. Returned arrays remain owned by the caller. Public setups dispose clients in finally, and no global kernel state is needed.",
+      "tolerance": "The unchanged workflow comparator observes every finite component under its existing 1e−12 absolute/relative tolerance. Supplementary live tests check exact tiny dyadic values, explicit IEEE tags and row-major ordering. No scientific arithmetic is substituted.",
+      "findings": [
+        {
+          "id": "xposeg-explicit-shape-oracle",
+          "summary": "The locked convenience wrapper uses nested matrices and inferred extents. On degenerate shapes the parity driver must preserve the caller’s declared dimensions and independently provide and inspect the physical storage for logical empty buffers.",
+          "repair": "Call locked sp.xposeg on ordinary positive shapes. For the supported degenerate dimensions, invoke the separately bound canonical xposeg_c on caller-sized output and non-null input storage, forwarding the original signed dimensions.",
+          "status": "repaired",
+          "caseIds": [
+            "coords-vectors-xposeg-empty-axes",
+            "coords-vectors-xposeg-nonpositive-no-write"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_matrix_oracle.py",
+            "packages/py-parity-checking/test/general-matrices.test.ts",
+            "docs/step8-general-matrices.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.xposeg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.xposeg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Local focused backend, oracle and public results are supplemental. Verification on the combined A10/A13 source requires complete source-bound required local and canonical CI evidence."
+}

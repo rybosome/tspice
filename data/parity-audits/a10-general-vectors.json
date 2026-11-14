@@ -512,7 +512,8 @@
         "coords-vectors-vzerog-mixed-dimensions",
         "coords-vectors-vzerog-zero-and-last-component"
       ],
-      "observation": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a10-78297004-wasm",
@@ -606,7 +607,8 @@
         "coords-vectors-vzerog-mixed-dimensions",
         "coords-vectors-vzerog-zero-and-last-component"
       ],
-      "observation": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a10-78297004-node",
@@ -702,7 +704,8 @@
       ],
       "commit": "78297004a553e6a0c756fc65b78d8c4cd09bcc01",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550267694/job/132310887727",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a10-78297004-wasm",
@@ -798,7 +801,8 @@
       ],
       "commit": "78297004a553e6a0c756fc65b78d8c4cd09bcc01",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550267694/job/132310887727",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -879,11 +883,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vaddg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -893,11 +898,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vaddg -> typed WASM adapter -> exported _tspice_vaddg with checked buffers/dimension and copied output -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -963,11 +969,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdistg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -976,11 +983,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdistg -> typed WASM adapter -> exported _tspice_vdistg with checked buffers/dimension and copied output -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1051,11 +1059,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdotg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1064,11 +1073,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vdotg -> typed WASM adapter -> exported _tspice_vdotg with checked buffers/dimension and copied output -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1154,11 +1164,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1168,11 +1179,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vequg -> typed WASM adapter -> exported _tspice_vequg with checked buffers/dimension and copied output -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1253,11 +1265,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhatg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1267,11 +1280,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vhatg -> typed WASM adapter -> exported _tspice_vhatg with checked buffers/dimension and copied output -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1354,11 +1368,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcomg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1368,11 +1383,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vlcomg -> typed WASM adapter -> exported _tspice_vlcomg with checked buffers/dimension and copied output -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1458,11 +1474,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminug -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1472,11 +1489,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vminug -> typed WASM adapter -> exported _tspice_vminug with checked buffers/dimension and copied output -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1542,11 +1560,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1555,11 +1574,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vnormg -> typed WASM adapter -> exported _tspice_vnormg with checked buffers/dimension and copied output -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1645,11 +1665,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vprojg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1659,11 +1680,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vprojg -> typed WASM adapter -> exported _tspice_vprojg with checked buffers/dimension and copied output -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1734,11 +1756,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrelg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1747,11 +1770,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vrelg -> typed WASM adapter -> exported _tspice_vrelg with checked buffers/dimension and copied output -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1834,11 +1858,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsclg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1848,11 +1873,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsclg -> typed WASM adapter -> exported _tspice_vsclg with checked buffers/dimension and copied output -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -1928,11 +1954,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsepg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1941,11 +1968,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsepg -> typed WASM adapter -> exported _tspice_vsepg with checked buffers/dimension and copied output -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -2026,11 +2054,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsubg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2040,11 +2069,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vsubg -> typed WASM adapter -> exported _tspice_vsubg with checked buffers/dimension and copied output -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -2110,11 +2140,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzerog -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2123,11 +2154,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.vzerog -> typed WASM adapter -> exported _tspice_vzerog with checked buffers/dimension and copied output -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     },
@@ -2208,11 +2240,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
-          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2222,14 +2255,15 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.unormg -> typed WASM adapter -> exported _tspice_unormg with checked buffers/dimension and copied output -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
-          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Original source fingerprints and execution evidence are retained. The combined A10/A13 source requires fresh source-bound required local and canonical CI observations on both backends."
 }

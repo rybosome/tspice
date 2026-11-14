@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 177
-- Planned (not yet implemented): 472
+- Implemented now (SpiceRawBackend): 185
+- Planned (not yet implemented): 464
 - Excluded: 3
 
 ## Implemented now
@@ -112,9 +112,15 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `mequg_c` | Matrix equal to another, general dimension |
+| `mtxmg_c` | Matrix transpose times matrix, general dimension |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
+| `mtxvg_c` | Matrix transpose times vector, general dimension |
 | `mxm_c` | Matrix times matrix, 3x3 |
+| `mxmg_c` | Matrix times matrix, general dimension |
+| `mxmtg_c` | Matrix times matrix transpose, general dimension |
 | `mxv_c` | Matrix times vector, 3x3 |
+| `mxvg_c` | Matrix times vector, general dimension |
 | `namfrm_c` | Name to frame |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
@@ -193,11 +199,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vsepg_c` | Angular separation of vectors, general dimension |
 | `vsub_c` | Vector subtraction, 3 dimensions |
 | `vsubg_c` | Vector subtraction, general dimension |
+| `vtmvg_c` | Vector transpose times matrix times vector |
 | `vzerog_c` | Is a vector the zero vector? -- general dim. |
 | `wncard_c` | Cardinality of a double precision window |
 | `wnfetd_c` | Fetch an interval from a DP window |
 | `wninsd_c` | Insert an interval into a DP window |
 | `wnvald_c` | Validate a DP window |
+| `xposeg_c` | Transpose a matrix, general |
 
 ## Planned (not yet implemented)
 
@@ -469,17 +477,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `maxd_c` | Maximum of a set of double precision values |
 | `maxi_c` | Maximum of a set of integers |
 | `mequ_c` | Matrix equal to another, 3x3 |
-| `mequg_c` | Matrix equal to another, general dimension |
 | `mind_c` | Minimum of a set of double precision values |
 | `mini_c` | minimum of a set of integers |
 | `moved_c` | Move a double precision array to another |
 | `mtxm_c` | Matrix transpose times matrix, 3x3 |
-| `mtxmg_c` | Matrix transpose times matrix, general dimension |
-| `mtxvg_c` | Matrix transpose times vector, general dimension |
-| `mxmg_c` | Matrix times matrix, general dimension |
 | `mxmt_c` | Matrix times matrix transpose, 3x3 |
-| `mxmtg_c` | Matrix times matrix transpose, general dimension |
-| `mxvg_c` | Matrix times vector, general dimension |
 | `ncpos_c` | NOT Character position |
 | `ncposr_c` | Character position, reverse |
 | `nearpt_c` | Nearest point on an ellipsoid |
@@ -653,7 +655,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vrotv_c` | Vector rotation about an axis |
 | `vsep_c` | Angular separation of vectors, 3 dimensions |
 | `vtmv_c` | Vector transpose times matrix times vector, 3 dim |
-| `vtmvg_c` | Vector transpose times matrix times vector |
 | `vupack_c` | Unpack three scalar components from a vector |
 | `vzero_c` | Is a vector the zero vector? |
 | `wncomd_c` | Complement a DP window |
@@ -674,7 +675,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `xfmsta_c` | Transform state between coordinate systems |
 | `xpose_c` | Transpose a matrix, 3x3 |
 | `xpose6_c` | Transpose a matrix, 6x6 |
-| `xposeg_c` | Transpose a matrix, general |
 
 ## Excluded
 

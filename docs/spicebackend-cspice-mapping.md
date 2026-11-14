@@ -399,6 +399,22 @@ TIMDEF defaults persist across `kclear`/`reset`. Parity workflows capture and re
 
 The audit retains the real cookbook fixture and adds a repository-authored two-partition clock with small exact values, making fractional/partition errors observable under unchanged numeric tolerances. Every result/error comes from the actual raw operation and live SpiceyPy. Fixture provenance, conditional conversion requirements, same-instance recovery and temporary allocation rollback are recorded per routine.
 
+### General matrices
+
+| Raw method         | Canonical operation | Result                      |
+| ------------------ | ------------------- | --------------------------- |
+| `mequg(A,r,c)`     | `mequg_c`           | Owned row-major copy, r × c |
+| `mtxmg(A,B,r,k,c)` | `mtxmg_c`           | AᵀB, r × c                  |
+| `mtxvg(A,x,r,k)`   | `mtxvg_c`           | Aᵀx, r elements             |
+| `mxmg(A,B,r,k,c)`  | `mxmg_c`            | AB, r × c                   |
+| `mxmtg(A,B,r,k,c)` | `mxmtg_c`           | ABᵀ, r × c                  |
+| `mxvg(A,x,r,k)`    | `mxvg_c`            | Ax, r elements              |
+| `vtmvg(y,A,x,r,c)` | `vtmvg_c`           | Scalar yᵀAx                 |
+| `xposeg(A,r,c)`    | `xposeg_c`          | Flat c × r transpose        |
+
+The input arrays retain row-major order. Output extent and the expected input
+lengths depend on each routine's dimension order. [Shapes, signed dimensions and independent observations](step8-general-matrices.md)
+
 ## Domain: `file-io` readers (`FileIoApi`)
 
 | Raw method       | Actual CSPICE route        | Semantic observations                                                                                                |

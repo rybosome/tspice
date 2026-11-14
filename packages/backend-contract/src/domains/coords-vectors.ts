@@ -9,6 +9,121 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
   /**
+   * Copy an nr by nc flat row-major matrix. Negative dimensions are rejected because the
+   * pinned implementation passes nr*nc to memmove. Inputs are finite flat row-major
+   * arrays and outputs are owned. Dimensions must be nonnegative signed 32-bit integers.
+   * Each input and output buffer on both backends is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mequg_c.html
+   */
+  mequg(m1: readonly number[], nr: number, nc: number): number[];
+
+  /**
+   * Multiply transpose(m1) by m2. Inputs have nr1r2 rows and respectively nc1 and nc2
+   * columns. A nonpositive contracted dimension yields a zero-filled nc1 by nc2 result
+   * from empty operands. Inputs are finite flat row-major arrays and outputs are owned.
+   * Signed 32-bit dimensions may be negative only for the contracted dimension. Each
+   * input and output buffer on both backends is limited to 256 MiB. The outer output row
+   * count is also limited to 33,554,432, including when the result has zero columns.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mtxmg_c.html
+   */
+  mtxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+    nc2: number,
+  ): number[];
+
+  /**
+   * Multiply transpose(m1) by v2. The matrix has nr1r2 rows and nc1 columns, and the
+   * vector has nr1r2 entries. Supply magnitudes that avoid intermediate overflow. Inputs
+   * are finite flat row-major arrays and outputs are owned. Dimensions must be
+   * nonnegative signed 32-bit integers. Each input and output buffer on both backends is
+   * limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mtxvg_c.html
+   */
+  mtxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+  ): number[];
+
+  /**
+   * Multiply m1 by m2. Inputs have shapes nr1 by nc1r2 and nc1r2 by nc2. A nonpositive
+   * contracted dimension yields a zero-filled nr1 by nc2 result from empty operands.
+   * Inputs are finite flat row-major arrays and outputs are owned. Signed 32-bit
+   * dimensions may be negative only for the contracted dimension. Each input and output
+   * buffer on both backends is limited to 256 MiB. The outer output row count is also
+   * limited to 33,554,432, including when the result has zero columns.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxmg_c.html
+   */
+  mxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+    nc2: number,
+  ): number[];
+
+  /**
+   * Multiply m1 by transpose(m2). Both input matrices have nc1c2 columns, with nr1 and
+   * nr2 rows respectively. Supply magnitudes that avoid intermediate overflow. Inputs are
+   * finite flat row-major arrays and outputs are owned. Dimensions must be nonnegative
+   * signed 32-bit integers. Each input and output buffer on both backends is limited to
+   * 256 MiB. The outer output row count is also limited to 33,554,432, including when the
+   * result has zero columns.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxmtg_c.html
+   */
+  mxmtg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1c2: number,
+    nr2: number,
+  ): number[];
+
+  /**
+   * Multiply an nr1 by nc1r2 matrix by an nc1r2-element vector. The result has nr1
+   * entries. Supply magnitudes that avoid intermediate overflow. Inputs are finite flat
+   * row-major arrays and outputs are owned. Dimensions must be nonnegative signed 32-bit
+   * integers. Each input and output buffer on both backends is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxvg_c.html
+   */
+  mxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+  ): number[];
+
+  /**
+   * Compute the scalar transpose(v1) * matrix * v2. The vectors have nrow and ncol
+   * entries. An empty contraction returns zero. Choose magnitudes that keep intermediate
+   * products and sums in range. Inputs are finite flat row-major arrays and outputs are
+   * owned. Dimensions must be nonnegative signed 32-bit integers. Each input and output
+   * buffer on both backends is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vtmvg_c.html
+   */
+  vtmvg(
+    v1: readonly number[],
+    matrix: readonly number[],
+    v2: readonly number[],
+    nrow: number,
+    ncol: number,
+  ): number;
+
+  /**
+   * Transpose an nrow by ncol matrix into a separate flat ncol by nrow output. When
+   * either dimension is nonpositive, the actual routine takes no action on the empty
+   * input/output. Inputs are finite flat row-major arrays and outputs are owned.
+   * Dimensions are signed 32-bit integers. Each input and output buffer on both backends
+   * is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xposeg_c.html
+   */
+  xposeg(matrix: readonly number[], nrow: number, ncol: number): number[];
+
+  /**
    * Return the component-wise sum a + b as an independent array.
    *
    * Vector inputs are readonly arrays of finite numbers and are not modified.

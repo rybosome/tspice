@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import general_matrix_oracle
 from .. import general_vector_oracle
 
 from ..models import (
@@ -11,6 +12,14 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsMequg,
+    StepCoordsVectorsMtxmg,
+    StepCoordsVectorsMtxvg,
+    StepCoordsVectorsMxmg,
+    StepCoordsVectorsMxmtg,
+    StepCoordsVectorsMxvg,
+    StepCoordsVectorsVtmvg,
+    StepCoordsVectorsXposeg,
     StepCoordsVectorsVaddg,
     StepCoordsVectorsVdistg,
     StepCoordsVectorsVdotg,
@@ -75,6 +84,38 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsMequg):
+        result = general_matrix_oracle.mequg(step.m1, step.nr, step.nc)
+        return StepOutput(op=step.op, value=result)
+
+    if isinstance(step, StepCoordsVectorsMtxmg):
+        result = general_matrix_oracle.mtxmg(step.m1, step.m2, step.nc1, step.nr1r2, step.nc2)
+        return StepOutput(op=step.op, value=result)
+
+    if isinstance(step, StepCoordsVectorsMtxvg):
+        result = general_matrix_oracle.mtxvg(step.m1, step.v2, step.nc1, step.nr1r2)
+        return StepOutput(op=step.op, value=result)
+
+    if isinstance(step, StepCoordsVectorsMxmg):
+        result = general_matrix_oracle.mxmg(step.m1, step.m2, step.nr1, step.nc1r2, step.nc2)
+        return StepOutput(op=step.op, value=result)
+
+    if isinstance(step, StepCoordsVectorsMxmtg):
+        result = general_matrix_oracle.mxmtg(step.m1, step.m2, step.nr1, step.nc1c2, step.nr2)
+        return StepOutput(op=step.op, value=result)
+
+    if isinstance(step, StepCoordsVectorsMxvg):
+        result = general_matrix_oracle.mxvg(step.m1, step.v2, step.nr1, step.nc1r2)
+        return StepOutput(op=step.op, value=result)
+
+    if isinstance(step, StepCoordsVectorsVtmvg):
+        result = general_matrix_oracle.vtmvg(step.v1, step.matrix, step.v2, step.nrow, step.ncol)
+        return StepOutput(op=step.op, value=result)
+
+    if isinstance(step, StepCoordsVectorsXposeg):
+        result = general_matrix_oracle.xposeg(step.matrix, step.nrow, step.ncol)
+        return StepOutput(op=step.op, value=result)
+
     if isinstance(step, StepCoordsVectorsVaddg):
         general_vector_oracle.validate_inputs("vaddg", step.a, step.b)
         out = general_vector_oracle.empty_result("vaddg") if len(step.a) == 0 else sp.vaddg(step.a, step.b)

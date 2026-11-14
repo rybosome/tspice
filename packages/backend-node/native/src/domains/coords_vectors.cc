@@ -1,5 +1,8 @@
 #include "coords_vectors.h"
 
+#include "tspice_matrix_shapes.h"
+#include <memory>
+#include <new>
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -41,6 +44,322 @@ static bool ReadGeneralVector(Napi::Env env, const Napi::Value& value, std::vect
     if (!ReadGeneralVectorScalar(env, array.Get(i), &out[i], label)) return false;
   }
   return true;
+}
+
+static bool ReadMatrixDimension(Napi::Env env, const Napi::Value& value, int *out) {
+  if (value.IsNumber()) {
+    const double number = value.As<Napi::Number>().DoubleValue();
+    if (number >= INT32_MIN && number <= INT32_MAX && std::trunc(number) == number) {
+      *out = static_cast<int>(number);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Matrix dimension must be a signed 32-bit integer"));
+  return false;
+}
+
+static bool CheckMatrixLength(Napi::Env env, const Napi::Value& source, int count) {
+  if (!source.IsArray() || source.As<Napi::Array>().Length() != static_cast<uint32_t>(count)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Flat matrix or vector input has an incorrect length"));
+    return false;
+  }
+  return true;
+}
+
+static std::unique_ptr<double[]> MatrixStorage(Napi::Env env, int count) {
+  // N0067 expects non-null pointers even when the logical array is empty.
+  std::unique_ptr<double[]> out(new (std::nothrow) double[std::max(1, count)]);
+  if (!out) ThrowSpiceError(Napi::Error::New(env, "Unable to allocate matrix storage"));
+  return out;
+}
+
+static bool CopyMatrixInput(Napi::Env env, const Napi::Value& source, int count, double *out) {
+  const auto array = source.As<Napi::Array>();
+  for (int i = 0; i < count; ++i) {
+    if (!ReadGeneralVectorScalar(env, array.Get(static_cast<uint32_t>(i)), &out[i], "matrix component")) return false;
+  }
+  return true;
+}
+
+static Napi::Value Mequg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mequg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nr;
+  if (!ReadMatrixDimension(env, info[1], &nr)) return env.Undefined();
+  int nc;
+  if (!ReadMatrixDimension(env, info[2], &nc)) return env.Undefined();
+  int m1Count, outCount;
+  if (!tspice_matrix_count(nr, nc, &m1Count) ||
+      !tspice_matrix_count(nr, nc, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], m1Count)) return env.Undefined();
+  auto m1 = MatrixStorage(env, m1Count);
+  if (!m1 || !CopyMatrixInput(env, info[0], m1Count, m1.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_mequg(m1.get(), nr, nc, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "mequg", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out.get(),static_cast<size_t>(outCount));
+}
+
+static Napi::Value Mtxmg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mtxmg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nc1;
+  if (!ReadMatrixDimension(env, info[2], &nc1)) return env.Undefined();
+  int nr1r2;
+  if (!ReadMatrixDimension(env, info[3], &nr1r2)) return env.Undefined();
+  int nc2;
+  if (!ReadMatrixDimension(env, info[4], &nc2)) return env.Undefined();
+  const int k = nr1r2 < 0 ? 0 : nr1r2;
+  int m1Count, m2Count, outCount;
+  if (nc1 > TSPICE_MATRIX_MAX_ELEMENTS ||
+      !tspice_matrix_count(k, nc1, &m1Count) ||
+      !tspice_matrix_count(k, nc2, &m2Count) ||
+      !tspice_matrix_count(nc1, nc2, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], m1Count)) return env.Undefined();
+  if (!CheckMatrixLength(env, info[1], m2Count)) return env.Undefined();
+  auto m1 = MatrixStorage(env, m1Count);
+  if (!m1 || !CopyMatrixInput(env, info[0], m1Count, m1.get())) return env.Undefined();
+  auto m2 = MatrixStorage(env, m2Count);
+  if (!m2 || !CopyMatrixInput(env, info[1], m2Count, m2.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_mtxmg(m1.get(), m2.get(), nc1, nr1r2, nc2, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "mtxmg", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out.get(),static_cast<size_t>(outCount));
+}
+
+static Napi::Value Mtxvg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mtxvg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nc1;
+  if (!ReadMatrixDimension(env, info[2], &nc1)) return env.Undefined();
+  int nr1r2;
+  if (!ReadMatrixDimension(env, info[3], &nr1r2)) return env.Undefined();
+  int m1Count, v2Count, outCount;
+  if (!tspice_matrix_count(nr1r2, nc1, &m1Count) ||
+      !tspice_matrix_count(nr1r2, 1, &v2Count) ||
+      !tspice_matrix_count(nc1, 1, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], m1Count)) return env.Undefined();
+  if (!CheckMatrixLength(env, info[1], v2Count)) return env.Undefined();
+  auto m1 = MatrixStorage(env, m1Count);
+  if (!m1 || !CopyMatrixInput(env, info[0], m1Count, m1.get())) return env.Undefined();
+  auto v2 = MatrixStorage(env, v2Count);
+  if (!v2 || !CopyMatrixInput(env, info[1], v2Count, v2.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_mtxvg(m1.get(), v2.get(), nc1, nr1r2, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "mtxvg", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out.get(),static_cast<size_t>(outCount));
+}
+
+static Napi::Value Mxmg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mxmg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nr1;
+  if (!ReadMatrixDimension(env, info[2], &nr1)) return env.Undefined();
+  int nc1r2;
+  if (!ReadMatrixDimension(env, info[3], &nc1r2)) return env.Undefined();
+  int nc2;
+  if (!ReadMatrixDimension(env, info[4], &nc2)) return env.Undefined();
+  const int k = nc1r2 < 0 ? 0 : nc1r2;
+  int m1Count, m2Count, outCount;
+  if (nr1 > TSPICE_MATRIX_MAX_ELEMENTS ||
+      !tspice_matrix_count(nr1, k, &m1Count) ||
+      !tspice_matrix_count(k, nc2, &m2Count) ||
+      !tspice_matrix_count(nr1, nc2, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], m1Count)) return env.Undefined();
+  if (!CheckMatrixLength(env, info[1], m2Count)) return env.Undefined();
+  auto m1 = MatrixStorage(env, m1Count);
+  if (!m1 || !CopyMatrixInput(env, info[0], m1Count, m1.get())) return env.Undefined();
+  auto m2 = MatrixStorage(env, m2Count);
+  if (!m2 || !CopyMatrixInput(env, info[1], m2Count, m2.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_mxmg(m1.get(), m2.get(), nr1, nc1r2, nc2, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "mxmg", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out.get(),static_cast<size_t>(outCount));
+}
+
+static Napi::Value Mxmtg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mxmtg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nr1;
+  if (!ReadMatrixDimension(env, info[2], &nr1)) return env.Undefined();
+  int nc1c2;
+  if (!ReadMatrixDimension(env, info[3], &nc1c2)) return env.Undefined();
+  int nr2;
+  if (!ReadMatrixDimension(env, info[4], &nr2)) return env.Undefined();
+  int m1Count, m2Count, outCount;
+  if (nr1 > TSPICE_MATRIX_MAX_ELEMENTS ||
+      !tspice_matrix_count(nr1, nc1c2, &m1Count) ||
+      !tspice_matrix_count(nr2, nc1c2, &m2Count) ||
+      !tspice_matrix_count(nr1, nr2, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], m1Count)) return env.Undefined();
+  if (!CheckMatrixLength(env, info[1], m2Count)) return env.Undefined();
+  auto m1 = MatrixStorage(env, m1Count);
+  if (!m1 || !CopyMatrixInput(env, info[0], m1Count, m1.get())) return env.Undefined();
+  auto m2 = MatrixStorage(env, m2Count);
+  if (!m2 || !CopyMatrixInput(env, info[1], m2Count, m2.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_mxmtg(m1.get(), m2.get(), nr1, nc1c2, nr2, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "mxmtg", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out.get(),static_cast<size_t>(outCount));
+}
+
+static Napi::Value Mxvg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mxvg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nr1;
+  if (!ReadMatrixDimension(env, info[2], &nr1)) return env.Undefined();
+  int nc1r2;
+  if (!ReadMatrixDimension(env, info[3], &nc1r2)) return env.Undefined();
+  int m1Count, v2Count, outCount;
+  if (!tspice_matrix_count(nr1, nc1r2, &m1Count) ||
+      !tspice_matrix_count(nc1r2, 1, &v2Count) ||
+      !tspice_matrix_count(nr1, 1, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], m1Count)) return env.Undefined();
+  if (!CheckMatrixLength(env, info[1], v2Count)) return env.Undefined();
+  auto m1 = MatrixStorage(env, m1Count);
+  if (!m1 || !CopyMatrixInput(env, info[0], m1Count, m1.get())) return env.Undefined();
+  auto v2 = MatrixStorage(env, v2Count);
+  if (!v2 || !CopyMatrixInput(env, info[1], v2Count, v2.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_mxvg(m1.get(), v2.get(), nr1, nc1r2, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "mxvg", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out.get(),static_cast<size_t>(outCount));
+}
+
+static Napi::Value Vtmvg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vtmvg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nrow;
+  if (!ReadMatrixDimension(env, info[3], &nrow)) return env.Undefined();
+  int ncol;
+  if (!ReadMatrixDimension(env, info[4], &ncol)) return env.Undefined();
+  int v1Count, matrixCount, v2Count, outCount;
+  if (!tspice_matrix_count(nrow, 1, &v1Count) ||
+      !tspice_matrix_count(nrow, ncol, &matrixCount) ||
+      !tspice_matrix_count(ncol, 1, &v2Count) ||
+      !tspice_matrix_count(1, 1, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], v1Count)) return env.Undefined();
+  if (!CheckMatrixLength(env, info[1], matrixCount)) return env.Undefined();
+  if (!CheckMatrixLength(env, info[2], v2Count)) return env.Undefined();
+  auto v1 = MatrixStorage(env, v1Count);
+  if (!v1 || !CopyMatrixInput(env, info[0], v1Count, v1.get())) return env.Undefined();
+  auto matrix = MatrixStorage(env, matrixCount);
+  if (!matrix || !CopyMatrixInput(env, info[1], matrixCount, matrix.get())) return env.Undefined();
+  auto v2 = MatrixStorage(env, v2Count);
+  if (!v2 || !CopyMatrixInput(env, info[2], v2Count, v2.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_vtmvg(v1.get(), matrix.get(), v2.get(), nrow, ncol, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "vtmvg", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env,out[0]);
+}
+
+static Napi::Value Xposeg(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "xposeg: incorrect argument count"));
+    return env.Undefined();
+  }
+  int nrow;
+  if (!ReadMatrixDimension(env, info[1], &nrow)) return env.Undefined();
+  int ncol;
+  if (!ReadMatrixDimension(env, info[2], &ncol)) return env.Undefined();
+  const int r = nrow <= 0 || ncol <= 0 ? 0 : nrow;
+  const int c = r == 0 ? 0 : ncol;
+  int matrixCount, outCount;
+  if (!tspice_matrix_count(r, c, &matrixCount) ||
+      !tspice_matrix_count(r, c, &outCount)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Matrix dimension or buffer exceeds supported bounds"));
+    return env.Undefined();
+  }
+  if (!CheckMatrixLength(env, info[0], matrixCount)) return env.Undefined();
+  auto matrix = MatrixStorage(env, matrixCount);
+  if (!matrix || !CopyMatrixInput(env, info[0], matrixCount, matrix.get())) return env.Undefined();
+  auto out = MatrixStorage(env, outCount);
+  if (!out) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_xposeg(matrix.get(), nrow, ncol, out.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "xposeg", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out.get(),static_cast<size_t>(outCount));
 }
 
 static Napi::Array Vaddg(const Napi::CallbackInfo& info) {
@@ -973,6 +1292,14 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "mequg", Napi::Function::New(env, Mequg), __func__)) return;
+  if (!SetExportChecked(env, exports, "mtxmg", Napi::Function::New(env, Mtxmg), __func__)) return;
+  if (!SetExportChecked(env, exports, "mtxvg", Napi::Function::New(env, Mtxvg), __func__)) return;
+  if (!SetExportChecked(env, exports, "mxmg", Napi::Function::New(env, Mxmg), __func__)) return;
+  if (!SetExportChecked(env, exports, "mxmtg", Napi::Function::New(env, Mxmtg), __func__)) return;
+  if (!SetExportChecked(env, exports, "mxvg", Napi::Function::New(env, Mxvg), __func__)) return;
+  if (!SetExportChecked(env, exports, "vtmvg", Napi::Function::New(env, Vtmvg), __func__)) return;
+  if (!SetExportChecked(env, exports, "xposeg", Napi::Function::New(env, Xposeg), __func__)) return;
   if (!SetExportChecked(env, exports, "vaddg", Napi::Function::New(env, Vaddg), __func__)) return;
   if (!SetExportChecked(env, exports, "vdistg", Napi::Function::New(env, Vdistg), __func__)) return;
   if (!SetExportChecked(env, exports, "vdotg", Napi::Function::New(env, Vdotg), __func__)) return;

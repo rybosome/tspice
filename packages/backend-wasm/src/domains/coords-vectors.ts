@@ -1,3 +1,9 @@
+import {
+  matrixDimension,
+  matrixElementCount,
+  checkMatrixProductRows,
+  checkMatrixInputLength,
+} from "@rybosome/tspice-core";
 import type {
   CoordsVectorsApi,
   Mat3RowMajor,
@@ -834,6 +840,309 @@ export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    mequg: (m1, nr, nc) => {
+      matrixDimension(nr, "mequg(nr)");
+      matrixDimension(nc, "mequg(nc)");
+      const m1Count = matrixElementCount(nr, nc);
+      checkMatrixInputLength(m1, m1Count, "mequg(m1)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mequg(m1)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(m1Count),
+          generalVectorBufferBytes(m1Count),
+        ],
+        (errPtr, m1Ptr, outPtr) => {
+          module.HEAPF64.set(m1Copy, m1Ptr >>> 3);
+          const status = module._tspice_mequg(
+            m1Ptr,
+            nr,
+            nc,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, m1Count);
+        },
+      );
+    },
+    mtxmg: (m1, m2, nc1, nr1r2, nc2) => {
+      matrixDimension(nc1, "mtxmg(nc1)");
+      matrixDimension(nr1r2, "mtxmg(nr1r2)", true);
+      matrixDimension(nc2, "mtxmg(nc2)");
+      const k = Math.max(0, nr1r2);
+      checkMatrixProductRows(nc1);
+      const m1Count = matrixElementCount(k, nc1);
+      const m2Count = matrixElementCount(k, nc2);
+      const outCount = matrixElementCount(nc1, nc2);
+      checkMatrixInputLength(m1, m1Count, "mtxmg(m1)");
+      checkMatrixInputLength(m2, m2Count, "mtxmg(m2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mtxmg(m1)");
+      const m2Copy = copyGeneralVector(m2, m2Count, "mtxmg(m2)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(m1Count),
+          generalVectorBufferBytes(m2Count),
+          generalVectorBufferBytes(outCount),
+        ],
+        (errPtr, m1Ptr, m2Ptr, outPtr) => {
+          module.HEAPF64.set(m1Copy, m1Ptr >>> 3);
+          module.HEAPF64.set(m2Copy, m2Ptr >>> 3);
+          const status = module._tspice_mtxmg(
+            m1Ptr,
+            m2Ptr,
+            nc1,
+            nr1r2,
+            nc2,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, outCount);
+        },
+      );
+    },
+    mtxvg: (m1, v2, nc1, nr1r2) => {
+      matrixDimension(nc1, "mtxvg(nc1)");
+      matrixDimension(nr1r2, "mtxvg(nr1r2)");
+      const m1Count = matrixElementCount(nr1r2, nc1);
+      const v2Count = matrixElementCount(nr1r2, 1);
+      const outCount = matrixElementCount(nc1, 1);
+      checkMatrixInputLength(m1, m1Count, "mtxvg(m1)");
+      checkMatrixInputLength(v2, v2Count, "mtxvg(v2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mtxvg(m1)");
+      const v2Copy = copyGeneralVector(v2, v2Count, "mtxvg(v2)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(m1Count),
+          generalVectorBufferBytes(v2Count),
+          generalVectorBufferBytes(outCount),
+        ],
+        (errPtr, m1Ptr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(m1Copy, m1Ptr >>> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >>> 3);
+          const status = module._tspice_mtxvg(
+            m1Ptr,
+            v2Ptr,
+            nc1,
+            nr1r2,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, outCount);
+        },
+      );
+    },
+    mxmg: (m1, m2, nr1, nc1r2, nc2) => {
+      matrixDimension(nr1, "mxmg(nr1)");
+      matrixDimension(nc1r2, "mxmg(nc1r2)", true);
+      matrixDimension(nc2, "mxmg(nc2)");
+      const k = Math.max(0, nc1r2);
+      checkMatrixProductRows(nr1);
+      const m1Count = matrixElementCount(nr1, k);
+      const m2Count = matrixElementCount(k, nc2);
+      const outCount = matrixElementCount(nr1, nc2);
+      checkMatrixInputLength(m1, m1Count, "mxmg(m1)");
+      checkMatrixInputLength(m2, m2Count, "mxmg(m2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mxmg(m1)");
+      const m2Copy = copyGeneralVector(m2, m2Count, "mxmg(m2)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(m1Count),
+          generalVectorBufferBytes(m2Count),
+          generalVectorBufferBytes(outCount),
+        ],
+        (errPtr, m1Ptr, m2Ptr, outPtr) => {
+          module.HEAPF64.set(m1Copy, m1Ptr >>> 3);
+          module.HEAPF64.set(m2Copy, m2Ptr >>> 3);
+          const status = module._tspice_mxmg(
+            m1Ptr,
+            m2Ptr,
+            nr1,
+            nc1r2,
+            nc2,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, outCount);
+        },
+      );
+    },
+    mxmtg: (m1, m2, nr1, nc1c2, nr2) => {
+      matrixDimension(nr1, "mxmtg(nr1)");
+      matrixDimension(nc1c2, "mxmtg(nc1c2)");
+      matrixDimension(nr2, "mxmtg(nr2)");
+      checkMatrixProductRows(nr1);
+      const m1Count = matrixElementCount(nr1, nc1c2);
+      const m2Count = matrixElementCount(nr2, nc1c2);
+      const outCount = matrixElementCount(nr1, nr2);
+      checkMatrixInputLength(m1, m1Count, "mxmtg(m1)");
+      checkMatrixInputLength(m2, m2Count, "mxmtg(m2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mxmtg(m1)");
+      const m2Copy = copyGeneralVector(m2, m2Count, "mxmtg(m2)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(m1Count),
+          generalVectorBufferBytes(m2Count),
+          generalVectorBufferBytes(outCount),
+        ],
+        (errPtr, m1Ptr, m2Ptr, outPtr) => {
+          module.HEAPF64.set(m1Copy, m1Ptr >>> 3);
+          module.HEAPF64.set(m2Copy, m2Ptr >>> 3);
+          const status = module._tspice_mxmtg(
+            m1Ptr,
+            m2Ptr,
+            nr1,
+            nc1c2,
+            nr2,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, outCount);
+        },
+      );
+    },
+    mxvg: (m1, v2, nr1, nc1r2) => {
+      matrixDimension(nr1, "mxvg(nr1)");
+      matrixDimension(nc1r2, "mxvg(nc1r2)");
+      const m1Count = matrixElementCount(nr1, nc1r2);
+      const v2Count = matrixElementCount(nc1r2, 1);
+      const outCount = matrixElementCount(nr1, 1);
+      checkMatrixInputLength(m1, m1Count, "mxvg(m1)");
+      checkMatrixInputLength(v2, v2Count, "mxvg(v2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mxvg(m1)");
+      const v2Copy = copyGeneralVector(v2, v2Count, "mxvg(v2)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(m1Count),
+          generalVectorBufferBytes(v2Count),
+          generalVectorBufferBytes(outCount),
+        ],
+        (errPtr, m1Ptr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(m1Copy, m1Ptr >>> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >>> 3);
+          const status = module._tspice_mxvg(
+            m1Ptr,
+            v2Ptr,
+            nr1,
+            nc1r2,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, outCount);
+        },
+      );
+    },
+    vtmvg: (v1, matrix, v2, nrow, ncol) => {
+      matrixDimension(nrow, "vtmvg(nrow)");
+      matrixDimension(ncol, "vtmvg(ncol)");
+      const v1Count = matrixElementCount(nrow, 1);
+      const matrixCount = matrixElementCount(nrow, ncol);
+      const v2Count = matrixElementCount(ncol, 1);
+      checkMatrixInputLength(v1, v1Count, "vtmvg(v1)");
+      checkMatrixInputLength(matrix, matrixCount, "vtmvg(matrix)");
+      checkMatrixInputLength(v2, v2Count, "vtmvg(v2)");
+      const v1Copy = copyGeneralVector(v1, v1Count, "vtmvg(v1)");
+      const matrixCopy = copyGeneralVector(
+        matrix,
+        matrixCount,
+        "vtmvg(matrix)",
+      );
+      const v2Copy = copyGeneralVector(v2, v2Count, "vtmvg(v2)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(v1Count),
+          generalVectorBufferBytes(matrixCount),
+          generalVectorBufferBytes(v2Count),
+          generalVectorBufferBytes(1),
+        ],
+        (errPtr, v1Ptr, matrixPtr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(v1Copy, v1Ptr >>> 3);
+          module.HEAPF64.set(matrixCopy, matrixPtr >>> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >>> 3);
+          const status = module._tspice_vtmvg(
+            v1Ptr,
+            matrixPtr,
+            v2Ptr,
+            nrow,
+            ncol,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const out = module.HEAPF64[outPtr >>> 3];
+          if (typeof out !== "number")
+            throw new RangeError("Invalid VTMVG output pointer");
+          return out;
+        },
+      );
+    },
+    xposeg: (matrix, nrow, ncol) => {
+      matrixDimension(nrow, "xposeg(nrow)", true);
+      matrixDimension(ncol, "xposeg(ncol)", true);
+      const r = Math.max(0, nrow),
+        c = Math.max(0, ncol);
+      const matrixCount = matrixElementCount(r, c);
+      checkMatrixInputLength(matrix, matrixCount, "xposeg(matrix)");
+      const matrixCopy = copyGeneralVector(
+        matrix,
+        matrixCount,
+        "xposeg(matrix)",
+      );
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          generalVectorBufferBytes(matrixCount),
+          generalVectorBufferBytes(matrixCount),
+        ],
+        (errPtr, matrixPtr, outPtr) => {
+          module.HEAPF64.set(matrixCopy, matrixPtr >>> 3);
+          const status = module._tspice_xposeg(
+            matrixPtr,
+            nrow,
+            ncol,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, matrixCount);
+        },
+      );
+    },
     vaddg: (a, b) => {
       const aLength = generalVectorDimension(a, "vaddg(a)", 2147483647);
       const bLength = generalVectorDimension(b, "vaddg(b)", 2147483647);

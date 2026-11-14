@@ -47,6 +47,14 @@ export function dispatchStep(
     case "ids-names.bodvar":
       return runIdsNamesStep(context, step);
 
+    case "coords-vectors.mequg":
+    case "coords-vectors.mtxmg":
+    case "coords-vectors.mtxvg":
+    case "coords-vectors.mxmg":
+    case "coords-vectors.mxmtg":
+    case "coords-vectors.mxvg":
+    case "coords-vectors.vtmvg":
+    case "coords-vectors.xposeg":
     case "coords-vectors.vaddg":
     case "coords-vectors.vdistg":
     case "coords-vectors.vdotg":

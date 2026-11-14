@@ -5,6 +5,14 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsMequg,
+  StepCoordsVectorsMtxmg,
+  StepCoordsVectorsMtxvg,
+  StepCoordsVectorsMxmg,
+  StepCoordsVectorsMxmtg,
+  StepCoordsVectorsMxvg,
+  StepCoordsVectorsVtmvg,
+  StepCoordsVectorsXposeg,
   StepCoordsVectorsVaddg,
   StepCoordsVectorsVdistg,
   StepCoordsVectorsVdotg,
@@ -41,6 +49,14 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsMequg
+  | StepCoordsVectorsMtxmg
+  | StepCoordsVectorsMtxvg
+  | StepCoordsVectorsMxmg
+  | StepCoordsVectorsMxmtg
+  | StepCoordsVectorsMxvg
+  | StepCoordsVectorsVtmvg
+  | StepCoordsVectorsXposeg
   | StepCoordsVectorsVaddg
   | StepCoordsVectorsVdistg
   | StepCoordsVectorsVdotg
@@ -101,6 +117,80 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.mequg": {
+      const out = context.spice.raw.mequg(step.m1, step.nr, step.nc);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mtxmg": {
+      const out = context.spice.raw.mtxmg(
+        step.m1,
+        step.m2,
+        step.nc1,
+        step.nr1r2,
+        step.nc2,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mtxvg": {
+      const out = context.spice.raw.mtxvg(
+        step.m1,
+        step.v2,
+        step.nc1,
+        step.nr1r2,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mxmg": {
+      const out = context.spice.raw.mxmg(
+        step.m1,
+        step.m2,
+        step.nr1,
+        step.nc1r2,
+        step.nc2,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mxmtg": {
+      const out = context.spice.raw.mxmtg(
+        step.m1,
+        step.m2,
+        step.nr1,
+        step.nc1c2,
+        step.nr2,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mxvg": {
+      const out = context.spice.raw.mxvg(
+        step.m1,
+        step.v2,
+        step.nr1,
+        step.nc1r2,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vtmvg": {
+      const out = context.spice.raw.vtmvg(
+        step.v1,
+        step.matrix,
+        step.v2,
+        step.nrow,
+        step.ncol,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.xposeg": {
+      const out = context.spice.raw.xposeg(step.matrix, step.nrow, step.ncol);
+      return { op: step.op, value: out };
+    }
+
     case "coords-vectors.vaddg": {
       const out = context.spice.raw.vaddg(step.a, step.b);
       return { op: step.op, value: out };

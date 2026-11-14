@@ -22,6 +22,14 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsMequg,
+    StepCoordsVectorsMtxmg,
+    StepCoordsVectorsMtxvg,
+    StepCoordsVectorsMxmg,
+    StepCoordsVectorsMxmtg,
+    StepCoordsVectorsMxvg,
+    StepCoordsVectorsVtmvg,
+    StepCoordsVectorsXposeg,
     StepCoordsVectorsVaddg,
     StepCoordsVectorsVdistg,
     StepCoordsVectorsVdotg,
@@ -509,6 +517,80 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.mequg":
+            return StepCoordsVectorsMequg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mequg.m1"),
+                nr=_expect_int(step.get("nr"), label="coords-vectors.mequg.nr"),
+                nc=_expect_int(step.get("nc"), label="coords-vectors.mequg.nc"),
+            )
+
+        case "coords-vectors.mtxmg":
+            return StepCoordsVectorsMtxmg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mtxmg.m1"),
+                m2=_expect_number_list(step.get("m2"), label="coords-vectors.mtxmg.m2"),
+                nc1=_expect_int(step.get("nc1"), label="coords-vectors.mtxmg.nc1"),
+                nr1r2=_expect_int(step.get("nr1r2"), label="coords-vectors.mtxmg.nr1r2"),
+                nc2=_expect_int(step.get("nc2"), label="coords-vectors.mtxmg.nc2"),
+            )
+
+        case "coords-vectors.mtxvg":
+            return StepCoordsVectorsMtxvg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mtxvg.m1"),
+                v2=_expect_number_list(step.get("v2"), label="coords-vectors.mtxvg.v2"),
+                nc1=_expect_int(step.get("nc1"), label="coords-vectors.mtxvg.nc1"),
+                nr1r2=_expect_int(step.get("nr1r2"), label="coords-vectors.mtxvg.nr1r2"),
+            )
+
+        case "coords-vectors.mxmg":
+            return StepCoordsVectorsMxmg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mxmg.m1"),
+                m2=_expect_number_list(step.get("m2"), label="coords-vectors.mxmg.m2"),
+                nr1=_expect_int(step.get("nr1"), label="coords-vectors.mxmg.nr1"),
+                nc1r2=_expect_int(step.get("nc1r2"), label="coords-vectors.mxmg.nc1r2"),
+                nc2=_expect_int(step.get("nc2"), label="coords-vectors.mxmg.nc2"),
+            )
+
+        case "coords-vectors.mxmtg":
+            return StepCoordsVectorsMxmtg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mxmtg.m1"),
+                m2=_expect_number_list(step.get("m2"), label="coords-vectors.mxmtg.m2"),
+                nr1=_expect_int(step.get("nr1"), label="coords-vectors.mxmtg.nr1"),
+                nc1c2=_expect_int(step.get("nc1c2"), label="coords-vectors.mxmtg.nc1c2"),
+                nr2=_expect_int(step.get("nr2"), label="coords-vectors.mxmtg.nr2"),
+            )
+
+        case "coords-vectors.mxvg":
+            return StepCoordsVectorsMxvg(
+                op=op,
+                m1=_expect_number_list(step.get("m1"), label="coords-vectors.mxvg.m1"),
+                v2=_expect_number_list(step.get("v2"), label="coords-vectors.mxvg.v2"),
+                nr1=_expect_int(step.get("nr1"), label="coords-vectors.mxvg.nr1"),
+                nc1r2=_expect_int(step.get("nc1r2"), label="coords-vectors.mxvg.nc1r2"),
+            )
+
+        case "coords-vectors.vtmvg":
+            return StepCoordsVectorsVtmvg(
+                op=op,
+                v1=_expect_number_list(step.get("v1"), label="coords-vectors.vtmvg.v1"),
+                matrix=_expect_number_list(step.get("matrix"), label="coords-vectors.vtmvg.matrix"),
+                v2=_expect_number_list(step.get("v2"), label="coords-vectors.vtmvg.v2"),
+                nrow=_expect_int(step.get("nrow"), label="coords-vectors.vtmvg.nrow"),
+                ncol=_expect_int(step.get("ncol"), label="coords-vectors.vtmvg.ncol"),
+            )
+
+        case "coords-vectors.xposeg":
+            return StepCoordsVectorsXposeg(
+                op=op,
+                matrix=_expect_number_list(step.get("matrix"), label="coords-vectors.xposeg.matrix"),
+                nrow=_expect_int(step.get("nrow"), label="coords-vectors.xposeg.nrow"),
+                ncol=_expect_int(step.get("ncol"), label="coords-vectors.xposeg.ncol"),
             )
 
         case "coords-vectors.vaddg":

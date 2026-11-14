@@ -431,7 +431,23 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/715"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+      "nextAction": "Revalidate A10 on the combined A10/A13 source. Original source-bound execution evidence remains recorded for PR #715."
+    },
+    {
+      "id": "a13-general-matrices",
+      "routines": [
+        "mequg_c",
+        "mtxmg_c",
+        "mtxvg_c",
+        "mxmg_c",
+        "mxmtg_c",
+        "mxvg_c",
+        "vtmvg_c",
+        "xposeg_c"
+      ],
+      "dependsOn": ["a10-general-vectors"],
+      "prs": [],
+      "nextAction": "Record both required local lanes and the observed canonical CI run for this combined source, then check the complete final-head matrix and rebaseability."
     }
   ]
 }
