@@ -3,7 +3,7 @@
  *
  * Tranche 1 scope:
  * - "Plumbing" utilities (`gfsstp/gfstep`, `gfstol`, `gfrefn`, `gfrepi/gfrepf`).
- * - A couple high-level, callback-free searches: `gfsep` and `gfdist`.
+ * - Callback-free distance, angular separation, occultation and field-of-view searches.
  *
  * Notes:
  * - The CSPICE GF subsystem has some **global mutable state** (e.g. `gfsstp`,
@@ -20,6 +20,56 @@ export type GfRelate =
 
 /** Backend contract for Geometry Finder (GF) event-finding routines. */
 export interface GeometryGfApi {
+  /** Find occultations of the back target by the front target. Supply the occultation type, each body’s shape and fixed frame, correction and observer. Point shapes permit an empty frame; ellipsoid and supported DSK shapes need their kernels.
+   * The positive search step is in TDB seconds and updates the global GF step. The routine replaces the distinct, preallocated result window with complete TDB intervals. A miss yields an empty window. Step size controls event detection; the GF convergence tolerance controls boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfoclt_c.html
+   */
+  gfoclt(
+    occtyp: string,
+    front: string,
+    fshape: string,
+    fframe: string,
+    back: string,
+    bshape: string,
+    bframe: string,
+    abcorr: string,
+    obsrvr: string,
+    step: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Find epochs when the supplied direction in rframe is within the instrument field of view. The three-component direction is dimensionless and need not be normalized. FOV and time-dependent frames require the corresponding kernels.
+   * The positive search step is in TDB seconds and updates the global GF step. The routine replaces the distinct, preallocated result window with complete TDB intervals. A miss yields an empty window. Step size controls event detection; the GF convergence tolerance controls boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfrfov_c.html
+   */
+  gfrfov(
+    inst: string,
+    raydir: readonly [number, number, number],
+    rframe: string,
+    abcorr: string,
+    obsrvr: string,
+    step: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Find epochs when the instrument sees any part of the target. POINT uses the center; ELLIPSOID uses its limb and a body-fixed frame. A point target permits an empty frame.
+   * The positive search step is in TDB seconds and updates the global GF step. The routine replaces the distinct, preallocated result window with complete TDB intervals. A miss yields an empty window. Step size controls event detection; the GF convergence tolerance controls boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gftfov_c.html
+   */
+  gftfov(
+    inst: string,
+    target: string,
+    tshape: string,
+    tframe: string,
+    abcorr: string,
+    obsrvr: string,
+    step: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
   /**
    * Set a positive constant step in TDB seconds for {@link GeometryGfApi.gfstep}.
    * This process/module-global setting survives `kclear()`.

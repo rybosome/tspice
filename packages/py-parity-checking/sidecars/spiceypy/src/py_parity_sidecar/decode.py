@@ -134,6 +134,9 @@ from .models import (
     StepGeometryGfGfrefn,
     StepGeometryGfGfrepf,
     StepGeometryGfGfrepi,
+    StepGeometryGfGfoclt,
+    StepGeometryGfGfrfov,
+    StepGeometryGfGftfov,
     StepGeometryGfGfsep,
     StepGeometryGfGfsstp,
     StepGeometryGfGfstep,
@@ -1739,6 +1742,53 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
 
         case "geometry-gf.gfrepf":
             return StepGeometryGfGfrepf(op=op)
+
+        case "geometry-gf.gfoclt":
+            return StepGeometryGfGfoclt(
+                op=op,
+                occtyp=_expect_string(step.get("occtyp"), label="geometry-gf.gfoclt.occtyp"),
+                front=_expect_string(step.get("front"), label="geometry-gf.gfoclt.front"),
+                fshape=_expect_string(step.get("fshape"), label="geometry-gf.gfoclt.fshape"),
+                fframe=_expect_string(step.get("fframe"), label="geometry-gf.gfoclt.fframe"),
+                back=_expect_string(step.get("back"), label="geometry-gf.gfoclt.back"),
+                bshape=_expect_string(step.get("bshape"), label="geometry-gf.gfoclt.bshape"),
+                bframe=_expect_string(step.get("bframe"), label="geometry-gf.gfoclt.bframe"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfoclt.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfoclt.obsrvr"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfoclt.step"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfoclt.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfoclt.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gfrfov":
+            return StepGeometryGfGfrfov(
+                op=op,
+                inst=_expect_string(step.get("inst"), label="geometry-gf.gfrfov.inst"),
+                raydir=_expect_vec3(step.get("raydir"), label="geometry-gf.gfrfov.raydir"),
+                rframe=_expect_string(step.get("rframe"), label="geometry-gf.gfrfov.rframe"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfrfov.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfrfov.obsrvr"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfrfov.step"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfrfov.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfrfov.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gftfov":
+            return StepGeometryGfGftfov(
+                op=op,
+                inst=_expect_string(step.get("inst"), label="geometry-gf.gftfov.inst"),
+                target=_expect_string(step.get("target"), label="geometry-gf.gftfov.target"),
+                tshape=_expect_string(step.get("tshape"), label="geometry-gf.gftfov.tshape"),
+                tframe=_expect_string(step.get("tframe"), label="geometry-gf.gftfov.tframe"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gftfov.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gftfov.obsrvr"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gftfov.step"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gftfov.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gftfov.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
 
         case "geometry-gf.gfsep":
             return StepGeometryGfGfsep(

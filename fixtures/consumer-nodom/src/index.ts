@@ -87,3 +87,75 @@ export async function fieldOfViewConsumer(
   );
   return { shape, ray, target };
 }
+
+/** Consume all visibility searches through synchronous and asynchronous public raw clients. */
+export async function visibilitySearchConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const c = spice.kit.newWindow(2),
+    r = spice.kit.newWindow(2);
+  try {
+    spice.raw.gfrfov("CAMERA", [1, 0, 0], "J2000", "NONE", "EARTH", 2, c, r);
+    spice.raw.gftfov("CAMERA", "SUN", "POINT", "", "NONE", "EARTH", 2, c, r);
+    spice.raw.gfoclt(
+      "ANY",
+      "MOON",
+      "ELLIPSOID",
+      "IAU_MOON",
+      "SUN",
+      "POINT",
+      "",
+      "NONE",
+      "EARTH",
+      2,
+      c,
+      r,
+    );
+  } finally {
+    spice.kit.freeWindow(r);
+    spice.kit.freeWindow(c);
+  }
+  const input = await asyncSpice.kit.newWindow(2),
+    output = await asyncSpice.kit.newWindow(2);
+  try {
+    await asyncSpice.raw.gfrfov(
+      "CAMERA",
+      [1, 0, 0],
+      "J2000",
+      "NONE",
+      "EARTH",
+      2,
+      input,
+      output,
+    );
+    await asyncSpice.raw.gftfov(
+      "CAMERA",
+      "SUN",
+      "POINT",
+      "",
+      "NONE",
+      "EARTH",
+      2,
+      input,
+      output,
+    );
+    await asyncSpice.raw.gfoclt(
+      "ANY",
+      "MOON",
+      "ELLIPSOID",
+      "IAU_MOON",
+      "SUN",
+      "POINT",
+      "",
+      "NONE",
+      "EARTH",
+      2,
+      input,
+      output,
+    );
+  } finally {
+    await asyncSpice.kit.freeWindow(output);
+    await asyncSpice.kit.freeWindow(input);
+  }
+}

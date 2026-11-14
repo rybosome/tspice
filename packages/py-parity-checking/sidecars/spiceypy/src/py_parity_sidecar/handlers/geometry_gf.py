@@ -14,6 +14,9 @@ from ..models import (
     StepGeometryGfGfrefn,
     StepGeometryGfGfrepf,
     StepGeometryGfGfrepi,
+    StepGeometryGfGfoclt,
+    StepGeometryGfGfrfov,
+    StepGeometryGfGftfov,
     StepGeometryGfGfsep,
     StepGeometryGfGfsstp,
     StepGeometryGfGfstep,
@@ -42,6 +45,16 @@ def _get_or_create_window(windows: WindowStore, window_id: str, *, max_intervals
     window = SPICEDOUBLE_CELL(max_intervals * 2)
     windows[window_id] = window
     return window
+
+
+def _visibility_output(op: str, confinement: Any, result: Any) -> StepOutput:
+    def intervals(window: Any) -> list[list[float]]:
+        return [list(map(float, sp.wnfetd(window, i))) for i in range(sp.wncard(window))]
+
+    return StepOutput(op=op, value={
+        "intervals": intervals(result),
+        "confinementIntervals": intervals(confinement),
+    })
 
 
 _libc = ctypes.CDLL(None)
@@ -108,6 +121,24 @@ def run_geometry_gf_step(step: WorkflowStep, windows: WindowStore) -> StepOutput
         with _suppress_native_stdout():
             sp.gfrepf()
         return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepGeometryGfGfoclt):
+        cnfine = _require_window(windows, step.cnfineWindowId)
+        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else 8)
+        sp.gfoclt(step.occtyp, step.front, step.fshape, step.fframe, step.back, step.bshape, step.bframe, step.abcorr, step.obsrvr, step.step, cnfine, result)
+        return _visibility_output(step.op, cnfine, result)
+
+    if isinstance(step, StepGeometryGfGfrfov):
+        cnfine = _require_window(windows, step.cnfineWindowId)
+        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else 8)
+        sp.gfrfov(step.inst, step.raydir, step.rframe, step.abcorr, step.obsrvr, step.step, cnfine, result)
+        return _visibility_output(step.op, cnfine, result)
+
+    if isinstance(step, StepGeometryGfGftfov):
+        cnfine = _require_window(windows, step.cnfineWindowId)
+        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else 8)
+        sp.gftfov(step.inst, step.target, step.tshape, step.tframe, step.abcorr, step.obsrvr, step.step, cnfine, result)
+        return _visibility_output(step.op, cnfine, result)
 
     if isinstance(step, StepGeometryGfGfsep):
         cnfine = _require_window(windows, step.cnfineWindowId)

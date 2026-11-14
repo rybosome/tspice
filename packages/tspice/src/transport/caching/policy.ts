@@ -10,6 +10,10 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",
+  // Each visibility search overwrites a live result window.
+  "raw.gfoclt",
+  "raw.gfrfov",
+  "raw.gftfov",
 ]) satisfies readonly string[];
 
 const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> =

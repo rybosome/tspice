@@ -3,6 +3,10 @@
 #include "SpiceUsr.h"
 
 #include "../handle_validation.h"
+#include "../geometry_names.h"
+
+#include <limits.h>
+#include <math.h>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -230,6 +234,118 @@ int tspice_gfrepf(char *err, int errMaxBytes) {
     return 1;
   }
 
+  return 0;
+}
+
+static int visibility_windows(uintptr_t input, uintptr_t output, double step,
+                              SpiceCell **cnfine, SpiceCell **result, char *err,
+                              int cap) {
+  if (input == output)
+    return tspice_geometry_gf_invalid_arg(
+        err, cap, "Confinement and result must be distinct windows");
+  if (!isfinite(step))
+    return tspice_geometry_gf_invalid_arg(err, cap,
+                                          "Expected a finite search step");
+  if (tspice_expect_double_window(input, "cnfine", "GF search", cnfine, err,
+                                  cap) ||
+      tspice_expect_double_window(output, "result", "GF search", result, err,
+                                  cap))
+    return 1;
+  // A positive constant step must advance the current floating-point epoch.
+  // ZZGFSOLV repeatedly adds it, including at the end of the interval.
+  if (step > 0) {
+    for (SpiceInt i = 0; i + 1 < (*cnfine)->card; i += 2) {
+      const double a = SPICE_CELL_ELEM_D(*cnfine, i),
+                   b = SPICE_CELL_ELEM_D(*cnfine, i + 1);
+      if (!isfinite(a) || !isfinite(b))
+        return tspice_geometry_gf_invalid_arg(err, cap,
+                                              "Nonfinite confinement epoch");
+      if (a < b &&
+          (a + step == a || (nextafter(b, a) + step == nextafter(b, a))))
+        return tspice_geometry_gf_invalid_arg(
+            err, cap, "Step cannot advance across confinement epochs");
+    }
+  }
+  return 0;
+}
+
+static int visibility_text(const char *const *items, size_t n, char *err,
+                           int cap) {
+  for (size_t i = 0; i < n; i++) {
+    if (!items[i] || strlen(items[i]) >= INT_MAX)
+      return tspice_geometry_gf_invalid_arg(
+          err, cap, "Missing or oversized visibility argument");
+  }
+  return 0;
+}
+
+int tspice_gfoclt(const char *occtyp, const char *front, const char *fshape,
+                  const char *fframe, const char *back, const char *bshape,
+                  const char *bframe, const char *abcorr, const char *obsrvr,
+                  double step, uintptr_t input, uintptr_t output, char *err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  const char *text[] = {occtyp, front,  fshape, fframe, back,
+                        bshape, bframe, abcorr, obsrvr};
+  SpiceCell *cnfine = NULL, *result = NULL;
+  if (visibility_text(text, 9, err, cap) ||
+      visibility_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (*occtyp && *front && *fshape && *back && *bshape && *abcorr && *obsrvr &&
+      step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfoclt_c(occtyp, front, fshape, fframe, back, bshape, bframe, abcorr, obsrvr,
+           step, cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gfrfov(const char *inst, const double raydir[3], const char *rframe,
+                  const char *abcorr, const char *obsrvr, double step,
+                  uintptr_t input, uintptr_t output, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  const char *text[] = {inst, rframe, abcorr, obsrvr};
+  SpiceCell *cnfine = NULL, *result = NULL;
+  if (visibility_text(text, 4, err, cap) ||
+      visibility_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (!raydir || !isfinite(raydir[0]) || !isfinite(raydir[1]) ||
+      !isfinite(raydir[2]))
+    return tspice_geometry_gf_invalid_arg(err, cap, "Invalid ray direction");
+  if (*inst && *rframe && *abcorr && step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfrfov_c(inst, raydir, rframe, abcorr, obsrvr, step, cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gftfov(const char *inst, const char *target, const char *tshape,
+                  const char *tframe, const char *abcorr, const char *obsrvr,
+                  double step, uintptr_t input, uintptr_t output, char *err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  const char *text[] = {inst, target, tshape, tframe, abcorr, obsrvr};
+  SpiceCell *cnfine = NULL, *result = NULL;
+  if (visibility_text(text, 6, err, cap) ||
+      visibility_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (*inst && *target && *tshape && *abcorr && *obsrvr &&
+      !eqstr_c(tshape, "RAY") && step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gftfov_c(inst, target, tshape, tframe, abcorr, obsrvr, step, cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
   return 0;
 }
 

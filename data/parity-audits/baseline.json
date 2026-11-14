@@ -422,6 +422,13 @@
       "routines": ["getfov_c", "getfvn_c", "fovray_c", "fovtrg_c"],
       "dependsOn": ["e16-geometry-quantities"],
       "prs": ["https://github.com/rybosome/tspice/pull/756"],
+      "nextAction": "Preserve prior source-bound observations as historical and revalidate against the expanded source."
+    },
+    {
+      "id": "e23-gf-visibility",
+      "routines": ["gfoclt_c", "gfrfov_c", "gftfov_c"],
+      "dependsOn": ["e15-field-of-view"],
+      "prs": ["https://github.com/rybosome/tspice/pull/768"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]

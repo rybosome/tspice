@@ -546,6 +546,41 @@ export type NativeAddon = {
   gfrepi(window: SpiceWindow, begmss: string, endmss: string): void;
   gfrepf(): void;
 
+  gfoclt(
+    occtyp: string,
+    front: string,
+    fshape: string,
+    fframe: string,
+    back: string,
+    bshape: string,
+    bframe: string,
+    abcorr: string,
+    obsrvr: string,
+    step: number,
+    cnfine: number,
+    result: number,
+  ): void;
+  gfrfov(
+    inst: string,
+    raydir: readonly [number, number, number],
+    rframe: string,
+    abcorr: string,
+    obsrvr: string,
+    step: number,
+    cnfine: number,
+    result: number,
+  ): void;
+  gftfov(
+    inst: string,
+    target: string,
+    tshape: string,
+    tframe: string,
+    abcorr: string,
+    obsrvr: string,
+    step: number,
+    cnfine: number,
+    result: number,
+  ): void;
   gfsep(
     targ1: string,
     shape1: string,

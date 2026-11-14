@@ -625,6 +625,9 @@ export function getNodeBinding(): NativeAddon {
     typeof native.gfrepf === "function",
     "Expected native addon to export gfrepf()",
   );
+  invariant(typeof native.gfoclt === "function", "Expected gfoclt export");
+  invariant(typeof native.gfrfov === "function", "Expected gfrfov export");
+  invariant(typeof native.gftfov === "function", "Expected gftfov export");
   invariant(
     typeof native.gfsep === "function",
     "Expected native addon to export gfsep(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",

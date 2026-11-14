@@ -1054,6 +1054,12 @@ int tspice_gfrepi(uintptr_t windowHandle, const char *begmss, const char *endmss
 // gfrepf_c: progress report finalize.
 int tspice_gfrepf(char *err, int errMaxBytes);
 
+int tspice_gfoclt(const char *occtyp, const char *front, const char *fshape, const char *fframe, const char *back, const char *bshape, const char *bframe, const char *abcorr, const char *obsrvr, double step, uintptr_t input, uintptr_t output, char *err, int cap);
+
+int tspice_gfrfov(const char *inst, const double raydir[3], const char *rframe, const char *abcorr, const char *obsrvr, double step, uintptr_t input, uintptr_t output, char *err, int cap);
+
+int tspice_gftfov(const char *inst, const char *target, const char *tshape, const char *tframe, const char *abcorr, const char *obsrvr, double step, uintptr_t input, uintptr_t output, char *err, int cap);
+
 // gfsep_c: angular separation search.
 int tspice_gfsep(
     const char *targ1,

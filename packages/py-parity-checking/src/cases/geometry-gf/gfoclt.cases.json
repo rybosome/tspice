@@ -1,0 +1,1156 @@
+[
+  {
+    "caseId": "geometry-gf-gfoclt-types-large",
+    "description": "Observe every boundary of full, annular, partial and any occultation for this finite disk.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100105",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_LARGE",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "PARTIAL",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100105",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_LARGE",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANNULAR",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100105",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_LARGE",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "FULL",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100105",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_LARGE",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-types-small",
+    "description": "Observe every boundary of full, annular, partial and any occultation for this finite disk.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "PARTIAL",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANNULAR",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "FULL",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-point",
+    "description": "Compare an ellipsoid occulting a point through both contact epochs and a reversed-order miss.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100104",
+        "bshape": "POINT",
+        "bframe": "",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100104",
+        "fshape": "POINT",
+        "fframe": "",
+        "back": "100101",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-corrections",
+    "description": "Search with geometric, converged reception and transmission ephemerides.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "LT",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "CN",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "XLT",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "XCN",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-dsk",
+    "description": "Use the authored octahedral DSK for the front target against a point.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "DSK/UNPRIORITIZED",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100104",
+        "bshape": "POINT",
+        "bframe": "",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-disjoint",
+    "description": "Keep all confinement intervals, replace prepopulated output, and observe the global search step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -190,
+        "right": -30,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 20,
+        "right": 27,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 36,
+        "right": 130,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 999,
+        "right": 1001,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 1.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 22
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-point-confinement",
+    "description": "Compare included and excluded singleton times and a finite interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -120,
+        "right": -120,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 10,
+        "right": 25,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 178,
+        "right": 178,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-tolerance",
+    "description": "Observe full time boundaries before and after changing the search convergence tolerance.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 0.0001
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 4.3,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 4.3,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-reload",
+    "description": "Search again after clearing and reloading the stateful fixtures.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-negative-step",
+    "description": "Observe the complete canonical failure for negative-step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": -1,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSTEP)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-bad-correction",
+    "description": "Observe the complete canonical failure for bad-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NOT A CORRECTION",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-bad-type",
+    "description": "Observe the complete canonical failure for bad-type.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "INVALID",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOCCTYPE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-two-points",
+    "description": "Observe the complete canonical failure for two-points.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "POINT",
+        "fframe": "",
+        "back": "100103",
+        "bshape": "POINT",
+        "bframe": "",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSHAPECOMBO)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-point-full",
+    "description": "Observe the complete canonical failure for point-full.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "FULL",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "POINT",
+        "bframe": "",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADTYPESHAPECOMBO)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-unknown-front",
+    "description": "Observe the complete canonical failure for unknown-front.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "UNKNOWN SCIENCE BODY",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-wrong-frame",
+    "description": "Observe the complete canonical failure for wrong-frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "NO SUCH FRAME",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-same",
+    "description": "Observe the complete canonical failure for same.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100103",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-bad-shape",
+    "description": "Observe the complete canonical failure for bad-shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "CUBE",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADMETHODSYNTAX)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-no-dsk",
+    "description": "Observe the complete canonical failure for no-dsk.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "DSK/UNPRIORITIZED",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSHAPECOMBO)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfoclt-small-result",
+    "description": "Three disjoint visible intervals exceed a one-interval output window.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -5,
+        "right": -4,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 4,
+        "right": 5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfoclt",
+        "occtyp": "ANY",
+        "front": "100101",
+        "fshape": "ELLIPSOID",
+        "fframe": "AUDIT_GEOMETRY_FIXED",
+        "back": "100103",
+        "bshape": "ELLIPSOID",
+        "bframe": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "step": 2.0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(WINDOWEXCESS)"]
+    }
+  }
+]

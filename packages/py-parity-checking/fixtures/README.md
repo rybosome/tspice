@@ -177,3 +177,7 @@ derive limb contact directly from the authored linear tracks and radii.
 ### Instrument field of view
 
 `kernels/audit-fov.ti` is a repository-authored, MIT-licensed synthetic IK. Its four arbitrary instruments define a circle, ellipse, angle-defined rectangle and rotated polygon. No mission or external observations are included. Its SHA-256 is `03d07f7b5c7dc19f359811f245d6a147b15879d685da1f2838f11d11cf70b64c`. Visibility cases reuse the manufactured linear tracks, frame definitions and semiaxes in `audit-geometry.bsp` and `audit-geometry.tf`.
+
+### Sweeping GF instrument
+
+`audit-gf-ray.tf` defines a synthetic +X camera on the existing CK frame used by `audit-pointing.bc`. Its circular field has a half-angle of atan(0.005) radians. The original, hand-authored NAIF text kernel is distributed under the repository MIT license. It requires the generated CK and its published `audit-ck-clock.tsc` fixture. SHA-256 `b47d3e9340bcb7633711b961035009899783246ba0e180bece0afdb50a790dd5`.

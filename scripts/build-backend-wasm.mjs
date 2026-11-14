@@ -514,6 +514,9 @@ const exportedFunctions = [
   "_tspice_gfrefn",
   "_tspice_gfrepi",
   "_tspice_gfrepf",
+  "_tspice_gfoclt",
+  "_tspice_gfrfov",
+  "_tspice_gftfov",
   "_tspice_gfsep",
   "_tspice_gfdist",
 

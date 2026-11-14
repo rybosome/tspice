@@ -2,7 +2,11 @@ import type {
   GeometryGfApi,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32 } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  fovRayDirection,
+  spiceStringByteLength,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -14,6 +18,22 @@ import {
   assertWasmOwnedWindowHandle,
   wasmWindowPointer,
 } from "./cells-windows.js";
+
+const visibilityEncoder = new TextEncoder();
+
+function writeVisibilityText(
+  module: EmscriptenModule,
+  pointer: number,
+  size: number,
+  text: string,
+) {
+  const start = pointer >>> 0;
+  visibilityEncoder.encodeInto(
+    text,
+    module.HEAPU8.subarray(start, start + size - 1),
+  );
+  module.HEAPU8[start + size - 1] = 0;
+}
 
 function assertGfStrings(values: readonly unknown[], context: string): void {
   for (const value of values)
@@ -282,6 +302,172 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
     },
     gfrepf: () => tspiceCallGfrepf(module),
 
+    gfoclt: (
+      occtyp,
+      front,
+      fshape,
+      fframe,
+      back,
+      bshape,
+      bframe,
+      abcorr,
+      obsrvr,
+      step,
+      cnfine,
+      result,
+    ) => {
+      assertFiniteNumber(step, "gfoclt(step)");
+      const input = wasmWindowPointer(module, cnfine, "gfoclt(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfoclt(result)");
+      const texts = [
+          occtyp,
+          front,
+          fshape,
+          fframe,
+          back,
+          bshape,
+          bframe,
+          abcorr,
+          obsrvr,
+        ],
+        sizes = texts.map((t) => spiceStringByteLength(t, "gfoclt") + 1);
+      withAllocs(
+        module,
+        [...sizes, WASM_ERR_MAX_BYTES],
+        (
+          occtypPtr,
+          frontPtr,
+          fshapePtr,
+          fframePtr,
+          backPtr,
+          bshapePtr,
+          bframePtr,
+          abcorrPtr,
+          obsrvrPtr,
+          err,
+        ) => {
+          [
+            occtypPtr,
+            frontPtr,
+            fshapePtr,
+            fframePtr,
+            backPtr,
+            bshapePtr,
+            bframePtr,
+            abcorrPtr,
+            obsrvrPtr,
+          ].forEach((ptr, i) =>
+            writeVisibilityText(module, ptr, sizes[i]!, texts[i]!),
+          );
+          const status = module._tspice_gfoclt(
+            occtypPtr,
+            frontPtr,
+            fshapePtr,
+            fframePtr,
+            backPtr,
+            bshapePtr,
+            bframePtr,
+            abcorrPtr,
+            obsrvrPtr,
+            step,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    gfrfov: (inst, raydir, rframe, abcorr, obsrvr, step, cnfine, result) => {
+      assertFiniteNumber(step, "gfrfov(step)");
+      const input = wasmWindowPointer(module, cnfine, "gfrfov(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfrfov(result)");
+      const texts = [inst, rframe, abcorr, obsrvr],
+        sizes = texts.map((t) => spiceStringByteLength(t, "gfrfov") + 1);
+      const dir = fovRayDirection(raydir);
+      withAllocs(
+        module,
+        [...sizes, 24, WASM_ERR_MAX_BYTES],
+        (instPtr, rframePtr, abcorrPtr, obsrvrPtr, rayPtr, err) => {
+          [instPtr, rframePtr, abcorrPtr, obsrvrPtr].forEach((ptr, i) =>
+            writeVisibilityText(module, ptr, sizes[i]!, texts[i]!),
+          );
+          module.HEAPF64.set(dir, rayPtr >>> 3);
+          const status = module._tspice_gfrfov(
+            instPtr,
+            rayPtr,
+            rframePtr,
+            abcorrPtr,
+            obsrvrPtr,
+            step,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    gftfov: (
+      inst,
+      target,
+      tshape,
+      tframe,
+      abcorr,
+      obsrvr,
+      step,
+      cnfine,
+      result,
+    ) => {
+      assertFiniteNumber(step, "gftfov(step)");
+      const input = wasmWindowPointer(module, cnfine, "gftfov(cnfine)"),
+        output = wasmWindowPointer(module, result, "gftfov(result)");
+      const texts = [inst, target, tshape, tframe, abcorr, obsrvr],
+        sizes = texts.map((t) => spiceStringByteLength(t, "gftfov") + 1);
+      withAllocs(
+        module,
+        [...sizes, WASM_ERR_MAX_BYTES],
+        (
+          instPtr,
+          targetPtr,
+          tshapePtr,
+          tframePtr,
+          abcorrPtr,
+          obsrvrPtr,
+          err,
+        ) => {
+          [
+            instPtr,
+            targetPtr,
+            tshapePtr,
+            tframePtr,
+            abcorrPtr,
+            obsrvrPtr,
+          ].forEach((ptr, i) =>
+            writeVisibilityText(module, ptr, sizes[i]!, texts[i]!),
+          );
+          const status = module._tspice_gftfov(
+            instPtr,
+            targetPtr,
+            tshapePtr,
+            tframePtr,
+            abcorrPtr,
+            obsrvrPtr,
+            step,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
     gfsep: (
       targ1,
       shape1,

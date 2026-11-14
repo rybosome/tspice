@@ -1,5 +1,10 @@
 import type { GeometryGfApi } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32, invariant } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  invariant,
+  fovRayDirection,
+  spiceStringByteLength,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
@@ -98,6 +103,95 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       native.gfrepf();
     },
 
+    gfoclt: (
+      occtyp,
+      front,
+      fshape,
+      fframe,
+      back,
+      bshape,
+      bframe,
+      abcorr,
+      obsrvr,
+      step,
+      cnfine,
+      result,
+    ) => {
+      for (const text of [
+        occtyp,
+        front,
+        fshape,
+        fframe,
+        back,
+        bshape,
+        bframe,
+        abcorr,
+        obsrvr,
+      ])
+        spiceStringByteLength(text, "gfoclt");
+      assertFiniteNumber(step, "gfoclt(step)");
+      assertOpaqueHandle(cnfine, "gfoclt(cnfine)");
+      assertOpaqueHandle(result, "gfoclt(result)");
+      native.gfoclt(
+        occtyp,
+        front,
+        fshape,
+        fframe,
+        back,
+        bshape,
+        bframe,
+        abcorr,
+        obsrvr,
+        step,
+        cnfine,
+        result,
+      );
+    },
+    gfrfov: (inst, raydir, rframe, abcorr, obsrvr, step, cnfine, result) => {
+      for (const text of [inst, rframe, abcorr, obsrvr])
+        spiceStringByteLength(text, "gfrfov");
+      assertFiniteNumber(step, "gfrfov(step)");
+      assertOpaqueHandle(cnfine, "gfrfov(cnfine)");
+      assertOpaqueHandle(result, "gfrfov(result)");
+      native.gfrfov(
+        inst,
+        fovRayDirection(raydir),
+        rframe,
+        abcorr,
+        obsrvr,
+        step,
+        cnfine,
+        result,
+      );
+    },
+    gftfov: (
+      inst,
+      target,
+      tshape,
+      tframe,
+      abcorr,
+      obsrvr,
+      step,
+      cnfine,
+      result,
+    ) => {
+      for (const text of [inst, target, tshape, tframe, abcorr, obsrvr])
+        spiceStringByteLength(text, "gftfov");
+      assertFiniteNumber(step, "gftfov(step)");
+      assertOpaqueHandle(cnfine, "gftfov(cnfine)");
+      assertOpaqueHandle(result, "gftfov(result)");
+      native.gftfov(
+        inst,
+        target,
+        tshape,
+        tframe,
+        abcorr,
+        obsrvr,
+        step,
+        cnfine,
+        result,
+      );
+    },
     gfsep: (
       targ1,
       shape1,

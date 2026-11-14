@@ -1072,6 +1072,50 @@ export type StepGeometryGfGfrepf = {
   op: "geometry-gf.gfrepf";
 };
 
+export type StepGeometryGfGfoclt = {
+  op: "geometry-gf.gfoclt";
+  occtyp: string;
+  front: string;
+  fshape: string;
+  fframe: string;
+  back: string;
+  bshape: string;
+  bframe: string;
+  abcorr: string;
+  obsrvr: string;
+  step: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
+export type StepGeometryGfGfrfov = {
+  op: "geometry-gf.gfrfov";
+  inst: string;
+  raydir: [number, number, number];
+  rframe: string;
+  abcorr: string;
+  obsrvr: string;
+  step: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
+export type StepGeometryGfGftfov = {
+  op: "geometry-gf.gftfov";
+  inst: string;
+  target: string;
+  tshape: string;
+  tframe: string;
+  abcorr: string;
+  obsrvr: string;
+  step: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
 export type StepGeometryGfGfsep = {
   op: "geometry-gf.gfsep";
   targ1: string;
@@ -1521,6 +1565,9 @@ export type WorkflowStep =
   | StepGeometryGfGfrefn
   | StepGeometryGfGfrepi
   | StepGeometryGfGfrepf
+  | StepGeometryGfGfoclt
+  | StepGeometryGfGfrfov
+  | StepGeometryGfGftfov
   | StepGeometryGfGfsep
   | StepGeometryGfGfdist
   | StepDskDskobj
@@ -1970,6 +2017,9 @@ export type StepOutput =
   | { op: "geometry-gf.gfrefn"; value: number }
   | { op: "geometry-gf.gfrepi"; value: null }
   | { op: "geometry-gf.gfrepf"; value: null }
+  | { op: "geometry-gf.gfoclt"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfrfov"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gftfov"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfsep"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfdist"; value: GfSearchWindowPayload }
   | {

@@ -4,6 +4,9 @@ import type {
   StepGeometryGfGfrefn,
   StepGeometryGfGfrepf,
   StepGeometryGfGfrepi,
+  StepGeometryGfGfoclt,
+  StepGeometryGfGfrfov,
+  StepGeometryGfGftfov,
   StepGeometryGfGfsep,
   StepGeometryGfGfsstp,
   StepGeometryGfGfstep,
@@ -22,6 +25,9 @@ type GeometryGfStep =
   | StepGeometryGfGfrefn
   | StepGeometryGfGfrepf
   | StepGeometryGfGfrepi
+  | StepGeometryGfGfoclt
+  | StepGeometryGfGfrfov
+  | StepGeometryGfGftfov
   | StepGeometryGfGfsep
   | StepGeometryGfGfsstp
   | StepGeometryGfGfstep
@@ -47,6 +53,23 @@ function windowIntervals(
     intervals.push([left, right]);
   }
   return intervals;
+}
+
+/** Each sidecar gets a fresh process. Restore the native runtime's existing
+ * step once per workflow when N0067 has one. Its initial unset state has no setter. */
+function preserveSearchStep(context: RunTspiceContext): void {
+  const label = "geometryGF.restoreSearchStep";
+  if (context.lifecycle.finalizers.some((item) => item.label === label)) return;
+  let previous: number | undefined;
+  try {
+    previous = context.spice.raw.gfstep(0);
+  } catch (error) {
+    if (!(error instanceof Error && error.message.includes("NOTINITIALIZED")))
+      throw error;
+  }
+  registerFinalizer(context, label, () => {
+    if (previous !== undefined) context.spice.raw.gfsstp(previous);
+  });
 }
 
 /** Execute one `geometry-gf.*` workflow step in tspice. */
@@ -90,6 +113,89 @@ export function runGeometryGfStep(
       context.spice.raw.gfrepf();
       return { op: step.op, value: null };
 
+    case "geometry-gf.gfoclt": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfoclt(
+        step.occtyp,
+        step.front,
+        step.fshape,
+        step.fframe,
+        step.back,
+        step.bshape,
+        step.bframe,
+        step.abcorr,
+        step.obsrvr,
+        step.step,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gfrfov": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfrfov(
+        step.inst,
+        step.raydir,
+        step.rframe,
+        step.abcorr,
+        step.obsrvr,
+        step.step,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gftfov": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gftfov(
+        step.inst,
+        step.target,
+        step.tshape,
+        step.tframe,
+        step.abcorr,
+        step.obsrvr,
+        step.step,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
     case "geometry-gf.gfsep": {
       const cnfine = requireWindow(context, step.cnfineWindowId);
       const result = getOrCreateWindow(
