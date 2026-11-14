@@ -3017,13 +3017,20 @@
         {
           "kind": "local-focused",
           "result": "The shared aberration-cache validity correction covers all 35 pinned owners on Node and WASM. All 170 registered comparisons, 14 public checks, 25 native and 45 WASM tests passed on the rebuilt source, including inherited SPKEZR, independent full-state comparisons, the blank-option diagnostic and recovery. Source-bound full lanes and canonical CI require a new run. The final Chrome worker matched all eight independent outputs and the mixed SPKEZR/SPKACS state, diagnostic and recovery sequence."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43589578886/job/132431245235",
+          "result": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run full required local lanes and inspect matching canonical source CI. Confirm final-head matrix and rebaseability before readiness.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-spk-corrections",
       "branch": "codex/expand-spk-corrections",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "The shared aberration-cache validity correction covers all 35 pinned owners on Node and WASM. All 170 registered comparisons, 14 public checks, 25 native and 45 WASM tests passed on the rebuilt source, including inherited SPKEZR, independent full-state comparisons, the blank-option diagnostic and recovery. Source-bound full lanes and canonical CI require a new run. The final Chrome worker matched all eight independent outputs and the mixed SPKEZR/SPKACS state, diagnostic and recovery sequence."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 2d32c8bf. 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "The shared aberration-cache validity correction covers all 35 pinned owners on Node and WASM. All 170 registered comparisons, 14 public checks, 25 native and 45 WASM tests passed on the rebuilt source, including inherited SPKEZR, independent full-state comparisons, the blank-option diagnostic and recovery. Source-bound full lanes and canonical CI require a new run. The final Chrome worker matched all eight independent outputs and the mixed SPKEZR/SPKACS state, diagnostic and recovery sequence."
     },
     {
       "id": "E09-spk-relative-observers",

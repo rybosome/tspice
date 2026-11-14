@@ -424,7 +424,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/770"],
-      "nextAction": "Record current full backend-local and observed canonical source CI evidence, then inspect the final PR matrix and rebaseability."
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
