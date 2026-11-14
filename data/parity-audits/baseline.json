@@ -443,8 +443,8 @@
         "xpose6_c"
       ],
       "dependsOn": ["a12-fixed-matrices"],
-      "prs": [],
-      "nextAction": "Record complete source-bound local and inspected canonical checks for both backends. Recheck final-head CI and explicit rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/736"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

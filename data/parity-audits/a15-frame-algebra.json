@@ -31,7 +31,248 @@
     "packages/py-parity-checking/test/frame-algebra-public.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a15-3fb46545-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a15-3fb46545-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "frame_c",
@@ -69,16 +310,16 @@
       "findings": [],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.frame uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_frame then frame_c on success. Independent live handler calls SpiceyPy frame on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.frame uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_frame then frame_c on success. Independent live handler calls SpiceyPy frame on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -151,16 +392,16 @@
       ],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.twovec uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_twovec then twovec_c on success. Independent live handler calls SpiceyPy twovec on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.twovec uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_twovec then twovec_c on success. Independent live handler calls SpiceyPy twovec on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -247,16 +488,16 @@
       ],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.twovxf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_twovxf then twovxf_c on success. The independent sidecar checks locked zztwovxf_ and then obtains the successful public result from sp.twovxf.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.twovxf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_twovxf then twovxf_c on success. The independent sidecar checks locked zztwovxf_ and then obtains the successful public result from sp.twovxf.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -334,16 +575,16 @@
       ],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.eul2xf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_eul2xf then eul2xf_c on success. The independent sidecar calls sp.eul2xf on the ordinary domain and traced, initialized locked eul2m_ on the invalid leading-axis lookup domain.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.eul2xf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_eul2xf then eul2xf_c on success. The independent sidecar calls sp.eul2xf on the ordinary domain and traced, initialized locked eul2m_ on the invalid leading-axis lookup domain.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -416,16 +657,16 @@
       ],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xf2eul uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xf2eul then xf2eul_c on success. The independent sidecar checks the typed locked xf2eul_ ABI in column-major order before returning a successful sp.xf2eul result.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xf2eul uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xf2eul then xf2eul_c on success. The independent sidecar checks the typed locked xf2eul_ ABI in column-major order before returning a successful sp.xf2eul result.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -460,16 +701,16 @@
       "findings": [],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xf2rav uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xf2rav then xf2rav_c on success. Independent live handler calls SpiceyPy xf2rav on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xf2rav uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xf2rav then xf2rav_c on success. Independent live handler calls SpiceyPy xf2rav on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -504,16 +745,16 @@
       "findings": [],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.rav2xf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_rav2xf then rav2xf_c on success. Independent live handler calls SpiceyPy rav2xf on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.rav2xf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_rav2xf then rav2xf_c on success. Independent live handler calls SpiceyPy rav2xf on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -548,16 +789,16 @@
       "findings": [],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.invstm uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_invstm then invstm_c on success. Independent live handler calls SpiceyPy invstm on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.invstm uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_invstm then invstm_c on success. Independent live handler calls SpiceyPy invstm on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     },
@@ -592,19 +833,19 @@
       "findings": [],
       "backends": {
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xpose6 uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xpose6 then xpose6_c on success. Independent live handler calls SpiceyPy xpose6 on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         },
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xpose6 uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xpose6 then xpose6_c on success. Independent live handler calls SpiceyPy xpose6 on the same input.",
-          "executions": []
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         }
       }
     }
   ],
-  "verificationNote": "Reviewed against pinned N0067, independent SpiceyPy 6.0.3, registered scenarios and focused compiled tests. Both full required local executions and inspected source CI remain to be recorded for this combined branch."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
