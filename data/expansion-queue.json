@@ -2074,7 +2074,7 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/730"],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -2083,13 +2083,20 @@
         {
           "kind": "source-and-abi",
           "result": "Actual N0067 OSCLTX receives all 20 allocated doubles and publishes the eleven defined fields. The independent pinned wrapper requires an explicit CSPICE failure check. EQNCPV zero mean-longitude rate compares NaN/finite classifications across all six coordinates. Generated WASM SHA-256 ef97340873af4818c45ae04ed4a515d561fcc57c0561e7ea38d9334429944744."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
+          "result": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both required local lanes and capture source-matched canonical CI on the new PR. Check final-head jobs and rebaseability before readiness.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-orbital-elements",
       "branch": "codex/expand-orbital-elements",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Five direct canonical routes and the locked-oracle OSCLTX status repair are reviewed. Full local and CI verification remains independent of the focused results."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source b72ef2e9. 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Five direct canonical routes and the locked-oracle OSCLTX status repair are reviewed. Full local and CI verification remains independent of the focused results."
     },
     {
       "id": "E02-tle-propagation",
