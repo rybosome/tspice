@@ -3,11 +3,13 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { spiceClients } from "@rybosome/tspice";
+import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 const enc = new TextEncoder();
 const src = (path: string, text: string) => ({ path, bytes: enc.encode(text) });
-for (const backend of ["node", "wasm"] as const)
-  describe(backend + " compiled text and command state", () => {
+for (const backend of ["node", "wasm"] as const) {
+  const suite = describe.runIf(backend === "wasm" || nodeBackendAvailable);
+  suite(backend + " compiled text and command state", () => {
     it("releases a reader at the first actual toolkit capacity error and retries the same file", async () => {
       const client = await spiceClients.toSync({ backend });
       try {
@@ -142,30 +144,36 @@ for (const backend of ["node", "wasm"] as const)
       }
     });
   });
-it("preserves an outstanding native owner and closes an unrelated unit without losing its cursor", async () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "c14-owner-"));
-  const paths = ["shared", "unrelated"].map((p) => path.join(root, p));
-  for (const p of paths) fs.writeFileSync(p, "one\ntwo\nthree\n");
-  const a = await spiceClients.toSync({ backend: "node" }),
-    b = await spiceClients.toSync({ backend: "node" });
-  try {
-    expect(a.spice.raw.rdtext(paths[0]!).line).toBe("one");
-    expect(a.spice.raw.rdtext(paths[1]!).line).toBe("one");
-    expect(b.spice.raw.rdtext(paths[0]!).line).toBe("two");
-    await a.dispose();
-    expect(b.spice.raw.rdtext(paths[0]!).line).toBe("three");
-    expect(b.spice.raw.rdtext(paths[0]!)).toEqual({ eof: true, line: "" });
-    expect(b.spice.raw.rdtext(paths[1]!).line).toBe("one");
-    await b.dispose();
-    const c = await spiceClients.toSync({ backend: "node" });
+}
+
+const itNative = it.runIf(nodeBackendAvailable);
+itNative(
+  "preserves an outstanding native owner and closes an unrelated unit without losing its cursor",
+  async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "c14-owner-"));
+    const paths = ["shared", "unrelated"].map((p) => path.join(root, p));
+    for (const p of paths) fs.writeFileSync(p, "one\ntwo\nthree\n");
+    const a = await spiceClients.toSync({ backend: "node" }),
+      b = await spiceClients.toSync({ backend: "node" });
     try {
-      expect(c.spice.raw.rdtext(paths[1]!).line).toBe("one");
+      expect(a.spice.raw.rdtext(paths[0]!).line).toBe("one");
+      expect(a.spice.raw.rdtext(paths[1]!).line).toBe("one");
+      expect(b.spice.raw.rdtext(paths[0]!).line).toBe("two");
+      await a.dispose();
+      expect(b.spice.raw.rdtext(paths[0]!).line).toBe("three");
+      expect(b.spice.raw.rdtext(paths[0]!)).toEqual({ eof: true, line: "" });
+      expect(b.spice.raw.rdtext(paths[1]!).line).toBe("one");
+      await b.dispose();
+      const c = await spiceClients.toSync({ backend: "node" });
+      try {
+        expect(c.spice.raw.rdtext(paths[1]!).line).toBe("one");
+      } finally {
+        await c.dispose();
+      }
     } finally {
-      await c.dispose();
+      await a.dispose();
+      await b.dispose();
+      fs.rmSync(root, { recursive: true, force: true });
     }
-  } finally {
-    await a.dispose();
-    await b.dispose();
-    fs.rmSync(root, { recursive: true, force: true });
-  }
-});
+  },
+);

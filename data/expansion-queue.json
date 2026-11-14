@@ -2478,11 +2478,11 @@
           "result": "Both complete required lanes passed locally on 04bb754253a44b86ef915eec79bfe08a3e9a78be. JavaScript: 2,475 parity tests and one expected guard skip. Native-required: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132426787762 on 04bb754253a44b86ef915eec79bfe08a3e9a78be: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "nextAction": "Run both complete local lanes and canonical source CI, then check the final matrix and explicit GitHub rebaseability.",
       "worktree": "/private/tmp/tspice-step8-text-command-state",
       "branch": "codex/expand-text-command-state",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 04bb7542. 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed.",
+      "progressNote": "Linux JavaScript-only CI exposed six native-only supplemental tests without availability guards. The corrected suite passed five WASM checks with an absent addon, six native plus five WASM checks with compiled artifacts and the required native guard. Prior full local and canonical source executions remain historical.",
       "priorCheckpoint": "Repaired standalone C fixture linkage to the canonical staged text-reader definitions."
     },
     {
