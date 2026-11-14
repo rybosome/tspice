@@ -714,3 +714,21 @@ Callback-free GFDIST/GFSEP do not automatically drive a separate reporter.
 GFSEP preserves NAIF's documented POINT alignment limitation for equality to zero;
 LOCMIN/ABSMIN tests establish the corresponding nonempty extrema. POINT frame
 orientation is ignored, with nonempty C strings still required.
+
+## Numeric string conversion and marker replacement
+
+| Raw method | CSPICE     | Scientific effect                                                                                                                                                 |
+| ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dp2hx`    | `dp2hx_c`  | Encode a finite binary64 number in CSPICE normalized hex with its complete pre-truncation size.                                                                   |
+| `hx2dp`    | `hx2dp_c`  | Parse a normalized hexadecimal mantissa and base-16 exponent, preserving the scientific conversion flag, full returned error prefix and successful numeric value. |
+| `prsdp`    | `prsdp_c`  | Parse the CSPICE decimal grammar and PI mnemonic as a double.                                                                                                     |
+| `prsint`   | `prsint_c` | Parse the CSPICE decimal grammar and truncate the result toward zero into a signed integer.                                                                       |
+| `repmc`    | `repmc_c`  | Replace the first marker with a character value, trimming only significant ASCII-space padding in the scientific string operation.                                |
+| `repmct`   | `repmct_c` | Replace the first marker with English cardinal words for a signed integer, preserving requested case.                                                             |
+| `repmd`    | `repmd_c`  | Replace the first marker with a scientific-formatted double, honoring the pinned significant-digit range.                                                         |
+| `repmf`    | `repmf_c`  | Replace the first marker with a scientific or fixed representation, retaining pinned formatting and scoped 56-byte internal width.                                |
+| `repmi`    | `repmi_c`  | Replace the first marker with signed decimal integer text, including exact endpoints.                                                                             |
+| `repml`    | `repml_c`  | Replace the first marker with a logical value in upper, lower or initial-capital case.                                                                            |
+| `repmot`   | `repmot_c` | Replace the first marker with English ordinal words for a signed integer, preserving hyphenation and case.                                                        |
+
+Caller buffer bounds, direct typed oracle signatures and binary64 saturation are described in the batch audit. [Numeric strings and marker replacement](step8-string-numbers.md)

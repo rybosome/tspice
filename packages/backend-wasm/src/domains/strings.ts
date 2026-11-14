@@ -44,9 +44,435 @@ function readString(
   }
 }
 
+function finite(value: number, name: string): void {
+  if (!Number.isFinite(value))
+    throw new TypeError(name + " must be a finite number");
+}
+
 /** Create the raw string API backed by the WASM CSPICE module. */
 export function createStringsApi(module: EmscriptenModule): StringsApi {
   return {
+    dp2hx: (value, lenout) => {
+      finite(value, "dp2hx value");
+      const bound = 255;
+      const capacity = spiceStringOutputCapacity(bound, 2, lenout);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(1, capacity), 4],
+        (err, textOut, sizeOut) => {
+          const status = module._tspice_dp2hx(
+            value,
+            capacity,
+            textOut,
+            sizeOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          const hxssiz = module.HEAP32[sizeOut >>> 2];
+          if (hxssiz === undefined || hxssiz < 1 || hxssiz > 255)
+            throw new Error("Invalid dp2hx size");
+          return { hxstr: readString(module, textOut, capacity), hxssiz };
+        },
+      );
+    },
+    hx2dp: (input, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "hx2dp input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const bound = 192;
+      const capacity = spiceStringOutputCapacity(bound, 2, lenout);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 8, 4, Math.max(1, capacity)],
+        (err, inputPtr, numberOut, errorOut, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_hx2dp(
+            inputPtr,
+            capacity,
+            numberOut,
+            errorOut,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          const errmsg = readString(module, textOut, capacity);
+          if (module.HEAP32[errorOut >>> 2]) return { error: true, errmsg };
+          const number = module.HEAPF64[numberOut >>> 3];
+          if (number === undefined || errmsg !== "")
+            throw new Error("Invalid hx2dp result");
+          return { error: false, number, errmsg };
+        },
+      );
+    },
+    prsdp: (input) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "prsdp input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 8],
+        (err, inputPtr, numberOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_prsdp(
+            inputPtr,
+            numberOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          const number = module.HEAPF64[numberOut >>> 3];
+          if (number === undefined) throw new Error("Missing parsed number");
+          return number;
+        },
+      );
+    },
+    prsint: (input) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "prsint input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 4],
+        (err, inputPtr, numberOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_prsint(
+            inputPtr,
+            numberOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          const number = module.HEAP32[numberOut >>> 2];
+          if (number === undefined) throw new Error("Missing parsed number");
+          return number;
+        },
+      );
+    },
+    repmc: (input, marker, value, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "repmc input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const markerBytes = spiceStringByteLength(
+        marker,
+        "repmc marker",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const valueBytes = spiceStringByteLength(
+        value,
+        "repmc value",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const bound = inputBytes + Math.max(1, valueBytes);
+      if (bound >= 2147483647)
+        throw new RangeError("Replacement result exceeds signed32 storage");
+      const capacity = spiceStringOutputCapacity(bound, 1, lenout);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          markerBytes + 1,
+          valueBytes + 1,
+          Math.max(1, capacity),
+        ],
+        (err, inputPtr, markerPtr, valuePtr, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          writeString(module, markerPtr, marker, markerBytes);
+          writeString(module, valuePtr, value, valueBytes);
+          const status = module._tspice_repmc(
+            inputPtr,
+            markerPtr,
+            valuePtr,
+            capacity,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return readString(module, textOut, capacity);
+        },
+      );
+    },
+    repmct: (input, marker, value, rtcase, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "repmct input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const markerBytes = spiceStringByteLength(
+        marker,
+        "repmct marker",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(value, "repmct value");
+      const rtcaseByte = spiceAsciiChar(rtcase, "repmct rtcase");
+      const bound = inputBytes + 145;
+      if (bound >= 2147483647)
+        throw new RangeError("Replacement result exceeds signed32 storage");
+      const capacity = spiceStringOutputCapacity(bound, 1, lenout);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          markerBytes + 1,
+          Math.max(1, capacity),
+        ],
+        (err, inputPtr, markerPtr, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          writeString(module, markerPtr, marker, markerBytes);
+          const status = module._tspice_repmct(
+            inputPtr,
+            markerPtr,
+            value,
+            rtcaseByte,
+            capacity,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return readString(module, textOut, capacity);
+        },
+      );
+    },
+    repmd: (input, marker, value, sigdig, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "repmd input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const markerBytes = spiceStringByteLength(
+        marker,
+        "repmd marker",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      finite(value, "repmd value");
+      assertSpiceInt32(sigdig, "repmd sigdig");
+      const bound = inputBytes + 23;
+      if (bound >= 2147483647)
+        throw new RangeError("Replacement result exceeds signed32 storage");
+      const capacity = spiceStringOutputCapacity(bound, 1, lenout);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          markerBytes + 1,
+          Math.max(1, capacity),
+        ],
+        (err, inputPtr, markerPtr, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          writeString(module, markerPtr, marker, markerBytes);
+          const status = module._tspice_repmd(
+            inputPtr,
+            markerPtr,
+            value,
+            sigdig,
+            capacity,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return readString(module, textOut, capacity);
+        },
+      );
+    },
+    repmf: (input, marker, value, sigdig, format, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "repmf input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const markerBytes = spiceStringByteLength(
+        marker,
+        "repmf marker",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      finite(value, "repmf value");
+      assertSpiceInt32(sigdig, "repmf sigdig");
+      const formatByte = spiceAsciiChar(format, "repmf format");
+      const bound = inputBytes + 56;
+      if (bound >= 2147483647)
+        throw new RangeError("Replacement result exceeds signed32 storage");
+      const capacity = spiceStringOutputCapacity(bound, 1, lenout);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          markerBytes + 1,
+          Math.max(1, capacity),
+        ],
+        (err, inputPtr, markerPtr, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          writeString(module, markerPtr, marker, markerBytes);
+          const status = module._tspice_repmf(
+            inputPtr,
+            markerPtr,
+            value,
+            sigdig,
+            formatByte,
+            capacity,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return readString(module, textOut, capacity);
+        },
+      );
+    },
+    repmi: (input, marker, value, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "repmi input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const markerBytes = spiceStringByteLength(
+        marker,
+        "repmi marker",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(value, "repmi value");
+      const bound = inputBytes + 11;
+      if (bound >= 2147483647)
+        throw new RangeError("Replacement result exceeds signed32 storage");
+      const capacity = spiceStringOutputCapacity(bound, 1, lenout);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          markerBytes + 1,
+          Math.max(1, capacity),
+        ],
+        (err, inputPtr, markerPtr, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          writeString(module, markerPtr, marker, markerBytes);
+          const status = module._tspice_repmi(
+            inputPtr,
+            markerPtr,
+            value,
+            capacity,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return readString(module, textOut, capacity);
+        },
+      );
+    },
+    repml: (input, marker, value, rtcase, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "repml input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const markerBytes = spiceStringByteLength(
+        marker,
+        "repml marker",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      if (typeof value !== "boolean")
+        throw new TypeError("repml value must be a boolean");
+      const rtcaseByte = spiceAsciiChar(rtcase, "repml rtcase");
+      const bound = inputBytes + 5;
+      if (bound >= 2147483647)
+        throw new RangeError("Replacement result exceeds signed32 storage");
+      const capacity = spiceStringOutputCapacity(bound, 2, lenout);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          markerBytes + 1,
+          Math.max(1, capacity),
+        ],
+        (err, inputPtr, markerPtr, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          writeString(module, markerPtr, marker, markerBytes);
+          const status = module._tspice_repml(
+            inputPtr,
+            markerPtr,
+            Number(value),
+            rtcaseByte,
+            capacity,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return readString(module, textOut, capacity);
+        },
+      );
+    },
+    repmot: (input, marker, value, rtcase, lenout) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "repmot input",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const markerBytes = spiceStringByteLength(
+        marker,
+        "repmot marker",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(value, "repmot value");
+      const rtcaseByte = spiceAsciiChar(rtcase, "repmot rtcase");
+      const bound = inputBytes + 147;
+      if (bound >= 2147483647)
+        throw new RangeError("Replacement result exceeds signed32 storage");
+      const capacity = spiceStringOutputCapacity(bound, 1, lenout);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          markerBytes + 1,
+          Math.max(1, capacity),
+        ],
+        (err, inputPtr, markerPtr, textOut) => {
+          writeString(module, inputPtr, input, inputBytes);
+          writeString(module, markerPtr, marker, markerBytes);
+          const status = module._tspice_repmot(
+            inputPtr,
+            markerPtr,
+            value,
+            rtcaseByte,
+            capacity,
+            textOut,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return readString(module, textOut, capacity);
+        },
+      );
+    },
     cmprss: (delim, n, input, lenout) => {
       const delimByte = spiceAsciiChar(delim, "cmprss(delim)");
       assertSpiceInt32(n, "cmprss(n)");

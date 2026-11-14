@@ -529,6 +529,53 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  dp2hx(value: number, lenout: number): { hxstr: string; hxssiz: number };
+  hx2dp(
+    input: string,
+    lenout: number,
+  ):
+    | { error: false; number: number; errmsg: string }
+    | { error: true; errmsg: string };
+  prsdp(input: string): number;
+  prsint(input: string): number;
+  repmc(input: string, marker: string, value: string, lenout: number): string;
+  repmct(
+    input: string,
+    marker: string,
+    value: number,
+    rtcase: string,
+    lenout: number,
+  ): string;
+  repmd(
+    input: string,
+    marker: string,
+    value: number,
+    sigdig: number,
+    lenout: number,
+  ): string;
+  repmf(
+    input: string,
+    marker: string,
+    value: number,
+    sigdig: number,
+    format: string,
+    lenout: number,
+  ): string;
+  repmi(input: string, marker: string, value: number, lenout: number): string;
+  repml(
+    input: string,
+    marker: string,
+    value: boolean,
+    rtcase: string,
+    lenout: number,
+  ): string;
+  repmot(
+    input: string,
+    marker: string,
+    value: number,
+    rtcase: string,
+    lenout: number,
+  ): string;
   cmprss(delim: string, n: number, input: string, lenout: number): string;
   eqstr(a: string, b: string): boolean;
   iswhsp(input: string): boolean;

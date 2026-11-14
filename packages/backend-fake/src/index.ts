@@ -2393,6 +2393,39 @@ export function createFakeBackend(
     },
 
     // This fake does not model CSPICE string and wildcard semantics.
+    dp2hx: () => {
+      throw new Error("Fake backend does not model dp2hx()");
+    },
+    hx2dp: () => {
+      throw new Error("Fake backend does not model hx2dp()");
+    },
+    prsdp: () => {
+      throw new Error("Fake backend does not model prsdp()");
+    },
+    prsint: () => {
+      throw new Error("Fake backend does not model prsint()");
+    },
+    repmc: () => {
+      throw new Error("Fake backend does not model repmc()");
+    },
+    repmct: () => {
+      throw new Error("Fake backend does not model repmct()");
+    },
+    repmd: () => {
+      throw new Error("Fake backend does not model repmd()");
+    },
+    repmf: () => {
+      throw new Error("Fake backend does not model repmf()");
+    },
+    repmi: () => {
+      throw new Error("Fake backend does not model repmi()");
+    },
+    repml: () => {
+      throw new Error("Fake backend does not model repml()");
+    },
+    repmot: () => {
+      throw new Error("Fake backend does not model repmot()");
+    },
     cmprss: () => {
       throw new Error("Fake backend does not model cmprss()");
     },

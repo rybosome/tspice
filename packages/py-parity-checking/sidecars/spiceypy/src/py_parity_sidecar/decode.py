@@ -168,6 +168,17 @@ from .models import (
     StepTimeSce2s,
     StepTimeScs2e,
     StepTimeSct2e,
+    StepStringsDp2hx,
+    StepStringsHx2dp,
+    StepStringsPrsdp,
+    StepStringsPrsint,
+    StepStringsRepmc,
+    StepStringsRepmct,
+    StepStringsRepmd,
+    StepStringsRepmf,
+    StepStringsRepmi,
+    StepStringsRepml,
+    StepStringsRepmot,
     StepStringsCmprss,
     StepStringsEqstr,
     StepStringsIswhsp,
@@ -362,6 +373,90 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
     op = _expect_string(step.get("op"), label="workflow step.op")
 
     match op:
+        case "strings.dp2hx":
+            return StepStringsDp2hx(
+                op=op,
+                value=_expect_number(step.get("value"), label="strings.dp2hx.value"),
+                lenout=_expect_int(step.get("lenout"), label="strings.dp2hx.lenout") if "lenout" in step else None,
+            )
+        case "strings.hx2dp":
+            return StepStringsHx2dp(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.hx2dp.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.hx2dp.lenout") if "lenout" in step else None,
+            )
+        case "strings.prsdp":
+            return StepStringsPrsdp(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.prsdp.input"),
+            )
+        case "strings.prsint":
+            return StepStringsPrsint(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.prsint.input"),
+            )
+        case "strings.repmc":
+            return StepStringsRepmc(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmc.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmc.marker"),
+                value=_expect_string(step.get("value"), label="strings.repmc.value"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmc.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmct":
+            return StepStringsRepmct(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmct.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmct.marker"),
+                value=_expect_int(step.get("value"), label="strings.repmct.value"),
+                rtcase=_expect_string(step.get("rtcase"), label="strings.repmct.rtcase"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmct.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmd":
+            return StepStringsRepmd(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmd.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmd.marker"),
+                value=_expect_number(step.get("value"), label="strings.repmd.value"),
+                sigdig=_expect_int(step.get("sigdig"), label="strings.repmd.sigdig"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmd.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmf":
+            return StepStringsRepmf(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmf.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmf.marker"),
+                value=_expect_number(step.get("value"), label="strings.repmf.value"),
+                sigdig=_expect_int(step.get("sigdig"), label="strings.repmf.sigdig"),
+                format=_expect_string(step.get("format"), label="strings.repmf.format"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmf.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmi":
+            return StepStringsRepmi(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmi.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmi.marker"),
+                value=_expect_int(step.get("value"), label="strings.repmi.value"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmi.lenout") if "lenout" in step else None,
+            )
+        case "strings.repml":
+            return StepStringsRepml(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repml.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repml.marker"),
+                value=_expect_bool(step.get("value"), label="strings.repml.value"),
+                rtcase=_expect_string(step.get("rtcase"), label="strings.repml.rtcase"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repml.lenout") if "lenout" in step else None,
+            )
+        case "strings.repmot":
+            return StepStringsRepmot(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.repmot.input"),
+                marker=_expect_string(step.get("marker"), label="strings.repmot.marker"),
+                value=_expect_int(step.get("value"), label="strings.repmot.value"),
+                rtcase=_expect_string(step.get("rtcase"), label="strings.repmot.rtcase"),
+                lenout=_expect_int(step.get("lenout"), label="strings.repmot.lenout") if "lenout" in step else None,
+            )
         case "strings.cmprss":
             return StepStringsCmprss(
                 op=op,

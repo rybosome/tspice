@@ -76,3 +76,7 @@ and exposing incomplete UTF-8 prefixes. Boolean results and byte indices use
 the installed SpiceyPy wrappers. Each backend judgment progresses from source
 review to verification after fresh required local lanes and observed CI.
 [Primary semantics, byte evidence and boundaries](step8-string-transforms.md)
+
+## Numeric strings and marker replacement
+
+A21 adds eleven direct methods on A18’s string contract. Its conversion flags, buffer truncation and full counts coexist with independently checked scientific errors. Source-derived limits on extreme hexadecimal scaling and minimum integer word conversion apply to the documented calls. [Numeric strings](step8-string-numbers.md) [Per-routine audit](../data/parity-audits/a21-string-numeric.json)

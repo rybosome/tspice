@@ -56,3 +56,24 @@ export async function stringConsumer(
     asyncSensitive,
   ];
 }
+
+/** Check all numeric string results through the public synchronous and asynchronous contracts. */
+export async function stringNumberConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const { hxstr, hxssiz } = spice.raw.dp2hx(1.5);
+  const parsed = await asyncSpice.raw.hx2dp(hxstr, 80);
+  const message: string = parsed.errmsg;
+  const value: number = parsed.error ? 0 : parsed.number;
+  spice.raw.prsdp("PI");
+  await asyncSpice.raw.prsint("1.5");
+  spice.raw.repmc("#", "#", "x");
+  spice.raw.repmct("#", "#", 2, "L");
+  spice.raw.repmd("#", "#", 2, 4);
+  await asyncSpice.raw.repmf("#", "#", 2, 4, "F");
+  spice.raw.repmi("#", "#", -1);
+  spice.raw.repml("#", "#", true, "C");
+  spice.raw.repmot("#", "#", 3, "U");
+  void [hxssiz, message, value];
+}

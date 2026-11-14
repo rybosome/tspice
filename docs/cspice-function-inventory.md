@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 170
-- Planned (not yet implemented): 479
+- Implemented now (SpiceRawBackend): 181
+- Planned (not yet implemented): 468
 - Excluded: 3
 
 ## Implemented now
@@ -54,6 +54,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
+| `dp2hx_c` | D.p. number to hexadecimal string |
 | `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
@@ -101,6 +102,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `gfstol_c` | GF, set a tolerance value for GF |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
+| `hx2dp_c` | Hexadecimal string to d.p. number |
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
@@ -129,10 +131,19 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
+| `prsdp_c` | Parse d.p. number with error checking |
+| `prsint_c` | Parse integer with error checking |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
+| `repmc_c` | Replace marker with character string |
+| `repmct_c` | Replace marker with cardinal text |
+| `repmd_c` | Replace marker with double precision number |
+| `repmf_c` | Replace marker with formatted d.p. value |
+| `repmi_c` | Replace marker with integer |
+| `repml_c` | Replace marker with logical value text |
+| `repmot_c` | Replace marker with ordinal text |
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
@@ -296,7 +307,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `dlafps_c` | DLA, find previous segment |
 | `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
 | `dnearp_c` | Derivative of near point |
-| `dp2hx_c` | D.p. number to hexadecimal string |
 | `dpgrdr_c` | Derivative of planetographic w.r.t. rectangular |
 | `dpmax_c` | Largest DP number |
 | `dpmin_c` | Smallest DP number |
@@ -399,7 +409,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `halfpi_c` | Half the value of pi |
 | `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
 | `hrmint_c` | Hermite polynomial interpolation |
-| `hx2dp_c` | Hexadecimal string to d.p. number |
 | `ident_c` | Return the 3x3 identity matrix |
 | `illum_c` | Illumination angles |
 | `illum_pl02` | illumination angles using DSK type 2 plate model |
@@ -505,8 +514,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `pos_c` | Position of substring |
 | `posr_c` | Position of substring, reverse search |
 | `prop2b_c` | Propagate a two-body solution |
-| `prsdp_c` | Parse d.p. number with error checking |
-| `prsint_c` | Parse integer with error checking |
 | `psv2pl_c` | Point and spanning vectors to plane |
 | `putcml_c` | Get the command line |
 | `pxfrm2_c` | Position Transform Matrix, Different Epochs |
@@ -530,13 +537,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `reordd_c` | Reorder a double precision array |
 | `reordi_c` | Reorder an integer array |
 | `reordl_c` | Reorder a logical array |
-| `repmc_c` | Replace marker with character string |
-| `repmct_c` | Replace marker with cardinal text |
-| `repmd_c` | Replace marker with double precision number |
-| `repmf_c` | Replace marker with formatted d.p. value |
-| `repmi_c` | Replace marker with integer |
-| `repml_c` | Replace marker with logical value text |
-| `repmot_c` | Replace marker with ordinal text |
 | `return_c` | Immediate Return Indicator |
 | `rotvec_c` | Transform a vector via a rotation |
 | `rpd_c` | Radians per degree |
