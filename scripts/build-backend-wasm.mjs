@@ -477,6 +477,11 @@ const exportedFunctions = [
   "_tspice_nvc2pl",
   "_tspice_pl2nvc",
   // --- ephemeris ---
+  "_tspice_conics",
+  "_tspice_eqncpv",
+  "_tspice_oscelt",
+  "_tspice_oscltx",
+  "_tspice_prop2b",
   "_tspice_spkezr",
   "_tspice_spkpos",
   "_tspice_spkez",

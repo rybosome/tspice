@@ -1,4 +1,8 @@
 import type {
+  SpiceConicElements,
+  SpiceEquinoctialElements,
+  SpiceExtendedConicElements,
+  SpiceStateVector,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -579,6 +583,42 @@ export type StepEphemerisSpkezr = {
   ref: string;
   abcorr: string;
   observer: string;
+};
+
+export type StepEphemerisConics = {
+  op: "ephemeris.conics";
+  elts: SpiceConicElements;
+  et: number;
+};
+
+export type StepEphemerisEqncpv = {
+  op: "ephemeris.eqncpv";
+  et: number;
+  epoch: number;
+  eqel: SpiceEquinoctialElements;
+  rapol: number;
+  decpol: number;
+};
+
+export type StepEphemerisOscelt = {
+  op: "ephemeris.oscelt";
+  state: SpiceStateVector;
+  et: number;
+  mu: number;
+};
+
+export type StepEphemerisOscltx = {
+  op: "ephemeris.oscltx";
+  state: SpiceStateVector;
+  et: number;
+  mu: number;
+};
+
+export type StepEphemerisProp2b = {
+  op: "ephemeris.prop2b";
+  gm: number;
+  pvinit: SpiceStateVector;
+  dt: number;
 };
 
 export type StepEphemerisSpkgeo = {
@@ -1369,6 +1409,11 @@ export type WorkflowStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisConics
+  | StepEphemerisEqncpv
+  | StepEphemerisOscelt
+  | StepEphemerisOscltx
+  | StepEphemerisProp2b
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -1626,6 +1671,11 @@ export type StepOutput =
         lt: number;
       };
     }
+  | { op: "ephemeris.conics"; value: SpiceStateVector }
+  | { op: "ephemeris.eqncpv"; value: SpiceStateVector }
+  | { op: "ephemeris.oscelt"; value: SpiceConicElements }
+  | { op: "ephemeris.oscltx"; value: SpiceExtendedConicElements }
+  | { op: "ephemeris.prop2b"; value: SpiceStateVector }
   | {
       op: "ephemeris.spkgeo";
       value: {

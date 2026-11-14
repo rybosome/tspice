@@ -14,6 +14,11 @@ from ..models import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisConics,
+    StepEphemerisEqncpv,
+    StepEphemerisOscelt,
+    StepEphemerisOscltx,
+    StepEphemerisProp2b,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -221,6 +226,29 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             label="spkezr",
         )
         return StepOutput(op=step.op, value={"state": state, "lt": lt})
+
+    if isinstance(step, StepEphemerisConics):
+        result = sp.conics(step.elts, step.et)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=6, label="ephemeris.conics"))
+
+    if isinstance(step, StepEphemerisEqncpv):
+        result = sp.eqncpv(step.et, step.epoch, step.eqel, step.rapol, step.decpol)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=6, label="ephemeris.eqncpv"))
+
+    if isinstance(step, StepEphemerisOscelt):
+        result = sp.oscelt(step.state, step.et, step.mu)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=8, label="ephemeris.oscelt"))
+
+    if isinstance(step, StepEphemerisOscltx):
+        result = sp.oscltx(step.state, step.et, step.mu)
+        # SpiceyPy 6.0.3 omits its error-check decorator on oscltx.
+        # Read the actual toolkit condition before consuming the output.
+        sp.check_for_spice_error(sp.oscltx)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=11, label="ephemeris.oscltx"))
+
+    if isinstance(step, StepEphemerisProp2b):
+        result = sp.prop2b(step.gm, step.pvinit, step.dt)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=6, label="ephemeris.prop2b"))
 
     if isinstance(step, StepEphemerisSpkgeo):
         state, lt = _normalize_state_lt(

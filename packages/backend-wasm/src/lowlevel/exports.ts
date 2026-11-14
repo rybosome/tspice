@@ -527,6 +527,47 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_conics(
+    eltsPtr: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eqncpv(
+    et: number,
+    epoch: number,
+    eqelPtr: number,
+    rapol: number,
+    decpol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_oscelt(
+    statePtr: number,
+    et: number,
+    mu: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_oscltx(
+    statePtr: number,
+    et: number,
+    mu: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_prop2b(
+    gm: number,
+    pvinitPtr: number,
+    dt: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_spkezr(
     targetPtr: number,
     et: number,
@@ -1588,6 +1629,47 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_conics(
+    eltsPtr: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eqncpv(
+    et: number,
+    epoch: number,
+    eqelPtr: number,
+    rapol: number,
+    decpol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_oscelt(
+    statePtr: number,
+    et: number,
+    mu: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_oscltx(
+    statePtr: number,
+    et: number,
+    mu: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_prop2b(
+    gm: number,
+    pvinitPtr: number,
+    dt: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_spkezr(
     targetPtr: number,
     et: number,
@@ -2228,6 +2310,11 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ckcov",
   "_tspice_pxform",
   "_tspice_sxform",
+  "_tspice_conics",
+  "_tspice_eqncpv",
+  "_tspice_oscelt",
+  "_tspice_oscltx",
+  "_tspice_prop2b",
   "_tspice_spkezr",
   "_tspice_spkpos",
   "_tspice_spkez",

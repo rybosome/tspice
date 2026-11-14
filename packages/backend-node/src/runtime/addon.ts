@@ -296,6 +296,17 @@ export type NativeAddon = {
     coverWindowHandle: number,
   ): void;
 
+  conics(elts: readonly number[], et: number): number[];
+  eqncpv(
+    et: number,
+    epoch: number,
+    eqel: readonly number[],
+    rapol: number,
+    decpol: number,
+  ): number[];
+  oscelt(state: readonly number[], et: number, mu: number): number[];
+  oscltx(state: readonly number[], et: number, mu: number): number[];
+  prop2b(gm: number, pvinit: readonly number[], dt: number): number[];
   spkezr(
     target: string,
     et: number,

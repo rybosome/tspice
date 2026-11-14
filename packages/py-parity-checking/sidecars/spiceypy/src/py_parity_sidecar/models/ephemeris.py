@@ -53,6 +53,47 @@ class StepEphemerisSpkezr:
 
 
 @dataclass(frozen=True)
+class StepEphemerisConics:
+    op: Literal["ephemeris.conics"]
+    elts: list[float]
+    et: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisEqncpv:
+    op: Literal["ephemeris.eqncpv"]
+    et: float
+    epoch: float
+    eqel: list[float]
+    rapol: float
+    decpol: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisOscelt:
+    op: Literal["ephemeris.oscelt"]
+    state: list[float]
+    et: float
+    mu: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisOscltx:
+    op: Literal["ephemeris.oscltx"]
+    state: list[float]
+    et: float
+    mu: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisProp2b:
+    op: Literal["ephemeris.prop2b"]
+    gm: float
+    pvinit: list[float]
+    dt: float
+
+
+@dataclass(frozen=True)
 class StepEphemerisSpkgeo:
     op: Literal["ephemeris.spkgeo"]
     target: int

@@ -113,6 +113,9 @@ Source: `packages/tspice/src/index.ts`
 - `SpiceClientBuildResult`
 - `SpiceClientsBuilder`
 - `SpiceClientsWebWorkerOptions`
+- `SpiceConicElements`
+- `SpiceEquinoctialElements`
+- `SpiceExtendedConicElements`
 - `SpiceKit`
 - `SpiceSync`
 - `SpiceTime`

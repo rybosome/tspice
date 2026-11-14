@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import Any, Mapping
 
 from .models import (
@@ -41,6 +42,11 @@ from .models import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisConics,
+    StepEphemerisEqncpv,
+    StepEphemerisOscelt,
+    StepEphemerisOscltx,
+    StepEphemerisProp2b,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -202,6 +208,19 @@ def _expect_number(value: Any, *, label: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise TypeError(f"{label} must be numeric")
     return float(value)
+
+
+def _orbital_number(value: Any, *, label: str) -> float:
+    result = _expect_number(value, label=label)
+    if not math.isfinite(result):
+        raise ValueError(f"{label} must be finite")
+    return result
+
+
+def _orbital_vector(value: Any, *, length: int, label: str) -> list[float]:
+    if not isinstance(value, list) or len(value) != length:
+        raise ValueError(f"{label} must contain exactly {length} components")
+    return [_orbital_number(item, label=f"{label}[{index}]") for index, item in enumerate(value)]
 
 
 def _expect_bool(value: Any, *, label: str) -> bool:
@@ -915,6 +934,47 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 ref=_expect_string(step.get("ref"), label="ephemeris.spkezr.ref"),
                 abcorr=_expect_string(step.get("abcorr"), label="ephemeris.spkezr.abcorr"),
                 observer=_expect_string(step.get("observer"), label="ephemeris.spkezr.observer"),
+            )
+
+        case "ephemeris.conics":
+            return StepEphemerisConics(
+                op=op,
+                elts=_orbital_vector(step.get("elts"), length=8, label="ephemeris.conics.elts"),
+                et=_orbital_number(step.get("et"), label="ephemeris.conics.et"),
+            )
+
+        case "ephemeris.eqncpv":
+            return StepEphemerisEqncpv(
+                op=op,
+                et=_orbital_number(step.get("et"), label="ephemeris.eqncpv.et"),
+                epoch=_orbital_number(step.get("epoch"), label="ephemeris.eqncpv.epoch"),
+                eqel=_orbital_vector(step.get("eqel"), length=9, label="ephemeris.eqncpv.eqel"),
+                rapol=_orbital_number(step.get("rapol"), label="ephemeris.eqncpv.rapol"),
+                decpol=_orbital_number(step.get("decpol"), label="ephemeris.eqncpv.decpol"),
+            )
+
+        case "ephemeris.oscelt":
+            return StepEphemerisOscelt(
+                op=op,
+                state=_orbital_vector(step.get("state"), length=6, label="ephemeris.oscelt.state"),
+                et=_orbital_number(step.get("et"), label="ephemeris.oscelt.et"),
+                mu=_orbital_number(step.get("mu"), label="ephemeris.oscelt.mu"),
+            )
+
+        case "ephemeris.oscltx":
+            return StepEphemerisOscltx(
+                op=op,
+                state=_orbital_vector(step.get("state"), length=6, label="ephemeris.oscltx.state"),
+                et=_orbital_number(step.get("et"), label="ephemeris.oscltx.et"),
+                mu=_orbital_number(step.get("mu"), label="ephemeris.oscltx.mu"),
+            )
+
+        case "ephemeris.prop2b":
+            return StepEphemerisProp2b(
+                op=op,
+                gm=_orbital_number(step.get("gm"), label="ephemeris.prop2b.gm"),
+                pvinit=_orbital_vector(step.get("pvinit"), length=6, label="ephemeris.prop2b.pvinit"),
+                dt=_orbital_number(step.get("dt"), label="ephemeris.prop2b.dt"),
             )
 
         case "ephemeris.spkgeo":

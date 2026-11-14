@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 167
+- Planned (not yet implemented): 482
 - Excluded: 3
 
 ## Implemented now
@@ -41,6 +41,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
 | `cnmfrm_c` | Center name to associated frame |
+| `conics_c` | Determine state from conic elements |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
@@ -77,6 +78,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
+| `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -118,10 +120,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `namfrm_c` | Name to frame |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
+| `oscelt_c` | Determine conic elements from state |
+| `oscltx_c` | Extended osculating elements from state |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
+| `prop2b_c` | Propagate a two-body solution |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
@@ -230,7 +235,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `clight_c` | C, Speed of light in a vacuum |
 | `clpool_c` | Clear the pool of kernel variables |
 | `cmprss_c` | Compress a character string |
-| `conics_c` | Determine state from conic elements |
 | `convrt_c` | Convert Units |
 | `copy_c` | Copy a SPICE cell |
 | `cpos_c` | Character position |
@@ -350,7 +354,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `elemc_c` | Element of a character set |
 | `elemd_c` | Element of a double precision set |
 | `elemi_c` | Element of an integer set |
-| `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `eqstr_c` | Equivalent strings |
 | `erract_c` | Get/Set Default Error Action |
 | `errch_c` | Insert String into Error Message Text |
@@ -480,8 +483,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `orderd_c` | Order of a double precision array |
 | `orderi_c` | Order of an integer array |
 | `ordi_c` | The ordinal position of an element in a set |
-| `oscelt_c` | Determine conic elements from state |
-| `oscltx_c` | Extended osculating elements from state |
 | `pckcls_c` | PCK, close file |
 | `pckcov_c` | PCK coverage |
 | `pckfrm_c` | PCK, get reference frame class ID set |
@@ -503,7 +504,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `polyds_c` | Compute a Polynomial and its Derivatives |
 | `pos_c` | Position of substring |
 | `posr_c` | Position of substring, reverse search |
-| `prop2b_c` | Propagate a two-body solution |
 | `prsdp_c` | Parse d.p. number with error checking |
 | `prsint_c` | Parse integer with error checking |
 | `psv2pl_c` | Point and spanning vectors to plane |
