@@ -23,6 +23,18 @@ import coordsVectorsMtxmCasesRaw from "./coords-vectors/mtxm.cases.json" with { 
 import coordsVectorsMxmtCasesRaw from "./coords-vectors/mxmt.cases.json" with { type: "json" };
 import coordsVectorsTraceCasesRaw from "./coords-vectors/trace.cases.json" with { type: "json" };
 import coordsVectorsXposeCasesRaw from "./coords-vectors/xpose.cases.json" with { type: "json" };
+import coordsVectorsDazldrCasesRaw from "./coords-vectors/dazldr.cases.json" with { type: "json" };
+import coordsVectorsDcyldrCasesRaw from "./coords-vectors/dcyldr.cases.json" with { type: "json" };
+import coordsVectorsDgeodrCasesRaw from "./coords-vectors/dgeodr.cases.json" with { type: "json" };
+import coordsVectorsDlatdrCasesRaw from "./coords-vectors/dlatdr.cases.json" with { type: "json" };
+import coordsVectorsDpgrdrCasesRaw from "./coords-vectors/dpgrdr.cases.json" with { type: "json" };
+import coordsVectorsDrdazlCasesRaw from "./coords-vectors/drdazl.cases.json" with { type: "json" };
+import coordsVectorsDrdcylCasesRaw from "./coords-vectors/drdcyl.cases.json" with { type: "json" };
+import coordsVectorsDrdgeoCasesRaw from "./coords-vectors/drdgeo.cases.json" with { type: "json" };
+import coordsVectorsDrdlatCasesRaw from "./coords-vectors/drdlat.cases.json" with { type: "json" };
+import coordsVectorsDrdpgrCasesRaw from "./coords-vectors/drdpgr.cases.json" with { type: "json" };
+import coordsVectorsDrdsphCasesRaw from "./coords-vectors/drdsph.cases.json" with { type: "json" };
+import coordsVectorsDsphdrCasesRaw from "./coords-vectors/dsphdr.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -166,6 +178,19 @@ export const idsNamesCases: ParityCase[] = [
   ...(idsNamesBodvarCasesRaw as ParityCase[]),
 ];
 export const coordsVectorsCases: ParityCase[] = [
+  ...(coordsVectorsDazldrCasesRaw as ParityCase[]),
+  ...(coordsVectorsDcyldrCasesRaw as ParityCase[]),
+  ...(coordsVectorsDgeodrCasesRaw as ParityCase[]),
+  ...(coordsVectorsDlatdrCasesRaw as ParityCase[]),
+  ...(coordsVectorsDpgrdrCasesRaw as ParityCase[]),
+  ...(coordsVectorsDrdazlCasesRaw as ParityCase[]),
+  ...(coordsVectorsDrdcylCasesRaw as ParityCase[]),
+  ...(coordsVectorsDrdgeoCasesRaw as ParityCase[]),
+  ...(coordsVectorsDrdlatCasesRaw as ParityCase[]),
+  ...(coordsVectorsDrdpgrCasesRaw as ParityCase[]),
+  ...(coordsVectorsDrdsphCasesRaw as ParityCase[]),
+  ...(coordsVectorsDsphdrCasesRaw as ParityCase[]),
+
   ...(coordsVectorsDetCasesRaw as ParityCase[]),
   ...(coordsVectorsDiags2CasesRaw as ParityCase[]),
   ...(coordsVectorsIdentCasesRaw as ParityCase[]),

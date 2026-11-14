@@ -1,5 +1,6 @@
 #include "coords_vectors.h"
 
+#include <climits>
 #include <cmath>
 
 #include "../addon_common.h"
@@ -19,6 +20,333 @@ static bool ReadFixedMatrix(Napi::Env env, const Napi::Value& value, size_t leng
     }
   }
   return true;
+}
+
+static bool JacobianNumber(Napi::Env env, const Napi::Value &value, double *result, const char *label) {
+  if (value.IsNumber()) {
+    *result = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(*result)) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " requires a finite number"));
+  return false;
+}
+
+static Napi::Value Dazldr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dazldr expects 5 arguments"));
+    return env.Undefined();
+  }
+  double x;
+  if (!JacobianNumber(env, info[0], &x, "dazldr(x)")) return env.Undefined();
+  double y;
+  if (!JacobianNumber(env, info[1], &y, "dazldr(y)")) return env.Undefined();
+  double z;
+  if (!JacobianNumber(env, info[2], &z, "dazldr(z)")) return env.Undefined();
+  if (!info[3].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "azccw must be a boolean"));
+    return env.Undefined();
+  }
+  const bool azccw = info[3].As<Napi::Boolean>().Value();
+  if (!info[4].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "elplsz must be a boolean"));
+    return env.Undefined();
+  }
+  const bool elplsz = info[4].As<Napi::Boolean>().Value();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dazldr(x, y, z, azccw, elplsz, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dazldr", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Dcyldr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dcyldr expects 3 arguments"));
+    return env.Undefined();
+  }
+  double x;
+  if (!JacobianNumber(env, info[0], &x, "dcyldr(x)")) return env.Undefined();
+  double y;
+  if (!JacobianNumber(env, info[1], &y, "dcyldr(y)")) return env.Undefined();
+  double z;
+  if (!JacobianNumber(env, info[2], &z, "dcyldr(z)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dcyldr(x, y, z, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dcyldr", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Dgeodr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dgeodr expects 5 arguments"));
+    return env.Undefined();
+  }
+  double x;
+  if (!JacobianNumber(env, info[0], &x, "dgeodr(x)")) return env.Undefined();
+  double y;
+  if (!JacobianNumber(env, info[1], &y, "dgeodr(y)")) return env.Undefined();
+  double z;
+  if (!JacobianNumber(env, info[2], &z, "dgeodr(z)")) return env.Undefined();
+  double re;
+  if (!JacobianNumber(env, info[3], &re, "dgeodr(re)")) return env.Undefined();
+  double f;
+  if (!JacobianNumber(env, info[4], &f, "dgeodr(f)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dgeodr(x, y, z, re, f, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dgeodr", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Dlatdr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dlatdr expects 3 arguments"));
+    return env.Undefined();
+  }
+  double x;
+  if (!JacobianNumber(env, info[0], &x, "dlatdr(x)")) return env.Undefined();
+  double y;
+  if (!JacobianNumber(env, info[1], &y, "dlatdr(y)")) return env.Undefined();
+  double z;
+  if (!JacobianNumber(env, info[2], &z, "dlatdr(z)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dlatdr(x, y, z, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dlatdr", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Dpgrdr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dpgrdr expects 6 arguments"));
+    return env.Undefined();
+  }
+  if (!info[0].IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a body name"));
+    return env.Undefined();
+  }
+  const std::string body = info[0].As<Napi::String>().Utf8Value();
+  if (body.find('\0') != std::string::npos || body.size() > INT_MAX) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid CSPICE body name"));
+    return env.Undefined();
+  }
+  double x;
+  if (!JacobianNumber(env, info[1], &x, "dpgrdr(x)")) return env.Undefined();
+  double y;
+  if (!JacobianNumber(env, info[2], &y, "dpgrdr(y)")) return env.Undefined();
+  double z;
+  if (!JacobianNumber(env, info[3], &z, "dpgrdr(z)")) return env.Undefined();
+  double re;
+  if (!JacobianNumber(env, info[4], &re, "dpgrdr(re)")) return env.Undefined();
+  double f;
+  if (!JacobianNumber(env, info[5], &f, "dpgrdr(f)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dpgrdr(body.c_str(), x, y, z, re, f, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dpgrdr", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Drdazl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "drdazl expects 5 arguments"));
+    return env.Undefined();
+  }
+  double range;
+  if (!JacobianNumber(env, info[0], &range, "drdazl(range)")) return env.Undefined();
+  double az;
+  if (!JacobianNumber(env, info[1], &az, "drdazl(az)")) return env.Undefined();
+  double el;
+  if (!JacobianNumber(env, info[2], &el, "drdazl(el)")) return env.Undefined();
+  if (!info[3].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "azccw must be a boolean"));
+    return env.Undefined();
+  }
+  const bool azccw = info[3].As<Napi::Boolean>().Value();
+  if (!info[4].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "elplsz must be a boolean"));
+    return env.Undefined();
+  }
+  const bool elplsz = info[4].As<Napi::Boolean>().Value();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_drdazl(range, az, el, azccw, elplsz, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling drdazl", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Drdcyl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "drdcyl expects 3 arguments"));
+    return env.Undefined();
+  }
+  double radius;
+  if (!JacobianNumber(env, info[0], &radius, "drdcyl(radius)")) return env.Undefined();
+  double lon;
+  if (!JacobianNumber(env, info[1], &lon, "drdcyl(lon)")) return env.Undefined();
+  double z;
+  if (!JacobianNumber(env, info[2], &z, "drdcyl(z)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_drdcyl(radius, lon, z, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling drdcyl", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Drdgeo(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "drdgeo expects 5 arguments"));
+    return env.Undefined();
+  }
+  double lon;
+  if (!JacobianNumber(env, info[0], &lon, "drdgeo(lon)")) return env.Undefined();
+  double lat;
+  if (!JacobianNumber(env, info[1], &lat, "drdgeo(lat)")) return env.Undefined();
+  double alt;
+  if (!JacobianNumber(env, info[2], &alt, "drdgeo(alt)")) return env.Undefined();
+  double re;
+  if (!JacobianNumber(env, info[3], &re, "drdgeo(re)")) return env.Undefined();
+  double f;
+  if (!JacobianNumber(env, info[4], &f, "drdgeo(f)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_drdgeo(lon, lat, alt, re, f, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling drdgeo", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Drdlat(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "drdlat expects 3 arguments"));
+    return env.Undefined();
+  }
+  double radius;
+  if (!JacobianNumber(env, info[0], &radius, "drdlat(radius)")) return env.Undefined();
+  double lon;
+  if (!JacobianNumber(env, info[1], &lon, "drdlat(lon)")) return env.Undefined();
+  double lat;
+  if (!JacobianNumber(env, info[2], &lat, "drdlat(lat)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_drdlat(radius, lon, lat, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling drdlat", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Drdpgr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "drdpgr expects 6 arguments"));
+    return env.Undefined();
+  }
+  if (!info[0].IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a body name"));
+    return env.Undefined();
+  }
+  const std::string body = info[0].As<Napi::String>().Utf8Value();
+  if (body.find('\0') != std::string::npos || body.size() > INT_MAX) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid CSPICE body name"));
+    return env.Undefined();
+  }
+  double lon;
+  if (!JacobianNumber(env, info[1], &lon, "drdpgr(lon)")) return env.Undefined();
+  double lat;
+  if (!JacobianNumber(env, info[2], &lat, "drdpgr(lat)")) return env.Undefined();
+  double alt;
+  if (!JacobianNumber(env, info[3], &alt, "drdpgr(alt)")) return env.Undefined();
+  double re;
+  if (!JacobianNumber(env, info[4], &re, "drdpgr(re)")) return env.Undefined();
+  double f;
+  if (!JacobianNumber(env, info[5], &f, "drdpgr(f)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_drdpgr(body.c_str(), lon, lat, alt, re, f, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling drdpgr", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Drdsph(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "drdsph expects 3 arguments"));
+    return env.Undefined();
+  }
+  double radius;
+  if (!JacobianNumber(env, info[0], &radius, "drdsph(radius)")) return env.Undefined();
+  double colat;
+  if (!JacobianNumber(env, info[1], &colat, "drdsph(colat)")) return env.Undefined();
+  double lon;
+  if (!JacobianNumber(env, info[2], &lon, "drdsph(lon)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_drdsph(radius, colat, lon, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling drdsph", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Dsphdr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dsphdr expects 3 arguments"));
+    return env.Undefined();
+  }
+  double x;
+  if (!JacobianNumber(env, info[0], &x, "dsphdr(x)")) return env.Undefined();
+  double y;
+  if (!JacobianNumber(env, info[1], &y, "dsphdr(y)")) return env.Undefined();
+  double z;
+  if (!JacobianNumber(env, info[2], &z, "dsphdr(z)")) return env.Undefined();
+  double out[9] = {0};
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_dsphdr(x, y, z, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dsphdr", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
 }
 
 static Napi::Number Det(const Napi::CallbackInfo& info) {
@@ -821,6 +1149,18 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "dazldr", Napi::Function::New(env, Dazldr), __func__)) return;
+  if (!SetExportChecked(env, exports, "dcyldr", Napi::Function::New(env, Dcyldr), __func__)) return;
+  if (!SetExportChecked(env, exports, "dgeodr", Napi::Function::New(env, Dgeodr), __func__)) return;
+  if (!SetExportChecked(env, exports, "dlatdr", Napi::Function::New(env, Dlatdr), __func__)) return;
+  if (!SetExportChecked(env, exports, "dpgrdr", Napi::Function::New(env, Dpgrdr), __func__)) return;
+  if (!SetExportChecked(env, exports, "drdazl", Napi::Function::New(env, Drdazl), __func__)) return;
+  if (!SetExportChecked(env, exports, "drdcyl", Napi::Function::New(env, Drdcyl), __func__)) return;
+  if (!SetExportChecked(env, exports, "drdgeo", Napi::Function::New(env, Drdgeo), __func__)) return;
+  if (!SetExportChecked(env, exports, "drdlat", Napi::Function::New(env, Drdlat), __func__)) return;
+  if (!SetExportChecked(env, exports, "drdpgr", Napi::Function::New(env, Drdpgr), __func__)) return;
+  if (!SetExportChecked(env, exports, "drdsph", Napi::Function::New(env, Drdsph), __func__)) return;
+  if (!SetExportChecked(env, exports, "dsphdr", Napi::Function::New(env, Dsphdr), __func__)) return;
   if (!SetExportChecked(env, exports, "det", Napi::Function::New(env, Det), __func__)) return;
   if (!SetExportChecked(env, exports, "diags2", Napi::Function::New(env, Diags2), __func__)) return;
   if (!SetExportChecked(env, exports, "ident", Napi::Function::New(env, Ident), __func__)) return;

@@ -1,0 +1,1223 @@
+{
+  "schemaVersion": 1,
+  "batch": "a07-coordinate-jacobians",
+  "traceFiles": [
+    "docs/step8-coordinate-jacobians.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/coords-vectors.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/coordinate-jacobians-domain.test.ts",
+    "packages/backend-shim-c/src/domains/coords_vectors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/coordinate-jacobians-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/mat3.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/core/test/mat3-result.test.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/jacobian_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+    "packages/py-parity-checking/src/run-tspice/utils/matrix.ts",
+    "packages/py-parity-checking/test/coordinate-jacobians.test.ts",
+    "packages/tspice/src/transport/rpc/protocol.ts",
+    "packages/tspice/src/transport/rpc/taskScheduling.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-a07-1fcdbd94-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "observation": "Both complete required lanes passed locally on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4. JavaScript: 2,708 parity tests and one expected guard skip. Native-required: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a07-1fcdbd94-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "observation": "Both complete required lanes passed locally on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4. JavaScript: 2,708 parity tests and one expected guard skip. Native-required: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a07-1fcdbd94-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "commit": "1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572898028/job/132380908546",
+      "observation": "Inspected successful Linux Node 22 native-required job 132380908546 on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a07-1fcdbd94-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "commit": "1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572898028/job/132380908546",
+      "observation": "Inspected successful Linux Node 22 native-required job 132380908546 on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dazldr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dazldr_c.html",
+      "semantics": "Differentiate (range, azimuth, elevation) from Cartesian (x, y, z). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dazldr-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dazldr-origin",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dazldr-z-axis",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dazldr-near-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dazldr-directions",
+          "coverage": ["success", "edge"],
+          "observes": "Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dazldr-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "Required toolkit short-code groups: POINTONZAXIS (2).",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dazldr -> serialized native N-API and checked inputs -> tspice_dazldr -> dazldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dazldr.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dazldr -> validated WASM call and scoped allocations -> tspice_dazldr -> dazldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dazldr.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dcyldr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dcyldr_c.html",
+      "semantics": "Differentiate (cylindrical radius, longitude, z) from Cartesian (x, y, z). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dcyldr-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dcyldr-origin",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dcyldr-z-axis",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dcyldr-near-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dcyldr-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "Required toolkit short-code groups: POINTONZAXIS (2).",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dcyldr -> serialized native N-API and checked inputs -> tspice_dcyldr -> dcyldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dcyldr.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dcyldr -> validated WASM call and scoped allocations -> tspice_dcyldr -> dcyldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dcyldr.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dgeodr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dgeodr_c.html",
+      "semantics": "Differentiate (geodetic longitude, latitude, altitude) from Cartesian (x, y, z). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dgeodr-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dgeodr-origin",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dgeodr-z-axis",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dgeodr-near-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dgeodr-reference-shapes",
+          "coverage": ["success", "edge"],
+          "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dgeodr-zero-equator",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require BADRADIUS."
+        },
+        {
+          "caseId": "coords-vectors-dgeodr-unit-flattening",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "coords-vectors-dgeodr-nearest-point-bound",
+          "coverage": ["error", "edge"],
+          "observes": "The scaled position is too large for the nearest-point operation. Observe its genuine error before the parent transformation consumes an unavailable normal. Require INPUTSTOOLARGE."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening.",
+      "errorAssessment": "Required toolkit short-code groups: POINTONZAXIS (2), BADRADIUS (1), VALUEOUTOFRANGE (1), INPUTSTOOLARGE (1).",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [
+        {
+          "id": "dgeodr-nearest-point",
+          "status": "repaired",
+          "summary": "The N0067 RECGEO error path feeds a potentially unwritten normal to RECLAT after failure of the nearest-point routine.",
+          "repair": "Preserve the original NEARPT diagnostic using an initialized actual callee before dispatch; recover the next valid result.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/coords_vectors.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/jacobian_oracle.py",
+            "docs/step8-coordinate-jacobians.md",
+            "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dgeodr-nearest-point-bound"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dgeodr -> serialized native N-API and checked inputs -> tspice_dgeodr -> dgeodr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dgeodr -> validated WASM call and scoped allocations -> tspice_dgeodr -> dgeodr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dlatdr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlatdr_c.html",
+      "semantics": "Differentiate (radius, longitude, latitude) from Cartesian (x, y, z). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dlatdr-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dlatdr-origin",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dlatdr-z-axis",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dlatdr-near-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dlatdr-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "Required toolkit short-code groups: POINTONZAXIS (2).",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dlatdr -> serialized native N-API and checked inputs -> tspice_dlatdr -> dlatdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dlatdr.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dlatdr -> validated WASM call and scoped allocations -> tspice_dlatdr -> dlatdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dlatdr.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dpgrdr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpgrdr_c.html",
+      "semantics": "Differentiate (planetographic longitude, latitude, altitude) from Cartesian (x, y, z). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dpgrdr-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-origin",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-z-axis",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-near-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-reference-shapes",
+          "coverage": ["success", "edge"],
+          "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-zero-equator",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-unit-flattening",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-spin-and-overrides",
+          "coverage": ["success", "edge"],
+          "observes": "Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-earth-moon-sun",
+          "coverage": ["success", "edge"],
+          "observes": "Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-blank-body",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require EMPTYSTRING."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require IDCODENOTFOUND."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-no-orientation",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require MISSINGDATA."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-invalid-override",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require INVALIDOPTION."
+        },
+        {
+          "caseId": "coords-vectors-dpgrdr-nearest-point-bound",
+          "coverage": ["error", "edge"],
+          "observes": "The scaled position is too large for the nearest-point operation. Observe its genuine error before the parent transformation consumes an unavailable normal. Require INPUTSTOOLARGE."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation. Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth.",
+      "errorAssessment": "Required toolkit short-code groups: POINTONZAXIS (2), VALUEOUTOFRANGE (2), EMPTYSTRING (1), IDCODENOTFOUND (1), MISSINGDATA (1), INVALIDOPTION (1), INPUTSTOOLARGE (1).",
+      "fixtures": [],
+      "fixtureRationale": "Synthetic positions and caller-provided shape parameters; planetographic cases create synthetic body mappings and kernel-pool values in the running toolkit.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [
+        {
+          "id": "dpgrdr-body-lookup",
+          "status": "repaired",
+          "summary": "An unresolved body can leave an uninitialized value in the internal N0067 ZZBODS2C cache. A paired body table can also contain the unhashable signed minimum.",
+          "repair": "First resolve with initialized output and protect only unsafe table contents. Unknown-name diagnostics and recovery are explicit; the genuine matrix still comes from the canonical routine.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/coords_vectors.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/jacobian_oracle.py",
+            "docs/step8-coordinate-jacobians.md",
+            "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dpgrdr-unknown-body"]
+        },
+        {
+          "id": "dpgrdr-nearest-point",
+          "status": "repaired",
+          "summary": "The N0067 RECGEO error path feeds a potentially unwritten normal to RECLAT after failure of the nearest-point routine.",
+          "repair": "Preserve the original NEARPT diagnostic using an initialized actual callee before dispatch; recover the next valid result.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/coords_vectors.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/jacobian_oracle.py",
+            "docs/step8-coordinate-jacobians.md",
+            "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dpgrdr-nearest-point-bound"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dpgrdr -> serialized native N-API and checked inputs -> tspice_dpgrdr -> dpgrdr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dpgrdr -> validated WASM call and scoped allocations -> tspice_dpgrdr -> dpgrdr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "drdazl_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdazl_c.html",
+      "semantics": "Differentiate Cartesian (x, y, z) from azimuth/elevation (range, azimuth, elevation). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-drdazl-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdazl-zero-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdazl-angular-periods",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdazl-negative-radius",
+          "coverage": ["error", "edge"],
+          "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Require VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "coords-vectors-drdazl-directions",
+          "coverage": ["success", "edge"],
+          "observes": "Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdazl-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "Required toolkit short-code groups: VALUEOUTOFRANGE (1).",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdazl -> serialized native N-API and checked inputs -> tspice_drdazl -> drdazl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdazl.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdazl -> validated WASM call and scoped allocations -> tspice_drdazl -> drdazl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdazl.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "drdcyl_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdcyl_c.html",
+      "semantics": "Differentiate Cartesian (x, y, z) from cylindrical (radius, longitude, z). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-drdcyl-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdcyl-zero-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdcyl-angular-periods",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdcyl-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdcyl-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "This forward routine is error-free for finite scalar inputs. Explicit invalid JavaScript numbers and wrong argument types are tested at the adapter boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdcyl -> serialized native N-API and checked inputs -> tspice_drdcyl -> drdcyl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdcyl.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdcyl -> validated WASM call and scoped allocations -> tspice_drdcyl -> drdcyl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdcyl.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "drdgeo_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdgeo_c.html",
+      "semantics": "Differentiate Cartesian (x, y, z) from (geodetic longitude, latitude, altitude). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-drdgeo-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdgeo-poles-below-surface",
+          "coverage": ["success", "edge"],
+          "observes": "Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdgeo-reference-shapes",
+          "coverage": ["success", "edge"],
+          "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdgeo-zero-equator",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require BADRADIUS."
+        },
+        {
+          "caseId": "coords-vectors-drdgeo-unit-flattening",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation. Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening.",
+      "errorAssessment": "Required toolkit short-code groups: BADRADIUS (1), VALUEOUTOFRANGE (1).",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdgeo -> serialized native N-API and checked inputs -> tspice_drdgeo -> drdgeo_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdgeo.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdgeo -> validated WASM call and scoped allocations -> tspice_drdgeo -> drdgeo_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdgeo.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "drdlat_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdlat_c.html",
+      "semantics": "Differentiate Cartesian (x, y, z) from latitudinal (radius, longitude, latitude). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-drdlat-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdlat-zero-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdlat-angular-periods",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdlat-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdlat-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "This forward routine is error-free for finite scalar inputs. Explicit invalid JavaScript numbers and wrong argument types are tested at the adapter boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdlat -> serialized native N-API and checked inputs -> tspice_drdlat -> drdlat_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdlat.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdlat -> validated WASM call and scoped allocations -> tspice_drdlat -> drdlat_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdlat.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "drdpgr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdpgr_c.html",
+      "semantics": "Differentiate Cartesian (x, y, z) from (planetographic longitude, latitude, altitude). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-drdpgr-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-poles-below-surface",
+          "coverage": ["success", "edge"],
+          "observes": "Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-reference-shapes",
+          "coverage": ["success", "edge"],
+          "observes": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-zero-equator",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-unit-flattening",
+          "coverage": ["error", "edge"],
+          "observes": "Use the original toolkit diagnostic for an invalid reference figure. Require VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-spin-and-overrides",
+          "coverage": ["success", "edge"],
+          "observes": "Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-earth-moon-sun",
+          "coverage": ["success", "edge"],
+          "observes": "Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-blank-body",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require EMPTYSTRING."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require IDCODENOTFOUND."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-no-orientation",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require MISSINGDATA."
+        },
+        {
+          "caseId": "coords-vectors-drdpgr-invalid-override",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the body resolution or longitude-policy diagnostic before any matrix is published. Require INVALIDOPTION."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation. Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening. Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation. Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth.",
+      "errorAssessment": "Required toolkit short-code groups: VALUEOUTOFRANGE (2), EMPTYSTRING (1), IDCODENOTFOUND (1), MISSINGDATA (1), INVALIDOPTION (1).",
+      "fixtures": [],
+      "fixtureRationale": "Synthetic positions and caller-provided shape parameters; planetographic cases create synthetic body mappings and kernel-pool values in the running toolkit.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [
+        {
+          "id": "drdpgr-body-lookup",
+          "status": "repaired",
+          "summary": "An unresolved body can leave an uninitialized value in the internal N0067 ZZBODS2C cache. A paired body table can also contain the unhashable signed minimum.",
+          "repair": "First resolve with initialized output and protect only unsafe table contents. Unknown-name diagnostics and recovery are explicit; the genuine matrix still comes from the canonical routine.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/coords_vectors.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/jacobian_oracle.py",
+            "docs/step8-coordinate-jacobians.md",
+            "packages/py-parity-checking/test/coordinate-jacobians.test.ts"
+          ],
+          "caseIds": ["coords-vectors-drdpgr-unknown-body"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdpgr -> serialized native N-API and checked inputs -> tspice_drdpgr -> drdpgr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdpgr -> validated WASM call and scoped allocations -> tspice_drdpgr -> drdpgr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "drdsph_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdsph_c.html",
+      "semantics": "Differentiate Cartesian (x, y, z) from spherical (radius, colatitude, longitude). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-drdsph-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdsph-zero-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdsph-angular-periods",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdsph-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-drdsph-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius. Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions. Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "This forward routine is error-free for finite scalar inputs. Explicit invalid JavaScript numbers and wrong argument types are tested at the adapter boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdsph -> serialized native N-API and checked inputs -> tspice_drdsph -> drdsph_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdsph.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.drdsph -> validated WASM call and scoped allocations -> tspice_drdsph -> drdsph_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdsph.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dsphdr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dsphdr_c.html",
+      "semantics": "Differentiate (radius, colatitude, longitude) from Cartesian (x, y, z). Return all nine owned row-major components.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dsphdr-mixed-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dsphdr-origin",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dsphdr-z-axis",
+          "coverage": ["error", "edge"],
+          "observes": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis. Require POINTONZAXIS."
+        },
+        {
+          "caseId": "coords-vectors-dsphdr-near-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Compare every row and column against the independent reference."
+        },
+        {
+          "caseId": "coords-vectors-dsphdr-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance. Compare every row and column against the independent reference."
+        }
+      ],
+      "edgeAssessment": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives. Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign. Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+      "errorAssessment": "Required toolkit short-code groups: POINTONZAXIS (2).",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free numerical inputs; no external scientific fixtures.",
+      "cleanup": "All native calls are serialized, WASM allocations are released on every acquisition failure, and each parity workflow clears kernel and error state.",
+      "tolerance": "Standard 1e-12 absolute/relative scientific comparisons. Independent central differences use 2e-8 scaled bounds only in supplemental checks, with both directions checked at nonsingular test points.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dsphdr -> serialized native N-API and checked inputs -> tspice_dsphdr -> dsphdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dsphdr.",
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "CoordsVectorsApi.dsphdr -> validated WASM call and scoped allocations -> tspice_dsphdr -> dsphdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dsphdr.",
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

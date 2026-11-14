@@ -39,3 +39,41 @@ export function fixedMatrixTypes(sync: Spice, async: SpiceAsync): void {
     asyncEigensystem,
   ];
 }
+
+/** Check sync and async coordinate Jacobians against the branded matrix result without DOM types. */
+export function coordinateJacobianTypes(sync: Spice, async: SpiceAsync): void {
+  type Jacobian = ReturnType<Spice["raw"]["ident"]>;
+  const dazldr: Jacobian = sync.raw.dazldr(3, 4, -2, true, false);
+  const dcyldr: Promise<Jacobian> = async.raw.dcyldr(3, 4, -2);
+  const dgeodr: Jacobian = sync.raw.dgeodr(3, 4, -2, 3, 0.125);
+  const dlatdr: Promise<Jacobian> = async.raw.dlatdr(3, 4, -2);
+  const dpgrdr: Jacobian = sync.raw.dpgrdr("Earth", 3, 4, -2, 3, 0.125);
+  const drdazl: Promise<Jacobian> = async.raw.drdazl(5, 0.7, -0.4, true, false);
+  const drdcyl: Jacobian = sync.raw.drdcyl(5, 0.7, -2);
+  const drdgeo: Promise<Jacobian> = async.raw.drdgeo(0.7, -0.4, 2, 3, 0.125);
+  const drdlat: Jacobian = sync.raw.drdlat(5, 0.7, -0.4);
+  const drdpgr: Promise<Jacobian> = async.raw.drdpgr(
+    "Earth",
+    0.7,
+    -0.4,
+    2,
+    3,
+    0.125,
+  );
+  const drdsph: Jacobian = sync.raw.drdsph(5, 1.1, 0.7);
+  const dsphdr: Promise<Jacobian> = async.raw.dsphdr(3, 4, -2);
+  void [
+    dazldr,
+    dcyldr,
+    dgeodr,
+    dlatdr,
+    dpgrdr,
+    drdazl,
+    drdcyl,
+    drdgeo,
+    drdlat,
+    drdpgr,
+    drdsph,
+    dsphdr,
+  ];
+}

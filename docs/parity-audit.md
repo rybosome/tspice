@@ -108,3 +108,7 @@ Regression evidence: [fixed-matrices-domain.test.ts](../packages/backend-node/te
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
+
+## Coordinate derivatives
+
+A07 covers twelve coordinate Jacobians. The source review records two pinned exception paths, independent directional derivatives, exact buffer ownership and tabulated body conventions. [Scientific and representation evidence](step8-coordinate-jacobians.md) [Per-routine records](../data/parity-audits/a07-coordinate-jacobians.json)

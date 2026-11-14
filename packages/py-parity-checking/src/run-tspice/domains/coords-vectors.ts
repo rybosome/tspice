@@ -16,6 +16,18 @@ import type {
   StepCoordsVectorsMxmt,
   StepCoordsVectorsTrace,
   StepCoordsVectorsXpose,
+  StepCoordsVectorsDazldr,
+  StepCoordsVectorsDcyldr,
+  StepCoordsVectorsDgeodr,
+  StepCoordsVectorsDlatdr,
+  StepCoordsVectorsDpgrdr,
+  StepCoordsVectorsDrdazl,
+  StepCoordsVectorsDrdcyl,
+  StepCoordsVectorsDrdgeo,
+  StepCoordsVectorsDrdlat,
+  StepCoordsVectorsDrdpgr,
+  StepCoordsVectorsDrdsph,
+  StepCoordsVectorsDsphdr,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -48,6 +60,18 @@ type CoordsVectorsStep =
   | StepCoordsVectorsMxmt
   | StepCoordsVectorsTrace
   | StepCoordsVectorsXpose
+  | StepCoordsVectorsDazldr
+  | StepCoordsVectorsDcyldr
+  | StepCoordsVectorsDgeodr
+  | StepCoordsVectorsDlatdr
+  | StepCoordsVectorsDpgrdr
+  | StepCoordsVectorsDrdazl
+  | StepCoordsVectorsDrdcyl
+  | StepCoordsVectorsDrdgeo
+  | StepCoordsVectorsDrdlat
+  | StepCoordsVectorsDrdpgr
+  | StepCoordsVectorsDrdsph
+  | StepCoordsVectorsDsphdr
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -93,6 +117,104 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.dazldr": {
+      const out = context.spice.raw.dazldr(
+        step.x,
+        step.y,
+        step.z,
+        step.azccw,
+        step.elplsz,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.dcyldr": {
+      const out = context.spice.raw.dcyldr(step.x, step.y, step.z);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.dgeodr": {
+      const out = context.spice.raw.dgeodr(
+        step.x,
+        step.y,
+        step.z,
+        step.re,
+        step.f,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.dlatdr": {
+      const out = context.spice.raw.dlatdr(step.x, step.y, step.z);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.dpgrdr": {
+      const out = context.spice.raw.dpgrdr(
+        step.body,
+        step.x,
+        step.y,
+        step.z,
+        step.re,
+        step.f,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.drdazl": {
+      const out = context.spice.raw.drdazl(
+        step.range,
+        step.az,
+        step.el,
+        step.azccw,
+        step.elplsz,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.drdcyl": {
+      const out = context.spice.raw.drdcyl(step.radius, step.lon, step.z);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.drdgeo": {
+      const out = context.spice.raw.drdgeo(
+        step.lon,
+        step.lat,
+        step.alt,
+        step.re,
+        step.f,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.drdlat": {
+      const out = context.spice.raw.drdlat(step.radius, step.lon, step.lat);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.drdpgr": {
+      const out = context.spice.raw.drdpgr(
+        step.body,
+        step.lon,
+        step.lat,
+        step.alt,
+        step.re,
+        step.f,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.drdsph": {
+      const out = context.spice.raw.drdsph(step.radius, step.colat, step.lon);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.dsphdr": {
+      const out = context.spice.raw.dsphdr(step.x, step.y, step.z);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
     case "coords-vectors.det": {
       const out = context.spice.raw.det(flattenMatrix(step.m));
       return { op: step.op, value: out };

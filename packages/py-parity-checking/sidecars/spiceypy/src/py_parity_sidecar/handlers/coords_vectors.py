@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import jacobian_oracle
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -20,6 +21,18 @@ from ..models import (
     StepCoordsVectorsMxmt,
     StepCoordsVectorsTrace,
     StepCoordsVectorsXpose,
+    StepCoordsVectorsDazldr,
+    StepCoordsVectorsDcyldr,
+    StepCoordsVectorsDgeodr,
+    StepCoordsVectorsDlatdr,
+    StepCoordsVectorsDpgrdr,
+    StepCoordsVectorsDrdazl,
+    StepCoordsVectorsDrdcyl,
+    StepCoordsVectorsDrdgeo,
+    StepCoordsVectorsDrdlat,
+    StepCoordsVectorsDrdpgr,
+    StepCoordsVectorsDrdsph,
+    StepCoordsVectorsDsphdr,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -107,6 +120,54 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
 
     if isinstance(step, StepCoordsVectorsXpose):
         out = sp.xpose(step.m)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDazldr):
+        out = sp.dazldr(step.x, step.y, step.z, step.azccw, step.elplsz)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDcyldr):
+        out = sp.dcyldr(step.x, step.y, step.z)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDgeodr):
+        out = jacobian_oracle.dgeodr(step.x, step.y, step.z, step.re, step.f)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDlatdr):
+        out = sp.dlatdr(step.x, step.y, step.z)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDpgrdr):
+        out = jacobian_oracle.dpgrdr(step.body, step.x, step.y, step.z, step.re, step.f)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDrdazl):
+        out = sp.drdazl(step.range, step.az, step.el, step.azccw, step.elplsz)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDrdcyl):
+        out = sp.drdcyl(step.radius, step.lon, step.z)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDrdgeo):
+        out = sp.drdgeo(step.lon, step.lat, step.alt, step.re, step.f)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDrdlat):
+        out = sp.drdlat(step.radius, step.lon, step.lat)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDrdpgr):
+        out = jacobian_oracle.drdpgr(step.body, step.lon, step.lat, step.alt, step.re, step.f)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDrdsph):
+        out = sp.drdsph(step.radius, step.colat, step.lon)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsDsphdr):
+        out = sp.dsphdr(step.x, step.y, step.z)
         return StepOutput(op=step.op, value=_to_matrix3x3(out))
 
     if isinstance(step, StepCoordsVectorsReclat):

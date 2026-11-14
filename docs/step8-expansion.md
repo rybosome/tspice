@@ -1,167 +1,61 @@
 # Step 8 expansion queue
 
-The [maintained queue](../data/expansion-queue.json) assigns every eligible routine
-absent from main at `73f3fec8788ed926351f891b459ac75d434f6446` to exactly one bounded
-implementation batch. That commit merged [Step 7 PR #706](https://github.com/rybosome/tspice/pull/706).
-The earlier audit owns the existing surface; Step 8 owns the new routines below.
-Its [semantic audit standard](parity-audit.md) remains the acceptance standard.
+The [maintained queue](../data/expansion-queue.json) assigns every eligible routine absent from [main at the completed Step 7 audit](https://github.com/rybosome/tspice/pull/706) to one of 75 batches. The ledger and raw contract establish that baseline at `73f3fec8788ed926351f891b459ac75d434f6446`. It includes 652 canonical routines, 649 eligible, 162 already present, 487 absent and 1,109 registered scenarios across 162 files. The three exclusions are `ftncls_c`, `getcml_c` and `prompt_c`. [Audit acceptance and execution records](parity-audit.md)
 
-The snapshot is **652 canonical routines, 649 eligible, 162 already present,
-487 absent, and 3 excluded**. There are **162 registered case files and 1,109
-scenarios** at that base. Absence was derived from the ledger's `implementation`
-field and actual contract, not the inventory's `planned` decision. The exclusions
-remain `ftncls_c`, `getcml_c`, and `prompt_c`.
+## Ownership and delivery
 
-The maintained queue has **75 batches**: **92 routines in eleven in-progress
-batches, 19 routines in two PR-ready batches, and 376 routines in planned batches**.
-Zero Step 8 routines are landed or blocked. PR-ready means reviewed delivery
-with successful required final-head checks; it is not merged coverage. The
-base's 162 routines and Step 7 repairs are not Step 8 progress. Working-branch
-implementation counts can increase before anything lands on main.
+This checkpoint has 27 routines ready for review, 297 in progress and 163 planned. Zero Step 8 routines have landed or are blocked. Codex Step 8 owns the 43 claimed batches and integration of each generated artifact. A PR becomes ready after its required final-head checks pass and GitHub confirms rebaseability. The queue records each base revision, routine owner, oracle, fixtures, dependencies, tests and next action.
 
-## Active ownership and next deliveries
+| Batch                        | Canonical routines                                                                                                                                                         | Prerequisite batches                | Delivery                                                        |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------- |
+| A01-constants                | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                                                                                  | Main baseline                       | PR-ready [#707](https://github.com/rybosome/tspice/pull/707)    |
+| A02-remaining-constants      | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c`                                                            | Main baseline                       | PR-ready [#708](https://github.com/rybosome/tspice/pull/708)    |
+| A03-scalar-math              | `brcktd_c`, `brckti_c`, `convrt_c`, `sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c`                                                                           | Main baseline                       | in-progress [#714](https://github.com/rybosome/tspice/pull/714) |
+| A04-array-storage            | `clearc_c`, `cleard_c`, `cleari_c`, `filld_c`, `filli_c`, `moved_c`                                                                                                        | Main baseline                       | in-progress [#720](https://github.com/rybosome/tspice/pull/720) |
+| A05-cylindrical-coordinates  | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                                                                             | Main baseline                       | PR-ready [#709](https://github.com/rybosome/tspice/pull/709)    |
+| A06-coordinate-conventions   | `azlrec_c`, `recazl_c`, `pgrrec_c`, `recpgr_c`, `radrec_c`, `recrad_c`, `srfrec_c`                                                                                         | Main baseline                       | in-progress [#713](https://github.com/rybosome/tspice/pull/713) |
+| A07-coordinate-jacobians     | `dazldr_c`, `dcyldr_c`, `dgeodr_c`, `dlatdr_c`, `dpgrdr_c`, `drdazl_c`, `drdcyl_c`, `drdgeo_c`, `drdlat_c`, `drdpgr_c`, `drdsph_c`, `dsphdr_c`                             | A12-fixed-matrices                  | in-progress                                                     |
+| A08-vector-basics            | `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c`                                                                                      | Main baseline                       | in-progress [#710](https://github.com/rybosome/tspice/pull/710) |
+| A09-vector-combinations      | `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c`                                                                                     | Main baseline                       | in-progress [#711](https://github.com/rybosome/tspice/pull/711) |
+| A10-general-vectors          | `vaddg_c`, `vdistg_c`, `vdotg_c`, `vequg_c`, `vhatg_c`, `vlcomg_c`, `vminug_c`, `vnormg_c`, `vprojg_c`, `vrelg_c`, `vsclg_c`, `vsepg_c`, `vsubg_c`, `vzerog_c`, `unormg_c` | Main baseline                       | in-progress [#715](https://github.com/rybosome/tspice/pull/715) |
+| A11-state-derivatives        | `ducrss_c`, `dvcrss_c`, `dvdot_c`, `dvhat_c`, `dvnorm_c`, `dvsep_c`                                                                                                        | Main baseline                       | in-progress [#716](https://github.com/rybosome/tspice/pull/716) |
+| A12-fixed-matrices           | `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c`                                                      | Main baseline                       | in-progress [#712](https://github.com/rybosome/tspice/pull/712) |
+| A13-general-matrices         | `mequg_c`, `mtxmg_c`, `mtxvg_c`, `mxmg_c`, `mxmtg_c`, `mxvg_c`, `vtmvg_c`, `xposeg_c`                                                                                      | A10-general-vectors                 | in-progress [#731](https://github.com/rybosome/tspice/pull/731) |
+| A14-rotation-representations | `eul2m_c`, `m2eul_c`, `m2q_c`, `q2m_c`, `qxq_c`, `qdq2av_c`, `raxisa_c`                                                                                                    | A12-fixed-matrices                  | in-progress [#725](https://github.com/rybosome/tspice/pull/725) |
+| A15-frame-algebra            | `frame_c`, `twovec_c`, `twovxf_c`, `eul2xf_c`, `xf2eul_c`, `xf2rav_c`, `rav2xf_c`, `invstm_c`, `xpose6_c`                                                                  | A12-fixed-matrices                  | in-progress [#736](https://github.com/rybosome/tspice/pull/736) |
+| A16-polynomial-expansions    | `chbder_c`, `chbigr_c`, `chbint_c`, `chbval_c`, `polyds_c`, `rquad_c`                                                                                                      | Main baseline                       | in-progress [#717](https://github.com/rybosome/tspice/pull/717) |
+| A17-interpolation            | `hrmesp_c`, `hrmint_c`, `lgresp_c`, `lgrind_c`, `lgrint_c`, `qderiv_c`                                                                                                     | Main baseline                       | in-progress [#718](https://github.com/rybosome/tspice/pull/718) |
+| A18-string-transform         | `cmprss_c`, `eqstr_c`, `iswhsp_c`, `lastnb_c`, `lcase_c`, `ucase_c`, `matchi_c`, `matchw_c`                                                                                | Main baseline                       | in-progress [#719](https://github.com/rybosome/tspice/pull/719) |
+| A19-string-search            | `cpos_c`, `cposr_c`, `ncpos_c`, `ncposr_c`, `pos_c`, `posr_c`, `esrchc_c`                                                                                                  | A18-string-transform                | in-progress [#726](https://github.com/rybosome/tspice/pull/726) |
+| A20-string-tokenize          | `nextwd_c`, `nthwd_c`, `lparse_c`, `lparsm_c`, `lx4dec_c`, `lx4num_c`, `lx4sgn_c`, `lx4uns_c`, `lxqstr_c`                                                                  | A18-string-transform                | in-progress [#735](https://github.com/rybosome/tspice/pull/735) |
+| A21-string-numeric           | `dp2hx_c`, `hx2dp_c`, `prsdp_c`, `prsint_c`, `repmc_c`, `repmct_c`, `repmd_c`, `repmf_c`, `repmi_c`, `repml_c`, `repmot_c`                                                 | A18-string-transform                | in-progress [#737](https://github.com/rybosome/tspice/pull/737) |
+| A22-array-search             | `bschoc_c`, `bschoi_c`, `bsrchc_c`, `bsrchd_c`, `bsrchi_c`, `isrchc_c`, `isrchd_c`, `isrchi_c`                                                                             | A24-sorted-bounds                   | in-progress [#732](https://github.com/rybosome/tspice/pull/732) |
+| A23-array-order              | `isordv_c`, `orderc_c`, `orderd_c`, `orderi_c`, `reordc_c`, `reordd_c`, `reordi_c`, `reordl_c`, `shellc_c`, `shelld_c`, `shelli_c`                                         | A24-sorted-bounds                   | in-progress [#744](https://github.com/rybosome/tspice/pull/744) |
+| A24-sorted-bounds            | `lstlec_c`, `lstled_c`, `lstlei_c`, `lstltc_c`, `lstltd_c`, `lstlti_c`                                                                                                     | Main baseline                       | in-progress [#721](https://github.com/rybosome/tspice/pull/721) |
+| B01-cell-arrays              | `appndc_c`, `appndd_c`, `appndi_c`, `copy_c`, `elemc_c`, `elemd_c`, `elemi_c`                                                                                              | B03-window-algebra                  | in-progress [#728](https://github.com/rybosome/tspice/pull/728) |
+| B02-set-algebra              | `diff_c`, `inter_c`, `sdiff_c`, `set_c`, `union_c`, `removc_c`, `removd_c`, `removi_c`, `ordc_c`, `ordd_c`, `ordi_c`                                                       | B01-cell-arrays                     | in-progress [#742](https://github.com/rybosome/tspice/pull/742) |
+| B03-window-algebra           | `wncomd_c`, `wncond_c`, `wndifd_c`, `wnelmd_c`, `wnexpd_c`, `wnextd_c`, `wnfild_c`, `wnfltd_c`, `wnincd_c`, `wnintd_c`, `wnreld_c`, `wnsumd_c`, `wnunid_c`                 | Main baseline                       | in-progress [#722](https://github.com/rybosome/tspice/pull/722) |
+| B04-string-set               | `lparss_c`                                                                                                                                                                 | A20-string-tokenize                 | in-progress                                                     |
+| B05-kernel-pool              | `badkpv_c`, `bodvcd_c`, `bodvrd_c`, `clpool_c`, `dvpool_c`, `ldpool_c`, `lmpool_c`, `stpool_c`, `szpool_c`                                                                 | Main baseline                       | in-progress [#734](https://github.com/rybosome/tspice/pull/734) |
+| C01-daf-navigation           | `dafbbs_c`, `dafcs_c`, `daffpa_c`, `dafgh_c`, `dafgn_c`, `dafgs_c`, `dafhsf_c`, `dafopw_c`                                                                                 | Main baseline                       | in-progress [#727](https://github.com/rybosome/tspice/pull/727) |
+| C02-daf-records              | `dafps_c`, `dafus_c`, `dafgsr_c`, `dafrfr_c`, `dafrda_c`, `dafgda_c`                                                                                                       | C01-daf-navigation                  | in-progress [#738](https://github.com/rybosome/tspice/pull/738) |
+| C03-daf-mutation             | `dafac_c`, `dafdc_c`, `dafec_c`, `dafrs_c`                                                                                                                                 | C01-daf-navigation, C02-daf-records | in-progress                                                     |
+| C04-das-lifecycle            | `dasonw_c`, `dasops_c`, `dasopw_c`, `dashfn_c`, `dashfs_c`, `daslla_c`, `dasllc_c`, `dasrfr_c`, `daswbr_c`                                                                 | Main baseline                       | in-progress [#743](https://github.com/rybosome/tspice/pull/743) |
+| D01-time-additions           | `etcal_c`, `utc2et_c`, `tparch_c`, `tsetyr_c`, `et2lst_c`                                                                                                                  | Main baseline                       | in-progress [#741](https://github.com/rybosome/tspice/pull/741) |
+| D02-sclk-additions           | `sce2t_c`, `scfmt_c`, `scpart_c`, `sctiks_c`                                                                                                                               | Main baseline                       | in-progress [#724](https://github.com/rybosome/tspice/pull/724) |
+| D03-frame-additions          | `bltfrm_c`, `pxfrm2_c`, `tipbod_c`, `tisbod_c`, `tkfram_c`, `xfmsta_c`                                                                                                     | Main baseline                       | in-progress [#740](https://github.com/rybosome/tspice/pull/740) |
+| D04-surface-names            | `srfc2s_c`, `srfcss_c`, `srfs2c_c`, `srfscc_c`                                                                                                                             | Main baseline                       | in-progress [#723](https://github.com/rybosome/tspice/pull/723) |
+| E01-orbital-elements         | `conics_c`, `eqncpv_c`, `oscelt_c`, `oscltx_c`, `prop2b_c`                                                                                                                 | Main baseline                       | in-progress [#730](https://github.com/rybosome/tspice/pull/730) |
+| E02-tle-propagation          | `evsgp4_c`, `getelm_c`                                                                                                                                                     | Main baseline                       | in-progress [#739](https://github.com/rybosome/tspice/pull/739) |
+| E10-plane-geometry           | `nvp2pl_c`, `pl2nvp_c`, `pl2psv_c`, `psv2pl_c`, `inrypl_c`, `vprjp_c`, `vprjpi_c`, `nplnpt_c`                                                                              | Main baseline                       | in-progress [#729](https://github.com/rybosome/tspice/pull/729) |
+| E11-ellipse-geometry         | `cgv2el_c`, `el2cgv_c`, `saelgv_c`, `pjelpl_c`, `inelpl_c`, `inedpl_c`, `npelpt_c`                                                                                         | E10-plane-geometry                  | in-progress [#733](https://github.com/rybosome/tspice/pull/733) |
+| E12-ellipsoid-geometry       | `nearpt_c`, `npedln_c`, `edlimb_c`, `ednmpt_c`, `edpnt_c`, `surfnm_c`, `surfpt_c`                                                                                          | E11-ellipse-geometry                | in-progress                                                     |
+| E16-geometry-quantities      | `phaseq_c`, `lspcn_c`, `trgsep_c`                                                                                                                                          | Main baseline                       | in-progress                                                     |
 
-`Codex Step 8 (/root)` owns all thirteen claimed batches and their integration. The first
-batch uses `/private/tmp/tspice-step8-constants`, branch `codex/expand-constants`.
-The second uses `/private/tmp/tspice-step8-scalar-constants`, branch
-`codex/expand-scalar-constants`. The third uses `/private/tmp/tspice-step8-cylindrical`,
-branch `codex/expand-cylindrical-coordinates`, independently based on `73f3fec8`.
-The fourth uses `/private/tmp/tspice-step8-vector-basics`, branch
-`codex/expand-vector-basics`, also based on `73f3fec8`. The fifth uses
-`/private/tmp/tspice-step8-vector-combinations`, branch
-`codex/expand-vector-combinations`, independently based on the same commit. The sixth
-uses `/private/tmp/tspice-step8-fixed-matrices`, branch
-`codex/expand-fixed-matrices`, also independently based on `73f3fec8`. The seventh
-uses `/private/tmp/tspice-step8-coordinate-conventions`, branch
-`codex/expand-coordinate-conventions`, independently based on the same commit. The eighth uses
-`/private/tmp/tspice-step8-scalar-math`, branch `codex/expand-scalar-math`,
-independently based on `73f3fec8`. The ninth uses
-`/private/tmp/tspice-step8-general-vectors`, branch `codex/expand-general-vectors`,
-also independently based on `73f3fec8`. The tenth uses
-`/private/tmp/tspice-step8-state-derivatives`, branch `codex/expand-state-derivatives`,
-independently based on the same commit. The eleventh uses
-`/private/tmp/tspice-step8-polynomial-expansions`, branch
-`codex/expand-polynomial-expansions`, also based on `73f3fec8`. The twelfth uses
-`/private/tmp/tspice-step8-interpolation`, branch `codex/expand-interpolation`,
-independently based on the same commit. The thirteenth uses
-`/private/tmp/tspice-step8-string-transforms`, branch `codex/expand-string-transforms`,
-on the same base. The agent coordinating Step 7 was notified of the first exact routine list after its merged
-completion was inspected. No open Step 7 PR was found when this work began.
+After a parent lands, restack its dependent PRs on the merged history, regenerate combined WASM and generated evidence, and rerun the required checks. Scientific findings and source-bound verification for the routines present on this branch are in the [per-routine ledger](coverage-ledger.md).
 
-| Batch                       | Exact canonical routines                                                                                                                                                   | Public placement                                                                                                                          | Next action                                                                                                                                                                                                                                                        |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A01-constants               | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                                                                                  | Angular constants in `CoordsVectorsApi`; day/epoch constants in `TimeApi`. All remain flat `raw` methods.                                 | [PR-ready #707](https://github.com/rybosome/tspice/pull/707): final head `1eee2cff` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                                                                                            |
-| A02-remaining-constants     | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c`                                                            | Epoch/year constants in `TimeApi`; scalar limits and light speed in `CoordsVectorsApi`.                                                   | [PR-ready #708](https://github.com/rybosome/tspice/pull/708): final head `2b59cee8` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                                                                                            |
-| A05-cylindrical-coordinates | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                                                                             | Existing `CoordsVectorsApi` scalar and Vec3 conventions.                                                                                  | [PR #709](https://github.com/rybosome/tspice/pull/709). reccyl now copies the validated rectangular coordinates once. Fresh required validation pending.                                                                                                           |
-| A08-vector-basics           | `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c`                                                                                      | Existing `CoordsVectorsApi` scalar and Vec3 conventions, with explicit multi-output results where needed.                                 | [PR #710](https://github.com/rybosome/tspice/pull/710). Seven vector-input methods now use owned vector snapshots; scalar-input vpack is unchanged. Fresh required validation pending.                                                                             |
-| A09-vector-combinations     | `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c`                                                                                     | Existing `CoordsVectorsApi` Vec3/Mat3 conventions; distinguish active and passive rotation.                                               | [PR #711](https://github.com/rybosome/tspice/pull/711). All eight methods now snapshot their vector and, for vtmv, matrix inputs. Fresh required validation pending.                                                                                               |
-| A12-fixed-matrices          | `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c`                                                      | Existing `CoordsVectorsApi`, Mat3RowMajor and an immediately consumed 2x2 shape; numeric result ownership helper preserves CSPICE output. | [PR #712](https://github.com/rybosome/tspice/pull/712) corrected source `279dc29b` passed both required local lanes and [Linux Node 22 CI](https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167). Final-head CI and rebaseability pending. |
-| A06-coordinate-conventions  | `azlrec_c`, `recazl_c`, `pgrrec_c`, `recpgr_c`, `radrec_c`, `recrad_c`, `srfrec_c`                                                                                         | Existing `CoordsVectorsApi`; authored body constants support planetographic/surface conventions.                                          | [PR #713](https://github.com/rybosome/tspice/pull/713). recazl, recpgr and recrad now copy the validated rectangular coordinates once. Fresh required validation pending.                                                                                          |
-| A03-scalar-math             | `brcktd_c`, `brckti_c`, `convrt_c`, `sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c`                                                                           | Existing `CoordsVectorsApi`; bounded reductions and independently investigated C variadic oracle route.                                   | [PR #714](https://github.com/rybosome/tspice/pull/714). sumad, sumai, maxd, maxi, mind and mini now validate owned numeric arrays; the sumai prefix check uses the dispatched copy. Fresh required validation pending.                                             |
-| A10-general-vectors         | `vaddg_c`, `vdistg_c`, `vdotg_c`, `vequg_c`, `vhatg_c`, `vlcomg_c`, `vminug_c`, `vnormg_c`, `vprojg_c`, `vrelg_c`, `vsclg_c`, `vsepg_c`, `vsubg_c`, `vzerog_c`, `unormg_c` | Existing `CoordsVectorsApi`; immediately consumed readonly general-vector shapes with reviewed dimensions.                                | [PR #715](https://github.com/rybosome/tspice/pull/715). All fifteen general-vector methods now use stable validated dimensions and owned vector inputs. Fresh required validation pending.                                                                         |
-| A11-state-derivatives       | `ducrss_c`, `dvcrss_c`, `dvdot_c`, `dvhat_c`, `dvnorm_c`, `dvsep_c`                                                                                                        | Existing `CoordsVectorsApi`; immediately consumed readonly six-component state inputs.                                                    | [PR #716](https://github.com/rybosome/tspice/pull/716). All six state-derivative methods now use stable six-component state inputs. Fresh required validation pending.                                                                                             |
-| A16-polynomial-expansions   | `chbder_c`, `chbigr_c`, `chbint_c`, `chbval_c`, `polyds_c`, `rquad_c`                                                                                                      | Existing `CoordsVectorsApi`; immediately consumed bounded polynomial inputs/results.                                                      | Five array-bearing polynomial methods now snapshot coefficients and transformations; scalar rquad and its documented upstream diagnostic are unchanged. Fresh required validation pending.                                                                         |
-| A17-interpolation           | `hrmesp_c`, `hrmint_c`, `lgresp_c`, `lgrind_c`, `lgrint_c`, `qderiv_c`                                                                                                     | Existing `CoordsVectorsApi`; immediate interpolation inputs/workspaces.                                                                   | Six direct paths; 53 scenarios / 132 calls. Corrected native copies use validated counts; compiled focused and required source-bound evidence tracked separately.                                                                                                  |
-| A18-string-transform        | `cmprss_c`, `eqstr_c`, `iswhsp_c`, `lastnb_c`, `lcase_c`, `ucase_c`, `matchi_c`, `matchw_c`                                                                                | Immediately consumed raw strings API; placement, byte and blank semantics under source review.                                            | Assigned, no verification or delivery claim.                                                                                                                                                                                                                       |
+For this branch, [A07 coordinate Jacobians](step8-coordinate-jacobians.md) records the tested charts, pinned error paths and independent derivative comparisons.
 
-Only A01 and A02 are PR-ready. Each exact final head passed all 15 CI jobs and an
-explicit after-CI REST rebaseability check against `73f3fec8`. Neither was merged.
+## A07 source validation checkpoint
 
-Review identified repeated reads of caller arrays in nine earlier batches:
-A05, A08, A09, A12, A06, A03, A10, A11 and A16. Their adapters now use stable
-input snapshots with corresponding boundary regressions. Fresh source-bound
-validation is required. Earlier execution records still document the source that ran.
-Readiness for #709 and #710 was withdrawn; earlier successful final checks do
-not establish the corrected source. The JSON queue retains their historical
-readiness evidence. No change to the canonical roster or exclusions follows.
-
-A17 has 53 registered scenarios / 132 actual calls, including 11 genuine errors.
-Its native paired-input repair copies exactly the validated counts. All six
-independent Python wrappers call the locked library; required corrected-source
-backend and CI evidence must be recorded separately. A18 is owned and in progress; A14 remains prepared but unclaimed/planned. Refresh main and ownership before taking more work.
-
-A12-fixed-matrices corrected source `279dc29b` now has fresh required local and
-canonical CI evidence for all 173 routines on both backends. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips.
-Its earlier source checks remain historical. [Observed Linux Node 22 job](https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167).
-
-## Reading and maintaining the queue
-
-Each JSON batch records its exact routines, proposed domain/API placement,
-owner, status, batch dependencies, prerequisite investigation, fixture needs,
-locked-oracle availability, expected implementation changes, PR URLs, validation
-evidence and next action. Proposed type/fixture/ABI work is explicitly unresolved
-until reviewed. The graph does not require public wrappers for internal CSPICE
-callees. String utilities propose one directly consumed strings domain because
-there is currently no general string API; its placement is a decision for the
-first string batch, not a speculative architecture change in the constants PR.
-
-The waves are scheduling guides. Earlier letters are not a global barrier.
-Small stateful writer/search families deliberately remain below five routines;
-their complete workflow is the review unit. Larger families stay at fifteen
-routines or fewer. Split a batch before implementation if its subtype, callback,
-fixture or oracle work is too large for review. Preserve unique ownership and
-update any dependent batch IDs when splitting.
-
-Use these status meanings consistently:
-
-- `planned`: scheduled candidate; unresolved design and oracle work may remain.
-- `in-progress`: owned source work; no delivery or merge claim.
-- `PR-ready`: complete supported path, reviewed semantic evidence, successful
-  required local and observed CI execution, and a reviewable open PR.
-- `landed`: that implementation merged on main; record its merge commit and
-  reconcile the current inventory.
-- `blocked`: a concrete dependency or maintainer decision prevents this batch;
-  record the reason and continue independent work.
-
-Keep `prs` and `validationEvidence` empty until actual evidence exists. For each
-observation record the exact command, backend/native-required setting, result,
-tested commit/source digest and CI job URL where applicable. Record source-bound
-per-routine semantic evidence with the existing audit machinery. Generated
-inventory/ledger files belong to their generators; queue status must not override
-their derived implementation or audit judgments.
-
-One integrator owns each compiled WASM revision. When source changes combine,
-preserve all declarations/registrations, regenerate both Node/web artifacts with
-the pinned owning build, verify actual exports and rerun affected raw paths.
-Never resolve a binary conflict by choosing one side. Reconcile main and open PRs
-before assigning another routine; landed work from another agent must be removed
-from the absent-work queue rather than reimplemented or claimed as our delivery.
-
-## Oracle availability and unresolved work
-
-The queue records an availability inspection of the installed, locked SpiceyPy
-**6.0.3** `spiceypy.py` module. The source SHA-256 and lockfile location are in
-`oracleInspection`. Function definitions and direct `libspice` call names were
-inspected, including the wrappers named `set_c` and `return_c`. Presence means
-there is a source entry point to review. It does not establish correct error/found
-handling, complete outputs, ABI compatibility or sufficient scientific coverage.
-
-The following **23 routines lack corresponding top-level wrappers** in that
-inspected module:
-
-- Array storage/reductions: `clearc_c`, `cleard_c`, `cleari_c`, `filld_c`, `filli_c`,
-  `moved_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c`.
-- Text/command state: `nextwd_c`, `nthwd_c`, `putcml_c`, `repml_c`.
-- DAS character data: `dasrdc_c`, `dasudc_c`.
-- Legacy plate geometry: `illum_pl02`, `illum_plid_pl02`, `limb_pl02`,
-  `llgrid_pl02`, `subpt_pl02`, `subsol_pl02`, `term_pl02`.
-
-These initial wrapper-availability gaps require an actual locked-library and
-pinned N0067 ABI route. A03 now references the independent max/min variadic
-investigation in PR #707; its earlier live validation is recorded in PR #714. The adapter correction still requires fresh evidence.
-The other listed gaps retain their investigation prerequisites. If a route cannot
-be established, request a concrete maintainer decision while delivering independent
-routines. Do not compare tspice
-against its own shim, silently omit parity, or add exclusions. Supported routines
-in a mixed batch can be split out rather than waiting on unrelated wrapper gaps.
-
-Other explicit investigations include callback ownership and synchronous
-Node/WASM invocation (`E24`/`E25`), process/signal/error policy (`B07`/`E26`), and
-implicit text-file/command state (`C14`). These are unresolved breadth/platform
-questions, not approved unsupported-backend exceptions. New scientific fixtures
-require provenance, rights and deterministic independent generation before they
-can satisfy a batch.
-
-No PR may be merged without explicit authorization. Step 9 reconciliation and
-release decisions remain separate; this queue authorizes no version choice,
-publishing or deployment.
+[PR #747](https://github.com/rybosome/tspice/pull/747) remains in progress. Both complete required lanes passed locally on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4. JavaScript: 2,708 parity tests and one expected guard skip. Native-required: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43572898028/job/132380908546) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.

@@ -775,6 +775,22 @@ function tspiceCallRecgeo(
   }
 }
 
+function jacobianBody(value: unknown): string {
+  if (
+    typeof value !== "string" ||
+    value.includes("\0") ||
+    /[\uD800-\uDFFF]/u.test(value)
+  )
+    throw new TypeError("Expected a UTF-8 representable NUL-free body name");
+  return value;
+}
+
+function jacobianFlag(value: unknown): boolean {
+  if (typeof value !== "boolean")
+    throw new TypeError("Expected a boolean direction flag");
+  return value;
+}
+
 function assertFixedMatrixScalar(
   value: unknown,
   label: string,
@@ -830,7 +846,7 @@ function readFixedMatrixResult(
   ptr: number,
   label: string,
 ): Mat3RowMajor {
-  const start = ptr >> 3;
+  const start = (ptr >>> 0) / 8;
   return brandMat3RowMajorResult(module.HEAPF64.subarray(start, start + 9), {
     label,
   });
@@ -850,6 +866,262 @@ export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    dazldr: (x, y, z, azccw, elplsz) => {
+      assertFixedMatrixScalar(x, "dazldr(x)");
+      assertFixedMatrixScalar(y, "dazldr(y)");
+      assertFixedMatrixScalar(z, "dazldr(z)");
+      const azccwFlag = Number(jacobianFlag(azccw));
+      const elplszFlag = Number(jacobianFlag(elplsz));
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_dazldr(
+          x,
+          y,
+          z,
+          azccwFlag,
+          elplszFlag,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "dazldr result");
+      });
+    },
+    dcyldr: (x, y, z) => {
+      assertFixedMatrixScalar(x, "dcyldr(x)");
+      assertFixedMatrixScalar(y, "dcyldr(y)");
+      assertFixedMatrixScalar(z, "dcyldr(z)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_dcyldr(
+          x,
+          y,
+          z,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "dcyldr result");
+      });
+    },
+    dgeodr: (x, y, z, re, f) => {
+      assertFixedMatrixScalar(x, "dgeodr(x)");
+      assertFixedMatrixScalar(y, "dgeodr(y)");
+      assertFixedMatrixScalar(z, "dgeodr(z)");
+      assertFixedMatrixScalar(re, "dgeodr(re)");
+      assertFixedMatrixScalar(f, "dgeodr(f)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_dgeodr(
+          x,
+          y,
+          z,
+          re,
+          f,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "dgeodr result");
+      });
+    },
+    dlatdr: (x, y, z) => {
+      assertFixedMatrixScalar(x, "dlatdr(x)");
+      assertFixedMatrixScalar(y, "dlatdr(y)");
+      assertFixedMatrixScalar(z, "dlatdr(z)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_dlatdr(
+          x,
+          y,
+          z,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "dlatdr result");
+      });
+    },
+    dpgrdr: (body, x, y, z, re, f) => {
+      assertFixedMatrixScalar(x, "dpgrdr(x)");
+      assertFixedMatrixScalar(y, "dpgrdr(y)");
+      assertFixedMatrixScalar(z, "dpgrdr(z)");
+      assertFixedMatrixScalar(re, "dpgrdr(re)");
+      assertFixedMatrixScalar(f, "dpgrdr(f)");
+      const bytes = new TextEncoder().encode(jacobianBody(body));
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, bytes.length + 1],
+        (errPtr, outPtr, bodyPtr) => {
+          module.HEAPU8.set(bytes, bodyPtr >>> 0);
+          module.HEAPU8[(bodyPtr >>> 0) + bytes.length] = 0;
+          const status = module._tspice_dpgrdr(
+            bodyPtr,
+            x,
+            y,
+            z,
+            re,
+            f,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "dpgrdr result");
+        },
+      );
+    },
+    drdazl: (range, az, el, azccw, elplsz) => {
+      assertFixedMatrixScalar(range, "drdazl(range)");
+      assertFixedMatrixScalar(az, "drdazl(az)");
+      assertFixedMatrixScalar(el, "drdazl(el)");
+      const azccwFlag = Number(jacobianFlag(azccw));
+      const elplszFlag = Number(jacobianFlag(elplsz));
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_drdazl(
+          range,
+          az,
+          el,
+          azccwFlag,
+          elplszFlag,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "drdazl result");
+      });
+    },
+    drdcyl: (radius, lon, z) => {
+      assertFixedMatrixScalar(radius, "drdcyl(radius)");
+      assertFixedMatrixScalar(lon, "drdcyl(lon)");
+      assertFixedMatrixScalar(z, "drdcyl(z)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_drdcyl(
+          radius,
+          lon,
+          z,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "drdcyl result");
+      });
+    },
+    drdgeo: (lon, lat, alt, re, f) => {
+      assertFixedMatrixScalar(lon, "drdgeo(lon)");
+      assertFixedMatrixScalar(lat, "drdgeo(lat)");
+      assertFixedMatrixScalar(alt, "drdgeo(alt)");
+      assertFixedMatrixScalar(re, "drdgeo(re)");
+      assertFixedMatrixScalar(f, "drdgeo(f)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_drdgeo(
+          lon,
+          lat,
+          alt,
+          re,
+          f,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "drdgeo result");
+      });
+    },
+    drdlat: (radius, lon, lat) => {
+      assertFixedMatrixScalar(radius, "drdlat(radius)");
+      assertFixedMatrixScalar(lon, "drdlat(lon)");
+      assertFixedMatrixScalar(lat, "drdlat(lat)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_drdlat(
+          radius,
+          lon,
+          lat,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "drdlat result");
+      });
+    },
+    drdpgr: (body, lon, lat, alt, re, f) => {
+      assertFixedMatrixScalar(lon, "drdpgr(lon)");
+      assertFixedMatrixScalar(lat, "drdpgr(lat)");
+      assertFixedMatrixScalar(alt, "drdpgr(alt)");
+      assertFixedMatrixScalar(re, "drdpgr(re)");
+      assertFixedMatrixScalar(f, "drdpgr(f)");
+      const bytes = new TextEncoder().encode(jacobianBody(body));
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, bytes.length + 1],
+        (errPtr, outPtr, bodyPtr) => {
+          module.HEAPU8.set(bytes, bodyPtr >>> 0);
+          module.HEAPU8[(bodyPtr >>> 0) + bytes.length] = 0;
+          const status = module._tspice_drdpgr(
+            bodyPtr,
+            lon,
+            lat,
+            alt,
+            re,
+            f,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "drdpgr result");
+        },
+      );
+    },
+    drdsph: (radius, colat, lon) => {
+      assertFixedMatrixScalar(radius, "drdsph(radius)");
+      assertFixedMatrixScalar(colat, "drdsph(colat)");
+      assertFixedMatrixScalar(lon, "drdsph(lon)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_drdsph(
+          radius,
+          colat,
+          lon,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "drdsph result");
+      });
+    },
+    dsphdr: (x, y, z) => {
+      assertFixedMatrixScalar(x, "dsphdr(x)");
+      assertFixedMatrixScalar(y, "dsphdr(y)");
+      assertFixedMatrixScalar(z, "dsphdr(z)");
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_dsphdr(
+          x,
+          y,
+          z,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "dsphdr result");
+      });
+    },
     det: (m) => {
       const mCopy = copyMatrixInput(m, "det(m)");
       return withAllocs(

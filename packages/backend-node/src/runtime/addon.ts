@@ -529,6 +529,50 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  dcyldr(x: number, y: number, z: number): number[];
+  dgeodr(x: number, y: number, z: number, re: number, f: number): number[];
+  dlatdr(x: number, y: number, z: number): number[];
+  dpgrdr(
+    body: string,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  drdcyl(radius: number, lon: number, z: number): number[];
+  drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdlat(radius: number, lon: number, lat: number): number[];
+  drdpgr(
+    body: string,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdsph(radius: number, colat: number, lon: number): number[];
+  dsphdr(x: number, y: number, z: number): number[];
   det(m: readonly number[]): number;
   diags2(symmat: readonly number[]): { diag: number[]; rotate: number[] };
   ident(): number[];
