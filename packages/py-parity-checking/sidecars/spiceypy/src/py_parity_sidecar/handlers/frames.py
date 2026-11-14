@@ -6,6 +6,7 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
 
+from .. import frame_algebra_oracle
 from ..models import (
     StepFramesCcifrm,
     StepFramesCidfrm,
@@ -20,6 +21,15 @@ from ..models import (
     StepFramesFrmnam,
     StepFramesNamfrm,
     StepFramesPxform,
+    StepFramesFrame,
+    StepFramesTwovec,
+    StepFramesTwovxf,
+    StepFramesEul2xf,
+    StepFramesXf2eul,
+    StepFramesXf2rav,
+    StepFramesRav2xf,
+    StepFramesInvstm,
+    StepFramesXpose6,
     StepFramesSxform,
     StepOutput,
     WorkflowStep,
@@ -340,6 +350,42 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
     if isinstance(step, StepFramesPxform):
         out = sp.pxform(step.from_, step.to, step.et)
         return StepOutput(op=step.op, value=_to_matrix3(out))
+
+    if isinstance(step, StepFramesFrame):
+        x, y, z = sp.frame(step.x)
+        return StepOutput(op=step.op, value={"x": _to_vec3(x), "y": _to_vec3(y), "z": _to_vec3(z)})
+
+    if isinstance(step, StepFramesTwovec):
+        out = sp.twovec(step.axdef, step.indexa, step.plndef, step.indexp)
+        return StepOutput(op=step.op, value=_to_matrix3(out))
+
+    if isinstance(step, StepFramesTwovxf):
+        out = frame_algebra_oracle.twovxf(step.axdef, step.indexa, step.plndef, step.indexp)
+        return StepOutput(op=step.op, value=_to_matrix6(out))
+
+    if isinstance(step, StepFramesEul2xf):
+        out = frame_algebra_oracle.eul2xf(step.eulang, step.axisa, step.axisb, step.axisc)
+        return StepOutput(op=step.op, value=_to_matrix6(out))
+
+    if isinstance(step, StepFramesXf2eul):
+        eulang, unique = frame_algebra_oracle.xf2eul(step.xform, step.axisa, step.axisb, step.axisc)
+        return StepOutput(op=step.op, value={"eulang": eulang.tolist(), "unique": bool(unique)})
+
+    if isinstance(step, StepFramesXf2rav):
+        rot, av = sp.xf2rav(step.xform)
+        return StepOutput(op=step.op, value={"rot": _to_matrix3(rot), "av": _to_vec3(av)})
+
+    if isinstance(step, StepFramesRav2xf):
+        out = sp.rav2xf(step.rot, step.av)
+        return StepOutput(op=step.op, value=_to_matrix6(out))
+
+    if isinstance(step, StepFramesInvstm):
+        out = sp.invstm(step.mat)
+        return StepOutput(op=step.op, value=_to_matrix6(out))
+
+    if isinstance(step, StepFramesXpose6):
+        out = sp.xpose6(step.m1)
+        return StepOutput(op=step.op, value=_to_matrix6(out))
 
     if isinstance(step, StepFramesSxform):
         out = sp.sxform(step.from_, step.to, step.et)

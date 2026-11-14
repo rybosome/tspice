@@ -12,6 +12,11 @@ import type {
 import {
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
+  brandMat3RowMajorResult,
+  frameOperand,
+  frameVectorResult,
+  frameStateResult,
+  frameMatrixResult,
   brandMat6RowMajor,
   brandVec3,
   brandMat3RowMajor,
@@ -686,6 +691,260 @@ export function createFramesApi(module: EmscriptenModule): FramesApi {
     pxform: (from: string, to: string, et: number) => {
       assertFrameTransform(from, to, et, "pxform");
       return tspiceCallPxform(module, from, to, et);
+    },
+    frame: (x) => {
+      const xCopy = frameOperand(x, 3, "frame(x)");
+      return withAllocs(
+        module,
+        [24, 24, 24, 24, WASM_ERR_MAX_BYTES],
+        (xPtr, outXPtr, outYPtr, outZPtr, errPtr) => {
+          module.HEAPF64.set(xCopy, xPtr / 8);
+          const status = module._tspice_frame(
+            xPtr,
+            outXPtr,
+            outYPtr,
+            outZPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            x: frameVectorResult(
+              module.HEAPF64.subarray(outXPtr / 8, outXPtr / 8 + 3),
+              "frame(x)",
+            ),
+            y: frameVectorResult(
+              module.HEAPF64.subarray(outYPtr / 8, outYPtr / 8 + 3),
+              "frame(y)",
+            ),
+            z: frameVectorResult(
+              module.HEAPF64.subarray(outZPtr / 8, outZPtr / 8 + 3),
+              "frame(z)",
+            ),
+          };
+        },
+      );
+    },
+    twovec: (axdef, indexa, plndef, indexp) => {
+      const axdefCopy = frameOperand(axdef, 3, "twovec(axdef)");
+      assertSpiceInt32(indexa, "twovec(indexa)");
+      const plndefCopy = frameOperand(plndef, 3, "twovec(plndef)");
+      assertSpiceInt32(indexp, "twovec(indexp)");
+      return withAllocs(
+        module,
+        [24, 24, 72, WASM_ERR_MAX_BYTES],
+        (axdefPtr, plndefPtr, outRotationPtr, errPtr) => {
+          module.HEAPF64.set(axdefCopy, axdefPtr / 8);
+          module.HEAPF64.set(plndefCopy, plndefPtr / 8);
+          const status = module._tspice_twovec(
+            axdefPtr,
+            indexa,
+            plndefPtr,
+            indexp,
+            outRotationPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return brandMat3RowMajorResult(
+            module.HEAPF64.subarray(outRotationPtr / 8, outRotationPtr / 8 + 9),
+            { label: "twovec(rotation)" },
+          );
+        },
+      );
+    },
+    twovxf: (axdef, indexa, plndef, indexp) => {
+      const axdefCopy = frameOperand(axdef, 6, "twovxf(axdef)");
+      assertSpiceInt32(indexa, "twovxf(indexa)");
+      const plndefCopy = frameOperand(plndef, 6, "twovxf(plndef)");
+      assertSpiceInt32(indexp, "twovxf(indexp)");
+      return withAllocs(
+        module,
+        [48, 48, 288, WASM_ERR_MAX_BYTES],
+        (axdefPtr, plndefPtr, outXformPtr, errPtr) => {
+          module.HEAPF64.set(axdefCopy, axdefPtr / 8);
+          module.HEAPF64.set(plndefCopy, plndefPtr / 8);
+          const status = module._tspice_twovxf(
+            axdefPtr,
+            indexa,
+            plndefPtr,
+            indexp,
+            outXformPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return frameMatrixResult(
+            module.HEAPF64.subarray(outXformPtr / 8, outXformPtr / 8 + 36),
+            "twovxf(xform)",
+          );
+        },
+      );
+    },
+    eul2xf: (eulang, axisa, axisb, axisc) => {
+      const eulangCopy = frameOperand(eulang, 6, "eul2xf(eulang)");
+      assertSpiceInt32(axisa, "eul2xf(axisa)");
+      assertSpiceInt32(axisb, "eul2xf(axisb)");
+      assertSpiceInt32(axisc, "eul2xf(axisc)");
+      return withAllocs(
+        module,
+        [48, 288, WASM_ERR_MAX_BYTES],
+        (eulangPtr, outXformPtr, errPtr) => {
+          module.HEAPF64.set(eulangCopy, eulangPtr / 8);
+          const status = module._tspice_eul2xf(
+            eulangPtr,
+            axisa,
+            axisb,
+            axisc,
+            outXformPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return frameMatrixResult(
+            module.HEAPF64.subarray(outXformPtr / 8, outXformPtr / 8 + 36),
+            "eul2xf(xform)",
+          );
+        },
+      );
+    },
+    xf2eul: (xform, axisa, axisb, axisc) => {
+      const xformCopy = frameOperand(xform, 36, "xf2eul(xform)");
+      assertSpiceInt32(axisa, "xf2eul(axisa)");
+      assertSpiceInt32(axisb, "xf2eul(axisb)");
+      assertSpiceInt32(axisc, "xf2eul(axisc)");
+      return withAllocs(
+        module,
+        [288, 48, 4, WASM_ERR_MAX_BYTES],
+        (xformPtr, outEulangPtr, outUniquePtr, errPtr) => {
+          module.HEAPF64.set(xformCopy, xformPtr / 8);
+          const status = module._tspice_xf2eul(
+            xformPtr,
+            axisa,
+            axisb,
+            axisc,
+            outEulangPtr,
+            outUniquePtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const flag = module.HEAP32[outUniquePtr / 4];
+          if (flag !== 0 && flag !== 1)
+            throw new TypeError("Invalid XF2EUL uniqueness flag");
+          const unique = flag === 1;
+          return {
+            eulang: frameStateResult(
+              module.HEAPF64.subarray(outEulangPtr / 8, outEulangPtr / 8 + 6),
+              "xf2eul(eulang)",
+            ),
+            unique,
+          };
+        },
+      );
+    },
+    xf2rav: (xform) => {
+      const xformCopy = frameOperand(xform, 36, "xf2rav(xform)");
+      return withAllocs(
+        module,
+        [288, 72, 24, WASM_ERR_MAX_BYTES],
+        (xformPtr, outRotPtr, outAvPtr, errPtr) => {
+          module.HEAPF64.set(xformCopy, xformPtr / 8);
+          const status = module._tspice_xf2rav(
+            xformPtr,
+            outRotPtr,
+            outAvPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            rot: brandMat3RowMajorResult(
+              module.HEAPF64.subarray(outRotPtr / 8, outRotPtr / 8 + 9),
+              { label: "xf2rav(rot)" },
+            ),
+            av: frameVectorResult(
+              module.HEAPF64.subarray(outAvPtr / 8, outAvPtr / 8 + 3),
+              "xf2rav(av)",
+            ),
+          };
+        },
+      );
+    },
+    rav2xf: (rot, av) => {
+      const rotCopy = frameOperand(rot, 9, "rav2xf(rot)");
+      const avCopy = frameOperand(av, 3, "rav2xf(av)");
+      return withAllocs(
+        module,
+        [72, 24, 288, WASM_ERR_MAX_BYTES],
+        (rotPtr, avPtr, outXformPtr, errPtr) => {
+          module.HEAPF64.set(rotCopy, rotPtr / 8);
+          module.HEAPF64.set(avCopy, avPtr / 8);
+          const status = module._tspice_rav2xf(
+            rotPtr,
+            avPtr,
+            outXformPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return frameMatrixResult(
+            module.HEAPF64.subarray(outXformPtr / 8, outXformPtr / 8 + 36),
+            "rav2xf(xform)",
+          );
+        },
+      );
+    },
+    invstm: (mat) => {
+      const matCopy = frameOperand(mat, 36, "invstm(mat)");
+      return withAllocs(
+        module,
+        [288, 288, WASM_ERR_MAX_BYTES],
+        (matPtr, outInvmatPtr, errPtr) => {
+          module.HEAPF64.set(matCopy, matPtr / 8);
+          const status = module._tspice_invstm(
+            matPtr,
+            outInvmatPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return frameMatrixResult(
+            module.HEAPF64.subarray(outInvmatPtr / 8, outInvmatPtr / 8 + 36),
+            "invstm(invmat)",
+          );
+        },
+      );
+    },
+    xpose6: (m1) => {
+      const m1Copy = frameOperand(m1, 36, "xpose6(m1)");
+      return withAllocs(
+        module,
+        [288, 288, WASM_ERR_MAX_BYTES],
+        (m1Ptr, outMoutPtr, errPtr) => {
+          module.HEAPF64.set(m1Copy, m1Ptr / 8);
+          const status = module._tspice_xpose6(
+            m1Ptr,
+            outMoutPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return frameMatrixResult(
+            module.HEAPF64.subarray(outMoutPtr / 8, outMoutPtr / 8 + 36),
+            "xpose6(mout)",
+          );
+        },
+      );
     },
     sxform: (from: string, to: string, et: number) => {
       assertFrameTransform(from, to, et, "sxform");

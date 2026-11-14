@@ -519,6 +519,77 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_frame(
+    xPtr: number,
+    outXPtr: number,
+    outYPtr: number,
+    outZPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovec(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outRotationPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovxf(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eul2xf(
+    eulangPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2eul(
+    xformPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outEulangPtr: number,
+    outUniquePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2rav(
+    xformPtr: number,
+    outRotPtr: number,
+    outAvPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rav2xf(
+    rotPtr: number,
+    avPtr: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invstm(
+    matPtr: number,
+    outInvmatPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose6(
+    m1Ptr: number,
+    outMoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_sxform(
     fromPtr: number,
     toPtr: number,
@@ -1647,6 +1718,77 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_frame(
+    xPtr: number,
+    outXPtr: number,
+    outYPtr: number,
+    outZPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovec(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outRotationPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_twovxf(
+    axdefPtr: number,
+    indexa: number,
+    plndefPtr: number,
+    indexp: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eul2xf(
+    eulangPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2eul(
+    xformPtr: number,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+    outEulangPtr: number,
+    outUniquePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xf2rav(
+    xformPtr: number,
+    outRotPtr: number,
+    outAvPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rav2xf(
+    rotPtr: number,
+    avPtr: number,
+    outXformPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invstm(
+    matPtr: number,
+    outInvmatPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose6(
+    m1Ptr: number,
+    outMoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_sxform(
     fromPtr: number,
     toPtr: number,
@@ -2361,6 +2503,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ckobj",
   "_tspice_ckcov",
   "_tspice_pxform",
+  "_tspice_frame",
+  "_tspice_twovec",
+  "_tspice_twovxf",
+  "_tspice_eul2xf",
+  "_tspice_xf2eul",
+  "_tspice_xf2rav",
+  "_tspice_rav2xf",
+  "_tspice_invstm",
+  "_tspice_xpose6",
   "_tspice_sxform",
   "_tspice_spkezr",
   "_tspice_spkpos",

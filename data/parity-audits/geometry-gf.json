@@ -1866,7 +1866,8 @@
         "geometry-gf-gfstol-invalid-value-error",
         "geometry-gf-gfstol-success"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "local-a12-snapshot-279dc29b-wasm",
@@ -1987,7 +1988,8 @@
         "geometry-gf-gfstol-invalid-value-error",
         "geometry-gf-gfstol-success"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-node",
@@ -2110,7 +2112,8 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-wasm",
@@ -2233,7 +2236,496 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a15-3fb46545-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "29579b4284cd90cb6faf9182a80d6a1a8f7add470312be1fb299f602636c1e94",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a15-3fb46545-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "29579b4284cd90cb6faf9182a80d6a1a8f7add470312be1fb299f602636c1e94",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "29579b4284cd90cb6faf9182a80d6a1a8f7add470312be1fb299f602636c1e94",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "29579b4284cd90cb6faf9182a80d6a1a8f7add470312be1fb299f602636c1e94",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
     }
   ],
   "routines": [
@@ -2312,14 +2804,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfsstp -> typed node adapter -> actual registered N-API gfsstp binding -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2332,14 +2823,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfsstp -> typed wasm adapter -> actual compiled _tspice_gfsstp export -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -2412,14 +2902,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfstep -> typed node adapter -> actual registered N-API gfstep binding -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2432,14 +2921,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfstep -> typed wasm adapter -> actual compiled _tspice_gfstep export -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -2517,14 +3005,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfstol -> typed node adapter -> actual registered N-API gfstol binding -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2537,14 +3024,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfstol -> typed wasm adapter -> actual compiled _tspice_gfstol export -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -2647,14 +3133,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfrefn -> typed node adapter -> actual registered N-API gfrefn binding -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2667,14 +3152,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfrefn -> typed wasm adapter -> actual compiled _tspice_gfrefn export -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -2823,14 +3307,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfrepi -> typed node adapter -> actual registered N-API gfrepi binding -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2843,14 +3326,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfrepi -> typed wasm adapter -> actual compiled _tspice_gfrepi export -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -2911,14 +3393,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfrepf -> typed node adapter -> actual registered N-API gfrepf binding -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2931,14 +3412,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfrepf -> typed wasm adapter -> actual compiled _tspice_gfrepf export -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -3296,14 +3776,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfdist -> typed node adapter -> actual registered N-API gfdist binding -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -3316,14 +3795,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfdist -> typed wasm adapter -> actual compiled _tspice_gfdist export -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -3721,14 +4199,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfsep -> typed node adapter -> actual registered N-API gfsep binding -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -3741,14 +4218,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.gfsep -> typed wasm adapter -> actual compiled _tspice_gfsep export -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     }

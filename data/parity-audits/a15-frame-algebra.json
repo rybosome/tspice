@@ -1,0 +1,851 @@
+{
+  "schemaVersion": 1,
+  "batch": "a15-frame-algebra",
+  "traceFiles": [
+    "docs/step8-frame-algebra.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/frame-algebra-domain.test.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/frame-algebra-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/frame-algebra.ts",
+    "packages/core/src/spice-runtime/shared/mat3.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_algebra_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/frames/index.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+    "packages/py-parity-checking/src/run-tspice/utils/matrix.ts",
+    "packages/py-parity-checking/test/frame-algebra-public.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-a15-3fb46545-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a15-3fb46545-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "532fa7af0d4608053afb7e8f4428f5c5ef2411081d1d15606de295d02175a8db",
+      "caseIds": [
+        "frames-eul2xf-bad-last",
+        "frames-eul2xf-bad-middle",
+        "frames-eul2xf-equal-axes",
+        "frames-eul2xf-first-adjacent",
+        "frames-eul2xf-gimbal",
+        "frames-eul2xf-last-adjacent",
+        "frames-eul2xf-products",
+        "frames-eul2xf-rates",
+        "frames-frame-basis",
+        "frames-frame-scaled",
+        "frames-frame-skew",
+        "frames-frame-zero",
+        "frames-invstm-all-blocks",
+        "frames-invstm-copy-range",
+        "frames-invstm-state-blocks",
+        "frames-rav2xf-basis-rates",
+        "frames-rav2xf-orientations",
+        "frames-rav2xf-scale",
+        "frames-twovec-axis-order",
+        "frames-twovec-equal",
+        "frames-twovec-large-index",
+        "frames-twovec-near-parallel",
+        "frames-twovec-parallel",
+        "frames-twovec-swapped",
+        "frames-twovec-zero-axis",
+        "frames-twovec-zero-index",
+        "frames-twovxf-axis-order",
+        "frames-twovxf-equal",
+        "frames-twovxf-large-index",
+        "frames-twovxf-parallel",
+        "frames-twovxf-swapped",
+        "frames-twovxf-velocities",
+        "frames-twovxf-zero-axis",
+        "frames-twovxf-zero-index",
+        "frames-xf2eul-axis-range",
+        "frames-xf2eul-equal-middle",
+        "frames-xf2eul-ignored-blocks",
+        "frames-xf2eul-moving",
+        "frames-xf2eul-nonrotation",
+        "frames-xf2eul-sequences",
+        "frames-xf2eul-singular",
+        "frames-xf2rav-basis",
+        "frames-xf2rav-right-blocks",
+        "frames-xf2rav-scale",
+        "frames-xpose6-all-coordinates",
+        "frames-xpose6-copy-range",
+        "frames-xpose6-state-and-zero"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "frame_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frame_c.html",
+      "semantics": "Construct a right-handed triad around the supplied x direction. Return the unitized x and the actual auxiliary y and z chosen in N0067. All three outputs have independent storage.",
+      "scenarios": [
+        {
+          "caseId": "frames-frame-basis",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the returned unitized input and both right-handed auxiliary axes."
+        },
+        {
+          "caseId": "frames-frame-skew",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all nine signed entries for each choice of smallest component."
+        },
+        {
+          "caseId": "frames-frame-zero",
+          "coverage": ["success", "edge"],
+          "observes": "The zero vector yields the Cartesian basis."
+        },
+        {
+          "caseId": "frames-frame-scaled",
+          "coverage": ["success", "edge"],
+          "observes": "Observe directions at widely separated representable scales."
+        }
+      ],
+      "edgeAssessment": "Zero yields the Cartesian basis. Skew inputs activate each smallest-component choice. Widely separated magnitudes and signed directions test normalization and orientation.",
+      "errorAssessment": "FRAME is error-free for defined input. An incorrect tuple length or nonfinite component is rejected at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "The ordinary workflow compares all returned components using the existing float comparison. Axis error identity and the XF2EUL uniqueness flag are exact. Angular and rate conventions follow the pinned toolkit, including its nonunique decomposition; no tolerance override is applied.",
+      "findings": [],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.frame uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_frame then frame_c on success. Independent live handler calls SpiceyPy frame on the same input.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.frame uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_frame then frame_c on success. Independent live handler calls SpiceyPy frame on the same input.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "twovec_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/twovec_c.html",
+      "semantics": "Construct the rotation from the original frame into the frame defined by the first direction and the principal plane. The two distinct axis numbers are 1, 2 or 3. The result is a branded row-major 3×3 matrix.",
+      "scenarios": [
+        {
+          "caseId": "frames-twovec-axis-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six distinct placements of the axis and plane."
+        },
+        {
+          "caseId": "frames-twovec-swapped",
+          "coverage": ["success", "edge"],
+          "observes": "Reversing or reflecting the defining directions changes the actual transform."
+        },
+        {
+          "caseId": "frames-twovec-zero-index",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for zero-index. The independent comparison requires BADINDEX."
+        },
+        {
+          "caseId": "frames-twovec-large-index",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for large-index. The independent comparison requires BADINDEX."
+        },
+        {
+          "caseId": "frames-twovec-equal",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for equal. The independent comparison requires UNDEFINEDFRAME."
+        },
+        {
+          "caseId": "frames-twovec-parallel",
+          "coverage": ["error"],
+          "observes": "Exactly collinear Cartesian directions have a zero cross product on all supported toolkits and signal DEPENDENTVECTORS. The independent comparison requires DEPENDENTVECTORS."
+        },
+        {
+          "caseId": "frames-twovec-zero-axis",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for zero-axis. The independent comparison requires DEPENDENTVECTORS."
+        },
+        {
+          "caseId": "frames-twovec-near-parallel",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the orientation of two distinct axes separated by a small signed component."
+        }
+      ],
+      "edgeAssessment": "All six axis placements, swapped and reflected inputs, and near-parallel but distinguishable vectors expose axis ordering and cross-product orientation. Exact dependence uses simple axis-aligned inputs.",
+      "errorAssessment": "Two out-of-range choices give BADINDEX. Equal axis numbers give UNDEFINEDFRAME. Parallel vectors or a zero defining direction give DEPENDENTVECTORS. The public wrapper transposes the provided output even on failure; the shim supplies initialized local storage.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "The ordinary workflow compares all returned components using the existing float comparison. Axis error identity and the XF2EUL uniqueness flag are exact. Angular and rate conventions follow the pinned toolkit, including its nonunique decomposition; no tolerance override is applied.",
+      "findings": [
+        {
+          "id": "collinear-fixture-conditioning",
+          "status": "repaired",
+          "summary": "The original mathematically collinear fixture [2,-1,3] and its scaled copy can acquire a residual cross product during toolkit unitization. The local locked wheel and compiled backends differed on whether that example signaled dependence.",
+          "repair": "Use the exactly representable axis-aligned pair [1,0,0] and [2,0,0] for the dependent-input assertion. Retain the distinct near-parallel or other nonparallel comparisons and existing numerical tolerances.",
+          "caseIds": ["frames-twovec-parallel"],
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/twovec.cases.json",
+            "docs/step8-frame-algebra.md",
+            "packages/py-parity-checking/test/frame-algebra-public.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.twovec uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_twovec then twovec_c on success. Independent live handler calls SpiceyPy twovec on the same input.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.twovec uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_twovec then twovec_c on success. Independent live handler calls SpiceyPy twovec on the same input.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "twovxf_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/twovxf_c.html",
+      "semantics": "Construct a state transform into the moving frame defined by two position/velocity states. Their position components fix the axis and plane while their velocities determine the lower-left derivative block.",
+      "scenarios": [
+        {
+          "caseId": "frames-twovxf-axis-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six distinct placements of the axis and plane."
+        },
+        {
+          "caseId": "frames-twovxf-swapped",
+          "coverage": ["success", "edge"],
+          "observes": "Reversing or reflecting the defining directions changes the actual transform."
+        },
+        {
+          "caseId": "frames-twovxf-zero-index",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for zero-index. The independent comparison requires BADINDEX."
+        },
+        {
+          "caseId": "frames-twovxf-large-index",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for large-index. The independent comparison requires BADINDEX."
+        },
+        {
+          "caseId": "frames-twovxf-equal",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for equal. The independent comparison requires UNDEFINEDFRAME."
+        },
+        {
+          "caseId": "frames-twovxf-parallel",
+          "coverage": ["error"],
+          "observes": "Exactly collinear Cartesian directions have a zero cross product on all supported toolkits and signal DEPENDENTVECTORS. The independent comparison requires DEPENDENTVECTORS."
+        },
+        {
+          "caseId": "frames-twovxf-zero-axis",
+          "coverage": ["error"],
+          "observes": "Observe the specific toolkit diagnostic for zero-axis. The independent comparison requires DEPENDENTVECTORS."
+        },
+        {
+          "caseId": "frames-twovxf-velocities",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish rotation and derivative blocks with static positions and independently reversed velocities."
+        }
+      ],
+      "edgeAssessment": "All six axis placements and changed velocities expose derivative sign and position/velocity ordering. A stationary direction is valid, whereas an exactly dependent pair of position directions fails even with nonzero velocities.",
+      "errorAssessment": "BADINDEX, UNDEFINEDFRAME and DEPENDENTVECTORS are signaled by ZZTWOVXF. The exact construction is checked in initialized storage before calling TWOVXF_C on success.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "The ordinary workflow compares all returned components using the existing float comparison. Axis error identity and the XF2EUL uniqueness flag are exact. Angular and rate conventions follow the pinned toolkit, including its nonunique decomposition; no tolerance override is applied.",
+      "findings": [
+        {
+          "id": "initialized-state-frame-construction",
+          "status": "repaired",
+          "summary": "N0067 TWOVXF inverts its private XI after ZZTWOVXF can return with an error before defining XI.",
+          "repair": "Check the linked ZZTWOVXF with initialized output under twovxf_c and TWOVXF trace frames. Publish the normal TWOVXF_C result only after a successful construction.",
+          "caseIds": ["frames-twovxf-parallel", "frames-twovxf-zero-index"],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_algebra_oracle.py",
+            "packages/backend-node/test/frame-algebra-domain.test.ts",
+            "packages/backend-wasm/test/frame-algebra-allocations.test.ts",
+            "docs/step8-frame-algebra.md"
+          ]
+        },
+        {
+          "id": "collinear-fixture-conditioning",
+          "status": "repaired",
+          "summary": "The original mathematically collinear fixture [2,-1,3] and its scaled copy can acquire a residual cross product during toolkit unitization. The local locked wheel and compiled backends differed on whether that example signaled dependence.",
+          "repair": "Use the exactly representable axis-aligned pair [1,0,0] and [2,0,0] for the dependent-input assertion. Retain the distinct near-parallel or other nonparallel comparisons and existing numerical tolerances.",
+          "caseIds": ["frames-twovxf-parallel"],
+          "evidence": [
+            "packages/py-parity-checking/src/cases/frames/twovxf.cases.json",
+            "docs/step8-frame-algebra.md",
+            "packages/py-parity-checking/test/frame-algebra-public.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.twovxf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_twovxf then twovxf_c on success. The independent sidecar checks locked zztwovxf_ and then obtains the successful public result from sp.twovxf.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.twovxf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_twovxf then twovxf_c on success. The independent sidecar checks locked zztwovxf_ and then obtains the successful public result from sp.twovxf.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "eul2xf_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eul2xf_c.html",
+      "semantics": "Build a passive A/B/C Euler rotation and its derivative from three angles in radians and three angular rates. Return 36 flat row-major values arranged as [R,0;dR/dt,R].",
+      "scenarios": [
+        {
+          "caseId": "frames-eul2xf-products",
+          "coverage": ["success", "edge"],
+          "observes": "Compare row-major position and rate blocks for cyclic, noncyclic and proper Euler axes."
+        },
+        {
+          "caseId": "frames-eul2xf-equal-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Adjacent equal axes combine on the forward path, including three equal axes."
+        },
+        {
+          "caseId": "frames-eul2xf-rates",
+          "coverage": ["success", "edge"],
+          "observes": "Compare individual signed derivatives at fixed and zero angles."
+        },
+        {
+          "caseId": "frames-eul2xf-gimbal",
+          "coverage": ["success", "edge"],
+          "observes": "Observe forward transforms at both Tait-Bryan poles and a proper Euler pole."
+        },
+        {
+          "caseId": "frames-eul2xf-bad-middle",
+          "coverage": ["error"],
+          "observes": "Observe BADAXISNUMBERS at bad-middle. The independent comparison requires BADAXISNUMBERS."
+        },
+        {
+          "caseId": "frames-eul2xf-bad-last",
+          "coverage": ["error"],
+          "observes": "Observe BADAXISNUMBERS at bad-last. The independent comparison requires BADAXISNUMBERS."
+        },
+        {
+          "caseId": "frames-eul2xf-first-adjacent",
+          "coverage": ["error"],
+          "observes": "Observe BADAXISNUMBERS at first-adjacent. The independent comparison requires BADAXISNUMBERS."
+        },
+        {
+          "caseId": "frames-eul2xf-last-adjacent",
+          "coverage": ["error"],
+          "observes": "Observe BADAXISNUMBERS at last-adjacent. The independent comparison requires BADAXISNUMBERS."
+        }
+      ],
+      "edgeAssessment": "Proper Euler, cyclic and noncyclic products, both forward gimbal poles, three independent signed rates, adjacent repeats and three identical axes are supported.",
+      "errorAssessment": "Invalid axes produce BADAXISNUMBERS. Repeated adjacent axes with an invalid first axis are checked by the linked numerical EUL2M entry before EUL2XF can index its fixed three-element table.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "The ordinary workflow compares all returned components using the existing float comparison. Axis error identity and the XF2EUL uniqueness flag are exact. Angular and rate conventions follow the pinned toolkit, including its nonunique decomposition; no tolerance override is applied.",
+      "findings": [
+        {
+          "id": "invalid-adjacent-axis-check",
+          "status": "repaired",
+          "summary": "N0067 EUL2XF uses the first axis to index a local three-entry table before checking its range when adjacent axes coincide.",
+          "repair": "Route this invalid combination through the linked EUL2M validator with initialized storage and the two outer trace frames. All other defined cases use EUL2XF_C normally.",
+          "caseIds": [
+            "frames-eul2xf-first-adjacent",
+            "frames-eul2xf-last-adjacent"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_algebra_oracle.py",
+            "packages/backend-node/test/frame-algebra-domain.test.ts",
+            "packages/backend-wasm/test/frame-algebra-allocations.test.ts",
+            "docs/step8-frame-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.eul2xf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_eul2xf then eul2xf_c on success. The independent sidecar calls sp.eul2xf on the ordinary domain and traced, initialized locked eul2m_ on the invalid leading-axis lookup domain.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.eul2xf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_eul2xf then eul2xf_c on success. The independent sidecar calls sp.eul2xf on the ordinary domain and traced, initialized locked eul2m_ on the invalid leading-axis lookup domain.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "xf2eul_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xf2eul_c.html",
+      "semantics": "Decompose the upper-left rotation and lower-left derivative blocks into three Euler angles and three rates, with the actual boolean uniqueness result. The other two blocks do not contribute.",
+      "scenarios": [
+        {
+          "caseId": "frames-xf2eul-sequences",
+          "coverage": ["success", "edge"],
+          "observes": "Compare six angles/rates and the uniqueness flag for each Euler sequence."
+        },
+        {
+          "caseId": "frames-xf2eul-moving",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish moving and stationary rotations using independently authored derivative blocks."
+        },
+        {
+          "caseId": "frames-xf2eul-singular",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six returned values even for the nonunique proper Euler representation."
+        },
+        {
+          "caseId": "frames-xf2eul-ignored-blocks",
+          "coverage": ["success", "edge"],
+          "observes": "Only the rotation and its derivative on the left enter the decomposition."
+        },
+        {
+          "caseId": "frames-xf2eul-equal-middle",
+          "coverage": ["error"],
+          "observes": "Observe actual M2EUL diagnostics from the checked rotation/axis decomposition. The independent comparison requires BADAXISNUMBERS."
+        },
+        {
+          "caseId": "frames-xf2eul-axis-range",
+          "coverage": ["error"],
+          "observes": "Observe actual M2EUL diagnostics from the checked rotation/axis decomposition. The independent comparison requires BADAXISNUMBERS."
+        },
+        {
+          "caseId": "frames-xf2eul-nonrotation",
+          "coverage": ["error"],
+          "observes": "Observe actual M2EUL diagnostics from the checked rotation/axis decomposition. The independent comparison requires NOTAROTATION."
+        }
+      ],
+      "edgeAssessment": "A nonunique decomposition retains all six returned values; the toolkit fixes the first angle to zero at its singularity. Moving, static, proper and other sequences exercise orientation and derivative signs.",
+      "errorAssessment": "An invalid axis or middle axis matching a neighbor yields BADAXISNUMBERS. An invalid position rotation yields NOTAROTATION. The checked inner XF2EUL has an initialized uniqueness output on all early returns.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "The ordinary workflow compares all returned components using the existing float comparison. Axis error identity and the XF2EUL uniqueness flag are exact. Angular and rate conventions follow the pinned toolkit, including its nonunique decomposition; no tolerance override is applied.",
+      "findings": [
+        {
+          "id": "initialized-euler-uniqueness",
+          "status": "repaired",
+          "summary": "The N0067 public wrapper reads its private logical result even when the underlying XF2EUL returns from an M2EUL error before setting it.",
+          "repair": "Transpose the input for the linked XF2EUL ABI and provide initialized angles and logical output under the public trace. A successful preflight proceeds to the same-named canonical public entry.",
+          "caseIds": [
+            "frames-xf2eul-equal-middle",
+            "frames-xf2eul-nonrotation"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_algebra_oracle.py",
+            "packages/backend-node/test/frame-algebra-domain.test.ts",
+            "packages/backend-wasm/test/frame-algebra-allocations.test.ts",
+            "docs/step8-frame-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xf2eul uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xf2eul then xf2eul_c on success. The independent sidecar checks the typed locked xf2eul_ ABI in column-major order before returning a successful sp.xf2eul result.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xf2eul uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xf2eul then xf2eul_c on success. The independent sidecar checks the typed locked xf2eul_ ABI in column-major order before returning a successful sp.xf2eul result.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "xf2rav_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xf2rav_c.html",
+      "semantics": "Extract the upper-left position rotation and angular velocity of the destination relative to the source, in source-frame coordinates. The derivative block below the rotation determines the angular velocity.",
+      "scenarios": [
+        {
+          "caseId": "frames-xf2rav-basis",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect independent position rotation and signed rotation rates, including zero motion."
+        },
+        {
+          "caseId": "frames-xf2rav-right-blocks",
+          "coverage": ["success", "edge"],
+          "observes": "Perturb both right blocks separately and observe the returned rotation and angular velocity."
+        },
+        {
+          "caseId": "frames-xf2rav-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Compare very small and large representable angular rates."
+        }
+      ],
+      "edgeAssessment": "Independent signed basis velocities, scaled rates and separate right-hand block perturbations distinguish the consumed transform entries.",
+      "errorAssessment": "XF2RAV is error-free and does not validate rotation orthogonality. The public boundary validates the finite 36-component input.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "The ordinary workflow compares all returned components using the existing float comparison. Axis error identity and the XF2EUL uniqueness flag are exact. Angular and rate conventions follow the pinned toolkit, including its nonunique decomposition; no tolerance override is applied. The public test resolves signed derivative entries at rate 2^-43 by scaling with that rate before exact comparison and verifies the extracted source-frame angular velocity.",
+      "findings": [],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xf2rav uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xf2rav then xf2rav_c on success. Independent live handler calls SpiceyPy xf2rav on the same input.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xf2rav uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xf2rav then xf2rav_c on success. Independent live handler calls SpiceyPy xf2rav on the same input.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "rav2xf_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rav2xf_c.html",
+      "semantics": "Build a state transform with the input rotation on both diagonal blocks, zeros in the upper-right block, and the source-frame angular velocity coupled to the rotation in the lower-left block.",
+      "scenarios": [
+        {
+          "caseId": "frames-rav2xf-orientations",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish angular velocity in the source frame from one expressed in the destination frame."
+        },
+        {
+          "caseId": "frames-rav2xf-basis-rates",
+          "coverage": ["success", "edge"],
+          "observes": "Independently activate each component of angular velocity with a nonsymmetric rotation."
+        },
+        {
+          "caseId": "frames-rav2xf-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Compare signed rate blocks while the position rotation stays fixed."
+        }
+      ],
+      "edgeAssessment": "Signed single-component velocities through nonsymmetric rotations and independently authored orientation and scale cases distinguish destination/source coordinates and radians per unit time.",
+      "errorAssessment": "RAV2XF is error-free; it does not test that the supplied rotation is orthogonal. The wrapper validates finite input components and their storage widths.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "The ordinary workflow compares all returned components using the existing float comparison. Axis error identity and the XF2EUL uniqueness flag are exact. Angular and rate conventions follow the pinned toolkit, including its nonunique decomposition; no tolerance override is applied. The public test resolves signed derivative entries at rate 2^-43 by scaling with that rate before exact comparison and verifies the extracted source-frame angular velocity.",
+      "findings": [],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.rav2xf uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_rav2xf then rav2xf_c on success. Independent live handler calls SpiceyPy rav2xf on the same input.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.rav2xf uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_rav2xf then rav2xf_c on success. Independent live handler calls SpiceyPy rav2xf on the same input.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "invstm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/invstm_c.html",
+      "semantics": "Transpose each of the four 3×3 blocks in place within a new row-major 6×6 result. For a proper rotation-derived state transform this gives its inverse.",
+      "scenarios": [
+        {
+          "caseId": "frames-invstm-state-blocks",
+          "coverage": ["success", "edge"],
+          "observes": "Compare orientation and rate blocks for proper state transforms."
+        },
+        {
+          "caseId": "frames-invstm-all-blocks",
+          "coverage": ["success", "edge"],
+          "observes": "A deliberately non-state matrix makes independent block transposes observable, including the upper-right block."
+        },
+        {
+          "caseId": "frames-invstm-copy-range",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all copied entries through wide finite magnitudes."
+        }
+      ],
+      "edgeAssessment": "Proper transforms with motion and an intentionally non-state matrix distinguish all four independent block transposes from transposing the entire 6×6 matrix. Extreme finite entries exercise copying.",
+      "errorAssessment": "INVSTM is error-free and does not check whether the input is a valid state transformation. An arbitrary finite matrix exposes the block operation without asserting it is a mathematical inverse.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "Every matrix entry is copied without arithmetic. The focused adapter tests also preserve IEEE fields including signed zero and ensure independently owned storage.",
+      "findings": [],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.invstm uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_invstm then invstm_c on success. Independent live handler calls SpiceyPy invstm on the same input.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.invstm uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_invstm then invstm_c on success. Independent live handler calls SpiceyPy invstm on the same input.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    },
+    {
+      "routine": "xpose6_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xpose6_c.html",
+      "semantics": "Transpose any finite 6×6 input in flat row-major order, publishing all 36 entries as an owned mutable tuple.",
+      "scenarios": [
+        {
+          "caseId": "frames-xpose6-all-coordinates",
+          "coverage": ["success", "edge"],
+          "observes": "A signed matrix with distinct entries detects every transposition."
+        },
+        {
+          "caseId": "frames-xpose6-state-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Moving, static and zero matrices exercise off-diagonal blocks."
+        },
+        {
+          "caseId": "frames-xpose6-copy-range",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve extreme finite and tiny entries in both off-diagonal blocks."
+        }
+      ],
+      "edgeAssessment": "Distinct signed entries detect every index mapping. Zero, static and moving state matrices and widely separated finite entries exercise both off-diagonal blocks.",
+      "errorAssessment": "XPOSE6 is an error-free copy operation. Incorrect matrix width, sparse or nonnumeric entries and nonfinite inputs are wrapper errors.",
+      "fixtures": [],
+      "fixtureRationale": "Registered inputs are project-authored numerical tuples, axes and transformations. No kernel data or file state is required.",
+      "cleanup": "Both adapters capture each operand before dispatch. The shim checks SPICE status and publishes initialized results after success. The native addon serializes CSPICE calls. WASM frees all previously allocated buffers on success, allocation failure and scientific error.",
+      "tolerance": "Every matrix entry is copied without arithmetic. The focused adapter tests also preserve IEEE fields including signed zero and ensure independently owned storage. The public test uses Object.is for a transposed negative zero and exact equality for the smallest positive subnormal.",
+      "findings": [],
+      "backends": {
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xpose6 uses the WASM adapter, fixed-size allocations and compiled export and reaches tspice_xpose6 then xpose6_c on success. Independent live handler calls SpiceyPy xpose6 on the same input.",
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
+        },
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xpose6 uses the Node adapter, registered native method and CSPICE mutex and reaches tspice_xpose6 then xpose6_c on success. Independent live handler calls SpiceyPy xpose6 on the same input.",
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

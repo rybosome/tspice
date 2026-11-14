@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 173
-- Planned (not yet implemented): 476
+- Implemented now (SpiceRawBackend): 182
+- Planned (not yet implemented): 467
 - Excluded: 3
 
 ## Implemented now
@@ -80,9 +80,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
 | `et2utc_c` | Ephemeris Time to UTC |
+| `eul2xf_c` | Euler angles and derivative to transformation |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
+| `frame_c` | Build a right handed coordinate frame |
 | `frinfo_c` | Frame Information |
 | `frmnam_c` | Frame to Name |
 | `furnsh_c` | Furnish a program with SPICE kernels |
@@ -110,6 +112,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `insrti_c` | Insert an item into an integer set |
 | `invert_c` | Invert a 3x3 matrix |
 | `invort_c` | Invert nearly orthogonal matrices |
+| `invstm_c` | Inverse of state transformation matrix |
 | `isrot_c` | Indicate whether a matrix is a rotation matrix |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
@@ -132,6 +135,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
+| `rav2xf_c` | Rotation and angular velocity to transform |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
@@ -178,6 +182,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
 | `trace_c` | Trace of a 3x3 matrix |
+| `twovec_c` | Two vectors defining an orthonormal frame |
+| `twovxf_c` | Two states defining a frame transformation |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -193,7 +199,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `wnfetd_c` | Fetch an interval from a DP window |
 | `wninsd_c` | Insert an interval into a DP window |
 | `wnvald_c` | Validate a DP window |
+| `xf2eul_c` | State transformation to Euler angles |
+| `xf2rav_c` | Transform to rotation and angular velocity |
 | `xpose_c` | Transpose a matrix, 3x3 |
+| `xpose6_c` | Transpose a matrix, 6x6 |
 
 ## Planned (not yet implemented)
 
@@ -371,13 +380,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `et2lst_c` | ET to Local Solar Time |
 | `etcal_c` | Convert ET to Calendar format |
 | `eul2m_c` | Euler angles to matrix |
-| `eul2xf_c` | Euler angles and derivative to transformation |
 | `evsgp4_c` | Evaluate "two-line" element data |
 | `filld_c` | Fill a double precision array |
 | `filli_c` | Fill an integer array |
 | `fovray_c` | Is ray in FOV at time? |
 | `fovtrg_c` | Is target in FOV at time? |
-| `frame_c` | Build a right handed coordinate frame |
 | `getelm_c` | Get the components from two-line elements |
 | `getfov_c` | Get instrument FOV parameters |
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
@@ -412,7 +419,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `inter_c` | Intersection of two sets |
 | `intmax_c` | Largest integer number |
 | `intmin_c` | Smallest integer number |
-| `invstm_c` | Inverse of state transformation matrix |
 | `isordv_c` | Is array an order vector? |
 | `isrchc_c` | Search in a character array |
 | `isrchd_c` | Search in a double precision array |
@@ -517,7 +523,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `qdq2av_c` | Quaternion and quaternion derivative to a.v. |
 | `qxq_c` | Quaternion times quaternion |
 | `radrec_c` | Range, RA and DEC to rectangular coordinates |
-| `rav2xf_c` | Rotation and angular velocity to transform |
 | `raxisa_c` | Rotation axis of a matrix |
 | `rdtext_c` | Read a line from a text file |
 | `recazl_c` | Rectangular coordinates to AZ/EL |
@@ -615,8 +620,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `trgsep_c` | Separation quantity from observer |
 | `tsetyr_c` | Time --- set year expansion boundaries |
 | `twopi_c` | Twice the value of pi |
-| `twovec_c` | Two vectors defining an orthonormal frame |
-| `twovxf_c` | Two states defining a frame transformation |
 | `tyear_c` | Seconds per tropical year |
 | `ucase_c` | Convert to uppercase |
 | `ucrss_c` | Unitized cross product, 3x3 |
@@ -670,10 +673,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `wnreld_c` | Compare two DP windows |
 | `wnsumd_c` | Summary of a double precision window |
 | `wnunid_c` | Union two DP windows |
-| `xf2eul_c` | State transformation to Euler angles |
-| `xf2rav_c` | Transform to rotation and angular velocity |
 | `xfmsta_c` | Transform state between coordinate systems |
-| `xpose6_c` | Transpose a matrix, 6x6 |
 | `xposeg_c` | Transpose a matrix, general |
 
 ## Excluded

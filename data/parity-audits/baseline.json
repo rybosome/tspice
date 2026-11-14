@@ -427,7 +427,24 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/712"],
-      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310706167 verified corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
+      "nextAction": "Revalidate all inherited fixed-matrix routines on the combined A12/A15 source. PR #712 and the retained historical executions cover the earlier source."
+    },
+    {
+      "id": "a15-frame-algebra",
+      "routines": [
+        "frame_c",
+        "twovec_c",
+        "twovxf_c",
+        "eul2xf_c",
+        "xf2eul_c",
+        "xf2rav_c",
+        "rav2xf_c",
+        "invstm_c",
+        "xpose6_c"
+      ],
+      "dependsOn": ["a12-fixed-matrices"],
+      "prs": ["https://github.com/rybosome/tspice/pull/736"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

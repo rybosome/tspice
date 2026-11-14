@@ -131,6 +131,20 @@ Notes:
 
 ## Domain: `frames` (`FramesApi`)
 
+A15 extends the same frame domain as `pxform` and `sxform`. All nine methods accept readonly finite inputs and use kernel-independent algebra. State transforms are flat row-major 6×6 tuples. [Frame algebra and checked CSPICE error paths](step8-frame-algebra.md)
+
+| Raw call                             | Successful CSPICE entry | Result                                      |
+| ------------------------------------ | ----------------------- | ------------------------------------------- |
+| `frame(x)`                           | `frame_c`               | {x,y,z} (three owned Vec3 tuples)           |
+| `twovec(axdef,indexa,plndef,indexp)` | `twovec_c`              | Mat3RowMajor                                |
+| `twovxf(axdef,indexa,plndef,indexp)` | `twovxf_c`              | SpiceMatrix6x6                              |
+| `eul2xf(eulang,axisa,axisb,axisc)`   | `eul2xf_c`              | SpiceMatrix6x6                              |
+| `xf2eul(xform,axisa,axisb,axisc)`    | `xf2eul_c`              | {eulang,unique} (six values plus a boolean) |
+| `xf2rav(xform)`                      | `xf2rav_c`              | {rot,av} (Mat3RowMajor and Vec3)            |
+| `rav2xf(rot,av)`                     | `rav2xf_c`              | SpiceMatrix6x6                              |
+| `invstm(mat)`                        | `invstm_c`              | SpiceMatrix6x6                              |
+| `xpose6(m1)`                         | `xpose6_c`              | SpiceMatrix6x6                              |
+
 | domain.method                           | CSPICE entrypoint(s) | Args (TS shape)                                                                                                             | Returns (TS shape)                                                | Comparison notes (tolerance/normalization)                    | Statefulness / required kernels                                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `frames.namfrm(name)`                   | `namfrm_c`           | `(name: string): Found<{ code: number }>`                                                                                   | `Found<{ code: number }>`                                         | exact integer match                                           | requires FK and/or built-in frame definitions; per NAIF docs, `namfrm_c` returns the frame code, or `0` if `name` is not recognized (there is no `found` output). In this project `J2000` is code `1` (see tests), so treating `0` as “not found” is safe. If you want to avoid depending on the `0` sentinel, validate the returned code via `frinfo_c` (it provides a `found` flag). |

@@ -357,7 +357,8 @@
         "coords-vectors-xpose-ordered-asymmetric",
         "coords-vectors-xpose-zero-and-identity"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "local-a12-snapshot-279dc29b-wasm",
@@ -419,7 +420,8 @@
         "coords-vectors-xpose-ordered-asymmetric",
         "coords-vectors-xpose-zero-and-identity"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-node",
@@ -483,7 +485,8 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-wasm",
@@ -547,7 +550,260 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a15-3fb46545-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a3acbfd15d9c80b8b0af55f5453f037eb5fd95746e8ddcde61407eb63b67e8c3",
+      "caseIds": [
+        "coords-vectors-det-asymmetric-and-transpose",
+        "coords-vectors-det-scaled-magnitudes",
+        "coords-vectors-det-signed-and-singular",
+        "coords-vectors-det-triangular-distinct",
+        "coords-vectors-diags2-diagonal-zero-and-repeated",
+        "coords-vectors-diags2-distinct-eigenvalues-and-signs",
+        "coords-vectors-diags2-ignored-lower-triangle",
+        "coords-vectors-diags2-negative-and-indefinite",
+        "coords-vectors-diags2-scaled-magnitudes",
+        "coords-vectors-ident-exact",
+        "coords-vectors-ident-repeat-after-reset",
+        "coords-vectors-invert-determinant-above-threshold",
+        "coords-vectors-invert-determinant-at-threshold",
+        "coords-vectors-invert-determinant-below-threshold",
+        "coords-vectors-invert-finite-large-small-inverse",
+        "coords-vectors-invert-nonsymmetric-positive-negative",
+        "coords-vectors-invert-singular-zero-and-dependent",
+        "coords-vectors-invort-nonorthogonal-contract",
+        "coords-vectors-invort-orthogonal-scaled-columns",
+        "coords-vectors-invort-scaled-magnitudes",
+        "coords-vectors-invort-small-reciprocal-finite",
+        "coords-vectors-invort-too-small-column-1",
+        "coords-vectors-invort-too-small-column-2",
+        "coords-vectors-invort-too-small-column-3",
+        "coords-vectors-invort-zero-column-1",
+        "coords-vectors-invort-zero-column-2",
+        "coords-vectors-invort-zero-column-3",
+        "coords-vectors-isrot-column-norm-tolerance",
+        "coords-vectors-isrot-loose-tolerances",
+        "coords-vectors-isrot-negative-dtol",
+        "coords-vectors-isrot-negative-ntol",
+        "coords-vectors-isrot-proper-reflection-singular",
+        "coords-vectors-isrot-unitized-determinant-tolerance",
+        "coords-vectors-mequ-finite-extremes",
+        "coords-vectors-mequ-ordered-asymmetric",
+        "coords-vectors-mequ-zero-and-identity",
+        "coords-vectors-mtxm-asymmetric-operand-order",
+        "coords-vectors-mtxm-balanced-scales",
+        "coords-vectors-mtxm-gram-matrix",
+        "coords-vectors-mtxm-identity-and-zero",
+        "coords-vectors-mxmt-asymmetric-operand-order",
+        "coords-vectors-mxmt-balanced-scales",
+        "coords-vectors-mxmt-gram-matrix",
+        "coords-vectors-mxmt-identity-and-zero",
+        "coords-vectors-trace-diagonal-selection",
+        "coords-vectors-trace-scaled-magnitudes",
+        "coords-vectors-trace-zero-and-cancellation",
+        "coords-vectors-xpose-finite-extremes",
+        "coords-vectors-xpose-ordered-asymmetric",
+        "coords-vectors-xpose-zero-and-identity"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a15-3fb46545-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a3acbfd15d9c80b8b0af55f5453f037eb5fd95746e8ddcde61407eb63b67e8c3",
+      "caseIds": [
+        "coords-vectors-det-asymmetric-and-transpose",
+        "coords-vectors-det-scaled-magnitudes",
+        "coords-vectors-det-signed-and-singular",
+        "coords-vectors-det-triangular-distinct",
+        "coords-vectors-diags2-diagonal-zero-and-repeated",
+        "coords-vectors-diags2-distinct-eigenvalues-and-signs",
+        "coords-vectors-diags2-ignored-lower-triangle",
+        "coords-vectors-diags2-negative-and-indefinite",
+        "coords-vectors-diags2-scaled-magnitudes",
+        "coords-vectors-ident-exact",
+        "coords-vectors-ident-repeat-after-reset",
+        "coords-vectors-invert-determinant-above-threshold",
+        "coords-vectors-invert-determinant-at-threshold",
+        "coords-vectors-invert-determinant-below-threshold",
+        "coords-vectors-invert-finite-large-small-inverse",
+        "coords-vectors-invert-nonsymmetric-positive-negative",
+        "coords-vectors-invert-singular-zero-and-dependent",
+        "coords-vectors-invort-nonorthogonal-contract",
+        "coords-vectors-invort-orthogonal-scaled-columns",
+        "coords-vectors-invort-scaled-magnitudes",
+        "coords-vectors-invort-small-reciprocal-finite",
+        "coords-vectors-invort-too-small-column-1",
+        "coords-vectors-invort-too-small-column-2",
+        "coords-vectors-invort-too-small-column-3",
+        "coords-vectors-invort-zero-column-1",
+        "coords-vectors-invort-zero-column-2",
+        "coords-vectors-invort-zero-column-3",
+        "coords-vectors-isrot-column-norm-tolerance",
+        "coords-vectors-isrot-loose-tolerances",
+        "coords-vectors-isrot-negative-dtol",
+        "coords-vectors-isrot-negative-ntol",
+        "coords-vectors-isrot-proper-reflection-singular",
+        "coords-vectors-isrot-unitized-determinant-tolerance",
+        "coords-vectors-mequ-finite-extremes",
+        "coords-vectors-mequ-ordered-asymmetric",
+        "coords-vectors-mequ-zero-and-identity",
+        "coords-vectors-mtxm-asymmetric-operand-order",
+        "coords-vectors-mtxm-balanced-scales",
+        "coords-vectors-mtxm-gram-matrix",
+        "coords-vectors-mtxm-identity-and-zero",
+        "coords-vectors-mxmt-asymmetric-operand-order",
+        "coords-vectors-mxmt-balanced-scales",
+        "coords-vectors-mxmt-gram-matrix",
+        "coords-vectors-mxmt-identity-and-zero",
+        "coords-vectors-trace-diagonal-selection",
+        "coords-vectors-trace-scaled-magnitudes",
+        "coords-vectors-trace-zero-and-cancellation",
+        "coords-vectors-xpose-finite-extremes",
+        "coords-vectors-xpose-ordered-asymmetric",
+        "coords-vectors-xpose-zero-and-identity"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a3acbfd15d9c80b8b0af55f5453f037eb5fd95746e8ddcde61407eb63b67e8c3",
+      "caseIds": [
+        "coords-vectors-det-asymmetric-and-transpose",
+        "coords-vectors-det-scaled-magnitudes",
+        "coords-vectors-det-signed-and-singular",
+        "coords-vectors-det-triangular-distinct",
+        "coords-vectors-diags2-diagonal-zero-and-repeated",
+        "coords-vectors-diags2-distinct-eigenvalues-and-signs",
+        "coords-vectors-diags2-ignored-lower-triangle",
+        "coords-vectors-diags2-negative-and-indefinite",
+        "coords-vectors-diags2-scaled-magnitudes",
+        "coords-vectors-ident-exact",
+        "coords-vectors-ident-repeat-after-reset",
+        "coords-vectors-invert-determinant-above-threshold",
+        "coords-vectors-invert-determinant-at-threshold",
+        "coords-vectors-invert-determinant-below-threshold",
+        "coords-vectors-invert-finite-large-small-inverse",
+        "coords-vectors-invert-nonsymmetric-positive-negative",
+        "coords-vectors-invert-singular-zero-and-dependent",
+        "coords-vectors-invort-nonorthogonal-contract",
+        "coords-vectors-invort-orthogonal-scaled-columns",
+        "coords-vectors-invort-scaled-magnitudes",
+        "coords-vectors-invort-small-reciprocal-finite",
+        "coords-vectors-invort-too-small-column-1",
+        "coords-vectors-invort-too-small-column-2",
+        "coords-vectors-invort-too-small-column-3",
+        "coords-vectors-invort-zero-column-1",
+        "coords-vectors-invort-zero-column-2",
+        "coords-vectors-invort-zero-column-3",
+        "coords-vectors-isrot-column-norm-tolerance",
+        "coords-vectors-isrot-loose-tolerances",
+        "coords-vectors-isrot-negative-dtol",
+        "coords-vectors-isrot-negative-ntol",
+        "coords-vectors-isrot-proper-reflection-singular",
+        "coords-vectors-isrot-unitized-determinant-tolerance",
+        "coords-vectors-mequ-finite-extremes",
+        "coords-vectors-mequ-ordered-asymmetric",
+        "coords-vectors-mequ-zero-and-identity",
+        "coords-vectors-mtxm-asymmetric-operand-order",
+        "coords-vectors-mtxm-balanced-scales",
+        "coords-vectors-mtxm-gram-matrix",
+        "coords-vectors-mtxm-identity-and-zero",
+        "coords-vectors-mxmt-asymmetric-operand-order",
+        "coords-vectors-mxmt-balanced-scales",
+        "coords-vectors-mxmt-gram-matrix",
+        "coords-vectors-mxmt-identity-and-zero",
+        "coords-vectors-trace-diagonal-selection",
+        "coords-vectors-trace-scaled-magnitudes",
+        "coords-vectors-trace-zero-and-cancellation",
+        "coords-vectors-xpose-finite-extremes",
+        "coords-vectors-xpose-ordered-asymmetric",
+        "coords-vectors-xpose-zero-and-identity"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a3acbfd15d9c80b8b0af55f5453f037eb5fd95746e8ddcde61407eb63b67e8c3",
+      "caseIds": [
+        "coords-vectors-det-asymmetric-and-transpose",
+        "coords-vectors-det-scaled-magnitudes",
+        "coords-vectors-det-signed-and-singular",
+        "coords-vectors-det-triangular-distinct",
+        "coords-vectors-diags2-diagonal-zero-and-repeated",
+        "coords-vectors-diags2-distinct-eigenvalues-and-signs",
+        "coords-vectors-diags2-ignored-lower-triangle",
+        "coords-vectors-diags2-negative-and-indefinite",
+        "coords-vectors-diags2-scaled-magnitudes",
+        "coords-vectors-ident-exact",
+        "coords-vectors-ident-repeat-after-reset",
+        "coords-vectors-invert-determinant-above-threshold",
+        "coords-vectors-invert-determinant-at-threshold",
+        "coords-vectors-invert-determinant-below-threshold",
+        "coords-vectors-invert-finite-large-small-inverse",
+        "coords-vectors-invert-nonsymmetric-positive-negative",
+        "coords-vectors-invert-singular-zero-and-dependent",
+        "coords-vectors-invort-nonorthogonal-contract",
+        "coords-vectors-invort-orthogonal-scaled-columns",
+        "coords-vectors-invort-scaled-magnitudes",
+        "coords-vectors-invort-small-reciprocal-finite",
+        "coords-vectors-invort-too-small-column-1",
+        "coords-vectors-invort-too-small-column-2",
+        "coords-vectors-invort-too-small-column-3",
+        "coords-vectors-invort-zero-column-1",
+        "coords-vectors-invort-zero-column-2",
+        "coords-vectors-invort-zero-column-3",
+        "coords-vectors-isrot-column-norm-tolerance",
+        "coords-vectors-isrot-loose-tolerances",
+        "coords-vectors-isrot-negative-dtol",
+        "coords-vectors-isrot-negative-ntol",
+        "coords-vectors-isrot-proper-reflection-singular",
+        "coords-vectors-isrot-unitized-determinant-tolerance",
+        "coords-vectors-mequ-finite-extremes",
+        "coords-vectors-mequ-ordered-asymmetric",
+        "coords-vectors-mequ-zero-and-identity",
+        "coords-vectors-mtxm-asymmetric-operand-order",
+        "coords-vectors-mtxm-balanced-scales",
+        "coords-vectors-mtxm-gram-matrix",
+        "coords-vectors-mtxm-identity-and-zero",
+        "coords-vectors-mxmt-asymmetric-operand-order",
+        "coords-vectors-mxmt-balanced-scales",
+        "coords-vectors-mxmt-gram-matrix",
+        "coords-vectors-mxmt-identity-and-zero",
+        "coords-vectors-trace-diagonal-selection",
+        "coords-vectors-trace-scaled-magnitudes",
+        "coords-vectors-trace-zero-and-cancellation",
+        "coords-vectors-xpose-finite-extremes",
+        "coords-vectors-xpose-ordered-asymmetric",
+        "coords-vectors-xpose-zero-and-identity"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
     }
   ],
   "routines": [
@@ -607,14 +863,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.det -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_det shared C shim -> det_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -623,14 +878,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.det -> typed WASM adapter -> configured _tspice_det export -> tspice_det shared C shim -> det_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -695,14 +949,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.diags2 -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_diags2 shared C shim -> diags2_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -711,14 +964,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.diags2 -> typed WASM adapter -> configured _tspice_diags2 export -> tspice_diags2 shared C shim -> diags2_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -753,14 +1005,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ident -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_ident shared C shim -> ident_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -768,14 +1019,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ident -> typed WASM adapter -> configured _tspice_ident export -> tspice_ident shared C shim -> ident_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -882,14 +1132,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.invert -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invert shared C shim -> invert_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -899,14 +1148,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.invert -> typed WASM adapter -> configured _tspice_invert export -> tspice_invert shared C shim -> invert_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -996,14 +1244,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.invort -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invort shared C shim -> invort_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1012,14 +1259,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.invort -> typed WASM adapter -> configured _tspice_invort export -> tspice_invort shared C shim -> invort_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1089,14 +1335,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.isrot -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_isrot shared C shim -> isrot_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1105,14 +1350,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.isrot -> typed WASM adapter -> configured _tspice_isrot export -> tspice_isrot shared C shim -> isrot_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1167,14 +1411,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mequ -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mequ shared C shim -> mequ_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1183,14 +1426,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mequ -> typed WASM adapter -> configured _tspice_mequ export -> tspice_mequ shared C shim -> mequ_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1271,14 +1513,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxm -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mtxm shared C shim -> mtxm_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1288,14 +1529,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxm -> typed WASM adapter -> configured _tspice_mtxm export -> tspice_mtxm shared C shim -> mtxm_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1376,14 +1616,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxmt -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mxmt shared C shim -> mxmt_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1393,14 +1632,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxmt -> typed WASM adapter -> configured _tspice_mxmt export -> tspice_mxmt shared C shim -> mxmt_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1455,14 +1693,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.trace -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_trace shared C shim -> trace_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1471,14 +1708,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.trace -> typed WASM adapter -> configured _tspice_trace export -> tspice_trace shared C shim -> trace_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1533,14 +1769,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.xpose -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_xpose shared C shim -> xpose_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1549,14 +1784,13 @@
             "verified",
             "needs-repair",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.xpose -> typed WASM adapter -> configured _tspice_xpose export -> tspice_xpose shared C shim -> xpose_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     }

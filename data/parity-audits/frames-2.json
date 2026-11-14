@@ -952,7 +952,8 @@
         "frames-sxform-identity-success",
         "frames-sxform-unknown-frame-error"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "local-a12-snapshot-279dc29b-wasm",
@@ -1005,7 +1006,8 @@
         "frames-sxform-identity-success",
         "frames-sxform-unknown-frame-error"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-node",
@@ -1060,7 +1062,8 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-wasm",
@@ -1115,7 +1118,224 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a15-3fb46545-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "61806838547cd99de4a8421be5d7e7f695c786aa1226d47a778494b4904094f3",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a15-3fb46545-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "61806838547cd99de4a8421be5d7e7f695c786aa1226d47a778494b4904094f3",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "61806838547cd99de4a8421be5d7e7f695c786aa1226d47a778494b4904094f3",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a15-3fb46545-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "61806838547cd99de4a8421be5d7e7f695c786aa1226d47a778494b4904094f3",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+      "observation": "Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
     }
   ],
   "routines": [
@@ -1196,14 +1416,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.namfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1218,14 +1437,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.namfrm -> WASM typed helper -> configured actual compiled _tspice_namfrm export -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1318,14 +1536,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.frmnam -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1340,14 +1557,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.frmnam -> WASM typed helper -> configured actual compiled _tspice_frmnam export -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1448,14 +1664,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cidfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1470,14 +1685,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cidfrm -> WASM typed helper -> configured actual compiled _tspice_cidfrm export -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1584,14 +1798,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cnmfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1606,14 +1819,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cnmfrm -> WASM typed helper -> configured actual compiled _tspice_cnmfrm export -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1728,14 +1940,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.frinfo -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1750,14 +1961,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.frinfo -> WASM typed helper -> configured actual compiled _tspice_frinfo export -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -1872,14 +2082,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ccifrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -1894,14 +2103,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ccifrm -> WASM typed helper -> configured actual compiled _tspice_ccifrm export -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -2005,14 +2213,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2027,14 +2234,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pxform -> WASM typed helper -> configured actual compiled _tspice_pxform export -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     },
@@ -2138,14 +2344,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.sxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": ["local-a15-3fb46545-node", "ci-a15-3fb46545-node"]
         },
         "wasm": {
           "history": [
@@ -2160,14 +2365,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.sxform -> WASM typed helper -> configured actual compiled _tspice_sxform export -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": ["local-a15-3fb46545-wasm", "ci-a15-3fb46545-wasm"]
         }
       }
     }

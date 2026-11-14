@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 173,
-    planned: 476,
+    implemented: 182,
+    planned: 467,
     excluded: 3,
-    caseFiles: 173,
-    scenarios: 1159,
+    caseFiles: 182,
+    scenarios: 1206,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -444,9 +444,57 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 }
 
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
-  const ledger = fixture(t).build();
+  const f = fixture(t);
+  const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 11);
+  assert.equal(ledger.audit.expansionRoutines, 20);
+  // Each success route reaches its public C entrypoint. The three guarded paths
+  // must also retain the linked numerical routine used to reject invalid input.
+  for (const name of [
+    "frame",
+    "twovec",
+    "twovxf",
+    "eul2xf",
+    "xf2eul",
+    "xf2rav",
+    "rav2xf",
+    "invstm",
+    "xpose6",
+  ]) {
+    const routine = ledger.routines.find(
+      (entry) => entry.routine === name + "_c",
+    );
+    for (const backend of ["node", "wasm"])
+      assert.ok(
+        routine.mapping[backend].cspiceEntrypoints.includes(name + "_c"),
+      );
+  }
+  const definitions = cFunctions(
+    cTokens(
+      fs.readFileSync(
+        path.join(f.root, "packages/backend-shim-c/src/domains/frames.c"),
+        "utf8",
+      ),
+    ),
+  );
+  for (const [routine, guard, component] of [
+    ["twovxf", "check_twovxf", "zztwovxf_"],
+    ["eul2xf", "check_eul2xf_axes", "eul2m_"],
+    ["xf2eul", "check_xf2eul", "xf2eul_"],
+  ]) {
+    assert.ok(
+      cCalls(definitions.get("tspice_" + routine).body).includes(guard),
+    );
+    const calls = cCalls(definitions.get(guard).body);
+    for (const target of [
+      component,
+      "chkin_c",
+      "chkout_c",
+      "frame_algebra_status",
+    ])
+      assert.ok(calls.includes(target));
+  }
+
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

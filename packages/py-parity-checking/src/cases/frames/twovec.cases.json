@@ -1,0 +1,191 @@
+[
+  {
+    "caseId": "frames-twovec-axis-order",
+    "description": "Observe all six distinct placements of the axis and plane.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2],
+        "indexp": 3
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2],
+        "indexp": 1
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2],
+        "indexp": 3
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 3,
+        "plndef": [-3, 5, 2],
+        "indexp": 1
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 3,
+        "plndef": [-3, 5, 2],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-twovec-swapped",
+    "description": "Reversing or reflecting the defining directions changes the actual transform.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [-3, 5, 2],
+        "indexa": 3,
+        "plndef": [2, -1, 3],
+        "indexp": 1
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [-2, 1, -3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 2,
+        "plndef": [3, -5, -2],
+        "indexp": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-twovec-zero-index",
+    "description": "Observe the specific toolkit diagnostic for zero-index.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 0,
+        "plndef": [-3, 5, 2],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADINDEX"]
+    }
+  },
+  {
+    "caseId": "frames-twovec-large-index",
+    "description": "Observe the specific toolkit diagnostic for large-index.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2],
+        "indexp": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADINDEX"]
+    }
+  },
+  {
+    "caseId": "frames-twovec-equal",
+    "description": "Observe the specific toolkit diagnostic for equal.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [2, -1, 3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNDEFINEDFRAME"]
+    }
+  },
+  {
+    "caseId": "frames-twovec-parallel",
+    "description": "Exactly collinear Cartesian directions have a zero cross product on all supported toolkits and signal DEPENDENTVECTORS.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [1, 0, 0],
+        "indexa": 1,
+        "plndef": [2, 0, 0],
+        "indexp": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEPENDENTVECTORS"]
+    }
+  },
+  {
+    "caseId": "frames-twovec-zero-axis",
+    "description": "Observe the specific toolkit diagnostic for zero-axis.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [0, 0, 0],
+        "indexa": 2,
+        "plndef": [-3, 5, 2],
+        "indexp": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEPENDENTVECTORS"]
+    }
+  },
+  {
+    "caseId": "frames-twovec-near-parallel",
+    "description": "Compare the orientation of two distinct axes separated by a small signed component.",
+    "workflow": [
+      {
+        "op": "frames.twovec",
+        "axdef": [1, 0, 0],
+        "indexa": 1,
+        "plndef": [1, 2.9802322387695312e-8, 0],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovec",
+        "axdef": [1, 0, 0],
+        "indexa": 1,
+        "plndef": [1, -2.9802322387695312e-8, 0],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

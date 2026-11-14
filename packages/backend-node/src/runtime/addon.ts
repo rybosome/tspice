@@ -527,6 +527,35 @@ export type NativeAddon = {
     result: SpiceWindow,
   ): void;
   pxform(from: string, to: string, et: number): number[];
+  frame(x: number[]): { x: unknown; y: unknown; z: unknown };
+  twovec(
+    axdef: number[],
+    indexa: number,
+    plndef: number[],
+    indexp: number,
+  ): unknown;
+  twovxf(
+    axdef: number[],
+    indexa: number,
+    plndef: number[],
+    indexp: number,
+  ): unknown;
+  eul2xf(
+    eulang: number[],
+    axisa: number,
+    axisb: number,
+    axisc: number,
+  ): unknown;
+  xf2eul(
+    xform: number[],
+    axisa: number,
+    axisb: number,
+    axisc: number,
+  ): { eulang: unknown; unique: unknown };
+  xf2rav(xform: number[]): { rot: unknown; av: unknown };
+  rav2xf(rot: number[], av: number[]): unknown;
+  invstm(mat: number[]): unknown;
+  xpose6(m1: number[]): unknown;
   sxform(from: string, to: string, et: number): number[];
 
   det(m: readonly number[]): number;

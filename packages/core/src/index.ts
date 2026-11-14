@@ -162,3 +162,10 @@ export {
 } from "./spice-runtime/domains/kernels-utils.js";
 
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
+
+export {
+  frameOperand,
+  frameVectorResult,
+  frameStateResult,
+  frameMatrixResult,
+} from "./spice-runtime/domains/frame-algebra.js";
