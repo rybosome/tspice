@@ -9,6 +9,8 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copyTleLines,
+  copyTleTuple,
   assertSpiceInt32,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
@@ -113,6 +115,23 @@ export function createEphemerisApi(
   const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
 
   return {
+    getelm: (firstYear, lines) => {
+      assertSpiceInt32(firstYear, "firstYear");
+      const out = native.getelm(firstYear, copyTleLines(lines));
+      return {
+        epoch: requireSpkNumber(out.epoch, "TLE epoch"),
+        elems: copyTleTuple(out.elems, 10, "TLE elements", false),
+      };
+    },
+    evsgp4: (et, geophs, elems) => {
+      requireSpkNumber(et, "et");
+      const out = native.evsgp4(
+        et,
+        copyTleTuple(geophs, 8, "geophs", true),
+        copyTleTuple(elems, 10, "elems", true),
+      );
+      return copyTleTuple(out, 6, "TEME state", false);
+    },
     spkezr: (target, et, ref, abcorr, observer) => {
       requireSpkNumber(et, "spkezr(et)");
       requireSpkString(ref, "spkezr(ref)");

@@ -1724,6 +1724,12 @@ export function createFakeBackend(
       } satisfies SpkposResult;
     },
 
+    getelm: () => {
+      throw new Error("Fake backend does not parse TLE records");
+    },
+    evsgp4: () => {
+      throw new Error("Fake backend does not propagate TLE orbits");
+    },
     spkssb: (target, et, ref) => {
       assertSpiceInt32(target, "spkssb(target)");
 

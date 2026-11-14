@@ -53,6 +53,23 @@ class StepEphemerisSpkezr:
 
 
 @dataclass(frozen=True)
+class StepEphemerisGetelm:
+    op: Literal["ephemeris.getelm"]
+    firstYear: int
+    lines: list[str]
+    captureError: bool = False
+
+
+@dataclass(frozen=True)
+class StepEphemerisEvsgp4:
+    op: Literal["ephemeris.evsgp4"]
+    et: float
+    geophs: list[float]
+    elems: list[float]
+    captureError: bool = False
+
+
+@dataclass(frozen=True)
 class StepEphemerisSpkgeo:
     op: Literal["ephemeris.spkgeo"]
     target: int

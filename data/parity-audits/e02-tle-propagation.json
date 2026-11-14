@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "batch": "e02-tle-propagation",
+  "traceFiles": [
+    "docs/step8-tle-propagation.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/tle-propagation-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/tle-propagation-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/tle.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/audit-tle.json",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/tle_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/test/tle-propagation-public.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "getelm_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getelm_c.html",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-getelm-civil-survey",
+          "coverage": ["success", "edge"],
+          "observes": "Observe UTC leap-year fractional day, both signed drag derivatives, implied exponents, angular units, mean motion and repeated epoch."
+        },
+        {
+          "caseId": "ephemeris-getelm-mixed-orbits",
+          "coverage": ["success", "edge"],
+          "observes": "Read all ten components on contrasting low, high and resonant fictional satellites in repeated parser calls."
+        },
+        {
+          "caseId": "ephemeris-getelm-century-pivot",
+          "coverage": ["success", "edge"],
+          "observes": "The same two-digit epoch year maps on opposite sides of the firstYear cutoff."
+        },
+        {
+          "caseId": "ephemeris-getelm-optional-checksum",
+          "coverage": ["success", "edge"],
+          "observes": "Observe equal full outputs with intact, omitted and deliberately different checksum digits; compare trailing blanks too."
+        },
+        {
+          "caseId": "ephemeris-getelm-mean-motion-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "N0067 accepts both endpoints of the [0,20] rev/day parser range; zero is a parser-only observation."
+        },
+        {
+          "caseId": "ephemeris-getelm-inclination-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero and 180 degree inclinations and angular conversion."
+        },
+        {
+          "caseId": "ephemeris-getelm-blank-rows",
+          "coverage": ["error"],
+          "observes": "Trailing blank padding keeps both short records addressable before the length error."
+        },
+        {
+          "caseId": "ephemeris-getelm-mismatched-id",
+          "coverage": ["error"],
+          "observes": "The two record catalog numbers must match before the time conversion."
+        },
+        {
+          "caseId": "ephemeris-getelm-unparseable-field",
+          "coverage": ["error"],
+          "observes": "One nonnumeric mean anomaly gives a scientific diagnostic at the named field."
+        },
+        {
+          "caseId": "ephemeris-getelm-bad-angle",
+          "coverage": ["error"],
+          "observes": "A 360-degree ascending node is outside the parser range."
+        },
+        {
+          "caseId": "ephemeris-getelm-bad-motion",
+          "coverage": ["error"],
+          "observes": "A mean motion above 20 revolutions/day signals the canonical parser error."
+        },
+        {
+          "caseId": "ephemeris-getelm-lsk-unloaded",
+          "coverage": ["error"],
+          "observes": "A parsed valid pair still needs a leap second table."
+        },
+        {
+          "caseId": "ephemeris-getelm-error-recovery",
+          "coverage": ["success", "edge"],
+          "observes": "Observe valid values before and after a captured bad ID, then clear and restore the LSK."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/audit-tle.json",
+          "provenance": "Four repository-authored fictional orbital element pairs with deterministic modulo-ten checksums. The Earth constants are the eight NAIF EVSGP4 example values; fixture/README.md documents provenance.",
+          "distribution": "Original synthetic records distributed under the repository license. No external TLE or catalog content."
+        }
+      ],
+      "fixtureRationale": "Actual UTC/TDB conversion depends on naif0012.tls. Four authored geometric regimes and all inputs can be reconstructed locally without an external ephemeris.",
+      "cleanup": "Each owning case disposes the client. Kernel clearing, reloading, original scientific diagnostics and subsequent valid results are tested. Native calls hold the global CSPICE mutex; every one of the four explicit WASM acquisition positions is exercised.",
+      "tolerance": "Full strings, counts and diagnostics are exact; the 1e−12 relative/absolute numerical comparator covers each scalar or vector slot at realistic epochs. Supplementary parser derivative tests restore input units; a separate millennium-scale guard control has a scoped 1e−6 relative allowance.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.getelm -> validated Node adapter, actual mutex-protected N-API entry point -> tspice_getelm -> getelm_c. The independent oracle calls the actual operation from locked SpiceyPy.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.getelm -> validated module-local WASM adapter, actual generated export -> tspice_getelm -> getelm_c. The independent oracle calls the actual operation from locked SpiceyPy.",
+          "executions": []
+        }
+      },
+      "semantics": "Parse the supplied pair to TDB seconds after J2000 and ten model elements, preserving the signed exponents, angle/rate conversions and repeated epoch. The fractional UTC day uses the loaded leap-seconds kernel and firstYear selects the two-digit century.",
+      "edgeAssessment": "68/69 nonblank columns, omitted or changed checksum, trailing blanks, repeated firstYear boundaries, zero/180-degree inclinations, zero/20 rev/day parser range. Matching vehicle ID precedes length checks.",
+      "errorAssessment": "BADTLE for mismatched IDs, invalid columns, angle/range and malformed numeric field; NOLEAPSECONDS for a valid pair without the LSK. Wrapper validation separately covers unrepresentable text or calendar bounds, preserving earlier canonical errors.",
+      "findings": [
+        {
+          "id": "getelm-safe-fixed-rows-and-calendar",
+          "status": "repaired",
+          "summary": "The parser compares the first six ID columns before checking the native row length and later converts calendar fields to signed day counts.",
+          "repair": "Keep at least seven readable ASCII bytes per row and let actual CSPICE handle ordinary malformed records. For out-of-range calendar arithmetic, consult pinned field parsing and preserve the true earlier status at a safely representable calendar argument.",
+          "evidence": [
+            "docs/step8-tle-propagation.md",
+            "packages/py-parity-checking/test/tle-propagation-public.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/tle_oracle.py",
+            "packages/backend-node/test/tle-propagation-domain.test.ts",
+            "packages/backend-wasm/test/tle-propagation-allocations.test.ts"
+          ],
+          "caseIds": [
+            "ephemeris-getelm-blank-rows",
+            "ephemeris-getelm-mismatched-id",
+            "ephemeris-getelm-error-recovery"
+          ]
+        }
+      ]
+    },
+    {
+      "routine": "evsgp4_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/evsgp4_c.html",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-evsgp4-survey-state",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six TEME position and velocity values at epoch and at independent positive and negative offsets."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-relay-resonance",
+          "coverage": ["success", "edge"],
+          "observes": "Cross multiple positive and negative half-day integration steps on a synchronous relay orbit."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-eccentric-halfday",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise the eccentric half-day resonance with asymmetric orientation and several evaluation times."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-nonresonant-deep",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a less-than-six-revolutions-per-day nonresonant orbit at epoch and after multiple periods."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-change-orbit",
+          "coverage": ["success", "edge"],
+          "observes": "Reinitialize alternating model regimes in one client and repeat the first state."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-earth-constants",
+          "coverage": ["success", "edge"],
+          "observes": "Contrast J2 and ER effects separately, then observe N0067 fixed atmospheric parameters with alternate QO, SO and AE entries."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-no-leapseconds",
+          "coverage": ["error"],
+          "observes": "EVSGP4 initializes with TDB to JDUTC conversion even for direct numeric elements."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-suborbital",
+          "coverage": ["error"],
+          "observes": "Perigee inside the Earth yields a genuine SUBORBITAL error."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-negative-eccentricity",
+          "coverage": ["error"],
+          "observes": "A negative mean eccentricity past the pinned tolerance yields BADMECCENTRICITY."
+        },
+        {
+          "caseId": "ephemeris-evsgp4-error-recovery",
+          "coverage": ["success", "edge"],
+          "observes": "Recover a valid nominal state and independently recompute after errors and LSK restoration."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/audit-tle.json",
+          "provenance": "Four repository-authored fictional orbital element pairs with deterministic modulo-ten checksums. The Earth constants are the eight NAIF EVSGP4 example values; fixture/README.md documents provenance.",
+          "distribution": "Original synthetic records distributed under the repository license. No external TLE or catalog content."
+        }
+      ],
+      "fixtureRationale": "Actual UTC/TDB conversion depends on naif0012.tls. Four authored geometric regimes and all inputs can be reconstructed locally without an external ephemeris.",
+      "cleanup": "Each owning case disposes the client. Kernel clearing, reloading, original scientific diagnostics and subsequent valid results are tested. Native calls hold the global CSPICE mutex; every one of the four explicit WASM acquisition positions is exercised.",
+      "tolerance": "Full strings, counts and diagnostics are exact; the 1e−12 relative/absolute numerical comparator covers each scalar or vector slot at realistic epochs. Supplementary parser derivative tests restore input units; a separate millennium-scale guard control has a scoped 1e−6 relative allowance.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.evsgp4 -> validated Node adapter, actual mutex-protected N-API entry point -> tspice_evsgp4 -> evsgp4_c. The independent oracle calls the actual operation from locked SpiceyPy.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.evsgp4 -> validated module-local WASM adapter, actual generated export -> tspice_evsgp4 -> evsgp4_c. The independent oracle calls the actual operation from locked SpiceyPy.",
+          "executions": []
+        }
+      },
+      "semantics": "Initialize from the complete Earth constants and elements at the UTC Julian date corresponding to the elements TDB epoch, then return all six TEME state components (km and km/s) at the requested TDB epoch. Initialization is repeated even after a different prior orbit.",
+      "edgeAssessment": "Near-Earth, synchronous, eccentric half-day and nonresonant deep-space orbits, forward/backward evaluation, repeated epoch, switching orbit regimes, distinct geophysical constants and LSK unload/reload.",
+      "errorAssessment": "Original SUBORBITAL, BADMECCENTRICITY and NOLEAPSECONDS diagnostics compare on both backends. Computational and signed-calendar guards are tested separately from actual CSPICE diagnostics.",
+      "findings": [
+        {
+          "id": "evsgp4-locked-wrapper-status",
+          "status": "repaired",
+          "summary": "The SpiceyPy 6.0.3 EVSGP4 wrapper omits the normal error decorator and can return its buffer even though N0067 set an error.",
+          "repair": "Immediately check independent SPICE status after the original public call before interpreting the six outputs; retain missing kernel, suborbital and eccentricity error evidence and recovery.",
+          "caseIds": [
+            "ephemeris-evsgp4-error-recovery",
+            "ephemeris-evsgp4-negative-eccentricity",
+            "ephemeris-evsgp4-suborbital"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/tle_oracle.py",
+            "packages/py-parity-checking/test/tle-propagation-public.test.ts",
+            "docs/step8-tle-propagation.md"
+          ]
+        },
+        {
+          "id": "evsgp4-resonant-work-and-calendar",
+          "status": "repaired",
+          "summary": "The translated initialization uses signed calendar intermediates and the resonant deep-space integrator takes one step per 720 minutes.",
+          "repair": "Bound the element epoch, query the pinned corrected mean motion only on large intervals and guard only the two source-defined resonances. Preserve real initialization error priority. The unaffected nonresonant controls above the work boundary run the real full propagator on both runtimes.",
+          "caseIds": [
+            "ephemeris-evsgp4-relay-resonance",
+            "ephemeris-evsgp4-eccentric-halfday",
+            "ephemeris-evsgp4-nonresonant-deep"
+          ],
+          "evidence": [
+            "docs/step8-tle-propagation.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/tle_oracle.py",
+            "packages/py-parity-checking/test/tle-propagation-public.test.ts",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ]
+        }
+      ]
+    }
+  ],
+  "verificationNote": "Compiled local comparisons, focused tests and browser smoke support this source review. The required full local and inspected canonical CI executions remain separate."
+}

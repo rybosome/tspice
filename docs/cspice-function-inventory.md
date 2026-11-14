@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 164
+- Planned (not yet implemented): 485
 - Excluded: 3
 
 ## Implemented now
@@ -78,6 +78,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
 | `et2utc_c` | Ephemeris Time to UTC |
+| `evsgp4_c` | Evaluate "two-line" element data |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
@@ -87,6 +88,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gcpool_c` | Get character data from the kernel pool |
 | `gdpool_c` | Get d.p. values from the kernel pool |
 | `georec_c` | Geodetic to rectangular coordinates |
+| `getelm_c` | Get the components from two-line elements |
 | `getfat_c` | Get file architecture and type |
 | `getmsg_c` | Get Error Message |
 | `gfdist_c` | GF, distance search |
@@ -363,13 +365,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `etcal_c` | Convert ET to Calendar format |
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
-| `evsgp4_c` | Evaluate "two-line" element data |
 | `filld_c` | Fill a double precision array |
 | `filli_c` | Fill an integer array |
 | `fovray_c` | Is ray in FOV at time? |
 | `fovtrg_c` | Is target in FOV at time? |
 | `frame_c` | Build a right handed coordinate frame |
-| `getelm_c` | Get the components from two-line elements |
 | `getfov_c` | Get instrument FOV parameters |
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `gfbail_c` | GF, interrupt signal indicator |

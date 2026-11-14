@@ -163,3 +163,7 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+## Synthetic two-line element records
+
+`audit-tle.json` contains four repository-authored civil-orbit test pairs with fictional identifiers 99001–99004. The raw 68-column fields specify independently chosen inclinations, nodes, eccentricities, arguments, anomalies, rates and epoch days. Each 69th column is reproducible by summing the first 68 columns' digits plus one per minus sign and taking the result modulo ten. The public test verifies all eight checksums. The low survey, synchronous relay, nonresonant medium and eccentric half-day records correspond to different SGP4 branches. They are distributed under the repository license. The eight model constants in the same file follow the primary NAIF example; time conversion uses the existing `naif0012.tls`. [EVSGP4 constants and units](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/evsgp4_c.html)

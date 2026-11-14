@@ -1,5 +1,7 @@
 #include "ephemeris.h"
 
+#include <algorithm>
+#include <vector>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
@@ -48,6 +50,85 @@ static bool ReadInt32Checked(Napi::Env env, const Napi::Value& value, const char
     *out = (int32_t)d;
   }
   return true;
+}
+
+static Napi::Value TleArgumentError(Napi::Env env, const char* msg) {
+  ThrowSpiceError(Napi::TypeError::New(env, msg));
+  return env.Undefined();
+}
+
+static Napi::Value Getelm(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  int32_t year;
+  if (info.Length() != 2 || !info[1].IsArray())
+    return TleArgumentError(env, "getelm expects a first year and two ASCII records");
+  if (!ReadInt32Checked(env, info[0], "firstYear", &year)) return env.Undefined();
+  auto arr = info[1].As<Napi::Array>();
+  if (arr.Length() != 2) return TleArgumentError(env, "getelm requires two records");
+  std::string rows[2];
+  size_t stride = 8;
+  for (uint32_t i = 0; i < 2; i++) {
+    auto value = arr.Get(i);
+    if (env.IsExceptionPending()) return env.Undefined();
+    if (!value.IsString()) return TleArgumentError(env, "TLE record must be a string");
+    rows[i] = value.As<Napi::String>().Utf8Value();
+    if (rows[i].size() >= 134217728)
+      return TleArgumentError(env, "TLE records exceed the 256 MiB table bound");
+    for (unsigned char c : rows[i])
+      if (!c || c > 127) return TleArgumentError(env, "TLE records must be NUL-free ASCII");
+    stride = std::max(stride, rows[i].size() + 1);
+  }
+  std::vector<char> table(2 * stride, 0);
+  for (size_t i = 0; i < 2; i++) {
+    std::fill_n(table.data() + i * stride, 7, ' ');
+    std::copy(rows[i].begin(), rows[i].end(), table.data() + i * stride);
+  }
+  double epoch = 0, elems[10] = {};
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_getelm(year, static_cast<int>(stride), table.data(), &epoch, elems, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling getelm", err);
+    return env.Undefined();
+  }
+  auto result = Napi::Object::New(env);
+  result.Set("epoch", epoch);
+  result.Set("elems", MakeNumberArray(env, elems, 10));
+  return result;
+}
+
+static bool ReadTleNumbers(Napi::Env env, Napi::Value value, uint32_t size, double* out) {
+  if (!value.IsArray() || value.As<Napi::Array>().Length() != size) {
+    TleArgumentError(env, "SGP4 input tuple has the wrong extent");
+    return false;
+  }
+  auto array = value.As<Napi::Array>();
+  for (uint32_t i = 0; i < size; i++) {
+    auto entry = array.Get(i);
+    if (env.IsExceptionPending()) return false;
+    if (!entry.IsNumber() || !std::isfinite(entry.As<Napi::Number>().DoubleValue())) {
+      TleArgumentError(env, "SGP4 tuple entries must be finite");
+      return false;
+    }
+    out[i] = entry.As<Napi::Number>().DoubleValue();
+  }
+  return true;
+}
+
+static Napi::Value Evsgp4(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber())
+    return TleArgumentError(env, "evsgp4 expects an ET and two numeric tuples");
+  double et = info[0].As<Napi::Number>().DoubleValue(), geophs[8], elems[10], state[6] = {};
+  if (!std::isfinite(et)) return TleArgumentError(env, "ET must be finite");
+  if (!ReadTleNumbers(env, info[1], 8, geophs) || !ReadTleNumbers(env, info[2], 10, elems))
+    return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_evsgp4(et, geophs, elems, state, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling evsgp4", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, state, 6);
 }
 
 static Napi::Object Ckgp(const Napi::CallbackInfo& info) {
@@ -832,6 +913,8 @@ static void Spkw08(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "getelm", Napi::Function::New(env, Getelm), __func__)) return;
+  if (!SetExportChecked(env, exports, "evsgp4", Napi::Function::New(env, Evsgp4), __func__)) return;
   if (!SetExportChecked(env, exports, "ckgp", Napi::Function::New(env, Ckgp), __func__)) return;
   if (!SetExportChecked(env, exports, "ckgpav", Napi::Function::New(env, Ckgpav), __func__)) return;
   if (!SetExportChecked(env, exports, "spkezr", Napi::Function::New(env, Spkezr), __func__)) return;

@@ -646,6 +646,23 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_getelm(
+    firstYear: number,
+    stride: number,
+    lines: number,
+    epoch: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_evsgp4(
+    et: number,
+    geophs: number,
+    elems: number,
+    state: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_spkssb(
     target: number,
     et: number,
@@ -1707,6 +1724,23 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_getelm(
+    firstYear: number,
+    stride: number,
+    lines: number,
+    epoch: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_evsgp4(
+    et: number,
+    geophs: number,
+    elems: number,
+    state: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_spkssb(
     target: number,
     et: number,
@@ -2238,6 +2272,8 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_illumf",
   "_tspice_nvc2pl",
   "_tspice_pl2nvc",
+  "_tspice_getelm",
+  "_tspice_evsgp4",
   "_tspice_spkssb",
   "_tspice_spkcov",
   "_tspice_spkobj",
