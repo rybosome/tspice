@@ -25,3 +25,5 @@ All 33 registered workflows passed on both compiled backends. Their 283 steps in
 On the combined binary, Chrome also rejected four mixed-writer errors, recovered both writers and reloaded both physical files. The six-component type 14 state at ET 4 and the six-component type 10 state at ET 1 agreed with the independent results, and CSPICE reported a clear final error state.
 
 The transport cache bypasses all three streaming writers. Repeating begin or end on the same handle reaches the live state machine, and repeating a packet at the same epoch raises the genuine ordering error. A cached client can open another segment on that handle after ending the first.
+
+Disposing a sync or async in-process client that created its native backend now finalizes its open type 14 stream before clearing kernel state. An independent SpiceyPy process reopens the physical file and evaluates all six state components after disposal. A caller-supplied backend retains its own lifecycle.

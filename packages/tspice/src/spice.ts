@@ -11,6 +11,17 @@ import type {
 } from "./kit/types/spice-types.js";
 import { createKit } from "./kit/spice/create-kit.js";
 
+const ownedDisposers = new WeakMap<Spice | SpiceAsync, () => void>();
+
+/** Release the in-process backend created by an owning client. */
+export function disposeOwnedBackend(spice: Spice | SpiceAsync): void {
+  const dispose = ownedDisposers.get(spice);
+  if (dispose) {
+    ownedDisposers.delete(spice);
+    dispose();
+  }
+}
+
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
    * If provided, `createSpice()` will wrap this backend instead of creating a new one.
@@ -92,7 +103,10 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     { byteBackedKernelPaths },
   );
 
-  return { raw, kit };
+  const spice = { raw, kit };
+  if (!options.backendInstance && backend.disposeAll)
+    ownedDisposers.set(spice, backend.disposeAll.bind(backend));
+  return spice;
 }
 
 function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
@@ -136,10 +150,9 @@ function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
 export async function createSpiceAsync(
   options: CreateSpiceAsyncOptions,
 ): Promise<SpiceAsync> {
-  const { raw, kit } = await createSpice(options);
-
-  return {
-    raw: promisifyApi(raw),
-    kit: promisifyApi(kit),
-  };
+  const sync = await createSpice(options);
+  const client = { raw: promisifyApi(sync.raw), kit: promisifyApi(sync.kit) };
+  const dispose = ownedDisposers.get(sync);
+  if (dispose) ownedDisposers.set(client, dispose);
+  return client;
 }

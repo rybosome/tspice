@@ -1096,7 +1096,8 @@
         "file-io-getfat-dsk-success",
         "file-io-getfat-missing-file-error"
       ],
-      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e07-90107a0e-wasm",
@@ -1145,7 +1146,8 @@
         "file-io-getfat-dsk-success",
         "file-io-getfat-missing-file-error"
       ],
-      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-90107a0e-node",
@@ -1196,7 +1198,8 @@
       ],
       "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
-      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-90107a0e-wasm",
@@ -1247,7 +1250,8 @@
       ],
       "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
-      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1325,11 +1329,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlafns -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1346,11 +1351,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlafns -> shared C shim -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -1440,11 +1446,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlaopn -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1461,11 +1468,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlaopn -> shared C shim -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -1579,11 +1587,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskmi2 -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1600,11 +1609,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskmi2 -> shared C shim -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -1682,11 +1692,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskopn -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1703,11 +1714,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskopn -> shared C shim -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -1809,11 +1821,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskw02 -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1830,11 +1843,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskw02 -> shared C shim -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -1912,11 +1926,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.exists -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_exists -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1933,11 +1948,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.exists -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_exists -> shared C shim -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -2025,11 +2041,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getfat -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_getfat -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2046,14 +2063,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getfat -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_getfat -> shared C shim -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
 }

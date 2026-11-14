@@ -381,3 +381,43 @@ it("repeats terminal and successful streaming parity cases on one WASM client", 
     await setup.dispose();
   }
 });
+
+for (const mode of ["sync", "async"] as const) {
+  it.runIf(nodeBackendAvailable)(
+    mode + " client disposal finalizes an interrupted native stream on disk",
+    async () => {
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tspice-owned-spk-"));
+      const file = path.join(dir, "interrupted.bsp");
+      const writer =
+        mode === "sync"
+          ? await spiceClients.toSync({ backend: "node" })
+          : await spiceClients.toAsync({ backend: "node" });
+      try {
+        const raw = writer.spice.raw;
+        const h = await raw.spkopn(file, "OWNED", 0);
+        await raw.spk14b(h, "OWNED", 196014, 0, "J2000", 0, 1, 0);
+        await raw.spk14a(h, 1, [0, 1, 9, 8, 7, 6, 5, 4], [0]);
+        await writer.dispose();
+        // The independent process can open the DAF and evaluate the segment only after it is finalized.
+        const state = execFileSync(
+          "uv",
+          [
+            "run",
+            "--locked",
+            "--project",
+            "sidecars/spiceypy",
+            "python",
+            "-c",
+            "import json, sys, spiceypy as s; s.furnsh(sys.argv[1]); print(json.dumps(s.spkgeo(196014, .5, 'J2000', 0)[0].tolist())); s.kclear()",
+            file,
+          ],
+          { cwd: pkg, encoding: "utf8" },
+        );
+        expect(JSON.parse(state)).toEqual([9, 8, 7, 6, 5, 4]);
+      } finally {
+        await writer.dispose();
+        fs.rmSync(dir, { recursive: true, force: true });
+      }
+    },
+  );
+}

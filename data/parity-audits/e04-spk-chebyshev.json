@@ -644,7 +644,8 @@
         "ephemeris-spkw20-zero-distance-scale",
         "ephemeris-spkw20-zero-interval"
       ],
-      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e07-90107a0e-wasm",
@@ -709,7 +710,8 @@
         "ephemeris-spkw20-zero-distance-scale",
         "ephemeris-spkw20-zero-interval"
       ],
-      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-90107a0e-node",
@@ -776,7 +778,8 @@
       ],
       "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
-      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-90107a0e-wasm",
@@ -843,7 +846,8 @@
       ],
       "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
-      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -975,11 +979,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw02 -> spkw02_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -990,11 +995,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw02 -> spkw02_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -1126,11 +1132,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw03 -> spkw03_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1141,11 +1148,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw03 -> spkw03_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -1287,11 +1295,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw20 -> spkw20_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1302,14 +1311,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw20 -> spkw20_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
 }

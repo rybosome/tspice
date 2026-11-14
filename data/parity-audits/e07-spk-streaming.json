@@ -5,6 +5,7 @@
     "docs/step8-spk-streaming.md",
     "fixtures/consumer-nodom/src/index.ts",
     "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-contract/src/index.ts",
     "packages/backend-fake/src/index.ts",
     "packages/backend-node/native/src/addon_common.cc",
     "packages/backend-node/native/src/domains/ephemeris.cc",
@@ -51,6 +52,8 @@
     "packages/py-parity-checking/src/workflow-normalization/types.ts",
     "packages/py-parity-checking/test/_helpers/spk_streaming_oracle.py",
     "packages/py-parity-checking/test/spk-streaming-files.test.ts",
+    "packages/tspice/src/clients/spiceClients.ts",
+    "packages/tspice/src/spice.ts",
     "packages/tspice/src/transport/caching/policy.ts",
     "scripts/build-backend-wasm.mjs"
   ],
@@ -98,7 +101,8 @@
         "ephemeris-spk14e-nonstandard-radius",
         "ephemeris-spk14e-twice"
       ],
-      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e07-90107a0e-wasm",
@@ -143,7 +147,8 @@
         "ephemeris-spk14e-nonstandard-radius",
         "ephemeris-spk14e-twice"
       ],
-      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-90107a0e-node",
@@ -190,7 +195,8 @@
       ],
       "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
-      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e07-90107a0e-wasm",
@@ -237,7 +243,8 @@
       ],
       "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
       "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
-      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -345,16 +352,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public spk14b -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14b -> spk14b_c. Locked sidecar invokes actual SpiceyPy spk14b and a separate DAF reader inspects independently emitted files.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public spk14b -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14b -> spk14b_c. Locked sidecar invokes actual SpiceyPy spk14b and a separate DAF reader inspects independently emitted files.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -462,16 +481,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public spk14a -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14a -> spk14a_c. Locked sidecar invokes actual SpiceyPy spk14a and a separate DAF reader inspects independently emitted files.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public spk14a -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14a -> spk14a_c. Locked sidecar invokes actual SpiceyPy spk14a and a separate DAF reader inspects independently emitted files.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     },
@@ -539,19 +570,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public spk14e -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14e -> spk14e_c. Locked sidecar invokes actual SpiceyPy spk14e and a separate DAF reader inspects independently emitted files.",
-          "executions": ["local-e07-90107a0e-node", "ci-e07-90107a0e-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public spk14e -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14e -> spk14e_c. Locked sidecar invokes actual SpiceyPy spk14e and a separate DAF reader inspects independently emitted files.",
-          "executions": ["local-e07-90107a0e-wasm", "ci-e07-90107a0e-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
 }

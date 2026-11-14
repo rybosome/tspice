@@ -1,6 +1,7 @@
 import {
   createSpice,
   createSpiceAsync,
+  disposeOwnedBackend,
   type CreateSpiceAsyncOptions,
   type CreateSpiceOptions,
 } from "../spice.js";
@@ -420,6 +421,12 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
             }
           }
 
+          // Release instance-owned native handles and signal claims before clearing kernels.
+          try {
+            disposeOwnedBackend(baseSpice);
+          } catch {
+            /* continue best-effort cleanup */
+          }
           // In-process: best-effort kernel cleanup.
           try {
             raw.kit.kclear();
@@ -493,6 +500,12 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
             }
           }
 
+          // Release instance-owned native handles and signal claims before clearing kernels.
+          try {
+            disposeOwnedBackend(baseSpice);
+          } catch {
+            /* continue best-effort cleanup */
+          }
           // In-process: best-effort kernel cleanup.
           try {
             await spice.kit.kclear();
