@@ -137,3 +137,36 @@ export type SpiceAsync = {
   raw: PromisifyObject<SpiceRaw>;
   kit: PromisifyObject<SpiceKit>;
 };
+
+type WorkerGfScalar = (et: number) => number | Promise<number>;
+type WorkerGfCondition<S extends WorkerGfScalar> = (
+  scalar: S,
+  et: number,
+) => boolean | Promise<boolean>;
+
+type SearchOptions<K extends "gfudb" | "gfuds"> =
+  Parameters<SpiceRaw[K]> extends [unknown, unknown, ...infer Rest]
+    ? Rest
+    : never;
+
+/** Worker callbacks execute on the caller's thread and can await a measurement on the worker. */
+type WorkerGfRaw = {
+  uddf(scalar: WorkerGfScalar, x: number, dx: number): Promise<number>;
+  uddc(scalar: WorkerGfScalar, x: number, dx: number): Promise<boolean>;
+  gfudb<S extends WorkerGfScalar>(
+    scalar: S,
+    predicate: WorkerGfCondition<S>,
+    ...options: SearchOptions<"gfudb">
+  ): Promise<void>;
+  gfuds<S extends WorkerGfScalar>(
+    scalar: S,
+    isDecreasing: WorkerGfCondition<S>,
+    ...options: SearchOptions<"gfuds">
+  ): Promise<void>;
+};
+
+/** The public Web Worker client. Numeric and predicate callbacks retain their original identity. */
+export type SpiceWorker = {
+  raw: Omit<SpiceAsync["raw"], keyof WorkerGfRaw> & WorkerGfRaw;
+  kit: SpiceAsync["kit"];
+};

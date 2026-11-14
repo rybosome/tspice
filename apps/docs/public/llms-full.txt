@@ -116,6 +116,7 @@ Source: `packages/tspice/src/index.ts`
 - `SpiceKit`
 - `SpiceSync`
 - `SpiceTime`
+- `SpiceWorker`
 - `StateVector`
 - `TspiceKernelCatalog`
 - `TspiceKernelId`

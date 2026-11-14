@@ -1,0 +1,164 @@
+[
+  {
+    "caseId": "geometry-gf-uddc-affine-sign",
+    "description": "Linear increasing and decreasing functions produce opposite slopes, including the same samples in both dispatches.",
+    "workflow": [
+      {
+        "op": "geometry-gf.uddc",
+        "x": 2,
+        "dx": 0.25,
+        "scalar": "identity"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 2,
+        "dx": 0.25,
+        "scalar": "negativeAffine"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": -3,
+        "dx": 0.5,
+        "scalar": "negativeAffine"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-uddc-stationary",
+    "description": "A constant function and a quadratic at its minimum have zero centered difference. Observe both sampled input epochs and values.",
+    "workflow": [
+      {
+        "op": "geometry-gf.uddc",
+        "x": 1,
+        "dx": 0.125,
+        "scalar": "constant"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 0,
+        "dx": 0.125,
+        "scalar": "square"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 0,
+        "dx": 1,
+        "scalar": "negativeSquare"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-uddc-turning-point",
+    "description": "Observe decreasing, flat and increasing behavior on either side of a true quadratic turning point.",
+    "workflow": [
+      {
+        "op": "geometry-gf.uddc",
+        "x": -2,
+        "dx": 0.25,
+        "scalar": "square"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 0,
+        "dx": 0.25,
+        "scalar": "square"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 2,
+        "dx": 0.25,
+        "scalar": "square"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-uddc-negative-separation",
+    "description": "Negative DX reverses callback sample order. Compare the signed central quotient and its decreasing predicate.",
+    "workflow": [
+      {
+        "op": "geometry-gf.uddc",
+        "x": 1,
+        "dx": 0.5,
+        "scalar": "cubic"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 1,
+        "dx": -0.5,
+        "scalar": "cubic"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": -2,
+        "dx": -0.25,
+        "scalar": "square"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-uddc-finite-difference",
+    "description": "Cubic measurements distinguish the finite-difference result from the analytic derivative at the same point.",
+    "workflow": [
+      {
+        "op": "geometry-gf.uddc",
+        "x": 1,
+        "dx": 0.5,
+        "scalar": "cubic"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 1,
+        "dx": 0.25,
+        "scalar": "cubic"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 1,
+        "dx": 0.125,
+        "scalar": "cubic"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": -0.5,
+        "dx": 0.5,
+        "scalar": "cubic"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-uddc-coincident-representable-samples",
+    "description": "At a large finite epoch a positive step can round both sample epochs to the same word; the callback is still evaluated twice.",
+    "workflow": [
+      {
+        "op": "geometry-gf.uddc",
+        "x": 9007199254740992,
+        "dx": 0.125,
+        "scalar": "identity"
+      },
+      {
+        "op": "geometry-gf.uddc",
+        "x": 9007199254740992,
+        "dx": 0.125,
+        "scalar": "negativeAffine"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

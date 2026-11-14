@@ -17,7 +17,7 @@ static Napi::Boolean Failed(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, false);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   int outFailed = 0;
   char err[tspice_backend_node::kErrMaxBytes];
@@ -38,7 +38,7 @@ static void Reset(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_reset(err, (int)sizeof(err));
   if (code != 0) {
@@ -58,7 +58,7 @@ static Napi::String Getmsg(const Napi::CallbackInfo& info) {
 
   const std::string which = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
 
   char out[tspice_backend_node::kOutMaxBytes];
   char err[tspice_backend_node::kErrMaxBytes];
@@ -81,7 +81,7 @@ static void Setmsg(const Napi::CallbackInfo& info) {
 
   const std::string msg = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_setmsg(msg.c_str(), err, (int)sizeof(err));
   if (code != 0) {
@@ -99,7 +99,7 @@ static void Sigerr(const Napi::CallbackInfo& info) {
 
   const std::string shortMsg = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_sigerr(shortMsg.c_str(), err, (int)sizeof(err));
   if (code != 0) {
@@ -117,7 +117,7 @@ static void Chkin(const Napi::CallbackInfo& info) {
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_chkin(name.c_str(), err, (int)sizeof(err));
   if (code != 0) {
@@ -135,7 +135,7 @@ static void Chkout(const Napi::CallbackInfo& info) {
 
   const std::string name = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_chkout(name.c_str(), err, (int)sizeof(err));
   if (code != 0) {

@@ -65,6 +65,33 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       native.gfsstp(step);
     },
 
+    udf: (et, initialValue = 0) => native.udf(et, initialValue),
+    uddf: (scalar, x, dx) => native.uddf(scalar, x, dx),
+    uddc: (scalar, x, dx) => native.uddc(scalar, x, dx),
+    gfudb: (scalar, predicate, step, cnfine, result) =>
+      native.gfudb(scalar, predicate, step, cnfine, result),
+    gfuds: (
+      scalar,
+      isDecreasing,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) =>
+      native.gfuds(
+        scalar,
+        isDecreasing,
+        relate,
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result,
+      ),
     gfstep: (time) => {
       assertFiniteNumber(time, "gfstep(time)");
       const out = native.gfstep(time);

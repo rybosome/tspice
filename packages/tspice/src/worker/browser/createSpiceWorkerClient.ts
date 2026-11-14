@@ -1,7 +1,7 @@
-import type { SpiceAsync } from "../../kit/types/spice-types.js";
+import type { SpiceWorker } from "../../kit/types/spice-types.js";
 
 import type { SpiceTransport } from "../../transport/types.js";
-import { createSpiceAsyncFromTransport } from "../../clients/createSpiceAsyncFromTransport.js";
+import { createSpiceWorkerFromTransport } from "../../clients/createSpiceAsyncFromTransport.js";
 
 import {
   createWorkerTransport,
@@ -41,8 +41,8 @@ export type SpiceWorkerClient<
   baseTransport: WorkerTransport;
   /** The transport after applying `wrapTransport` (e.g. `withCaching`). */
   transport: TTransport;
-  /** A `SpiceAsync` client backed by `transport`. */
-  spice: SpiceAsync;
+  /** A worker client backed by `transport`. */
+  spice: SpiceWorker;
   /** Dispose wrapper transport (if any) and the worker transport. */
   dispose: () => void;
   /**
@@ -101,7 +101,7 @@ export function createSpiceWorkerClient<
     ? opts.wrapTransport(baseTransport)
     : (baseTransport as unknown as TTransport);
 
-  const spice = createSpiceAsyncFromTransport(transport);
+  const spice = createSpiceWorkerFromTransport(transport);
 
   let disposePromise: Promise<void> | undefined;
 

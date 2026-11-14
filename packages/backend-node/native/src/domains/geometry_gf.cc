@@ -157,6 +157,139 @@ static bool VisibilityWindowPointers(const tspice_backend_node::CspiceLock& lock
   return !env.IsExceptionPending();
 }
 
+
+// JS callbacks are invoked synchronously on the Node thread that owns this call.
+// Nested derivatives get their own frame; the toolkit mutex stays held throughout.
+struct UserCallbacks {
+  Napi::Env env;
+  Napi::Function scalar;
+  Napi::Function predicate;
+  Napi::Value error;
+  bool failed = false;
+};
+
+static int CallGfFunction(void *context, int predicate, double t, double *out) {
+  auto &callbacks = *static_cast<UserCallbacks *>(context);
+  if (callbacks.failed) return 1;
+  auto env = callbacks.env;
+  // Searches can issue millions of callbacks inside one addon invocation.
+  Napi::EscapableHandleScope scope(env);
+  const auto epoch = Napi::Number::New(env, t);
+  const auto value = predicate ? callbacks.predicate.Call({callbacks.scalar,epoch}) : callbacks.scalar.Call({epoch});
+  if (env.IsExceptionPending()) {
+    napi_value thrown=nullptr;
+    napi_get_and_clear_last_exception(env,&thrown);
+    callbacks.error=scope.Escape(Napi::Value(env,thrown));
+    callbacks.failed=true;
+    return 1;
+  }
+  if (predicate ? !value.IsBoolean() : (!value.IsNumber() || !std::isfinite(value.As<Napi::Number>().DoubleValue()))) {
+    callbacks.error=scope.Escape(Napi::TypeError::New(env,predicate?"GF predicate must return a boolean":"GF scalar must return a finite number").Value());
+    callbacks.failed=true;
+    return 1;
+  }
+  *out = predicate ? (value.As<Napi::Boolean>().Value() ? 1. : 0.) : value.As<Napi::Number>().DoubleValue();
+  return 0;
+}
+static bool FinishUserCall(UserCallbacks &c, int status, const char *error) {
+  if (c.failed) { napi_throw(c.env,c.error); return false; }
+  if (status) { ThrowSpiceError(c.env,"CSPICE user-function call failed",error);return false; }
+  return true;
+}
+static Napi::Value Udf(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=2 || !info[0].IsNumber() || !info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env,"udf expects a numeric epoch and initial value"));return env.Undefined();
+  }
+  tspice_backend_node::CspiceLock lock; double out=0; char err[tspice_backend_node::kErrMaxBytes]={0};
+  if(tspice_udf(info[0].As<Napi::Number>().DoubleValue(),info[1].As<Napi::Number>().DoubleValue(),&out,err,sizeof(err))) {
+    ThrowSpiceError(env,"udf failed",err);return env.Undefined();
+  }
+  return Napi::Number::New(env,out);
+}
+static bool ReadDerivative(const Napi::CallbackInfo &info, double &x, double &dx) {
+  if (info.Length() != 3 || !info[0].IsFunction() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(info.Env(), "Expected a scalar callback, x and dx"));
+    return false;
+  }
+  x = info[1].As<Napi::Number>().DoubleValue();
+  dx = info[2].As<Napi::Number>().DoubleValue();
+  return true;
+}
+
+static Napi::Value Uddc(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  double x, dx;
+  if (!ReadDerivative(info, x, dx)) return env.Undefined();
+  auto fn = info[0].As<Napi::Function>();
+  UserCallbacks callbacks{env, fn, fn, env.Undefined()};
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int result = 0;
+  tspice_backend_node::CspiceLock lock;
+  int status = tspice_uddc(CallGfFunction, &callbacks, x, dx, &result, err, sizeof(err));
+  if (!FinishUserCall(callbacks, status, err)) return env.Undefined();
+  return Napi::Boolean::New(env, result != 0);
+}
+
+static Napi::Value Uddf(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  double x, dx;
+  if (!ReadDerivative(info, x, dx)) return env.Undefined();
+  auto fn = info[0].As<Napi::Function>();
+  UserCallbacks callbacks{env, fn, fn, env.Undefined()};
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double result = 0;
+  tspice_backend_node::CspiceLock lock;
+  int status = tspice_uddf(CallGfFunction, &callbacks, x, dx, &result, err, sizeof(err));
+  if (!FinishUserCall(callbacks, status, err)) return env.Undefined();
+  return Napi::Number::New(env, result);
+}
+
+static bool CheckUserSearch(const Napi::CallbackInfo &info, size_t length, size_t step) {
+  if (info.Length() == length && info[0].IsFunction() && info[1].IsFunction() && info[step].IsNumber())
+    return true;
+  ThrowSpiceError(Napi::TypeError::New(info.Env(), "Expected scalar and predicate callbacks and a numeric step"));
+  return false;
+}
+
+static void Gfudb(const Napi::CallbackInfo &info) {
+  if (!CheckUserSearch(info, 5, 2)) return;
+  auto env = info.Env();
+  UserCallbacks callbacks{env, info[0].As<Napi::Function>(), info[1].As<Napi::Function>(), env.Undefined()};
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  uintptr_t cnfine, result;
+  tspice_backend_node::CspiceLock lock;
+  if (!VisibilityWindowPointers(lock, info, 3, &cnfine, &result)) return;
+  int status = tspice_gfudb(CallGfFunction, &callbacks, info[2].As<Napi::Number>().DoubleValue(),
+                            cnfine, result, err, sizeof(err));
+  FinishUserCall(callbacks, status, err);
+}
+
+static void Gfuds(const Napi::CallbackInfo &info) {
+  if (!CheckUserSearch(info, 9, 5)) return;
+  auto env = info.Env();
+  std::string relate;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &relate)) return;
+  if (!info[3].IsNumber() || !info[4].IsNumber() || !info[6].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected numeric scalar search bounds and a workspace count"));
+    return;
+  }
+  const double count = info[6].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(count) || std::trunc(count) != count || count < INT32_MIN || count > INT32_MAX) {
+    ThrowSpiceError(Napi::RangeError::New(env, "GF workspace count must be a SpiceInt"));
+    return;
+  }
+  UserCallbacks callbacks{env, info[0].As<Napi::Function>(), info[1].As<Napi::Function>(), env.Undefined()};
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  uintptr_t cnfine, result;
+  tspice_backend_node::CspiceLock lock;
+  if (!VisibilityWindowPointers(lock, info, 7, &cnfine, &result)) return;
+  int status = tspice_gfuds(CallGfFunction, &callbacks, relate.c_str(), info[3].As<Napi::Number>().DoubleValue(),
+                            info[4].As<Napi::Number>().DoubleValue(), info[5].As<Napi::Number>().DoubleValue(),
+                            static_cast<int>(count), cnfine, result, err, sizeof(err));
+  FinishUserCall(callbacks, status, err);
+}
+
 static void Gfoclt(const Napi::CallbackInfo &info) {
   auto env = info.Env();
   if (info.Length() != 12 || !info[9].IsNumber()) {
@@ -432,6 +565,11 @@ void RegisterGeometryGf(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "gftfov",
                         Napi::Function::New(env, Gftfov), __func__))
     return;
+  if (!SetExportChecked(env,exports,"udf",Napi::Function::New(env,Udf),__func__)) return;
+  if (!SetExportChecked(env,exports,"uddf",Napi::Function::New(env,Uddf),__func__)) return;
+  if (!SetExportChecked(env,exports,"uddc",Napi::Function::New(env,Uddc),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfudb",Napi::Function::New(env,Gfudb),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfuds",Napi::Function::New(env,Gfuds),__func__)) return;
   if (!SetExportChecked(env, exports, "gfsep", Napi::Function::New(env, Gfsep), __func__)) return;
   if (!SetExportChecked(env, exports, "gfdist", Napi::Function::New(env, Gfdist), __func__)) return;
 }

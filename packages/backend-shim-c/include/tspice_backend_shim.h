@@ -1060,6 +1060,13 @@ int tspice_gfrfov(const char *inst, const double raydir[3], const char *rframe, 
 
 int tspice_gftfov(const char *inst, const char *target, const char *tshape, const char *tframe, const char *abcorr, const char *obsrvr, double step, uintptr_t input, uintptr_t output, char *err, int cap);
 
+// The host callback returns zero on success and writes a finite scalar or a boolean.
+typedef int (*TspiceGfCallback)(void *context, int predicate, double et, double *value);
+int tspice_udf(double et, double initial, double *out, char *err, int cap);
+int tspice_uddc(TspiceGfCallback callback, void *context, double x, double dx, int *out, char *err, int cap);
+int tspice_uddf(TspiceGfCallback callback, void *context, double x, double dx, double *out, char *err, int cap);
+int tspice_gfudb(TspiceGfCallback callback, void *context, double step, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gfuds(TspiceGfCallback callback, void *context, const char *relate, double refval, double adjust, double step, int count, uintptr_t input, uintptr_t output, char *err, int cap);
 // gfsep_c: angular separation search.
 int tspice_gfsep(
     const char *targ1,

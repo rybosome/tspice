@@ -3,6 +3,18 @@
 // NOTE: The `FS` member is intentionally `any` because Emscripten's FS typing is
 // not stable across toolchains.
 export type EmscriptenModule = {
+  tspiceInvokeGf?: (
+    id: number,
+    slot: number,
+    ...args: unknown[]
+  ) => number | Promise<number>;
+  ccall(
+    name: string,
+    result: "number",
+    types: "number"[],
+    args: number[],
+    opts: { async: true },
+  ): number | Promise<number>;
   _malloc(size: number): number;
   _free(ptr: number): void;
   UTF8ToString(ptr: number, maxBytesToRead?: number): string;
@@ -979,6 +991,53 @@ export type EmscriptenModule = {
     step: number,
     cnfine: number,
     result: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_udf(
+    et: number,
+    initial: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_uddf(
+    callback: number,
+    id: number,
+    x: number,
+    dx: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_uddc(
+    callback: number,
+    id: number,
+    x: number,
+    dx: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_gfudb(
+    callback: number,
+    id: number,
+    step: number,
+    input: number,
+    output: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_gfuds(
+    callback: number,
+    id: number,
+    relate: number,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    input: number,
+    output: number,
     err: number,
     cap: number,
   ): number;
@@ -2424,6 +2483,11 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfoclt",
   "_tspice_gfrfov",
   "_tspice_gftfov",
+  "_tspice_udf",
+  "_tspice_uddf",
+  "_tspice_uddc",
+  "_tspice_gfudb",
+  "_tspice_gfuds",
   "_tspice_gfsep",
   "_tspice_gfdist",
   "_tspice_reclat",

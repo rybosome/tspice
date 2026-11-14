@@ -25,6 +25,8 @@ SpiceCell *tspice_validate_handle(
 // Internal registry helpers used by the cells/windows domain to register and
 // retire handles.
 int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes);
+// Distinguishes an original live allocation from a new cell at the same address after reentry.
+uint64_t tspice_registry_generation(uintptr_t handle);
 int tspice_registry_remove(SpiceCell *cell);
 
 // Enforce the caller precondition that a size cannot exceed original allocated

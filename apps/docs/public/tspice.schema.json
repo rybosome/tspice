@@ -165,6 +165,10 @@
         "description": "Seconds past J2000 (ET)."
       },
       {
+        "name": "SpiceWorker",
+        "description": "Public export from @rybosome/tspice."
+      },
+      {
         "name": "StateVector",
         "description": "Structured result returned by kit.getState() (position, velocity, light time, and query metadata)."
       },

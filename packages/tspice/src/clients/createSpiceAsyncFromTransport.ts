@@ -1,4 +1,4 @@
-import type { SpiceAsync } from "../kit/types/spice-types.js";
+import type { SpiceAsync, SpiceWorker } from "../kit/types/spice-types.js";
 
 import type { SpiceTransport } from "../transport/types.js";
 
@@ -191,11 +191,19 @@ export function createSpiceAsyncFromTransport(
   t: SpiceTransport,
   surfaceMethodKeys?: SurfaceMethodKeySnapshot,
 ): SpiceAsync {
+  return createSpiceWorkerFromTransport(t, surfaceMethodKeys);
+}
+
+/** Project the worker RPC surface, including callbacks that may await a client-side operation. */
+export function createSpiceWorkerFromTransport(
+  t: SpiceTransport,
+  surfaceMethodKeys?: SurfaceMethodKeySnapshot,
+): SpiceWorker {
   const rawMethodKeys = surfaceMethodKeys?.raw;
   const kitMethodKeys = surfaceMethodKeys?.kit;
 
   return {
-    raw: createNamespacedProxy(t, "raw", rawMethodKeys) as SpiceAsync["raw"],
+    raw: createNamespacedProxy(t, "raw", rawMethodKeys) as SpiceWorker["raw"],
     kit: createNamespacedProxy(t, "kit", kitMethodKeys) as SpiceAsync["kit"],
   };
 }

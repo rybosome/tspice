@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 172
-- Planned (not yet implemented): 477
+- Implemented now (SpiceRawBackend): 177
+- Planned (not yet implemented): 472
 - Excluded: 3
 
 ## Implemented now
@@ -104,6 +104,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfstep_c` | Geometry finder step size |
 | `gfstol_c` | GF, set a tolerance value for GF |
 | `gftfov_c` | GF, is target in FOV? |
+| `gfudb_c` | GF, user defined boolean |
+| `gfuds_c` | GF, user defined scalar |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
 | `illumf_c` | Illumination angles, general source, return flags |
@@ -178,6 +180,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
 | `trgsep_c` | Separation quantity from observer |
+| `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |
+| `uddf_c` | First derivative of a function, df(x)/dx |
+| `udf_c` | GF, dummy function |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -391,8 +396,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfrr_c` | GF, range rate search |
 | `gfsntc_c` | GF, surface intercept vector coordinate search |
 | `gfsubc_c` | GF, subpoint vector coordinate search |
-| `gfudb_c` | GF, user defined boolean |
-| `gfuds_c` | GF, user defined scalar |
 | `halfpi_c` | Half the value of pi |
 | `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
 | `hrmint_c` | Hermite polynomial interpolation |
@@ -619,9 +622,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tyear_c` | Seconds per tropical year |
 | `ucase_c` | Convert to uppercase |
 | `ucrss_c` | Unitized cross product, 3x3 |
-| `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |
-| `uddf_c` | First derivative of a function, df(x)/dx |
-| `udf_c` | GF, dummy function |
 | `union_c` | Union of two sets |
 | `unorm_c` | Unit vector and norm, 3 dimensional |
 | `unormg_c` | Unit vector and norm, general dimension |

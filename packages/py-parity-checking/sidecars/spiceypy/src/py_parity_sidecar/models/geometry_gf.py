@@ -113,6 +113,56 @@ class StepGeometryGfGfsep:
 
 
 @dataclass(frozen=True)
+class StepGeometryGfUdf:
+    op: Literal["geometry-gf.udf"]
+    et: float
+    initialValue: float | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfUddc:
+    op: Literal["geometry-gf.uddc"]
+    scalar: str
+    x: float
+    dx: float
+
+
+@dataclass(frozen=True)
+class StepGeometryGfUddf:
+    op: Literal["geometry-gf.uddf"]
+    scalar: str
+    x: float
+    dx: float
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfudb:
+    op: Literal["geometry-gf.gfudb"]
+    scalar: str
+    predicate: str
+    threshold: float
+    step: float
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfuds:
+    op: Literal["geometry-gf.gfuds"]
+    scalar: str
+    conditionDx: float
+    relate: str
+    refval: float
+    adjust: float
+    step: float
+    nintvls: int
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
 class StepGeometryGfGfdist:
     op: Literal["geometry-gf.gfdist"]
     target: str
