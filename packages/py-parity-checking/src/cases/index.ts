@@ -18,6 +18,15 @@ import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" wit
 import coordsVectorsMtxvCasesRaw from "./coords-vectors/mtxv.cases.json" with { type: "json" };
 import coordsVectorsMxmCasesRaw from "./coords-vectors/mxm.cases.json" with { type: "json" };
 import coordsVectorsMxvCasesRaw from "./coords-vectors/mxv.cases.json" with { type: "json" };
+import stringNextwdCases from "./strings/nextwd.cases.json" with { type: "json" };
+import stringNthwdCases from "./strings/nthwd.cases.json" with { type: "json" };
+import stringLparseCases from "./strings/lparse.cases.json" with { type: "json" };
+import stringLparsmCases from "./strings/lparsm.cases.json" with { type: "json" };
+import stringLx4decCases from "./strings/lx4dec.cases.json" with { type: "json" };
+import stringLx4numCases from "./strings/lx4num.cases.json" with { type: "json" };
+import stringLx4sgnCases from "./strings/lx4sgn.cases.json" with { type: "json" };
+import stringLx4unsCases from "./strings/lx4uns.cases.json" with { type: "json" };
+import stringLxqstrCases from "./strings/lxqstr.cases.json" with { type: "json" };
 import stringCmprssCases from "./strings/cmprss.cases.json" with { type: "json" };
 import stringEqstrCases from "./strings/eqstr.cases.json" with { type: "json" };
 import stringIswhspCases from "./strings/iswhsp.cases.json" with { type: "json" };
@@ -294,6 +303,15 @@ export const geometryGfCases: ParityCase[] = [
 ];
 
 export const stringsCases: ParityCase[] = [
+  ...(stringNextwdCases as ParityCase[]),
+  ...(stringNthwdCases as ParityCase[]),
+  ...(stringLparseCases as ParityCase[]),
+  ...(stringLparsmCases as ParityCase[]),
+  ...(stringLx4decCases as ParityCase[]),
+  ...(stringLx4numCases as ParityCase[]),
+  ...(stringLx4sgnCases as ParityCase[]),
+  ...(stringLx4unsCases as ParityCase[]),
+  ...(stringLxqstrCases as ParityCase[]),
   ...(stringCmprssCases as ParityCase[]),
   ...(stringEqstrCases as ParityCase[]),
   ...(stringIswhspCases as ParityCase[]),

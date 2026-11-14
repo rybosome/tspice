@@ -1079,6 +1079,15 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+int tspice_nextwd(const char *input, int nexlen, int reslen, char *next, char *rest, char *err, int errMaxBytes);
+int tspice_nthwd(const char *input, int nth, int worlen, char *word, int *loc, char *err, int errMaxBytes);
+int tspice_lparse(const char *list, const char *delim, int nmax, int itemln, int *n, char *items, char *err, int errMaxBytes);
+int tspice_lparsm(const char *list, const char *delims, int nmax, int itemln, int *n, char *items, char *err, int errMaxBytes);
+int tspice_lx4dec(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lx4num(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lx4sgn(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lx4uns(const char *input, int first, double *last, int *nchar, char *err, int errMaxBytes);
+int tspice_lxqstr(const char *input, int qchar, int first, double *last, int *nchar, char *err, int errMaxBytes);
 int tspice_cmprss(int delim, int n, const char *input, int lenout, char *out, char *err, int errMaxBytes);
 int tspice_eqstr(const char *a, const char *b, int *out, char *err, int errMaxBytes);
 int tspice_iswhsp(const char *input, int *out, char *err, int errMaxBytes);

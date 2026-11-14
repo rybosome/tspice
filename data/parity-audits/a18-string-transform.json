@@ -118,7 +118,8 @@
         "strings-ucase-utf8-byte-boundaries",
         "strings-ucase-zero-capacity-error"
       ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a18-572a9d29-wasm",
@@ -194,7 +195,8 @@
         "strings-ucase-utf8-byte-boundaries",
         "strings-ucase-zero-capacity-error"
       ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a18-572a9d29-node",
@@ -272,7 +274,8 @@
       ],
       "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a18-572a9d29-wasm",
@@ -350,7 +353,8 @@
       ],
       "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -433,16 +437,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.cmprss -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.cmprss -> typed WASM domain -> checked transactional buffers -> exported _tspice_cmprss -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -492,16 +508,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.eqstr -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.eqstr -> typed WASM domain -> checked transactional buffers -> exported _tspice_eqstr -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -541,16 +557,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.iswhsp -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.iswhsp -> typed WASM domain -> checked transactional buffers -> exported _tspice_iswhsp -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -590,16 +606,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.lastnb -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.lastnb -> typed WASM domain -> checked transactional buffers -> exported _tspice_lastnb -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -685,16 +701,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lcase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lcase -> typed WASM domain -> checked transactional buffers -> exported _tspice_lcase -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -780,16 +808,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ucase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ucase -> typed WASM domain -> checked transactional buffers -> exported _tspice_ucase -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -859,16 +899,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.matchi -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.matchi -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchi -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -938,19 +978,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.matchw -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.matchw -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchw -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Original evidence retains its source fingerprints. Fresh source-bound local and canonical CI evidence is required for the combined A18/A20 source."
 }

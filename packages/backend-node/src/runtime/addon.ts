@@ -529,6 +529,37 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  nextwd(
+    input: string,
+    nexlen: number,
+    reslen: number,
+  ): { next: string; rest: string };
+  nthwd(
+    input: string,
+    nth: number,
+    worlen: number,
+  ): { word: string; loc: number };
+  lparse(
+    list: string,
+    delim: string,
+    nmax: number,
+    itemln: number,
+  ): { n: number; items: string[] };
+  lparsm(
+    list: string,
+    delims: string,
+    nmax: number,
+    itemln: number,
+  ): { n: number; items: string[] };
+  lx4dec(input: string, first: number): { last: number; nchar: number };
+  lx4num(input: string, first: number): { last: number; nchar: number };
+  lx4sgn(input: string, first: number): { last: number; nchar: number };
+  lx4uns(input: string, first: number): { last: number; nchar: number };
+  lxqstr(
+    input: string,
+    qchar: string,
+    first: number,
+  ): { last: number; nchar: number };
   cmprss(delim: string, n: number, input: string, lenout: number): string;
   eqstr(a: string, b: string): boolean;
   iswhsp(input: string): boolean;

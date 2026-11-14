@@ -1,0 +1,306 @@
+[
+  {
+    "caseId": "strings-lx4num-empty",
+    "description": "Compare complete last and nchar outputs, including the per-routine empty-buffer behavior.",
+    "workflow": [
+      {
+        "op": "strings.lx4num",
+        "input": "",
+        "first": -4
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "",
+        "first": 3
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "",
+        "first": 2147483647
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "",
+        "first": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lx4num-starts",
+    "description": "A hit only starts at the supplied zero-based byte index. Misses retain its predecessor.",
+    "workflow": [
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": -4
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": -1
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 2
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 3
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 4
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 5
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 6
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 8
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 9
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 11
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 15
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "  +12.50E-3 ???",
+        "first": 256
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lx4num-whole-extents",
+    "description": "Both signed limits and their neighbors use the documented out-of-range scan result.",
+    "workflow": [
+      {
+        "op": "strings.lx4num",
+        "input": "1abc",
+        "first": -2147483648
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "1abc",
+        "first": -2147483647
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "1abc",
+        "first": 2147483646
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "1abc",
+        "first": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lx4num-utf8",
+    "description": "A numeric or quoted token following multibyte text is recognized at a byte index.",
+    "workflow": [
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 2
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 4
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 5
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 6
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 7
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 8
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 9
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "Ωé'xy' -9",
+        "first": 10
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lx4num-number-grammar",
+    "description": "Signed/unsigned integers, fractional parts, exponents and incomplete prefixes separate the four scanners.",
+    "workflow": [
+      {
+        "op": "strings.lx4num",
+        "input": "+27",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "-38",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": ".25",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "-.25",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "7.",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "17E-3",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "17d+3",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "3E",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "3e+",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "1.2.3",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "-",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "+",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "--9",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": " 23",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "1,234",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "42\t55",
+        "first": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lx4num-lexical-only",
+    "description": "A long digit run and large exponent are recognized by range without converting to a numeric value.",
+    "workflow": [
+      {
+        "op": "strings.lx4num",
+        "input": "999999999999999999999999999999999999999999999!",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "1D9999",
+        "first": 0
+      },
+      {
+        "op": "strings.lx4num",
+        "input": "-12345678901234567890123456789",
+        "first": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -76,3 +76,12 @@ and exposing incomplete UTF-8 prefixes. Boolean results and byte indices use
 the installed SpiceyPy wrappers. Each backend judgment progresses from source
 review to verification after fresh required local lanes and observed CI.
 [Primary semantics, byte evidence and boundaries](step8-string-transforms.md)
+
+## String tokenization
+
+A20 adds nine parsing and lexical operations on the A18 string domain. Both
+real backends passed the 62 registered workflows after correcting Node's
+validation of the signed leading-dot mantissa count. The audit retains the
+actual index and count, each row or word, and strict byte-capacity diagnostics.
+Parent A18 executions remain historical on their original source.
+[String contracts, assumptions and observed edge values](step8-string-tokenization.md)

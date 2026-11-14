@@ -182,6 +182,15 @@ from .kernels import (
     StepKernelsUnload,
 )
 from .strings import (
+    StepStringsNextwd,
+    StepStringsNthwd,
+    StepStringsLparse,
+    StepStringsLparsm,
+    StepStringsLx4dec,
+    StepStringsLx4num,
+    StepStringsLx4sgn,
+    StepStringsLx4uns,
+    StepStringsLxqstr,
     StepStringsCmprss,
     StepStringsEqstr,
     StepStringsIswhsp,
@@ -212,6 +221,15 @@ from .time import (
 
 WorkflowStep: TypeAlias = (
     StepTimeStr2Et
+    | StepStringsNextwd
+    | StepStringsNthwd
+    | StepStringsLparse
+    | StepStringsLparsm
+    | StepStringsLx4dec
+    | StepStringsLx4num
+    | StepStringsLx4sgn
+    | StepStringsLx4uns
+    | StepStringsLxqstr
     | StepStringsCmprss
     | StepStringsEqstr
     | StepStringsIswhsp

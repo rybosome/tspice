@@ -981,7 +981,8 @@
         "time-sct2e-happy-with-cook-sclk",
         "time-sct2e-missing-sclk-error"
       ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a18-572a9d29-wasm",
@@ -1036,7 +1037,8 @@
         "time-sct2e-happy-with-cook-sclk",
         "time-sct2e-missing-sclk-error"
       ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a18-572a9d29-node",
@@ -1093,7 +1095,8 @@
       ],
       "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a18-572a9d29-wasm",
@@ -1150,7 +1153,8 @@
       ],
       "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1219,11 +1223,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.deltet -> Node adapter with integer validation -> serialized native handler -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1238,11 +1243,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.deltet -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -1350,11 +1356,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.et2utc -> Node adapter with integer validation -> serialized native handler -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1369,11 +1376,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.et2utc -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -1472,11 +1480,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scdecd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1491,11 +1500,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scdecd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -1606,11 +1616,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2c -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1625,11 +1636,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2c -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -1740,11 +1752,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2s -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1759,11 +1772,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2s -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -1867,11 +1881,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scencd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1886,11 +1901,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scencd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -2001,11 +2017,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scs2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2020,11 +2037,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scs2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     },
@@ -2135,11 +2153,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sct2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2154,14 +2173,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sct2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Original evidence retains its source fingerprints. Fresh source-bound local and canonical CI evidence is required for the combined A18/A20 source."
 }

@@ -424,7 +424,24 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/719"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+      "nextAction": "Revalidate A18 on this stacked source. Parent PR #719 retains its original source-bound observations."
+    },
+    {
+      "id": "a20-string-tokenize",
+      "routines": [
+        "nextwd_c",
+        "nthwd_c",
+        "lparse_c",
+        "lparsm_c",
+        "lx4dec_c",
+        "lx4num_c",
+        "lx4sgn_c",
+        "lx4uns_c",
+        "lxqstr_c"
+      ],
+      "dependsOn": ["a18-string-transform"],
+      "prs": [],
+      "nextAction": "Record full required local and canonical CI evidence on the combined source and inspect the final-head matrix and explicit rebaseability."
     }
   ]
 }

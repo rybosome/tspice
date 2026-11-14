@@ -154,6 +154,7 @@ export {
 export {
   spiceStringByteLength,
   spiceAsciiChar,
+  spiceTokenTable,
   spiceStringOutputCapacity,
 } from "./spice-runtime/domains/string-bytes.js";
 
