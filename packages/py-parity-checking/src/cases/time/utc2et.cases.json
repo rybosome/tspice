@@ -1,0 +1,167 @@
+[
+  {
+    "caseId": "time-utc2et-epochs",
+    "description": "Calendar, ordinal and Julian UTC expressions identify the same J2000 noon instant.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2000-01-01T12:00:00"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2000-001T12:00:00"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "JD 2451545"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2000 JAN 01 12:00:00"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-utc2et-leap-second",
+    "description": "Three successive UTC instants include an inserted second before 2017.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2016-12-31T23:59:59"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2016-12-31T23:59:60"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2017-01-01T00:00:00"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-utc2et-fractional",
+    "description": "Nonintegral seconds and mixed date formats yield distinguishable ET.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "1987 APR 05 03:02:01.25"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2024-060T03:02:01.125"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "JD 2451544.75"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-utc2et-missing-lsk",
+    "description": "Recognized UTC without required leap seconds signals a missing kernel.",
+    "workflow": [
+      {
+        "op": "time.utc2et",
+        "utcstr": "2000-01-01T12:00:00"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLEAPSECONDS"]
+    }
+  },
+  {
+    "caseId": "time-utc2et-empty",
+    "description": "Observe the legacy UTC parser diagnostic for empty.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "time-utc2et-label",
+    "description": "Observe the legacy UTC parser diagnostic for label.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2000 JAN 01 12:00:00 TDB"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTIMESTRING"]
+    }
+  },
+  {
+    "caseId": "time-utc2et-text",
+    "description": "Observe the legacy UTC parser diagnostic for text.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "NOT_A_TIME"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTIMESTRING"]
+    }
+  },
+  {
+    "caseId": "time-utc2et-timezone",
+    "description": "Observe the legacy UTC parser diagnostic for timezone.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2000 JAN 01 12:00 PST"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTIMESTRING"]
+    }
+  }
+]

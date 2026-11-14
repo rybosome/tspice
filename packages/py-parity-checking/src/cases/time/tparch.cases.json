@@ -1,0 +1,135 @@
+[
+  {
+    "caseId": "time-tparch-normalize",
+    "description": "Changing from strict to permissive restores overflow-component handling.",
+    "workflow": [
+      {
+        "op": "time.tparch",
+        "type": "YES"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "1993 APR 30 12:00"
+      },
+      {
+        "op": "time.tparch",
+        "type": "NO"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "1993 APR 31 12:00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "1993 MAY 01 12:00"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tparch-other-value",
+    "description": "A non-YES word re-enables normalized date input after strict parsing.",
+    "workflow": [
+      {
+        "op": "time.tparch",
+        "type": "yes"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "1993 APR 30 12:00"
+      },
+      {
+        "op": "time.tparch",
+        "type": "other"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "1993 APR 31 12:00"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tparch-strict-tparse",
+    "description": "Observe parser restriction through the original formal-time helper.",
+    "workflow": [
+      {
+        "op": "time.tparch",
+        "type": " YES "
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "1993 APR 31 12:00"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["day of the month"]
+    }
+  },
+  {
+    "caseId": "time-tparch-strict-utc",
+    "description": "Strict policy changes the actual downstream UTC2ET result.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.tparch",
+        "type": "yes"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "1993 APR 31 12:00"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTIMESTRING"]
+    }
+  },
+  {
+    "caseId": "time-tparch-permissive-utc",
+    "description": "Permissive input resolves the day overflow through the live UTC scale conversion.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.tparch",
+        "type": "NO"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "1993 APR 31 12:00"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "1993 MAY 01 12:00"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tparch-empty",
+    "description": "The C wrapper checks empty mode text before changing state.",
+    "workflow": [
+      {
+        "op": "time.tparch",
+        "type": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

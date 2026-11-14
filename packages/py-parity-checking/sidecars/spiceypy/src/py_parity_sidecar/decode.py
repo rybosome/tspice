@@ -171,6 +171,11 @@ from .models import (
     StepTimeStr2Et,
     StepTimeTimout,
     StepTimeTkvrsn,
+    StepTimeEtcal,
+    StepTimeUtc2et,
+    StepTimeTparch,
+    StepTimeTsetyr,
+    StepTimeEt2lst,
     StepTimeTparse,
     StepTimeTpictr,
     StepTimeTimdefGet,
@@ -392,6 +397,42 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 epoch=_expect_number(step.get("epoch"), label="time.unitim.epoch"),
                 insys=_expect_string(step.get("insys"), label="time.unitim.insys"),
                 outsys=_expect_string(step.get("outsys"), label="time.unitim.outsys"),
+            )
+
+        case "time.etcal":
+            return StepTimeEtcal(
+                op=op,
+                et=_expect_number(step.get("et"), label="time.etcal.et"),
+                callen=_expect_int(step.get("callen",256), label="time.etcal.callen"),
+            )
+
+        case "time.utc2et":
+            return StepTimeUtc2et(
+                op=op,
+                utcstr=_expect_string(step.get("utcstr"), label="time.utc2et.utcstr"),
+            )
+
+        case "time.tparch":
+            return StepTimeTparch(
+                op=op,
+                type=_expect_string(step.get("type"), label="time.tparch.type"),
+            )
+
+        case "time.tsetyr":
+            return StepTimeTsetyr(
+                op=op,
+                year=_expect_int(step.get("year"), label="time.tsetyr.year"),
+            )
+
+        case "time.et2lst":
+            return StepTimeEt2lst(
+                op=op,
+                et=_expect_number(step.get("et"), label="time.et2lst.et"),
+                body=_expect_int(step.get("body"), label="time.et2lst.body"),
+                lon=_expect_number(step.get("lon"), label="time.et2lst.lon"),
+                type=_expect_string(step.get("type"), label="time.et2lst.type"),
+                timlen=_expect_int(step.get("timlen",256), label="time.et2lst.timlen"),
+                ampmlen=_expect_int(step.get("ampmlen",256), label="time.et2lst.ampmlen"),
             )
 
         case "time.tparse":

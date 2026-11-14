@@ -195,6 +195,11 @@ from .time import (
     StepTimeTimdefSet,
     StepTimeTimout,
     StepTimeTkvrsn,
+    StepTimeEtcal,
+    StepTimeUtc2et,
+    StepTimeTparch,
+    StepTimeTsetyr,
+    StepTimeEt2lst,
     StepTimeTparse,
     StepTimeTpictr,
     StepTimeUnitim,
@@ -207,6 +212,11 @@ WorkflowStep: TypeAlias = (
     | StepTimeTimout
     | StepTimeDeltet
     | StepTimeUnitim
+    | StepTimeEtcal
+    | StepTimeUtc2et
+    | StepTimeTparch
+    | StepTimeTsetyr
+    | StepTimeEt2lst
     | StepTimeTparse
     | StepTimeTpictr
     | StepTimeTimdefGet

@@ -21,6 +21,57 @@ export interface TimeApi {
    */
   tkvrsn(item: "TOOLKIT"): string;
 
+  /**
+   * Format finite ephemeris seconds from J2000 on the formal Gregorian calendar
+   * with 86400-second days. No kernels are needed. N0067 supplies boundary text
+   * for epochs beyond its calendar day limits. callen includes the terminator,
+   * defaults to 181 and truncates smaller valid outputs; below 2 signals STRINGTOOSHORT.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/etcal_c.html
+   */
+  etcal(et: number, callen?: number): string;
+  /**
+   * Convert a legacy UTC calendar, day-of-year or Julian-date string to ET.
+   * Requires leap-second information. Calendar checking and two-digit years use
+   * the current TPARCH/TSETYR settings. Explicit zones, AM/PM or alternate
+   * systems produce INVALIDTIMESTRING. Unrepresentable signed calendar/LSK day
+   * arithmetic is rejected before conversion.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/utc2et_c.html
+   */
+  utc2et(utcstr: string): number;
+  /**
+   * Change the toolkit's persistent parsing mode. A nonempty string matching
+   * YES under CSPICE comparison enables calendar checks; other nonempty values
+   * select permissive parsing. Native clients share this process setting.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tparch_c.html
+   */
+  tparch(type: string): void;
+  /**
+   * Set the first year of the 100-year window used to expand two-digit dates.
+   * Nonpositive signed integers leave it unchanged. The largest supported
+   * lower bound is 5851355 so every expanded year fits TPARSE's year*367.
+   * This parsing setting persists across kernel clears and native clients.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tsetyr_c.html
+   */
+  tsetyr(year: number): void;
+  /**
+   * Return local solar clock fields and both formatted strings at ET, at the
+   * given longitude in radians. PLANETOCENTRIC is east-positive; PLANETOGRAPHIC
+   * uses the body's longitude convention. Except for the Sun's noon shortcut,
+   * the body-fixed frame, Sun ephemeris and rotation rate must be available.
+   * Planetographic longitude is converted before the Sun shortcut. Signed
+   * capacities include NUL and default to 9 and 14. INT_MIN body lookup and
+   * undefined numerical narrowing are rejected.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/et2lst_c.html
+   */
+  et2lst(
+    et: number,
+    body: number,
+    lon: number,
+    type: string,
+    timlen?: number,
+    ampmlen?: number,
+  ): { hr: number; mn: number; sc: number; time: string; ampm: string };
+
   // --- core conversions ----------------------------------------------------
 
   /**

@@ -95,6 +95,26 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export unitim(epoch, insys, outsys)",
   );
   invariant(
+    typeof native.etcal === "function",
+    "Expected native addon to export etcal",
+  );
+  invariant(
+    typeof native.utc2et === "function",
+    "Expected native addon to export utc2et",
+  );
+  invariant(
+    typeof native.tparch === "function",
+    "Expected native addon to export tparch",
+  );
+  invariant(
+    typeof native.tsetyr === "function",
+    "Expected native addon to export tsetyr",
+  );
+  invariant(
+    typeof native.et2lst === "function",
+    "Expected native addon to export et2lst",
+  );
+  invariant(
     typeof native.tparse === "function",
     "Expected native addon to export tparse(timstr)",
   );

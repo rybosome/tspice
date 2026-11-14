@@ -94,13 +94,47 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 162,
-    planned: 487,
+    implemented: 167,
+    planned: 482,
     excluded: 3,
-    caseFiles: 162,
-    scenarios: 1109,
+    caseFiles: 167,
+    scenarios: 1147,
     wasmRawUnsupported: 0,
   });
+  const functions = cFunctions(
+    cTokens(
+      fs.readFileSync(
+        path.join(f.root, "packages/backend-shim-c/src/domains/time.c"),
+        "utf8",
+      ),
+    ),
+  );
+  for (const name of ["etcal", "utc2et", "tparch", "tsetyr", "et2lst"]) {
+    const row = ledger.routines.find((r) => r.routine === name + "_c");
+    for (const backend of ["node", "wasm"])
+      assert.ok(row.mapping[backend].cspiceEntrypoints.includes(name + "_c"));
+    assert.ok(
+      cCalls(functions.get("tspice_" + name).body).includes(name + "_c"),
+    );
+  }
+  assert.ok(
+    cCalls(functions.get("tspice_utc2et").body).includes("utc_numbers_defined"),
+  );
+  assert.ok(
+    cCalls(functions.get("utc_numbers_defined").body).includes("tpartv_"),
+  );
+  assert.ok(
+    cCalls(functions.get("tspice_et2lst").body).includes("local_time_defined"),
+  );
+  const localCalls = cCalls(functions.get("local_time_defined").body);
+  for (const required of [
+    "body_mapping_defined",
+    "pgrrec_",
+    "cidfrm_",
+    "spkez_",
+    "rmaind_",
+  ])
+    assert.ok(localCalls.includes(required));
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
   assert.equal(kplfrm.inventoryDecision, "planned");
   assert.equal(kplfrm.implementation, "contract-present");
@@ -445,7 +479,12 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
-  assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
+  assert.equal(ledger.audit.baselineRoutines, 162);
+  assert.equal(ledger.audit.expansionRoutines, 5);
+  assert.equal(
+    ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
+    ledger.summary.implemented,
+  );
   for (const backend of ["node", "wasm"]) {
     assert.ok(ledger.audit.counts[backend].reviewed >= 8);
     assert.equal(ledger.audit.counts[backend].verified, 0);
@@ -470,7 +509,21 @@ test("baseline rejects duplicate, removed, and omitted routines", (t) => {
   ]) {
     const f = fixture(t);
     editAudit(f, mutation, "baseline.json");
-    assert.throws(f.build, /duplicate|unknown\/removed|missing from baseline/);
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
+  }
+});
+
+test("expansion assignments cannot omit routines, duplicate baseline, or plan absent APIs", (t) => {
+  for (const mutation of [
+    (r) => {
+      r.expansionBatches = [];
+    },
+    (r) => r.expansionBatches[0].routines.push(r.batches[0].routines[0]),
+    (r) => r.expansionBatches[0].routines.push("clight_c"),
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation, "baseline.json");
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
   }
 });
 

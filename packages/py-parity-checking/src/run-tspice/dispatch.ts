@@ -27,6 +27,11 @@ export function dispatchStep(
     case "time.timout":
     case "time.deltet":
     case "time.unitim":
+    case "time.etcal":
+    case "time.utc2et":
+    case "time.tparch":
+    case "time.tsetyr":
+    case "time.et2lst":
     case "time.tparse":
     case "time.tpictr":
     case "time.timdef":

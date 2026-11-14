@@ -51,6 +51,42 @@ class StepTimeUnitim:
 
 
 @dataclass(frozen=True)
+class StepTimeEtcal:
+    op:Literal["time.etcal"]
+    et: float
+    callen: int = 256
+
+
+@dataclass(frozen=True)
+class StepTimeUtc2et:
+    op:Literal["time.utc2et"]
+    utcstr: str
+
+
+@dataclass(frozen=True)
+class StepTimeTparch:
+    op:Literal["time.tparch"]
+    type: str
+
+
+@dataclass(frozen=True)
+class StepTimeTsetyr:
+    op:Literal["time.tsetyr"]
+    year: int
+
+
+@dataclass(frozen=True)
+class StepTimeEt2lst:
+    op:Literal["time.et2lst"]
+    et: float
+    body: int
+    lon: float
+    type: str
+    timlen: int = 256
+    ampmlen: int = 256
+
+
+@dataclass(frozen=True)
 class StepTimeTparse:
     op: Literal["time.tparse"]
     timstr: str

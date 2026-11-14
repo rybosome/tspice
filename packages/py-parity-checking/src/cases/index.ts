@@ -123,6 +123,11 @@ import timeStr2EtCasesRaw from "./time/str2et.cases.json" with { type: "json" };
 import timeTimdefCasesRaw from "./time/timdef.cases.json" with { type: "json" };
 import timeTimoutCasesRaw from "./time/timout.cases.json" with { type: "json" };
 import timeTkvrsnCasesRaw from "./time/tkvrsn.cases.json" with { type: "json" };
+import timeEtcalCases from "./time/etcal.cases.json" with { type: "json" };
+import timeUtc2etCases from "./time/utc2et.cases.json" with { type: "json" };
+import timeTparchCases from "./time/tparch.cases.json" with { type: "json" };
+import timeTsetyrCases from "./time/tsetyr.cases.json" with { type: "json" };
+import timeEt2lstCases from "./time/et2lst.cases.json" with { type: "json" };
 import timeTparseCasesRaw from "./time/tparse.cases.json" with { type: "json" };
 import timeTpictrCasesRaw from "./time/tpictr.cases.json" with { type: "json" };
 import timeUnitimCasesRaw from "./time/unitim.cases.json" with { type: "json" };
@@ -140,6 +145,11 @@ export const timeCases: ParityCase[] = [
   ...(timeSct2eCasesRaw as ParityCase[]),
   ...(timeTimoutCasesRaw as ParityCase[]),
   ...(timeTkvrsnCasesRaw as ParityCase[]),
+  ...(timeEtcalCases as ParityCase[]),
+  ...(timeUtc2etCases as ParityCase[]),
+  ...(timeTparchCases as ParityCase[]),
+  ...(timeTsetyrCases as ParityCase[]),
+  ...(timeEt2lstCases as ParityCase[]),
   ...(timeTparseCasesRaw as ParityCase[]),
   ...(timeTpictrCasesRaw as ParityCase[]),
   ...(timeUnitimCasesRaw as ParityCase[]),

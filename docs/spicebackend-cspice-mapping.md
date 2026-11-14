@@ -93,6 +93,16 @@ For generic solar system work, these NAIF standards are commonly used:
 
 ## Domain: `time` (`TimeApi`)
 
+D01 adds five direct Node and WASM mappings in this domain. Signed capacities include the C terminator. CSPICE parser controls persist across calls. [Detailed civil-time semantics and evidence](step8-civil-time.md)
+
+| Raw method | Canonical routine | Observable result                                                     |
+| ---------- | ----------------- | --------------------------------------------------------------------- |
+| `etcal`    | `etcal_c`         | Formal calendar string, including truncated and extreme-epoch outputs |
+| `utc2et`   | `utc2et_c`        | ET from a legacy UTC string using loaded leap data                    |
+| `tparch`   | `tparch_c`        | Persistent strict/permissive parsing setting                          |
+| `tsetyr`   | `tsetyr_c`        | Persistent two-digit-year lower bound                                 |
+| `et2lst`   | `et2lst_c`        | Local solar clock fields and both formatted time strings              |
+
 | domain.method                       | CSPICE entrypoint(s)  | Args (TS shape)                                          | Returns (TS shape) | Comparison notes (tolerance/normalization)                                   | Statefulness / required kernels                                                                                                       |
 | ----------------------------------- | --------------------- | -------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `time.spiceVersion()`               | `tkvrsn_c("TOOLKIT")` | `(): string`                                             | `string`           | exact string match                                                           | none                                                                                                                                  |
