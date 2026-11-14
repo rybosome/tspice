@@ -11,6 +11,8 @@
 typedef struct {
   uintptr_t handle;
   SpiceInt capacity;
+  int isWindow;
+  int preserveWindowControl;
 } tspice_cell_registry_entry;
 
 typedef struct {
@@ -59,7 +61,7 @@ static int tspice_registry_contains(uintptr_t handle) {
   return found;
 }
 
-int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes) {
+int tspice_registry_add(SpiceCell *cell, int isWindow, const char *ctx, char *err, int errMaxBytes) {
   if (!cell) {
     return tspice_return_error(err, errMaxBytes, "tspice_registry_add(): cell must be non-null");
   }
@@ -93,6 +95,8 @@ int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxB
   }
   tspice_cells_registry.items[idx].handle = handle;
   tspice_cells_registry.items[idx].capacity = cell->size;
+  tspice_cells_registry.items[idx].isWindow = isWindow;
+  tspice_cells_registry.items[idx].preserveWindowControl = 0;
   tspice_cells_registry.len++;
 
   return 0;
@@ -177,6 +181,30 @@ SpiceCell *tspice_validate_handle(
   }
 
   return (SpiceCell *)handle;
+}
+
+SpiceCell *tspice_validate_window_kind(uintptr_t handle, char *err, int errMaxBytes) {
+  int found = 0;
+  const size_t idx = tspice_registry_lower_bound(handle, &found);
+  if (!found || !tspice_cells_registry.items[idx].isWindow) {
+    tspice_write_error(err, errMaxBytes, "Expected a live window handle");
+    return NULL;
+  }
+  return (SpiceCell *)handle;
+}
+
+int tspice_preserves_window_control(const SpiceCell *window) {
+  int found = 0;
+  const size_t idx = tspice_registry_lower_bound((uintptr_t)window, &found);
+  return found && tspice_cells_registry.items[idx].preserveWindowControl;
+}
+
+void tspice_set_window_control_preserved(const SpiceCell *window, int preserve) {
+  int found = 0;
+  const size_t idx = tspice_registry_lower_bound((uintptr_t)window, &found);
+  if (found && tspice_cells_registry.items[idx].isWindow) {
+    tspice_cells_registry.items[idx].preserveWindowControl = preserve;
+  }
 }
 
 int tspice_validate_cell_capacity(

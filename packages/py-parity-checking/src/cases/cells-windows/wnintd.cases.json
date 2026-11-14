@@ -1,0 +1,472 @@
+[
+  {
+    "caseId": "cells-windows-wnintd-interleaved-and-reversed",
+    "description": "Evaluate both operand orders, overwriting the same result, and retain each input endpoint.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 2,
+        "right": 4,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 6,
+        "right": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 20,
+        "right": 24
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 28,
+        "right": 30
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "R",
+        "left": 90,
+        "right": 91,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "A"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "A",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "A",
+        "index": 1
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "A",
+        "index": 2
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "B"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "B",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "B",
+        "index": 1
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "B",
+        "index": 2
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "B",
+        "index": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnintd-touching-and-singletons",
+    "description": "Touching boundaries and isolated points distinguish closed interval algebra.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": -7,
+        "right": -3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 4
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 9,
+        "right": 9
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": -3,
+        "right": -1,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 2,
+        "right": 2
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 4,
+        "right": 7
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 9,
+        "right": 10
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnintd-empty-operands",
+    "description": "Read empty input in either operand position and overwrite a previously nonempty result.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "B",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "B",
+        "bId": "B",
+        "resultId": "R",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnintd-same-input",
+    "description": "Input operands may share a live handle; the destination remains independently allocated.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "A",
+        "bId": "A",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "A"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "A",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "A",
+        "index": 1
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "A",
+        "index": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnintd-nested-and-disjoint",
+    "description": "Compare a contained interval and a distant disjoint interval against both operand orders.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": -9,
+        "right": 4,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 10,
+        "right": 20
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": -5,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 30,
+        "right": 40
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnintd-undersized-result",
+    "description": "The explicit one-interval destination cannot hold this result.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 2,
+        "right": 4,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 6,
+        "right": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 20,
+        "right": 24
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 28,
+        "right": 30
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "maxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wnintd-exact-capacity",
+    "description": "Three intersections exactly fill the six available endpoint slots.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 2,
+        "right": 4,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 6,
+        "right": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 20,
+        "right": 24
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 28,
+        "right": 30
+      },
+      {
+        "op": "cells-windows.wnintd",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "maxIntervals": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -8,6 +8,10 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   issueOpaqueSpiceHandle,
+  assertWindowScalar,
+  windowSideByte,
+  windowOperatorBytes,
+  windowSummaryIndex,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
@@ -15,7 +19,12 @@ import {
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import * as emscriptenExports from "../lowlevel/exports.js";
 
-import { withAllocs, withMalloc, WASM_ERR_MAX_BYTES } from "../codec/alloc.js";
+import {
+  withAllocs,
+  withMalloc,
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 
@@ -633,6 +642,253 @@ export function createCellsWindowsApi(
         throw new TypeError("insrtc(item): expected a string");
       assertKnownCell(cell, "insrtc()");
       tspiceCallInsrtc(module, item, cell);
+    },
+    wncomd: (left, right, window, result) => {
+      assertWindowScalar(left, "wncomd(left)");
+      assertWindowScalar(right, "wncomd(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wncomd()");
+      const resultPtr = wasmWindowPointer(module, result, "wncomd()");
+      if (result === window)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wncomd(
+          left,
+          right,
+          windowPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wncond: (left, right, window) => {
+      assertWindowScalar(left, "wncond(left)");
+      assertWindowScalar(right, "wncond(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wncond()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wncond(
+          left,
+          right,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wndifd: (a, b, result) => {
+      const aPtr = wasmWindowPointer(module, a, "wndifd()");
+      const bPtr = wasmWindowPointer(module, b, "wndifd()");
+      const resultPtr = wasmWindowPointer(module, result, "wndifd()");
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wndifd(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnelmd: (point, window) => {
+      assertWindowScalar(point, "wnelmd(point)");
+      const windowPtr = wasmWindowPointer(module, window, "wnelmd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_wnelmd(
+          point,
+          windowPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const out = module.HEAP32[outPtr >>> 2];
+        if (out !== 0 && out !== 1)
+          throw new TypeError("Invalid window predicate result");
+        return out === 1;
+      });
+    },
+    wnexpd: (left, right, window) => {
+      assertWindowScalar(left, "wnexpd(left)");
+      assertWindowScalar(right, "wnexpd(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wnexpd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnexpd(
+          left,
+          right,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnextd: (side, window) => {
+      const sideByte = windowSideByte(side);
+      const windowPtr = wasmWindowPointer(module, window, "wnextd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnextd(
+          sideByte,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnfild: (small, window) => {
+      assertWindowScalar(small, "wnfild(small)");
+      const windowPtr = wasmWindowPointer(module, window, "wnfild()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnfild(
+          small,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnfltd: (small, window) => {
+      assertWindowScalar(small, "wnfltd(small)");
+      const windowPtr = wasmWindowPointer(module, window, "wnfltd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnfltd(
+          small,
+          windowPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnincd: (left, right, window) => {
+      assertWindowScalar(left, "wnincd(left)");
+      assertWindowScalar(right, "wnincd(right)");
+      const windowPtr = wasmWindowPointer(module, window, "wnincd()");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (errPtr, outPtr) => {
+        const status = module._tspice_wnincd(
+          left,
+          right,
+          windowPtr,
+          outPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+        const out = module.HEAP32[outPtr >>> 2];
+        if (out !== 0 && out !== 1)
+          throw new TypeError("Invalid window predicate result");
+        return out === 1;
+      });
+    },
+    wnintd: (a, b, result) => {
+      const aPtr = wasmWindowPointer(module, a, "wnintd()");
+      const bPtr = wasmWindowPointer(module, b, "wnintd()");
+      const resultPtr = wasmWindowPointer(module, result, "wnintd()");
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnintd(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
+    },
+    wnreld: (a, op, b) => {
+      const aPtr = wasmWindowPointer(module, a, "wnreld()");
+      const bytes = windowOperatorBytes(op, WASM_MAX_ALLOC_BYTES - 1);
+      const bPtr = wasmWindowPointer(module, b, "wnreld()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1, 4],
+        (errPtr, opPtr, outPtr) => {
+          const start = opPtr >>> 0;
+          new TextEncoder().encodeInto(
+            op,
+            module.HEAPU8.subarray(start, start + bytes),
+          );
+          module.HEAPU8[start + bytes] = 0;
+          const status = module._tspice_wnreld(
+            aPtr,
+            opPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const out = module.HEAP32[outPtr >>> 2];
+          if (out !== 0 && out !== 1)
+            throw new TypeError("Invalid window predicate result");
+          return out === 1;
+        },
+      );
+    },
+    wnsumd: (window) => {
+      const windowPtr = wasmWindowPointer(module, window, "wnsumd()");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 8, 8, 8, 4, 4],
+        (errPtr, measPtr, avgPtr, stddevPtr, shortestPtr, longestPtr) => {
+          const status = module._tspice_wnsumd(
+            windowPtr,
+            measPtr,
+            avgPtr,
+            stddevPtr,
+            shortestPtr,
+            longestPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            meas: module.HEAPF64[measPtr >>> 3]!,
+            avg: module.HEAPF64[avgPtr >>> 3]!,
+            stddev: module.HEAPF64[stddevPtr >>> 3]!,
+            shortest: windowSummaryIndex(module.HEAP32[shortestPtr >>> 2]),
+            longest: windowSummaryIndex(module.HEAP32[longestPtr >>> 2]),
+          };
+        },
+      );
+    },
+    wnunid: (a, b, result) => {
+      const aPtr = wasmWindowPointer(module, a, "wnunid()");
+      const bPtr = wasmWindowPointer(module, b, "wnunid()");
+      const resultPtr = wasmWindowPointer(module, result, "wnunid()");
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const status = module._tspice_wnunid(
+          aPtr,
+          bPtr,
+          resultPtr,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+      });
     },
     wninsd: (left, right, window) => {
       assertKnownWindow(window, "wninsd()");

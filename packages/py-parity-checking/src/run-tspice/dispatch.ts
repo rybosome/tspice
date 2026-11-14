@@ -80,6 +80,19 @@ export function dispatchStep(
     case "cells-windows.wncard":
     case "cells-windows.wninsd":
     case "cells-windows.wnfetd":
+    case "cells-windows.wncomd":
+    case "cells-windows.wncond":
+    case "cells-windows.wndifd":
+    case "cells-windows.wnelmd":
+    case "cells-windows.wnexpd":
+    case "cells-windows.wnextd":
+    case "cells-windows.wnfild":
+    case "cells-windows.wnfltd":
+    case "cells-windows.wnincd":
+    case "cells-windows.wnintd":
+    case "cells-windows.wnreld":
+    case "cells-windows.wnsumd":
+    case "cells-windows.wnunid":
     case "cells-windows.wnvald":
       return runCellsWindowsStep(context, step);
 

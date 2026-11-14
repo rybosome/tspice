@@ -7,6 +7,10 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertWindowScalar,
+  windowSideByte,
+  windowOperatorBytes,
+  windowSummaryIndex,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
   invariant,
@@ -49,6 +53,99 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
     },
     insrtc: (item, cell) => {
       native.insrtc(item, cell);
+    },
+    wncomd: (left, right, window, result) => {
+      assertWindowScalar(left, "wncomd(left)");
+      assertWindowScalar(right, "wncomd(right)");
+      if (result === window)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wncomd(left, right, window, result);
+    },
+    wncond: (left, right, window) => {
+      assertWindowScalar(left, "wncond(left)");
+      assertWindowScalar(right, "wncond(right)");
+      native.wncond(left, right, window);
+    },
+    wndifd: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wndifd(a, b, result);
+    },
+    wnelmd: (point, window) => {
+      assertWindowScalar(point, "wnelmd(point)");
+      const out = native.wnelmd(point, window);
+      invariant(
+        typeof out === "boolean",
+        "Expected wnelmd() to return a boolean",
+      );
+      return out;
+    },
+    wnexpd: (left, right, window) => {
+      assertWindowScalar(left, "wnexpd(left)");
+      assertWindowScalar(right, "wnexpd(right)");
+      native.wnexpd(left, right, window);
+    },
+    wnextd: (side, window) => {
+      windowSideByte(side);
+      native.wnextd(side, window);
+    },
+    wnfild: (small, window) => {
+      assertWindowScalar(small, "wnfild(small)");
+      native.wnfild(small, window);
+    },
+    wnfltd: (small, window) => {
+      assertWindowScalar(small, "wnfltd(small)");
+      native.wnfltd(small, window);
+    },
+    wnincd: (left, right, window) => {
+      assertWindowScalar(left, "wnincd(left)");
+      assertWindowScalar(right, "wnincd(right)");
+      const out = native.wnincd(left, right, window);
+      invariant(
+        typeof out === "boolean",
+        "Expected wnincd() to return a boolean",
+      );
+      return out;
+    },
+    wnintd: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wnintd(a, b, result);
+    },
+    wnreld: (a, op, b) => {
+      windowOperatorBytes(op);
+      const out = native.wnreld(a, op, b);
+      invariant(
+        typeof out === "boolean",
+        "Expected wnreld() to return a boolean",
+      );
+      return out;
+    },
+    wnsumd: (window) => {
+      const out = native.wnsumd(window);
+      invariant(
+        out !== null && typeof out === "object",
+        "Expected wnsumd() to return a summary",
+      );
+      const { meas, avg, stddev, shortest, longest } = out;
+      invariant(
+        typeof meas === "number" &&
+          typeof avg === "number" &&
+          typeof stddev === "number",
+        "Expected numeric window summary measures",
+      );
+      return {
+        meas,
+        avg,
+        stddev,
+        shortest: windowSummaryIndex(shortest),
+        longest: windowSummaryIndex(longest),
+      };
+    },
+    wnunid: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wnunid(a, b, result);
     },
     wninsd: (left, right, window) => {
       native.wninsd(left, right, window);

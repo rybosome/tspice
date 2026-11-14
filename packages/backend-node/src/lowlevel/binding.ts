@@ -498,6 +498,58 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export cellGetc(cell, index)",
   );
   invariant(
+    typeof native.wncomd === "function",
+    "Native addon missing wncomd()",
+  );
+  invariant(
+    typeof native.wncond === "function",
+    "Native addon missing wncond()",
+  );
+  invariant(
+    typeof native.wndifd === "function",
+    "Native addon missing wndifd()",
+  );
+  invariant(
+    typeof native.wnelmd === "function",
+    "Native addon missing wnelmd()",
+  );
+  invariant(
+    typeof native.wnexpd === "function",
+    "Native addon missing wnexpd()",
+  );
+  invariant(
+    typeof native.wnextd === "function",
+    "Native addon missing wnextd()",
+  );
+  invariant(
+    typeof native.wnfild === "function",
+    "Native addon missing wnfild()",
+  );
+  invariant(
+    typeof native.wnfltd === "function",
+    "Native addon missing wnfltd()",
+  );
+  invariant(
+    typeof native.wnincd === "function",
+    "Native addon missing wnincd()",
+  );
+  invariant(
+    typeof native.wnintd === "function",
+    "Native addon missing wnintd()",
+  );
+  invariant(
+    typeof native.wnreld === "function",
+    "Native addon missing wnreld()",
+  );
+  invariant(
+    typeof native.wnsumd === "function",
+    "Native addon missing wnsumd()",
+  );
+  invariant(
+    typeof native.wnunid === "function",
+    "Native addon missing wnunid()",
+  );
+  invariant(
     typeof native.wninsd === "function",
     "Expected native addon to export wninsd(left, right, window)",
   );

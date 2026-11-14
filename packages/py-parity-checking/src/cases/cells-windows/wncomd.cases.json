@@ -1,0 +1,284 @@
+[
+  {
+    "caseId": "cells-windows-wncomd-closure-overwrites-result",
+    "description": "The interval-bounded complement overwrites a populated result; the original three intervals remain accessible.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "R",
+        "left": 71,
+        "right": 73,
+        "maxIntervals": 4
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 0,
+        "right": 30,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 4
+      },
+      {
+        "op": "cells-windows.wncard",
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 0
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 1
+      },
+      {
+        "op": "cells-windows.wnfetd",
+        "windowId": "W",
+        "index": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wncomd-clipped-and-disjoint",
+    "description": "Clip to interior endpoints, a disjoint range, a fully covered interval and a singleton.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 2,
+        "right": 24,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 30,
+        "right": 45,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 8,
+        "right": 9,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 5,
+        "right": 5,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 3,
+        "right": 3,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wncomd-empty-window",
+    "description": "An empty input leaves the whole bounding interval.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": -5,
+        "right": 8,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wncomd-singleton-closure",
+    "description": "Closing the complement rejoins both sides of an isolated excluded point.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 0,
+        "right": 7,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wncomd-zero-capacity-empty-result",
+    "description": "A covered bounding interval needs no result endpoints and uses a logical zero-capacity cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 8,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 2,
+        "right": 6,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wncomd-undersized-result",
+    "description": "A one-interval destination cannot hold all complement intervals.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 0,
+        "right": 30,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wncomd-reversed-endpoints",
+    "description": "The left complement bound exceeds the right bound.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wncomd",
+        "left": 3,
+        "right": 1,
+        "windowId": "W",
+        "resultId": "R",
+        "maxIntervals": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADENDPOINTS"]
+    }
+  }
+]

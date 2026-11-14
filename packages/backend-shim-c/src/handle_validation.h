@@ -24,8 +24,16 @@ SpiceCell *tspice_validate_handle(
 
 // Internal registry helpers used by the cells/windows domain to register and
 // retire handles.
-int tspice_registry_add(SpiceCell *cell, const char *ctx, char *err, int errMaxBytes);
+int tspice_registry_add(SpiceCell *cell, int isWindow, const char *ctx, char *err, int errMaxBytes);
 int tspice_registry_remove(SpiceCell *cell);
+
+// Accept only a live allocation issued specifically as a window.
+SpiceCell *tspice_validate_window_kind(uintptr_t handle, char *err, int errMaxBytes);
+
+// Failed B03 result calls can leave the written Fortran cardinality different
+// from SpiceCell.card. Other live handles use the ordinary descriptor path.
+int tspice_preserves_window_control(const SpiceCell *window);
+void tspice_set_window_control_preserved(const SpiceCell *window, int preserve);
 
 // Enforce the caller precondition that a size cannot exceed original allocated
 // backing storage. CSPICE cannot detect this from the mutable cell descriptor.

@@ -587,6 +587,26 @@ export type NativeAddon = {
   cellGetd(cell: number, index: number): number;
   cellGetc(cell: number, index: number): string;
 
+  wncomd(left: number, right: number, window: number, result: number): void;
+  wncond(left: number, right: number, window: number): void;
+  wndifd(a: number, b: number, result: number): void;
+  wnelmd(point: number, window: number): boolean;
+  wnexpd(left: number, right: number, window: number): void;
+  wnextd(side: string, window: number): void;
+  wnfild(small: number, window: number): void;
+  wnfltd(small: number, window: number): void;
+  wnincd(left: number, right: number, window: number): boolean;
+  wnintd(a: number, b: number, result: number): void;
+  wnreld(a: number, op: string, b: number): boolean;
+  wnsumd(window: number): {
+    meas: number;
+    avg: number;
+    stddev: number;
+    shortest: number;
+    longest: number;
+  };
+  wnunid(a: number, b: number, result: number): void;
+
   wninsd(left: number, right: number, window: number): void;
   wncard(window: number): number;
   wnfetd(window: number, index: number): number[];

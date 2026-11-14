@@ -6,6 +6,9 @@
 
 #include "tspice_backend_shim.h"
 
+#include <cmath>
+#include <limits>
+#include <string>
 #include <cstdint>
 #include <mutex>
 
@@ -496,6 +499,373 @@ static Napi::String CellGetc(const Napi::CallbackInfo& info) {
   return Napi::String::New(env, out.c_str());
 }
 
+static bool ReadWindowOp(Napi::Env env, const Napi::Value& value, std::string* text) {
+  if (!value.IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a string"));
+    return false;
+  }
+  size_t bytes = 0;
+  if (napi_get_value_string_utf8(env, value, nullptr, 0, &bytes) != napi_ok || bytes >= std::numeric_limits<int>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "String exceeds its UTF-8 byte limit"));
+    return false;
+  }
+  const Napi::String input = value.As<Napi::String>();
+  // N-API replaces unpaired surrogates when encoding UTF-8. Validate the
+  // original UTF-16 units before making the C string.
+  const std::u16string units = input.Utf16Value();
+  for (size_t i = 0; i < units.size(); i++) {
+    const char16_t c = units[i];
+    if (c == 0) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Input contains an embedded NUL"));
+      return false;
+    }
+    if (c >= 0xd800 && c <= 0xdfff) {
+      if (c > 0xdbff || i + 1 == units.size() || units[i+1] < 0xdc00 || units[i+1] > 0xdfff) {
+        ThrowSpiceError(Napi::TypeError::New(env, "Input contains an unpaired UTF-16 surrogate"));
+        return false;
+      }
+      i++;
+    }
+  }
+  *text = input.Utf8Value();
+  return true;
+}
+
+static bool ReadWindowSide(Napi::Env env, const Napi::Value& value, int* out) {
+  size_t units = 0;
+  if (value.IsString() && napi_get_value_string_utf16(env, value, nullptr, 0, &units) == napi_ok && units == 1) {
+    const auto text = value.As<Napi::String>().Utf16Value();
+    if (text.size() == 1 && text[0] <= 127) { *out = text[0]; return true; }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected one ASCII byte"));
+  return false;
+}
+
+static bool ReadWindowScalar(Napi::Env env, const Napi::Value& value, double* out) {
+  if (value.IsNumber()) {
+    const double number = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(number)) { *out = number; return true; }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite window argument"));
+  return false;
+}
+
+static Napi::Value Wncomd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wncomd() expects 4 arguments"));
+    return env.Undefined();
+  }
+  double left = 0;
+  if (!ReadWindowScalar(env, info[0], &left)) return env.Undefined();
+  double right = 0;
+  if (!ReadWindowScalar(env, info[1], &right)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &windowHandle)) return env.Undefined();
+  uint32_t resultHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[3], "window", &resultHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wncomd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t result = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, resultHandle, SPICE_DP, "wncomd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wncomd(left, right, window, result, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wncomd", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wncond(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wncond() expects 3 arguments"));
+    return env.Undefined();
+  }
+  double left = 0;
+  if (!ReadWindowScalar(env, info[0], &left)) return env.Undefined();
+  double right = 0;
+  if (!ReadWindowScalar(env, info[1], &right)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wncond", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wncond(left, right, window, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wncond", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wndifd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wndifd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  uint32_t aHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[0], "window", &aHandle)) return env.Undefined();
+  uint32_t bHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "window", &bHandle)) return env.Undefined();
+  uint32_t resultHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &resultHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t a = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, aHandle, SPICE_DP, "wndifd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t b = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, bHandle, SPICE_DP, "wndifd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t result = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, resultHandle, SPICE_DP, "wndifd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wndifd(a, b, result, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wndifd", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wnelmd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnelmd() expects 2 arguments"));
+    return env.Undefined();
+  }
+  double point = 0;
+  if (!ReadWindowScalar(env, info[0], &point)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wnelmd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnelmd(point, window, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnelmd", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Value Wnexpd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnexpd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  double left = 0;
+  if (!ReadWindowScalar(env, info[0], &left)) return env.Undefined();
+  double right = 0;
+  if (!ReadWindowScalar(env, info[1], &right)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wnexpd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnexpd(left, right, window, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnexpd", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wnextd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnextd() expects 2 arguments"));
+    return env.Undefined();
+  }
+  int side = 0;
+  if (!ReadWindowSide(env, info[0], &side)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wnextd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnextd(side, window, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnextd", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wnfild(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnfild() expects 2 arguments"));
+    return env.Undefined();
+  }
+  double small = 0;
+  if (!ReadWindowScalar(env, info[0], &small)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wnfild", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnfild(small, window, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnfild", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wnfltd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnfltd() expects 2 arguments"));
+    return env.Undefined();
+  }
+  double small = 0;
+  if (!ReadWindowScalar(env, info[0], &small)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wnfltd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnfltd(small, window, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnfltd", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wnincd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnincd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  double left = 0;
+  if (!ReadWindowScalar(env, info[0], &left)) return env.Undefined();
+  double right = 0;
+  if (!ReadWindowScalar(env, info[1], &right)) return env.Undefined();
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wnincd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnincd(left, right, window, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnincd", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Value Wnintd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnintd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  uint32_t aHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[0], "window", &aHandle)) return env.Undefined();
+  uint32_t bHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "window", &bHandle)) return env.Undefined();
+  uint32_t resultHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &resultHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t a = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, aHandle, SPICE_DP, "wnintd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t b = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, bHandle, SPICE_DP, "wnintd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t result = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, resultHandle, SPICE_DP, "wnintd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnintd(a, b, result, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnintd", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Wnreld(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnreld() expects 3 arguments"));
+    return env.Undefined();
+  }
+  uint32_t aHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[0], "window", &aHandle)) return env.Undefined();
+  std::string op;
+  if (!ReadWindowOp(env, info[1], &op)) return env.Undefined();
+  uint32_t bHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &bHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t a = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, aHandle, SPICE_DP, "wnreld", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t b = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, bHandle, SPICE_DP, "wnreld", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnreld(a, op.c_str(), b, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnreld", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Value Wnsumd(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnsumd() expects 1 arguments"));
+    return env.Undefined();
+  }
+  uint32_t windowHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[0], "window", &windowHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t window = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, windowHandle, SPICE_DP, "wnsumd", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  double meas = 0, avg = 0, stddev = 0;
+  int shortest = -1, longest = -1;
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnsumd(window, &meas, &avg, &stddev, &shortest, &longest, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnsumd", err);
+    return env.Undefined();
+  }
+  const Napi::Object summary = Napi::Object::New(env);
+  summary.Set("meas", Napi::Number::New(env, meas));
+  summary.Set("avg", Napi::Number::New(env, avg));
+  summary.Set("stddev", Napi::Number::New(env, stddev));
+  summary.Set("shortest", Napi::Number::New(env, shortest));
+  summary.Set("longest", Napi::Number::New(env, longest));
+  return summary;
+}
+
+static Napi::Value Wnunid(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "wnunid() expects 3 arguments"));
+    return env.Undefined();
+  }
+  uint32_t aHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[0], "window", &aHandle)) return env.Undefined();
+  uint32_t bHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "window", &bHandle)) return env.Undefined();
+  uint32_t resultHandle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "window", &resultHandle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t a = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, aHandle, SPICE_DP, "wnunid", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t b = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, bHandle, SPICE_DP, "wnunid", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  const uintptr_t result = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, resultHandle, SPICE_DP, "wnunid", "window");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_wnunid(a, b, result, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling wnunid", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
 static Napi::Value Wninsd(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber()) {
@@ -668,6 +1038,19 @@ void RegisterCellsWindows(Napi::Env env, Napi::Object exports) {
     return;
   }
 
+  if (!SetExportChecked(env, exports, "wncomd", Napi::Function::New(env, Wncomd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wncond", Napi::Function::New(env, Wncond), __func__)) return;
+  if (!SetExportChecked(env, exports, "wndifd", Napi::Function::New(env, Wndifd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnelmd", Napi::Function::New(env, Wnelmd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnexpd", Napi::Function::New(env, Wnexpd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnextd", Napi::Function::New(env, Wnextd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnfild", Napi::Function::New(env, Wnfild), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnfltd", Napi::Function::New(env, Wnfltd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnincd", Napi::Function::New(env, Wnincd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnintd", Napi::Function::New(env, Wnintd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnreld", Napi::Function::New(env, Wnreld), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnsumd", Napi::Function::New(env, Wnsumd), __func__)) return;
+  if (!SetExportChecked(env, exports, "wnunid", Napi::Function::New(env, Wnunid), __func__)) return;
   if (!SetExportChecked(env, exports, "wninsd", Napi::Function::New(env, Wninsd), __func__)) {
     return;
   }

@@ -1,0 +1,563 @@
+[
+  {
+    "caseId": "cells-windows-wnreld-proper-subset-and-superset",
+    "description": "Use all six operators in both directions on contained windows.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 4,
+        "right": 5
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 0,
+        "right": 6,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">="
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnreld-equal-handles-and-values",
+    "description": "Equal but independently owned windows and identical references distinguish strict from inclusive relations.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnreld-incomparable-overlap",
+    "description": "Overlapping windows with distinct outside endpoints are incomparable for inclusion.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 0,
+        "right": 5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 3,
+        "right": 9,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">="
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnreld-empty-relations",
+    "description": "Empty windows are equal; the empty set is a proper subset of a nonempty window.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "A",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "B",
+        "left": 1,
+        "right": 1,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "B",
+        "relation": ">="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<>"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": "<="
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">"
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "B",
+        "bId": "A",
+        "relation": ">="
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnreld-trailing-blanks",
+    "description": "Fortran character comparison accepts trailing blanks on a recognized relation.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "=  "
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "<= "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnreld-unknown-operator",
+    "description": "An unsupported inequality spelling is a genuine toolkit error.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": "!="
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPERATION"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wnreld-leading-blank",
+    "description": "A leading blank is significant to the relation parser.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": " ="
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPERATION"]
+    }
+  },
+  {
+    "caseId": "cells-windows-wnreld-empty-operator",
+    "description": "The C wrapper diagnoses an empty operator before the Fortran comparison.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "A",
+        "left": 23,
+        "right": 27
+      },
+      {
+        "op": "cells-windows.wnreld",
+        "aId": "A",
+        "bId": "A",
+        "relation": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]
