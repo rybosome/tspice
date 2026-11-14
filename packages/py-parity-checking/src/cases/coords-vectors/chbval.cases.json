@@ -1,0 +1,185 @@
+[
+  {
+    "caseId": "coords-vectors-chbval-constant-and-zero",
+    "description": "chbval: constant-and-zero; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [7],
+        "x2s": [10, 4],
+        "x": 6
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [7],
+        "x2s": [10, 4],
+        "x": 10
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [7],
+        "x2s": [10, 4],
+        "x": 14
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [0],
+        "x2s": [10, 4],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+    "description": "chbval: distinct-basis-and-coefficient-order; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [1],
+        "x2s": [10, 4],
+        "x": 12
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [0, 1],
+        "x2s": [10, 4],
+        "x": 12
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [0, 0, 1],
+        "x2s": [10, 4],
+        "x": 12
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [0, 0, 0, 1],
+        "x2s": [10, 4],
+        "x": 12
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [1, 2, 3, 4, 5, 6],
+        "x2s": [10, 4],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbval-shifted-scaled-domain",
+    "description": "chbval: shifted-scaled-domain; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 8
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 10
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbval-domain-endpoints",
+    "description": "chbval: domain-endpoints; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 6
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 14
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbval-scaled-coefficients",
+    "description": "chbval: scaled-coefficients; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2e100, -3.0000000000000002e100, 5e100, -7e100],
+        "x2s": [10, 4],
+        "x": 12
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2e-100, -3e-100, 5e-100, -7e-100],
+        "x2s": [10, 4],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbval-scaled-domain-radius",
+    "description": "chbval: scaled-domain-radius; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [0, 1e100],
+        "x": 5e99
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [0, 1e-100],
+        "x": 5e-101
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbval-negative-radius-orientation",
+    "description": "chbval: negative-radius-orientation; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, -4],
+        "x": 8
+      },
+      {
+        "op": "coords-vectors.chbval",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, -4],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

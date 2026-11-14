@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -31,6 +31,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bodvar_c` | Return values from the kernel pool |
 | `card_c` | Cardinality of a cell |
 | `ccifrm_c` | Class and class ID to associated frame |
+| `chbder_c` | Derivatives of a Chebyshev expansion |
+| `chbigr_c` | Chebyshev expansion integral |
+| `chbint_c` | Interpolate a Chebyshev expansion |
+| `chbval_c` | Value of a Chebyshev polynomial expansion |
 | `chkin_c` | module Check In |
 | `chkout_c` | Module Check Out |
 | `cidfrm_c` | center SPK ID frame |
@@ -122,6 +126,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
+| `polyds_c` | Compute a Polynomial and its Derivatives |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
@@ -129,6 +134,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
+| `rquad_c` | Roots of a quadratic equation |
 | `scard_c` | Set the cardinality of a cell |
 | `scdecd_c` | Decode spacecraft clock |
 | `sce2c_c` | ET to continuous SCLK ticks |
@@ -207,10 +213,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bsrchd_c` | Binary search for a double precision value |
 | `bsrchi_c` | Binary search for an integer value |
 | `cgv2el_c` | Center and generating vectors to ellipse |
-| `chbder_c` | Derivatives of a Chebyshev expansion |
-| `chbigr_c` | Chebyshev expansion integral |
-| `chbint_c` | Interpolate a Chebyshev expansion |
-| `chbval_c` | Value of a Chebyshev polynomial expansion |
 | `ckcls_c` | CK, Close file |
 | `ckfrot_c` | CK frame, find position rotation |
 | `ckfxfm_c` | CK frame, find state transformation |
@@ -500,7 +502,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pltnp_c` | Nearest point on triangular plate |
 | `pltnrm_c` | DSK, compute outward normal of plate |
 | `pltvol_c` | Compute volume of plate model |
-| `polyds_c` | Compute a Polynomial and its Derivatives |
 | `pos_c` | Position of substring |
 | `posr_c` | Position of substring, reverse search |
 | `prop2b_c` | Propagate a two-body solution |
@@ -539,7 +540,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `return_c` | Immediate Return Indicator |
 | `rotvec_c` | Transform a vector via a rotation |
 | `rpd_c` | Radians per degree |
-| `rquad_c` | Roots of a quadratic equation |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
 | `sce2t_c` | ET to SCLK ticks |
 | `scfmt_c` | Convert SCLK "ticks" to character clock format |

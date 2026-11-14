@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs, WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,267 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertPolynomialNumber(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyPolynomialCoefficients(
+  value: unknown,
+  label: string,
+  allowEmpty: boolean,
+): number[] {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  const length = value.length;
+  if (
+    !Number.isSafeInteger(length) ||
+    length < 0 ||
+    length > 2147483647 ||
+    (!allowEmpty && length === 0)
+  )
+    throw new RangeError(`${label} has an unsupported coefficient count`);
+  polynomialBufferBytes(length);
+  // Coefficient getters must not be re-read during native/WASM marshaling.
+  const result: number[] = [];
+  for (let i = 0; i < length; i++) {
+    const entry: unknown = value[i];
+    assertPolynomialNumber(entry, `${label}[${i}]`);
+    result.push(entry);
+  }
+  return result;
+}
+
+function copyPolynomialTransform(
+  value: unknown,
+  label: string,
+): [number, number] {
+  if (!Array.isArray(value) || value.length !== 2)
+    throw new TypeError(`${label} must be a length-2 array`);
+  const midpoint: unknown = value[0];
+  const scale: unknown = value[1];
+  assertPolynomialNumber(midpoint, `${label}[0]`);
+  assertPolynomialNumber(scale, `${label}[1]`);
+  return [midpoint, scale];
+}
+
+function polynomialDerivativeCount(nderiv: number, chebyshev: boolean): number {
+  assertSpiceInt32(nderiv, "nderiv");
+  if (
+    (chebyshev && (nderiv < 0 || nderiv > 715827881)) ||
+    (!chebyshev && nderiv > 2147483646)
+  )
+    throw new RangeError("nderiv exceeds the supported derivative order");
+  return nderiv < 0 ? 0 : nderiv + 1;
+}
+
+function polynomialBufferBytes(count: number): number {
+  const bytes = Math.max(1, count) * 8;
+  if (!Number.isSafeInteger(bytes) || bytes > WASM_MAX_ALLOC_BYTES)
+    throw new RangeError(
+      `Polynomial buffer exceeds ${WASM_MAX_ALLOC_BYTES} bytes`,
+    );
+  return bytes;
+}
+
+function readPolynomialArray(
+  module: EmscriptenModule,
+  ptr: number,
+  count: number,
+): number[] {
+  const start = ptr >>> 3;
+  return Array.from(module.HEAPF64.subarray(start, start + count));
+}
+
+function readPolynomialPair(
+  module: EmscriptenModule,
+  ptr: number,
+): [number, number] {
+  const start = ptr >>> 3;
+  return [module.HEAPF64[start]!, module.HEAPF64[start + 1]!];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    chbder: (cp, x2s, x, nderiv) => {
+      const outputCount = polynomialDerivativeCount(nderiv, true);
+      const outputBytes = polynomialBufferBytes(outputCount);
+      const workspaceBytes = polynomialBufferBytes(3 * outputCount);
+      const cpCopy = copyPolynomialCoefficients(cp, "chbder(cp)", false);
+      const transform = copyPolynomialTransform(x2s, "chbder(x2s)");
+      assertPolynomialNumber(x, "chbder(x)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          polynomialBufferBytes(cpCopy.length),
+          16,
+          workspaceBytes,
+          outputBytes,
+        ],
+        (errPtr, cpPtr, x2sPtr, workspacePtr, outPtr) => {
+          module.HEAPF64.set(cpCopy, cpPtr >>> 3);
+          module.HEAPF64.set(transform, x2sPtr >>> 3);
+          const status = module._tspice_chbder(
+            cpPtr,
+            cpCopy.length,
+            x2sPtr,
+            x,
+            nderiv,
+            workspacePtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readPolynomialArray(module, outPtr, outputCount);
+        },
+      );
+    },
+    chbigr: (cp, x2s, x) => {
+      const cpCopy = copyPolynomialCoefficients(cp, "chbigr(cp)", true);
+      const transform = copyPolynomialTransform(x2s, "chbigr(x2s)");
+      assertPolynomialNumber(x, "chbigr(x)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, polynomialBufferBytes(cpCopy.length), 16, 8, 8],
+        (errPtr, cpPtr, x2sPtr, outPtr, secondaryPtr) => {
+          module.HEAPF64.set(cpCopy, cpPtr >>> 3);
+          module.HEAPF64.set(transform, x2sPtr >>> 3);
+          const status = module._tspice_chbigr(
+            cpPtr,
+            cpCopy.length,
+            x2sPtr,
+            x,
+            outPtr,
+            secondaryPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            p: module.HEAPF64[outPtr >>> 3]!,
+            itgrlp: module.HEAPF64[secondaryPtr >>> 3]!,
+          };
+        },
+      );
+    },
+    chbint: (cp, x2s, x) => {
+      const cpCopy = copyPolynomialCoefficients(cp, "chbint(cp)", false);
+      const transform = copyPolynomialTransform(x2s, "chbint(x2s)");
+      assertPolynomialNumber(x, "chbint(x)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, polynomialBufferBytes(cpCopy.length), 16, 8, 8],
+        (errPtr, cpPtr, x2sPtr, outPtr, secondaryPtr) => {
+          module.HEAPF64.set(cpCopy, cpPtr >>> 3);
+          module.HEAPF64.set(transform, x2sPtr >>> 3);
+          const status = module._tspice_chbint(
+            cpPtr,
+            cpCopy.length,
+            x2sPtr,
+            x,
+            outPtr,
+            secondaryPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            p: module.HEAPF64[outPtr >>> 3]!,
+            dpdx: module.HEAPF64[secondaryPtr >>> 3]!,
+          };
+        },
+      );
+    },
+    chbval: (cp, x2s, x) => {
+      const cpCopy = copyPolynomialCoefficients(cp, "chbval(cp)", false);
+      const transform = copyPolynomialTransform(x2s, "chbval(x2s)");
+      assertPolynomialNumber(x, "chbval(x)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, polynomialBufferBytes(cpCopy.length), 16, 8],
+        (errPtr, cpPtr, x2sPtr, outPtr) => {
+          module.HEAPF64.set(cpCopy, cpPtr >>> 3);
+          module.HEAPF64.set(transform, x2sPtr >>> 3);
+          const status = module._tspice_chbval(
+            cpPtr,
+            cpCopy.length,
+            x2sPtr,
+            x,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    polyds: (coeffs, nderiv, t) => {
+      const outputCount = polynomialDerivativeCount(nderiv, false);
+      const outputBytes = polynomialBufferBytes(outputCount);
+      const coeffsCopy = copyPolynomialCoefficients(
+        coeffs,
+        "polyds(coeffs)",
+        true,
+      );
+      assertPolynomialNumber(t, "polyds(t)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, polynomialBufferBytes(coeffsCopy.length), outputBytes],
+        (errPtr, coeffsPtr, outPtr) => {
+          module.HEAPF64.set(coeffsCopy, coeffsPtr >>> 3);
+          const status = module._tspice_polyds(
+            coeffsPtr,
+            coeffsCopy.length,
+            nderiv,
+            t,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readPolynomialArray(module, outPtr, outputCount);
+        },
+      );
+    },
+    rquad: (a, b, c) => {
+      assertPolynomialNumber(a, "rquad(a)");
+      assertPolynomialNumber(b, "rquad(b)");
+      assertPolynomialNumber(c, "rquad(c)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 16, 16],
+        (errPtr, root1Ptr, root2Ptr) => {
+          const status = module._tspice_rquad(
+            a,
+            b,
+            c,
+            root1Ptr,
+            root2Ptr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            root1: readPolynomialPair(module, root1Ptr),
+            root2: readPolynomialPair(module, root2Ptr),
+          };
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

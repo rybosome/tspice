@@ -408,5 +408,21 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a16-polynomial-expansions",
+      "routines": [
+        "chbder_c",
+        "chbigr_c",
+        "chbint_c",
+        "chbval_c",
+        "polyds_c",
+        "rquad_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review coefficient order/inferred degree, interval and derivative conventions, source-derived signed/workspace bounds, actual errors and independent negative-order polyds route. Require complete live outputs, both full local lanes and observed canonical CI before source-bound verification. No merge authorized."
+    }
   ]
 }

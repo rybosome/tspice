@@ -1,0 +1,603 @@
+{
+  "schemaVersion": 1,
+  "batch": "a16-polynomial-expansions",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/polynomial-expansions.test.ts",
+    "packages/py-parity-checking/test/polynomial-expansions-extremes.test.ts",
+    "packages/backend-wasm/test/polynomial-expansions-allocations.test.ts",
+    "packages/backend-node/test/polynomial-expansions-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/polynomial_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-polynomial-expansions.md",
+    "packages/tspice/test/polynomial-results-rpc.test.ts",
+    "packages/tspice/test/_helpers/fakeWorker.ts",
+    "packages/tspice/test/_helpers/nodeBackendAvailable.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/transport/rpc/protocol.ts",
+    "packages/tspice/src/transport/rpc/taskScheduling.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/py-parity-checking/test/polynomial-rquad-trace.test.ts",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/core/src/spice-runtime/shared/errors.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/addon_common.h",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/test/polynomial-input-snapshots.test.ts"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "chbder_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chbder_c.html",
+      "semantics": "raw.chbder(cp,x2s,x,nderiv) invokes actual CSPICE for a first-kind Chebyshev expansion and all requested derivatives in x. Degree is the full coefficient count minus one, cp[0] is the full constant coefficient, and s=(x-x2s[0])/x2s[1]. Output order is value then ascending derivatives, with nderiv+1 owned entries; the internal workspace has 3*(nderiv+1) doubles. Order0..715827881 preserves signed workspace indices. Nonempty coefficients are required. Finite transforms are passed unchanged without clamping; reliable-use acceptance requires nonzero scale and normalized s within [-1,1]. All numeric inputs are finite; coefficient/transformation arrays are readonly and outputs own storage. Coefficient counts fit signed32, byte multiplication is checked, and WASM retains its256MiB per-buffer allocation cap including workspace.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-chbder-constant-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full constant coefficient/zero expansion and all requested derivative tails, without a half-coefficient convention."
+        },
+        {
+          "caseId": "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
+        },
+        {
+          "caseId": "coords-vectors-chbder-shifted-scaled-domain",
+          "coverage": ["success", "edge"],
+          "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
+        },
+        {
+          "caseId": "coords-vectors-chbder-domain-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
+        },
+        {
+          "caseId": "coords-vectors-chbder-scaled-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
+        },
+        {
+          "caseId": "coords-vectors-chbder-scaled-domain-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe radii1e100/1e−100 at fixed normalized argument; focused live comparison multiplies each derivative by its own radius power, observing all value/derivative entries."
+        },
+        {
+          "caseId": "coords-vectors-chbder-negative-radius-orientation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe negative nonzero radius inside normalized range; compare actual orientation and derivative signs without inventing INVALIDRADIUS for the error-free evaluator."
+        },
+        {
+          "caseId": "coords-vectors-chbder-derivative-order-and-zero-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Observe order0, higher derivatives, orders beyond degree and trailing coefficient zeros; output length/order and every zero tail entry remain observable."
+        }
+      ],
+      "edgeAssessment": "Constants/zero, distinct Chebyshev basis entries, reversed/shifted domains, endpoints, large/small coefficient and radius scales, negative nonzero radius, order0 and derivatives beyond degree observe every entry. Focused radius-power rescaling distinguishes x derivatives from s derivatives, and finite/nonfinite tagged outputs preserve all derivative tails within normalized domain. Tagged normalized-domain probes observe [Inf,MAX,0,0] for maximal coefficients and [0,Inf,NaN,NaN] for a positive minimum-subnormal radius, with safe finite controls.",
+      "errorAssessment": "The pinned routine is error-free for its supported defined inputs. Malformed/nonfinite values, disallowed empty coefficient arrays and unsafe counts/orders/workspaces are separate wrapper-safety tests; no fabricated scientific exception. Chebyshev reliable-use restrictions are documented separately from raw finite-argument preservation.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored coefficients, transformations, abscissae and quadratic roots only. No kernels/external dataset or retained scientific fixture; sentinel/fault instrumentation validates boundaries without replacing scientific outputs.",
+      "cleanup": "Kernel-free authored inputs require no scientific resources. Native owns coefficient/work/output buffers under the existing global SPICE mutex. Shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors; adapters publish results only after status checking. WASM uses checked per-buffer sizes and transactional allocation/release; outputs are copied before release. Valid sentinel storage supports empty coefficients/negative-order outputs. Public tests dispose clients; actual errors require reset/recovery and allocation cleanup.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 for every scalar/array/object field. Focused live rescaling makes tiny coefficients, radius-scaled derivatives/integrals and tiny quadratic roots observable without changing the global comparator. Tagged comparisons retain full shapes, NaN/Inf/zero signs exactly and finite nonzero values with relative-only1e-12 tolerance.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated caller-owned coefficient and transformation arrays, then read them again during dispatch or heap preparation. These later reads could disagree with the checked values/count.",
+          "repair": "Copy and validate each finite coefficient once into an owned array; snapshot both transformation components for Chebyshev methods. Use those stable copies and their counts for native dispatch and WASM buffer sizing/marshaling. Bounded regression tests check ownership and that missing values fail before dispatch/allocation; the registered cases retain the unchanged scientific algorithm.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/polynomial-expansions-domain.test.ts",
+            "packages/backend-wasm/test/polynomial-input-snapshots.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-chbder-distinct-basis-and-coefficient-order"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.chbder -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.chbder -> typed WASM adapter -> exported _tspice_chbder with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "chbigr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chbigr_c.html",
+      "semantics": "raw.chbigr(cp,x2s,x) invokes actual CSPICE with inferred degree first, then complete coefficients and transformation. Return {p,itgrlp} contains expansion value and integral in x, with integration constant chosen so the integral is zero at x2s[0]. Empty coefficients infer degree−1 and signal actual INVALIDDEGREE; nonpositive radius signals actual INVALIDRADIUS. Reliable-use acceptance stays within normalized [-1,1], with no new clamping or replacement integration. All numeric inputs are finite; coefficient/transformation arrays are readonly and outputs own storage. Coefficient counts fit signed32, byte multiplication is checked, and WASM retains its256MiB per-buffer allocation cap including workspace.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-chbigr-constant-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full constant coefficient and zero expansion, retaining both value and midpoint-normalized integral."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-shifted-scaled-domain",
+          "coverage": ["success", "edge"],
+          "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-domain-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-scaled-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-scaled-domain-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe radii1e100/1e−100 at fixed normalized argument; focused live comparison retains p and rescales integral by dividing by radius."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-integral-midpoint-normalization",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the integral exactly at the midpoint and on each side, distinguishing the prescribed integration constant and signed area from an arbitrary antiderivative."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-empty-degree-error",
+          "coverage": ["error"],
+          "observes": "Observe actual SPICE(INVALIDDEGREE) from inferred degree−1 with valid unread dummy storage; require the real spelling rather than the header typo."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-zero-radius-error",
+          "coverage": ["error"],
+          "observes": "Observe actual SPICE(INVALIDRADIUS) for zero radius; do not reclassify it as a wrapper error."
+        },
+        {
+          "caseId": "coords-vectors-chbigr-negative-radius-error",
+          "coverage": ["error"],
+          "observes": "Observe actual SPICE(INVALIDRADIUS) for negative radius, distinguishing integral semantics from the error-free evaluators."
+        }
+      ],
+      "edgeAssessment": "Constants/zero, mixed coefficient order, shifted/scaled interval, endpoints, midpoint integration constant, large/small coefficients and radius observe both expansion and integral. Actual invalid degree/radius cases remain genuine errors. Tagged normalized-domain overflow and finite controls retain both fields. Tagged maximal coefficients at normalized endpoint observe p and integral both Inf, with finite controls.",
+      "errorAssessment": "Three registered actual CSPICE errors cover inferred negative degree INVALIDDEGREE and zero/negative radius INVALIDRADIUS. Focused tests require matching independent oracle errors, automatic backend reset and actual valid-call recovery. Malformed/nonfinite shapes and byte/count bounds remain separate wrapper validation.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored coefficients, transformations, abscissae and quadratic roots only. No kernels/external dataset or retained scientific fixture; sentinel/fault instrumentation validates boundaries without replacing scientific outputs.",
+      "cleanup": "Kernel-free authored inputs require no scientific resources. Native owns coefficient/work/output buffers under the existing global SPICE mutex. Shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors; adapters publish results only after status checking. WASM uses checked per-buffer sizes and transactional allocation/release; outputs are copied before release. Valid sentinel storage supports empty coefficients/negative-order outputs. Public tests dispose clients; actual errors require reset/recovery and allocation cleanup.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 for every scalar/array/object field. Focused live rescaling makes tiny coefficients, radius-scaled derivatives/integrals and tiny quadratic roots observable without changing the global comparator. Tagged comparisons retain full shapes, NaN/Inf/zero signs exactly and finite nonzero values with relative-only1e-12 tolerance.",
+      "findings": [
+        {
+          "id": "canonical-invaliddegree-spelling",
+          "status": "repaired",
+          "summary": "The published C header spells the negative-degree error INVALDDEGREE, while pinned implementation and locked oracle emit INVALIDDEGREE.",
+          "repair": "Use the actual canonical error spelling in JSDoc, registered error expectation and focused independent error/recovery checks; preserve direct CSPICE error behavior.",
+          "evidence": [
+            "packages/backend-contract/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/polynomial-expansions.test.ts",
+            "packages/py-parity-checking/test/polynomial-expansions-extremes.test.ts",
+            "docs/step8-polynomial-expansions.md"
+          ],
+          "caseIds": ["coords-vectors-chbigr-empty-degree-error"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated caller-owned coefficient and transformation arrays, then read them again during dispatch or heap preparation. These later reads could disagree with the checked values/count.",
+          "repair": "Copy and validate each finite coefficient once into an owned array; snapshot both transformation components for Chebyshev methods. Use those stable copies and their counts for native dispatch and WASM buffer sizing/marshaling. Bounded regression tests check ownership and that missing values fail before dispatch/allocation; the registered cases retain the unchanged scientific algorithm.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/polynomial-expansions-domain.test.ts",
+            "packages/backend-wasm/test/polynomial-input-snapshots.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-chbigr-distinct-basis-and-coefficient-order"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.chbigr -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.chbigr -> typed WASM adapter -> exported _tspice_chbigr with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "chbint_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chbint_c.html",
+      "semantics": "raw.chbint(cp,x2s,x) invokes actual CSPICE for the expansion value and first derivative in x, returning both as {p,dpdx}. Degree is nonempty cp.length−1 and coefficients are ascending first-kind Chebyshev terms. Nonzero radius and normalized [-1,1] define reliable-use acceptance; finite scales/abscissae are forwarded unchanged. Negative nonzero radius reverses orientation, and no derivative with respect to s is silently substituted. All numeric inputs are finite; coefficient/transformation arrays are readonly and outputs own storage. Coefficient counts fit signed32, byte multiplication is checked, and WASM retains its256MiB per-buffer allocation cap including workspace.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-chbint-constant-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe full constant coefficient and zero expansion, retaining value and zero first derivative."
+        },
+        {
+          "caseId": "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
+        },
+        {
+          "caseId": "coords-vectors-chbint-shifted-scaled-domain",
+          "coverage": ["success", "edge"],
+          "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
+        },
+        {
+          "caseId": "coords-vectors-chbint-domain-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
+        },
+        {
+          "caseId": "coords-vectors-chbint-scaled-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
+        },
+        {
+          "caseId": "coords-vectors-chbint-scaled-domain-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe radii1e100/1e−100 at fixed normalized argument; focused live comparison retains p and multiplies dpdx by radius."
+        },
+        {
+          "caseId": "coords-vectors-chbint-negative-radius-orientation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe negative nonzero radius inside normalized range; compare actual orientation and derivative signs without inventing INVALIDRADIUS for the error-free evaluator."
+        }
+      ],
+      "edgeAssessment": "Constants/zero, distinct basis/order, shifted/scaled interval, endpoints, large/small coefficients/radius and negative radius observe both value and signed x derivative. Focused rescaling keeps tiny derivatives visible; tagged normalized-domain overflow/reciprocal limits retain both fields. Tagged maximal coefficients observe p Inf and derivative MAX; positive minimum-subnormal radius yields infinite derivative, with finite controls.",
+      "errorAssessment": "The pinned routine is error-free for its supported defined inputs. Malformed/nonfinite values, disallowed empty coefficient arrays and unsafe counts/orders/workspaces are separate wrapper-safety tests; no fabricated scientific exception. Chebyshev reliable-use restrictions are documented separately from raw finite-argument preservation.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored coefficients, transformations, abscissae and quadratic roots only. No kernels/external dataset or retained scientific fixture; sentinel/fault instrumentation validates boundaries without replacing scientific outputs.",
+      "cleanup": "Kernel-free authored inputs require no scientific resources. Native owns coefficient/work/output buffers under the existing global SPICE mutex. Shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors; adapters publish results only after status checking. WASM uses checked per-buffer sizes and transactional allocation/release; outputs are copied before release. Valid sentinel storage supports empty coefficients/negative-order outputs. Public tests dispose clients; actual errors require reset/recovery and allocation cleanup.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 for every scalar/array/object field. Focused live rescaling makes tiny coefficients, radius-scaled derivatives/integrals and tiny quadratic roots observable without changing the global comparator. Tagged comparisons retain full shapes, NaN/Inf/zero signs exactly and finite nonzero values with relative-only1e-12 tolerance.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated caller-owned coefficient and transformation arrays, then read them again during dispatch or heap preparation. These later reads could disagree with the checked values/count.",
+          "repair": "Copy and validate each finite coefficient once into an owned array; snapshot both transformation components for Chebyshev methods. Use those stable copies and their counts for native dispatch and WASM buffer sizing/marshaling. Bounded regression tests check ownership and that missing values fail before dispatch/allocation; the registered cases retain the unchanged scientific algorithm.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/polynomial-expansions-domain.test.ts",
+            "packages/backend-wasm/test/polynomial-input-snapshots.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-chbint-distinct-basis-and-coefficient-order"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.chbint -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.chbint -> typed WASM adapter -> exported _tspice_chbint with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "chbval_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/chbval_c.html",
+      "semantics": "raw.chbval(cp,x2s,x) invokes actual CSPICE for a first-kind Chebyshev expansion at s=(x-midpoint)/radius. cp[0] is the full constant term and nonempty cp.length−1 is the degree, retaining trailing zero coefficients. The scalar result preserves actual recurrence arithmetic. Reliable-use acceptance uses nonzero radius and normalized [-1,1]; finite transforms/abscissae are forwarded without clamping. All numeric inputs are finite; coefficient/transformation arrays are readonly and outputs own storage. Coefficient counts fit signed32, byte multiplication is checked, and WASM retains its256MiB per-buffer allocation cap including workspace.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-chbval-constant-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full constant coefficient and zero expansion at distinct abscissae, without a half-coefficient convention."
+        },
+        {
+          "caseId": "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe isolated T_i and mixed ordered coefficients so reversal, dropping a highest term, or confusing power and Chebyshev bases changes actual outputs."
+        },
+        {
+          "caseId": "coords-vectors-chbval-shifted-scaled-domain",
+          "coverage": ["success", "edge"],
+          "observes": "Observe midpoint and radius mappings away from the unit interval, retaining all returned fields in x units."
+        },
+        {
+          "caseId": "coords-vectors-chbval-domain-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both normalized endpoints s=−1 and s=+1, retaining signs and all returned components."
+        },
+        {
+          "caseId": "coords-vectors-chbval-scaled-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
+        },
+        {
+          "caseId": "coords-vectors-chbval-scaled-domain-radius",
+          "coverage": ["success", "edge"],
+          "observes": "Observe radii1e100/1e−100 at fixed normalized argument; actual scalar value remains5 through both interval transformations."
+        },
+        {
+          "caseId": "coords-vectors-chbval-negative-radius-orientation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe negative nonzero radius inside normalized range; compare actual orientation and derivative signs without inventing INVALIDRADIUS for the error-free evaluator."
+        }
+      ],
+      "edgeAssessment": "Constant/full T0 coefficient, zero expansion, isolated/mixed ordered basis entries, shifted/scaled domains, endpoints, negative radius and large/small coefficients retain actual scalar recurrence output. Tagged normalized-domain overflow and finite control distinguish output preservation. Tagged maximal coefficients at normalized endpoint observe Inf, with a finite coefficient control.",
+      "errorAssessment": "The pinned routine is error-free for its supported defined inputs. Malformed/nonfinite values, disallowed empty coefficient arrays and unsafe counts/orders/workspaces are separate wrapper-safety tests; no fabricated scientific exception. Chebyshev reliable-use restrictions are documented separately from raw finite-argument preservation.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored coefficients, transformations, abscissae and quadratic roots only. No kernels/external dataset or retained scientific fixture; sentinel/fault instrumentation validates boundaries without replacing scientific outputs.",
+      "cleanup": "Kernel-free authored inputs require no scientific resources. Native owns coefficient/work/output buffers under the existing global SPICE mutex. Shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors; adapters publish results only after status checking. WASM uses checked per-buffer sizes and transactional allocation/release; outputs are copied before release. Valid sentinel storage supports empty coefficients/negative-order outputs. Public tests dispose clients; actual errors require reset/recovery and allocation cleanup.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 for every scalar/array/object field. Focused live rescaling makes tiny coefficients, radius-scaled derivatives/integrals and tiny quadratic roots observable without changing the global comparator. Tagged comparisons retain full shapes, NaN/Inf/zero signs exactly and finite nonzero values with relative-only1e-12 tolerance.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated caller-owned coefficient and transformation arrays, then read them again during dispatch or heap preparation. These later reads could disagree with the checked values/count.",
+          "repair": "Copy and validate each finite coefficient once into an owned array; snapshot both transformation components for Chebyshev methods. Use those stable copies and their counts for native dispatch and WASM buffer sizing/marshaling. Bounded regression tests check ownership and that missing values fail before dispatch/allocation; the registered cases retain the unchanged scientific algorithm.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/polynomial-expansions-domain.test.ts",
+            "packages/backend-wasm/test/polynomial-input-snapshots.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-chbval-distinct-basis-and-coefficient-order"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.chbval -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.chbval -> typed WASM adapter -> exported _tspice_chbval with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "polyds_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/polyds_c.html",
+      "semantics": "raw.polyds(coeffs,nderiv,t) invokes actual CSPICE for ascending ordinary-power coefficients, inferred degree coeffs.length−1 and the real abscissa t. Nonnegative order returns an owned [value,first derivative,...] array; empty coefficients infer degree−1 and yield all requested zeros. Any negative signed32 order invokes the canonical no-write path with valid output storage and returns a new empty array. Nonnegative order at most2147483646 avoids inclusive signed loop-counter overflow. Actual factorial growth and floating outputs are retained. All numeric inputs are finite; coefficient/transformation arrays are readonly and outputs own storage. Coefficient counts fit signed32, byte multiplication is checked, and WASM retains its256MiB per-buffer allocation cap including workspace.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-polyds-constant-and-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Observe constant outputs, ordinary zero polynomial and empty degree−1 producing all requested zeros through actual CSPICE."
+        },
+        {
+          "caseId": "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+          "coverage": ["success", "edge"],
+          "observes": "Observe distinct ascending ordinary-power coefficients at positive, negative and zero abscissae; retain every requested derivative."
+        },
+        {
+          "caseId": "coords-vectors-polyds-derivative-order-and-zero-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Observe order0, higher derivatives, orders beyond degree and trailing coefficient zeros; output length/order and every zero tail entry remain observable."
+        },
+        {
+          "caseId": "coords-vectors-polyds-negative-order-no-write",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual canonical calls at negative signed32 orders, including INT32_MIN, with both nonempty/empty coefficients. Independent guarded output storage remains untouched and public empty arrays reach comparison."
+        },
+        {
+          "caseId": "coords-vectors-polyds-scaled-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 1e100 and 1e−100 common coefficient scales. Focused live rescaling keeps every tiny output field observable; quadratic roots instead retain scale invariance."
+        },
+        {
+          "caseId": "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+          "coverage": ["success", "edge"],
+          "observes": "Observe higher polynomial degree and the last nonzero coefficient with derivatives including the highest and beyond-degree orders, preventing truncation to low-order cases."
+        }
+      ],
+      "edgeAssessment": "Constants and empty degree−1, signed abscissae, coefficient ordering, order0/order above degree, trailing zeros, negative signed32 order, large/small coefficients and higher-degree last coefficients observe the full derivative array. Negative order uses actual canonical no-write with guards; tagged overflow retains the full finite derivative tail. Tagged maximal coefficients at t=1/order3 observe [Inf,MAX,0,0], retaining finite derivative/tail entries and a finite control.",
+      "errorAssessment": "No scientific exception is invented: empty coefficients and negative derivative orders are legitimate canonical zero/no-write cases. Malformed/nonfinite coefficients/abscissae, fractional/out-of-signed-range orders, inclusive-loop overflow boundary and unsafe buffers are separate guard tests rejected before C.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored coefficients, transformations, abscissae and quadratic roots only. No kernels/external dataset or retained scientific fixture; sentinel/fault instrumentation validates boundaries without replacing scientific outputs.",
+      "cleanup": "Kernel-free authored inputs require no scientific resources. Native owns coefficient/work/output buffers under the existing global SPICE mutex. Shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors; adapters publish results only after status checking. WASM uses checked per-buffer sizes and transactional allocation/release; outputs are copied before release. Valid sentinel storage supports empty coefficients/negative-order outputs. Public tests dispose clients; actual errors require reset/recovery and allocation cleanup.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 for every scalar/array/object field. Focused live rescaling makes tiny coefficients, radius-scaled derivatives/integrals and tiny quadratic roots observable without changing the global comparator. Tagged comparisons retain full shapes, NaN/Inf/zero signs exactly and finite nonzero values with relative-only1e-12 tolerance. Negative-order empty shape and empty-coefficient zero arrays are exact; no numerical oracle substitute is constructed.",
+      "findings": [
+        {
+          "id": "negative-order-oracle-output-conversion",
+          "status": "repaired",
+          "summary": "SpiceyPy6.0.3 cannot return negative-order no-write results: order−1 calls C then fails zero-length conversion; lower orders fail negative-length allocation.",
+          "repair": "Use an independent exact typed polyds_c binding from the locked library only for negative order, with non-null preceding/source/output sentinels and no-write assertions. Preserve actual degree/order/abscissa and read no invented numerical outputs; nonnegative calls stay on SpiceyPy. Guards reject unsafe inputs before C.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/polynomial_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/polynomial-expansions.test.ts",
+            "packages/py-parity-checking/test/polynomial-expansions-extremes.test.ts",
+            "docs/step8-polynomial-expansions.md"
+          ],
+          "caseIds": [
+            "coords-vectors-polyds-negative-order-no-write",
+            "coords-vectors-polyds-constant-and-empty"
+          ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated caller-owned coefficient and transformation arrays, then read them again during dispatch or heap preparation. These later reads could disagree with the checked values/count.",
+          "repair": "Copy and validate each finite coefficient once into an owned array; snapshot both transformation components for Chebyshev methods. Use those stable copies and their counts for native dispatch and WASM buffer sizing/marshaling. Bounded regression tests check ownership and that missing values fail before dispatch/allocation; the registered cases retain the unchanged scientific algorithm.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/polynomial-expansions-domain.test.ts",
+            "packages/backend-wasm/test/polynomial-input-snapshots.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-polyds-coefficient-order-and-signed-abscissa"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.polyds -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "raw.polyds -> typed WASM adapter -> exported _tspice_polyds with checked coefficient/output/workspace buffers and copied results -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "rquad_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rquad_c.html",
+      "semantics": "raw.rquad(a,b,c) invokes actual CSPICE for both roots of a*x²+b*x+c, returning owned root1/root2 real-imaginary pairs in actual formula order. Negative leading coefficient can reverse the imaginary sign of root1; no sorting occurs. Linear a=0,b!=0 returns the same value in two separate arrays; a=b=0 signals DEGENERATECASE. Pinned coefficient scaling avoids erasing nonzero coefficients, and the smaller real root uses the root product where applicable. No JavaScript quadratic formula or root-overflow repair is used. All numeric inputs are finite; coefficient/transformation arrays are readonly and outputs own storage. Root storage is fixed at two independent two-double arrays.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-rquad-real-root-order-and-leading-sign",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both real roots with positive/negative quadratic and linear coefficients; actual formula branch ordering is retained rather than sorted."
+        },
+        {
+          "caseId": "coords-vectors-rquad-complex-conjugate-fields",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all four real/imaginary entries, including changed imaginary ordering for negative leading coefficient and nonsymmetric real part."
+        },
+        {
+          "caseId": "coords-vectors-rquad-repeated-and-zero-roots",
+          "coverage": ["success", "edge"],
+          "observes": "Observe repeated roots, zero constant term and double zero roots, retaining both pair fields and duplicate roots."
+        },
+        {
+          "caseId": "coords-vectors-rquad-linear-equations",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a=0,b!=0 with signed linear/constant coefficients; both actual root pairs carry the repeated linear solution."
+        },
+        {
+          "caseId": "coords-vectors-rquad-unequal-root-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both tiny and huge roots with either linear coefficient sign; focused independent scaling distinguishes the tiny root from zero and preserves branch ordering."
+        },
+        {
+          "caseId": "coords-vectors-rquad-scaled-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe common coefficient scaling by1e100 and1e−100; all four ordered root components retain the actual scale-invariant results."
+        },
+        {
+          "caseId": "coords-vectors-rquad-all-zero-error",
+          "coverage": ["error"],
+          "observes": "Observe actual SPICE(DEGENERATECASE) when all coefficients vanish; no invented root set is returned."
+        },
+        {
+          "caseId": "coords-vectors-rquad-constant-only-error",
+          "coverage": ["error"],
+          "observes": "Observe actual SPICE(DEGENERATECASE) when a=b=0 and constant is nonzero; distinguish from the genuine linear path."
+        }
+      ],
+      "edgeAssessment": "Positive/negative leading coefficients, real/conjugate/repeated/zero roots, linear cases, very unequal root magnitudes and common coefficient scaling preserve both ordered complex pairs. Focused scaling makes ~1e-16 roots visible. Degenerate quadratic/linear coefficients produce actual errors; tagged root overflow and finite controls preserve all four numeric fields. Tagged extreme inputs observe root1[NaN,0]/root2[-Inf,0] and linear duplicate[-Inf,0]; finite controls and exact negative-zero fields retain all four components.",
+      "errorAssessment": "Two registered actual SPICE(DEGENERATECASE) errors cover all-zero and constant-only equations. Genuine linear equations return repeated roots without error. Focused independent checks verify matching errors, reset and valid-call recovery; malformed/nonfinite coefficients are separate JS/native boundary validation. Pinned rquad_c also emits a direct checkout-name diagnostic depending on the error device. Dedicated repeated error/caller-stack tests preserve the primary DEGENERATECASE fields and cleanup; the upstream typo and possible console output remain explicitly documented, not repaired or reclassified as the primary exception.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored coefficients, transformations, abscissae and quadratic roots only. No kernels/external dataset or retained scientific fixture; sentinel/fault instrumentation validates boundaries without replacing scientific outputs.",
+      "cleanup": "Kernel-free authored inputs require no scientific resources. Native owns coefficient/work/output buffers under the existing global SPICE mutex. Shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors; adapters publish results only after status checking. WASM uses checked per-buffer sizes and transactional allocation/release; outputs are copied before release. Valid sentinel storage supports empty coefficients/negative-order outputs. Public tests dispose clients; actual errors require reset/recovery and allocation cleanup. Dedicated error traceback probes preserve a caller frame across each degenerate call and automatic reset, verify a fresh signal has no stale rquad frame, then match caller checkout and require empty trace. This proves cleanup beyond merely seeing failed=false.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 for every scalar/array/object field. Focused live rescaling makes tiny coefficients, radius-scaled derivatives/integrals and tiny quadratic roots observable without changing the global comparator. Tagged comparisons retain full shapes, NaN/Inf/zero signs exactly and finite nonzero values with relative-only1e-12 tolerance. Root ordering and both real/imaginary fields are retained; no sorting, conjugacy-only check or zeroing small roots.",
+      "findings": [
+        {
+          "id": "pinned-checkout-diagnostic-evidence",
+          "status": "repaired",
+          "summary": "Actual N0067 rquad_c checks in rquad_c but checks out rquad on its degenerate-error path. CHKOUT writes device-dependent NAMESDONOTMATCH directly; the initial audit had not established its effect on the primary error and caller traceback.",
+          "repair": "Close the evidence gap with repeated actual oracle/public-backend checks of primary DEGENERATECASE short/long/trace, automatic reset, valid linear recovery, preserved caller frame and empty trace after matching checkout. An isolated oracle SCREEN-versus-NULL probe reproduces direct diagnostic output without changing production settings. Document the remaining toolkit typo/output caveat; this does not claim an upstream code repair or suppression. The regression helper was corrected to validate present optional long/trace strings and map only omitted empty fields to the oracle empty-string representation, matching the existing contract. All three actual-backend/isolated-oracle regressions then passed; no production representation change.",
+          "evidence": [
+            "packages/py-parity-checking/test/polynomial-rquad-trace.test.ts",
+            "packages/backend-contract/src/domains/coords-vectors.ts",
+            "packages/backend-shim-c/src/errors.c",
+            "docs/step8-polynomial-expansions.md"
+          ],
+          "caseIds": [
+            "coords-vectors-rquad-all-zero-error",
+            "coords-vectors-rquad-constant-only-error"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.rquad -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.rquad -> typed WASM adapter -> exported _tspice_rquad with checked coefficient/output/workspace buffers and copied results -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
+}
