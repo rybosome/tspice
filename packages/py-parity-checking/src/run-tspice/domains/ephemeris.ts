@@ -22,6 +22,10 @@ import type {
   StepEphemerisSpkw02,
   StepEphemerisSpkw03,
   StepEphemerisSpkw20,
+  StepEphemerisSpkw05,
+  StepEphemerisSpkw10,
+  StepEphemerisSpkw15,
+  StepEphemerisSpkw17,
   StepEphemerisSpkw08,
   StepOutput,
 } from "../../case-types.js";
@@ -58,6 +62,10 @@ type EphemerisStep =
   | StepEphemerisSpkw02
   | StepEphemerisSpkw03
   | StepEphemerisSpkw20
+  | StepEphemerisSpkw05
+  | StepEphemerisSpkw10
+  | StepEphemerisSpkw15
+  | StepEphemerisSpkw17
   | StepEphemerisSpkw08;
 
 function toVec3(vec: readonly number[]): [number, number, number] {
@@ -440,6 +448,78 @@ export function runEphemerisStep(
         step.tscale,
         step.initjd,
         step.initfr,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw05": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw05(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.gm,
+        step.states,
+        step.epochs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw10": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw10(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.consts,
+        step.elems,
+        step.epochs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw15": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw15(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.epoch,
+        step.tp,
+        step.pa,
+        step.p,
+        step.ecc,
+        step.j2flg,
+        step.pv,
+        step.gm,
+        step.j2,
+        step.radius,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkw17": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spkw17(
+        handle,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.segid,
+        step.epoch,
+        step.eqel,
+        step.rapol,
+        step.decpol,
       );
       return { op: step.op, value: null };
     }

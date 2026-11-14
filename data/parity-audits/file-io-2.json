@@ -688,7 +688,8 @@
         "file-io-getfat-dsk-success",
         "file-io-getfat-missing-file-error"
       ],
-      "observation": "Both complete required lanes passed locally on 7bdb04414f982fde1d52f584cd7f150fcce7c71a. JavaScript: 2,541 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 7bdb04414f982fde1d52f584cd7f150fcce7c71a. JavaScript: 2,541 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e04-7bdb0441-wasm",
@@ -737,7 +738,8 @@
         "file-io-getfat-dsk-success",
         "file-io-getfat-missing-file-error"
       ],
-      "observation": "Both complete required lanes passed locally on 7bdb04414f982fde1d52f584cd7f150fcce7c71a. JavaScript: 2,541 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 7bdb04414f982fde1d52f584cd7f150fcce7c71a. JavaScript: 2,541 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e04-7bdb0441-node",
@@ -788,7 +790,8 @@
       ],
       "commit": "7bdb04414f982fde1d52f584cd7f150fcce7c71a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43578704714/job/132398570734",
-      "observation": "Inspected successful Linux Node 22 native-required job 132398570734 on 7bdb04414f982fde1d52f584cd7f150fcce7c71a: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132398570734 on 7bdb04414f982fde1d52f584cd7f150fcce7c71a: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e04-7bdb0441-wasm",
@@ -839,7 +842,208 @@
       ],
       "commit": "7bdb04414f982fde1d52f584cd7f150fcce7c71a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43578704714/job/132398570734",
-      "observation": "Inspected successful Linux Node 22 native-required job 132398570734 on 7bdb04414f982fde1d52f584cd7f150fcce7c71a: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132398570734 on 7bdb04414f982fde1d52f584cd7f150fcce7c71a: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e06-f4a21a96-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4a6cdba8c641f16793eefbe28f81b2832b85b92666d5cce9901e2d8e9e905d2",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e06-f4a21a96-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4a6cdba8c641f16793eefbe28f81b2832b85b92666d5cce9901e2d8e9e905d2",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e06-f4a21a96-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4a6cdba8c641f16793eefbe28f81b2832b85b92666d5cce9901e2d8e9e905d2",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e06-f4a21a96-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4a6cdba8c641f16793eefbe28f81b2832b85b92666d5cce9901e2d8e9e905d2",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -913,11 +1117,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlafns -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
         },
         "wasm": {
           "history": [
@@ -930,11 +1136,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlafns -> shared C shim -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
         }
       }
     },
@@ -1020,11 +1228,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlaopn -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
         },
         "wasm": {
           "history": [
@@ -1037,11 +1247,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlaopn -> shared C shim -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
         }
       }
     },
@@ -1151,11 +1363,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskmi2 -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
         },
         "wasm": {
           "history": [
@@ -1168,11 +1382,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskmi2 -> shared C shim -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
         }
       }
     },
@@ -1246,11 +1462,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskopn -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
         },
         "wasm": {
           "history": [
@@ -1263,11 +1481,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskopn -> shared C shim -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
         }
       }
     },
@@ -1365,11 +1585,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskw02 -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
         },
         "wasm": {
           "history": [
@@ -1382,11 +1604,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskw02 -> shared C shim -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
         }
       }
     },
@@ -1460,11 +1684,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.exists -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_exists -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
         },
         "wasm": {
           "history": [
@@ -1477,11 +1703,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.exists -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_exists -> shared C shim -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
         }
       }
     },
@@ -1565,11 +1793,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.getfat -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_getfat -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
         },
         "wasm": {
           "history": [
@@ -1582,11 +1812,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.getfat -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_getfat -> shared C shim -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
-          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
         }
       }
     }

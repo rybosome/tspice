@@ -28,6 +28,10 @@ from ..models import (
     StepEphemerisSpkw02,
     StepEphemerisSpkw03,
     StepEphemerisSpkw20,
+    StepEphemerisSpkw05,
+    StepEphemerisSpkw10,
+    StepEphemerisSpkw15,
+    StepEphemerisSpkw17,
     StepEphemerisSpkw08,
     StepOutput,
     WorkflowStep,
@@ -361,6 +365,11 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         else:
             sp.spkw02(*common, step.btime)
         return StepOutput(op=step.op, value=None)
+
+    if isinstance(step,(StepEphemerisSpkw05,StepEphemerisSpkw10,StepEphemerisSpkw15,StepEphemerisSpkw17)):
+        from ..analytic_spk_oracle import write_analytic
+        write_analytic(_require_spk_handle(context,step.handleId),step)
+        return StepOutput(op=step.op,value=None)
 
     if isinstance(step, StepEphemerisSpkw08):
         handle = _require_spk_handle(context, step.handleId)

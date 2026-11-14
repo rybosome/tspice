@@ -13,6 +13,22 @@ async function writeChebyshevSpk(): Promise<void> {
       0,
     );
     const meta = [h, 195002, 0, "J2000", 0, 1, "NODOM"] as const;
+    c.spice.raw.spkw05(...meta, 1, [1, 0, 0, 0, 1, 0], [0]);
+    c.spice.raw.spkw10(...meta, new Float64Array(8), new Float64Array(10), [0]);
+    c.spice.raw.spkw15(
+      ...meta,
+      0,
+      [0, 0, 1],
+      [1, 0, 0],
+      1,
+      0,
+      3,
+      [0, 0, 1],
+      1,
+      0,
+      0,
+    );
+    c.spice.raw.spkw17(...meta, 0, new Float64Array(9), 0, 1);
     c.spice.raw.spkw02(...meta, 1, 1, 0, [1, 2, 3] as const, 0);
     c.spice.raw.spkw03(...meta, 1, 1, 0, new Float64Array(6), 0);
     c.spice.raw.spkw20(...meta, 1, 1, 0, [1, 2, 3, 4, 5, 6], 2, 3, 2451545, 0);

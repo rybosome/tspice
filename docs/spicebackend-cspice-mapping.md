@@ -340,6 +340,17 @@ use 1e-9 km position and 1e-12 km/s velocity bounds.
 
 Each method returns void and uses an owned open SPK token. [Units, full record layouts and two-way independent file checks](step8-spk-chebyshev.md)
 
+### Analytic SPK writers
+
+| Raw method                                                                                                  | CSPICE route | Record                                                                                                                                                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkw05(handle, body, center, frame, first, last, segid, gm, states, epochs)`                               | `spkw05_c`   | Type 5 stores Cartesian states, increasing TDB sample epochs and central GM. Evaluation propagates neighbouring Keplerian states, blends with a derivative contribution to velocity, and extrapolates from the terminal state.                          |
+| `spkw10(handle, body, center, frame, first, last, segid, consts, elems, epochs)`                            | `spkw10_c`   | Type 10 stores eight geophysical constants and generic fourteen-word packets containing ten TLE values and four generated nutation quantities, indexed by increasing reference epoch. Near-Earth and deep-space samples evaluate in J2000 with the LSK. |
+| `spkw15(handle, body, center, frame, first, last, segid, epoch, tp, pa, p, ecc, j2flg, pv, gm, j2, radius)` | `spkw15_c`   | Type 15 normalizes three directions and writes a 16-word precessing-conic record using semilatus rectum, eccentricity, J2 flag and physical constants. Its evaluator applies distinct modes for secular node regression and apsidal precession.         |
+| `spkw17(handle, body, center, frame, first, last, segid, epoch, eqel, rapol, decpol)`                       | `spkw17_c`   | Type 17 writes the epoch, nine equinoctial elements and two pole angles. Its Cartesian evaluator applies all terms in the tilted reference plane and includes angular rates in the returned velocity.                                                   |
+
+All take a live owned SPK writer and return void. [File layouts, runtime boundaries and numerical comparisons](step8-spk-analytic.md)
+
 ### SPK state, position and segment-search audit
 
 `ephemeris-2` reviews `spkez`, `spkezp`, `spkezr`, `spkpos`, `spkgeo`, `spkgps`,

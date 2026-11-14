@@ -888,6 +888,55 @@ static void SpkChebyshevWriter(const Napi::CallbackInfo& info) {
   if (code) ThrowSpiceError(env, "CSPICE failed writing Chebyshev SPK segment", err);
 }
 
+template <int Type>
+static void WriteAnalyticSpk(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 9) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid analytic SPK writer arity"));
+    return;
+  }
+  int32_t handle, body, center, n;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle) ||
+      !ReadInt32Checked(env, info[1], "body", &body) ||
+      !ReadInt32Checked(env, info[2], "center", &center) ||
+      !ReadInt32Checked(env, info[7], "n", &n))
+    return;
+  if (!info[3].IsString() || !info[6].IsString() || !info[4].IsNumber() || !info[5].IsNumber() ||
+      !info[8].IsTypedArray() ||
+      info[8].As<Napi::TypedArray>().TypedArrayType() != napi_float64_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid analytic SPK strings, epochs or data"));
+    return;
+  }
+  const auto frame = info[3].As<Napi::String>().Utf8Value(),
+             id = info[6].As<Napi::String>().Utf8Value();
+  auto buffer = info[8].As<Napi::Float64Array>();
+  if (frame.find('\0') != std::string::npos || id.find('\0') != std::string::npos ||
+      buffer.ElementLength() > 33554432) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid analytic SPK string or buffer length"));
+    return;
+  }
+  const double first = info[4].As<Napi::Number>().DoubleValue(),
+               last = info[5].As<Napi::Number>().DoubleValue();
+  const int words = static_cast<int>(buffer.ElementLength());
+  const double sentinel = 0, *data = words ? buffer.Data() : &sentinel;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int status;
+  if constexpr (Type == 5)
+    status = tspice_spkw05(handle, body, center, frame.c_str(), first, last, id.c_str(), n, data,
+                           words, err, sizeof(err));
+  else if constexpr (Type == 10)
+    status = tspice_spkw10(handle, body, center, frame.c_str(), first, last, id.c_str(), n, data,
+                           words, err, sizeof(err));
+  else if constexpr (Type == 15)
+    status = tspice_spkw15(handle, body, center, frame.c_str(), first, last, id.c_str(), n, data,
+                           words, err, sizeof(err));
+  else
+    status = tspice_spkw17(handle, body, center, frame.c_str(), first, last, id.c_str(), n, data,
+                           words, err, sizeof(err));
+  if (status) ThrowSpiceError(env, "CSPICE failed writing analytic SPK segment", err);
+}
+
 namespace tspice_backend_node {
 
 void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
@@ -904,6 +953,18 @@ void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
                         __func__))
     return;
   if (!SetExportChecked(env, exports, "spkw20", Napi::Function::New(env, SpkChebyshevWriter<20>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw05", Napi::Function::New(env, WriteAnalyticSpk<5>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw10", Napi::Function::New(env, WriteAnalyticSpk<10>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw15", Napi::Function::New(env, WriteAnalyticSpk<15>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw17", Napi::Function::New(env, WriteAnalyticSpk<17>),
                         __func__))
     return;
   if (!SetExportChecked(env, exports, "spkw08", Napi::Function::New(env, Spkw08), __func__)) return;

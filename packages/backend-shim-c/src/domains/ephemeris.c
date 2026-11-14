@@ -868,3 +868,87 @@ int tspice_spkw20(int handle, int body, int center, const char* frame, double fi
   }
   return 0;
 }
+
+// The packed transport is limited to 256 MiB on both backends. Slice offsets
+// below are reached only after proving the complete physical dimensions.
+static int check_analytic_spk(int type, int n, const double* data, int words, char* err, int cap) {
+  int64_t required = type == 5    ? 1 + 7 * (int64_t)n
+                     : type == 10 ? 8 + 11 * (int64_t)n
+                     : type == 15 ? 16
+                                  : 12;
+  if (!data || n < 0 || words < 0 || words > 33554432 || required != words ||
+      ((type == 15 || type == 17) && n != 1))
+    return tspice_ephemeris_invalid_arg(err, cap, "Incomplete analytic SPK data");
+  for (int i = 0; i < words; ++i)
+    if (!isfinite(data[i]))
+      return tspice_ephemeris_invalid_arg(err, cap, "Nonfinite analytic SPK data");
+  if (type == 10) {
+    const double* epochs = data + 8 + 10 * (int64_t)n;
+    for (int i = 1; i < n; ++i)
+      if (epochs[i - 1] >= epochs[i])
+        return tspice_ephemeris_invalid_arg(
+            err, cap, "Type 10 epochs must increase before opening a generic segment");
+  }
+  if (type == 15 && (trunc(data[9]) < (double)INT32_MIN || trunc(data[9]) > (double)INT32_MAX))
+    return tspice_ephemeris_invalid_arg(err, cap,
+                                        "Type 15 J2 flag exceeds signed evaluation range");
+  return 0;
+}
+
+int tspice_spkw05(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
+  if (check_analytic_spk(5, n, data, words, err, cap)) return 1;
+  spkw05_c(handle, body, center, frame, first, last, segid, data[0], n,
+           (const SpiceDouble(*)[6])(data + 1), data + 1 + 6 * n);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw10(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
+  if (check_analytic_spk(10, n, data, words, err, cap)) return 1;
+  spkw10_c(handle, body, center, frame, first, last, segid, data, n, data + 8, data + 8 + 10 * n);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw15(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
+  if (check_analytic_spk(15, n, data, words, err, cap)) return 1;
+  spkw15_c(handle, body, center, frame, first, last, segid, data[0], data + 1, data + 4, data[7],
+           data[8], data[9], data + 10, data[13], data[14], data[15]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_spkw17(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int n, const double* data, int words, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !isfinite(first) || !isfinite(last))
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
+  if (check_analytic_spk(17, n, data, words, err, cap)) return 1;
+  spkw17_c(handle, body, center, frame, first, last, segid, data[0], data + 1, data[10], data[11]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}

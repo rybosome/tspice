@@ -16,6 +16,10 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   copySpkChebyshevData,
+  packSpk05,
+  packSpk10,
+  packSpk15,
+  packSpk17,
   validateSpkChebyshevFields,
   assertSpiceInt32,
   copySpkPackedDescriptor,
@@ -206,7 +210,7 @@ function tspiceCallSpkopa(module: EmscriptenModule, path: string): number {
   }
 }
 
-function writeChebyshevRecord(
+function writeSpkRecord(
   module: EmscriptenModule,
   frame: string,
   segid: string,
@@ -1044,7 +1048,7 @@ export function createEphemerisApi(
         btime,
       );
       const data = copySpkChebyshevData(2, n, degree, cdata);
-      writeChebyshevRecord(
+      writeSpkRecord(
         module,
         frame,
         segid,
@@ -1099,7 +1103,7 @@ export function createEphemerisApi(
         btime,
       );
       const data = copySpkChebyshevData(3, n, degree, cdata);
-      writeChebyshevRecord(
+      writeSpkRecord(
         module,
         frame,
         segid,
@@ -1160,7 +1164,7 @@ export function createEphemerisApi(
         initfr,
       );
       const data = copySpkChebyshevData(20, n, degree, cdata);
-      writeChebyshevRecord(
+      writeSpkRecord(
         module,
         frame,
         segid,
@@ -1186,6 +1190,153 @@ export function createEphemerisApi(
             err,
             WASM_ERR_MAX_BYTES,
           ),
+      );
+    },
+    spkw05: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      gm,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw05").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk05(gm, states, epochs);
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw05(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
+      );
+    },
+    spkw10: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      consts,
+      elems,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw10").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk10(consts, elems, epochs);
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw10(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
+      );
+    },
+    spkw15: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      tp,
+      pa,
+      p,
+      ecc,
+      j2flg,
+      pv,
+      gm,
+      j2,
+      radius,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw15").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk15(
+        epoch,
+        tp,
+        pa,
+        p,
+        ecc,
+        j2flg,
+        pv,
+        gm,
+        j2,
+        radius,
+      );
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw15(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
+      );
+    },
+    spkw17: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      eqel,
+      rapol,
+      decpol,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw17").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk17(epoch, eqel, rapol, decpol);
+      writeSpkRecord(module, frame, segid, data, (f, id, ptr, err) =>
+        module._tspice_spkw17(
+          actual,
+          body,
+          center,
+          f,
+          first,
+          last,
+          id,
+          n,
+          ptr,
+          data.length,
+          err,
+          WASM_ERR_MAX_BYTES,
+        ),
       );
     },
     spkw08: (

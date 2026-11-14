@@ -10,6 +10,10 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   copySpkChebyshevData,
+  packSpk05,
+  packSpk10,
+  packSpk15,
+  packSpk17,
   validateSpkChebyshevFields,
   assertSpiceInt32,
   copySpkPackedDescriptor,
@@ -483,6 +487,93 @@ export function createEphemerisApi(
         initjd,
         initfr,
       );
+    },
+    spkw05: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      gm,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw05").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk05(gm, states, epochs);
+      native.spkw05(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw10: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      consts,
+      elems,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw10").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk10(consts, elems, epochs);
+      native.spkw10(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw15: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      tp,
+      pa,
+      p,
+      ecc,
+      j2flg,
+      pv,
+      gm,
+      j2,
+      radius,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw15").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk15(
+        epoch,
+        tp,
+        pa,
+        p,
+        ecc,
+        j2flg,
+        pv,
+        gm,
+        j2,
+        radius,
+      );
+      native.spkw15(actual, body, center, frame, first, last, segid, n, data);
+    },
+    spkw17: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      epoch,
+      eqel,
+      rapol,
+      decpol,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw17").nativeHandle;
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      const { n, data } = packSpk17(epoch, eqel, rapol, decpol);
+      native.spkw17(actual, body, center, frame, first, last, segid, n, data);
     },
     spkw08: (
       handle: SpiceHandle,
