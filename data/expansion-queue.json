@@ -81,7 +81,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "Angular constants in CoordsVectorsApi; spd/j2000/j1900/b1950 in TimeApi. Public methods are raw.<canonical name without _c>().",
       "owner": "Codex Step 8 (/root)",
-      "status": "pr-ready",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "No shared prerequisite beyond merged #706. Establish epoch outputs as Julian dates, not ET; zero-argument constants need no invented error cases.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -135,7 +135,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "TimeApi: b1900/j1950/j2100/jyear/tyear; CoordsVectorsApi: clight/dpmax/dpmin/intmax/intmin.",
       "owner": "Codex Step 8 (/root)",
-      "status": "pr-ready",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Use existing time domain for epoch/year constants and coords-vectors for scalar constants. Verify signed SpiceInt bounds and exact platform N0067 floating limits. Does not require A01 wrappers.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -303,7 +303,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
-      "status": "pr-ready",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Reuse existing scalar/Vec3 conventions; verify longitude/colatitude units and signed/zero radius behavior with asymmetric cases.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -436,18 +436,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/747"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "160 registered compiled comparisons; 6 public, 12 native boundary, 38 WASM allocation. Sync/async no-DOM consumer compiled. The actual Chrome public worker matched all 108 matrix entries to the locked library and recovered after a singular-axis error."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43572898028/job/132380908546",
+          "result": "Both complete required lanes passed locally on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4. JavaScript: 2,708 parity tests and one expected guard skip. Native-required: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132380908546 on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
         }
       ],
-      "nextAction": "Run and inspect complete local and canonical source lanes, final-head checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-coordinate-jacobians",
       "branch": "codex/expand-coordinate-jacobians",
       "baseCommit": "a1127d866930e7e3be177d4fceee94a3a220b5c0",
-      "progressNote": "Twelve complete CSPICE-backed derivative paths; finite-difference, inverse, pool-state and IEEE components checked."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 1fcdbd94. 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed.",
+      "priorCheckpoint": "Twelve complete CSPICE-backed derivative paths; finite-difference, inverse, pool-state and IEEE components checked."
     },
     {
       "id": "A08-vector-basics",

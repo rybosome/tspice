@@ -40,7 +40,380 @@
     "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a07-1fcdbd94-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "observation": "Both complete required lanes passed locally on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4. JavaScript: 2,708 parity tests and one expected guard skip. Native-required: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a07-1fcdbd94-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "observation": "Both complete required lanes passed locally on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4. JavaScript: 2,708 parity tests and one expected guard skip. Native-required: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a07-1fcdbd94-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "commit": "1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572898028/job/132380908546",
+      "observation": "Inspected successful Linux Node 22 native-required job 132380908546 on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a07-1fcdbd94-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "b79020fbc889f5a448c1bfa92fab6ace6c7db93f65fc5f09163dfe509091af9f",
+      "caseIds": [
+        "coords-vectors-dazldr-directions",
+        "coords-vectors-dazldr-distance-scales",
+        "coords-vectors-dazldr-mixed-positions",
+        "coords-vectors-dazldr-near-axis",
+        "coords-vectors-dazldr-origin",
+        "coords-vectors-dazldr-z-axis",
+        "coords-vectors-dcyldr-distance-scales",
+        "coords-vectors-dcyldr-mixed-positions",
+        "coords-vectors-dcyldr-near-axis",
+        "coords-vectors-dcyldr-origin",
+        "coords-vectors-dcyldr-z-axis",
+        "coords-vectors-dgeodr-mixed-positions",
+        "coords-vectors-dgeodr-near-axis",
+        "coords-vectors-dgeodr-nearest-point-bound",
+        "coords-vectors-dgeodr-origin",
+        "coords-vectors-dgeodr-reference-shapes",
+        "coords-vectors-dgeodr-unit-flattening",
+        "coords-vectors-dgeodr-z-axis",
+        "coords-vectors-dgeodr-zero-equator",
+        "coords-vectors-dlatdr-distance-scales",
+        "coords-vectors-dlatdr-mixed-positions",
+        "coords-vectors-dlatdr-near-axis",
+        "coords-vectors-dlatdr-origin",
+        "coords-vectors-dlatdr-z-axis",
+        "coords-vectors-dpgrdr-blank-body",
+        "coords-vectors-dpgrdr-earth-moon-sun",
+        "coords-vectors-dpgrdr-invalid-override",
+        "coords-vectors-dpgrdr-mixed-positions",
+        "coords-vectors-dpgrdr-near-axis",
+        "coords-vectors-dpgrdr-nearest-point-bound",
+        "coords-vectors-dpgrdr-no-orientation",
+        "coords-vectors-dpgrdr-origin",
+        "coords-vectors-dpgrdr-reference-shapes",
+        "coords-vectors-dpgrdr-spin-and-overrides",
+        "coords-vectors-dpgrdr-unit-flattening",
+        "coords-vectors-dpgrdr-unknown-body",
+        "coords-vectors-dpgrdr-z-axis",
+        "coords-vectors-dpgrdr-zero-equator",
+        "coords-vectors-drdazl-angular-periods",
+        "coords-vectors-drdazl-directions",
+        "coords-vectors-drdazl-distance-scales",
+        "coords-vectors-drdazl-mixed-positions",
+        "coords-vectors-drdazl-negative-radius",
+        "coords-vectors-drdazl-zero-radius",
+        "coords-vectors-drdcyl-angular-periods",
+        "coords-vectors-drdcyl-distance-scales",
+        "coords-vectors-drdcyl-mixed-positions",
+        "coords-vectors-drdcyl-negative-radius",
+        "coords-vectors-drdcyl-zero-radius",
+        "coords-vectors-drdgeo-mixed-positions",
+        "coords-vectors-drdgeo-poles-below-surface",
+        "coords-vectors-drdgeo-reference-shapes",
+        "coords-vectors-drdgeo-unit-flattening",
+        "coords-vectors-drdgeo-zero-equator",
+        "coords-vectors-drdlat-angular-periods",
+        "coords-vectors-drdlat-distance-scales",
+        "coords-vectors-drdlat-mixed-positions",
+        "coords-vectors-drdlat-negative-radius",
+        "coords-vectors-drdlat-zero-radius",
+        "coords-vectors-drdpgr-blank-body",
+        "coords-vectors-drdpgr-earth-moon-sun",
+        "coords-vectors-drdpgr-invalid-override",
+        "coords-vectors-drdpgr-mixed-positions",
+        "coords-vectors-drdpgr-no-orientation",
+        "coords-vectors-drdpgr-poles-below-surface",
+        "coords-vectors-drdpgr-reference-shapes",
+        "coords-vectors-drdpgr-spin-and-overrides",
+        "coords-vectors-drdpgr-unit-flattening",
+        "coords-vectors-drdpgr-unknown-body",
+        "coords-vectors-drdpgr-zero-equator",
+        "coords-vectors-drdsph-angular-periods",
+        "coords-vectors-drdsph-distance-scales",
+        "coords-vectors-drdsph-mixed-positions",
+        "coords-vectors-drdsph-negative-radius",
+        "coords-vectors-drdsph-zero-radius",
+        "coords-vectors-dsphdr-distance-scales",
+        "coords-vectors-dsphdr-mixed-positions",
+        "coords-vectors-dsphdr-near-axis",
+        "coords-vectors-dsphdr-origin",
+        "coords-vectors-dsphdr-z-axis"
+      ],
+      "commit": "1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572898028/job/132380908546",
+      "observation": "Inspected successful Linux Node 22 native-required job 132380908546 on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "dazldr_c",
@@ -88,16 +461,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dazldr -> serialized native N-API and checked inputs -> tspice_dazldr -> dazldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dazldr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dazldr -> validated WASM call and scoped allocations -> tspice_dazldr -> dazldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dazldr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -142,16 +515,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dcyldr -> serialized native N-API and checked inputs -> tspice_dcyldr -> dcyldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dcyldr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dcyldr -> validated WASM call and scoped allocations -> tspice_dcyldr -> dcyldr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dcyldr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -225,16 +598,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dgeodr -> serialized native N-API and checked inputs -> tspice_dgeodr -> dgeodr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dgeodr -> validated WASM call and scoped allocations -> tspice_dgeodr -> dgeodr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -279,16 +652,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dlatdr -> serialized native N-API and checked inputs -> tspice_dlatdr -> dlatdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dlatdr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dlatdr -> validated WASM call and scoped allocations -> tspice_dlatdr -> dlatdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dlatdr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -405,16 +778,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dpgrdr -> serialized native N-API and checked inputs -> tspice_dpgrdr -> dpgrdr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dpgrdr -> validated WASM call and scoped allocations -> tspice_dpgrdr -> dpgrdr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -464,16 +837,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdazl -> serialized native N-API and checked inputs -> tspice_drdazl -> drdazl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdazl.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdazl -> validated WASM call and scoped allocations -> tspice_drdazl -> drdazl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdazl.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -518,16 +891,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdcyl -> serialized native N-API and checked inputs -> tspice_drdcyl -> drdcyl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdcyl.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdcyl -> validated WASM call and scoped allocations -> tspice_drdcyl -> drdcyl_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdcyl.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -572,16 +945,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdgeo -> serialized native N-API and checked inputs -> tspice_drdgeo -> drdgeo_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdgeo.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdgeo -> validated WASM call and scoped allocations -> tspice_drdgeo -> drdgeo_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdgeo.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -626,16 +999,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdlat -> serialized native N-API and checked inputs -> tspice_drdlat -> drdlat_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdlat.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdlat -> validated WASM call and scoped allocations -> tspice_drdlat -> drdlat_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdlat.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -724,16 +1097,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdpgr -> serialized native N-API and checked inputs -> tspice_drdpgr -> drdpgr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdpgr -> validated WASM call and scoped allocations -> tspice_drdpgr -> drdpgr_c -> checked owned nine-number result. N0067 input/diagnostic preflight and independent locked callee documented in the source review.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -778,16 +1151,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdsph -> serialized native N-API and checked inputs -> tspice_drdsph -> drdsph_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdsph.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.drdsph -> validated WASM call and scoped allocations -> tspice_drdsph -> drdsph_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy drdsph.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     },
@@ -832,19 +1205,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dsphdr -> serialized native N-API and checked inputs -> tspice_dsphdr -> dsphdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dsphdr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-node", "ci-a07-1fcdbd94-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "CoordsVectorsApi.dsphdr -> validated WASM call and scoped allocations -> tspice_dsphdr -> dsphdr_c -> checked owned nine-number result. Scientific oracle calls locked SpiceyPy dsphdr.",
-          "executions": []
+          "executions": ["local-a07-1fcdbd94-wasm", "ci-a07-1fcdbd94-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused numerical and lifecycle evidence is reviewed. Full required local and canonical CI source-matched verification is pending."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
