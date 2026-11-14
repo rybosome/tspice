@@ -6,6 +6,8 @@
 #include <cmath>
 #include <cstring>
 #include <limits>
+#include <memory>
+#include <new>
 #include <string>
 #include <vector>
 
@@ -66,22 +68,26 @@ static bool ReadInt(Napi::Env env, const Napi::Value& value, int* out) {
   return false;
 }
 
-static Napi::Value StringResult(Napi::Env env, const std::vector<char>& out) {
-  const auto end = std::find(out.begin(), out.end(), '\0');
-  if (end == out.end()) {
+static Napi::Value StringBytes(Napi::Env env, const char* data, size_t capacity) {
+  const auto end = std::find(data, data + capacity, '\0');
+  if (end == data + capacity) {
     ThrowSpiceError(Napi::Error::New(env, "CSPICE string result has no NUL terminator"));
     return env.Undefined();
   }
-  const size_t length = static_cast<size_t>(end - out.begin());
-  const auto result = Napi::String::New(env, out.data(), length);
+  const size_t length = static_cast<size_t>(end - data);
+  const auto result = Napi::String::New(env, data, length);
   // N-API decodes invalid UTF-8 with replacement. A round trip must preserve
   // every byte, including a leading BOM and trailing whitespace.
   const std::string decoded = result.Utf8Value();
-  if (decoded.size() != length || std::memcmp(decoded.data(), out.data(), length) != 0) {
+  if (decoded.size() != length || std::memcmp(decoded.data(), data, length) != 0) {
     ThrowSpiceError(Napi::TypeError::New(env, "CSPICE string result is not valid UTF-8"));
     return env.Undefined();
   }
   return result;
+}
+
+static Napi::Value StringResult(Napi::Env env, const std::vector<char>& out) {
+  return StringBytes(env, out.data(), out.size());
 }
 
 static Napi::Value Cmprss(const Napi::CallbackInfo& info) {
@@ -266,9 +272,303 @@ static Napi::Value Matchw(const Napi::CallbackInfo& info) {
   return Napi::Boolean::New(env, out != 0);
 }
 
+
+static bool TokenInput(Napi::Env env, const Napi::Value& input, std::string* out) {
+  if (!ReadText(env, input, out)) return false;
+  if (out->size() <= static_cast<size_t>(std::numeric_limits<int>::max()-2)) return true;
+  ThrowSpiceError(Napi::RangeError::New(env, "Input exceeds token cursor range"));
+  return false;
+}
+
+static int TokenCapacity(size_t bytes, int requested) {
+  return std::min(requested, std::max(2, static_cast<int>(bytes) + 1));
+}
+
+static std::unique_ptr<char[]> TokenBuffer(Napi::Env env, size_t size) {
+  auto bytes = std::unique_ptr<char[]>(new (std::nothrow) char[size]());
+  if (!bytes) ThrowSpiceError(Napi::RangeError::New(env, "Could not allocate token output"));
+  return bytes;
+}
+
+static Napi::Value Nextwd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "nextwd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  int nexlen, reslen;
+  if (!ReadInt(env, info[1], &nexlen) || !ReadInt(env, info[2], &reslen)) return env.Undefined();
+  nexlen = TokenCapacity(input.size(), nexlen);
+  reslen = TokenCapacity(input.size(), reslen);
+  auto next = TokenBuffer(env, std::max(1, nexlen));
+  if (!next) return env.Undefined();
+  auto rest = TokenBuffer(env, std::max(1, reslen));
+  if (!rest) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_nextwd(input.c_str(), nexlen, reslen, next.get(), rest.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling nextwd", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  auto nextValue = StringBytes(env, next.get(), nexlen);
+  if (env.IsExceptionPending()) return env.Undefined();
+  result.Set("next", nextValue);
+  auto restValue = StringBytes(env, rest.get(), reslen);
+  if (env.IsExceptionPending()) return env.Undefined();
+  result.Set("rest", restValue);
+  return result;
+}
+
+static Napi::Value Nthwd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "nthwd() expects 3 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  int nth, worlen, loc = -1;
+  if (!ReadInt(env, info[1], &nth) || !ReadInt(env, info[2], &worlen)) return env.Undefined();
+  worlen = TokenCapacity(input.size(), worlen);
+  auto word = TokenBuffer(env, std::max(1, worlen));
+  if (!word) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_nthwd(input.c_str(), nth, worlen, word.get(), &loc, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling nthwd", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  auto wordValue = StringBytes(env, word.get(), worlen);
+  if (env.IsExceptionPending()) return env.Undefined();
+  result.Set("word", wordValue);
+  result.Set("loc", loc);
+  return result;
+}
+
+static Napi::Value Lparse(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lparse() expects 4 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  std::string delimiters;
+  int nmax, itemln, n = 0;
+  if (!ReadText(env, info[1], &delimiters) || !ReadInt(env, info[2], &nmax) ||
+      !ReadInt(env, info[3], &itemln)) return env.Undefined();
+  nmax = std::min(nmax, static_cast<int>(input.size()) + 1);
+  itemln = TokenCapacity(input.size(), itemln);
+  const int64_t bytes = nmax > 0 && itemln >= 2 ? static_cast<int64_t>(nmax) * itemln : 1;
+  if (bytes > 256LL * 1024 * 1024) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Token table exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  auto items = TokenBuffer(env, static_cast<size_t>(bytes));
+  if (!items) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lparse(input.c_str(), delimiters.c_str(), nmax, itemln, &n, items.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling lparse", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  if (n < 0 || n > std::max(0, nmax)) {
+    ThrowSpiceError(Napi::Error::New(env, "Invalid returned token count"));
+    return env.Undefined();
+  }
+  Napi::Array strings = Napi::Array::New(env, n);
+  for (int i = 0; i < n; ++i) {
+    auto text = StringBytes(env, items.get() + static_cast<size_t>(i) * itemln, itemln);
+    if (env.IsExceptionPending()) return env.Undefined();
+    strings.Set(static_cast<uint32_t>(i), text);
+  }
+  result.Set("n", n);
+  result.Set("items", strings);
+  return result;
+}
+
+static Napi::Value Lparsm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lparsm() expects 4 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  std::string delimiters;
+  int nmax, itemln, n = 0;
+  if (!ReadText(env, info[1], &delimiters) || !ReadInt(env, info[2], &nmax) ||
+      !ReadInt(env, info[3], &itemln)) return env.Undefined();
+  nmax = std::min(nmax, static_cast<int>(input.size()) + 1);
+  itemln = TokenCapacity(input.size(), itemln);
+  const int64_t bytes = nmax > 0 && itemln >= 2 ? static_cast<int64_t>(nmax) * itemln : 1;
+  if (bytes > 256LL * 1024 * 1024) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Token table exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  auto items = TokenBuffer(env, static_cast<size_t>(bytes));
+  if (!items) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lparsm(input.c_str(), delimiters.c_str(), nmax, itemln, &n, items.get(), err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling lparsm", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  if (n < 0 || n > std::max(0, nmax)) {
+    ThrowSpiceError(Napi::Error::New(env, "Invalid returned token count"));
+    return env.Undefined();
+  }
+  Napi::Array strings = Napi::Array::New(env, n);
+  for (int i = 0; i < n; ++i) {
+    auto text = StringBytes(env, items.get() + static_cast<size_t>(i) * itemln, itemln);
+    if (env.IsExceptionPending()) return env.Undefined();
+    strings.Set(static_cast<uint32_t>(i), text);
+  }
+  result.Set("n", n);
+  result.Set("items", strings);
+  return result;
+}
+
+static Napi::Value Lx4dec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lx4dec() expects 2 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  int first;
+  if (!ReadInt(env, info[1], &first)) return env.Undefined();
+  double last = 0;
+  int nchar = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lx4dec(input.c_str(), first, &last, &nchar, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling lx4dec", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("last", last);
+  result.Set("nchar", nchar);
+  return result;
+}
+
+static Napi::Value Lx4num(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lx4num() expects 2 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  int first;
+  if (!ReadInt(env, info[1], &first)) return env.Undefined();
+  double last = 0;
+  int nchar = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lx4num(input.c_str(), first, &last, &nchar, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling lx4num", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("last", last);
+  result.Set("nchar", nchar);
+  return result;
+}
+
+static Napi::Value Lx4sgn(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lx4sgn() expects 2 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  int first;
+  if (!ReadInt(env, info[1], &first)) return env.Undefined();
+  double last = 0;
+  int nchar = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lx4sgn(input.c_str(), first, &last, &nchar, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling lx4sgn", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("last", last);
+  result.Set("nchar", nchar);
+  return result;
+}
+
+static Napi::Value Lx4uns(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lx4uns() expects 2 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  int first;
+  if (!ReadInt(env, info[1], &first)) return env.Undefined();
+  double last = 0;
+  int nchar = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lx4uns(input.c_str(), first, &last, &nchar, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling lx4uns", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("last", last);
+  result.Set("nchar", nchar);
+  return result;
+}
+
+static Napi::Value Lxqstr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lxqstr() expects 3 arguments"));
+    return env.Undefined();
+  }
+  std::string input;
+  if (!TokenInput(env, info[0], &input)) return env.Undefined();
+  int qchar;
+  if (!ReadChar(env, info[1], &qchar)) return env.Undefined();
+  int first;
+  if (!ReadInt(env, info[2], &first)) return env.Undefined();
+  double last = 0;
+  int nchar = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lxqstr(input.c_str(), qchar, first, &last, &nchar, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling lxqstr", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("last", last);
+  result.Set("nchar", nchar);
+  return result;
+}
+
 namespace tspice_backend_node {
 
 void RegisterStrings(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "nextwd", Napi::Function::New(env, Nextwd), __func__)) return;
+  if (!SetExportChecked(env, exports, "nthwd", Napi::Function::New(env, Nthwd), __func__)) return;
+  if (!SetExportChecked(env, exports, "lparse", Napi::Function::New(env, Lparse), __func__)) return;
+  if (!SetExportChecked(env, exports, "lparsm", Napi::Function::New(env, Lparsm), __func__)) return;
+  if (!SetExportChecked(env, exports, "lx4dec", Napi::Function::New(env, Lx4dec), __func__)) return;
+  if (!SetExportChecked(env, exports, "lx4num", Napi::Function::New(env, Lx4num), __func__)) return;
+  if (!SetExportChecked(env, exports, "lx4sgn", Napi::Function::New(env, Lx4sgn), __func__)) return;
+  if (!SetExportChecked(env, exports, "lx4uns", Napi::Function::New(env, Lx4uns), __func__)) return;
+  if (!SetExportChecked(env, exports, "lxqstr", Napi::Function::New(env, Lxqstr), __func__)) return;
   if (!SetExportChecked(env, exports, "cmprss", Napi::Function::New(env, Cmprss), __func__)) return;
   if (!SetExportChecked(env, exports, "eqstr", Napi::Function::New(env, Eqstr), __func__)) return;
   if (!SetExportChecked(env, exports, "iswhsp", Napi::Function::New(env, Iswhsp), __func__)) return;

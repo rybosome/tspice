@@ -21,6 +21,58 @@ export type PathRef = {
 /** Preferred path contract (`PathRef`) with string fixture compatibility for existing case JSON. */
 export type PathRefLike = PathRef | string;
 
+export type StepStringsNextwd = {
+  op: "strings.nextwd";
+  input: string;
+  nexlen?: number;
+  reslen?: number;
+};
+export type StepStringsNthwd = {
+  op: "strings.nthwd";
+  input: string;
+  nth: number;
+  worlen?: number;
+};
+export type StepStringsLparse = {
+  op: "strings.lparse";
+  list: string;
+  delim: string;
+  nmax: number;
+  itemln?: number;
+};
+export type StepStringsLparsm = {
+  op: "strings.lparsm";
+  list: string;
+  delims: string;
+  nmax: number;
+  itemln?: number;
+};
+export type StepStringsLx4dec = {
+  op: "strings.lx4dec";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4num = {
+  op: "strings.lx4num";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4sgn = {
+  op: "strings.lx4sgn";
+  input: string;
+  first: number;
+};
+export type StepStringsLx4uns = {
+  op: "strings.lx4uns";
+  input: string;
+  first: number;
+};
+export type StepStringsLxqstr = {
+  op: "strings.lxqstr";
+  input: string;
+  qchar: string;
+  first: number;
+};
 export type StepStringsCmprss = {
   op: "strings.cmprss";
   delim: string;
@@ -1342,6 +1394,15 @@ export type StepDskDskb02 = {
 };
 
 export type WorkflowStep =
+  | StepStringsNextwd
+  | StepStringsNthwd
+  | StepStringsLparse
+  | StepStringsLparsm
+  | StepStringsLx4dec
+  | StepStringsLx4num
+  | StepStringsLx4sgn
+  | StepStringsLx4uns
+  | StepStringsLxqstr
   | StepStringsCmprss
   | StepStringsEqstr
   | StepStringsIswhsp
@@ -1544,6 +1605,15 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "strings.nextwd"; value: { next: string; rest: string } }
+  | { op: "strings.nthwd"; value: { word: string; loc: number } }
+  | { op: "strings.lparse"; value: { n: number; items: string[] } }
+  | { op: "strings.lparsm"; value: { n: number; items: string[] } }
+  | { op: "strings.lx4dec"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4num"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4sgn"; value: { last: number; nchar: number } }
+  | { op: "strings.lx4uns"; value: { last: number; nchar: number } }
+  | { op: "strings.lxqstr"; value: { last: number; nchar: number } }
   | { op: "strings.cmprss"; value: string }
   | { op: "strings.eqstr"; value: boolean }
   | { op: "strings.iswhsp"; value: boolean }

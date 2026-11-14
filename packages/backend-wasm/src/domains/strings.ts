@@ -4,6 +4,7 @@ import {
   spiceAsciiChar,
   spiceStringByteLength,
   spiceStringOutputCapacity,
+  spiceTokenTable,
 } from "@rybosome/tspice-core";
 import {
   withAllocs,
@@ -47,6 +48,312 @@ function readString(
 /** Create the raw string API backed by the WASM CSPICE module. */
 export function createStringsApi(module: EmscriptenModule): StringsApi {
   return {
+    nextwd: (input, nexlen, reslen) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "nextwd(input)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const nextCap = spiceStringOutputCapacity(inputBytes, 2, nexlen);
+      const restCap = spiceStringOutputCapacity(inputBytes, 2, reslen);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          Math.max(1, nextCap),
+          Math.max(1, restCap),
+        ],
+        (errPtr, inputPtr, nextPtr, restPtr) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_nextwd(
+            inputPtr,
+            nextCap,
+            restCap,
+            nextPtr,
+            restPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            next: readString(module, nextPtr, nextCap),
+            rest: readString(module, restPtr, restCap),
+          };
+        },
+      );
+    },
+    nthwd: (input, nth, worlen) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "nthwd(input)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(nth, "nth");
+      const wordCap = spiceStringOutputCapacity(inputBytes, 2, worlen);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, Math.max(1, wordCap), 4],
+        (errPtr, inputPtr, wordPtr, locPtr) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_nthwd(
+            inputPtr,
+            nth,
+            wordCap,
+            wordPtr,
+            locPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            word: readString(module, wordPtr, wordCap),
+            loc: module.HEAP32[locPtr >>> 2]!,
+          };
+        },
+      );
+    },
+    lparse: (list, delim, nmax, itemln) => {
+      const inputBytes = spiceStringByteLength(
+        list,
+        "lparse(list)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const delimiterBytes = spiceStringByteLength(
+        delim,
+        "lparse(delim)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const table = spiceTokenTable(inputBytes, nmax, itemln);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          delimiterBytes + 1,
+          4,
+          table.bytes,
+        ],
+        (errPtr, inputPtr, delimiterPtr, countPtr, itemsPtr) => {
+          writeString(module, inputPtr, list, inputBytes);
+          writeString(module, delimiterPtr, delim, delimiterBytes);
+          const status = module._tspice_lparse(
+            inputPtr,
+            delimiterPtr,
+            table.count,
+            table.width,
+            countPtr,
+            itemsPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const n = module.HEAP32[countPtr >>> 2]!;
+          if (n < 0 || n > Math.max(0, table.count))
+            throw new Error("Invalid returned token count");
+          const items = Array.from({ length: n }, (_, i) =>
+            readString(module, itemsPtr + i * table.width, table.width),
+          );
+          return { n, items };
+        },
+      );
+    },
+    lparsm: (list, delims, nmax, itemln) => {
+      const inputBytes = spiceStringByteLength(
+        list,
+        "lparsm(list)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const delimiterBytes = spiceStringByteLength(
+        delims,
+        "lparsm(delims)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const table = spiceTokenTable(inputBytes, nmax, itemln);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          inputBytes + 1,
+          delimiterBytes + 1,
+          4,
+          table.bytes,
+        ],
+        (errPtr, inputPtr, delimiterPtr, countPtr, itemsPtr) => {
+          writeString(module, inputPtr, list, inputBytes);
+          writeString(module, delimiterPtr, delims, delimiterBytes);
+          const status = module._tspice_lparsm(
+            inputPtr,
+            delimiterPtr,
+            table.count,
+            table.width,
+            countPtr,
+            itemsPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const n = module.HEAP32[countPtr >>> 2]!;
+          if (n < 0 || n > Math.max(0, table.count))
+            throw new Error("Invalid returned token count");
+          const items = Array.from({ length: n }, (_, i) =>
+            readString(module, itemsPtr + i * table.width, table.width),
+          );
+          return { n, items };
+        },
+      );
+    },
+    lx4dec: (input, first) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "lx4dec(input)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(first, "first");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 8, 4],
+        (errPtr, inputPtr, lastPtr, ncharPtr) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_lx4dec(
+            inputPtr,
+            first,
+            lastPtr,
+            ncharPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            last: module.HEAPF64[lastPtr >>> 3]!,
+            nchar: module.HEAP32[ncharPtr >>> 2]!,
+          };
+        },
+      );
+    },
+    lx4num: (input, first) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "lx4num(input)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(first, "first");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 8, 4],
+        (errPtr, inputPtr, lastPtr, ncharPtr) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_lx4num(
+            inputPtr,
+            first,
+            lastPtr,
+            ncharPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            last: module.HEAPF64[lastPtr >>> 3]!,
+            nchar: module.HEAP32[ncharPtr >>> 2]!,
+          };
+        },
+      );
+    },
+    lx4sgn: (input, first) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "lx4sgn(input)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(first, "first");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 8, 4],
+        (errPtr, inputPtr, lastPtr, ncharPtr) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_lx4sgn(
+            inputPtr,
+            first,
+            lastPtr,
+            ncharPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            last: module.HEAPF64[lastPtr >>> 3]!,
+            nchar: module.HEAP32[ncharPtr >>> 2]!,
+          };
+        },
+      );
+    },
+    lx4uns: (input, first) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "lx4uns(input)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      assertSpiceInt32(first, "first");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 8, 4],
+        (errPtr, inputPtr, lastPtr, ncharPtr) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_lx4uns(
+            inputPtr,
+            first,
+            lastPtr,
+            ncharPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            last: module.HEAPF64[lastPtr >>> 3]!,
+            nchar: module.HEAP32[ncharPtr >>> 2]!,
+          };
+        },
+      );
+    },
+    lxqstr: (input, qchar, first) => {
+      const inputBytes = spiceStringByteLength(
+        input,
+        "lxqstr(input)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const quoteByte = spiceAsciiChar(qchar, "qchar");
+      assertSpiceInt32(first, "first");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, inputBytes + 1, 8, 4],
+        (errPtr, inputPtr, lastPtr, ncharPtr) => {
+          writeString(module, inputPtr, input, inputBytes);
+          const status = module._tspice_lxqstr(
+            inputPtr,
+            quoteByte,
+            first,
+            lastPtr,
+            ncharPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            last: module.HEAPF64[lastPtr >>> 3]!,
+            nchar: module.HEAP32[ncharPtr >>> 2]!,
+          };
+        },
+      );
+    },
     cmprss: (delim, n, input, lenout) => {
       const delimByte = spiceAsciiChar(delim, "cmprss(delim)");
       assertSpiceInt32(n, "cmprss(n)");

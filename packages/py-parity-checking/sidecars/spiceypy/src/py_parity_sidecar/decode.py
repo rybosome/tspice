@@ -168,6 +168,15 @@ from .models import (
     StepTimeSce2s,
     StepTimeScs2e,
     StepTimeSct2e,
+    StepStringsNextwd,
+    StepStringsNthwd,
+    StepStringsLparse,
+    StepStringsLparsm,
+    StepStringsLx4dec,
+    StepStringsLx4num,
+    StepStringsLx4sgn,
+    StepStringsLx4uns,
+    StepStringsLxqstr,
     StepStringsCmprss,
     StepStringsEqstr,
     StepStringsIswhsp,
@@ -362,6 +371,76 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
     op = _expect_string(step.get("op"), label="workflow step.op")
 
     match op:
+        case "strings.nextwd":
+            return StepStringsNextwd(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.nextwd.input"),
+                nexlen=_expect_int(step.get("nexlen"), label="strings.nextwd.nexlen") if "nexlen" in step else None,
+                reslen=_expect_int(step.get("reslen"), label="strings.nextwd.reslen") if "reslen" in step else None,
+            )
+
+        case "strings.nthwd":
+            return StepStringsNthwd(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.nthwd.input"),
+                nth=_expect_int(step.get("nth"), label="strings.nthwd.nth"),
+                worlen=_expect_int(step.get("worlen"), label="strings.nthwd.worlen") if "worlen" in step else None,
+            )
+
+        case "strings.lparse":
+            return StepStringsLparse(
+                op=op,
+                list=_expect_string(step.get("list"), label="strings.lparse.list"),
+                delim=_expect_string(step.get("delim"), label="strings.lparse.delim"),
+                nmax=_expect_int(step.get("nmax"), label="strings.lparse.nmax"),
+                itemln=_expect_int(step.get("itemln"), label="strings.lparse.itemln") if "itemln" in step else None,
+            )
+
+        case "strings.lparsm":
+            return StepStringsLparsm(
+                op=op,
+                list=_expect_string(step.get("list"), label="strings.lparsm.list"),
+                delims=_expect_string(step.get("delims"), label="strings.lparsm.delims"),
+                nmax=_expect_int(step.get("nmax"), label="strings.lparsm.nmax"),
+                itemln=_expect_int(step.get("itemln"), label="strings.lparsm.itemln") if "itemln" in step else None,
+            )
+
+        case "strings.lx4dec":
+            return StepStringsLx4dec(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4dec.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4dec.first"),
+            )
+
+        case "strings.lx4num":
+            return StepStringsLx4num(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4num.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4num.first"),
+            )
+
+        case "strings.lx4sgn":
+            return StepStringsLx4sgn(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4sgn.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4sgn.first"),
+            )
+
+        case "strings.lx4uns":
+            return StepStringsLx4uns(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lx4uns.input"),
+                first=_expect_int(step.get("first"), label="strings.lx4uns.first"),
+            )
+
+        case "strings.lxqstr":
+            return StepStringsLxqstr(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lxqstr.input"),
+                qchar=_expect_string(step.get("qchar"), label="strings.lxqstr.qchar"),
+                first=_expect_int(step.get("first"), label="strings.lxqstr.first"),
+            )
+
         case "strings.cmprss":
             return StepStringsCmprss(
                 op=op,

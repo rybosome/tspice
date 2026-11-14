@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 170
-- Planned (not yet implemented): 479
+- Implemented now (SpiceRawBackend): 179
+- Planned (not yet implemented): 470
 - Excluded: 3
 
 ## Implemented now
@@ -117,12 +117,21 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `lastnb_c` | Last non-blank character |
 | `latrec_c` | Latitudinal to rectangular coordinates |
 | `lcase_c` | Convert to lowercase |
+| `lparse_c` | Parse items from a list |
+| `lparsm_c` | Parse a list of items having multiple delimiters |
+| `lx4dec_c` | Scan for decimal number |
+| `lx4num_c` | Scan for number |
+| `lx4sgn_c` | Scan for signed integer |
+| `lx4uns_c` | Scan for unsigned integer |
+| `lxqstr_c` | Lex quoted string |
 | `matchi_c` | Match string against wildcard template |
 | `matchw_c` | Match string against wildcard template |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
+| `nextwd_c` | Next word in a character string |
+| `nthwd_c` | n'th word in a character string |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
 | `pcpool_c` | Put character strings into the kernel pool |
@@ -434,8 +443,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `limbpt_c` | Limb points on an extended object |
 | `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
 | `lmpool_c` | Load variables from memory into the pool |
-| `lparse_c` | Parse items from a list |
-| `lparsm_c` | Parse a list of items having multiple delimiters |
 | `lparss_c` | Parse a list of items; return a set |
 | `lspcn_c` | Longitude of the sun, planetocentric |
 | `lstlec_c` | Last character element less than or equal to. |
@@ -445,11 +452,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `lstltd_c` | Last double precision element less than |
 | `lstlti_c` | Last integer element less than |
 | `ltime_c` | Light Time |
-| `lx4dec_c` | Scan for decimal number |
-| `lx4num_c` | Scan for number |
-| `lx4sgn_c` | Scan for signed integer |
-| `lx4uns_c` | Scan for unsigned integer |
-| `lxqstr_c` | Lex quoted string |
 | `m2eul_c` | Matrix to Euler angles |
 | `m2q_c` | Matrix to quaternion |
 | `maxd_c` | Maximum of a set of double precision values |
@@ -469,11 +471,9 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `ncpos_c` | NOT Character position |
 | `ncposr_c` | Character position, reverse |
 | `nearpt_c` | Nearest point on an ellipsoid |
-| `nextwd_c` | Next word in a character string |
 | `npedln_c` | Nearest point on ellipsoid to line |
 | `npelpt_c` | Nearest point on ellipse to point |
 | `nplnpt_c` | Nearest point on line to point |
-| `nthwd_c` | n'th word in a character string |
 | `nvp2pl_c` | Normal vector and point to plane |
 | `ordc_c` | The ordinal position of an element in a set |
 | `ordd_c` | The ordinal position of an element in a set |

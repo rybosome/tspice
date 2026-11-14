@@ -56,3 +56,35 @@ export async function stringConsumer(
     asyncSensitive,
   ];
 }
+
+/** Token results retain byte offsets in both local and transported public declarations. */
+export async function tokenConsumer(
+  spice: Spice,
+  remote: SpiceAsync,
+): Promise<void> {
+  const next: { next: string; rest: string } = spice.raw.nextwd(" alpha beta");
+  const nth: { word: string; loc: number } = await remote.raw.nthwd(
+    "α beta",
+    1,
+    4,
+  );
+  const single: { n: number; items: string[] } = spice.raw.lparse(
+    "a,b",
+    ",",
+    4,
+  );
+  const multiple: { n: number; items: string[] } = await remote.raw.lparsm(
+    "a;b c",
+    "; ",
+    4,
+    3,
+  );
+  const spans: { last: number; nchar: number }[] = [
+    spice.raw.lx4dec(".25", 0),
+    await remote.raw.lx4num("1E+3", 0),
+    spice.raw.lx4sgn("-3", 0),
+    await remote.raw.lx4uns("27", 0),
+    spice.raw.lxqstr("'q'", "'", 0),
+  ];
+  void [next, nth, single, multiple, spans];
+}

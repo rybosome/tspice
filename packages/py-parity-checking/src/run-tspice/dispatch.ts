@@ -22,6 +22,15 @@ export function dispatchStep(
   step: WorkflowStep,
 ): StepOutput {
   switch (step.op) {
+    case "strings.nextwd":
+    case "strings.nthwd":
+    case "strings.lparse":
+    case "strings.lparsm":
+    case "strings.lx4dec":
+    case "strings.lx4num":
+    case "strings.lx4sgn":
+    case "strings.lx4uns":
+    case "strings.lxqstr":
     case "strings.cmprss":
     case "strings.eqstr":
     case "strings.iswhsp":

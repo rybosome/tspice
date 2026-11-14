@@ -1,0 +1,169 @@
+[
+  {
+    "caseId": "strings-nthwd-ordinals",
+    "description": "Locate each word and distinguish zero-based byte locations, missing ordinals and truncation.",
+    "workflow": [
+      {
+        "op": "strings.nthwd",
+        "input": "  one   two  three ",
+        "nth": -1
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "  one   two  three ",
+        "nth": 0
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "  one   two  three ",
+        "nth": 1
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "  one   two  three ",
+        "nth": 2
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "  one   two  three ",
+        "nth": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nthwd-empty",
+    "description": "No word of an empty or all-space string exists.",
+    "workflow": [
+      {
+        "op": "strings.nthwd",
+        "input": "",
+        "nth": 0
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "",
+        "nth": 1
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "",
+        "nth": 6
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "   ",
+        "nth": 0
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "   ",
+        "nth": 1
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "   ",
+        "nth": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nthwd-utf8-byte-locations",
+    "description": "Multibyte code points before a hit distinguish byte offsets from JS indices.",
+    "workflow": [
+      {
+        "op": "strings.nthwd",
+        "input": "  Ω  宙  zz",
+        "nth": 0
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "  Ω  宙  zz",
+        "nth": 1
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "  Ω  宙  zz",
+        "nth": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nthwd-truncated-word",
+    "description": "A shortened word retains its original start location.",
+    "workflow": [
+      {
+        "op": "strings.nthwd",
+        "input": "first second last",
+        "nth": 1,
+        "worlen": 2
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "first second last",
+        "nth": 2,
+        "worlen": 3
+      },
+      {
+        "op": "strings.nthwd",
+        "input": " a\t  zz\n",
+        "nth": 0,
+        "worlen": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nthwd-signed-extents",
+    "description": "Extreme ordinals outside the word count remain legitimate misses.",
+    "workflow": [
+      {
+        "op": "strings.nthwd",
+        "input": "a b",
+        "nth": -2147483648,
+        "worlen": 10
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "a b",
+        "nth": 2147483647,
+        "worlen": 10
+      },
+      {
+        "op": "strings.nthwd",
+        "input": "a b",
+        "nth": 2147483646,
+        "worlen": 10
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nthwd-output-capacity",
+    "description": "A zero or negative caller buffer fails with the toolkit diagnostic.",
+    "workflow": [
+      {
+        "op": "strings.nthwd",
+        "input": "a b",
+        "nth": 0,
+        "worlen": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

@@ -1,0 +1,159 @@
+[
+  {
+    "caseId": "strings-nextwd-spaces",
+    "description": "Observe the first word and the entire remaining string including interior runs of spaces.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": "a  bb c   d"
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "  ab   cd ef  "
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "  one  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nextwd-empty",
+    "description": "Blank and empty text return two defined empty strings.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": ""
+      },
+      {
+        "op": "strings.nextwd",
+        "input": " "
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "     "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nextwd-ascii-controls",
+    "description": "Tabs and newlines are distinct from space and stay visible in each output.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": "a\t b\t"
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "x\ny  z\n"
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "\t   🪐"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nextwd-explicit-capacity",
+    "description": "Independent next and remainder capacities truncate different fields.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": "abc def ghi",
+        "nexlen": 2,
+        "reslen": 8
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "abc def ghi",
+        "nexlen": 4,
+        "reslen": 3
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "word",
+        "nexlen": 2147483647,
+        "reslen": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nextwd-unicode",
+    "description": "Complete UTF-8 scalar boundaries, mixed byte lengths, and adjacent blanks.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": "Ωμέγα  é x"
+      },
+      {
+        "op": "strings.nextwd",
+        "input": "Éé  宙 X",
+        "nexlen": 3,
+        "reslen": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-nextwd-short-next",
+    "description": "The canonical width error is observed even before the empty-input path.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": "",
+        "nexlen": 1,
+        "reslen": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-nextwd-short-rest",
+    "description": "The canonical width error is observed even before the empty-input path.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": "",
+        "nexlen": 2,
+        "reslen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-nextwd-negative-rest",
+    "description": "The canonical width error is observed even before the empty-input path.",
+    "workflow": [
+      {
+        "op": "strings.nextwd",
+        "input": "x",
+        "nexlen": 3,
+        "reslen": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

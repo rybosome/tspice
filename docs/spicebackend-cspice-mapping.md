@@ -245,6 +245,27 @@ accept ASCII including the NUL scalar. All rows use authored text fixtures.
 | `matchi(input: string, templ: string, wstr: string, wchr: string)` | `matchi_c`        | Exact boolean for an ASCII case-insensitive, byte-oriented wildcard match. |
 | `matchw(input: string, templ: string, wstr: string, wchr: string)` | `matchw_c`        | Exact boolean for a case-sensitive, byte-oriented wildcard match.          |
 
+### Tokenization and lexical spans
+
+All nine methods dispatch through their same-named CSPICE routine. A20 reuses
+the A18 string validation and strict byte decoding on both real backends.
+
+| Raw method | CSPICE     | Complete public result                                                     |
+| ---------- | ---------- | -------------------------------------------------------------------------- |
+| `nextwd`   | `nextwd_c` | Next word and left-justified remainder, with independent capacities        |
+| `nthwd`    | `nthwd_c`  | Word and zero-based UTF-8 start location                                   |
+| `lparse`   | `lparse_c` | Item count and ordered rows using one delimiter byte                       |
+| `lparsm`   | `lparsm_c` | Item count and ordered rows using a delimiter byte set                     |
+| `lx4dec`   | `lx4dec_c` | Inclusive last byte and character count of a decimal mantissa              |
+| `lx4num`   | `lx4num_c` | Inclusive last byte and character count of a number with optional exponent |
+| `lx4sgn`   | `lx4sgn_c` | Inclusive last byte and character count of an optionally signed integer    |
+| `lx4uns`   | `lx4uns_c` | Inclusive last byte and character count of unsigned digits                 |
+| `lxqstr`   | `lxqstr_c` | Inclusive last byte and character count of a quoted token                  |
+
+The independent oracle retains byte capacities, complete UTF-8 text, signed
+miss positions and the toolkit's separate decimal location/count fields.
+[Bounds, oracle adaptations and scientific observations](step8-string-tokenization.md)
+
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
 `rotate` and `rotmat` preserve CSPICE's modulo-three axis mapping (including zero/negative integers); their typed adapters reject fractional, non-finite, or overflowing JS axes before conversion. Matrices are row-major. `rotate`/`rotmat` use passive coordinate rotation, while `axisar` returns an active vector rotation. The audit includes noncommuting matrix products, both vector multiplication directions, coordinate poles/zero inputs, and oblate/prolate geodetic conversions.

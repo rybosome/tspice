@@ -1,0 +1,308 @@
+[
+  {
+    "caseId": "strings-lxqstr-empty",
+    "description": "Compare complete last and nchar outputs, including the per-routine empty-buffer behavior.",
+    "workflow": [
+      {
+        "op": "strings.lxqstr",
+        "input": "",
+        "qchar": "'",
+        "first": -4
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "",
+        "qchar": "'",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "",
+        "qchar": "'",
+        "first": 3
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "",
+        "qchar": "'",
+        "first": 2147483647
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "",
+        "qchar": "'",
+        "first": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lxqstr-starts",
+    "description": "A hit only starts at the supplied zero-based byte index. Misses retain its predecessor.",
+    "workflow": [
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": -4
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": -1
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 2
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 3
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 4
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 5
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 6
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 8
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 9
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 11
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 15
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "  +12.50E-3 ???",
+        "qchar": "'",
+        "first": 256
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lxqstr-whole-extents",
+    "description": "Both signed limits and their neighbors use the documented out-of-range scan result.",
+    "workflow": [
+      {
+        "op": "strings.lxqstr",
+        "input": "1abc",
+        "qchar": "'",
+        "first": -2147483648
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "1abc",
+        "qchar": "'",
+        "first": -2147483647
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "1abc",
+        "qchar": "'",
+        "first": 2147483646
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "1abc",
+        "qchar": "'",
+        "first": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lxqstr-utf8",
+    "description": "A numeric or quoted token following multibyte text is recognized at a byte index.",
+    "workflow": [
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 2
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 4
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 5
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 6
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 7
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 8
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 9
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "Ωé'xy' -9",
+        "qchar": "'",
+        "first": 10
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lxqstr-quoted",
+    "description": "Quoted strings, doubled quote, empty quoted string and unterminated text.",
+    "workflow": [
+      {
+        "op": "strings.lxqstr",
+        "input": "'abc'!",
+        "qchar": "'",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "''",
+        "qchar": "'",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "'a''bc'!",
+        "qchar": "'",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "'missing",
+        "qchar": "'",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "&&",
+        "qchar": "&",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "&&&abc&&&",
+        "qchar": "&",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "\"a\"\"b\"",
+        "qchar": "\"",
+        "first": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-lxqstr-custom-delimiter",
+    "description": "Nonmatching delimiter, nonzero start and quoted UTF-8 payload.",
+    "workflow": [
+      {
+        "op": "strings.lxqstr",
+        "input": "abc%é%",
+        "qchar": "%",
+        "first": 3
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "abc%é%",
+        "qchar": "%",
+        "first": 0
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "a 'x'",
+        "qchar": "\"",
+        "first": 2
+      },
+      {
+        "op": "strings.lxqstr",
+        "input": "a 'x'",
+        "qchar": "'",
+        "first": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

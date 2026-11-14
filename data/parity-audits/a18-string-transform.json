@@ -118,7 +118,8 @@
         "strings-ucase-utf8-byte-boundaries",
         "strings-ucase-zero-capacity-error"
       ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a18-572a9d29-wasm",
@@ -194,7 +195,8 @@
         "strings-ucase-utf8-byte-boundaries",
         "strings-ucase-zero-capacity-error"
       ],
-      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a18-572a9d29-node",
@@ -272,7 +274,8 @@
       ],
       "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a18-572a9d29-wasm",
@@ -350,7 +353,316 @@
       ],
       "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
-      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a20-4d4f03cd-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "97e5426690c16404d225eccfe50351ac42840ace08d1b81ace2c4a138518e711",
+      "caseIds": [
+        "strings-cmprss-capacity-and-order",
+        "strings-cmprss-complete-utf8-boundaries",
+        "strings-cmprss-delimiter-run-lengths",
+        "strings-cmprss-empty-all-delimiter-or-absent",
+        "strings-cmprss-int32-capacity-limits",
+        "strings-cmprss-negative-capacity-error",
+        "strings-cmprss-nul-delimiter",
+        "strings-cmprss-utf8-and-bom",
+        "strings-cmprss-whitespace-delimiters",
+        "strings-cmprss-zero-capacity-error",
+        "strings-eqstr-all-c-whitespace",
+        "strings-eqstr-case-and-punctuation",
+        "strings-eqstr-empty-and-nonempty",
+        "strings-eqstr-internal-whitespace",
+        "strings-eqstr-leading-and-trailing",
+        "strings-eqstr-utf8-byte-comparison",
+        "strings-iswhsp-empty-and-control-whitespace",
+        "strings-iswhsp-nonascii-space-and-visible",
+        "strings-iswhsp-nonwhite-controls",
+        "strings-iswhsp-visible-amid-whitespace",
+        "strings-lastnb-blank-versus-whitespace",
+        "strings-lastnb-mixed-leading-interior-and-tail",
+        "strings-lastnb-utf8-byte-indices",
+        "strings-lastnb-zero-based-or-minus-one",
+        "strings-lcase-ascii-letter-range",
+        "strings-lcase-capacity-includes-nul",
+        "strings-lcase-empty-and-nonempty",
+        "strings-lcase-int32-capacity-limits",
+        "strings-lcase-negative-capacity-error",
+        "strings-lcase-one-capacity-error",
+        "strings-lcase-preserved-terminal-whitespace",
+        "strings-lcase-utf8-and-bom",
+        "strings-lcase-utf8-byte-boundaries",
+        "strings-lcase-zero-capacity-error",
+        "strings-matchi-blanks-and-controls",
+        "strings-matchi-coincident-wildcards",
+        "strings-matchi-custom-wildcards",
+        "strings-matchi-empty-input-error",
+        "strings-matchi-empty-template-error",
+        "strings-matchi-literal-case-and-order",
+        "strings-matchi-multiple-wildcards-and-anchors",
+        "strings-matchi-nul-wildcards",
+        "strings-matchi-utf8-single-byte-wildcard",
+        "strings-matchi-zero-or-many-versus-one",
+        "strings-matchw-blanks-and-controls",
+        "strings-matchw-coincident-wildcards",
+        "strings-matchw-custom-wildcards",
+        "strings-matchw-empty-input-error",
+        "strings-matchw-empty-template-error",
+        "strings-matchw-literal-case-and-order",
+        "strings-matchw-multiple-wildcards-and-anchors",
+        "strings-matchw-nul-wildcards",
+        "strings-matchw-utf8-single-byte-wildcard",
+        "strings-matchw-zero-or-many-versus-one",
+        "strings-ucase-ascii-letter-range",
+        "strings-ucase-capacity-includes-nul",
+        "strings-ucase-empty-and-nonempty",
+        "strings-ucase-int32-capacity-limits",
+        "strings-ucase-negative-capacity-error",
+        "strings-ucase-one-capacity-error",
+        "strings-ucase-preserved-terminal-whitespace",
+        "strings-ucase-utf8-and-bom",
+        "strings-ucase-utf8-byte-boundaries",
+        "strings-ucase-zero-capacity-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "local-a20-4d4f03cd-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "97e5426690c16404d225eccfe50351ac42840ace08d1b81ace2c4a138518e711",
+      "caseIds": [
+        "strings-cmprss-capacity-and-order",
+        "strings-cmprss-complete-utf8-boundaries",
+        "strings-cmprss-delimiter-run-lengths",
+        "strings-cmprss-empty-all-delimiter-or-absent",
+        "strings-cmprss-int32-capacity-limits",
+        "strings-cmprss-negative-capacity-error",
+        "strings-cmprss-nul-delimiter",
+        "strings-cmprss-utf8-and-bom",
+        "strings-cmprss-whitespace-delimiters",
+        "strings-cmprss-zero-capacity-error",
+        "strings-eqstr-all-c-whitespace",
+        "strings-eqstr-case-and-punctuation",
+        "strings-eqstr-empty-and-nonempty",
+        "strings-eqstr-internal-whitespace",
+        "strings-eqstr-leading-and-trailing",
+        "strings-eqstr-utf8-byte-comparison",
+        "strings-iswhsp-empty-and-control-whitespace",
+        "strings-iswhsp-nonascii-space-and-visible",
+        "strings-iswhsp-nonwhite-controls",
+        "strings-iswhsp-visible-amid-whitespace",
+        "strings-lastnb-blank-versus-whitespace",
+        "strings-lastnb-mixed-leading-interior-and-tail",
+        "strings-lastnb-utf8-byte-indices",
+        "strings-lastnb-zero-based-or-minus-one",
+        "strings-lcase-ascii-letter-range",
+        "strings-lcase-capacity-includes-nul",
+        "strings-lcase-empty-and-nonempty",
+        "strings-lcase-int32-capacity-limits",
+        "strings-lcase-negative-capacity-error",
+        "strings-lcase-one-capacity-error",
+        "strings-lcase-preserved-terminal-whitespace",
+        "strings-lcase-utf8-and-bom",
+        "strings-lcase-utf8-byte-boundaries",
+        "strings-lcase-zero-capacity-error",
+        "strings-matchi-blanks-and-controls",
+        "strings-matchi-coincident-wildcards",
+        "strings-matchi-custom-wildcards",
+        "strings-matchi-empty-input-error",
+        "strings-matchi-empty-template-error",
+        "strings-matchi-literal-case-and-order",
+        "strings-matchi-multiple-wildcards-and-anchors",
+        "strings-matchi-nul-wildcards",
+        "strings-matchi-utf8-single-byte-wildcard",
+        "strings-matchi-zero-or-many-versus-one",
+        "strings-matchw-blanks-and-controls",
+        "strings-matchw-coincident-wildcards",
+        "strings-matchw-custom-wildcards",
+        "strings-matchw-empty-input-error",
+        "strings-matchw-empty-template-error",
+        "strings-matchw-literal-case-and-order",
+        "strings-matchw-multiple-wildcards-and-anchors",
+        "strings-matchw-nul-wildcards",
+        "strings-matchw-utf8-single-byte-wildcard",
+        "strings-matchw-zero-or-many-versus-one",
+        "strings-ucase-ascii-letter-range",
+        "strings-ucase-capacity-includes-nul",
+        "strings-ucase-empty-and-nonempty",
+        "strings-ucase-int32-capacity-limits",
+        "strings-ucase-negative-capacity-error",
+        "strings-ucase-one-capacity-error",
+        "strings-ucase-preserved-terminal-whitespace",
+        "strings-ucase-utf8-and-bom",
+        "strings-ucase-utf8-byte-boundaries",
+        "strings-ucase-zero-capacity-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-a20-4d4f03cd-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "97e5426690c16404d225eccfe50351ac42840ace08d1b81ace2c4a138518e711",
+      "caseIds": [
+        "strings-cmprss-capacity-and-order",
+        "strings-cmprss-complete-utf8-boundaries",
+        "strings-cmprss-delimiter-run-lengths",
+        "strings-cmprss-empty-all-delimiter-or-absent",
+        "strings-cmprss-int32-capacity-limits",
+        "strings-cmprss-negative-capacity-error",
+        "strings-cmprss-nul-delimiter",
+        "strings-cmprss-utf8-and-bom",
+        "strings-cmprss-whitespace-delimiters",
+        "strings-cmprss-zero-capacity-error",
+        "strings-eqstr-all-c-whitespace",
+        "strings-eqstr-case-and-punctuation",
+        "strings-eqstr-empty-and-nonempty",
+        "strings-eqstr-internal-whitespace",
+        "strings-eqstr-leading-and-trailing",
+        "strings-eqstr-utf8-byte-comparison",
+        "strings-iswhsp-empty-and-control-whitespace",
+        "strings-iswhsp-nonascii-space-and-visible",
+        "strings-iswhsp-nonwhite-controls",
+        "strings-iswhsp-visible-amid-whitespace",
+        "strings-lastnb-blank-versus-whitespace",
+        "strings-lastnb-mixed-leading-interior-and-tail",
+        "strings-lastnb-utf8-byte-indices",
+        "strings-lastnb-zero-based-or-minus-one",
+        "strings-lcase-ascii-letter-range",
+        "strings-lcase-capacity-includes-nul",
+        "strings-lcase-empty-and-nonempty",
+        "strings-lcase-int32-capacity-limits",
+        "strings-lcase-negative-capacity-error",
+        "strings-lcase-one-capacity-error",
+        "strings-lcase-preserved-terminal-whitespace",
+        "strings-lcase-utf8-and-bom",
+        "strings-lcase-utf8-byte-boundaries",
+        "strings-lcase-zero-capacity-error",
+        "strings-matchi-blanks-and-controls",
+        "strings-matchi-coincident-wildcards",
+        "strings-matchi-custom-wildcards",
+        "strings-matchi-empty-input-error",
+        "strings-matchi-empty-template-error",
+        "strings-matchi-literal-case-and-order",
+        "strings-matchi-multiple-wildcards-and-anchors",
+        "strings-matchi-nul-wildcards",
+        "strings-matchi-utf8-single-byte-wildcard",
+        "strings-matchi-zero-or-many-versus-one",
+        "strings-matchw-blanks-and-controls",
+        "strings-matchw-coincident-wildcards",
+        "strings-matchw-custom-wildcards",
+        "strings-matchw-empty-input-error",
+        "strings-matchw-empty-template-error",
+        "strings-matchw-literal-case-and-order",
+        "strings-matchw-multiple-wildcards-and-anchors",
+        "strings-matchw-nul-wildcards",
+        "strings-matchw-utf8-single-byte-wildcard",
+        "strings-matchw-zero-or-many-versus-one",
+        "strings-ucase-ascii-letter-range",
+        "strings-ucase-capacity-includes-nul",
+        "strings-ucase-empty-and-nonempty",
+        "strings-ucase-int32-capacity-limits",
+        "strings-ucase-negative-capacity-error",
+        "strings-ucase-one-capacity-error",
+        "strings-ucase-preserved-terminal-whitespace",
+        "strings-ucase-utf8-and-bom",
+        "strings-ucase-utf8-byte-boundaries",
+        "strings-ucase-zero-capacity-error"
+      ],
+      "commit": "4d4f03cd111409d7993311854d0f1132c654140d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43565592056/job/132358618309",
+      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-a20-4d4f03cd-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "97e5426690c16404d225eccfe50351ac42840ace08d1b81ace2c4a138518e711",
+      "caseIds": [
+        "strings-cmprss-capacity-and-order",
+        "strings-cmprss-complete-utf8-boundaries",
+        "strings-cmprss-delimiter-run-lengths",
+        "strings-cmprss-empty-all-delimiter-or-absent",
+        "strings-cmprss-int32-capacity-limits",
+        "strings-cmprss-negative-capacity-error",
+        "strings-cmprss-nul-delimiter",
+        "strings-cmprss-utf8-and-bom",
+        "strings-cmprss-whitespace-delimiters",
+        "strings-cmprss-zero-capacity-error",
+        "strings-eqstr-all-c-whitespace",
+        "strings-eqstr-case-and-punctuation",
+        "strings-eqstr-empty-and-nonempty",
+        "strings-eqstr-internal-whitespace",
+        "strings-eqstr-leading-and-trailing",
+        "strings-eqstr-utf8-byte-comparison",
+        "strings-iswhsp-empty-and-control-whitespace",
+        "strings-iswhsp-nonascii-space-and-visible",
+        "strings-iswhsp-nonwhite-controls",
+        "strings-iswhsp-visible-amid-whitespace",
+        "strings-lastnb-blank-versus-whitespace",
+        "strings-lastnb-mixed-leading-interior-and-tail",
+        "strings-lastnb-utf8-byte-indices",
+        "strings-lastnb-zero-based-or-minus-one",
+        "strings-lcase-ascii-letter-range",
+        "strings-lcase-capacity-includes-nul",
+        "strings-lcase-empty-and-nonempty",
+        "strings-lcase-int32-capacity-limits",
+        "strings-lcase-negative-capacity-error",
+        "strings-lcase-one-capacity-error",
+        "strings-lcase-preserved-terminal-whitespace",
+        "strings-lcase-utf8-and-bom",
+        "strings-lcase-utf8-byte-boundaries",
+        "strings-lcase-zero-capacity-error",
+        "strings-matchi-blanks-and-controls",
+        "strings-matchi-coincident-wildcards",
+        "strings-matchi-custom-wildcards",
+        "strings-matchi-empty-input-error",
+        "strings-matchi-empty-template-error",
+        "strings-matchi-literal-case-and-order",
+        "strings-matchi-multiple-wildcards-and-anchors",
+        "strings-matchi-nul-wildcards",
+        "strings-matchi-utf8-single-byte-wildcard",
+        "strings-matchi-zero-or-many-versus-one",
+        "strings-matchw-blanks-and-controls",
+        "strings-matchw-coincident-wildcards",
+        "strings-matchw-custom-wildcards",
+        "strings-matchw-empty-input-error",
+        "strings-matchw-empty-template-error",
+        "strings-matchw-literal-case-and-order",
+        "strings-matchw-multiple-wildcards-and-anchors",
+        "strings-matchw-nul-wildcards",
+        "strings-matchw-utf8-single-byte-wildcard",
+        "strings-matchw-zero-or-many-versus-one",
+        "strings-ucase-ascii-letter-range",
+        "strings-ucase-capacity-includes-nul",
+        "strings-ucase-empty-and-nonempty",
+        "strings-ucase-int32-capacity-limits",
+        "strings-ucase-negative-capacity-error",
+        "strings-ucase-one-capacity-error",
+        "strings-ucase-preserved-terminal-whitespace",
+        "strings-ucase-utf8-and-bom",
+        "strings-ucase-utf8-byte-boundaries",
+        "strings-ucase-zero-capacity-error"
+      ],
+      "commit": "4d4f03cd111409d7993311854d0f1132c654140d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43565592056/job/132358618309",
+      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
     }
   ],
   "routines": [
@@ -433,16 +745,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.cmprss -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.cmprss -> typed WASM domain -> checked transactional buffers -> exported _tspice_cmprss -> shared tspice_cmprss -> canonical cmprss_c. Independent sidecar uses typed independent ctypes cmprss_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     },
@@ -492,16 +818,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.eqstr -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.eqstr -> typed WASM domain -> checked transactional buffers -> exported _tspice_eqstr -> shared tspice_eqstr -> canonical eqstr_c. Independent sidecar uses locked SpiceyPy eqstr wrapper calling canonical eqstr_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     },
@@ -541,16 +879,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.iswhsp -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.iswhsp -> typed WASM domain -> checked transactional buffers -> exported _tspice_iswhsp -> shared tspice_iswhsp -> canonical iswhsp_c. Independent sidecar uses locked SpiceyPy iswhsp wrapper calling canonical iswhsp_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     },
@@ -590,16 +940,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lastnb -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lastnb -> typed WASM domain -> checked transactional buffers -> exported _tspice_lastnb -> shared tspice_lastnb -> canonical lastnb_c. Independent sidecar uses locked SpiceyPy lastnb wrapper calling canonical lastnb_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     },
@@ -685,16 +1047,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lcase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lcase -> typed WASM domain -> checked transactional buffers -> exported _tspice_lcase -> shared tspice_lcase -> canonical lcase_c. Independent sidecar uses typed independent ctypes lcase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     },
@@ -780,16 +1156,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.ucase -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.ucase -> typed WASM domain -> checked transactional buffers -> exported _tspice_ucase -> shared tspice_ucase -> canonical ucase_c. Independent sidecar uses typed independent ctypes ucase_c from the locked library, checked SPICE status and byte-exact output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     },
@@ -859,16 +1249,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.matchi -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.matchi -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchi -> shared tspice_matchi -> canonical matchi_c. Independent sidecar uses locked SpiceyPy matchi wrapper calling canonical matchi_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     },
@@ -938,16 +1340,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.matchw -> typed Node domain -> registered native addon under global SPICE mutex -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-node", "ci-a18-572a9d29-node"]
+          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.matchw -> typed WASM domain -> checked transactional buffers -> exported _tspice_matchw -> shared tspice_matchw -> canonical matchw_c. Independent sidecar uses locked SpiceyPy matchw wrapper calling canonical matchw_c with exact scalar output.",
-          "executions": ["local-a18-572a9d29-wasm", "ci-a18-572a9d29-wasm"]
+          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
         }
       }
     }

@@ -895,6 +895,85 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_nextwd(
+    input: number,
+    nexlen: number,
+    reslen: number,
+    next: number,
+    rest: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_nthwd(
+    input: number,
+    nth: number,
+    worlen: number,
+    word: number,
+    loc: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lparse(
+    list: number,
+    delim: number,
+    nmax: number,
+    itemln: number,
+    n: number,
+    items: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lparsm(
+    list: number,
+    delims: number,
+    nmax: number,
+    itemln: number,
+    n: number,
+    items: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4dec(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4num(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4sgn(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4uns(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lxqstr(
+    input: number,
+    qchar: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cmprss(
     delim: number,
     n: number,
@@ -1904,6 +1983,85 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_nextwd(
+    input: number,
+    nexlen: number,
+    reslen: number,
+    next: number,
+    rest: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_nthwd(
+    input: number,
+    nth: number,
+    worlen: number,
+    word: number,
+    loc: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lparse(
+    list: number,
+    delim: number,
+    nmax: number,
+    itemln: number,
+    n: number,
+    items: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lparsm(
+    list: number,
+    delims: number,
+    nmax: number,
+    itemln: number,
+    n: number,
+    items: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4dec(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4num(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4sgn(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lx4uns(
+    input: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lxqstr(
+    input: number,
+    qchar: number,
+    first: number,
+    last: number,
+    nchar: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cmprss(
     delim: number,
     n: number,
@@ -2384,6 +2542,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_nextwd",
+  "_tspice_nthwd",
+  "_tspice_lparse",
+  "_tspice_lparsm",
+  "_tspice_lx4dec",
+  "_tspice_lx4num",
+  "_tspice_lx4sgn",
+  "_tspice_lx4uns",
+  "_tspice_lxqstr",
   "_tspice_cmprss",
   "_tspice_eqstr",
   "_tspice_iswhsp",
