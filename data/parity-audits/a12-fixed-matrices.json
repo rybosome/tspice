@@ -357,7 +357,8 @@
         "coords-vectors-xpose-ordered-asymmetric",
         "coords-vectors-xpose-zero-and-identity"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "local-a12-snapshot-279dc29b-wasm",
@@ -419,7 +420,8 @@
         "coords-vectors-xpose-ordered-asymmetric",
         "coords-vectors-xpose-zero-and-identity"
       ],
-      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-node",
@@ -483,7 +485,8 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
     },
     {
       "id": "ci-a12-snapshot-279dc29b-wasm",
@@ -547,7 +550,8 @@
       ],
       "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
       "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending.",
+      "historical": true
     }
   ],
   "routines": [
@@ -607,14 +611,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.det -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_det shared C shim -> det_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -623,14 +625,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.det -> typed WASM adapter -> configured _tspice_det export -> tspice_det shared C shim -> det_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -695,14 +695,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.diags2 -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_diags2 shared C shim -> diags2_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -711,14 +709,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.diags2 -> typed WASM adapter -> configured _tspice_diags2 export -> tspice_diags2 shared C shim -> diags2_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -753,14 +749,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ident -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_ident shared C shim -> ident_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -768,14 +762,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ident -> typed WASM adapter -> configured _tspice_ident export -> tspice_ident shared C shim -> ident_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -798,17 +790,17 @@
         {
           "caseId": "coords-vectors-invert-determinant-below-threshold",
           "coverage": ["success", "edge"],
-          "observes": "Observe all-zero results at determinant ±5e-17, distinguishing the magnitude-based threshold from a signed or exact-zero-only test. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+          "observes": "Observe all-zero results at determinant \u00b15e-17, distinguishing the magnitude-based threshold from a signed or exact-zero-only test. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-determinant-at-threshold",
           "coverage": ["success", "edge"],
-          "observes": "Observe actual inverse entries at determinant ±1e-16; the comparison is strict, so these inputs must not return the zero shortcut. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+          "observes": "Observe actual inverse entries at determinant \u00b11e-16; the comparison is strict, so these inputs must not return the zero shortcut. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-determinant-above-threshold",
           "coverage": ["success", "edge"],
-          "observes": "Observe inverses at determinant ±2e-16 as controls immediately above the cutoff. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+          "observes": "Observe inverses at determinant \u00b12e-16 as controls immediately above the cutoff. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
         },
         {
           "caseId": "coords-vectors-invert-finite-large-small-inverse",
@@ -821,7 +813,7 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls invert_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
-      "tolerance": "Every entry reaches the unchanged shared comparator. A focused live rescaling makes tiny inverse entries observable, and threshold literals distinguish ±5e-17 from the exact ±1e-16 cutoff. Scoped nonfinite transport retains all nine entries with exact NaN/infinity class handling. Ill-conditioned arbitrary inverses are not claimed universally identical across builds.",
+      "tolerance": "Every entry reaches the unchanged shared comparator. A focused live rescaling makes tiny inverse entries observable, and threshold literals distinguish \u00b15e-17 from the exact \u00b11e-16 cutoff. Scoped nonfinite transport retains all nine entries with exact NaN/infinity class handling. Ill-conditioned arbitrary inverses are not claimed universally identical across builds.",
       "findings": [
         {
           "id": "invert-numeric-matrix-result",
@@ -882,14 +874,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invert -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invert shared C shim -> invert_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -899,14 +889,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invert -> typed WASM adapter -> configured _tspice_invert export -> tspice_invert shared C shim -> invert_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -996,14 +984,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invort -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invort shared C shim -> invort_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1012,14 +998,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.invort -> typed WASM adapter -> configured _tspice_invort export -> tspice_invort shared C shim -> invort_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1089,14 +1073,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrot -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_isrot shared C shim -> isrot_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1105,14 +1087,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.isrot -> typed WASM adapter -> configured _tspice_isrot export -> tspice_isrot shared C shim -> isrot_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1167,14 +1147,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequ -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mequ shared C shim -> mequ_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1183,14 +1161,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mequ -> typed WASM adapter -> configured _tspice_mequ export -> tspice_mequ shared C shim -> mequ_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1271,14 +1247,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxm -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mtxm shared C shim -> mtxm_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1288,14 +1262,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxm -> typed WASM adapter -> configured _tspice_mtxm export -> tspice_mtxm shared C shim -> mtxm_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1376,14 +1348,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmt -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mxmt shared C shim -> mxmt_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1393,14 +1363,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxmt -> typed WASM adapter -> configured _tspice_mxmt export -> tspice_mxmt shared C shim -> mxmt_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1455,14 +1423,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.trace -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_trace shared C shim -> trace_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1471,14 +1437,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.trace -> typed WASM adapter -> configured _tspice_trace export -> tspice_trace shared C shim -> trace_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1533,14 +1497,12 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xpose -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_xpose shared C shim -> xpose_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-node",
-            "ci-a12-snapshot-279dc29b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1549,17 +1511,15 @@
             "verified",
             "needs-repair",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.xpose -> typed WASM adapter -> configured _tspice_xpose export -> tspice_xpose shared C shim -> xpose_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": [
-            "local-a12-snapshot-279dc29b-wasm",
-            "ci-a12-snapshot-279dc29b-wasm"
-          ]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Historical A12/Step 7 source-bound executions and original fingerprints are retained. The combined A12/A14 shim, adapters, case registry and WASM binary require fresh required local and observed CI executions before verification."
 }

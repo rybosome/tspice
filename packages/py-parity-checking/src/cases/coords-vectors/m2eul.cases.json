@@ -1,0 +1,333 @@
+[
+  {
+    "caseId": "coords-vectors-m2eul-all-axis-families",
+    "description": "Decompose a non-symmetric rotation under every valid axis sequence.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 1,
+        "axis2": 3,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 1,
+        "axis2": 3,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 2,
+        "axis2": 1,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 2,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 2,
+        "axis2": 3,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 2,
+        "axis2": 3,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ],
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2eul-singular-angle-choices",
+    "description": "Canonical singular angle choice and radians on identity, coordinate half-turn and axes permutation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [1, 0, 0],
+          [0, -1, 0],
+          [0, 0, -1]
+        ],
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0, -1, 0],
+          [1, 0, 0],
+          [0, 0, 1]
+        ],
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0, 0, 1],
+          [1, 0, 0],
+          [0, 1, 0]
+        ],
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [1, 0, 0],
+          [0, -1, 0],
+          [0, 0, -1]
+        ],
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0, 0, 1],
+          [1, 0, 0],
+          [0, 1, 0]
+        ],
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2eul-sign-of-rotation",
+    "description": "Use rotation and transpose on separated axes.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0, -1, 0],
+          [1, 0, 0],
+          [0, 0, 1]
+        ],
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ],
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2eul-bad-axes-331",
+    "description": "Invalid decomposition axis configuration.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "axis3": 3,
+        "axis2": 3,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2eul-bad-axes-122",
+    "description": "Invalid decomposition axis configuration.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2eul-bad-axes-021",
+    "description": "Invalid decomposition axis configuration.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "axis3": 0,
+        "axis2": 2,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2eul-reflection",
+    "description": "A reflection is not a proper rotation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2eul",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, -1]
+        ],
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTAROTATION"]
+    }
+  }
+]

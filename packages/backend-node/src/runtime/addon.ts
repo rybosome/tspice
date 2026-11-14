@@ -529,6 +529,25 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  eul2m(
+    angle3: number,
+    angle2: number,
+    angle1: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): unknown;
+  m2eul(
+    m: readonly number[],
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): { angle3: unknown; angle2: unknown; angle1: unknown };
+  m2q(m: readonly number[]): unknown;
+  q2m(q: readonly number[]): unknown;
+  qxq(q1: readonly number[], q2: readonly number[]): unknown;
+  qdq2av(q: readonly number[], dq: readonly number[]): unknown;
+  raxisa(m: readonly number[]): { axis: unknown; angle: unknown };
   det(m: readonly number[]): number;
   diags2(symmat: readonly number[]): { diag: number[]; rotate: number[] };
   ident(): number[];

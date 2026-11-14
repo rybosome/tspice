@@ -6,8 +6,56 @@
  */
 import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
+/** Scalar-first SPICE quaternion [w,x,y,z], distinct from a vector-first engineering quaternion. */
+export type SpiceQuaternion = readonly [
+  w: number,
+  x: number,
+  y: number,
+  z: number,
+];
+
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /** Return a unit axis and angle in radians in [0,pi] for a row-major rotation. Identity returns [0,0,1] and zero; at pi the sign of the axis is not uniquely determined. Invalid rotations can signal an error. Inputs must be finite; outputs are owned. No kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/raxisa_c.html
+   */
+  raxisa(m: Mat3RowMajor): { axis: SpiceVector3; angle: number };
+  /** Return angular velocity in radians per unit of derivative time. CSPICE normalizes q and applies -2 times the vector part of conjugate(qhat) times dq. The derivative is not normalized; a zero q yields zero for ordinary finite derivatives. Inputs must be finite; outputs are owned. No kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/qdq2av_c.html
+   */
+  qdq2av(q: SpiceQuaternion, dq: SpiceQuaternion): SpiceVector3;
+  /** Return the Hamilton product q1 times q2. Order matters. Inputs are scalar-first SPICE quaternions; they need not have unit length. No normalization is applied. Inputs must be finite; outputs are owned. No kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/qxq_c.html
+   */
+  qxq(q1: SpiceQuaternion, q2: SpiceQuaternion): SpiceQuaternion;
+  /** Convert a scalar-first SPICE quaternion to a row-major rotation matrix. Normalization is implicit; zero gives identity. N0067 forms products before normalization, so finite extreme components may yield identity or nonfinite entries. Inputs must be finite; outputs are owned. No kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/q2m_c.html
+   */
+  q2m(q: SpiceQuaternion): Mat3RowMajor;
+  /** Return a unit SPICE quaternion (scalar component first) for a row-major rotation; the scalar component is nonnegative. A rejected rotation signals NOTAROTATION. Inputs must be finite; outputs are owned. No kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/m2q_c.html
+   */
+  m2q(m: Mat3RowMajor): SpiceQuaternion;
+  /** Decompose a row-major rotation matrix into angles in radians. Middle axis must differ from both neighbors. When the end angles are nonunique CSPICE sets angle3 to zero. Invalid axis sequences or a rejected rotation signal CSPICE errors. Inputs must be finite; outputs are owned. No kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/m2eul_c.html
+   */
+  m2eul(
+    m: Mat3RowMajor,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): { angle3: number; angle2: number; angle1: number };
+  /** Compose the three coordinate-axis rotations in the stated 3,2,1 argument order. Angles are radians, axes are 1,2,3. Repeated axes are allowed; an out-of-range axis signals BADAXISNUMBERS. Inputs must be finite; outputs are owned. No kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eul2m_c.html
+   */
+  eul2m(
+    angle3: number,
+    angle2: number,
+    angle1: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): Mat3RowMajor;
   /**
    * Return the determinant of a finite 3x3 matrix in row-major order.
    *

@@ -2416,6 +2416,27 @@ export function createFakeBackend(
     },
 
     // Toy fixed matrices for facade tests, not a CSPICE numerical oracle.
+    eul2m: () => {
+      throw new Error("Fake backend: eul2m() is not implemented");
+    },
+    m2eul: () => {
+      throw new Error("Fake backend: m2eul() is not implemented");
+    },
+    m2q: () => {
+      throw new Error("Fake backend: m2q() is not implemented");
+    },
+    q2m: () => {
+      throw new Error("Fake backend: q2m() is not implemented");
+    },
+    qxq: () => {
+      throw new Error("Fake backend: qxq() is not implemented");
+    },
+    qdq2av: () => {
+      throw new Error("Fake backend: qdq2av() is not implemented");
+    },
+    raxisa: () => {
+      throw new Error("Fake backend: raxisa() is not implemented");
+    },
     det: (m) => fakeMatrixDet(m),
     diags2: (symmat) => {
       const a = symmat[0],

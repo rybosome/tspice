@@ -86,9 +86,87 @@ function fixedMatrix2Output(
   ];
 }
 
+function rotationQuaternion(
+  value: unknown,
+  label: string,
+  requireFinite: boolean,
+): [number, number, number, number] {
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(label + " must contain four quaternion components");
+  const entry = (i: number) => {
+    const x: unknown = value[i];
+    if (typeof x !== "number" || (requireFinite && !Number.isFinite(x)))
+      throw new TypeError(label + " contains an invalid component");
+    return x;
+  };
+  return [entry(0), entry(1), entry(2), entry(3)];
+}
+
+function rotationVector(value: unknown): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError("Expected three rotation vector components");
+  return [
+    fixedMatrixOutputNumber(value[0], "vector[0]"),
+    fixedMatrixOutputNumber(value[1], "vector[1]"),
+    fixedMatrixOutputNumber(value[2], "vector[2]"),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    eul2m: (angle3, angle2, angle1, axis3, axis2, axis1) => {
+      assertFixedMatrixScalar(angle3, "eul2m(angle3)");
+      assertFixedMatrixScalar(angle2, "eul2m(angle2)");
+      assertFixedMatrixScalar(angle1, "eul2m(angle1)");
+      assertSpiceInt32(axis3, "eul2m(axis3)");
+      assertSpiceInt32(axis2, "eul2m(axis2)");
+      assertSpiceInt32(axis1, "eul2m(axis1)");
+      const result = native.eul2m(angle3, angle2, angle1, axis3, axis2, axis1);
+      return brandMat3RowMajorResult(result, { label: "eul2m result" });
+    },
+    m2eul: (m, axis3, axis2, axis1) => {
+      const mCopy = copyMatrixInput(m, "m2eul(m)");
+      assertSpiceInt32(axis3, "m2eul(axis3)");
+      assertSpiceInt32(axis2, "m2eul(axis2)");
+      assertSpiceInt32(axis1, "m2eul(axis1)");
+      const result = native.m2eul(mCopy, axis3, axis2, axis1);
+      return {
+        angle3: fixedMatrixOutputNumber(result.angle3, "m2eul(angle3)"),
+        angle2: fixedMatrixOutputNumber(result.angle2, "m2eul(angle2)"),
+        angle1: fixedMatrixOutputNumber(result.angle1, "m2eul(angle1)"),
+      };
+    },
+    m2q: (m) => {
+      const mCopy = copyMatrixInput(m, "m2q(m)");
+      const result = native.m2q(mCopy);
+      return rotationQuaternion(result, "m2q result", false);
+    },
+    q2m: (q) => {
+      const qCopy = rotationQuaternion(q, "q2m(q)", true);
+      const result = native.q2m(qCopy);
+      return brandMat3RowMajorResult(result, { label: "q2m result" });
+    },
+    qxq: (q1, q2) => {
+      const q1Copy = rotationQuaternion(q1, "qxq(q1)", true);
+      const q2Copy = rotationQuaternion(q2, "qxq(q2)", true);
+      const result = native.qxq(q1Copy, q2Copy);
+      return rotationQuaternion(result, "qxq result", false);
+    },
+    qdq2av: (q, dq) => {
+      const qCopy = rotationQuaternion(q, "qdq2av(q)", true);
+      const dqCopy = rotationQuaternion(dq, "qdq2av(dq)", true);
+      const result = native.qdq2av(qCopy, dqCopy);
+      return rotationVector(result);
+    },
+    raxisa: (m) => {
+      const mCopy = copyMatrixInput(m, "raxisa(m)");
+      const result = native.raxisa(mCopy);
+      return {
+        axis: rotationVector(result.axis),
+        angle: fixedMatrixOutputNumber(result.angle, "raxisa(angle)"),
+      };
+    },
     det: (m) => {
       const mCopy = copyMatrixInput(m, "det(m)");
       const out = native.det(mCopy);

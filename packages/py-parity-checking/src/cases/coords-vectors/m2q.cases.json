@@ -1,0 +1,138 @@
+[
+  {
+    "caseId": "coords-vectors-m2q-identity",
+    "description": "Observe documented identity, including scalar or axis choice.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2q-signed-quarter-turns",
+    "description": "Opposite axis signs for a non-symmetric rotation and transpose.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [0, -1, 0],
+          [1, 0, 0],
+          [0, 0, 1]
+        ]
+      },
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [0, 1, 0],
+          [-1, 0, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2q-half-turn",
+    "description": "Principal-axis half-turns exercise branch selection at pi.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [1, 0, 0],
+          [0, -1, 0],
+          [0, 0, -1]
+        ]
+      },
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [-1, 0, 0],
+          [0, 1, 0],
+          [0, 0, -1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2q-mixed-axis",
+    "description": "Nontrivial axis permutation and a rotation with fractional components.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [0, 0, 1],
+          [1, 0, 0],
+          [0, 1, 0]
+        ]
+      },
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [0.36, -0.48, 0.8],
+          [0.8, 0.6, 0],
+          [-0.48, 0.64, 0.6]
+        ]
+      },
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [0.36, 0.8, -0.48],
+          [-0.48, 0.6, 0.64],
+          [0.8, 0, 0.6]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2q-reflection",
+    "description": "Rejected nonrotation raises true CSPICE error.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, -1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTAROTATION"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-m2q-zero",
+    "description": "Rejected nonrotation raises true CSPICE error.",
+    "workflow": [
+      {
+        "op": "coords-vectors.m2q",
+        "m": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTAROTATION"]
+    }
+  }
+]

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from ..rotation_oracle import eul2m
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -9,6 +10,13 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsEul2m,
+    StepCoordsVectorsM2eul,
+    StepCoordsVectorsM2q,
+    StepCoordsVectorsQ2m,
+    StepCoordsVectorsQxq,
+    StepCoordsVectorsQdq2av,
+    StepCoordsVectorsRaxisa,
     StepCoordsVectorsDet,
     StepCoordsVectorsDiags2,
     StepCoordsVectorsIdent,
@@ -62,6 +70,34 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsEul2m):
+        out = eul2m((step.angle3, step.angle2, step.angle1), (step.axis3, step.axis2, step.axis1))
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsM2eul):
+        out = sp.m2eul(step.m, step.axis3, step.axis2, step.axis1)
+        return StepOutput(op=step.op, value={"angle3": float(out[0]), "angle2": float(out[1]), "angle1": float(out[2])})
+
+    if isinstance(step, StepCoordsVectorsM2q):
+        out = sp.m2q(step.m)
+        return StepOutput(op=step.op, value=[float(x) for x in out])
+
+    if isinstance(step, StepCoordsVectorsQ2m):
+        out = sp.q2m(step.q)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsQxq):
+        out = sp.qxq(step.q1, step.q2)
+        return StepOutput(op=step.op, value=[float(x) for x in out])
+
+    if isinstance(step, StepCoordsVectorsQdq2av):
+        out = sp.qdq2av(step.q, step.dq)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsRaxisa):
+        out = sp.raxisa(step.m)
+        return StepOutput(op=step.op, value={"axis": _to_vec3(out[0]), "angle": float(out[1])})
+
     if isinstance(step, StepCoordsVectorsDet):
         out = sp.det(step.m)
         return StepOutput(op=step.op, value=float(out))

@@ -12,6 +12,13 @@ import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with 
 import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
 import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
 import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
+import coordsVectorsEul2mCasesRaw from "./coords-vectors/eul2m.cases.json" with { type: "json" };
+import coordsVectorsM2eulCasesRaw from "./coords-vectors/m2eul.cases.json" with { type: "json" };
+import coordsVectorsM2qCasesRaw from "./coords-vectors/m2q.cases.json" with { type: "json" };
+import coordsVectorsQ2mCasesRaw from "./coords-vectors/q2m.cases.json" with { type: "json" };
+import coordsVectorsQxqCasesRaw from "./coords-vectors/qxq.cases.json" with { type: "json" };
+import coordsVectorsQdq2avCasesRaw from "./coords-vectors/qdq2av.cases.json" with { type: "json" };
+import coordsVectorsRaxisaCasesRaw from "./coords-vectors/raxisa.cases.json" with { type: "json" };
 import coordsVectorsDetCasesRaw from "./coords-vectors/det.cases.json" with { type: "json" };
 import coordsVectorsDiags2CasesRaw from "./coords-vectors/diags2.cases.json" with { type: "json" };
 import coordsVectorsIdentCasesRaw from "./coords-vectors/ident.cases.json" with { type: "json" };
@@ -166,6 +173,13 @@ export const idsNamesCases: ParityCase[] = [
   ...(idsNamesBodvarCasesRaw as ParityCase[]),
 ];
 export const coordsVectorsCases: ParityCase[] = [
+  ...(coordsVectorsEul2mCasesRaw as ParityCase[]),
+  ...(coordsVectorsM2eulCasesRaw as ParityCase[]),
+  ...(coordsVectorsM2qCasesRaw as ParityCase[]),
+  ...(coordsVectorsQ2mCasesRaw as ParityCase[]),
+  ...(coordsVectorsQxqCasesRaw as ParityCase[]),
+  ...(coordsVectorsQdq2avCasesRaw as ParityCase[]),
+  ...(coordsVectorsRaxisaCasesRaw as ParityCase[]),
   ...(coordsVectorsDetCasesRaw as ParityCase[]),
   ...(coordsVectorsDiags2CasesRaw as ParityCase[]),
   ...(coordsVectorsIdentCasesRaw as ParityCase[]),

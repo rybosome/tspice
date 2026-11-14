@@ -5,6 +5,13 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsEul2m,
+  StepCoordsVectorsM2eul,
+  StepCoordsVectorsM2q,
+  StepCoordsVectorsQ2m,
+  StepCoordsVectorsQxq,
+  StepCoordsVectorsQdq2av,
+  StepCoordsVectorsRaxisa,
   StepCoordsVectorsDet,
   StepCoordsVectorsDiags2,
   StepCoordsVectorsIdent,
@@ -37,6 +44,13 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsEul2m
+  | StepCoordsVectorsM2eul
+  | StepCoordsVectorsM2q
+  | StepCoordsVectorsQ2m
+  | StepCoordsVectorsQxq
+  | StepCoordsVectorsQdq2av
+  | StepCoordsVectorsRaxisa
   | StepCoordsVectorsDet
   | StepCoordsVectorsDiags2
   | StepCoordsVectorsIdent
@@ -93,6 +107,49 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.eul2m":
+      return {
+        op: step.op,
+        value: unflattenMatrix(
+          context.spice.raw.eul2m(
+            step.angle3,
+            step.angle2,
+            step.angle1,
+            step.axis3,
+            step.axis2,
+            step.axis1,
+          ),
+        ),
+      };
+    case "coords-vectors.m2eul":
+      return {
+        op: step.op,
+        value: context.spice.raw.m2eul(
+          flattenMatrix(step.m),
+          step.axis3,
+          step.axis2,
+          step.axis1,
+        ),
+      };
+    case "coords-vectors.m2q":
+      return {
+        op: step.op,
+        value: context.spice.raw.m2q(flattenMatrix(step.m)),
+      };
+    case "coords-vectors.q2m":
+      return {
+        op: step.op,
+        value: unflattenMatrix(context.spice.raw.q2m(step.q)),
+      };
+    case "coords-vectors.qxq":
+      return { op: step.op, value: context.spice.raw.qxq(step.q1, step.q2) };
+    case "coords-vectors.qdq2av":
+      return { op: step.op, value: context.spice.raw.qdq2av(step.q, step.dq) };
+    case "coords-vectors.raxisa":
+      return {
+        op: step.op,
+        value: context.spice.raw.raxisa(flattenMatrix(step.m)),
+      };
     case "coords-vectors.det": {
       const out = context.spice.raw.det(flattenMatrix(step.m));
       return { op: step.op, value: out };

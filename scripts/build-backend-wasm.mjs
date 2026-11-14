@@ -511,6 +511,13 @@ const exportedFunctions = [
   "_tspice_gfdist",
 
   // --- coords/vectors ---
+  "_tspice_eul2m",
+  "_tspice_m2eul",
+  "_tspice_m2q",
+  "_tspice_q2m",
+  "_tspice_qxq",
+  "_tspice_qdq2av",
+  "_tspice_raxisa",
   "_tspice_det",
   "_tspice_diags2",
   "_tspice_ident",

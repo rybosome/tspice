@@ -427,7 +427,22 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/712"],
-      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310706167 verified corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
+      "nextAction": "A12 evidence on its original source is retained historically. Revalidate the composite A12/A14 source fingerprint in full required local runs and observed canonical CI before verification."
+    },
+    {
+      "id": "a14-rotation-representations",
+      "routines": [
+        "eul2m_c",
+        "m2eul_c",
+        "m2q_c",
+        "q2m_c",
+        "qxq_c",
+        "qdq2av_c",
+        "raxisa_c"
+      ],
+      "dependsOn": ["a12-fixed-matrices"],
+      "prs": [],
+      "nextAction": "Source-review all rotation methods, singularities and exceptional matrix or quaternion outputs. Record both required local lanes and observed source CI on the combined A12/A14 branch."
     }
   ]
 }

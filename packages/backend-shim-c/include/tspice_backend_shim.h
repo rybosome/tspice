@@ -1080,6 +1080,13 @@ int tspice_gfdist(
 // --- coordinate conversions + small vector/matrix helpers ---
 
 // det_c: flat row-major matrix buffers.
+int tspice_eul2m(double angle3, double angle2, double angle1, int axis3, int axis2, int axis1, double *r, char *err, int errMaxBytes);
+int tspice_m2eul(const double * m, int axis3, int axis2, int axis1, double *angle3, double *angle2, double *angle1, char *err, int errMaxBytes);
+int tspice_m2q(const double * m, double *q, char *err, int errMaxBytes);
+int tspice_q2m(const double * q, double *r, char *err, int errMaxBytes);
+int tspice_qxq(const double * q1, const double * q2, double *qout, char *err, int errMaxBytes);
+int tspice_qdq2av(const double * q, const double * dq, double *av, char *err, int errMaxBytes);
+int tspice_raxisa(const double * m, double *axis, double *angle, char *err, int errMaxBytes);
 int tspice_det(const double *m, double *out, char *err, int errMaxBytes);
 // diags2_c: flat row-major matrix buffers.
 int tspice_diags2(const double *symmat, double *diag, double *rotate, char *err, int errMaxBytes);
