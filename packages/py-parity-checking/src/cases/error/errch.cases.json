@@ -1,0 +1,170 @@
+[
+  {
+    "caseId": "error-errch-repeat",
+    "description": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "  @ body @ end @"
+      },
+      {
+        "op": "error.errch",
+        "marker": " @ ",
+        "value": "  Jupiter  "
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "  Jupiter  "
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "  Jupiter  "
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errch-positions",
+    "description": "Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "@suffix"
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "  Jupiter  "
+      },
+      {
+        "op": "error.setmsg",
+        "message": "prefix@"
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "  Jupiter  "
+      },
+      {
+        "op": "error.setmsg",
+        "message": "@"
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "  Jupiter  "
+      },
+      {
+        "op": "error.errch",
+        "marker": "unmatched",
+        "value": "  Jupiter  "
+      },
+      {
+        "op": "error.errch",
+        "marker": "  ",
+        "value": "  Jupiter  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errch-capacity",
+    "description": "Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@"
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "12345678"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errch-empty-marker",
+    "description": "An empty marker is a genuine C-string error even when the message is prepared.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "saved"
+      },
+      {
+        "op": "error.errch",
+        "marker": "",
+        "value": "  Jupiter  "
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "error-errch-empty-value",
+    "description": "Distinguish an empty C string from a blank replacement.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "a@b"
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "error-errch-blank-and-utf8",
+    "description": "A blank replacement inserts one space and a multi-byte marker and value retain their case and complete UTF-8 sequence.",
+    "workflow": [
+      {
+        "op": "error.setmsg",
+        "message": "@é@é!"
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "   "
+      },
+      {
+        "op": "error.errch",
+        "marker": "é",
+        "value": "π"
+      },
+      {
+        "op": "error.errch",
+        "marker": "@",
+        "value": "café"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

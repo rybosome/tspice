@@ -13,6 +13,13 @@ export type NativeAddon = {
   spiceVersion(): string;
 
   // --- error/status utilities ---
+  errch(marker: string, value: string): void;
+  errdp(marker: string, value: number): void;
+  errint(marker: string, value: number): void;
+  qcktrc(tracelen: number): string;
+  return(): boolean;
+  trcdep(): number;
+  trcnam(index: number, namlen: number): string;
   failed(): boolean;
   reset(): void;
   getmsg(which: "SHORT" | "LONG" | "EXPLAIN"): string;

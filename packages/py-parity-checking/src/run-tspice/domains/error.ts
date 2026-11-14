@@ -1,6 +1,13 @@
 import type {
   StepErrorChkin,
   StepErrorChkout,
+  StepErrorErrch,
+  StepErrorErrdp,
+  StepErrorErrint,
+  StepErrorQcktrc,
+  StepErrorReturn,
+  StepErrorTrcdep,
+  StepErrorTrcnam,
   StepErrorFailed,
   StepErrorGetmsg,
   StepErrorReset,
@@ -11,6 +18,13 @@ import type {
 import { registerFinalizer, type RunTspiceContext } from "../context.js";
 
 type ErrorStep =
+  | StepErrorErrch
+  | StepErrorErrdp
+  | StepErrorErrint
+  | StepErrorQcktrc
+  | StepErrorReturn
+  | StepErrorTrcdep
+  | StepErrorTrcnam
   | StepErrorFailed
   | StepErrorReset
   | StepErrorGetmsg
@@ -25,6 +39,26 @@ export function runErrorStep(
   step: ErrorStep,
 ): StepOutput {
   switch (step.op) {
+    case "error.errch":
+      context.spice.raw.errch(step.marker, step.value);
+      return { op: step.op, value: context.spice.raw.getmsg("LONG") };
+    case "error.errdp":
+      context.spice.raw.errdp(step.marker, step.value);
+      return { op: step.op, value: context.spice.raw.getmsg("LONG") };
+    case "error.errint":
+      context.spice.raw.errint(step.marker, step.value);
+      return { op: step.op, value: context.spice.raw.getmsg("LONG") };
+    case "error.qcktrc":
+      return { op: step.op, value: context.spice.raw.qcktrc(step.tracelen) };
+    case "error.return":
+      return { op: step.op, value: context.spice.raw.return() };
+    case "error.trcdep":
+      return { op: step.op, value: context.spice.raw.trcdep() };
+    case "error.trcnam":
+      return {
+        op: step.op,
+        value: context.spice.raw.trcnam(step.index, step.namlen),
+      };
     case "error.failed":
       return { op: step.op, value: context.spice.raw.failed() };
 

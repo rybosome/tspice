@@ -5,6 +5,50 @@ from typing import Literal
 
 
 @dataclass(frozen=True)
+class StepErrorErrch:
+    op: Literal["error.errch"]
+    marker: str
+    value: str
+
+
+@dataclass(frozen=True)
+class StepErrorErrdp:
+    op: Literal["error.errdp"]
+    marker: str
+    value: float
+
+
+@dataclass(frozen=True)
+class StepErrorErrint:
+    op: Literal["error.errint"]
+    marker: str
+    value: int
+
+
+@dataclass(frozen=True)
+class StepErrorQcktrc:
+    op: Literal["error.qcktrc"]
+    tracelen: int | None = None
+
+
+@dataclass(frozen=True)
+class StepErrorReturn:
+    op: Literal["error.return"]
+
+
+@dataclass(frozen=True)
+class StepErrorTrcdep:
+    op: Literal["error.trcdep"]
+
+
+@dataclass(frozen=True)
+class StepErrorTrcnam:
+    op: Literal["error.trcnam"]
+    index: int
+    namlen: int | None = None
+
+
+@dataclass(frozen=True)
 class StepErrorFailed:
     op: Literal["error.failed"]
 

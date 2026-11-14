@@ -1,0 +1,884 @@
+[
+  {
+    "caseId": "error-trcdep-nested",
+    "description": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "OUTER"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.chkin",
+        "name": "Inner Module"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.chkout",
+        "name": "Inner Module"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.chkout",
+        "name": "OUTER"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-trcdep-depth-overflow",
+    "description": "A stack beyond the stored-name limit retains the logical depth; explicit checkout returns it to zero.",
+    "workflow": [
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F0"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F1"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F2"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F3"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F4"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F5"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F6"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F7"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F8"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F9"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F10"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F11"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F12"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F13"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F14"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F15"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F16"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F17"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F18"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F19"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F20"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F21"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F22"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F23"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F24"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F25"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F26"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F27"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F28"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F29"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F30"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F31"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F32"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F33"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F34"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F35"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F36"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F37"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F38"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F39"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F40"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F41"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F42"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F43"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F44"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F45"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F46"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F47"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F48"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F49"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F50"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F51"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F52"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F53"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F54"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F55"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F56"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F57"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F58"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F59"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F60"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F61"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F62"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F63"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F64"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F65"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F66"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F67"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F68"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F69"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F70"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F71"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F72"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F73"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F74"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F75"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F76"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F77"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F78"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F79"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F80"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F81"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F82"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F83"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F84"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F85"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F86"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F87"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F88"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F89"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F90"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F91"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F92"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F93"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F94"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F95"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F96"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F97"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F98"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F99"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F100"
+      },
+      {
+        "op": "error.chkin",
+        "name": "F101"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F101"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F100"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F99"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F98"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F97"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F96"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F95"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F94"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F93"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F92"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F91"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F90"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F89"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F88"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F87"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F86"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F85"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F84"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F83"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F82"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F81"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F80"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F79"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F78"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F77"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F76"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F75"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F74"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F73"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F72"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F71"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F70"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F69"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F68"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F67"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F66"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F65"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F64"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F63"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F62"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F61"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F60"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F59"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F58"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F57"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F56"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F55"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F54"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F53"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F52"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F51"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F50"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F49"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F48"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F47"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F46"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F45"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F44"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F43"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F42"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F41"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F40"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F39"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F38"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F37"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F36"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F35"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F34"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F33"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F32"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F31"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F30"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F29"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F28"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F27"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F26"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F25"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F24"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F23"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F22"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F21"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F20"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F19"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F18"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F17"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F16"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F15"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F14"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F13"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F12"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F11"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F10"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F9"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F8"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F7"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F6"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F5"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F4"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F3"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F2"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F1"
+      },
+      {
+        "op": "error.chkout",
+        "name": "F0"
+      },
+      {
+        "op": "error.trcdep"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,88 @@
+[
+  {
+    "caseId": "error-return-nested",
+    "description": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "OUTER"
+      },
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.chkin",
+        "name": "Inner Module"
+      },
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      },
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.chkout",
+        "name": "Inner Module"
+      },
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.chkout",
+        "name": "OUTER"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-return-recovery",
+    "description": "Immediate return is clear before signaling, after backend capture/reset, and after independent error cleanup.",
+    "workflow": [
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "part @"
+      },
+      {
+        "op": "error.errint",
+        "marker": "@",
+        "value": -8
+      },
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      },
+      {
+        "op": "error.return"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.return"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,969 @@
+[
+  {
+    "caseId": "error-qcktrc-nested",
+    "description": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "OUTER"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.chkin",
+        "name": "Inner Module"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(OBSERVED)",
+        "capture": true
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.chkout",
+        "name": "Inner Module"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.chkout",
+        "name": "OUTER"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-qcktrc-byte-capacity",
+    "description": "Observe the single-byte and full-name capacities independently, with UTF-8 and significant trailing tab.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "ABé\t"
+      },
+      {
+        "op": "error.qcktrc",
+        "tracelen": 2
+      },
+      {
+        "op": "error.qcktrc",
+        "tracelen": 5
+      },
+      {
+        "op": "error.qcktrc",
+        "tracelen": 6
+      },
+      {
+        "op": "error.qcktrc",
+        "tracelen": 2147483647
+      },
+      {
+        "op": "error.chkout",
+        "name": "ABé\t"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-qcktrc-length-1",
+    "description": "Retain the original output-length diagnostic before indexing or writing.",
+    "workflow": [
+      {
+        "op": "error.qcktrc",
+        "tracelen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-qcktrc-length--3",
+    "description": "Retain the original output-length diagnostic before indexing or writing.",
+    "workflow": [
+      {
+        "op": "error.qcktrc",
+        "tracelen": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-qcktrc-overflow",
+    "description": "Observe stored or overflowed trace names and the native overflow annotation after crossing the 100-entry stack.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "X0"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X1"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X2"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X3"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X4"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X5"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X6"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X7"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X8"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X9"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X10"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X11"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X12"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X13"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X14"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X15"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X16"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X17"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X18"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X19"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X20"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X21"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X22"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X23"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X24"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X25"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X26"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X27"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X28"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X29"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X30"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X31"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X32"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X33"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X34"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X35"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X36"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X37"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X38"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X39"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X40"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X41"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X42"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X43"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X44"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X45"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X46"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X47"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X48"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X49"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X50"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X51"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X52"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X53"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X54"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X55"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X56"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X57"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X58"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X59"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X60"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X61"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X62"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X63"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X64"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X65"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X66"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X67"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X68"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X69"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X70"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X71"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X72"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X73"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X74"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X75"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X76"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X77"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X78"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X79"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X80"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X81"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X82"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X83"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X84"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X85"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X86"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X87"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X88"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X89"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X90"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X91"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X92"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X93"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X94"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X95"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X96"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X97"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X98"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X99"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X100"
+      },
+      {
+        "op": "error.chkin",
+        "name": "X101"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.qcktrc",
+        "tracelen": 12
+      },
+      {
+        "op": "error.chkout",
+        "name": "X101"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X100"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X99"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X98"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X97"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X96"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X95"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X94"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X93"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X92"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X91"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X90"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X89"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X88"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X87"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X86"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X85"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X84"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X83"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X82"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X81"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X80"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X79"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X78"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X77"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X76"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X75"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X74"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X73"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X72"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X71"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X70"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X69"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X68"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X67"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X66"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X65"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X64"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X63"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X62"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X61"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X60"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X59"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X58"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X57"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X56"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X55"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X54"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X53"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X52"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X51"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X50"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X49"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X48"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X47"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X46"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X45"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X44"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X43"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X42"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X41"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X40"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X39"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X38"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X37"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X36"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X35"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X34"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X33"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X32"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X31"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X30"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X29"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X28"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X27"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X26"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X25"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X24"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X23"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X22"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X21"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X20"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X19"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X18"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X17"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X16"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X15"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X14"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X13"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X12"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X11"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X10"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X9"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X8"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X7"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X6"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X5"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X4"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X3"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X2"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X1"
+      },
+      {
+        "op": "error.chkout",
+        "name": "X0"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-qcktrc-empty",
+    "description": "Observe the exact empty stack between complete push/pop sequences.",
+    "workflow": [
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.chkin",
+        "name": "root"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.chkout",
+        "name": "root"
+      },
+      {
+        "op": "error.qcktrc"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

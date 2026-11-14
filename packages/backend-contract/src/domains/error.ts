@@ -18,6 +18,48 @@ export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
  */
 export interface ErrorApi {
   /**
+   * Substitute text for the first occurrence of the trimmed marker in the prepared long message. A blank marker does nothing. Blank replacement inserts one space. An empty C string signals EMPTYSTRING. The toolkit truncates the resulting message at 1840 bytes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errch_c.html
+   */
+  errch(marker: string, value: string): void;
+
+  /**
+   * Substitute the toolkit-formatted finite double for the first occurrence of the trimmed marker in the prepared long message. The fixed diagnostic field uses 14 significant digits. Empty markers signal EMPTYSTRING.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errdp_c.html
+   */
+  errdp(marker: string, value: number): void;
+
+  /**
+   * Substitute a signed 32-bit integer in decimal for the first occurrence of the trimmed marker in the prepared long message. Empty markers signal EMPTYSTRING.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errint_c.html
+   */
+  errint(marker: string, value: number): void;
+
+  /**
+   * Return the current printable traceback in call order. In RETURN mode a pending failure freezes the traceback. The optional signed byte capacity includes NUL and defaults to 4096, enough for all stored names and the overflow annotation. Smaller capacities can truncate; a split UTF-8 sequence cannot be returned as a string.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/qcktrc_c.html
+   */
+  qcktrc(tracelen?: number): string;
+
+  /**
+   * Return the CSPICE immediate-return indicator. In RETURN mode it is true while a failure is pending. Ordinary backend exceptions capture diagnostics and reset the toolkit before control reaches the caller.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/return_c.html
+   */
+  return(): boolean;
+
+  /**
+   * Return the number of modules in the current or frozen traceback, including entries beyond the stored-name limit.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trcdep_c.html
+   */
+  trcdep(): number;
+
+  /**
+   * Return the module at zero-based index in the current or frozen traceback. The optional byte capacity includes NUL and defaults to 33. Excess depth can produce the toolkit placeholder. Out-of-range indexes and capacities below two signal toolkit errors; truncated invalid UTF-8 cannot be returned as a string.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trcnam_c.html
+   */
+  trcnam(index: number, namlen?: number): string;
+
+  /**
    * Return whether the CSPICE error status is set. Backend calls normally capture
    * and reset that status before throwing, so a caught SPICE error leaves false.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/failed_c.html

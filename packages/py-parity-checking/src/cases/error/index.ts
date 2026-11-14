@@ -1,5 +1,12 @@
 import type { ParityCase } from "../../case-types.js";
 
+import errchCasesRaw from "./errch.cases.json" with { type: "json" };
+import errdpCasesRaw from "./errdp.cases.json" with { type: "json" };
+import errintCasesRaw from "./errint.cases.json" with { type: "json" };
+import qcktrcCasesRaw from "./qcktrc.cases.json" with { type: "json" };
+import returnCasesRaw from "./return.cases.json" with { type: "json" };
+import trcdepCasesRaw from "./trcdep.cases.json" with { type: "json" };
+import trcnamCasesRaw from "./trcnam.cases.json" with { type: "json" };
 import chkinCasesRaw from "./chkin.cases.json" with { type: "json" };
 import chkoutCasesRaw from "./chkout.cases.json" with { type: "json" };
 import failedCasesRaw from "./failed.cases.json" with { type: "json" };
@@ -8,6 +15,13 @@ import resetCasesRaw from "./reset.cases.json" with { type: "json" };
 import setmsgCasesRaw from "./setmsg.cases.json" with { type: "json" };
 import sigerrCasesRaw from "./sigerr.cases.json" with { type: "json" };
 
+export const errorErrchCases = errchCasesRaw as ParityCase[];
+export const errorErrdpCases = errdpCasesRaw as ParityCase[];
+export const errorErrintCases = errintCasesRaw as ParityCase[];
+export const errorQcktrcCases = qcktrcCasesRaw as ParityCase[];
+export const errorReturnCases = returnCasesRaw as ParityCase[];
+export const errorTrcdepCases = trcdepCasesRaw as ParityCase[];
+export const errorTrcnamCases = trcnamCasesRaw as ParityCase[];
 export const errorChkinCases = chkinCasesRaw as ParityCase[];
 export const errorChkoutCases = chkoutCasesRaw as ParityCase[];
 export const errorFailedCases = failedCasesRaw as ParityCase[];
@@ -17,6 +31,13 @@ export const errorSetmsgCases = setmsgCasesRaw as ParityCase[];
 export const errorSigerrCases = sigerrCasesRaw as ParityCase[];
 
 export const errorCases: ParityCase[] = [
+  ...errorErrchCases,
+  ...errorErrdpCases,
+  ...errorErrintCases,
+  ...errorQcktrcCases,
+  ...errorReturnCases,
+  ...errorTrcdepCases,
+  ...errorTrcnamCases,
   ...errorChkinCases,
   ...errorChkoutCases,
   ...errorFailedCases,
