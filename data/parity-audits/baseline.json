@@ -448,8 +448,8 @@
       "id": "c07-dla-segments",
       "routines": ["dlabbs_c", "dlabns_c", "dlaens_c", "dlafps_c"],
       "dependsOn": ["c04-das-lifecycle", "c05-das-data"],
-      "prs": [],
-      "nextAction": "Capture complete local and canonical CI runs on this combined source, then verify the final-head matrix and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/758"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

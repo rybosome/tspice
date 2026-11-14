@@ -2089,18 +2089,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/758"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "68 registered, 6 public, 5 Node and 16 WASM plus real Chrome. Full original descriptors and data, component sizes after finalization, linked search and error recovery checked. See docs/step8-dla-segments.md."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "9d9836f41edb8a86c36268acb439b963b1d27fe7",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43578704814/job/132398571244",
+          "result": "Both complete required lanes passed locally on 9d9836f41edb8a86c36268acb439b963b1d27fe7. JavaScript: 2,712 parity tests and one expected guard skip. Native-required: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132398571244 on 9d9836f41edb8a86c36268acb439b963b1d27fe7: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run required local and canonical CI lanes on the combined source. Confirm final-head matrix and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "baseCommit": "f7bed466e8b42a854754f1d01aade6b2670dac60",
       "worktree": "/private/tmp/tspice-step8-dla-segments",
       "branch": "codex/expand-dla-segments",
-      "progressNote": "34 workflows, 382 steps, 163 new-operation calls and seven terminal errors. Bidirectional file exchange and original descriptor/initial-control physical padding checks."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 9d9836f4. 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "34 workflows, 382 steps, 163 new-operation calls and seven terminal errors. Bidirectional file exchange and original descriptor/initial-control physical padding checks."
     },
     {
       "id": "C08-ek-records",

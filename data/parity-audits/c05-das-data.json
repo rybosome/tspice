@@ -322,6 +322,274 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43574808718/job/132386644376",
       "observation": "Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-c07-9d9836f4-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b3beab30287151b1b79df3369a5e2cbfc9c4f265f601f8f676d549cb26449c5",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "observation": "Both complete required lanes passed locally on 9d9836f41edb8a86c36268acb439b963b1d27fe7. JavaScript: 2,712 parity tests and one expected guard skip. Native-required: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c07-9d9836f4-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b3beab30287151b1b79df3369a5e2cbfc9c4f265f601f8f676d549cb26449c5",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "observation": "Both complete required lanes passed locally on 9d9836f41edb8a86c36268acb439b963b1d27fe7. JavaScript: 2,712 parity tests and one expected guard skip. Native-required: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c07-9d9836f4-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b3beab30287151b1b79df3369a5e2cbfc9c4f265f601f8f676d549cb26449c5",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "commit": "9d9836f41edb8a86c36268acb439b963b1d27fe7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43578704814/job/132398571244",
+      "observation": "Inspected successful Linux Node 22 native-required job 132398571244 on 9d9836f41edb8a86c36268acb439b963b1d27fe7: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c07-9d9836f4-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8b3beab30287151b1b79df3369a5e2cbfc9c4f265f601f8f676d549cb26449c5",
+      "caseIds": [
+        "file-io-dasadc-empty-and-negative",
+        "file-io-dasadc-independent-address-streams",
+        "file-io-dasadc-invalid-bounds",
+        "file-io-dasadc-physical-boundary",
+        "file-io-dasadc-row-slices",
+        "file-io-dasadc-write-access",
+        "file-io-dasadc-zero-stride",
+        "file-io-dasadd-empty-and-negative",
+        "file-io-dasadd-independent-address-streams",
+        "file-io-dasadd-physical-boundary",
+        "file-io-dasadd-write-access",
+        "file-io-dasadi-empty-and-negative",
+        "file-io-dasadi-independent-address-streams",
+        "file-io-dasadi-physical-boundary",
+        "file-io-dasadi-write-access",
+        "file-io-dasrdc-before-first",
+        "file-io-dasrdc-destination-sentinels",
+        "file-io-dasrdc-endpoints",
+        "file-io-dasrdc-invalid-bounds",
+        "file-io-dasrdc-noncontiguous-records",
+        "file-io-dasrdc-past-logical-end",
+        "file-io-dasrdc-persisted-read-claims",
+        "file-io-dasrdc-reversed",
+        "file-io-dasrdc-zero-stride",
+        "file-io-dasrdd-before-first",
+        "file-io-dasrdd-endpoints",
+        "file-io-dasrdd-noncontiguous-records",
+        "file-io-dasrdd-past-logical-end",
+        "file-io-dasrdd-persisted-read-claims",
+        "file-io-dasrdd-reversed",
+        "file-io-dasrdi-before-first",
+        "file-io-dasrdi-endpoints",
+        "file-io-dasrdi-noncontiguous-records",
+        "file-io-dasrdi-past-logical-end",
+        "file-io-dasrdi-persisted-read-claims",
+        "file-io-dasrdi-reversed",
+        "file-io-dasudc-bad-address",
+        "file-io-dasudc-cross-record",
+        "file-io-dasudc-invalid-bounds",
+        "file-io-dasudc-middle-sentinels",
+        "file-io-dasudc-nonzero-column-record-cursor",
+        "file-io-dasudc-read-only",
+        "file-io-dasudc-reversed",
+        "file-io-dasudc-zero-stride",
+        "file-io-dasudd-bad-address",
+        "file-io-dasudd-cross-record",
+        "file-io-dasudd-middle-sentinels",
+        "file-io-dasudd-read-only",
+        "file-io-dasudd-reversed",
+        "file-io-dasudi-bad-address",
+        "file-io-dasudi-cross-record",
+        "file-io-dasudi-middle-sentinels",
+        "file-io-dasudi-read-only",
+        "file-io-dasudi-reversed"
+      ],
+      "commit": "9d9836f41edb8a86c36268acb439b963b1d27fe7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43578704814/job/132398571244",
+      "observation": "Inspected successful Linux Node 22 native-required job 132398571244 on 9d9836f41edb8a86c36268acb439b963b1d27fe7: 2,486 registered Node/WASM live comparisons; 2,713 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 677 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -409,16 +677,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasadc -> owner registry, serialized native addon -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasadc -> owner registry, scoped WASM buffers and required export -> tspice_dasadc -> dasadc_c. Reference uses typed binary dasadc_c in SpiceyPy’s own N0067 library.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -478,16 +758,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasadd -> owner registry, serialized native addon -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasadd -> owner registry, scoped WASM buffers and required export -> tspice_dasadd -> dasadd_c. Reference uses locked sp.dasadd.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -547,16 +839,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasadi -> owner registry, serialized native addon -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasadi -> owner registry, scoped WASM buffers and required export -> tspice_dasadi -> dasadi_c. Reference uses locked sp.dasadi.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -657,16 +961,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrdc -> owner registry, serialized native addon -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrdc -> owner registry, scoped WASM buffers and required export -> tspice_dasrdc -> dasrdc_c. Reference uses typed binary dasrdc_c in SpiceyPy’s own N0067 library.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -739,16 +1055,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrdd -> owner registry, serialized native addon -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrdd -> owner registry, scoped WASM buffers and required export -> tspice_dasrdd -> dasrdd_c. Reference uses locked sp.dasrdd plus a typed canonical output sentinel for reversed reads.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -821,16 +1149,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrdi -> owner registry, serialized native addon -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrdi -> owner registry, scoped WASM buffers and required export -> tspice_dasrdi -> dasrdi_c. Reference uses locked sp.dasrdi plus a typed canonical output sentinel for reversed reads.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -923,16 +1263,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasudc -> owner registry, serialized native addon -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasudc -> owner registry, scoped WASM buffers and required export -> tspice_dasudc -> dasudc_c. Reference uses typed binary dasudc_c in SpiceyPy’s own N0067 library.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -983,16 +1335,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasudd -> owner registry, serialized native addon -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasudd -> owner registry, scoped WASM buffers and required export -> tspice_dasudd -> dasudd_c. Reference uses locked sp.dasudd.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     },
@@ -1043,19 +1407,31 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasudi -> owner registry, serialized native addon -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-node", "ci-c07-9d9836f4-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasudi -> owner registry, scoped WASM buffers and required export -> tspice_dasudi -> dasudi_c. Reference uses locked sp.dasudi.",
-          "executions": []
+          "executions": ["local-c07-9d9836f4-wasm", "ci-c07-9d9836f4-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Retain the previous source-linked executions as historical. The combined DLA creation, typed DAS data and segment traversal source requires fresh complete local and canonical runs."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
