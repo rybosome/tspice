@@ -1,0 +1,106 @@
+[
+  {
+    "caseId": "coords-vectors-vequg-dimension-zero",
+    "description": "vequg: actual C dimension-zero call with valid non-NULL storage; vector-output conversion uses the narrowly scoped independent binding, scalar wrappers call CSPICE directly.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vequg",
+        "v": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vequg-dimension-one",
+    "description": "vequg: dimension-one; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vequg",
+        "v": [7]
+      },
+      {
+        "op": "coords-vectors.vequg",
+        "v": [-3]
+      },
+      {
+        "op": "coords-vectors.vequg",
+        "v": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vequg-mixed-dimensions",
+    "description": "vequg: mixed-dimensions; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vequg",
+        "v": [3, 4]
+      },
+      {
+        "op": "coords-vectors.vequg",
+        "v": [3, -4, 0, 12]
+      },
+      {
+        "op": "coords-vectors.vequg",
+        "v": [1, -2, 4, -8, 16, -32, 64]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vequg-zero-and-last-component",
+    "description": "vequg: zero-and-last-component; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vequg",
+        "v": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vequg",
+        "v": [0, 0, 0, 0, 0, 0, -7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vequg-scaled-magnitudes",
+    "description": "vequg: scaled-magnitudes; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vequg",
+        "v": [3.0000000000000002e100, -4e100, 0, 1.2000000000000001e101]
+      },
+      {
+        "op": "coords-vectors.vequg",
+        "v": [3e-100, -4e-100, 0, 1.2e-99]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vequg-finite-extrema",
+    "description": "vequg: finite-extrema; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vequg",
+        "v": [
+          1.7976931348623157e308, -1.7976931348623157e308, 5e-324, -5e-324, 0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,131 @@
+[
+  {
+    "caseId": "coords-vectors-vlcomg-dimension-zero",
+    "description": "vlcomg: actual C dimension-zero call with valid non-NULL storage; vector-output conversion uses the narrowly scoped independent binding, scalar wrappers call CSPICE directly.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 2,
+        "v1": [],
+        "b": -3,
+        "v2": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcomg-dimension-one",
+    "description": "vlcomg: dimension-one; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 2,
+        "v1": [3],
+        "b": -5,
+        "v2": [7]
+      },
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": -0.5,
+        "v1": [-2],
+        "b": 3,
+        "v2": [4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+    "description": "vlcomg: distinct-coefficients-and-dimensions; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 2,
+        "v1": [1, -2],
+        "b": -3,
+        "v2": [5, 7]
+      },
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 0.5,
+        "v1": [3, -4, 0, 12],
+        "b": -2,
+        "v2": [2, 7, -11, 5]
+      },
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 2,
+        "v1": [1, -2, 4, -8, 16, -32, 64],
+        "b": -3,
+        "v2": [-3, 5, -7, 11, -13, 17, -19]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcomg-zero-identity-and-cancellation",
+    "description": "vlcomg: zero-identity-and-cancellation; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 0,
+        "v1": [1, -2, 4, -8, 16, -32, 64],
+        "b": 0,
+        "v2": [-3, 5, -7, 11, -13, 17, -19]
+      },
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 1,
+        "v1": [1, -2, 4, -8, 16, -32, 64],
+        "b": 0,
+        "v2": [-3, 5, -7, 11, -13, 17, -19]
+      },
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 0,
+        "v1": [1, -2, 4, -8, 16, -32, 64],
+        "b": 1,
+        "v2": [-3, 5, -7, 11, -13, 17, -19]
+      },
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 2,
+        "v1": [1, 2, 4, 8],
+        "b": -1,
+        "v2": [2, 4, 8, 16]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcomg-scaled-magnitudes",
+    "description": "vlcomg: scaled-magnitudes; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 0.5,
+        "v1": [1e100, -2e100, 4e100, -8e100],
+        "b": 2,
+        "v2": [2e100, 3.0000000000000002e100, -5e100, 7e100]
+      },
+      {
+        "op": "coords-vectors.vlcomg",
+        "a": 0.5,
+        "v1": [1e-100, -2e-100, 4e-100, -8e-100],
+        "b": 2,
+        "v2": [2e-100, 3e-100, -5e-100, 7e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

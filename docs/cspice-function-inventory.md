@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 177
+- Planned (not yet implemented): 472
 - Excluded: 3
 
 ## Implemented now
@@ -170,15 +170,30 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tpictr_c` | Create a Time Format Picture |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
+| `unormg_c` | Unit vector and norm, general dimension |
 | `vadd_c` | Vector addition, 3 dimensional |
+| `vaddg_c` | Vector addition, general dimension |
 | `valid_c` | Validate a set |
 | `vcrss_c` | Vector cross product, 3 dimensions |
+| `vdistg_c` | Vector distance, general dimension |
 | `vdot_c` | Vector dot product, 3 dimensions |
+| `vdotg_c` | Vector dot product, general dimension |
+| `vequg_c` | Vector equality, general dimension |
 | `vhat_c` | "V-Hat", unit vector along V, 3 dimensions |
+| `vhatg_c` | "V-Hat", unit vector along V, general dimension |
+| `vlcomg_c` | Vector linear combination, general dimension |
+| `vminug_c` | Negate vector, "-v", general dimension |
 | `vminus_c` | Negate vector, "-v", 3 dimensions |
 | `vnorm_c` | Vector norm, 3 dimensions |
+| `vnormg_c` | Vector norm, general dimension |
+| `vprojg_c` | Vector projection, general dimension |
+| `vrelg_c` | Vector relative difference, general dimension |
 | `vscl_c` | Vector scaling, 3 dimensions |
+| `vsclg_c` | Vector scaling, general dimension |
+| `vsepg_c` | Angular separation of vectors, general dimension |
 | `vsub_c` | Vector subtraction, 3 dimensions |
+| `vsubg_c` | Vector subtraction, general dimension |
+| `vzerog_c` | Is a vector the zero vector? -- general dim. |
 | `wncard_c` | Cardinality of a double precision window |
 | `wnfetd_c` | Fetch an interval from a DP window |
 | `wninsd_c` | Insert an interval into a DP window |
@@ -624,38 +639,23 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `udf_c` | GF, dummy function |
 | `union_c` | Union of two sets |
 | `unorm_c` | Unit vector and norm, 3 dimensional |
-| `unormg_c` | Unit vector and norm, general dimension |
 | `utc2et_c` | UTC to Ephemeris Time |
-| `vaddg_c` | Vector addition, general dimension |
 | `vdist_c` | Vector distance |
-| `vdistg_c` | Vector distance, general dimension |
-| `vdotg_c` | Vector dot product, general dimension |
 | `vequ_c` | Vector equality, 3 dimensions |
-| `vequg_c` | Vector equality, general dimension |
-| `vhatg_c` | "V-Hat", unit vector along V, general dimension |
 | `vlcom_c` | Vector linear combination, 3 dimensions |
 | `vlcom3_c` | Vector linear combination, 3 dimensions |
-| `vlcomg_c` | Vector linear combination, general dimension |
-| `vminug_c` | Negate vector, "-v", general dimension |
-| `vnormg_c` | Vector norm, general dimension |
 | `vpack_c` | Pack three scalar components into a vector |
 | `vperp_c` | Perpendicular component of a 3-vector |
 | `vprjp_c` | Vector projection onto plane |
 | `vprjpi_c` | Vector projection onto plane, inverted |
 | `vproj_c` | Vector projection, 3 dimensions |
-| `vprojg_c` | Vector projection, general dimension |
 | `vrel_c` | Vector relative difference, 3 dimensions |
-| `vrelg_c` | Vector relative difference, general dimension |
 | `vrotv_c` | Vector rotation about an axis |
-| `vsclg_c` | Vector scaling, general dimension |
 | `vsep_c` | Angular separation of vectors, 3 dimensions |
-| `vsepg_c` | Angular separation of vectors, general dimension |
-| `vsubg_c` | Vector subtraction, general dimension |
 | `vtmv_c` | Vector transpose times matrix times vector, 3 dim |
 | `vtmvg_c` | Vector transpose times matrix times vector |
 | `vupack_c` | Unpack three scalar components from a vector |
 | `vzero_c` | Is a vector the zero vector? |
-| `vzerog_c` | Is a vector the zero vector? -- general dim. |
 | `wncomd_c` | Complement a DP window |
 | `wncond_c` | Contract the intervals of a DP window |
 | `wndifd_c` | Difference two DP windows |

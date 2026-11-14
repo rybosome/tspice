@@ -10,6 +10,40 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## General vectors expansion
+
+A10 reviews fifteen general-dimensional routines in the existing coordinate
+API: `vaddg`, `vdistg`, `vdotg`, `vequg`, `vhatg`, `vlcomg`, `vminug`, `vnormg`,
+`vprojg`, `vrelg`, `vsclg`, `vsepg`, `vsubg`, `vzerog` and `unormg`. Their 82
+registered scenarios contain 205 actual new-routine calls across empty,
+singleton and larger dimensions. Every output component and both `unormg`
+fields reach independent comparison. No kernels or external fixtures are needed.
+
+[General-vector evidence](step8-general-vectors.md) explains the pinned empty
+results, safe dimensions, nine repaired SpiceyPy zero-length output conversions,
+and source-specific numerical limits. The independent repair calls exact
+canonical symbols in the locked library only for empty vector results; ordinary
+nonempty calls remain on SpiceyPy. Separate tagged comparisons retain all fields
+for 22 extreme/signed-zero observations per backend, without changing the normal
+comparator. Allocation, guard, ownership and real RPC codec/structured-clone
+checks are distinct from scientific comparisons and browser startup claims.
+
+The immutable original 162-routine assignment remains intact. This branch adds
+only A10's fifteen routines. Historical Step 7 executions cannot verify changed
+sources; all judgments remain `reviewed` until fresh required local and observed
+canonical CI records are attached to the final source digest.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.

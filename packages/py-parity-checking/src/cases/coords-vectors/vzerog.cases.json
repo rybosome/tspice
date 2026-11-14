@@ -1,0 +1,91 @@
+[
+  {
+    "caseId": "coords-vectors-vzerog-dimension-zero",
+    "description": "vzerog: actual C dimension-zero call with valid non-NULL storage; vector-output conversion uses the narrowly scoped independent binding, scalar wrappers call CSPICE directly.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzerog",
+        "v": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vzerog-dimension-one",
+    "description": "vzerog: dimension-one; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [7]
+      },
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [-3]
+      },
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vzerog-mixed-dimensions",
+    "description": "vzerog: mixed-dimensions; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [3, 4]
+      },
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [3, -4, 0, 12]
+      },
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [1, -2, 4, -8, 16, -32, 64]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vzerog-zero-and-last-component",
+    "description": "vzerog: zero-and-last-component; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [0, 0, 0, 0, 0, 0, -7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vzerog-last-component-subnormal",
+    "description": "vzerog: last-component-subnormal; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [0, 0, 0, 0, 0, 0, 5e-324]
+      },
+      {
+        "op": "coords-vectors.vzerog",
+        "v": [0, 0, 0, 0, 0, 0, -5e-324]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

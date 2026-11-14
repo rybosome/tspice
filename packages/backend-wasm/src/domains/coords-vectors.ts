@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs, WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,431 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertGeneralVectorScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertGeneralVector(
+  value: unknown,
+  label: string,
+  maxDimension: number,
+): asserts value is readonly number[] {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  if (value.length > maxDimension)
+    throw new RangeError(`${label} exceeds maximum dimension ${maxDimension}`);
+  generalVectorBufferBytes(value.length);
+  for (let i = 0; i < value.length; i++)
+    assertGeneralVectorScalar(value[i], `${label}[${i}]`);
+}
+
+function assertGeneralVectorDimensions(
+  a: readonly number[],
+  b: readonly number[],
+  label: string,
+): void {
+  if (a.length !== b.length)
+    throw new RangeError(`${label} vectors must have equal lengths`);
+}
+
+function generalVectorBufferBytes(dimension: number): number {
+  const bytes = Math.max(1, dimension) * 8;
+  if (!Number.isSafeInteger(bytes) || bytes > WASM_MAX_ALLOC_BYTES)
+    throw new RangeError(
+      `General vector buffer exceeds ${WASM_MAX_ALLOC_BYTES} bytes`,
+    );
+  return bytes;
+}
+
+function readGeneralVector(
+  module: EmscriptenModule,
+  ptr: number,
+  dimension: number,
+): number[] {
+  const start = ptr >>> 3;
+  return Array.from(module.HEAPF64.subarray(start, start + dimension));
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    vaddg: (a, b) => {
+      assertGeneralVector(a, "vaddg(a)", 2147483647);
+      assertGeneralVector(b, "vaddg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vaddg()");
+      const dimension = a.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_vaddg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vdistg: (a, b) => {
+      assertGeneralVector(a, "vdistg(a)", 2147483647);
+      assertGeneralVector(b, "vdistg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vdistg()");
+      const dimension = a.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_vdistg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vdotg: (a, b) => {
+      assertGeneralVector(a, "vdotg(a)", 2147483647);
+      assertGeneralVector(b, "vdotg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vdotg()");
+      const dimension = a.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_vdotg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vequg: (v) => {
+      assertGeneralVector(v, "vequg(v)", 2147483647);
+      const dimension = v.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >>> 3);
+          const status = module._tspice_vequg(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vhatg: (v) => {
+      assertGeneralVector(v, "vhatg(v)", 2147483647);
+      const dimension = v.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >>> 3);
+          const status = module._tspice_vhatg(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vlcomg: (a, v1, b, v2) => {
+      assertGeneralVectorScalar(a, "vlcomg(a)");
+      assertGeneralVector(v1, "vlcomg(v1)", 2147483647);
+      assertGeneralVectorScalar(b, "vlcomg(b)");
+      assertGeneralVector(v2, "vlcomg(v2)", 2147483647);
+      assertGeneralVectorDimensions(v1, v2, "vlcomg()");
+      const dimension = v1.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, v1Ptr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(v1, v1Ptr >>> 3);
+          module.HEAPF64.set(v2, v2Ptr >>> 3);
+          const status = module._tspice_vlcomg(
+            a,
+            v1Ptr,
+            b,
+            v2Ptr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vminug: (v) => {
+      assertGeneralVector(v, "vminug(v)", 2147483647);
+      const dimension = v.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >>> 3);
+          const status = module._tspice_vminug(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vnormg: (v) => {
+      assertGeneralVector(v, "vnormg(v)", 2147483647);
+      const dimension = v.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, 8],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >>> 3);
+          const status = module._tspice_vnormg(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vprojg: (a, b) => {
+      assertGeneralVector(a, "vprojg(a)", 2147483646);
+      assertGeneralVector(b, "vprojg(b)", 2147483646);
+      assertGeneralVectorDimensions(a, b, "vprojg()");
+      const dimension = a.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_vprojg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vrelg: (a, b) => {
+      assertGeneralVector(a, "vrelg(a)", 2147483647);
+      assertGeneralVector(b, "vrelg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vrelg()");
+      const dimension = a.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_vrelg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vsclg: (s, v) => {
+      assertGeneralVectorScalar(s, "vsclg(s)");
+      assertGeneralVector(v, "vsclg(v)", 2147483647);
+      const dimension = v.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >>> 3);
+          const status = module._tspice_vsclg(
+            s,
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vsepg: (a, b) => {
+      assertGeneralVector(a, "vsepg(a)", 2147483647);
+      assertGeneralVector(b, "vsepg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vsepg()");
+      const dimension = a.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_vsepg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vsubg: (a, b) => {
+      assertGeneralVector(a, "vsubg(a)", 2147483647);
+      assertGeneralVector(b, "vsubg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vsubg()");
+      const dimension = a.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_vsubg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vzerog: (v) => {
+      assertGeneralVector(v, "vzerog(v)", 2147483647);
+      const dimension = v.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, 4],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(v, vPtr >>> 3);
+          const status = module._tspice_vzerog(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >>> 2] !== 0;
+        },
+      );
+    },
+    unormg: (v) => {
+      assertGeneralVector(v, "unormg(v)", 2147483646);
+      const dimension = v.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, vPtr, outPtr, normPtr) => {
+          module.HEAPF64.set(v, vPtr >>> 3);
+          const status = module._tspice_unormg(
+            vPtr,
+            dimension,
+            outPtr,
+            normPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            unit: readGeneralVector(module, outPtr, dimension),
+            norm: module.HEAPF64[normPtr >>> 3]!,
+          };
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

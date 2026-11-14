@@ -3,6 +3,7 @@
 #include "SpiceUsr.h"
 
 #include <string.h>
+#include <stdint.h>
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   int i;
@@ -20,6 +21,210 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
       out[i][j] = (SpiceDouble)m3x3[i * 3 + j];
     }
   }
+}
+
+static int tspice_general_vector_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "general vector operation requires valid dimension and non-NULL buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_vaddg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vaddg_c(a, b, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vdistg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vdistg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vdotg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vdotg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vequg(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vequg_c(v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vhatg(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vhatg_c(v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vlcomg(double a, const double *v1, double b, const double *v2, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v1 || !v2 || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vlcomg_c((SpiceInt)ndim, a, v1, b, v2, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vminug(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vminug_c(v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vnormg(const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vnormg_c(v, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vprojg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || ndim > 2147483646 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  // Keep f2c one-based loop counters below their signed32 overflow limit.
+  vprojg_c(a, b, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vrelg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vrelg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vsclg(double s, const double *v, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vsclg_c(s, v, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vsepg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceDouble value = vsepg_c(a, b, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_vsubg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  vsubg_c(a, b, (SpiceInt)ndim, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_vzerog(const double *v, int ndim, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out || ndim < 0 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceBoolean value = vzerog_c(v, (SpiceInt)ndim);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value ? 1 : 0;
+  return 0;
+}
+
+int tspice_unormg(const double *v, int ndim, double *outUnit, double *outNorm, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !outUnit || !outNorm || ndim < 0 || ndim > 2147483646 || (size_t)ndim > SIZE_MAX / sizeof(double)) return tspice_general_vector_invalid_arg(err, errMaxBytes);
+  // Keep f2c one-based loop counters below their signed32 overflow limit.
+  *outNorm = 0.0;
+  unormg_c(v, (SpiceInt)ndim, outUnit, outNorm);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
 }
 
 int tspice_reclat(

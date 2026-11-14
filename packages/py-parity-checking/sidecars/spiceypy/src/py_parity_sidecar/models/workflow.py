@@ -23,6 +23,21 @@ from .coords_vectors import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsVaddg,
+    StepCoordsVectorsVdistg,
+    StepCoordsVectorsVdotg,
+    StepCoordsVectorsVequg,
+    StepCoordsVectorsVhatg,
+    StepCoordsVectorsVlcomg,
+    StepCoordsVectorsVminug,
+    StepCoordsVectorsVnormg,
+    StepCoordsVectorsVprojg,
+    StepCoordsVectorsVrelg,
+    StepCoordsVectorsVsclg,
+    StepCoordsVectorsVsepg,
+    StepCoordsVectorsVsubg,
+    StepCoordsVectorsVzerog,
+    StepCoordsVectorsUnormg,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -224,6 +239,21 @@ WorkflowStep: TypeAlias = (
     | StepIdsNamesBodfnd
     | StepIdsNamesBods2c
     | StepIdsNamesBodvar
+    | StepCoordsVectorsVaddg
+    | StepCoordsVectorsVdistg
+    | StepCoordsVectorsVdotg
+    | StepCoordsVectorsVequg
+    | StepCoordsVectorsVhatg
+    | StepCoordsVectorsVlcomg
+    | StepCoordsVectorsVminug
+    | StepCoordsVectorsVnormg
+    | StepCoordsVectorsVprojg
+    | StepCoordsVectorsVrelg
+    | StepCoordsVectorsVsclg
+    | StepCoordsVectorsVsepg
+    | StepCoordsVectorsVsubg
+    | StepCoordsVectorsVzerog
+    | StepCoordsVectorsUnormg
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph

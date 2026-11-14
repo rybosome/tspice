@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import general_vector_oracle
+
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -9,6 +11,21 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsVaddg,
+    StepCoordsVectorsVdistg,
+    StepCoordsVectorsVdotg,
+    StepCoordsVectorsVequg,
+    StepCoordsVectorsVhatg,
+    StepCoordsVectorsVlcomg,
+    StepCoordsVectorsVminug,
+    StepCoordsVectorsVnormg,
+    StepCoordsVectorsVprojg,
+    StepCoordsVectorsVrelg,
+    StepCoordsVectorsVsclg,
+    StepCoordsVectorsVsepg,
+    StepCoordsVectorsVsubg,
+    StepCoordsVectorsVzerog,
+    StepCoordsVectorsUnormg,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -27,6 +44,13 @@ from ..models import (
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext
+
+
+def _to_general_vector(values: object, dimension: int) -> list[float]:
+    out = values.tolist() if hasattr(values, "tolist") else values
+    if not isinstance(out, list) or len(out) != dimension:
+        raise TypeError(f"Expected {dimension} vector components, got {out!r}")
+    return [float(value) for value in out]
 
 
 def _to_vec3(values: object) -> list[float]:
@@ -51,6 +75,84 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsVaddg):
+        general_vector_oracle.validate_inputs("vaddg", step.a, step.b)
+        out = general_vector_oracle.empty_result("vaddg") if len(step.a) == 0 else sp.vaddg(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.a)))
+
+    if isinstance(step, StepCoordsVectorsVdistg):
+        general_vector_oracle.validate_inputs("vdistg", step.a, step.b)
+        out = sp.vdistg(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsVdotg):
+        general_vector_oracle.validate_inputs("vdotg", step.a, step.b)
+        out = sp.vdotg(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsVequg):
+        general_vector_oracle.validate_inputs("vequg", step.v)
+        out = general_vector_oracle.empty_result("vequg") if len(step.v) == 0 else sp.vequg(step.v)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.v)))
+
+    if isinstance(step, StepCoordsVectorsVhatg):
+        general_vector_oracle.validate_inputs("vhatg", step.v)
+        out = general_vector_oracle.empty_result("vhatg") if len(step.v) == 0 else sp.vhatg(step.v)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.v)))
+
+    if isinstance(step, StepCoordsVectorsVlcomg):
+        general_vector_oracle.validate_scalar(step.a)
+        general_vector_oracle.validate_scalar(step.b)
+        general_vector_oracle.validate_inputs("vlcomg", step.v1, step.v2)
+        out = general_vector_oracle.empty_result("vlcomg", a=step.a, b=step.b) if len(step.v1) == 0 else sp.vlcomg(len(step.v1), step.a, step.v1, step.b, step.v2)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.v1)))
+
+    if isinstance(step, StepCoordsVectorsVminug):
+        general_vector_oracle.validate_inputs("vminug", step.v)
+        out = general_vector_oracle.empty_result("vminug") if len(step.v) == 0 else sp.vminug(step.v)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.v)))
+
+    if isinstance(step, StepCoordsVectorsVnormg):
+        general_vector_oracle.validate_inputs("vnormg", step.v)
+        out = sp.vnormg(step.v)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsVprojg):
+        general_vector_oracle.validate_inputs("vprojg", step.a, step.b)
+        out = general_vector_oracle.empty_result("vprojg") if len(step.a) == 0 else sp.vprojg(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.a)))
+
+    if isinstance(step, StepCoordsVectorsVrelg):
+        general_vector_oracle.validate_inputs("vrelg", step.a, step.b)
+        out = sp.vrelg(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsVsclg):
+        general_vector_oracle.validate_scalar(step.s)
+        general_vector_oracle.validate_inputs("vsclg", step.v)
+        out = general_vector_oracle.empty_result("vsclg", s=step.s) if len(step.v) == 0 else sp.vsclg(step.s, step.v)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.v)))
+
+    if isinstance(step, StepCoordsVectorsVsepg):
+        general_vector_oracle.validate_inputs("vsepg", step.a, step.b)
+        out = sp.vsepg(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsVsubg):
+        general_vector_oracle.validate_inputs("vsubg", step.a, step.b)
+        out = general_vector_oracle.empty_result("vsubg") if len(step.a) == 0 else sp.vsubg(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_general_vector(out, len(step.a)))
+
+    if isinstance(step, StepCoordsVectorsVzerog):
+        general_vector_oracle.validate_inputs("vzerog", step.v)
+        out = sp.vzerog(step.v)
+        return StepOutput(op=step.op, value=bool(out))
+
+    if isinstance(step, StepCoordsVectorsUnormg):
+        general_vector_oracle.validate_inputs("unormg", step.v)
+        unit, norm = general_vector_oracle.empty_result("unormg") if len(step.v) == 0 else sp.unormg(step.v)
+        return StepOutput(op=step.op, value={"unit": _to_general_vector(unit, len(step.v)), "norm": float(norm)})
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

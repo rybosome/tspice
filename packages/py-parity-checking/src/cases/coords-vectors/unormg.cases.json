@@ -1,0 +1,91 @@
+[
+  {
+    "caseId": "coords-vectors-unormg-dimension-zero",
+    "description": "unormg: actual C dimension-zero call with valid non-NULL storage; vector-output conversion uses the narrowly scoped independent binding, scalar wrappers call CSPICE directly.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unormg",
+        "v": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-unormg-dimension-one",
+    "description": "unormg: dimension-one; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unormg",
+        "v": [7]
+      },
+      {
+        "op": "coords-vectors.unormg",
+        "v": [-3]
+      },
+      {
+        "op": "coords-vectors.unormg",
+        "v": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-unormg-mixed-dimensions",
+    "description": "unormg: mixed-dimensions; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unormg",
+        "v": [3, 4]
+      },
+      {
+        "op": "coords-vectors.unormg",
+        "v": [3, -4, 0, 12]
+      },
+      {
+        "op": "coords-vectors.unormg",
+        "v": [1, -2, 4, -8, 16, -32, 64]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-unormg-zero-and-last-component",
+    "description": "unormg: zero-and-last-component; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unormg",
+        "v": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.unormg",
+        "v": [0, 0, 0, 0, 0, 0, -7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-unormg-scaled-magnitudes",
+    "description": "unormg: scaled-magnitudes; kernel-free actual raw outputs, every component compared with the independent locked CSPICE oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unormg",
+        "v": [3.0000000000000002e100, -4e100, 0, 1.2000000000000001e101]
+      },
+      {
+        "op": "coords-vectors.unormg",
+        "v": [3e-100, -4e-100, 0, 1.2e-99]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

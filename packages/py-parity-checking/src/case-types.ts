@@ -172,6 +172,92 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsVaddg = {
+  op: "coords-vectors.vaddg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVdistg = {
+  op: "coords-vectors.vdistg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVdotg = {
+  op: "coords-vectors.vdotg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVequg = {
+  op: "coords-vectors.vequg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVhatg = {
+  op: "coords-vectors.vhatg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVlcomg = {
+  op: "coords-vectors.vlcomg";
+  a: number;
+  v1: number[];
+  b: number;
+  v2: number[];
+};
+
+export type StepCoordsVectorsVminug = {
+  op: "coords-vectors.vminug";
+  v: number[];
+};
+
+export type StepCoordsVectorsVnormg = {
+  op: "coords-vectors.vnormg";
+  v: number[];
+};
+
+export type StepCoordsVectorsVprojg = {
+  op: "coords-vectors.vprojg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVrelg = {
+  op: "coords-vectors.vrelg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVsclg = {
+  op: "coords-vectors.vsclg";
+  s: number;
+  v: number[];
+};
+
+export type StepCoordsVectorsVsepg = {
+  op: "coords-vectors.vsepg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVsubg = {
+  op: "coords-vectors.vsubg";
+  a: number[];
+  b: number[];
+};
+
+export type StepCoordsVectorsVzerog = {
+  op: "coords-vectors.vzerog";
+  v: number[];
+};
+
+export type StepCoordsVectorsUnormg = {
+  op: "coords-vectors.unormg";
+  v: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1399,21 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsVaddg
+  | StepCoordsVectorsVdistg
+  | StepCoordsVectorsVdotg
+  | StepCoordsVectorsVequg
+  | StepCoordsVectorsVhatg
+  | StepCoordsVectorsVlcomg
+  | StepCoordsVectorsVminug
+  | StepCoordsVectorsVnormg
+  | StepCoordsVectorsVprojg
+  | StepCoordsVectorsVrelg
+  | StepCoordsVectorsVsclg
+  | StepCoordsVectorsVsepg
+  | StepCoordsVectorsVsubg
+  | StepCoordsVectorsVzerog
+  | StepCoordsVectorsUnormg
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1585,21 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.vaddg"; value: number[] }
+  | { op: "coords-vectors.vdistg"; value: number }
+  | { op: "coords-vectors.vdotg"; value: number }
+  | { op: "coords-vectors.vequg"; value: number[] }
+  | { op: "coords-vectors.vhatg"; value: number[] }
+  | { op: "coords-vectors.vlcomg"; value: number[] }
+  | { op: "coords-vectors.vminug"; value: number[] }
+  | { op: "coords-vectors.vnormg"; value: number }
+  | { op: "coords-vectors.vprojg"; value: number[] }
+  | { op: "coords-vectors.vrelg"; value: number }
+  | { op: "coords-vectors.vsclg"; value: number[] }
+  | { op: "coords-vectors.vsepg"; value: number }
+  | { op: "coords-vectors.vsubg"; value: number[] }
+  | { op: "coords-vectors.vzerog"; value: boolean }
+  | { op: "coords-vectors.unormg"; value: { unit: number[]; norm: number } }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

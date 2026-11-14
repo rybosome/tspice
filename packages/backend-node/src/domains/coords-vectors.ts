@@ -15,9 +15,160 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertGeneralVectorScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertGeneralVector(
+  value: unknown,
+  label: string,
+  maxDimension: number,
+): asserts value is readonly number[] {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  if (value.length > maxDimension)
+    throw new RangeError(`${label} exceeds maximum dimension ${maxDimension}`);
+  for (let i = 0; i < value.length; i++)
+    assertGeneralVectorScalar(value[i], `${label}[${i}]`);
+}
+
+function assertGeneralVectorDimensions(
+  a: readonly number[],
+  b: readonly number[],
+  label: string,
+): void {
+  if (a.length !== b.length)
+    throw new RangeError(`${label} vectors must have equal lengths`);
+}
+
+function generalVectorOutputNumber(value: unknown, label: string): number {
+  // Do not reject IEEE-754 outputs produced by defined finite CSPICE inputs.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function generalVectorOutput(
+  value: unknown,
+  dimension: number,
+  label: string,
+): number[] {
+  if (!Array.isArray(value) || value.length !== dimension)
+    throw new TypeError(`${label} must be an array of length ${dimension}`);
+  const result: number[] = [];
+  for (let i = 0; i < dimension; i++)
+    result.push(generalVectorOutputNumber(value[i], `${label}[${i}]`));
+  return result;
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    vaddg: (a, b) => {
+      assertGeneralVector(a, "vaddg(a)", 2147483647);
+      assertGeneralVector(b, "vaddg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vaddg()");
+      const out: unknown = native.vaddg(a, b);
+      return generalVectorOutput(out, a.length, "vaddg result");
+    },
+    vdistg: (a, b) => {
+      assertGeneralVector(a, "vdistg(a)", 2147483647);
+      assertGeneralVector(b, "vdistg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vdistg()");
+      const out: unknown = native.vdistg(a, b);
+      return generalVectorOutputNumber(out, "vdistg result");
+    },
+    vdotg: (a, b) => {
+      assertGeneralVector(a, "vdotg(a)", 2147483647);
+      assertGeneralVector(b, "vdotg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vdotg()");
+      const out: unknown = native.vdotg(a, b);
+      return generalVectorOutputNumber(out, "vdotg result");
+    },
+    vequg: (v) => {
+      assertGeneralVector(v, "vequg(v)", 2147483647);
+      const out: unknown = native.vequg(v);
+      return generalVectorOutput(out, v.length, "vequg result");
+    },
+    vhatg: (v) => {
+      assertGeneralVector(v, "vhatg(v)", 2147483647);
+      const out: unknown = native.vhatg(v);
+      return generalVectorOutput(out, v.length, "vhatg result");
+    },
+    vlcomg: (a, v1, b, v2) => {
+      assertGeneralVectorScalar(a, "vlcomg(a)");
+      assertGeneralVector(v1, "vlcomg(v1)", 2147483647);
+      assertGeneralVectorScalar(b, "vlcomg(b)");
+      assertGeneralVector(v2, "vlcomg(v2)", 2147483647);
+      assertGeneralVectorDimensions(v1, v2, "vlcomg()");
+      const out: unknown = native.vlcomg(a, v1, b, v2);
+      return generalVectorOutput(out, v1.length, "vlcomg result");
+    },
+    vminug: (v) => {
+      assertGeneralVector(v, "vminug(v)", 2147483647);
+      const out: unknown = native.vminug(v);
+      return generalVectorOutput(out, v.length, "vminug result");
+    },
+    vnormg: (v) => {
+      assertGeneralVector(v, "vnormg(v)", 2147483647);
+      const out: unknown = native.vnormg(v);
+      return generalVectorOutputNumber(out, "vnormg result");
+    },
+    vprojg: (a, b) => {
+      assertGeneralVector(a, "vprojg(a)", 2147483646);
+      assertGeneralVector(b, "vprojg(b)", 2147483646);
+      assertGeneralVectorDimensions(a, b, "vprojg()");
+      const out: unknown = native.vprojg(a, b);
+      return generalVectorOutput(out, a.length, "vprojg result");
+    },
+    vrelg: (a, b) => {
+      assertGeneralVector(a, "vrelg(a)", 2147483647);
+      assertGeneralVector(b, "vrelg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vrelg()");
+      const out: unknown = native.vrelg(a, b);
+      return generalVectorOutputNumber(out, "vrelg result");
+    },
+    vsclg: (s, v) => {
+      assertGeneralVectorScalar(s, "vsclg(s)");
+      assertGeneralVector(v, "vsclg(v)", 2147483647);
+      const out: unknown = native.vsclg(s, v);
+      return generalVectorOutput(out, v.length, "vsclg result");
+    },
+    vsepg: (a, b) => {
+      assertGeneralVector(a, "vsepg(a)", 2147483647);
+      assertGeneralVector(b, "vsepg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vsepg()");
+      const out: unknown = native.vsepg(a, b);
+      return generalVectorOutputNumber(out, "vsepg result");
+    },
+    vsubg: (a, b) => {
+      assertGeneralVector(a, "vsubg(a)", 2147483647);
+      assertGeneralVector(b, "vsubg(b)", 2147483647);
+      assertGeneralVectorDimensions(a, b, "vsubg()");
+      const out: unknown = native.vsubg(a, b);
+      return generalVectorOutput(out, a.length, "vsubg result");
+    },
+    vzerog: (v) => {
+      assertGeneralVector(v, "vzerog(v)", 2147483647);
+      const out: unknown = native.vzerog(v);
+      invariant(
+        typeof out === "boolean",
+        "Expected vzerog() to return a boolean",
+      );
+      return out;
+    },
+    unormg: (v) => {
+      assertGeneralVector(v, "unormg(v)", 2147483646);
+      const out: unknown = native.unormg(v);
+      invariant(isPlainObject(out), "Expected unormg() to return an object");
+      return {
+        unit: generalVectorOutput(out.unit, v.length, "unormg().unit"),
+        norm: generalVectorOutputNumber(out.norm, "unormg().norm"),
+      };
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(
