@@ -1079,6 +1079,19 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+// chbder_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbder(const double *cp, int ncoeff, const double x2s[2], double x, int nderiv, double *workspace, double *out, char *err, int errMaxBytes);
+// chbigr_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbigr(const double *cp, int ncoeff, const double x2s[2], double x, double *outP, double *outIntegral, char *err, int errMaxBytes);
+// chbint_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbint(const double *cp, int ncoeff, const double x2s[2], double x, double *outP, double *outDerivative, char *err, int errMaxBytes);
+// chbval_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_chbval(const double *cp, int ncoeff, const double x2s[2], double x, double *out, char *err, int errMaxBytes);
+// polyds_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_polyds(const double *coeffs, int ncoeff, int nderiv, double t, double *out, char *err, int errMaxBytes);
+// rquad_c: adapters infer degree from ncoeff; empty buffers remain non-NULL.
+int tspice_rquad(double a, double b, double c, double root1[2], double root2[2], char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

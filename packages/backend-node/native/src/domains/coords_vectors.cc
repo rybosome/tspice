@@ -1,5 +1,10 @@
 #include "coords_vectors.h"
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <vector>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +12,224 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadPolynomialNumber(Napi::Env env, const Napi::Value& value, double* out, const char* label) {
+  if (!value.IsNumber() || !std::isfinite(value.As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a finite number"));
+    return false;
+  }
+  *out = value.As<Napi::Number>().DoubleValue();
+  return true;
+}
+
+static bool ReadPolynomialOrder(Napi::Env env, const Napi::Value& value, bool chebyshev, int* order, size_t* count) {
+  double number = 0.0;
+  if (!ReadPolynomialNumber(env, value, &number, "nderiv")) return false;
+  const double minimum = chebyshev ? 0.0 : -2147483648.0;
+  const double maximum = chebyshev ? 715827881.0 : 2147483646.0;
+  if (std::trunc(number) != number || number < minimum || number > maximum) {
+    ThrowSpiceError(Napi::RangeError::New(env, "nderiv exceeds the supported derivative order"));
+    return false;
+  }
+  *order = static_cast<int>(number);
+  *count = number < 0 ? 0 : static_cast<size_t>(*order) + 1;
+  const size_t multiplier = chebyshev ? 3 : 1;
+  if (*count > SIZE_MAX / (multiplier * sizeof(double))) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Polynomial output/workspace buffer is too large"));
+    return false;
+  }
+  return true;
+}
+
+static bool ReadPolynomialCoefficients(Napi::Env env, const Napi::Value& value, bool allowEmpty, std::vector<double>& out, int* count) {
+  if (!value.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Polynomial coefficients must be an array"));
+    return false;
+  }
+  const Napi::Array array = value.As<Napi::Array>();
+  const uint32_t length = array.Length();
+  if (length > 2147483647U || (!allowEmpty && length == 0) || static_cast<size_t>(length) > SIZE_MAX / sizeof(double)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Unsupported coefficient count"));
+    return false;
+  }
+  *count = static_cast<int>(length);
+  // A degree -1 call still receives real storage, never an empty vector's data().
+  out.resize(std::max<size_t>(1, length), 0.0);
+  for (uint32_t i = 0; i < length; i++) {
+    if (!ReadPolynomialNumber(env, array.Get(i), &out[i], "Polynomial coefficient")) return false;
+  }
+  return true;
+}
+
+static bool ReadPolynomialTransform(Napi::Env env, const Napi::Value& value, double out[2]) {
+  if (!value.IsArray() || value.As<Napi::Array>().Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "x2s must be a length-2 array"));
+    return false;
+  }
+  const Napi::Array array = value.As<Napi::Array>();
+  return ReadPolynomialNumber(env, array.Get(uint32_t{0}), &out[0], "x2s[0]") &&
+         ReadPolynomialNumber(env, array.Get(uint32_t{1}), &out[1], "x2s[1]");
+}
+
+static Napi::Array Chbder(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "chbder() expects 4 arguments"));
+    return Napi::Array::New(env);
+  }
+  int nderiv = 0;
+  size_t outputCount = 0;
+  if (!ReadPolynomialOrder(env, info[3], true, &nderiv, &outputCount)) return Napi::Array::New(env);
+  std::vector<double> cp;
+  int ncoeff = 0;
+  if (!ReadPolynomialCoefficients(env, info[0], false, cp, &ncoeff)) return Napi::Array::New(env);
+  double x2s[2] = {0};
+  if (!ReadPolynomialTransform(env, info[1], x2s)) return Napi::Array::New(env);
+  double x = 0.0;
+  if (!ReadPolynomialNumber(env, info[2], &x, "chbder(x)")) return Napi::Array::New(env);
+  std::vector<double> out(std::max<size_t>(1, outputCount), 0.0);
+  std::vector<double> workspace(3 * outputCount, 0.0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_chbder(cp.data(), ncoeff, x2s, x, nderiv, workspace.data(), out.data(), err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling chbder", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out.data(), outputCount);
+}
+
+static Napi::Object Chbigr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "chbigr() expects 3 arguments"));
+    return Napi::Object::New(env);
+  }
+  std::vector<double> cp;
+  int ncoeff = 0;
+  if (!ReadPolynomialCoefficients(env, info[0], true, cp, &ncoeff)) return Napi::Object::New(env);
+  double x2s[2] = {0};
+  if (!ReadPolynomialTransform(env, info[1], x2s)) return Napi::Object::New(env);
+  double x = 0.0;
+  if (!ReadPolynomialNumber(env, info[2], &x, "chbigr(x)")) return Napi::Object::New(env);
+  double p = 0.0;
+  double secondary = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_chbigr(cp.data(), ncoeff, x2s, x, &p, &secondary, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling chbigr", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("p", Napi::Number::New(env, p));
+  result.Set("itgrlp", Napi::Number::New(env, secondary));
+  return result;
+}
+
+static Napi::Object Chbint(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "chbint() expects 3 arguments"));
+    return Napi::Object::New(env);
+  }
+  std::vector<double> cp;
+  int ncoeff = 0;
+  if (!ReadPolynomialCoefficients(env, info[0], false, cp, &ncoeff)) return Napi::Object::New(env);
+  double x2s[2] = {0};
+  if (!ReadPolynomialTransform(env, info[1], x2s)) return Napi::Object::New(env);
+  double x = 0.0;
+  if (!ReadPolynomialNumber(env, info[2], &x, "chbint(x)")) return Napi::Object::New(env);
+  double p = 0.0;
+  double secondary = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_chbint(cp.data(), ncoeff, x2s, x, &p, &secondary, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling chbint", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("p", Napi::Number::New(env, p));
+  result.Set("dpdx", Napi::Number::New(env, secondary));
+  return result;
+}
+
+static Napi::Number Chbval(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "chbval() expects 3 arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::vector<double> cp;
+  int ncoeff = 0;
+  if (!ReadPolynomialCoefficients(env, info[0], false, cp, &ncoeff)) return Napi::Number::New(env, 0);
+  double x2s[2] = {0};
+  if (!ReadPolynomialTransform(env, info[1], x2s)) return Napi::Number::New(env, 0);
+  double x = 0.0;
+  if (!ReadPolynomialNumber(env, info[2], &x, "chbval(x)")) return Napi::Number::New(env, 0);
+  double out = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_chbval(cp.data(), ncoeff, x2s, x, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling chbval", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Array Polyds(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "polyds() expects 3 arguments"));
+    return Napi::Array::New(env);
+  }
+  int nderiv = 0;
+  size_t outputCount = 0;
+  if (!ReadPolynomialOrder(env, info[1], false, &nderiv, &outputCount)) return Napi::Array::New(env);
+  std::vector<double> coeffs;
+  int ncoeff = 0;
+  if (!ReadPolynomialCoefficients(env, info[0], true, coeffs, &ncoeff)) return Napi::Array::New(env);
+  double t = 0.0;
+  if (!ReadPolynomialNumber(env, info[2], &t, "polyds(t)")) return Napi::Array::New(env);
+  std::vector<double> out(std::max<size_t>(1, outputCount), 0.0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_polyds(coeffs.data(), ncoeff, nderiv, t, out.data(), err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling polyds", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out.data(), outputCount);
+}
+
+static Napi::Object Rquad(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "rquad() expects 3 arguments"));
+    return Napi::Object::New(env);
+  }
+  double a = 0.0;
+  if (!ReadPolynomialNumber(env, info[0], &a, "rquad(a)")) return Napi::Object::New(env);
+  double b = 0.0;
+  if (!ReadPolynomialNumber(env, info[1], &b, "rquad(b)")) return Napi::Object::New(env);
+  double c = 0.0;
+  if (!ReadPolynomialNumber(env, info[2], &c, "rquad(c)")) return Napi::Object::New(env);
+  double root1[2] = {0};
+  double root2[2] = {0};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_rquad(a, b, c, root1, root2, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling rquad", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("root1", MakeNumberArray(env, root1, 2));
+  result.Set("root2", MakeNumberArray(env, root2, 2));
+  return result;
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +795,12 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "chbder", Napi::Function::New(env, Chbder), __func__)) return;
+  if (!SetExportChecked(env, exports, "chbigr", Napi::Function::New(env, Chbigr), __func__)) return;
+  if (!SetExportChecked(env, exports, "chbint", Napi::Function::New(env, Chbint), __func__)) return;
+  if (!SetExportChecked(env, exports, "chbval", Napi::Function::New(env, Chbval), __func__)) return;
+  if (!SetExportChecked(env, exports, "polyds", Napi::Function::New(env, Polyds), __func__)) return;
+  if (!SetExportChecked(env, exports, "rquad", Napi::Function::New(env, Rquad), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

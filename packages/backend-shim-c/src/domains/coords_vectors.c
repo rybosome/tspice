@@ -3,6 +3,7 @@
 #include "SpiceUsr.h"
 
 #include <string.h>
+#include <stdint.h>
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   int i;
@@ -20,6 +21,88 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
       out[i][j] = (SpiceDouble)m3x3[i * 3 + j];
     }
   }
+}
+
+static int tspice_polynomial_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "Invalid polynomial buffer or dimension", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_chbder(const double *cp, int ncoeff, const double x2s[2], double x, int nderiv, double *workspace, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!cp || !x2s || !workspace || !out || ncoeff <= 0 || nderiv < 0 || nderiv > 715827881 || (size_t)(nderiv + 1) > SIZE_MAX / (3 * sizeof(double)) || (size_t)ncoeff > SIZE_MAX / sizeof(double)) return tspice_polynomial_invalid_arg(err, errMaxBytes);
+  double transform[2] = {x2s[0], x2s[1]};
+  chbder_c(cp, (SpiceInt)(ncoeff - 1), transform, x, (SpiceInt)nderiv, workspace, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_chbigr(const double *cp, int ncoeff, const double x2s[2], double x, double *outP, double *outIntegral, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!cp || !x2s || !outP || !outIntegral || ncoeff < 0 || (size_t)ncoeff > SIZE_MAX / sizeof(double)) return tspice_polynomial_invalid_arg(err, errMaxBytes);
+  chbigr_c((SpiceInt)(ncoeff - 1), cp, x2s, x, outP, outIntegral);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_chbint(const double *cp, int ncoeff, const double x2s[2], double x, double *outP, double *outDerivative, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!cp || !x2s || !outP || !outDerivative || ncoeff <= 0 || (size_t)ncoeff > SIZE_MAX / sizeof(double)) return tspice_polynomial_invalid_arg(err, errMaxBytes);
+  chbint_c(cp, (SpiceInt)(ncoeff - 1), x2s, x, outP, outDerivative);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_chbval(const double *cp, int ncoeff, const double x2s[2], double x, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!cp || !x2s || !out || ncoeff <= 0 || (size_t)ncoeff > SIZE_MAX / sizeof(double)) return tspice_polynomial_invalid_arg(err, errMaxBytes);
+  chbval_c(cp, (SpiceInt)(ncoeff - 1), x2s, x, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_polyds(const double *coeffs, int ncoeff, int nderiv, double t, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!coeffs || !out || ncoeff < 0 || nderiv > 2147483646 || (nderiv >= 0 && (size_t)(nderiv + 1) > SIZE_MAX / sizeof(double)) || (size_t)ncoeff > SIZE_MAX / sizeof(double)) return tspice_polynomial_invalid_arg(err, errMaxBytes);
+  polyds_c(coeffs, (SpiceInt)(ncoeff - 1), (SpiceInt)nderiv, t, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_rquad(double a, double b, double c, double root1[2], double root2[2], char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!root1 || !root2) return tspice_polynomial_invalid_arg(err, errMaxBytes);
+  rquad_c(a, b, c, root1, root2);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
 }
 
 int tspice_reclat(

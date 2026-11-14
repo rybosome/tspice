@@ -1,0 +1,208 @@
+[
+  {
+    "caseId": "coords-vectors-rquad-real-root-order-and-leading-sign",
+    "description": "rquad: real-root-order-and-leading-sign; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": -3,
+        "c": 2
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": -1,
+        "b": 3,
+        "c": -2
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 2,
+        "b": 3,
+        "c": -2
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": -2,
+        "b": -3,
+        "c": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rquad-complex-conjugate-fields",
+    "description": "rquad: complex-conjugate-fields; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": 2,
+        "c": 5
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": -1,
+        "b": -2,
+        "c": -5
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": 0,
+        "c": 1
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 3,
+        "b": -6,
+        "c": 15
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rquad-repeated-and-zero-roots",
+    "description": "rquad: repeated-and-zero-roots; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": -2,
+        "c": 1
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": 0,
+        "c": 0
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": -3,
+        "c": 0
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": 3,
+        "c": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rquad-linear-equations",
+    "description": "rquad: linear-equations; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 0,
+        "b": 2,
+        "c": -6
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 0,
+        "b": -2,
+        "c": -6
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 0,
+        "b": 7,
+        "c": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rquad-unequal-root-magnitudes",
+    "description": "rquad: retain separately ordered large and tiny roots; focused scaled observations distinguish the tiny root from zero.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": 1e16,
+        "c": 1
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1,
+        "b": -1e16,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rquad-scaled-coefficients",
+    "description": "rquad: scaled-coefficients; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1e100,
+        "b": -3.0000000000000002e100,
+        "c": 2e100
+      },
+      {
+        "op": "coords-vectors.rquad",
+        "a": 1e-100,
+        "b": -3e-100,
+        "c": 2e-100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rquad-all-zero-error",
+    "description": "rquad: all-zero-error; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 0,
+        "b": 0,
+        "c": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-rquad-constant-only-error",
+    "description": "rquad: constant-only-error; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rquad",
+        "a": 0,
+        "b": 0,
+        "c": 7
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  }
+]

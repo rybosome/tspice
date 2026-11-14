@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import polynomial_oracle
+
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -9,6 +11,12 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsChbder,
+    StepCoordsVectorsChbigr,
+    StepCoordsVectorsChbint,
+    StepCoordsVectorsChbval,
+    StepCoordsVectorsPolyds,
+    StepCoordsVectorsRquad,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -27,6 +35,13 @@ from ..models import (
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext
+
+
+def _to_number_array(values: object, length: int) -> list[float]:
+    out = values.tolist() if hasattr(values, "tolist") else values
+    if not isinstance(out, list) or len(out) != length:
+        raise TypeError(f"Expected {length} numeric outputs, got: {out!r}")
+    return [float(value) for value in out]
 
 
 def _to_vec3(values: object) -> list[float]:
@@ -51,6 +66,36 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsChbder):
+        polynomial_oracle.derivative_order(step.nderiv, chebyshev=True)
+        polynomial_oracle.chebyshev_inputs(step.cp, step.x2s, step.x)
+        out = sp.chbder(step.cp, len(step.cp) - 1, step.x2s, step.x, step.nderiv)
+        return StepOutput(op=step.op, value=_to_number_array(out, step.nderiv + 1))
+
+    if isinstance(step, StepCoordsVectorsChbigr):
+        polynomial_oracle.chebyshev_inputs(step.cp, step.x2s, step.x, integral=True)
+        p, integral = sp.chbigr(len(step.cp) - 1, step.cp if step.cp else [0.0], step.x2s, step.x)
+        return StepOutput(op=step.op, value={"p": float(p), "itgrlp": float(integral)})
+
+    if isinstance(step, StepCoordsVectorsChbint):
+        polynomial_oracle.chebyshev_inputs(step.cp, step.x2s, step.x)
+        p, derivative = sp.chbint(step.cp, len(step.cp) - 1, step.x2s, step.x)
+        return StepOutput(op=step.op, value={"p": float(p), "dpdx": float(derivative)})
+
+    if isinstance(step, StepCoordsVectorsChbval):
+        polynomial_oracle.chebyshev_inputs(step.cp, step.x2s, step.x)
+        return StepOutput(op=step.op, value=float(sp.chbval(step.cp, len(step.cp) - 1, step.x2s, step.x)))
+
+    if isinstance(step, StepCoordsVectorsPolyds):
+        out = polynomial_oracle.polyds(step.coeffs, step.nderiv, step.t)
+        return StepOutput(op=step.op, value=_to_number_array(out, max(0, step.nderiv + 1)))
+
+    if isinstance(step, StepCoordsVectorsRquad):
+        for coefficient in (step.a, step.b, step.c):
+            polynomial_oracle.finite(coefficient)
+        first, second = sp.rquad(step.a, step.b, step.c)
+        return StepOutput(op=step.op, value={"root1": _to_number_array(first, 2), "root2": _to_number_array(second, 2)})
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

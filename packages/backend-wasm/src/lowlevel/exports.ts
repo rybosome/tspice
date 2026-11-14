@@ -895,6 +895,65 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_chbder(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    nderiv: number,
+    workspacePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbigr(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbint(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbval(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_polyds(
+    coeffsPtr: number,
+    ncoeff: number,
+    nderiv: number,
+    t: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rquad(
+    a: number,
+    b: number,
+    c: number,
+    root1Ptr: number,
+    root2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1843,6 +1902,65 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_chbder(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    nderiv: number,
+    workspacePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbigr(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbint(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    secondaryPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_chbval(
+    cpPtr: number,
+    ncoeff: number,
+    x2sPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_polyds(
+    coeffsPtr: number,
+    ncoeff: number,
+    nderiv: number,
+    t: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_rquad(
+    a: number,
+    b: number,
+    c: number,
+    root1Ptr: number,
+    root2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2262,6 +2380,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_chbder",
+  "_tspice_chbigr",
+  "_tspice_chbint",
+  "_tspice_chbval",
+  "_tspice_polyds",
+  "_tspice_rquad",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

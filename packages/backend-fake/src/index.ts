@@ -2392,6 +2392,26 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    // This fake intentionally does not model polynomial numerics.
+    chbder: () => {
+      throw new Error("Fake backend does not model chbder()");
+    },
+    chbigr: () => {
+      throw new Error("Fake backend does not model chbigr()");
+    },
+    chbint: () => {
+      throw new Error("Fake backend does not model chbint()");
+    },
+    chbval: () => {
+      throw new Error("Fake backend does not model chbval()");
+    },
+    polyds: () => {
+      throw new Error("Fake backend does not model polyds()");
+    },
+    rquad: () => {
+      throw new Error("Fake backend does not model rquad()");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

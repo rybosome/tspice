@@ -1,0 +1,242 @@
+[
+  {
+    "caseId": "coords-vectors-chbder-constant-and-zero",
+    "description": "chbder: constant-and-zero; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [7],
+        "x2s": [10, 4],
+        "x": 6,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [7],
+        "x2s": [10, 4],
+        "x": 10,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [7],
+        "x2s": [10, 4],
+        "x": 14,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [0],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+    "description": "chbder: distinct-basis-and-coefficient-order; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [1],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [0, 1],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [0, 0, 1],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [0, 0, 0, 1],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [1, 2, 3, 4, 5, 6],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbder-shifted-scaled-domain",
+    "description": "chbder: shifted-scaled-domain; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 8,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 10,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbder-domain-endpoints",
+    "description": "chbder: domain-endpoints; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 6,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 14,
+        "nderiv": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbder-scaled-coefficients",
+    "description": "chbder: scaled-coefficients; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2e100, -3.0000000000000002e100, 5e100, -7e100],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2e-100, -3e-100, 5e-100, -7e-100],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbder-scaled-domain-radius",
+    "description": "chbder: scaled-domain-radius; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [0, 1e100],
+        "x": 5e99,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [0, 1e-100],
+        "x": 5e-101,
+        "nderiv": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbder-negative-radius-orientation",
+    "description": "chbder: negative-radius-orientation; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, -4],
+        "x": 8,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, -4],
+        "x": 12,
+        "nderiv": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-chbder-derivative-order-and-zero-tail",
+    "description": "chbder: derivative-order-and-zero-tail; kernel-free actual outputs, every returned field or derivative compared with the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 0
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 1
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 3
+      },
+      {
+        "op": "coords-vectors.chbder",
+        "cp": [2, -3, 5, -7],
+        "x2s": [10, 4],
+        "x": 12,
+        "nderiv": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

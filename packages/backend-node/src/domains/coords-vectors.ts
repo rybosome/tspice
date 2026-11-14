@@ -15,9 +15,151 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertPolynomialNumber(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyPolynomialCoefficients(
+  value: unknown,
+  label: string,
+  allowEmpty: boolean,
+): number[] {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  const length = value.length;
+  if (
+    !Number.isSafeInteger(length) ||
+    length < 0 ||
+    length > 2147483647 ||
+    (!allowEmpty && length === 0)
+  )
+    throw new RangeError(`${label} has an unsupported coefficient count`);
+  // Coefficient getters must not be re-read during native/WASM marshaling.
+  const result: number[] = [];
+  for (let i = 0; i < length; i++) {
+    const entry: unknown = value[i];
+    assertPolynomialNumber(entry, `${label}[${i}]`);
+    result.push(entry);
+  }
+  return result;
+}
+
+function copyPolynomialTransform(
+  value: unknown,
+  label: string,
+): [number, number] {
+  if (!Array.isArray(value) || value.length !== 2)
+    throw new TypeError(`${label} must be a length-2 array`);
+  const midpoint: unknown = value[0];
+  const scale: unknown = value[1];
+  assertPolynomialNumber(midpoint, `${label}[0]`);
+  assertPolynomialNumber(scale, `${label}[1]`);
+  return [midpoint, scale];
+}
+
+function polynomialDerivativeCount(nderiv: number, chebyshev: boolean): number {
+  assertSpiceInt32(nderiv, "nderiv");
+  if (
+    (chebyshev && (nderiv < 0 || nderiv > 715827881)) ||
+    (!chebyshev && nderiv > 2147483646)
+  )
+    throw new RangeError("nderiv exceeds the supported derivative order");
+  return nderiv < 0 ? 0 : nderiv + 1;
+}
+
+function polynomialOutputNumber(value: unknown, label: string): number {
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function polynomialOutputArray(
+  value: unknown,
+  length: number,
+  label: string,
+): number[] {
+  if (!Array.isArray(value) || value.length !== length)
+    throw new TypeError(`${label} must be an array of length ${length}`);
+  const result: number[] = [];
+  for (let i = 0; i < length; i++)
+    result.push(polynomialOutputNumber(value[i], `${label}[${i}]`));
+  return result;
+}
+
+function polynomialOutputPair(value: unknown, label: string): [number, number] {
+  if (!Array.isArray(value) || value.length !== 2)
+    throw new TypeError(`${label} must be a length-2 array`);
+  return [
+    polynomialOutputNumber(value[0], `${label}[0]`),
+    polynomialOutputNumber(value[1], `${label}[1]`),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    chbder: (cp, x2s, x, nderiv) => {
+      const outputCount = polynomialDerivativeCount(nderiv, true);
+      const cpCopy = copyPolynomialCoefficients(cp, "chbder(cp)", false);
+      const transform = copyPolynomialTransform(x2s, "chbder(x2s)");
+      assertPolynomialNumber(x, "chbder(x)");
+      const out: unknown = native.chbder(cpCopy, transform, x, nderiv);
+      return polynomialOutputArray(out, outputCount, "chbder result");
+    },
+    chbigr: (cp, x2s, x) => {
+      const cpCopy = copyPolynomialCoefficients(cp, "chbigr(cp)", true);
+      const transform = copyPolynomialTransform(x2s, "chbigr(x2s)");
+      assertPolynomialNumber(x, "chbigr(x)");
+      const out: unknown = native.chbigr(cpCopy, transform, x);
+      invariant(isPlainObject(out), "Expected chbigr() to return an object");
+      return {
+        p: polynomialOutputNumber(out.p, "chbigr().p"),
+        itgrlp: polynomialOutputNumber(out.itgrlp, "chbigr().itgrlp"),
+      };
+    },
+    chbint: (cp, x2s, x) => {
+      const cpCopy = copyPolynomialCoefficients(cp, "chbint(cp)", false);
+      const transform = copyPolynomialTransform(x2s, "chbint(x2s)");
+      assertPolynomialNumber(x, "chbint(x)");
+      const out: unknown = native.chbint(cpCopy, transform, x);
+      invariant(isPlainObject(out), "Expected chbint() to return an object");
+      return {
+        p: polynomialOutputNumber(out.p, "chbint().p"),
+        dpdx: polynomialOutputNumber(out.dpdx, "chbint().dpdx"),
+      };
+    },
+    chbval: (cp, x2s, x) => {
+      const cpCopy = copyPolynomialCoefficients(cp, "chbval(cp)", false);
+      const transform = copyPolynomialTransform(x2s, "chbval(x2s)");
+      assertPolynomialNumber(x, "chbval(x)");
+      const out: unknown = native.chbval(cpCopy, transform, x);
+      return polynomialOutputNumber(out, "chbval result");
+    },
+    polyds: (coeffs, nderiv, t) => {
+      const outputCount = polynomialDerivativeCount(nderiv, false);
+      const coeffsCopy = copyPolynomialCoefficients(
+        coeffs,
+        "polyds(coeffs)",
+        true,
+      );
+      assertPolynomialNumber(t, "polyds(t)");
+      const out: unknown = native.polyds(coeffsCopy, nderiv, t);
+      return polynomialOutputArray(out, outputCount, "polyds result");
+    },
+    rquad: (a, b, c) => {
+      assertPolynomialNumber(a, "rquad(a)");
+      assertPolynomialNumber(b, "rquad(b)");
+      assertPolynomialNumber(c, "rquad(c)");
+      const out: unknown = native.rquad(a, b, c);
+      invariant(isPlainObject(out), "Expected rquad() to return an object");
+      return {
+        root1: polynomialOutputPair(out.root1, "rquad().root1"),
+        root2: polynomialOutputPair(out.root2, "rquad().root2"),
+      };
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(
