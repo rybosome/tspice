@@ -33,6 +33,22 @@ export type StepTimeEt2Utc = {
   prec: number;
 };
 
+export type StepTimeSpd = {
+  op: "time.spd";
+};
+
+export type StepTimeJ2000 = {
+  op: "time.j2000";
+};
+
+export type StepTimeJ1900 = {
+  op: "time.j1900";
+};
+
+export type StepTimeB1950 = {
+  op: "time.b1950";
+};
+
 export type StepTimeTkvrsn = {
   op: "time.tkvrsn";
   item: "TOOLKIT";
@@ -194,6 +210,26 @@ export type StepCoordsVectorsSphrec = {
   radius: number;
   colat: number;
   lon: number;
+};
+
+export type StepCoordsVectorsPi = {
+  op: "coords-vectors.pi";
+};
+
+export type StepCoordsVectorsTwopi = {
+  op: "coords-vectors.twopi";
+};
+
+export type StepCoordsVectorsHalfpi = {
+  op: "coords-vectors.halfpi";
+};
+
+export type StepCoordsVectorsDpr = {
+  op: "coords-vectors.dpr";
+};
+
+export type StepCoordsVectorsRpd = {
+  op: "coords-vectors.rpd";
 };
 
 export type StepCoordsVectorsVnorm = {
@@ -1292,6 +1328,10 @@ export type StepDskDskb02 = {
 export type WorkflowStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
+  | StepTimeSpd
+  | StepTimeJ2000
+  | StepTimeJ1900
+  | StepTimeB1950
   | StepTimeTkvrsn
   | StepTimeTimout
   | StepTimeDeltet
@@ -1317,6 +1357,11 @@ export type WorkflowStep =
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
   | StepCoordsVectorsSphrec
+  | StepCoordsVectorsPi
+  | StepCoordsVectorsTwopi
+  | StepCoordsVectorsHalfpi
+  | StepCoordsVectorsDpr
+  | StepCoordsVectorsRpd
   | StepCoordsVectorsVnorm
   | StepCoordsVectorsVhat
   | StepCoordsVectorsVdot
@@ -1486,6 +1531,10 @@ export type GfSearchWindowPayload = {
 export type StepOutput =
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
+  | { op: "time.spd"; value: number }
+  | { op: "time.j2000"; value: number }
+  | { op: "time.j1900"; value: number }
+  | { op: "time.b1950"; value: number }
   | { op: "time.tkvrsn"; value: string }
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
@@ -1525,6 +1574,11 @@ export type StepOutput =
       value: { radius: number; colat: number; lon: number };
     }
   | { op: "coords-vectors.sphrec"; value: Vector3 }
+  | { op: "coords-vectors.pi"; value: number }
+  | { op: "coords-vectors.twopi"; value: number }
+  | { op: "coords-vectors.halfpi"; value: number }
+  | { op: "coords-vectors.dpr"; value: number }
+  | { op: "coords-vectors.rpd"; value: number }
   | { op: "coords-vectors.vnorm"; value: number }
   | { op: "coords-vectors.vhat"; value: Vector3 }
   | { op: "coords-vectors.vdot"; value: number }

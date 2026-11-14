@@ -50,6 +50,38 @@ export function createTimeApi(native: NativeAddon): TimeApi {
   }
 
   return {
+    spd: () => {
+      const out = native.spd();
+      invariant(
+        Number.isFinite(out),
+        "Expected spd() to return a finite number",
+      );
+      return out;
+    },
+    j2000: () => {
+      const out = native.j2000();
+      invariant(
+        Number.isFinite(out),
+        "Expected j2000() to return a finite number",
+      );
+      return out;
+    },
+    j1900: () => {
+      const out = native.j1900();
+      invariant(
+        Number.isFinite(out),
+        "Expected j1900() to return a finite number",
+      );
+      return out;
+    },
+    b1950: () => {
+      const out = native.b1950();
+      invariant(
+        Number.isFinite(out),
+        "Expected b1950() to return a finite number",
+      );
+      return out;
+    },
     tkvrsn: (item) => {
       invariant(item === "TOOLKIT", `Unsupported tkvrsn item: ${item}`);
       const version = native.spiceVersion();

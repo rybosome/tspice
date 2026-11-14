@@ -23,6 +23,26 @@ class StepTimeEt2Utc:
 
 
 @dataclass(frozen=True)
+class StepTimeSpd:
+    op: Literal["time.spd"]
+
+
+@dataclass(frozen=True)
+class StepTimeJ2000:
+    op: Literal["time.j2000"]
+
+
+@dataclass(frozen=True)
+class StepTimeJ1900:
+    op: Literal["time.j1900"]
+
+
+@dataclass(frozen=True)
+class StepTimeB1950:
+    op: Literal["time.b1950"]
+
+
+@dataclass(frozen=True)
 class StepTimeTkvrsn:
     op: Literal["time.tkvrsn"]
     item: TkvrsnItem

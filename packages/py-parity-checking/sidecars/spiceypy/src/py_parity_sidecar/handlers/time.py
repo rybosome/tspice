@@ -16,6 +16,10 @@ from ..models import (
     StepTimeTimdefGet,
     StepTimeTimdefSet,
     StepTimeTimout,
+    StepTimeSpd,
+    StepTimeJ2000,
+    StepTimeJ1900,
+    StepTimeB1950,
     StepTimeTkvrsn,
     StepTimeTparse,
     StepTimeTpictr,
@@ -41,6 +45,18 @@ def run_time_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOu
     if isinstance(step, StepTimeEt2Utc):
         utc = str(sp.et2utc(step.et, step.format, step.prec))
         return StepOutput(op=step.op, value=utc)
+
+    if isinstance(step, StepTimeSpd):
+        return StepOutput(op=step.op, value=float(sp.spd()))
+
+    if isinstance(step, StepTimeJ2000):
+        return StepOutput(op=step.op, value=float(sp.j2000()))
+
+    if isinstance(step, StepTimeJ1900):
+        return StepOutput(op=step.op, value=float(sp.j1900()))
+
+    if isinstance(step, StepTimeB1950):
+        return StepOutput(op=step.op, value=float(sp.b1950()))
 
     if isinstance(step, StepTimeTkvrsn):
         if step.item != "TOOLKIT":

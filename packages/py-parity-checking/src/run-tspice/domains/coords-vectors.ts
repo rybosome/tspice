@@ -16,6 +16,11 @@ import type {
   StepCoordsVectorsVdot,
   StepCoordsVectorsVhat,
   StepCoordsVectorsVminus,
+  StepCoordsVectorsPi,
+  StepCoordsVectorsTwopi,
+  StepCoordsVectorsHalfpi,
+  StepCoordsVectorsDpr,
+  StepCoordsVectorsRpd,
   StepCoordsVectorsVnorm,
   StepCoordsVectorsVscl,
   StepCoordsVectorsVsub,
@@ -30,6 +35,11 @@ type CoordsVectorsStep =
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
   | StepCoordsVectorsSphrec
+  | StepCoordsVectorsPi
+  | StepCoordsVectorsTwopi
+  | StepCoordsVectorsHalfpi
+  | StepCoordsVectorsDpr
+  | StepCoordsVectorsRpd
   | StepCoordsVectorsVnorm
   | StepCoordsVectorsVhat
   | StepCoordsVectorsVdot
@@ -71,6 +81,21 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.pi":
+      return { op: step.op, value: context.spice.raw.pi() };
+
+    case "coords-vectors.twopi":
+      return { op: step.op, value: context.spice.raw.twopi() };
+
+    case "coords-vectors.halfpi":
+      return { op: step.op, value: context.spice.raw.halfpi() };
+
+    case "coords-vectors.dpr":
+      return { op: step.op, value: context.spice.raw.dpr() };
+
+    case "coords-vectors.rpd":
+      return { op: step.op, value: context.spice.raw.rpd() };
+
     case "coords-vectors.reclat": {
       const out = context.spice.raw.reclat(step.rectan);
       return { op: step.op, value: out };

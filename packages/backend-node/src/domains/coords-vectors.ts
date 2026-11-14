@@ -18,6 +18,46 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    pi: () => {
+      const out = native.pi();
+      invariant(
+        Number.isFinite(out),
+        "Expected pi() to return a finite number",
+      );
+      return out;
+    },
+    twopi: () => {
+      const out = native.twopi();
+      invariant(
+        Number.isFinite(out),
+        "Expected twopi() to return a finite number",
+      );
+      return out;
+    },
+    halfpi: () => {
+      const out = native.halfpi();
+      invariant(
+        Number.isFinite(out),
+        "Expected halfpi() to return a finite number",
+      );
+      return out;
+    },
+    dpr: () => {
+      const out = native.dpr();
+      invariant(
+        Number.isFinite(out),
+        "Expected dpr() to return a finite number",
+      );
+      return out;
+    },
+    rpd: () => {
+      const out = native.rpd();
+      invariant(
+        Number.isFinite(out),
+        "Expected rpd() to return a finite number",
+      );
+      return out;
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(
