@@ -8,6 +8,68 @@ Matrix3x3: TypeAlias = list[list[float]]
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsCyllat:
+    op: Literal["coords-vectors.cyllat"]
+    radius: float
+    lon: float
+    z: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsCylrec:
+    op: Literal["coords-vectors.cylrec"]
+    radius: float
+    lon: float
+    z: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsCylsph:
+    op: Literal["coords-vectors.cylsph"]
+    radius: float
+    lon: float
+    z: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsLatcyl:
+    op: Literal["coords-vectors.latcyl"]
+    radius: float
+    lon: float
+    lat: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsLatsph:
+    op: Literal["coords-vectors.latsph"]
+    radius: float
+    lon: float
+    lat: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsReccyl:
+    op: Literal["coords-vectors.reccyl"]
+    rectan: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsSphcyl:
+    op: Literal["coords-vectors.sphcyl"]
+    radius: float
+    colat: float
+    lon: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsSphlat:
+    op: Literal["coords-vectors.sphlat"]
+    radius: float
+    colat: float
+    lon: float
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3

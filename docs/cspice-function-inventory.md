@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -42,6 +42,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ckupf_c` | CK, Unload pointing file |
 | `cnmfrm_c` | Center name to associated frame |
 | `cvpool_c` | Check variable in the pool for update |
+| `cyllat_c` | Cylindrical to latitudinal |
+| `cylrec_c` | Cylindrical to rectangular |
+| `cylsph_c` | Cylindrical to spherical |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
 | `daffna_c` | DAF, find next array |
@@ -111,7 +114,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `kplfrm_c` | Kernel pool frame IDs |
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
+| `latcyl_c` | Latitudinal to cylindrical coordinates |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `latsph_c` | Latitudinal to spherical coordinates |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -123,6 +128,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
+| `reccyl_c` | Rectangular to cylindrical coordinates |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
@@ -140,6 +146,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
 | `size_c` | Size of a cell |
+| `sphcyl_c` | Spherical to cylindrical coordinates |
+| `sphlat_c` | Spherical to latitudinal coordinates |
 | `sphrec_c` | Spherical to rectangular coordinates |
 | `spkcls_c` | SPK, Close file |
 | `spkcov_c` | SPK coverage |
@@ -235,9 +243,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `copy_c` | Copy a SPICE cell |
 | `cpos_c` | Character position |
 | `cposr_c` | Character position, reverse |
-| `cyllat_c` | Cylindrical to latitudinal |
-| `cylrec_c` | Cylindrical to rectangular |
-| `cylsph_c` | Cylindrical to spherical |
 | `dafac_c` | DAF add comments |
 | `dafbbs_c` | DAF, begin backward search |
 | `dafcs_c` | DAF, continue search |
@@ -419,8 +424,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `j2100_c` | Julian Date of 2100 JAN 1.5 |
 | `jyear_c` | Seconds per julian year |
 | `lastnb_c` | Last non-blank character |
-| `latcyl_c` | Latitudinal to cylindrical coordinates |
-| `latsph_c` | Latitudinal to spherical coordinates |
 | `latsrf_c` | Latitudinal grid to surface points |
 | `lcase_c` | Convert to lowercase |
 | `ldpool_c` | Load variables from a kernel file into the pool |
@@ -519,7 +522,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `raxisa_c` | Rotation axis of a matrix |
 | `rdtext_c` | Read a line from a text file |
 | `recazl_c` | Rectangular coordinates to AZ/EL |
-| `reccyl_c` | Rectangular to cylindrical coordinates |
 | `recpgr_c` | Rectangular to planetographic |
 | `recrad_c` | Rectangular coordinates to RA and DEC |
 | `removc_c` | Remove an item from a character set |
@@ -551,8 +553,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `shelld_c` | Shell sort a double precision array |
 | `shelli_c` | Shell sort an integer array |
 | `spd_c` | Seconds per day |
-| `sphcyl_c` | Spherical to cylindrical coordinates |
-| `sphlat_c` | Spherical to latitudinal coordinates |
 | `spk14a_c` | SPK, add data to a type 14 segment |
 | `spk14b_c` | SPK, begin a type 14 segment |
 | `spk14e_c` | SPK, end a type 14 segment |

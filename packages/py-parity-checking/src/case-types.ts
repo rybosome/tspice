@@ -172,6 +172,60 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsCyllat = {
+  op: "coords-vectors.cyllat";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsCylrec = {
+  op: "coords-vectors.cylrec";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsCylsph = {
+  op: "coords-vectors.cylsph";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsLatcyl = {
+  op: "coords-vectors.latcyl";
+  radius: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsLatsph = {
+  op: "coords-vectors.latsph";
+  radius: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsReccyl = {
+  op: "coords-vectors.reccyl";
+  rectan: Vector3;
+};
+
+export type StepCoordsVectorsSphcyl = {
+  op: "coords-vectors.sphcyl";
+  radius: number;
+  colat: number;
+  lon: number;
+};
+
+export type StepCoordsVectorsSphlat = {
+  op: "coords-vectors.sphlat";
+  radius: number;
+  colat: number;
+  lon: number;
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1367,14 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsCyllat
+  | StepCoordsVectorsCylrec
+  | StepCoordsVectorsCylsph
+  | StepCoordsVectorsLatcyl
+  | StepCoordsVectorsLatsph
+  | StepCoordsVectorsReccyl
+  | StepCoordsVectorsSphcyl
+  | StepCoordsVectorsSphlat
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1546,35 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | {
+      op: "coords-vectors.cyllat";
+      value: { radius: number; lon: number; lat: number };
+    }
+  | { op: "coords-vectors.cylrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.cylsph";
+      value: { radius: number; colat: number; lon: number };
+    }
+  | {
+      op: "coords-vectors.latcyl";
+      value: { radius: number; lon: number; z: number };
+    }
+  | {
+      op: "coords-vectors.latsph";
+      value: { radius: number; colat: number; lon: number };
+    }
+  | {
+      op: "coords-vectors.reccyl";
+      value: { radius: number; lon: number; z: number };
+    }
+  | {
+      op: "coords-vectors.sphcyl";
+      value: { radius: number; lon: number; z: number };
+    }
+  | {
+      op: "coords-vectors.sphlat";
+      value: { radius: number; lon: number; lat: number };
+    }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

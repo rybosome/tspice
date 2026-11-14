@@ -9,6 +9,14 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsCyllat,
+    StepCoordsVectorsCylrec,
+    StepCoordsVectorsCylsph,
+    StepCoordsVectorsLatcyl,
+    StepCoordsVectorsLatsph,
+    StepCoordsVectorsReccyl,
+    StepCoordsVectorsSphcyl,
+    StepCoordsVectorsSphlat,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -51,6 +59,38 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsCyllat):
+        radius, lon, lat = sp.cyllat(step.radius, step.lon, step.z)
+        return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})
+
+    if isinstance(step, StepCoordsVectorsCylrec):
+        out = sp.cylrec(step.radius, step.lon, step.z)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsCylsph):
+        radius, colat, lon = sp.cylsph(step.radius, step.lon, step.z)
+        return StepOutput(op=step.op, value={"radius": float(radius), "colat": float(colat), "lon": float(lon)})
+
+    if isinstance(step, StepCoordsVectorsLatcyl):
+        radius, lon, z = sp.latcyl(step.radius, step.lon, step.lat)
+        return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "z": float(z)})
+
+    if isinstance(step, StepCoordsVectorsLatsph):
+        radius, colat, lon = sp.latsph(step.radius, step.lon, step.lat)
+        return StepOutput(op=step.op, value={"radius": float(radius), "colat": float(colat), "lon": float(lon)})
+
+    if isinstance(step, StepCoordsVectorsReccyl):
+        radius, lon, z = sp.reccyl(step.rectan)
+        return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "z": float(z)})
+
+    if isinstance(step, StepCoordsVectorsSphcyl):
+        radius, lon, z = sp.sphcyl(step.radius, step.colat, step.lon)
+        return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "z": float(z)})
+
+    if isinstance(step, StepCoordsVectorsSphlat):
+        radius, lon, lat = sp.sphlat(step.radius, step.colat, step.lon)
+        return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

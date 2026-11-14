@@ -1,0 +1,459 @@
+{
+  "schemaVersion": 1,
+  "batch": "a05-cylindrical-coordinates",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/test/cylindrical-coordinates.test.ts",
+    "packages/backend-wasm/test/cylindrical-allocations.test.ts",
+    "packages/backend-node/test/cylindrical-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/test/cylindrical-overflow.test.ts"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "cyllat_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cyllat_c.html",
+      "semantics": "Cylindrical (radius,lon,z) to latitudinal {radius,lon,lat}; preserves input longitude and uses atan2(z,radius), allowing nonstandard latitude for negative radius. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-cyllat-mixed-signs",
+          "coverage": ["success", "edge"],
+          "observes": "cyllat: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cyllat-axis-and-origin",
+          "coverage": ["success", "edge"],
+          "observes": "cyllat: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cyllat-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "cyllat: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cyllat-unwrapped-longitude",
+          "coverage": ["success", "edge"],
+          "observes": "cyllat: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cyllat-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "cyllat: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cyllat -> Node typed adapter -> registered native handler under global mutex -> tspice_cyllat shared C shim -> cyllat_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cyllat -> WASM typed adapter -> configured/binary _tspice_cyllat -> tspice_cyllat shared C shim -> cyllat_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "cylrec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cylrec_c.html",
+      "semantics": "Cylindrical (radius,lon,z) to Cartesian [x,y,z]; preserves signs and does not normalize input angle/radius. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-cylrec-mixed-signs",
+          "coverage": ["success", "edge"],
+          "observes": "cylrec: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylrec-axis-and-origin",
+          "coverage": ["success", "edge"],
+          "observes": "cylrec: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylrec-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "cylrec: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylrec-unwrapped-longitude",
+          "coverage": ["success", "edge"],
+          "observes": "cylrec: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylrec-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "cylrec: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cylrec -> Node typed adapter -> registered native handler under global mutex -> tspice_cylrec shared C shim -> cylrec_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cylrec -> WASM typed adapter -> configured/binary _tspice_cylrec -> tspice_cylrec shared C shim -> cylrec_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "cylsph_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cylsph_c.html",
+      "semantics": "Cylindrical (radius,lon,z) to spherical {radius,colat,lon}; preserves longitude and uses atan2(radius,z), including negative colatitude. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-cylsph-mixed-signs",
+          "coverage": ["success", "edge"],
+          "observes": "cylsph: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylsph-axis-and-origin",
+          "coverage": ["success", "edge"],
+          "observes": "cylsph: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylsph-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "cylsph: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylsph-unwrapped-longitude",
+          "coverage": ["success", "edge"],
+          "observes": "cylsph: unwrapped-longitude; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-cylsph-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "cylsph: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cylsph -> Node typed adapter -> registered native handler under global mutex -> tspice_cylsph shared C shim -> cylsph_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cylsph -> WASM typed adapter -> configured/binary _tspice_cylsph -> tspice_cylsph shared C shim -> cylsph_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "latcyl_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/latcyl_c.html",
+      "semantics": "Latitudinal (radius,lon,lat) to cylindrical {radius,lon,z}; longitude passes through, cylindrical radius may be negative for unrestricted latitude/radius. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-latcyl-mixed-signs",
+          "coverage": ["success", "edge"],
+          "observes": "latcyl: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latcyl-zero-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "latcyl: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latcyl-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "latcyl: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latcyl-unwrapped-angles",
+          "coverage": ["success", "edge"],
+          "observes": "latcyl: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latcyl-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "latcyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.latcyl -> Node typed adapter -> registered native handler under global mutex -> tspice_latcyl shared C shim -> latcyl_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.latcyl -> WASM typed adapter -> configured/binary _tspice_latcyl -> tspice_latcyl shared C shim -> latcyl_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "latsph_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/latsph_c.html",
+      "semantics": "Latitudinal (radius,lon,lat) to spherical {radius,colat,lon}; colat=pi/2-lat with radius and longitude unchanged. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-latsph-mixed-signs",
+          "coverage": ["success", "edge"],
+          "observes": "latsph: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latsph-zero-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "latsph: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latsph-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "latsph: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latsph-unwrapped-angles",
+          "coverage": ["success", "edge"],
+          "observes": "latsph: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-latsph-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "latsph: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.latsph -> Node typed adapter -> registered native handler under global mutex -> tspice_latsph shared C shim -> latsph_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.latsph -> WASM typed adapter -> configured/binary _tspice_latsph -> tspice_latsph shared C shim -> latsph_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "reccyl_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/reccyl_c.html",
+      "semantics": "Readonly Cartesian three-vector to cylindrical {radius,lon,z}; nonnegative radius, longitude in [0,2pi] with zero on the axis, z unchanged. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-reccyl-four-quadrants",
+          "coverage": ["success", "edge"],
+          "observes": "reccyl: four-quadrants; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-reccyl-axis-and-origin",
+          "coverage": ["success", "edge"],
+          "observes": "reccyl: axis-and-origin; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-reccyl-longitude-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "reccyl: longitude-boundaries; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-reccyl-asymmetric-components",
+          "coverage": ["success", "edge"],
+          "observes": "reccyl: asymmetric-components; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-reccyl-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "reccyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.reccyl -> Node typed adapter -> registered native handler under global mutex -> tspice_reccyl shared C shim -> reccyl_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.reccyl -> WASM typed adapter -> configured/binary _tspice_reccyl -> tspice_reccyl shared C shim -> reccyl_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "sphcyl_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sphcyl_c.html",
+      "semantics": "Spherical (radius,colat,lon) to cylindrical {radius,lon,z}; preserves longitude and unrestricted signs/angles. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-sphcyl-mixed-signs",
+          "coverage": ["success", "edge"],
+          "observes": "sphcyl: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphcyl-zero-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "sphcyl: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphcyl-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "sphcyl: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphcyl-unwrapped-angles",
+          "coverage": ["success", "edge"],
+          "observes": "sphcyl: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphcyl-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "sphcyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.sphcyl -> Node typed adapter -> registered native handler under global mutex -> tspice_sphcyl shared C shim -> sphcyl_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.sphcyl -> WASM typed adapter -> configured/binary _tspice_sphcyl -> tspice_sphcyl shared C shim -> sphcyl_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "sphlat_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sphlat_c.html",
+      "semantics": "Spherical (radius,colat,lon) to latitudinal {radius,lon,lat}; lat=pi/2-colat with radius and longitude unchanged. Distances retain caller units, angles are radians. Inputs must be finite JS numbers; no kernel, indexing, capacity or handle dependency.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-sphlat-mixed-signs",
+          "coverage": ["success", "edge"],
+          "observes": "sphlat: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphlat-zero-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "sphlat: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphlat-negative-radius",
+          "coverage": ["success", "edge"],
+          "observes": "sphlat: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphlat-unwrapped-angles",
+          "coverage": ["success", "edge"],
+          "observes": "sphlat: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        },
+        {
+          "caseId": "coords-vectors-sphlat-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "sphlat: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine. Every actual raw output scalar/vector component is retained by the dispatcher and compared with the corresponding live SpiceyPy routine, preserving object field/array order semantics."
+        }
+      ],
+      "edgeAssessment": "Mixed signs, negative radius, unrestricted angles/longitudes, axes/origin/poles and scaled magnitudes distinguish input ordering and normalization. Focused tests supplement the live comparisons with scaled tiny/huge radii, complete conversion workflows, retained output ownership and input nonmutation. For cyllat/cylsph/reccyl, the focused live overflow test explicitly compares signed maximum-double inputs and finite recovery controls against locked SpiceyPy via scoped JSON-safe nonfinite classification; the ordinary workflow JSON cannot carry Infinity.",
+      "errorAssessment": "NAIF documents these routines as error-free for proper inputs. No fabricated scientific error scenario. TypeScript-specific finite scalar and exact finite vector validation is tested on both real backends, including subsequent recovery. Finite input can produce norm overflow; no extra finite-output restriction redefines CSPICE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
+      "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
+      "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.sphlat -> Node typed adapter -> registered native handler under global mutex -> tspice_sphlat shared C shim -> sphlat_c; all output fields copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.sphlat -> WASM typed adapter -> configured/binary _tspice_sphlat -> tspice_sphlat shared C shim -> sphlat_c; all output fields copied and propagated.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Complete implementation and semantic review; current source-bound local and canonical CI verification pending."
+}

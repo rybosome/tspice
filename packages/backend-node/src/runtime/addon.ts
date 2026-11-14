@@ -529,6 +529,39 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  cyllat(
+    radius: number,
+    lon: number,
+    z: number,
+  ): { radius: number; lon: number; lat: number };
+  cylrec(radius: number, lon: number, z: number): number[];
+  cylsph(
+    radius: number,
+    lon: number,
+    z: number,
+  ): { radius: number; colat: number; lon: number };
+  latcyl(
+    radius: number,
+    lon: number,
+    lat: number,
+  ): { radius: number; lon: number; z: number };
+  latsph(
+    radius: number,
+    lon: number,
+    lat: number,
+  ): { radius: number; colat: number; lon: number };
+  reccyl(rect: readonly number[]): { radius: number; lon: number; z: number };
+  sphcyl(
+    radius: number,
+    colat: number,
+    lon: number,
+  ): { radius: number; lon: number; z: number };
+  sphlat(
+    radius: number,
+    colat: number,
+    lon: number,
+  ): { radius: number; lon: number; lat: number };
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

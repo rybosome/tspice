@@ -1,5 +1,7 @@
 #include "coords_vectors.h"
 
+#include <cmath>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +9,233 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static Napi::Object Cyllat(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cyllat() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+  const double radius = info[0].As<Napi::Number>().DoubleValue();
+  const double lon = info[1].As<Napi::Number>().DoubleValue();
+  const double z = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(radius) || !std::isfinite(lon) || !std::isfinite(z)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cyllat() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_cyllat(radius, lon, z, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling cyllat", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("radius", Napi::Number::New(env, values[0]));
+  out.Set("lon", Napi::Number::New(env, values[1]));
+  out.Set("lat", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Array Cylrec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cylrec() expects three finite numbers"));
+    return Napi::Array::New(env);
+  }
+  const double radius = info[0].As<Napi::Number>().DoubleValue();
+  const double lon = info[1].As<Napi::Number>().DoubleValue();
+  const double z = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(radius) || !std::isfinite(lon) || !std::isfinite(z)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cylrec() expects three finite numbers"));
+    return Napi::Array::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_cylrec(radius, lon, z, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling cylrec", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, values, 3);
+}
+
+static Napi::Object Cylsph(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cylsph() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+  const double radius = info[0].As<Napi::Number>().DoubleValue();
+  const double lon = info[1].As<Napi::Number>().DoubleValue();
+  const double z = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(radius) || !std::isfinite(lon) || !std::isfinite(z)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cylsph() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_cylsph(radius, lon, z, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling cylsph", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("radius", Napi::Number::New(env, values[0]));
+  out.Set("colat", Napi::Number::New(env, values[1]));
+  out.Set("lon", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Object Latcyl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "latcyl() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+  const double radius = info[0].As<Napi::Number>().DoubleValue();
+  const double lon = info[1].As<Napi::Number>().DoubleValue();
+  const double lat = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(radius) || !std::isfinite(lon) || !std::isfinite(lat)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "latcyl() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_latcyl(radius, lon, lat, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling latcyl", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("radius", Napi::Number::New(env, values[0]));
+  out.Set("lon", Napi::Number::New(env, values[1]));
+  out.Set("z", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Object Latsph(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "latsph() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+  const double radius = info[0].As<Napi::Number>().DoubleValue();
+  const double lon = info[1].As<Napi::Number>().DoubleValue();
+  const double lat = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(radius) || !std::isfinite(lon) || !std::isfinite(lat)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "latsph() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_latsph(radius, lon, lat, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling latsph", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("radius", Napi::Number::New(env, values[0]));
+  out.Set("colat", Napi::Number::New(env, values[1]));
+  out.Set("lon", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Object Reccyl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "reccyl(rect) expects one vector"));
+    return Napi::Object::New(env);
+  }
+  double rect[3] = {0.0, 0.0, 0.0};
+  if (!tspice_backend_node::ReadVec3(env, info[0], rect, "reccyl(rect)")) return Napi::Object::New(env);
+  if (!std::isfinite(rect[0]) || !std::isfinite(rect[1]) || !std::isfinite(rect[2])) {
+    ThrowSpiceError(Napi::TypeError::New(env, "reccyl(rect) must contain three finite numbers"));
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_reccyl(rect, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling reccyl", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("radius", Napi::Number::New(env, values[0]));
+  out.Set("lon", Napi::Number::New(env, values[1]));
+  out.Set("z", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Object Sphcyl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sphcyl() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+  const double radius = info[0].As<Napi::Number>().DoubleValue();
+  const double colat = info[1].As<Napi::Number>().DoubleValue();
+  const double lon = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(radius) || !std::isfinite(colat) || !std::isfinite(lon)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sphcyl() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_sphcyl(radius, colat, lon, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sphcyl", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("radius", Napi::Number::New(env, values[0]));
+  out.Set("lon", Napi::Number::New(env, values[1]));
+  out.Set("z", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Object Sphlat(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() || !info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sphlat() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+  const double radius = info[0].As<Napi::Number>().DoubleValue();
+  const double colat = info[1].As<Napi::Number>().DoubleValue();
+  const double lon = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(radius) || !std::isfinite(colat) || !std::isfinite(lon)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sphlat() expects three finite numbers"));
+    return Napi::Object::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_sphlat(radius, colat, lon, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sphlat", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("radius", Napi::Number::New(env, values[0]));
+  out.Set("lon", Napi::Number::New(env, values[1]));
+  out.Set("lat", Napi::Number::New(env, values[2]));
+  return out;
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +801,14 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "cyllat", Napi::Function::New(env, Cyllat), __func__)) return;
+  if (!SetExportChecked(env, exports, "cylrec", Napi::Function::New(env, Cylrec), __func__)) return;
+  if (!SetExportChecked(env, exports, "cylsph", Napi::Function::New(env, Cylsph), __func__)) return;
+  if (!SetExportChecked(env, exports, "latcyl", Napi::Function::New(env, Latcyl), __func__)) return;
+  if (!SetExportChecked(env, exports, "latsph", Napi::Function::New(env, Latsph), __func__)) return;
+  if (!SetExportChecked(env, exports, "reccyl", Napi::Function::New(env, Reccyl), __func__)) return;
+  if (!SetExportChecked(env, exports, "sphcyl", Napi::Function::New(env, Sphcyl), __func__)) return;
+  if (!SetExportChecked(env, exports, "sphlat", Napi::Function::New(env, Sphlat), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

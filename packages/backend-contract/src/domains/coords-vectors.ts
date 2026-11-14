@@ -8,6 +8,131 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Convert cylindrical coordinates to latitudinal coordinates.
+   *
+   * Input radius is distance from the Z axis; z is height above the XY plane.
+   * Longitude passes through unchanged. Latitude is atan2(z, radius),
+   * in [-pi, pi]; radius and latitude are zero at the origin.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cyllat_c.html
+   */
+  cyllat(
+    radius: number,
+    lon: number,
+    z: number,
+  ): { radius: number; lon: number; lat: number };
+
+  /**
+   * Convert cylindrical coordinates to a rectangular [x, y, z] vector.
+   *
+   * Input radius is distance from the Z axis; z is height above the XY plane.
+   * Returns a new independent vector. Negative radius retains CSPICE behavior.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cylrec_c.html
+   */
+  cylrec(radius: number, lon: number, z: number): SpiceVector3;
+
+  /**
+   * Convert cylindrical coordinates to spherical coordinates.
+   *
+   * Input radius is distance from the Z axis; z is height above the XY plane.
+   * Longitude passes through unchanged. Colatitude is atan2(radius, z),
+   * in [-pi, pi]; radius and colatitude are zero at the origin.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cylsph_c.html
+   */
+  cylsph(
+    radius: number,
+    lon: number,
+    z: number,
+  ): { radius: number; colat: number; lon: number };
+
+  /**
+   * Convert latitudinal coordinates to cylindrical coordinates.
+   *
+   * Input radius is distance from the origin. Output radius is distance
+   * from the Z axis and z is height above the XY plane. Longitude passes
+   * through unchanged; negative radii and unrestricted angles are accepted.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/latcyl_c.html
+   */
+  latcyl(
+    radius: number,
+    lon: number,
+    lat: number,
+  ): { radius: number; lon: number; z: number };
+
+  /**
+   * Convert latitudinal coordinates to spherical coordinates.
+   *
+   * Radius and longitude pass through unchanged. Colatitude is pi/2 - lat.
+   * Negative radii and unrestricted angles are accepted without normalization.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/latsph_c.html
+   */
+  latsph(
+    radius: number,
+    lon: number,
+    lat: number,
+  ): { radius: number; colat: number; lon: number };
+
+  /**
+   * Convert a rectangular [x, y, z] vector to cylindrical coordinates.
+   *
+   * Output radius is distance from the Z axis; z preserves the input height.
+   * Longitude is in [0, 2*pi] and is zero on the Z axis. Input must contain
+   * exactly three finite numbers; it is not modified.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/reccyl_c.html
+   */
+  reccyl(rect: SpiceVector3): { radius: number; lon: number; z: number };
+
+  /**
+   * Convert spherical coordinates to cylindrical coordinates.
+   *
+   * Input radius is distance from the origin. Output radius is distance
+   * from the Z axis and z is height above the XY plane. Longitude passes
+   * through unchanged; negative radii and unrestricted angles are accepted.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sphcyl_c.html
+   */
+  sphcyl(
+    radius: number,
+    colat: number,
+    lon: number,
+  ): { radius: number; lon: number; z: number };
+
+  /**
+   * Convert spherical coordinates to latitudinal coordinates.
+   *
+   * Radius and longitude pass through unchanged. Latitude is pi/2 - colat.
+   * Negative radii and unrestricted angles are accepted without normalization.
+   * Angles are radians; distances use the same units throughout. Finite
+   * inputs are required. CSPICE is error-free; unrepresentable results may
+   * overflow. No kernels are needed, and no angles are normalized unless stated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sphlat_c.html
+   */
+  sphlat(
+    radius: number,
+    colat: number,
+    lon: number,
+  ): { radius: number; lon: number; lat: number };
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */
