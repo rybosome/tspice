@@ -113,6 +113,9 @@ export function dispatchStep(
     case "file-io.dafbfs":
     case "file-io.daffna":
     case "file-io.dasopr":
+    case "file-io.dasac":
+    case "file-io.dasdc":
+    case "file-io.dasec":
     case "file-io.dasonw":
     case "file-io.dasops":
     case "file-io.dasopw":

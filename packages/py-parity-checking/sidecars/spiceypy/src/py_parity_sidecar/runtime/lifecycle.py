@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import das_comment_oracle
+
 from .context import SidecarRuntimeContext, register_default_finalizers
 
 
@@ -51,7 +53,7 @@ def _close_file_io_handles_best_effort(context: SidecarRuntimeContext) -> None:
             if entry.closeWith == "dafcls":
                 sp.dafcls(entry.handle)
             else:
-                sp.dascls(entry.handle)
+                das_comment_oracle.close(entry.handle)
             entry.isOpen = False
         except BaseException:
             # Keep the open marker if native close fails; process teardown is

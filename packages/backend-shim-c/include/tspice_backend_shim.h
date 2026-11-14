@@ -129,6 +129,10 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes);
 // --- DAS -------------------------------------------------------------------
 
 // Full N0067 DAS name/header byte capacities, including the C terminator.
+#define TSPICE_DAS_COMMENT_BYTES (256 * 1024 * 1024)
+int tspice_dasac(int handle, int n, int width, const unsigned char *rows, int room, char *err, int errMaxBytes);
+int tspice_dasdc(int handle, char *err, int errMaxBytes);
+int tspice_dasec(int handle, int rows, int width, unsigned char *out, int room, int *n, int *done, char *err, int errMaxBytes);
 #define TSPICE_DAS_PATH_BYTES 256
 #define TSPICE_DAS_ID_BYTES 9
 #define TSPICE_DAS_IFNAME_BYTES 61

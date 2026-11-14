@@ -111,6 +111,27 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dasac(
+    h: number,
+    n: number,
+    w: number,
+    data: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasdc(h: number, err: number, errMaxBytes: number): number;
+  _tspice_dasec(
+    h: number,
+    rows: number,
+    w: number,
+    data: number,
+    room: number,
+    n: number,
+    done: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_dasonw(
     path: number,
     ftype: number,
@@ -2219,6 +2240,9 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dafcls",
   "_tspice_dafbfs",
   "_tspice_daffna",
+  "_tspice_dasac",
+  "_tspice_dasdc",
+  "_tspice_dasec",
   "_tspice_dasonw",
   "_tspice_dasops",
   "_tspice_dasopw",

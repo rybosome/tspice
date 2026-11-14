@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 171,
-    planned: 478,
+    implemented: 174,
+    planned: 475,
     excluded: 3,
-    caseFiles: 171,
-    scenarios: 1155,
+    caseFiles: 174,
+    scenarios: 1198,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -446,7 +446,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 9);
+  assert.equal(ledger.audit.expansionRoutines, 12);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -729,4 +729,27 @@ test("historical executions remain visible but cannot establish current verifica
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.throws(f.build, /missing local live verification/);
+});
+
+test("DASEC extraction needs reachable linked scientific and original conversion calls", (t) => {
+  const f = fixture(t);
+  const row = f.build().routines.find((r) => r.routine === "dasec_c");
+  for (const backend of ["node", "wasm"]) {
+    assert.equal(row.mapping[backend].classification, "alias-or-composed");
+    assert.ok(!row.mapping[backend].cspiceEntrypoints.includes("dasec_c"));
+  }
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const calls of [
+    ["dasec_(&h, &rows, count, out, &completed, width - 1)"],
+    ['dasioc_("READ", &unit, &rec, record, 4, 1024)'],
+    ['zzddhhlu_(&h, "DAS", &lock, &unit, 3)'],
+    [
+      "F2C_ConvertTrStrArr(*count, width, out)",
+      "F2C_ConvertTrStrArr(count, width, (char *)out)",
+    ],
+  ]) {
+    for (const call of calls) f.edit(source, call, "0 /* " + call + " */");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.dasec/);
+    for (const call of calls) f.edit(source, "0 /* " + call + " */", call);
+  }
 });

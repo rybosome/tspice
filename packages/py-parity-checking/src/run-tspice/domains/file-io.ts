@@ -9,6 +9,9 @@ import type {
   StepFileIoDafcls,
   StepFileIoDaffna,
   StepFileIoDafopr,
+  StepFileIoDasac,
+  StepFileIoDasdc,
+  StepFileIoDasec,
   StepFileIoDasonw,
   StepFileIoDasops,
   StepFileIoDasopw,
@@ -42,6 +45,9 @@ type FileIoStep =
   | StepFileIoDafbfs
   | StepFileIoDaffna
   | StepFileIoDasopr
+  | StepFileIoDasac
+  | StepFileIoDasdc
+  | StepFileIoDasec
   | StepFileIoDasonw
   | StepFileIoDasops
   | StepFileIoDasopw
@@ -160,6 +166,26 @@ export function runFileIoStep(
       };
     }
 
+    case "file-io.dasac":
+      context.spice.raw.dasac(
+        requireHandleState(context, step.handleId).handle,
+        step.lines,
+      );
+      return { op: step.op, value: null };
+    case "file-io.dasdc":
+      context.spice.raw.dasdc(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    case "file-io.dasec":
+      return {
+        op: step.op,
+        value: context.spice.raw.dasec(
+          requireHandleState(context, step.handleId).handle,
+          step.bufsiz,
+          step.buffln,
+        ),
+      };
     case "file-io.dasonw":
     case "file-io.dasops":
     case "file-io.dasopw": {

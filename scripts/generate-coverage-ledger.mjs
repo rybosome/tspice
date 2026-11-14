@@ -445,11 +445,17 @@ export function buildLedger(root = defaultRoot, options = {}) {
       const key = `${fromFile}:${symbol}`;
       if (seen.has(key)) return;
       seen.add(key);
-      if (symbol.endsWith("_c")) {
+      const definition = shim.resolve(symbol, fromFile);
+      const dasExtraction =
+        symbols.includes("tspice_dasec") &&
+        !definition &&
+        ["dasec_", "dasioc_", "zzddhhlu_", "F2C_ConvertTrStrArr"].includes(
+          symbol,
+        );
+      if (symbol.endsWith("_c") || dasExtraction) {
         result.add(symbol);
         return;
       }
-      const definition = shim.resolve(symbol, fromFile);
       for (const call of definition?.calls ?? [])
         visit(call, definition.evidence.file);
     }

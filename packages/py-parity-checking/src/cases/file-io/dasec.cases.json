@@ -1,0 +1,988 @@
+[
+  {
+    "caseId": "file-io-dasec-empty",
+    "description": "Repeated initial extraction of a reserved but empty DAS returns zero rows and done.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 2
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-full-final",
+    "description": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["a", "b", "c", "d"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 4,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-partial-final",
+    "description": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["head", "line", "tail"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": 5
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 5,
+        "buffln": 5
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 3,
+        "buffln": 5
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-blank-order",
+    "description": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["", "", " s", " "]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": 3
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-changing-width",
+    "description": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["x", "xy", "xyz", "xyzz"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": 4
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 5
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-default-width",
+    "description": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+          "x"
+        ]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-across-record",
+    "description": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "a",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "z"
+        ]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 2061
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 2
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-terminating-boundary",
+    "description": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 1024
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 1024
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-read-aliases",
+    "description": "Two open read tokens advance one cursor; closing one link preserves the remaining page position.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["1", "2", "3"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "alias",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "alias",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "alias",
+        "bufsiz": 2,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "alias",
+        "bufsiz": 3,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "alias"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-interleaved",
+    "description": "Interleave two different physical files and observe independent pages and EOF.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["a1", "a2", "a3"]
+      },
+      {
+        "op": "file-io.dasonw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-b.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS b",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "b",
+        "lines": ["b1", "b2"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-b.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "b",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "b",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-low-close-partial",
+    "description": "Close an incomplete read with DASLLC and observe row one again after reopening.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["first", "second", "third"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-writer-reopen",
+    "description": "Read on a writable claim, close the partial extraction, append after reopening and read the full new area.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["one", "two"]
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["three"]
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 3,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasec-zero-count",
+    "description": "Observe the genuine signed-capacity diagnostic for this live DAS input.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 0,
+        "buffln": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARGUMENT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasec-negative-count",
+    "description": "Observe the genuine signed-capacity diagnostic for this live DAS input.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": -8,
+        "buffln": 12
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARGUMENT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasec-width-one",
+    "description": "Observe the genuine signed-capacity diagnostic for this live DAS input.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 3,
+        "buffln": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasec-negative-width",
+    "description": "Observe the genuine signed-capacity diagnostic for this live DAS input.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": -9
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasec-width-before-count",
+    "description": "Observe the genuine signed-capacity diagnostic for this live DAS input.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": -3,
+        "buffln": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasec-narrow-second-row",
+    "description": "The pinned long message uses the page-relative row number when its second output row is too short.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["x", "abcd"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 2,
+        "buffln": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["COMMENTTOOLONG"]
+    }
+  }
+]

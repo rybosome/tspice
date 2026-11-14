@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from .. import das_comment_oracle
+
 from ..models import CaseRequest, StepOutput, WorkflowStep
 from ..runtime import SidecarRuntimeContext
 from .cells_windows import run_cells_windows_step
@@ -82,6 +84,8 @@ def _run_step(
 
 
 def run_workflow(req: CaseRequest, context: SidecarRuntimeContext) -> list[StepOutput]:
+    if any(step.op == "file-io.dasec" for step in req.workflow):
+        das_comment_oracle.prepare()
     outputs: list[StepOutput] = []
     for step in req.workflow:
         outputs.append(_run_step(step, context))

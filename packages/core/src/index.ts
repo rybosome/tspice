@@ -1,4 +1,7 @@
 export {
+  dasCommentTable,
+  dasCommentPageBytes,
+  dasCommentPage,
   dasFileTarget,
   dasText,
   decodeDasSummary,

@@ -386,6 +386,14 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+| Raw call                         | CSPICE entry                                                                            | Observable effect                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `dasac(handle, lines)`           | `dasac_c`                                                                               | Append complete printable comment rows to an owned DAS writer.  |
+| `dasdc(handle)`                  | `dasdc_c`                                                                               | Remove all comment records and preserve logical data addresses. |
+| `dasec(handle, bufsiz, buffln?)` | Traced N0067 `dasec_`, actual physical record reader and original defined-row converter | Return `{ n, lines, done }` for the shared per-file cursor.     |
+
+The first DAS writer can have the same native ID as N0067's private no-record sentinel. The adapter reads that writer's actual comment records. [Cursor handling and file-format evidence](step8-das-comments.md)
+
 C04 exposes actual DAS writer, scratch and metadata routes. [Named/scratch DAS lifecycle, field widths and low-close behavior](step8-das-lifecycle.md)
 
 | Raw method | CSPICE     | Result or effect                                                                                                                                           |

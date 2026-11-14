@@ -554,7 +554,8 @@
         "file-io-dlacls-audit-empty-closed-writer",
         "file-io-dlacls-double-close-error"
       ],
-      "observation": "Both complete required lanes passed locally on 6ab9b286f62c7a2411fdfc52f8624559637231e1. JavaScript: 2,526 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 6ab9b286f62c7a2411fdfc52f8624559637231e1. JavaScript: 2,526 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c04-6ab9b286-wasm",
@@ -593,7 +594,8 @@
         "file-io-dlacls-audit-empty-closed-writer",
         "file-io-dlacls-double-close-error"
       ],
-      "observation": "Both complete required lanes passed locally on 6ab9b286f62c7a2411fdfc52f8624559637231e1. JavaScript: 2,526 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 6ab9b286f62c7a2411fdfc52f8624559637231e1. JavaScript: 2,526 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c04-6ab9b286-node",
@@ -634,7 +636,8 @@
       ],
       "commit": "6ab9b286f62c7a2411fdfc52f8624559637231e1",
       "url": "https://github.com/rybosome/tspice/actions/runs/43570988079/job/132375119005",
-      "observation": "Inspected successful Linux Node 22 native-required job 132375119005 on 6ab9b286f62c7a2411fdfc52f8624559637231e1: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132375119005 on 6ab9b286f62c7a2411fdfc52f8624559637231e1: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c04-6ab9b286-wasm",
@@ -675,7 +678,168 @@
       ],
       "commit": "6ab9b286f62c7a2411fdfc52f8624559637231e1",
       "url": "https://github.com/rybosome/tspice/actions/runs/43570988079/job/132375119005",
-      "observation": "Inspected successful Linux Node 22 native-required job 132375119005 on 6ab9b286f62c7a2411fdfc52f8624559637231e1: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132375119005 on 6ab9b286f62c7a2411fdfc52f8624559637231e1: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-c06-df179e56-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "639271a5ba9495c37c705babacd4b05e8fc6f78749bd1b5daafaab51ef608c6f",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c06-df179e56-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "639271a5ba9495c37c705babacd4b05e8fc6f78749bd1b5daafaab51ef608c6f",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "observation": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c06-df179e56-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "639271a5ba9495c37c705babacd4b05e8fc6f78749bd1b5daafaab51ef608c6f",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+      "observation": "Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c06-df179e56-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "639271a5ba9495c37c705babacd4b05e8fc6f78749bd1b5daafaab51ef608c6f",
+      "caseIds": [
+        "file-io-dafbfs-audit-restart-and-end",
+        "file-io-dafbfs-kind-mismatch-error",
+        "file-io-dafbfs-search-sequence-success",
+        "file-io-dafcls-audit-last-close-and-reopen",
+        "file-io-dafcls-close-and-reopen-success",
+        "file-io-dafcls-double-close-error",
+        "file-io-daffna-audit-interleaved-distinct-files",
+        "file-io-daffna-found-after-bfs-success",
+        "file-io-daffna-without-bfs-error",
+        "file-io-dafopr-audit-duplicate-read-claims",
+        "file-io-dafopr-audit-empty-file",
+        "file-io-dafopr-audit-wrong-file-format",
+        "file-io-dafopr-lifecycle-success",
+        "file-io-dafopr-missing-file-error",
+        "file-io-dascls-closes-dla-handle-success",
+        "file-io-dascls-double-close-error",
+        "file-io-dasopr-audit-duplicate-read-claims",
+        "file-io-dasopr-audit-wrong-file-format",
+        "file-io-dasopr-missing-file-error",
+        "file-io-dasopr-open-empty-dla-success",
+        "file-io-dlabfs-audit-empty-closed-writer",
+        "file-io-dlabfs-audit-repeat-descriptor",
+        "file-io-dlabfs-first-segment-found-success",
+        "file-io-dlabfs-kind-mismatch-error",
+        "file-io-dlacls-alias-for-das-handle-success",
+        "file-io-dlacls-audit-empty-closed-writer",
+        "file-io-dlacls-double-close-error"
+      ],
+      "commit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+      "observation": "Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -779,11 +943,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dafopr -> tspice_dafopr -> dafopr_c.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -796,11 +962,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dafopr -> shared C shim -> dafopr_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -893,11 +1061,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafcls -> tspice_dafcls -> dafcls_c.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -910,11 +1080,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafcls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafcls -> shared C shim -> dafcls_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -996,11 +1168,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dafbfs -> tspice_dafbfs -> dafbfs_c.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -1013,11 +1187,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dafbfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dafbfs -> shared C shim -> dafbfs_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -1104,11 +1280,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native daffna -> tspice_daffna -> daffna_c. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -1121,11 +1299,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.daffna -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_daffna -> shared C shim -> daffna_c; withAllocs/withMalloc releases buffers. Shared C shim selects dafcs_c(handle) before daffna_c; oracle independently does sp.dafcs then sp.daffna.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -1213,11 +1393,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> Node typed file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> native dasopr -> tspice_dasopr -> dasopr_c.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -1230,11 +1412,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dasopr -> WASM file adapter -> owner-local SpiceHandleRegistry register after actual open; virtual path resolver before open -> actual _tspice_dasopr -> shared C shim -> dasopr_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -1316,11 +1500,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -1333,11 +1519,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dascls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -1431,11 +1619,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dlabfs -> tspice_dlabfs -> dlabfs_c. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -1448,11 +1638,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dlabfs -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dlabfs -> shared C shim -> dlabfs_c; withAllocs/withMalloc releases buffers. Native/heap eight-int result copied into DlaDescriptor, then all eight fields reach live assertion; oracle reads actual SpiceDLADescr.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -1543,11 +1735,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> Node typed file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> native dascls -> tspice_dascls -> dascls_c. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
-          "executions": ["local-c04-6ab9b286-node", "ci-c04-6ab9b286-node"]
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -1560,11 +1754,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "alias",
           "trace": "raw.dlacls -> WASM file adapter -> owner-local SpiceHandleRegistry kind/live lookup -> actual _tspice_dascls -> shared C shim -> dascls_c; withAllocs/withMalloc releases buffers. Legitimate tspice DAS-close alias; actual raw implementation is invoked, Python calls actual SpiceyPy dascls.",
-          "executions": ["local-c04-6ab9b286-wasm", "ci-c04-6ab9b286-wasm"]
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     }

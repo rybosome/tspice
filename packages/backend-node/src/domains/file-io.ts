@@ -1,4 +1,7 @@
 import {
+  dasCommentTable,
+  dasCommentPageBytes,
+  dasCommentPage,
   dasFileTarget,
   dasText,
   decodeDasSummary,
@@ -191,6 +194,19 @@ export function createFileIoApi(
       return found;
     },
 
+    dasac: (handle, lines) => {
+      const { n, width, table } = dasCommentTable(lines);
+      // Array accessors can close the original claim. Look it up after snapshotting.
+      const h = dasHandle(handle, "dasac");
+      native.dasac(h, n, width, table);
+    },
+    dasdc: (handle) => native.dasdc(dasHandle(handle, "dasdc")),
+    dasec: (handle, bufsiz, buffln = 1024) => {
+      const h = dasHandle(handle, "dasec");
+      dasCommentPageBytes(bufsiz, buffln);
+      const { n, done, bytes } = native.dasec(h, bufsiz, buffln);
+      return dasCommentPage(n, done, bytes, bufsiz, buffln);
+    },
     dasonw: (
       file: string | VirtualOutput,
       ftype: string,

@@ -28,6 +28,12 @@ export async function typecheckDasLifecycle() {
     }
     const scratch = raw.dasops();
     try {
+      raw.dasac(scratch, [" two  words", ""]);
+      const { n, lines, done } = raw.dasec(scratch, 2, 30);
+      const page: [number, string[], boolean] = [n, lines, done];
+      void page;
+      raw.dasdc(scratch);
+
       return {
         name,
         bytes: kit.readVirtualOutput(output),

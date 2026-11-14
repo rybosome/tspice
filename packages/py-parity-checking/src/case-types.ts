@@ -717,6 +717,18 @@ export type StepFileIoDasopr = {
   handleId: string;
 };
 
+export type StepFileIoDasac = {
+  op: "file-io.dasac";
+  handleId: string;
+  lines: string[];
+};
+export type StepFileIoDasdc = { op: "file-io.dasdc"; handleId: string };
+export type StepFileIoDasec = {
+  op: "file-io.dasec";
+  handleId: string;
+  bufsiz: number;
+  buffln?: number;
+};
 export type StepFileIoDasonw = {
   op: "file-io.dasonw";
   handleId: string;
@@ -1441,6 +1453,9 @@ export type WorkflowStep =
   | StepFileIoDafbfs
   | StepFileIoDaffna
   | StepFileIoDasopr
+  | StepFileIoDasac
+  | StepFileIoDasdc
+  | StepFileIoDasec
   | StepFileIoDasonw
   | StepFileIoDasops
   | StepFileIoDasopw
@@ -1746,6 +1761,9 @@ export type StepOutput =
   | { op: "file-io.dafbfs"; value: null }
   | { op: "file-io.daffna"; value: boolean }
   | { op: "file-io.dasopr"; value: null }
+  | { op: "file-io.dasac"; value: null }
+  | { op: "file-io.dasdc"; value: null }
+  | { op: "file-io.dasec"; value: ReturnType<SpiceRawBackend["dasec"]> }
   | { op: "file-io.dasonw"; value: null }
   | { op: "file-io.dasops"; value: null }
   | { op: "file-io.dasopw"; value: null }

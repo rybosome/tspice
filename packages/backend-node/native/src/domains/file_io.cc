@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <limits>
 #include <vector>
+#include <memory>
+#include <new>
 
 #include "../addon_common.h"
 #include "../napi_helpers.h"
@@ -268,6 +270,111 @@ static Napi::Value DasStringResult(Napi::Env env, const char (&out)[N]) {
 static Napi::Array DasInts(Napi::Env env, const int* ints, size_t count) {
   auto result = Napi::Array::New(env, count);
   for (size_t i = 0; i < count; ++i) result.Set(i, Napi::Number::New(env, ints[i]));
+  return result;
+}
+
+static bool DasCommentArgs(const Napi::CallbackInfo &info, size_t count) {
+  if (info.Length() == count)
+    return true;
+  ThrowSpiceError(Napi::TypeError::New(info.Env(), "Incorrect DAS argument count"));
+  return false;
+}
+
+static bool DasCommentSuccess(Napi::Env env, int status, const char *op, const char *err) {
+  if (status == 0)
+    return true;
+  ThrowSpiceError(env, std::string("CSPICE failed while calling ") + op, err);
+  return false;
+}
+
+static Napi::Uint8Array DasCommentBytes(Napi::Env env, const void *ptr, size_t length) {
+  auto result = Napi::Uint8Array::New(env, length);
+  if (length)
+    std::memcpy(result.Data(), ptr, length);
+  return result;
+}
+
+static bool DasCommentInputBytes(Napi::Env env, const Napi::Value &value, int limit, Napi::Uint8Array *view) {
+  if (!value.IsTypedArray() || value.As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array ||
+      value.As<Napi::Uint8Array>().ByteLength() > static_cast<size_t>(limit)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected bounded Uint8Array DAS storage"));
+    return false;
+  }
+  *view = value.As<Napi::Uint8Array>();
+  return true;
+}
+
+static Napi::Value Dasac(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  int32_t handle = 0, rows = 0, width = 0;
+  Napi::Uint8Array view;
+  if (!DasCommentArgs(info, 4) || !ReadInt32Checked(env, info[0], "handle", &handle) ||
+      !ReadInt32Checked(env, info[1], "rows", &rows) || !ReadInt32Checked(env, info[2], "width", &width) ||
+      !DasCommentInputBytes(env, info[3], TSPICE_DAS_COMMENT_BYTES, &view))
+    return env.Undefined();
+  unsigned char sentinel = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  // JS has already produced a private fixed-row table. Take a native snapshot
+  // so a direct addon caller with shared backing storage cannot change a row.
+  const size_t length = view.ByteLength();
+  if (rows < 0 || width < 2 || static_cast<int64_t>(rows) * width > static_cast<int64_t>(length)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid DAS input row table"));
+    return env.Undefined();
+  }
+  std::unique_ptr<unsigned char[]> data(length ? new (std::nothrow) unsigned char[length] : nullptr);
+  if (length && !data) {
+    ThrowSpiceError(Napi::Error::New(env, "Cannot allocate DAS input storage"));
+    return env.Undefined();
+  }
+  if (length)
+    std::memcpy(data.get(), view.Data(), length);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  DasCommentSuccess(env,
+                    tspice_dasac(handle, rows, width, length ? data.get() : &sentinel,
+                                 static_cast<int>(length), err, sizeof(err)),
+                    "dasac", err);
+  return env.Undefined();
+}
+
+static Napi::Value Dasdc(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  int32_t handle = 0;
+  if (!DasCommentArgs(info, 1) || !ReadInt32Checked(env, info[0], "handle", &handle))
+    return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  DasCommentSuccess(env, tspice_dasdc(handle, err, sizeof(err)), "dasdc", err);
+  return env.Undefined();
+}
+
+static Napi::Value Dasec(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  int32_t handle = 0, rows = 0, width = 0;
+  if (!DasCommentArgs(info, 3) || !ReadInt32Checked(env, info[0], "handle", &handle) ||
+      !ReadInt32Checked(env, info[1], "bufsiz", &rows) || !ReadInt32Checked(env, info[2], "buffln", &width))
+    return env.Undefined();
+  const int64_t size = rows > 0 && width >= 2 ? static_cast<int64_t>(rows) * width : 1;
+  if (size > TSPICE_DAS_COMMENT_BYTES) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAS comment page exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  std::unique_ptr<unsigned char[]> data(new (std::nothrow) unsigned char[size]);
+  if (!data) {
+    ThrowSpiceError(Napi::Error::New(env, "Cannot allocate DAS output storage"));
+    return env.Undefined();
+  }
+  int n = 0, done = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (!DasCommentSuccess(
+          env,
+          tspice_dasec(handle, rows, width, data.get(), static_cast<int>(size), &n, &done, err, sizeof(err)),
+          "dasec", err))
+    return env.Undefined();
+  auto result = Napi::Object::New(env);
+  result.Set("n", n);
+  result.Set("done", done != 0);
+  result.Set("bytes", DasCommentBytes(env, data.get(), static_cast<size_t>(n) * width));
   return result;
 }
 
@@ -1095,6 +1202,9 @@ void RegisterFileIo(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "dafbfs", Napi::Function::New(env, Dafbfs), __func__)) return;
   if (!SetExportChecked(env, exports, "daffna", Napi::Function::New(env, Daffna), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "dasac", Napi::Function::New(env, Dasac), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasdc", Napi::Function::New(env, Dasdc), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasec", Napi::Function::New(env, Dasec), __func__)) return;
   if (!SetExportChecked(env, exports, "dasonw", Napi::Function::New(env, Dasonw), __func__)) return;
   if (!SetExportChecked(env, exports, "dasops", Napi::Function::New(env, Dasops), __func__)) return;
   if (!SetExportChecked(env, exports, "dasopw", Napi::Function::New(env, Dasopw), __func__)) return;
