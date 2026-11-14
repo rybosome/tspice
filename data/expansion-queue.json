@@ -311,13 +311,20 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/713"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "933b912b5820d38b52efa4854b532ad39f15be41",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550279093/job/132310923919",
+          "result": "Both complete required lanes passed locally on 933b912b5820d38b52efa4854b532ad39f15be41. JavaScript: 2,560 parity tests and one expected guard skip. Native-required: 2,332 registered Node/WASM live comparisons; 2,561 parity-package tests with no skips, including the native-required guard; 108 native wrapper, 626 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132310923919 on 933b912b5820d38b52efa4854b532ad39f15be41: 2,332 registered Node/WASM live comparisons; 2,561 parity-package tests with no skips, including the native-required guard; 108 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-coordinate-conventions",
       "branch": "codex/expand-coordinate-conventions",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "recazl, recpgr and recrad now copy the validated rectangular coordinates once. Focused regression evidence is distinct from scientific parity. Earlier source records remain historical; fresh required local and observed canonical CI evidence for the corrected source is pending.",
-      "priorCheckpoint": "Draft PR #713 final metadata commit 232ee6ef pushed; canonical final-head CI run 43545867313 pending. Both required local lanes and inspected source Linux22 job132291465391 passed 2332 live comparisons and 2559 parity tests without skips; all169 source-bound audit reviews verified. Final-head readiness still pending."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 933b912b. 2,332 registered Node/WASM live comparisons; 2,561 parity-package tests with no skips, including the native-required guard; 108 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "recazl, recpgr and recrad now copy the validated rectangular coordinates once. Focused regression evidence is distinct from scientific parity. Earlier source records remain historical; fresh required local and observed canonical CI evidence for the corrected source is pending."
     },
     {
       "id": "A07-coordinate-jacobians",

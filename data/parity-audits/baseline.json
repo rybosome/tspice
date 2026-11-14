@@ -423,7 +423,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/713"],
-      "nextAction": "Complete primary-semantic and authored-fixture review, registered live cases and focused tests, then both required local lanes and observed canonical CI before current-source verification. Independent Step 8 batch; no merge authorized."
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
