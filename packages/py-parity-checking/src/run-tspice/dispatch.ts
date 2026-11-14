@@ -204,6 +204,15 @@ export function dispatchStep(
     case "frames.ckobj":
     case "frames.ckcov":
     case "frames.pxform":
+    case "frames.frame":
+    case "frames.twovec":
+    case "frames.twovxf":
+    case "frames.eul2xf":
+    case "frames.xf2eul":
+    case "frames.xf2rav":
+    case "frames.rav2xf":
+    case "frames.invstm":
+    case "frames.xpose6":
     case "frames.sxform":
       return runFramesStep(context, step);
 

@@ -1,0 +1,25 @@
+# Frame algebra
+
+Nine flat raw methods extend `FramesApi` beside `pxform` and `sxform`. They use the same source-to-destination convention and the existing row-major state matrix and position/velocity tuples. The branch is stacked on [fixed matrices #712](https://github.com/rybosome/tspice/pull/712), whose matrix result branding preserves numeric IEEE outputs. The methods require no kernels.
+
+## Reading the transforms
+
+A state transform acts on a column of three position components followed by three velocity components. Its diagonal 3×3 blocks contain the rotation, its lower-left block contains the time derivative, and its upper-right block is zero. `twovec` returns the position rotation. `twovxf` includes the motion of both defining directions. The two axis numbers must be distinct. `frame` returns the normalized first axis and the two auxiliary axes selected by CSPICE. A zero input returns the Cartesian basis. [Frame contract](../packages/backend-contract/src/domains/frames.ts)
+
+`eul2xf` takes three angles in radians followed by their rates and admits repeated adjacent valid axes. `xf2eul` requires the middle axis to differ from its neighbors and returns all six components even when `unique` is false. `rav2xf` takes angular velocity expressed in the source frame. `xf2rav` reads rotation and derivative from the two left blocks. `invstm` transposes each 3×3 block in its original location, which gives the inverse of a proper state transform. `xpose6` transposes the complete matrix. [Euler conventions](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xf2eul_c.html) [Angular velocity conventions](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xf2rav_c.html)
+
+## Checked N0067 error paths
+
+All nine successful routes reach their same-named CSPICE C entrypoints. Three failure paths use the following checks in the linked N0067 library, with the native mutex spanning the check and the call. The independent sidecar binds numerical entrypoints from its own locked SpiceyPy 6.0.3 library with typed arguments and initialized outputs. [Shared C integration](../packages/backend-shim-c/src/domains/frames.c) [Independent oracle](../packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_algebra_oracle.py)
+
+- N0067 `twovxf.c` calls `invstm_` on a private matrix even if `zztwovxf_` failed to construct it. The adapter first calls that same constructor with owned storage and the outer `twovxf_c` and `TWOVXF` trace frames. Its bad index, repeated index, or dependent vectors produce the original structured diagnostics.
+- N0067 `xf2eul_c.c` reads its private logical after an early `M2EUL` error. The adapter checks the linked `xf2eul_` with the same column-major input and initialized angle and logical outputs. A valid singular decomposition continues to the public call and retains its false uniqueness flag.
+- The `EUL2XF` entry in N0067 `xf2eul.c` can index its three-element axis table before its normal validator when adjacent axis numbers coincide. If the first axis is also out of range, the adapter calls the linked `eul2m_` with initialized storage under the two outer trace frames. That entry signals `BADAXISNUMBERS` for the supplied axes. Other defined inputs use `eul2xf_c`.
+
+The separate `twovec_c` wrapper transposes its caller-provided matrix on return. The shim initializes this matrix before the call and publishes it only on success. Both JS adapters snapshot every finite input component and own all returned vectors. [Node boundary tests](../packages/backend-node/test/frame-algebra-domain.test.ts) [WASM allocation and recovery tests](../packages/backend-wasm/test/frame-algebra-allocations.test.ts)
+
+## Observed scientific behavior
+
+The 47 registered workflows contain 129 frame-algebra calls and 17 expected terminal errors. The collinearity tests originally used `[2,-1,3]` and a scaled copy. Normalization left a nonzero residual cross product in the local locked wheel, while the compiled Node and WASM libraries diagnosed `DEPENDENTVECTORS`. The exact dependency tests now use `[1,0,0]` and `[2,0,0]`, with static velocities for the corresponding state case. Nonparallel constructions and the small signed separation case retain their original componentwise comparisons and tolerances. [TWOVEC cases](../packages/py-parity-checking/src/cases/frames/twovec.cases.json) [TWOVXF cases](../packages/py-parity-checking/src/cases/frames/twovxf.cases.json)
+
+All 94 registered backend comparisons, four supplementary public tests, 30 native boundary tests and 45 WASM allocation and boundary tests passed. The public tests checked derivative signs at a rate of 2⁻⁴³, inverse multiplication, unique and singular Euler reconstruction, unchanged caller inputs, independently mutable outputs, and the exact signed-zero and positive-subnormal entries of a transpose. A real Chrome inline worker exercised all nine methods. Full source-bound local and observed canonical CI evidence remains pending for the combined branch. [Public tests](../packages/py-parity-checking/test/frame-algebra-public.test.ts) [Per-routine audit](../data/parity-audits/a15-frame-algebra.json)

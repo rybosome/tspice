@@ -108,3 +108,7 @@ Regression evidence: [fixed-matrices-domain.test.ts](../packages/backend-node/te
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
+
+## Frame algebra
+
+The A15 review covers nine kernel-independent frame construction and state-transform methods. The 47 registered workflows contain 129 calls and 17 expected toolkit errors. The review tracks full row-major blocks, angular-velocity coordinates, both Euler uniqueness states and the linked-toolkit checks required for three failure paths. [Frame algebra evidence](step8-frame-algebra.md) [Routine audit](../data/parity-audits/a15-frame-algebra.json)

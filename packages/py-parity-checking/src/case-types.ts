@@ -1,4 +1,6 @@
 import type {
+  SpiceStateVector,
+  SpiceMatrix6x6,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -983,6 +985,64 @@ export type StepFramesPxform = {
   et: number;
 };
 
+export type StepFramesFrame = {
+  op: "frames.frame";
+  x: Vector3;
+};
+
+export type StepFramesTwovec = {
+  op: "frames.twovec";
+  axdef: Vector3;
+  indexa: number;
+  plndef: Vector3;
+  indexp: number;
+};
+
+export type StepFramesTwovxf = {
+  op: "frames.twovxf";
+  axdef: SpiceStateVector;
+  indexa: number;
+  plndef: SpiceStateVector;
+  indexp: number;
+};
+
+export type StepFramesEul2xf = {
+  op: "frames.eul2xf";
+  eulang: SpiceStateVector;
+  axisa: number;
+  axisb: number;
+  axisc: number;
+};
+
+export type StepFramesXf2eul = {
+  op: "frames.xf2eul";
+  xform: SpiceMatrix6x6;
+  axisa: number;
+  axisb: number;
+  axisc: number;
+};
+
+export type StepFramesXf2rav = {
+  op: "frames.xf2rav";
+  xform: SpiceMatrix6x6;
+};
+
+export type StepFramesRav2xf = {
+  op: "frames.rav2xf";
+  rot: Matrix3x3;
+  av: Vector3;
+};
+
+export type StepFramesInvstm = {
+  op: "frames.invstm";
+  mat: SpiceMatrix6x6;
+};
+
+export type StepFramesXpose6 = {
+  op: "frames.xpose6";
+  m1: SpiceMatrix6x6;
+};
+
 export type StepFramesSxform = {
   op: "frames.sxform";
   from: string;
@@ -1486,6 +1546,15 @@ export type WorkflowStep =
   | StepFramesCkobj
   | StepFramesCkcov
   | StepFramesPxform
+  | StepFramesFrame
+  | StepFramesTwovec
+  | StepFramesTwovxf
+  | StepFramesEul2xf
+  | StepFramesXf2eul
+  | StepFramesXf2rav
+  | StepFramesRav2xf
+  | StepFramesInvstm
+  | StepFramesXpose6
   | StepFramesSxform
   | StepEkEkopn
   | StepEkEkopr
@@ -1851,6 +1920,18 @@ export type StepOutput =
       };
     }
   | { op: "frames.pxform"; value: Matrix3x3 }
+  | { op: "frames.frame"; value: { x: Vector3; y: Vector3; z: Vector3 } }
+  | { op: "frames.twovec"; value: Matrix3x3 }
+  | { op: "frames.twovxf"; value: Matrix6x6 }
+  | { op: "frames.eul2xf"; value: Matrix6x6 }
+  | {
+      op: "frames.xf2eul";
+      value: { eulang: SpiceStateVector; unique: boolean };
+    }
+  | { op: "frames.xf2rav"; value: { rot: Matrix3x3; av: Vector3 } }
+  | { op: "frames.rav2xf"; value: Matrix6x6 }
+  | { op: "frames.invstm"; value: Matrix6x6 }
+  | { op: "frames.xpose6"; value: Matrix6x6 }
   | { op: "frames.sxform"; value: Matrix6x6 }
   | {
       op: "ek.ekopn";

@@ -344,6 +344,39 @@ export function getNodeBinding(): NativeAddon {
     typeof native.pxform === "function",
     "Expected native addon to export pxform(from, to, et)",
   );
+  invariant(typeof native.frame === "function", "Native addon missing frame()");
+  invariant(
+    typeof native.twovec === "function",
+    "Native addon missing twovec()",
+  );
+  invariant(
+    typeof native.twovxf === "function",
+    "Native addon missing twovxf()",
+  );
+  invariant(
+    typeof native.eul2xf === "function",
+    "Native addon missing eul2xf()",
+  );
+  invariant(
+    typeof native.xf2eul === "function",
+    "Native addon missing xf2eul()",
+  );
+  invariant(
+    typeof native.xf2rav === "function",
+    "Native addon missing xf2rav()",
+  );
+  invariant(
+    typeof native.rav2xf === "function",
+    "Native addon missing rav2xf()",
+  );
+  invariant(
+    typeof native.invstm === "function",
+    "Native addon missing invstm()",
+  );
+  invariant(
+    typeof native.xpose6 === "function",
+    "Native addon missing xpose6()",
+  );
   invariant(
     typeof native.sxform === "function",
     "Expected native addon to export sxform(from, to, et)",

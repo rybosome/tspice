@@ -1,0 +1,205 @@
+[
+  {
+    "caseId": "frames-twovxf-axis-order",
+    "description": "Observe all six distinct placements of the axis and plane.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 3
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 1
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 3
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 3,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 1
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 3,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-twovxf-swapped",
+    "description": "Reversing or reflecting the defining directions changes the actual transform.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexa": 3,
+        "plndef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexp": 1
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [-2, 1, -3, -0.4, 0.15, -0.3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 2,
+        "plndef": [3, -5, -2, 0.2, -0.75, -0.19],
+        "indexp": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-twovxf-zero-index",
+    "description": "Observe the specific toolkit diagnostic for zero-index.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 0,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADINDEX"]
+    }
+  },
+  {
+    "caseId": "frames-twovxf-large-index",
+    "description": "Observe the specific toolkit diagnostic for large-index.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADINDEX"]
+    }
+  },
+  {
+    "caseId": "frames-twovxf-equal",
+    "description": "Observe the specific toolkit diagnostic for equal.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 2,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNDEFINEDFRAME"]
+    }
+  },
+  {
+    "caseId": "frames-twovxf-parallel",
+    "description": "Exactly collinear Cartesian directions have a zero cross product on all supported toolkits and signal DEPENDENTVECTORS.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [1, 0, 0, 0, 0, 0],
+        "indexa": 1,
+        "plndef": [2, 0, 0, 0, 0, 0],
+        "indexp": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEPENDENTVECTORS"]
+    }
+  },
+  {
+    "caseId": "frames-twovxf-zero-axis",
+    "description": "Observe the specific toolkit diagnostic for zero-axis.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [0, 0, 0, 0, 0, 0],
+        "indexa": 2,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEPENDENTVECTORS"]
+    }
+  },
+  {
+    "caseId": "frames-twovxf-velocities",
+    "description": "Distinguish rotation and derivative blocks with static positions and independently reversed velocities.",
+    "workflow": [
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0, 0, 0],
+        "indexa": 1,
+        "plndef": [-3, 5, 2, 0, 0, 0],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0.4, -0.15, 0.3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2, 0, 0, 0],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, 0, 0, 0],
+        "indexa": 1,
+        "plndef": [-3, 5, 2, -0.2, 0.75, 0.19],
+        "indexp": 2
+      },
+      {
+        "op": "frames.twovxf",
+        "axdef": [2, -1, 3, -0.4, 0.15, -0.3],
+        "indexa": 1,
+        "plndef": [-3, 5, 2, 0.2, -0.75, -0.19],
+        "indexp": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

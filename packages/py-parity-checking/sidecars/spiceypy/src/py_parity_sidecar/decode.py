@@ -124,6 +124,15 @@ from .models import (
     StepFramesFrmnam,
     StepFramesNamfrm,
     StepFramesPxform,
+    StepFramesFrame,
+    StepFramesTwovec,
+    StepFramesTwovxf,
+    StepFramesEul2xf,
+    StepFramesXf2eul,
+    StepFramesXf2rav,
+    StepFramesRav2xf,
+    StepFramesInvstm,
+    StepFramesXpose6,
     StepFramesSxform,
     StepGeometryIlumin,
     StepGeometryIllumf,
@@ -276,6 +285,17 @@ def _expect_3x3_matrix(value: Any, *, label: str) -> list[list[float]]:
             _expect_number(row[2], label=f"{label}[{row_idx}][2]"),
         ])
     return rows
+
+
+def _frame_words(value: Any, length: int, *, label: str) -> list[float]:
+    if not isinstance(value, list) or len(value) != length:
+        raise TypeError(f"{label} must contain {length} values")
+    return _expect_number_list(value, label=label)
+
+
+def _frame_matrix(value: Any, *, label: str) -> list[list[float]]:
+    words = _frame_words(value, 36, label=label)
+    return [words[start:start + 6] for start in range(0, 36, 6)]
 
 
 def _expect_vec3(value: Any, *, label: str) -> tuple[float, float, float]:
@@ -1376,6 +1396,73 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 from_=_expect_string(step.get("from"), label="frames.pxform.from"),
                 to=_expect_string(step.get("to"), label="frames.pxform.to"),
                 et=_expect_number(step.get("et"), label="frames.pxform.et"),
+            )
+
+        case "frames.frame":
+            return StepFramesFrame(
+                op=op,
+                x=_expect_vec3(step.get("x"), label="frames.frame.x"),
+            )
+
+        case "frames.twovec":
+            return StepFramesTwovec(
+                op=op,
+                axdef=_expect_vec3(step.get("axdef"), label="frames.twovec.axdef"),
+                indexa=_expect_int(step.get("indexa"), label="frames.twovec.indexa"),
+                plndef=_expect_vec3(step.get("plndef"), label="frames.twovec.plndef"),
+                indexp=_expect_int(step.get("indexp"), label="frames.twovec.indexp"),
+            )
+
+        case "frames.twovxf":
+            return StepFramesTwovxf(
+                op=op,
+                axdef=_frame_words(step.get("axdef"), 6, label="frames.twovxf.axdef"),
+                indexa=_expect_int(step.get("indexa"), label="frames.twovxf.indexa"),
+                plndef=_frame_words(step.get("plndef"), 6, label="frames.twovxf.plndef"),
+                indexp=_expect_int(step.get("indexp"), label="frames.twovxf.indexp"),
+            )
+
+        case "frames.eul2xf":
+            return StepFramesEul2xf(
+                op=op,
+                eulang=_frame_words(step.get("eulang"), 6, label="frames.eul2xf.eulang"),
+                axisa=_expect_int(step.get("axisa"), label="frames.eul2xf.axisa"),
+                axisb=_expect_int(step.get("axisb"), label="frames.eul2xf.axisb"),
+                axisc=_expect_int(step.get("axisc"), label="frames.eul2xf.axisc"),
+            )
+
+        case "frames.xf2eul":
+            return StepFramesXf2eul(
+                op=op,
+                xform=_frame_matrix(step.get("xform"), label="frames.xf2eul.xform"),
+                axisa=_expect_int(step.get("axisa"), label="frames.xf2eul.axisa"),
+                axisb=_expect_int(step.get("axisb"), label="frames.xf2eul.axisb"),
+                axisc=_expect_int(step.get("axisc"), label="frames.xf2eul.axisc"),
+            )
+
+        case "frames.xf2rav":
+            return StepFramesXf2rav(
+                op=op,
+                xform=_frame_matrix(step.get("xform"), label="frames.xf2rav.xform"),
+            )
+
+        case "frames.rav2xf":
+            return StepFramesRav2xf(
+                op=op,
+                rot=_expect_3x3_matrix(step.get("rot"), label="frames.rav2xf.rot"),
+                av=_expect_vec3(step.get("av"), label="frames.rav2xf.av"),
+            )
+
+        case "frames.invstm":
+            return StepFramesInvstm(
+                op=op,
+                mat=_frame_matrix(step.get("mat"), label="frames.invstm.mat"),
+            )
+
+        case "frames.xpose6":
+            return StepFramesXpose6(
+                op=op,
+                m1=_frame_matrix(step.get("m1"), label="frames.xpose6.m1"),
             )
 
         case "frames.sxform":

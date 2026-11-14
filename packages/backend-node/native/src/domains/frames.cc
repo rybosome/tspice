@@ -253,6 +253,233 @@ static Napi::Array Pxform(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, m, 9);
 }
 
+template <size_t N>
+static bool ReadFrameOperand(Napi::Env env, const Napi::Value& source,
+                             double (&dest)[N], const char* name) {
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, source, N, dest, name)) return false;
+  for (double component : dest) {
+    if (!std::isfinite(component)) {
+      ThrowSpiceError(Napi::RangeError::New(env, std::string(name) + " must contain finite values"));
+      return false;
+    }
+  }
+  return true;
+}
+
+static bool ReadFrameAxis(Napi::Env env, const Napi::Value& value, int *out) {
+  if (value.IsNumber()) {
+    const double n = value.As<Napi::Number>().DoubleValue();
+    if (n >= INT32_MIN && n <= INT32_MAX && std::trunc(n) == n) {
+      *out = static_cast<int>(n);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::RangeError::New(env, "Expected a signed 32-bit frame axis"));
+  return false;
+}
+
+static Napi::Value Frame(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "frame: incorrect argument count"));
+    return env.Undefined();
+  }
+  double x[3];
+  if (!ReadFrameOperand(env, info[0], x, "frame(x)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outX[3] = {};
+  double outY[3] = {};
+  double outZ[3] = {};
+  if (tspice_frame(x, outX, outY, outZ, err, sizeof(err))) {
+    ThrowSpiceError(env, "frame", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("x", MakeNumberArray(env, outX, 3));
+  result.Set("y", MakeNumberArray(env, outY, 3));
+  result.Set("z", MakeNumberArray(env, outZ, 3));
+  return result;
+}
+
+static Napi::Value Twovec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "twovec: incorrect argument count"));
+    return env.Undefined();
+  }
+  double axdef[3];
+  if (!ReadFrameOperand(env, info[0], axdef, "twovec(axdef)")) return env.Undefined();
+  int indexa;
+  if (!ReadFrameAxis(env, info[1], &indexa)) return env.Undefined();
+  double plndef[3];
+  if (!ReadFrameOperand(env, info[2], plndef, "twovec(plndef)")) return env.Undefined();
+  int indexp;
+  if (!ReadFrameAxis(env, info[3], &indexp)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outRotation[9] = {};
+  if (tspice_twovec(axdef, indexa, plndef, indexp, outRotation, err, sizeof(err))) {
+    ThrowSpiceError(env, "twovec", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, outRotation, 9);
+}
+
+static Napi::Value Twovxf(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "twovxf: incorrect argument count"));
+    return env.Undefined();
+  }
+  double axdef[6];
+  if (!ReadFrameOperand(env, info[0], axdef, "twovxf(axdef)")) return env.Undefined();
+  int indexa;
+  if (!ReadFrameAxis(env, info[1], &indexa)) return env.Undefined();
+  double plndef[6];
+  if (!ReadFrameOperand(env, info[2], plndef, "twovxf(plndef)")) return env.Undefined();
+  int indexp;
+  if (!ReadFrameAxis(env, info[3], &indexp)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outXform[36] = {};
+  if (tspice_twovxf(axdef, indexa, plndef, indexp, outXform, err, sizeof(err))) {
+    ThrowSpiceError(env, "twovxf", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, outXform, 36);
+}
+
+static Napi::Value Eul2xf(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "eul2xf: incorrect argument count"));
+    return env.Undefined();
+  }
+  double eulang[6];
+  if (!ReadFrameOperand(env, info[0], eulang, "eul2xf(eulang)")) return env.Undefined();
+  int axisa;
+  if (!ReadFrameAxis(env, info[1], &axisa)) return env.Undefined();
+  int axisb;
+  if (!ReadFrameAxis(env, info[2], &axisb)) return env.Undefined();
+  int axisc;
+  if (!ReadFrameAxis(env, info[3], &axisc)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outXform[36] = {};
+  if (tspice_eul2xf(eulang, axisa, axisb, axisc, outXform, err, sizeof(err))) {
+    ThrowSpiceError(env, "eul2xf", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, outXform, 36);
+}
+
+static Napi::Value Xf2eul(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "xf2eul: incorrect argument count"));
+    return env.Undefined();
+  }
+  double xform[36];
+  if (!ReadFrameOperand(env, info[0], xform, "xf2eul(xform)")) return env.Undefined();
+  int axisa;
+  if (!ReadFrameAxis(env, info[1], &axisa)) return env.Undefined();
+  int axisb;
+  if (!ReadFrameAxis(env, info[2], &axisb)) return env.Undefined();
+  int axisc;
+  if (!ReadFrameAxis(env, info[3], &axisc)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outEulang[6] = {};
+  int outUnique = 0;
+  if (tspice_xf2eul(xform, axisa, axisb, axisc, outEulang, &outUnique, err, sizeof(err))) {
+    ThrowSpiceError(env, "xf2eul", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("eulang", MakeNumberArray(env, outEulang, 6));
+  result.Set("unique", Napi::Boolean::New(env, outUnique != 0));
+  return result;
+}
+
+static Napi::Value Xf2rav(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "xf2rav: incorrect argument count"));
+    return env.Undefined();
+  }
+  double xform[36];
+  if (!ReadFrameOperand(env, info[0], xform, "xf2rav(xform)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outRot[9] = {};
+  double outAv[3] = {};
+  if (tspice_xf2rav(xform, outRot, outAv, err, sizeof(err))) {
+    ThrowSpiceError(env, "xf2rav", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("rot", MakeNumberArray(env, outRot, 9));
+  result.Set("av", MakeNumberArray(env, outAv, 3));
+  return result;
+}
+
+static Napi::Value Rav2xf(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "rav2xf: incorrect argument count"));
+    return env.Undefined();
+  }
+  double rot[9];
+  if (!ReadFrameOperand(env, info[0], rot, "rav2xf(rot)")) return env.Undefined();
+  double av[3];
+  if (!ReadFrameOperand(env, info[1], av, "rav2xf(av)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outXform[36] = {};
+  if (tspice_rav2xf(rot, av, outXform, err, sizeof(err))) {
+    ThrowSpiceError(env, "rav2xf", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, outXform, 36);
+}
+
+static Napi::Value Invstm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "invstm: incorrect argument count"));
+    return env.Undefined();
+  }
+  double mat[36];
+  if (!ReadFrameOperand(env, info[0], mat, "invstm(mat)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outInvmat[36] = {};
+  if (tspice_invstm(mat, outInvmat, err, sizeof(err))) {
+    ThrowSpiceError(env, "invstm", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, outInvmat, 36);
+}
+
+static Napi::Value Xpose6(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "xpose6: incorrect argument count"));
+    return env.Undefined();
+  }
+  double m1[36];
+  if (!ReadFrameOperand(env, info[0], m1, "xpose6(m1)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double outMout[36] = {};
+  if (tspice_xpose6(m1, outMout, err, sizeof(err))) {
+    ThrowSpiceError(env, "xpose6", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, outMout, 36);
+}
+
 static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -433,6 +660,15 @@ void RegisterFrames(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "ckcov", Napi::Function::New(env, Ckcov), __func__)) return;
 
   if (!SetExportChecked(env, exports, "pxform", Napi::Function::New(env, Pxform), __func__)) return;
+  if (!SetExportChecked(env, exports, "frame", Napi::Function::New(env, Frame), __func__)) return;
+  if (!SetExportChecked(env, exports, "twovec", Napi::Function::New(env, Twovec), __func__)) return;
+  if (!SetExportChecked(env, exports, "twovxf", Napi::Function::New(env, Twovxf), __func__)) return;
+  if (!SetExportChecked(env, exports, "eul2xf", Napi::Function::New(env, Eul2xf), __func__)) return;
+  if (!SetExportChecked(env, exports, "xf2eul", Napi::Function::New(env, Xf2eul), __func__)) return;
+  if (!SetExportChecked(env, exports, "xf2rav", Napi::Function::New(env, Xf2rav), __func__)) return;
+  if (!SetExportChecked(env, exports, "rav2xf", Napi::Function::New(env, Rav2xf), __func__)) return;
+  if (!SetExportChecked(env, exports, "invstm", Napi::Function::New(env, Invstm), __func__)) return;
+  if (!SetExportChecked(env, exports, "xpose6", Napi::Function::New(env, Xpose6), __func__)) return;
   if (!SetExportChecked(env, exports, "sxform", Napi::Function::New(env, Sxform), __func__)) return;
 }
 

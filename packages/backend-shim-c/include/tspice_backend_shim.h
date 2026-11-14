@@ -681,6 +681,26 @@ int tspice_pxform(
 // sxform_c: compute state transformation matrix.
 //
 // Output matrix is written as 36 doubles in row-major order.
+// Frame algebra uses flat row-major matrices and position/velocity state vectors.
+int tspice_frame(
+    const double *x, double *outX, double *outY, double *outZ, char *err, int errMaxBytes);
+int tspice_twovec(
+    const double *axdef, int indexa, const double *plndef, int indexp, double *outRotation, char *err, int errMaxBytes);
+int tspice_twovxf(
+    const double *axdef, int indexa, const double *plndef, int indexp, double *outXform, char *err, int errMaxBytes);
+int tspice_eul2xf(
+    const double *eulang, int axisa, int axisb, int axisc, double *outXform, char *err, int errMaxBytes);
+int tspice_xf2eul(
+    const double *xform, int axisa, int axisb, int axisc, double *outEulang, int *outUnique, char *err, int errMaxBytes);
+int tspice_xf2rav(
+    const double *xform, double *outRot, double *outAv, char *err, int errMaxBytes);
+int tspice_rav2xf(
+    const double *rot, const double *av, double *outXform, char *err, int errMaxBytes);
+int tspice_invstm(
+    const double *mat, double *outInvmat, char *err, int errMaxBytes);
+int tspice_xpose6(
+    const double *m1, double *outMout, char *err, int errMaxBytes);
+
 int tspice_sxform(
     const char *from,
     const char *to,

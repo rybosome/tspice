@@ -1614,6 +1614,33 @@ export function createFakeBackend(
       return rotZRowMajor(theta);
     },
 
+    frame: () => {
+      throw new Error("Fake backend does not model frame()");
+    },
+    twovec: () => {
+      throw new Error("Fake backend does not model twovec()");
+    },
+    twovxf: () => {
+      throw new Error("Fake backend does not model twovxf()");
+    },
+    eul2xf: () => {
+      throw new Error("Fake backend does not model eul2xf()");
+    },
+    xf2eul: () => {
+      throw new Error("Fake backend does not model xf2eul()");
+    },
+    xf2rav: () => {
+      throw new Error("Fake backend does not model xf2rav()");
+    },
+    rav2xf: () => {
+      throw new Error("Fake backend does not model rav2xf()");
+    },
+    invstm: () => {
+      throw new Error("Fake backend does not model invstm()");
+    },
+    xpose6: () => {
+      throw new Error("Fake backend does not model xpose6()");
+    },
     sxform: (from: string, to: string, et: number) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);

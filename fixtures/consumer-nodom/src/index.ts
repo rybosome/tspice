@@ -39,3 +39,23 @@ export function fixedMatrixTypes(sync: Spice, async: SpiceAsync): void {
     asyncEigensystem,
   ];
 }
+
+async function frameAlgebra(spice: Spice, asyncSpice: SpiceAsync) {
+  const x = [1, 0, 0] as const,
+    y = [0, 1, 0] as const;
+  const ax = [1, 0, 0, 0, 0.25, 0] as const,
+    pl = [0, 1, 0, -0.25, 0, 0] as const;
+  const triad = spice.raw.frame(x);
+  const rot = spice.raw.twovec(triad.x, 1, y, 2);
+  const dynamic = await asyncSpice.raw.twovxf(ax, 1, pl, 2);
+  const recovered = spice.raw.xf2eul(dynamic, 3, 1, 3);
+  const { av } = await asyncSpice.raw.xf2rav(dynamic);
+  const state = spice.raw.rav2xf(rot, av);
+  const inverse = await asyncSpice.raw.invstm(state);
+  return [
+    spice.raw.xpose6(inverse),
+    spice.raw.eul2xf(recovered.eulang, 3, 1, 3),
+    recovered.unique,
+  ];
+}
+void frameAlgebra;
