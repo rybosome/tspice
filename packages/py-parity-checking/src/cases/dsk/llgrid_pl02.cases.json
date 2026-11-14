@@ -1,0 +1,215 @@
+[
+  {
+    "caseId": "dsk-llgrid_pl02-signed-faces",
+    "description": "Intersect three distinct faces and retain corresponding plate IDs and complete ordered points.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.llgrid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "grid": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-llgrid_pl02-repeated",
+    "description": "Repeated longitude/latitude pairs retain duplicate rows and plate membership.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.llgrid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "grid": [
+          [0.31, 0.21],
+          [0.31, 0.21],
+          [2.13, -0.49],
+          [0.31, 0.21]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-llgrid_pl02-periodic",
+    "description": "Check wrapped longitude and hemisphere sign in radians.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.llgrid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "grid": [
+          [0.31, 0.21],
+          [6.593185307179586, 0.21],
+          [-0.71, 0.15],
+          [0.71, -0.15]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-llgrid_pl02-empty",
+    "description": "The zero-size grid checks the real descriptor and returns two owned empty arrays.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.llgrid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "grid": []
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-llgrid_pl02-rectangular",
+    "description": "Equivalent rectangular and latitudinal segment descriptions preserve physical facet coordinates.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.llgrid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "grid": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-llgrid_pl02-miss",
+    "description": "A radial ray misses the first off-axis disconnected component.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-surface-cuts.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.dlafns",
+        "handleId": "h",
+        "dladscId": "d",
+        "nextId": "off"
+      },
+      {
+        "op": "dsk.llgrid_pl02",
+        "handleId": "h",
+        "dladscId": "off",
+        "grid": [[1.5, -1.4]]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOINTERCEPT"]
+    }
+  }
+]

@@ -329,6 +329,153 @@ static int data_segment(int handle, const int32_t* d, DskDataSegment* s, char* e
   return 0;
 }
 
+// These seven N0067 C symbols are exported but absent from SpiceUsr.h.
+void illum_pl02 ( SpiceInt               handle,
+                     ConstSpiceDLADescr   * dladsc,
+                     ConstSpiceChar       * target,
+                     SpiceDouble            et,
+                     ConstSpiceChar       * abcorr,
+                     ConstSpiceChar       * obsrvr,
+                     SpiceDouble            spoint [3],
+                     SpiceDouble          * phase,
+                     SpiceDouble          * solar,
+                     SpiceDouble          * emissn      );
+void illum_plid_pl02 ( SpiceInt               handle,
+                          ConstSpiceDLADescr   * dladsc,
+                          ConstSpiceChar       * target,
+                          SpiceDouble            et,
+                          ConstSpiceChar       * abcorr,
+                          ConstSpiceChar       * obsrvr,
+                          SpiceDouble            spoint [3],
+                          SpiceInt               plid,
+                          SpiceDouble          * trgepc,
+                          SpiceDouble            srfvec [3],
+                          SpiceDouble          * phase,
+                          SpiceDouble          * solar,
+                          SpiceDouble          * emissn,
+                          SpiceBoolean         * visible,
+                          SpiceBoolean         * lit       );
+void limb_pl02 ( SpiceInt              handle,
+                    ConstSpiceDLADescr  * dladsc,
+                    ConstSpiceChar      * target,
+                    SpiceDouble           et,
+                    ConstSpiceChar      * fixref,
+                    ConstSpiceChar      * abcorr,
+                    ConstSpiceChar      * obsrvr,
+                    SpiceInt              npts,
+                    SpiceDouble         * trgepc,
+                    SpiceDouble           obspos [3],
+                    SpiceDouble           lmbpts [][3],
+                    SpiceInt              pltids []     );
+void llgrid_pl02 ( SpiceInt               handle,
+                      ConstSpiceDLADescr   * dladsc,
+                      SpiceInt               npts,
+                      ConstSpiceDouble       grid   [][2],
+                      SpiceDouble            srfpts [][3],
+                      SpiceInt               pltids []     );
+void subpt_pl02 ( SpiceInt               handle,
+                     ConstSpiceDLADescr   * dladsc,
+                     ConstSpiceChar       * method,
+                     ConstSpiceChar       * target,
+                     SpiceDouble            et,
+                     ConstSpiceChar       * abcorr,
+                     ConstSpiceChar       * obsrvr,
+                     SpiceDouble            spoint [3],
+                     SpiceDouble          * alt,
+                     SpiceInt             * plateID     );
+void subsol_pl02 ( SpiceInt               handle,
+                      ConstSpiceDLADescr   * dladsc,
+                      ConstSpiceChar       * method,
+                      ConstSpiceChar       * target,
+                      SpiceDouble            et,
+                      ConstSpiceChar       * abcorr,
+                      ConstSpiceChar       * obsrvr,
+                      SpiceDouble            spoint [3],
+                      SpiceDouble          * dist,
+                      SpiceInt             * plateID     );
+void term_pl02 ( SpiceInt              handle,
+                    ConstSpiceDLADescr  * dladsc,
+                    ConstSpiceChar      * trmtyp,
+                    ConstSpiceChar      * source,
+                    ConstSpiceChar      * target,
+                    SpiceDouble           et,
+                    ConstSpiceChar      * fixref,
+                    ConstSpiceChar      * abcorr,
+                    ConstSpiceChar      * obsrvr,
+                    SpiceInt              npts,
+                    SpiceDouble         * trgepc,
+                    SpiceDouble           obspos   [3],
+                    SpiceDouble           trmpts   [][3],
+                    SpiceInt              pltids   []     );
+
+int tspice_illum_pl02(int handle, const int *descr, const char *target, double et, const char *abcorr, const char *obsrvr, const double *spoint, double *out, int *ids, char *err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !ids || !target || !abcorr || !obsrvr || !spoint) return tspice_return_error(err, cap, "Missing legacy plate storage");
+  illum_pl02(handle,&segment.descriptor,target,et,abcorr,obsrvr,(double*)spoint,out,out+1,out+2);
+  return data_status(err, cap);
+}
+
+int tspice_illum_plid_pl02(int handle, const int *descr, const char *target, double et, const char *abcorr, const char *obsrvr, const double *spoint, int plid, double *out, int *ids, char *err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !ids || !target || !abcorr || !obsrvr || !spoint) return tspice_return_error(err, cap, "Missing legacy plate storage");
+  // Only inspect an existing plate. For other indices the original DSKN02
+  // reports its scientific error after the legacy geometry prerequisites.
+  if (plid >= 1 && plid <= segment.np) {
+    int verts[3] = {0}, address = segment.descriptor.ibase + 11 + 3 * (plid - 1);
+    dasrdi_c(handle, address, address + 2, verts);
+    if (failed_c()) return data_status(err, cap);
+    for (int i=0; i<3; ++i) if (verts[i]<1 || verts[i]>segment.nv)
+      return tspice_return_error(err, cap, "Plate contains an invalid one-based vertex ID");
+  }
+  illum_plid_pl02(handle,&segment.descriptor,target,et,abcorr,obsrvr,(double*)spoint,plid,out,out+1,out+4,out+5,out+6,ids,ids+1);
+  return data_status(err, cap);
+}
+
+int tspice_limb_pl02(int handle, const int *descr, const char *target, double et, const char *fixref, const char *abcorr, const char *obsrvr, int npts, double *out, int *ids, char *err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !ids || !target || !fixref || !abcorr || !obsrvr) return tspice_return_error(err, cap, "Missing legacy plate storage");
+  if (npts > ((268435456-32)/24)) return tspice_return_error(err, cap, "Plate output exceeds buffer bound");
+  limb_pl02(handle,&segment.descriptor,target,et,fixref,abcorr,obsrvr,npts,out,out+1,(double(*)[3])(out+4),ids);
+  return data_status(err, cap);
+}
+
+int tspice_llgrid_pl02(int handle, const int *descr, int npts, const double *grid, double *out, int *ids, char *err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !ids || !grid) return tspice_return_error(err, cap, "Missing legacy plate storage");
+  if (npts > ((268435456-32)/24)) return tspice_return_error(err, cap, "Plate output exceeds buffer bound");
+  llgrid_pl02(handle,&segment.descriptor,npts,(const double(*)[2])grid,(double(*)[3])out,ids);
+  return data_status(err, cap);
+}
+
+int tspice_subpt_pl02(int handle, const int *descr, const char *method, const char *target, double et, const char *abcorr, const char *obsrvr, double *out, int *ids, char *err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !ids || !method || !target || !abcorr || !obsrvr) return tspice_return_error(err, cap, "Missing legacy plate storage");
+  subpt_pl02(handle,&segment.descriptor,method,target,et,abcorr,obsrvr,out,out+3,ids);
+  return data_status(err, cap);
+}
+
+int tspice_subsol_pl02(int handle, const int *descr, const char *method, const char *target, double et, const char *abcorr, const char *obsrvr, double *out, int *ids, char *err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !ids || !method || !target || !abcorr || !obsrvr) return tspice_return_error(err, cap, "Missing legacy plate storage");
+  subsol_pl02(handle,&segment.descriptor,method,target,et,abcorr,obsrvr,out,out+3,ids);
+  return data_status(err, cap);
+}
+
+int tspice_term_pl02(int handle, const int *descr, const char *trmtyp, const char *source, const char *target, double et, const char *fixref, const char *abcorr, const char *obsrvr, int npts, double *out, int *ids, char *err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !ids || !trmtyp || !source || !target || !fixref || !abcorr || !obsrvr) return tspice_return_error(err, cap, "Missing legacy plate storage");
+  if (npts > ((268435456-32)/24)) return tspice_return_error(err, cap, "Plate output exceeds buffer bound");
+  term_pl02(handle,&segment.descriptor,trmtyp,source,target,et,fixref,abcorr,obsrvr,npts,out,out+1,(double(*)[3])(out+4),ids);
+  return data_status(err, cap);
+}
+
 static int scalar_integer_item(int item) {
   return item == 1 || item == 2 || item == 3 || (item >= 5 && item <= 8);
 }

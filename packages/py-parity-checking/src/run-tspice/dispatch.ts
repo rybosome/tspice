@@ -178,6 +178,13 @@ export function dispatchStep(
     case "dsk.dlabfs":
     case "dsk.dskd02":
     case "dsk.dski02":
+    case "dsk.illum_pl02":
+    case "dsk.illum_plid_pl02":
+    case "dsk.limb_pl02":
+    case "dsk.llgrid_pl02":
+    case "dsk.subpt_pl02":
+    case "dsk.subsol_pl02":
+    case "dsk.term_pl02":
     case "dsk.dskx02":
     case "dsk.dskxsi":
     case "dsk.dskxv":

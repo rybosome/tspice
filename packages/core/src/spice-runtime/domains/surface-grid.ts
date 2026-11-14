@@ -6,10 +6,15 @@ const maxRows = Math.floor(268435456 / 24);
 export function surfaceGrid(
   rows: readonly (readonly number[])[],
   width: 2 | 3,
+  maxCount = maxRows,
 ) {
   if (!Array.isArray(rows)) throw new TypeError("Expected surface grid array");
   const count = rows.length;
-  if (!Number.isSafeInteger(count) || count < 0 || count > maxRows)
+  if (
+    !Number.isSafeInteger(count) ||
+    count < 0 ||
+    count > Math.min(maxRows, maxCount)
+  )
     throw new RangeError("Surface grid exceeds buffer bound");
   const words = new Float64Array(Math.max(1, count) * width);
   for (let i = 0; i < count; i++) {
@@ -24,6 +29,17 @@ export function surfaceGrid(
     }
   }
   return { count, words };
+}
+
+/** Four leading observer/epoch words share the largest 256 MiB result buffer. */
+export const maxLegacyPlateRows = Math.floor((268435456 - 32) / 24);
+
+/** Allocate one sentinel row for nonpositive scientific counts and bound positive arrays. */
+export function legacyPlateRows(count: number): number {
+  assertSpiceInt32(count, "plate point count");
+  if (count > maxLegacyPlateRows)
+    throw new RangeError("Plate output exceeds buffer bound");
+  return Math.max(1, count);
 }
 
 /** Bound positive capacities before allocation; invalid scientific counts get non-null sentinel storage. */

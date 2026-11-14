@@ -1,4 +1,4 @@
-import { stageLimbpt } from "./stage-limbpt.mjs";
+import { stageLegacyPlates } from "./stage-legacy-plates.mjs";
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -280,9 +280,9 @@ function patchReturnInt(filePath, symbol, indentation = "") {
   }
 }
 
-stageLimbpt(
-  path.join(cspiceSourceRoot, "src", "cspice", "limbpt.c"),
-  path.join(cspiceCspiceDir, "limbpt.c"),
+stageLegacyPlates(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
 );
 
 patchReturnInt(path.join(cspiceCspiceDir, "s_copy.c"), "s_copy", "\t");
@@ -420,6 +420,13 @@ const exportedFunctions = [
   "_tspice_dskw02",
   "_tspice_dskobj",
   "_tspice_dsksrf",
+  "_tspice_illum_pl02",
+  "_tspice_illum_plid_pl02",
+  "_tspice_limb_pl02",
+  "_tspice_llgrid_pl02",
+  "_tspice_subpt_pl02",
+  "_tspice_subsol_pl02",
+  "_tspice_term_pl02",
   "_tspice_dskx02",
   "_tspice_dskxsi",
   "_tspice_dskxv",

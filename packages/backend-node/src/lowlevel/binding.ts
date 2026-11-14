@@ -276,6 +276,34 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export dsksrf(dsk, bodyid, srfids)",
   );
   invariant(
+    typeof native.illum_pl02 === "function",
+    "Expected native addon to export illum_pl02",
+  );
+  invariant(
+    typeof native.illum_plid_pl02 === "function",
+    "Expected native addon to export illum_plid_pl02",
+  );
+  invariant(
+    typeof native.limb_pl02 === "function",
+    "Expected native addon to export limb_pl02",
+  );
+  invariant(
+    typeof native.llgrid_pl02 === "function",
+    "Expected native addon to export llgrid_pl02",
+  );
+  invariant(
+    typeof native.subpt_pl02 === "function",
+    "Expected native addon to export subpt_pl02",
+  );
+  invariant(
+    typeof native.subsol_pl02 === "function",
+    "Expected native addon to export subsol_pl02",
+  );
+  invariant(
+    typeof native.term_pl02 === "function",
+    "Expected native addon to export term_pl02",
+  );
+  invariant(
     typeof native.dskx02 === "function",
     "Expected native addon to export dskx02",
   );

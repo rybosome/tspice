@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 178
-- Planned (not yet implemented): 471
+- Implemented now (SpiceRawBackend): 185
+- Planned (not yet implemented): 464
 - Excluded: 3
 
 ## Implemented now
@@ -111,6 +111,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfstol_c` | GF, set a tolerance value for GF |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
+| `illum_pl02` | illumination angles using DSK type 2 plate model |
+| `illum_plid_pl02` | illumination angles using type 2 DSK |
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
@@ -125,7 +127,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
 | `latsrf_c` | Latitudinal grid to surface points |
+| `limb_pl02` | Limb using DSK type 2 plate model |
 | `limbpt_c` | Limb points on an extended object |
+| `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -175,9 +179,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
+| `subpt_pl02` | Sub-observer point using DSK type 2 plate model |
 | `subslr_c` | Sub-solar point |
+| `subsol_pl02` | Sub-solar point using DSK type 2 plate model |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
+| `term_pl02` | Terminator using DSK type 2 plate model |
 | `termpt_c` | Terminator points on an extended object |
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
@@ -400,8 +407,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `hx2dp_c` | Hexadecimal string to d.p. number |
 | `ident_c` | Return the 3x3 identity matrix |
 | `illum_c` | Illumination angles |
-| `illum_pl02` | illumination angles using DSK type 2 plate model |
-| `illum_plid_pl02` | illumination angles using type 2 DSK |
 | `inedpl_c` | Intersection of ellipsoid and plane |
 | `inelpl_c` | Intersection of ellipse and plane |
 | `inrypl_c` | Intersection of ray and plane |
@@ -430,8 +435,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `lgresp_c` | Lagrange interpolation on equally spaced points |
 | `lgrind_c` | Lagrange polynomial interpolation with derivative |
 | `lgrint_c` | Lagrange polynomial interpolation |
-| `limb_pl02` | Limb using DSK type 2 plate model |
-| `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
 | `lmpool_c` | Load variables from memory into the pool |
 | `lparse_c` | Parse items from a list |
 | `lparsm_c` | Parse a list of items having multiple delimiters |
@@ -592,9 +595,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `stlabx_c` | Stellar aberration, transmission case |
 | `stpool_c` | String from pool |
 | `subpt_c` | Sub-observer point |
-| `subpt_pl02` | Sub-observer point using DSK type 2 plate model |
 | `subsol_c` | Sub-solar point |
-| `subsol_pl02` | Sub-solar point using DSK type 2 plate model |
 | `sumad_c` | Sum of a double precision array |
 | `sumai_c` | Sum of an integer array |
 | `surfnm_c` | Surface normal vector on an ellipsoid |
@@ -602,7 +603,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `surfpv_c` | Surface point and velocity |
 | `szpool_c` | Get size limitations of the kernel pool |
 | `tangpt_c` | Ray-ellipsoid tangent point |
-| `term_pl02` | Terminator using DSK type 2 plate model |
 | `tipbod_c` | Transformation, inertial position to bodyfixed |
 | `tisbod_c` | Transformation, inertial state to bodyfixed |
 | `tkfram_c` | TK frame, find position rotation |

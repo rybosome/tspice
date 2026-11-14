@@ -200,6 +200,7 @@ function scenarioPaths(scenario, tracked) {
 export function buildLedger(root = defaultRoot, options = {}) {
   const errors = [];
   const inventory = canonicalInventory(root);
+  const canonicalNames = new Set(inventory.map((routine) => routine.name));
   const policy = readJson(root, "data/coverage-ledger-policy.json");
   if (policy.schemaVersion !== 1)
     throw new Error("Unknown coverage-ledger policy schema");
@@ -448,7 +449,12 @@ export function buildLedger(root = defaultRoot, options = {}) {
       const definition = shim.resolve(symbol, fromFile);
       // DSKXSI uses the exact linked N0067 callee. A local shim definition
       // with the same spelling does not establish the external ABI route.
-      if (symbol.endsWith("_c") || (symbol === "dskxsi_" && !definition)) {
+      if (
+        !definition &&
+        (canonicalNames.has(symbol) ||
+          symbol.endsWith("_c") ||
+          symbol === "dskxsi_")
+      ) {
         result.add(symbol);
         return;
       }

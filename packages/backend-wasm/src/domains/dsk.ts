@@ -1,4 +1,9 @@
 import {
+  legacyPlateRows,
+  maxLegacyPlateRows,
+  surfaceGrid,
+  surfaceVectors,
+  surfaceTextBytes,
   dskRay,
   dskRayBatch,
   dskRaySelection,
@@ -32,6 +37,7 @@ import type {
 
 import { assertWasmOwnedCellHandle, wasmCellPointer } from "./cells-windows.js";
 
+const legacyTextEncoder = new TextEncoder();
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
 
 const I32_MIN = -2147483648;
@@ -312,6 +318,452 @@ export function createDskApi(
     );
   }
   return {
+    illum_pl02(handle, dladsc, target, et, abcorr, obsrvr, spoint) {
+      const h = handles.lookup(handle, DAS_BACKED, "illum_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      const words = dskRay(spoint);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          32,
+          surfaceTextBytes(target),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(obsrvr),
+          words.byteLength,
+          3 * 8,
+          1 * 4,
+        ],
+        (
+          err,
+          ds,
+          targetPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          spointPtr,
+          outPtr,
+          idsPtr,
+        ) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPU8.set(legacyTextEncoder.encode(target), targetPtr);
+          module.HEAPU8[targetPtr + surfaceTextBytes(target) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(abcorr), abcorrPtr);
+          module.HEAPU8[abcorrPtr + surfaceTextBytes(abcorr) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(obsrvr), obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + surfaceTextBytes(obsrvr) - 1] = 0;
+          module.HEAPF64.set(words, spointPtr >>> 3);
+          check(
+            module._tspice_illum_pl02(
+              h,
+              ds,
+              targetPtr,
+              et,
+              abcorrPtr,
+              obsrvrPtr,
+              spointPtr,
+              outPtr,
+              idsPtr,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const out = module.HEAPF64.subarray(outPtr >>> 3, (outPtr >>> 3) + 3);
+          return { phase: out[0]!, solar: out[1]!, emissn: out[2]! };
+        },
+      );
+    },
+    illum_plid_pl02(handle, dladsc, target, et, abcorr, obsrvr, spoint, plid) {
+      const h = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "illum_plid_pl02",
+      ).nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      assertSpiceInt32(plid, "plate ID");
+      const words = dskRay(spoint);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          32,
+          surfaceTextBytes(target),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(obsrvr),
+          words.byteLength,
+          7 * 8,
+          2 * 4,
+        ],
+        (
+          err,
+          ds,
+          targetPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          spointPtr,
+          outPtr,
+          idsPtr,
+        ) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPU8.set(legacyTextEncoder.encode(target), targetPtr);
+          module.HEAPU8[targetPtr + surfaceTextBytes(target) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(abcorr), abcorrPtr);
+          module.HEAPU8[abcorrPtr + surfaceTextBytes(abcorr) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(obsrvr), obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + surfaceTextBytes(obsrvr) - 1] = 0;
+          module.HEAPF64.set(words, spointPtr >>> 3);
+          check(
+            module._tspice_illum_plid_pl02(
+              h,
+              ds,
+              targetPtr,
+              et,
+              abcorrPtr,
+              obsrvrPtr,
+              spointPtr,
+              plid,
+              outPtr,
+              idsPtr,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const out = module.HEAPF64.subarray(outPtr >>> 3, (outPtr >>> 3) + 7),
+            ids = module.HEAP32.subarray(idsPtr >>> 2, (idsPtr >>> 2) + 2);
+          return {
+            trgepc: out[0]!,
+            srfvec: dskPoint([out[1]!, out[2]!, out[3]!]),
+            phase: out[4]!,
+            solar: out[5]!,
+            emissn: out[6]!,
+            visible: ids[0] !== 0,
+            lit: ids[1] !== 0,
+          };
+        },
+      );
+    },
+    limb_pl02(handle, dladsc, target, et, fixref, abcorr, obsrvr, npts) {
+      const h = handles.lookup(handle, DAS_BACKED, "limb_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      const rows = legacyPlateRows(npts);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          32,
+          surfaceTextBytes(target),
+          surfaceTextBytes(fixref),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(obsrvr),
+          (4 + 3 * rows) * 8,
+          rows * 4,
+        ],
+        (
+          err,
+          ds,
+          targetPtr,
+          fixrefPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          idsPtr,
+        ) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPU8.set(legacyTextEncoder.encode(target), targetPtr);
+          module.HEAPU8[targetPtr + surfaceTextBytes(target) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(fixref), fixrefPtr);
+          module.HEAPU8[fixrefPtr + surfaceTextBytes(fixref) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(abcorr), abcorrPtr);
+          module.HEAPU8[abcorrPtr + surfaceTextBytes(abcorr) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(obsrvr), obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + surfaceTextBytes(obsrvr) - 1] = 0;
+          check(
+            module._tspice_limb_pl02(
+              h,
+              ds,
+              targetPtr,
+              et,
+              fixrefPtr,
+              abcorrPtr,
+              obsrvrPtr,
+              npts,
+              outPtr,
+              idsPtr,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const out = module.HEAPF64.subarray(
+              outPtr >>> 3,
+              (outPtr >>> 3) + (4 + 3 * rows),
+            ),
+            ids = module.HEAP32.subarray(idsPtr >>> 2, (idsPtr >>> 2) + rows);
+          return {
+            trgepc: out[0]!,
+            obspos: dskPoint([out[1]!, out[2]!, out[3]!]),
+            lmbpts: surfaceVectors(out.subarray(4), npts),
+            pltids: Array.from(ids.subarray(0, npts)),
+          };
+        },
+      );
+    },
+    llgrid_pl02(handle, dladsc, grid) {
+      const h = handles.lookup(handle, DAS_BACKED, "llgrid_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      const { count: npts, words } = surfaceGrid(grid, 2, maxLegacyPlateRows);
+      const rows = legacyPlateRows(npts);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 32, words.byteLength, 3 * rows * 8, rows * 4],
+        (err, ds, gridPtr, outPtr, idsPtr) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPF64.set(words, gridPtr >>> 3);
+          check(
+            module._tspice_llgrid_pl02(
+              h,
+              ds,
+              npts,
+              gridPtr,
+              outPtr,
+              idsPtr,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const out = module.HEAPF64.subarray(
+              outPtr >>> 3,
+              (outPtr >>> 3) + 3 * rows,
+            ),
+            ids = module.HEAP32.subarray(idsPtr >>> 2, (idsPtr >>> 2) + rows);
+          return {
+            srfpts: surfaceVectors(out.subarray(0), npts),
+            pltids: Array.from(ids.subarray(0, npts)),
+          };
+        },
+      );
+    },
+    subpt_pl02(handle, dladsc, method, target, et, abcorr, obsrvr) {
+      const h = handles.lookup(handle, DAS_BACKED, "subpt_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          32,
+          surfaceTextBytes(method),
+          surfaceTextBytes(target),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(obsrvr),
+          4 * 8,
+          1 * 4,
+        ],
+        (
+          err,
+          ds,
+          methodPtr,
+          targetPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          idsPtr,
+        ) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPU8.set(legacyTextEncoder.encode(method), methodPtr);
+          module.HEAPU8[methodPtr + surfaceTextBytes(method) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(target), targetPtr);
+          module.HEAPU8[targetPtr + surfaceTextBytes(target) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(abcorr), abcorrPtr);
+          module.HEAPU8[abcorrPtr + surfaceTextBytes(abcorr) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(obsrvr), obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + surfaceTextBytes(obsrvr) - 1] = 0;
+          check(
+            module._tspice_subpt_pl02(
+              h,
+              ds,
+              methodPtr,
+              targetPtr,
+              et,
+              abcorrPtr,
+              obsrvrPtr,
+              outPtr,
+              idsPtr,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const out = module.HEAPF64.subarray(outPtr >>> 3, (outPtr >>> 3) + 4),
+            ids = module.HEAP32.subarray(idsPtr >>> 2, (idsPtr >>> 2) + 1);
+          return {
+            spoint: dskPoint([out[0]!, out[1]!, out[2]!]),
+            alt: out[3]!,
+            plateID: ids[0]!,
+          };
+        },
+      );
+    },
+    subsol_pl02(handle, dladsc, method, target, et, abcorr, obsrvr) {
+      const h = handles.lookup(handle, DAS_BACKED, "subsol_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          32,
+          surfaceTextBytes(method),
+          surfaceTextBytes(target),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(obsrvr),
+          4 * 8,
+          1 * 4,
+        ],
+        (
+          err,
+          ds,
+          methodPtr,
+          targetPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          idsPtr,
+        ) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPU8.set(legacyTextEncoder.encode(method), methodPtr);
+          module.HEAPU8[methodPtr + surfaceTextBytes(method) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(target), targetPtr);
+          module.HEAPU8[targetPtr + surfaceTextBytes(target) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(abcorr), abcorrPtr);
+          module.HEAPU8[abcorrPtr + surfaceTextBytes(abcorr) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(obsrvr), obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + surfaceTextBytes(obsrvr) - 1] = 0;
+          check(
+            module._tspice_subsol_pl02(
+              h,
+              ds,
+              methodPtr,
+              targetPtr,
+              et,
+              abcorrPtr,
+              obsrvrPtr,
+              outPtr,
+              idsPtr,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const out = module.HEAPF64.subarray(outPtr >>> 3, (outPtr >>> 3) + 4),
+            ids = module.HEAP32.subarray(idsPtr >>> 2, (idsPtr >>> 2) + 1);
+          return {
+            spoint: dskPoint([out[0]!, out[1]!, out[2]!]),
+            dist: out[3]!,
+            plateID: ids[0]!,
+          };
+        },
+      );
+    },
+    term_pl02(
+      handle,
+      dladsc,
+      trmtyp,
+      source,
+      target,
+      et,
+      fixref,
+      abcorr,
+      obsrvr,
+      npts,
+    ) {
+      const h = handles.lookup(handle, DAS_BACKED, "term_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      const rows = legacyPlateRows(npts);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          32,
+          surfaceTextBytes(trmtyp),
+          surfaceTextBytes(source),
+          surfaceTextBytes(target),
+          surfaceTextBytes(fixref),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(obsrvr),
+          (4 + 3 * rows) * 8,
+          rows * 4,
+        ],
+        (
+          err,
+          ds,
+          trmtypPtr,
+          sourcePtr,
+          targetPtr,
+          fixrefPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          idsPtr,
+        ) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPU8.set(legacyTextEncoder.encode(trmtyp), trmtypPtr);
+          module.HEAPU8[trmtypPtr + surfaceTextBytes(trmtyp) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(source), sourcePtr);
+          module.HEAPU8[sourcePtr + surfaceTextBytes(source) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(target), targetPtr);
+          module.HEAPU8[targetPtr + surfaceTextBytes(target) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(fixref), fixrefPtr);
+          module.HEAPU8[fixrefPtr + surfaceTextBytes(fixref) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(abcorr), abcorrPtr);
+          module.HEAPU8[abcorrPtr + surfaceTextBytes(abcorr) - 1] = 0;
+          module.HEAPU8.set(legacyTextEncoder.encode(obsrvr), obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + surfaceTextBytes(obsrvr) - 1] = 0;
+          check(
+            module._tspice_term_pl02(
+              h,
+              ds,
+              trmtypPtr,
+              sourcePtr,
+              targetPtr,
+              et,
+              fixrefPtr,
+              abcorrPtr,
+              obsrvrPtr,
+              npts,
+              outPtr,
+              idsPtr,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const out = module.HEAPF64.subarray(
+              outPtr >>> 3,
+              (outPtr >>> 3) + (4 + 3 * rows),
+            ),
+            ids = module.HEAP32.subarray(idsPtr >>> 2, (idsPtr >>> 2) + rows);
+          return {
+            trgepc: out[0]!,
+            obspos: dskPoint([out[1]!, out[2]!, out[3]!]),
+            trmpts: surfaceVectors(out.subarray(4), npts),
+            pltids: Array.from(ids.subarray(0, npts)),
+          };
+        },
+      );
+    },
     dskx02(handle, dladsc, vertex, raydir) {
       const h = handles.lookup(handle, DAS_BACKED, "dskx02").nativeHandle,
         desc = snapshotDskDataDescriptor(dladsc),

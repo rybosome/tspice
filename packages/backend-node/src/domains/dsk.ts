@@ -1,4 +1,10 @@
 import {
+  legacyPlateRows,
+  maxLegacyPlateRows,
+  surfaceGrid,
+  surfaceVectors,
+  surfaceTextBytes,
+  assertSpiceInt32,
   dskRay,
   dskRayBatch,
   dskRaySelection,
@@ -204,6 +210,184 @@ export function createDskApi(
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
 
   return {
+    illum_pl02(handle, dladsc, target, et, abcorr, obsrvr, spoint) {
+      const h = handles.lookup(handle, DAS_BACKED, "illum_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      const words = dskRay(spoint);
+      surfaceTextBytes(target);
+      surfaceTextBytes(abcorr);
+      surfaceTextBytes(obsrvr);
+      const out = new Float64Array(3),
+        ids = new Int32Array(1);
+      native.illum_pl02(h, desc, target, et, abcorr, obsrvr, words, out, ids);
+      return { phase: out[0]!, solar: out[1]!, emissn: out[2]! };
+    },
+    illum_plid_pl02(handle, dladsc, target, et, abcorr, obsrvr, spoint, plid) {
+      const h = handles.lookup(
+        handle,
+        DAS_BACKED,
+        "illum_plid_pl02",
+      ).nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      assertSpiceInt32(plid, "plate ID");
+      const words = dskRay(spoint);
+      surfaceTextBytes(target);
+      surfaceTextBytes(abcorr);
+      surfaceTextBytes(obsrvr);
+      const out = new Float64Array(7),
+        ids = new Int32Array(2);
+      native.illum_plid_pl02(
+        h,
+        desc,
+        target,
+        et,
+        abcorr,
+        obsrvr,
+        words,
+        plid,
+        out,
+        ids,
+      );
+      return {
+        trgepc: out[0]!,
+        srfvec: dskPoint([out[1]!, out[2]!, out[3]!]),
+        phase: out[4]!,
+        solar: out[5]!,
+        emissn: out[6]!,
+        visible: ids[0] !== 0,
+        lit: ids[1] !== 0,
+      };
+    },
+    limb_pl02(handle, dladsc, target, et, fixref, abcorr, obsrvr, npts) {
+      const h = handles.lookup(handle, DAS_BACKED, "limb_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      const rows = legacyPlateRows(npts);
+      surfaceTextBytes(target);
+      surfaceTextBytes(fixref);
+      surfaceTextBytes(abcorr);
+      surfaceTextBytes(obsrvr);
+      const out = new Float64Array(4 + 3 * rows),
+        ids = new Int32Array(rows);
+      native.limb_pl02(
+        h,
+        desc,
+        target,
+        et,
+        fixref,
+        abcorr,
+        obsrvr,
+        npts,
+        out,
+        ids,
+      );
+      return {
+        trgepc: out[0]!,
+        obspos: dskPoint([out[1]!, out[2]!, out[3]!]),
+        lmbpts: surfaceVectors(out.subarray(4), npts),
+        pltids: Array.from(ids.subarray(0, npts)),
+      };
+    },
+    llgrid_pl02(handle, dladsc, grid) {
+      const h = handles.lookup(handle, DAS_BACKED, "llgrid_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      const { count: npts, words } = surfaceGrid(grid, 2, maxLegacyPlateRows);
+      const rows = legacyPlateRows(npts);
+      const out = new Float64Array(3 * rows),
+        ids = new Int32Array(rows);
+      native.llgrid_pl02(h, desc, npts, words, out, ids);
+      return {
+        srfpts: surfaceVectors(out.subarray(0), npts),
+        pltids: Array.from(ids.subarray(0, npts)),
+      };
+    },
+    subpt_pl02(handle, dladsc, method, target, et, abcorr, obsrvr) {
+      const h = handles.lookup(handle, DAS_BACKED, "subpt_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      surfaceTextBytes(method);
+      surfaceTextBytes(target);
+      surfaceTextBytes(abcorr);
+      surfaceTextBytes(obsrvr);
+      const out = new Float64Array(4),
+        ids = new Int32Array(1);
+      native.subpt_pl02(h, desc, method, target, et, abcorr, obsrvr, out, ids);
+      return {
+        spoint: dskPoint([out[0]!, out[1]!, out[2]!]),
+        alt: out[3]!,
+        plateID: ids[0]!,
+      };
+    },
+    subsol_pl02(handle, dladsc, method, target, et, abcorr, obsrvr) {
+      const h = handles.lookup(handle, DAS_BACKED, "subsol_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      surfaceTextBytes(method);
+      surfaceTextBytes(target);
+      surfaceTextBytes(abcorr);
+      surfaceTextBytes(obsrvr);
+      const out = new Float64Array(4),
+        ids = new Int32Array(1);
+      native.subsol_pl02(h, desc, method, target, et, abcorr, obsrvr, out, ids);
+      return {
+        spoint: dskPoint([out[0]!, out[1]!, out[2]!]),
+        dist: out[3]!,
+        plateID: ids[0]!,
+      };
+    },
+    term_pl02(
+      handle,
+      dladsc,
+      trmtyp,
+      source,
+      target,
+      et,
+      fixref,
+      abcorr,
+      obsrvr,
+      npts,
+    ) {
+      const h = handles.lookup(handle, DAS_BACKED, "term_pl02").nativeHandle;
+      const desc = snapshotDskDataDescriptor(dladsc);
+      if (!Number.isFinite(et))
+        throw new TypeError("Expected finite plate epoch");
+      const rows = legacyPlateRows(npts);
+      surfaceTextBytes(trmtyp);
+      surfaceTextBytes(source);
+      surfaceTextBytes(target);
+      surfaceTextBytes(fixref);
+      surfaceTextBytes(abcorr);
+      surfaceTextBytes(obsrvr);
+      const out = new Float64Array(4 + 3 * rows),
+        ids = new Int32Array(rows);
+      native.term_pl02(
+        h,
+        desc,
+        trmtyp,
+        source,
+        target,
+        et,
+        fixref,
+        abcorr,
+        obsrvr,
+        npts,
+        out,
+        ids,
+      );
+      return {
+        trgepc: out[0]!,
+        obspos: dskPoint([out[1]!, out[2]!, out[3]!]),
+        trmpts: surfaceVectors(out.subarray(4), npts),
+        pltids: Array.from(ids.subarray(0, npts)),
+      };
+    },
     dskx02(handle, dladsc, vertex, raydir) {
       const h = handles.lookup(handle, DAS_BACKED, "dskx02").nativeHandle,
         desc = snapshotDskDataDescriptor(dladsc),

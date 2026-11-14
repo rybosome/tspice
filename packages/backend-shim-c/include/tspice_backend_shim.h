@@ -353,6 +353,13 @@ int tspice_dsksrf(
 //
 // `outDoubles18` layout:
 // [corpar(10), co1min, co1max, co2min, co2max, co3min, co3max, start, stop]
+int tspice_illum_pl02(int handle, const int *descr, const char *target, double et, const char *abcorr, const char *obsrvr, const double *spoint, double *out, int *ids, char *err, int cap);
+int tspice_illum_plid_pl02(int handle, const int *descr, const char *target, double et, const char *abcorr, const char *obsrvr, const double *spoint, int plid, double *out, int *ids, char *err, int cap);
+int tspice_limb_pl02(int handle, const int *descr, const char *target, double et, const char *fixref, const char *abcorr, const char *obsrvr, int npts, double *out, int *ids, char *err, int cap);
+int tspice_llgrid_pl02(int handle, const int *descr, int npts, const double *grid, double *out, int *ids, char *err, int cap);
+int tspice_subpt_pl02(int handle, const int *descr, const char *method, const char *target, double et, const char *abcorr, const char *obsrvr, double *out, int *ids, char *err, int cap);
+int tspice_subsol_pl02(int handle, const int *descr, const char *method, const char *target, double et, const char *abcorr, const char *obsrvr, double *out, int *ids, char *err, int cap);
+int tspice_term_pl02(int handle, const int *descr, const char *trmtyp, const char *source, const char *target, double et, const char *fixref, const char *abcorr, const char *obsrvr, int npts, double *out, int *ids, char *err, int cap);
 int tspice_dskx02(int handle, const int *descr, const double *vertex, const double *dir, int *plid, double *xpt, int *found, char *err, int cap);
 int tspice_dskxsi(int pri, const char *target, int nsurf, const int *surfaces, double et, const char *fixref, const double *vertex, const double *dir, int maxd, int maxi, double *out, int *ints, char *err, int cap);
 int tspice_dskxv(int pri, const char *target, int nsurf, const int *surfaces, double et, const char *fixref, int nrays, const double *vertices, const double *dirs, double *out, int *found, char *err, int cap);

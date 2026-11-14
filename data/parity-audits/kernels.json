@@ -1368,7 +1368,8 @@
         "kernels-unload-empty-path-error",
         "kernels-unload-removes-loaded-kernel-success"
       ],
-      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e20-8b8168dc-wasm",
@@ -1420,7 +1421,8 @@
         "kernels-unload-empty-path-error",
         "kernels-unload-removes-loaded-kernel-success"
       ],
-      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e20-8b8168dc-node",
@@ -1474,7 +1476,8 @@
       ],
       "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
-      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e20-8b8168dc-wasm",
@@ -1528,7 +1531,220 @@
       ],
       "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
-      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e21-fd1e2a3b-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "149d521391ff921cccb6b5feceff6f607a0b53d7abcfee480e12bda149521c8d",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both complete required lanes passed locally on fd1e2a3b029d254b0af6164b5f28e0fa862a729c. JavaScript: 2,893 parity tests and one expected guard skip. Native-required: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e21-fd1e2a3b-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "149d521391ff921cccb6b5feceff6f607a0b53d7abcfee480e12bda149521c8d",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "observation": "Both complete required lanes passed locally on fd1e2a3b029d254b0af6164b5f28e0fa862a729c. JavaScript: 2,893 parity tests and one expected guard skip. Native-required: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e21-fd1e2a3b-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "149d521391ff921cccb6b5feceff6f607a0b53d7abcfee480e12bda149521c8d",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "fd1e2a3b029d254b0af6164b5f28e0fa862a729c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591172251/job/132436008369",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436008369 on fd1e2a3b029d254b0af6164b5f28e0fa862a729c: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e21-fd1e2a3b-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "149d521391ff921cccb6b5feceff6f607a0b53d7abcfee480e12bda149521c8d",
+      "caseIds": [
+        "kernels-furnsh-audit-binary-and-text",
+        "kernels-furnsh-audit-duplicate-byte-loads",
+        "kernels-furnsh-audit-empty-meta",
+        "kernels-furnsh-audit-malformed-text",
+        "kernels-furnsh-audit-observable-pool-values",
+        "kernels-furnsh-loads-text-kernel-success",
+        "kernels-furnsh-missing-file-error",
+        "kernels-kclear-audit-pool-and-repeat",
+        "kernels-kclear-clears-loaded-kernels-success",
+        "kernels-kdata-audit-index-and-filters",
+        "kernels-kdata-audit-invalid-kind",
+        "kernels-kdata-found-and-miss-success",
+        "kernels-kinfo-audit-cache-invalidation",
+        "kernels-kinfo-audit-empty-path",
+        "kernels-kinfo-found-and-miss-success",
+        "kernels-ktotal-audit-invalid-kind",
+        "kernels-ktotal-audit-subtypes-and-unions",
+        "kernels-ktotal-counts-loaded-kernels-success",
+        "kernels-kxtrct-audit-blank-key",
+        "kernels-kxtrct-audit-immediate-terminator",
+        "kernels-kxtrct-audit-key-last",
+        "kernels-kxtrct-audit-multiple-and-case",
+        "kernels-kxtrct-audit-newline-within-value",
+        "kernels-kxtrct-audit-no-terminators",
+        "kernels-kxtrct-audit-non-ascii-space",
+        "kernels-kxtrct-audit-nul-key-term",
+        "kernels-kxtrct-audit-nul-sequence",
+        "kernels-kxtrct-audit-repeated-keyword",
+        "kernels-kxtrct-audit-tab-within-value",
+        "kernels-kxtrct-audit-tabs-are-not-blanks",
+        "kernels-kxtrct-audit-terminator-last",
+        "kernels-kxtrct-audit-trailing-newline",
+        "kernels-kxtrct-audit-trailing-tab",
+        "kernels-kxtrct-audit-unicode-words",
+        "kernels-kxtrct-found-success",
+        "kernels-kxtrct-not-found-success",
+        "kernels-unload-audit-text-pool-reload",
+        "kernels-unload-audit-unknown-and-repeat",
+        "kernels-unload-empty-path-error",
+        "kernels-unload-removes-loaded-kernel-success"
+      ],
+      "commit": "fd1e2a3b029d254b0af6164b5f28e0fa862a729c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591172251/job/132436008369",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436008369 on fd1e2a3b029d254b0af6164b5f28e0fa862a729c: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1662,11 +1878,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> Node typed adapter/stager -> native registered furnsh -> tspice_furnsh shared C shim -> furnsh_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -1685,11 +1903,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.furnsh -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_furnsh -> shared C shim -> furnsh_c; outputs read before finally frees allocations.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -1790,11 +2010,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.unload -> Node typed adapter/stager -> native registered unload -> tspice_unload shared C shim -> unload_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -1813,11 +2035,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.unload -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_unload -> shared C shim -> unload_c; outputs read before finally frees allocations.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -1906,11 +2130,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kclear -> Node typed adapter/stager -> native registered kclear -> tspice_kclear shared C shim -> kclear_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -1929,11 +2155,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kclear -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kclear -> shared C shim -> kclear_c; outputs read before finally frees allocations.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -2032,11 +2260,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kdata -> Node typed adapter/stager -> native registered kdata -> tspice_kdata shared C shim -> kdata_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -2055,11 +2285,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kdata -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_kdata -> shared C shim -> kdata_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -2142,11 +2374,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kinfo -> Node typed adapter/stager -> native registered kinfo -> tspice_kinfo shared C shim -> kinfo_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -2165,11 +2399,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "composed",
           "trace": "raw.kinfo -> filename-keyed cache built from actual _tspice_ktotal/_tspice_kdata -> shared shim/CSPICE. Clear cache before furnsh/unload/kclear; live meta child-source/duplicate and mutation tests validate composed semantics.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -2268,11 +2504,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> Node typed adapter/stager -> native registered ktotal -> tspice_ktotal shared C shim -> ktotal_c; native buffers copied, SPICE errors captured/reset. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -2291,11 +2529,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ktotal -> WASM typed adapter/virtual FS -> typed/configured actual _tspice_ktotal -> shared C shim -> ktotal_c; outputs read before finally frees allocations. Ordinary kind queries reach the named C operation; explicit subtype/OR selectors compose the actual loaded table and filename filtering.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -2457,11 +2697,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.kxtrct -> Node typed adapter/stager -> native registered kxtrct -> tspice_kxtrct shared C shim -> kxtrct_c; native buffers copied, SPICE errors captured/reset.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -2480,11 +2722,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "javascript",
           "trace": "raw.kxtrct -> shared kxtrctJs; no WASM substitute in the parity handler. Independent oracle calls actual locked SpiceyPy libspice.kxtrct_c and reads exact buffers; supported adapter normalization/UTF-8 size limits are explicit.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     }

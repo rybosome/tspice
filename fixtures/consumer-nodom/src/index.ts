@@ -29,6 +29,60 @@ function readRay(spice: import("@rybosome/tspice").SpiceSync, path: string) {
     const desc = spice.raw.dlabfs(h),
       v = [10, 1, 0.25] as const,
       d = [-1, 0, 0] as const;
+    if (desc.found) {
+      spice.raw.illum_pl02(h, desc.descr, "100101", 0, "NONE", "100102", v);
+      spice.raw.illum_plid_pl02(
+        h,
+        desc.descr,
+        "100101",
+        0,
+        "NONE",
+        "100102",
+        v,
+        1,
+      );
+      spice.raw.limb_pl02(
+        h,
+        desc.descr,
+        "100101",
+        0,
+        "AUDIT_GEOMETRY_FIXED",
+        "NONE",
+        "100102",
+        4,
+      );
+      spice.raw.llgrid_pl02(h, desc.descr, [[0, 0]]);
+      spice.raw.subpt_pl02(
+        h,
+        desc.descr,
+        "INTERCEPT",
+        "100101",
+        0,
+        "NONE",
+        "100102",
+      );
+      spice.raw.subsol_pl02(
+        h,
+        desc.descr,
+        "INTERCEPT",
+        "100101",
+        0,
+        "NONE",
+        "100102",
+      );
+      spice.raw.term_pl02(
+        h,
+        desc.descr,
+        "UMBRAL",
+        "SUN",
+        "100101",
+        0,
+        "AUDIT_GEOMETRY_FIXED",
+        "NONE",
+        "100102",
+        4,
+      );
+    }
     if (desc.found) spice.raw.dskx02(h, desc.descr, v, d);
     const src = spice.raw.dskxsi(
       false,

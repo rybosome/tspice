@@ -11,6 +11,7 @@ from spiceypy.utils.libspicehelper import libspice
 
 from ..dsk_ray_oracle import source_intercept, batch_intercepts
 from ..dsk_data_oracle import read_page
+from ..legacy_plates_oracle import legacy_plate
 from ..models import (
     StepDskDascls,
     StepDskDasopr,
@@ -18,6 +19,13 @@ from ..models import (
     StepDskDskb02,
     StepDskDskd02,
     StepDskDski02,
+    StepDskIllumPl02,
+    StepDskIllumPlidPl02,
+    StepDskLimbPl02,
+    StepDskLlgridPl02,
+    StepDskSubptPl02,
+    StepDskSubsolPl02,
+    StepDskTermPl02,
     StepDskDskx02,
     StepDskDskxsi,
     StepDskDskxv,
@@ -338,6 +346,15 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
             context.register_finalizer("restore DSK tolerance", lambda: sp.dskstl(step.key, saved))
         sp.dskstl(step.key, step.value)
         return StepOutput(op=step.op, value=None)
+    if isinstance(step, (StepDskIllumPl02, StepDskIllumPlidPl02, StepDskLimbPl02, StepDskLlgridPl02, StepDskSubptPl02, StepDskSubsolPl02, StepDskTermPl02)):
+        tracked = _require_handle(context, step.handleId)
+        desc = _require_dladsc(context, step.dladscId)
+        if not tracked["isOpen"] or context.state.dsk.descriptorOwners.get(step.dladscId) is not tracked:
+            raise ValueError("Legacy plate request needs its original open file")
+        handle = int(tracked["handle"])
+        if sp.getfat(tracked["path"]) != ("DAS", "DSK") or sp.dskgd(handle,desc).dtype != 2:
+            raise ValueError("Expected a type 2 DSK segment")
+        return StepOutput(op=step.op,value=legacy_plate(step, handle,desc))
     if isinstance(step, StepDskDskx02):
         tracked = _require_handle(context, step.handleId)
         descriptor = _require_dladsc(context, step.dladscId)

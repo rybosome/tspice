@@ -1,0 +1,505 @@
+[
+  {
+    "caseId": "dsk-illum_plid_pl02-geometry",
+    "description": "Compare complete physical results for a moving observer at separated signed epochs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": -47,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 31,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-reception",
+    "description": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "LT",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "CN+S",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-unknown-target",
+    "description": "Unknown body text preserves the legacy lookup diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "UNIDENTIFIED_LEGACY_TARGET",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-segment-target",
+    "description": "A mismatched center is diagnosed before any plate result is returned.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100103",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["TARGETMISMATCH"]
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-opposing-facets",
+    "description": "Compare incident, phase and emission angles on opposing and oblique faces, including the plate-specific shadow and visibility flags when returned.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [-1.0, -0.6666666666666666, -0.3333333333333333],
+        "plid": 8
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, -0.6666666666666666, 0.3333333333333333],
+        "plid": 3
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [-1.0, 0.6666666666666666, -0.3333333333333333],
+        "plid": 6
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-opposite-observer",
+    "description": "Changing observer hemisphere changes emission geometry independently from solar incidence.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100106",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-transmission",
+    "description": "The legacy illumination routine rejects transmission corrections.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "XLT",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-plate-index",
+    "description": "An out-of-range one-based plate ID reaches DSKN02.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 9
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-illum_plid_pl02-rectangular-parameterization",
+    "description": "The plate-specific routine requires a latitudinal DSK descriptor and signals its original frame diagnostic for a rectangular descriptor.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.illum_plid_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "spoint": [1.0, 0.6666666666666666, 0.3333333333333333],
+        "plid": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FRAMENAMENOTFOUND"]
+    }
+  }
+]

@@ -12,6 +12,13 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.kclear",
   // DSK intersections depend on the live DAS claim, loaded segments and DSK
   // tolerances. Repeating a setter must apply it again after intervening writes.
+  "raw.illum_pl02",
+  "raw.illum_plid_pl02",
+  "raw.limb_pl02",
+  "raw.llgrid_pl02",
+  "raw.subpt_pl02",
+  "raw.subsol_pl02",
+  "raw.term_pl02",
   "raw.dskx02",
   "raw.dskxsi",
   "raw.dskxv",

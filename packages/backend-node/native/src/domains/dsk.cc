@@ -507,6 +507,248 @@ static bool RayArray(Napi::Env env, const Napi::Value &v, napi_typedarray_type t
   return false;
 }
 
+
+static bool LegacyPlateBuffer(const Napi::Value& value, napi_typedarray_type type, size_t words) {
+  if (!value.IsTypedArray()) return false;
+  const auto buffer=value.As<Napi::TypedArray>();
+  return buffer.TypedArrayType()==type && buffer.ElementLength()==words;
+}
+static Napi::Value LegacyPlateInputError(Napi::Env env) {
+  if (!env.IsExceptionPending()) ThrowSpiceError(Napi::TypeError::New(env,"Invalid legacy plate input or output storage"));
+  return env.Undefined();
+}
+static Napi::Value IllumPl02(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=9) return LegacyPlateInputError(env);
+  int32_t handle=0;
+  if (!ReadInt32Checked(env,info[0],"handle",&handle)) return env.Undefined();
+  int32_t descr[8]={};
+  if (!ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  if (!info[2].IsString()) return LegacyPlateInputError(env);
+  const auto target=info[2].As<Napi::String>().Utf8Value();
+  if (target.size()>268435455 || target.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[3].IsNumber()) return LegacyPlateInputError(env);
+  const double et=info[3].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) return LegacyPlateInputError(env);
+  if (!info[4].IsString()) return LegacyPlateInputError(env);
+  const auto abcorr=info[4].As<Napi::String>().Utf8Value();
+  if (abcorr.size()>268435455 || abcorr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[5].IsString()) return LegacyPlateInputError(env);
+  const auto obsrvr=info[5].As<Napi::String>().Utf8Value();
+  if (obsrvr.size()>268435455 || obsrvr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!LegacyPlateBuffer(info[6],napi_float64_array,3)) return LegacyPlateInputError(env);
+  auto spoint=info[6].As<Napi::Float64Array>();
+  for (size_t i=0;i<spoint.ElementLength();++i) if (!std::isfinite(spoint[i])) return LegacyPlateInputError(env);
+  if (!LegacyPlateBuffer(info[7],napi_float64_array,3)) return LegacyPlateInputError(env);
+  auto out=info[7].As<Napi::Float64Array>();
+  if (!LegacyPlateBuffer(info[8],napi_int32_array,1)) return LegacyPlateInputError(env);
+  auto ids=info[8].As<Napi::Int32Array>();
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_illum_pl02(handle, descr, target.c_str(), et, abcorr.c_str(), obsrvr.c_str(), spoint.Data(), out.Data(), ids.Data(),err,sizeof(err))) ThrowSpiceError(env,"CSPICE failed while calling illum_pl02",err);
+  return env.Undefined();
+}
+
+static Napi::Value IllumPlidPl02(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=10) return LegacyPlateInputError(env);
+  int32_t handle=0;
+  if (!ReadInt32Checked(env,info[0],"handle",&handle)) return env.Undefined();
+  int32_t descr[8]={};
+  if (!ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  if (!info[2].IsString()) return LegacyPlateInputError(env);
+  const auto target=info[2].As<Napi::String>().Utf8Value();
+  if (target.size()>268435455 || target.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[3].IsNumber()) return LegacyPlateInputError(env);
+  const double et=info[3].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) return LegacyPlateInputError(env);
+  if (!info[4].IsString()) return LegacyPlateInputError(env);
+  const auto abcorr=info[4].As<Napi::String>().Utf8Value();
+  if (abcorr.size()>268435455 || abcorr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[5].IsString()) return LegacyPlateInputError(env);
+  const auto obsrvr=info[5].As<Napi::String>().Utf8Value();
+  if (obsrvr.size()>268435455 || obsrvr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!LegacyPlateBuffer(info[6],napi_float64_array,3)) return LegacyPlateInputError(env);
+  auto spoint=info[6].As<Napi::Float64Array>();
+  for (size_t i=0;i<spoint.ElementLength();++i) if (!std::isfinite(spoint[i])) return LegacyPlateInputError(env);
+  int32_t plid=0;
+  if (!ReadInt32Checked(env,info[7],"plid",&plid)) return env.Undefined();
+  if (!LegacyPlateBuffer(info[8],napi_float64_array,7)) return LegacyPlateInputError(env);
+  auto out=info[8].As<Napi::Float64Array>();
+  if (!LegacyPlateBuffer(info[9],napi_int32_array,2)) return LegacyPlateInputError(env);
+  auto ids=info[9].As<Napi::Int32Array>();
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_illum_plid_pl02(handle, descr, target.c_str(), et, abcorr.c_str(), obsrvr.c_str(), spoint.Data(), plid, out.Data(), ids.Data(),err,sizeof(err))) ThrowSpiceError(env,"CSPICE failed while calling illum_plid_pl02",err);
+  return env.Undefined();
+}
+
+static Napi::Value LimbPl02(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=10) return LegacyPlateInputError(env);
+  int32_t handle=0;
+  if (!ReadInt32Checked(env,info[0],"handle",&handle)) return env.Undefined();
+  int32_t descr[8]={};
+  if (!ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  if (!info[2].IsString()) return LegacyPlateInputError(env);
+  const auto target=info[2].As<Napi::String>().Utf8Value();
+  if (target.size()>268435455 || target.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[3].IsNumber()) return LegacyPlateInputError(env);
+  const double et=info[3].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) return LegacyPlateInputError(env);
+  if (!info[4].IsString()) return LegacyPlateInputError(env);
+  const auto fixref=info[4].As<Napi::String>().Utf8Value();
+  if (fixref.size()>268435455 || fixref.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[5].IsString()) return LegacyPlateInputError(env);
+  const auto abcorr=info[5].As<Napi::String>().Utf8Value();
+  if (abcorr.size()>268435455 || abcorr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[6].IsString()) return LegacyPlateInputError(env);
+  const auto obsrvr=info[6].As<Napi::String>().Utf8Value();
+  if (obsrvr.size()>268435455 || obsrvr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  int32_t npts=0;
+  if (!ReadInt32Checked(env,info[7],"npts",&npts)) return env.Undefined();
+  if (npts > (268435456-32)/24) return LegacyPlateInputError(env);
+  const size_t rows=npts>0 ? static_cast<size_t>(npts) : 1;
+  if (!LegacyPlateBuffer(info[8],napi_float64_array,4+3*rows)) return LegacyPlateInputError(env);
+  auto out=info[8].As<Napi::Float64Array>();
+  if (!LegacyPlateBuffer(info[9],napi_int32_array,rows)) return LegacyPlateInputError(env);
+  auto ids=info[9].As<Napi::Int32Array>();
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_limb_pl02(handle, descr, target.c_str(), et, fixref.c_str(), abcorr.c_str(), obsrvr.c_str(), npts, out.Data(), ids.Data(),err,sizeof(err))) ThrowSpiceError(env,"CSPICE failed while calling limb_pl02",err);
+  return env.Undefined();
+}
+
+static Napi::Value LlgridPl02(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=6) return LegacyPlateInputError(env);
+  int32_t handle=0;
+  if (!ReadInt32Checked(env,info[0],"handle",&handle)) return env.Undefined();
+  int32_t descr[8]={};
+  if (!ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  int32_t npts=0;
+  if (!ReadInt32Checked(env,info[2],"npts",&npts)) return env.Undefined();
+  if (npts > (268435456-32)/24) return LegacyPlateInputError(env);
+  const size_t rows=npts>0 ? static_cast<size_t>(npts) : 1;
+  if (!LegacyPlateBuffer(info[3],napi_float64_array,2*rows)) return LegacyPlateInputError(env);
+  auto grid=info[3].As<Napi::Float64Array>();
+  for (size_t i=0;i<grid.ElementLength();++i) if (!std::isfinite(grid[i])) return LegacyPlateInputError(env);
+  if (!LegacyPlateBuffer(info[4],napi_float64_array,3*rows)) return LegacyPlateInputError(env);
+  auto out=info[4].As<Napi::Float64Array>();
+  if (!LegacyPlateBuffer(info[5],napi_int32_array,rows)) return LegacyPlateInputError(env);
+  auto ids=info[5].As<Napi::Int32Array>();
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_llgrid_pl02(handle, descr, npts, grid.Data(), out.Data(), ids.Data(),err,sizeof(err))) ThrowSpiceError(env,"CSPICE failed while calling llgrid_pl02",err);
+  return env.Undefined();
+}
+
+static Napi::Value SubptPl02(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=9) return LegacyPlateInputError(env);
+  int32_t handle=0;
+  if (!ReadInt32Checked(env,info[0],"handle",&handle)) return env.Undefined();
+  int32_t descr[8]={};
+  if (!ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  if (!info[2].IsString()) return LegacyPlateInputError(env);
+  const auto method=info[2].As<Napi::String>().Utf8Value();
+  if (method.size()>268435455 || method.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[3].IsString()) return LegacyPlateInputError(env);
+  const auto target=info[3].As<Napi::String>().Utf8Value();
+  if (target.size()>268435455 || target.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[4].IsNumber()) return LegacyPlateInputError(env);
+  const double et=info[4].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) return LegacyPlateInputError(env);
+  if (!info[5].IsString()) return LegacyPlateInputError(env);
+  const auto abcorr=info[5].As<Napi::String>().Utf8Value();
+  if (abcorr.size()>268435455 || abcorr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[6].IsString()) return LegacyPlateInputError(env);
+  const auto obsrvr=info[6].As<Napi::String>().Utf8Value();
+  if (obsrvr.size()>268435455 || obsrvr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!LegacyPlateBuffer(info[7],napi_float64_array,4)) return LegacyPlateInputError(env);
+  auto out=info[7].As<Napi::Float64Array>();
+  if (!LegacyPlateBuffer(info[8],napi_int32_array,1)) return LegacyPlateInputError(env);
+  auto ids=info[8].As<Napi::Int32Array>();
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_subpt_pl02(handle, descr, method.c_str(), target.c_str(), et, abcorr.c_str(), obsrvr.c_str(), out.Data(), ids.Data(),err,sizeof(err))) ThrowSpiceError(env,"CSPICE failed while calling subpt_pl02",err);
+  return env.Undefined();
+}
+
+static Napi::Value SubsolPl02(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=9) return LegacyPlateInputError(env);
+  int32_t handle=0;
+  if (!ReadInt32Checked(env,info[0],"handle",&handle)) return env.Undefined();
+  int32_t descr[8]={};
+  if (!ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  if (!info[2].IsString()) return LegacyPlateInputError(env);
+  const auto method=info[2].As<Napi::String>().Utf8Value();
+  if (method.size()>268435455 || method.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[3].IsString()) return LegacyPlateInputError(env);
+  const auto target=info[3].As<Napi::String>().Utf8Value();
+  if (target.size()>268435455 || target.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[4].IsNumber()) return LegacyPlateInputError(env);
+  const double et=info[4].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) return LegacyPlateInputError(env);
+  if (!info[5].IsString()) return LegacyPlateInputError(env);
+  const auto abcorr=info[5].As<Napi::String>().Utf8Value();
+  if (abcorr.size()>268435455 || abcorr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[6].IsString()) return LegacyPlateInputError(env);
+  const auto obsrvr=info[6].As<Napi::String>().Utf8Value();
+  if (obsrvr.size()>268435455 || obsrvr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!LegacyPlateBuffer(info[7],napi_float64_array,4)) return LegacyPlateInputError(env);
+  auto out=info[7].As<Napi::Float64Array>();
+  if (!LegacyPlateBuffer(info[8],napi_int32_array,1)) return LegacyPlateInputError(env);
+  auto ids=info[8].As<Napi::Int32Array>();
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_subsol_pl02(handle, descr, method.c_str(), target.c_str(), et, abcorr.c_str(), obsrvr.c_str(), out.Data(), ids.Data(),err,sizeof(err))) ThrowSpiceError(env,"CSPICE failed while calling subsol_pl02",err);
+  return env.Undefined();
+}
+
+static Napi::Value TermPl02(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=12) return LegacyPlateInputError(env);
+  int32_t handle=0;
+  if (!ReadInt32Checked(env,info[0],"handle",&handle)) return env.Undefined();
+  int32_t descr[8]={};
+  if (!ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  if (!info[2].IsString()) return LegacyPlateInputError(env);
+  const auto trmtyp=info[2].As<Napi::String>().Utf8Value();
+  if (trmtyp.size()>268435455 || trmtyp.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[3].IsString()) return LegacyPlateInputError(env);
+  const auto source=info[3].As<Napi::String>().Utf8Value();
+  if (source.size()>268435455 || source.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[4].IsString()) return LegacyPlateInputError(env);
+  const auto target=info[4].As<Napi::String>().Utf8Value();
+  if (target.size()>268435455 || target.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[5].IsNumber()) return LegacyPlateInputError(env);
+  const double et=info[5].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) return LegacyPlateInputError(env);
+  if (!info[6].IsString()) return LegacyPlateInputError(env);
+  const auto fixref=info[6].As<Napi::String>().Utf8Value();
+  if (fixref.size()>268435455 || fixref.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[7].IsString()) return LegacyPlateInputError(env);
+  const auto abcorr=info[7].As<Napi::String>().Utf8Value();
+  if (abcorr.size()>268435455 || abcorr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  if (!info[8].IsString()) return LegacyPlateInputError(env);
+  const auto obsrvr=info[8].As<Napi::String>().Utf8Value();
+  if (obsrvr.size()>268435455 || obsrvr.find('\0')!=std::string::npos) return LegacyPlateInputError(env);
+  int32_t npts=0;
+  if (!ReadInt32Checked(env,info[9],"npts",&npts)) return env.Undefined();
+  if (npts > (268435456-32)/24) return LegacyPlateInputError(env);
+  const size_t rows=npts>0 ? static_cast<size_t>(npts) : 1;
+  if (!LegacyPlateBuffer(info[10],napi_float64_array,4+3*rows)) return LegacyPlateInputError(env);
+  auto out=info[10].As<Napi::Float64Array>();
+  if (!LegacyPlateBuffer(info[11],napi_int32_array,rows)) return LegacyPlateInputError(env);
+  auto ids=info[11].As<Napi::Int32Array>();
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_term_pl02(handle, descr, trmtyp.c_str(), source.c_str(), target.c_str(), et, fixref.c_str(), abcorr.c_str(), obsrvr.c_str(), npts, out.Data(), ids.Data(),err,sizeof(err))) ThrowSpiceError(env,"CSPICE failed while calling term_pl02",err);
+  return env.Undefined();
+}
+
 static Napi::Value Dskx02(const Napi::CallbackInfo &info) {
   Napi::Env env=info.Env();
   if (info.Length()!=4) { ThrowSpiceError(Napi::TypeError::New(env,"dskx02: invalid argument count")); return env.Undefined(); }
@@ -636,6 +878,13 @@ void RegisterDsk(Napi::Env env, Napi::Object exports) {
   SetExportChecked(env, exports, "dskcls", Napi::Function::New(env, Dskcls), "RegisterDsk");
   SetExportChecked(env, exports, "dskobj", Napi::Function::New(env, Dskobj), "RegisterDsk");
   SetExportChecked(env, exports, "dsksrf", Napi::Function::New(env, Dsksrf), "RegisterDsk");
+  if (!SetExportChecked(env,exports,"illum_pl02",Napi::Function::New(env,IllumPl02),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"illum_plid_pl02",Napi::Function::New(env,IllumPlidPl02),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"limb_pl02",Napi::Function::New(env,LimbPl02),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"llgrid_pl02",Napi::Function::New(env,LlgridPl02),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"subpt_pl02",Napi::Function::New(env,SubptPl02),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"subsol_pl02",Napi::Function::New(env,SubsolPl02),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"term_pl02",Napi::Function::New(env,TermPl02),"RegisterDsk")) return;
   if (!SetExportChecked(env,exports,"dskx02",Napi::Function::New(env,Dskx02),"RegisterDsk")) return;
   if (!SetExportChecked(env,exports,"dskxsi",Napi::Function::New(env,Dskxsi),"RegisterDsk")) return;
   if (!SetExportChecked(env,exports,"dskxv",Napi::Function::New(env,Dskxv),"RegisterDsk")) return;

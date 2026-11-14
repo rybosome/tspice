@@ -169,6 +169,8 @@ export {
 } from "./spice-runtime/domains/dsk-data.js";
 
 export {
+  legacyPlateRows,
+  maxLegacyPlateRows,
   surfaceGrid,
   surfaceCutLimits,
   surfaceVectors,

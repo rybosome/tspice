@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { stageLimbpt } from "../../../../scripts/stage-limbpt.mjs";
+import { stageLegacyPlates } from "../../../../scripts/stage-legacy-plates.mjs";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -271,7 +271,7 @@ async function main() {
       );
     }
   }
-  stageLimbpt(source, path.join(generatedDir, "limbpt.c"));
+  stageLegacyPlates(path.dirname(source), generatedDir);
 
   // Print the absolute generated directory path for consumption by binding.gyp via
   // the tspice_native_generated_dir variable.
