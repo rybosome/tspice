@@ -7,6 +7,7 @@
     {
       "target_name": "tspice_backend_node",
       "sources": [
+        "<!@(node ../../../scripts/stage-aberration-cache.mjs)",
         "src/addon.cc",
         "src/addon_common.cc",
         "src/cell_handles.cc",
@@ -55,6 +56,7 @@
       "conditions": [
         ["OS=='linux'", { "libraries": ["-lm"] }]
       ],
+      "cflags_c": ["-std=gnu11"],
       "cflags": ["-fno-exceptions"],
       "cflags_cc": ["-std=c++17", "-fno-exceptions"]
     },

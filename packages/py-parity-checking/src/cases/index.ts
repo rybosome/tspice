@@ -57,6 +57,14 @@ import ephemerisSpkcovCasesRaw from "./ephemeris/spkcov.cases.json" with { type:
 import ephemerisSpkezCasesRaw from "./ephemeris/spkez.cases.json" with { type: "json" };
 import ephemerisSpkezpCasesRaw from "./ephemeris/spkezp.cases.json" with { type: "json" };
 import ephemerisSpkezrCasesRaw from "./ephemeris/spkezr.cases.json" with { type: "json" };
+import ephemerisSpkacsCasesRaw from "./ephemeris/spkacs.cases.json" with { type: "json" };
+import ephemerisSpkapoCasesRaw from "./ephemeris/spkapo.cases.json" with { type: "json" };
+import ephemerisSpkappCasesRaw from "./ephemeris/spkapp.cases.json" with { type: "json" };
+import ephemerisSpkapsCasesRaw from "./ephemeris/spkaps.cases.json" with { type: "json" };
+import ephemerisSpkltcCasesRaw from "./ephemeris/spkltc.cases.json" with { type: "json" };
+import ephemerisStelabCasesRaw from "./ephemeris/stelab.cases.json" with { type: "json" };
+import ephemerisStlabxCasesRaw from "./ephemeris/stlabx.cases.json" with { type: "json" };
+import ephemerisLtimeCasesRaw from "./ephemeris/ltime.cases.json" with { type: "json" };
 import ephemerisSpkgeoCasesRaw from "./ephemeris/spkgeo.cases.json" with { type: "json" };
 import ephemerisSpkgpsCasesRaw from "./ephemeris/spkgps.cases.json" with { type: "json" };
 import ephemerisSpkobjCasesRaw from "./ephemeris/spkobj.cases.json" with { type: "json" };
@@ -215,6 +223,14 @@ export const ephemerisCases: ParityCase[] = [
   ...(ephemerisSpkezCasesRaw as ParityCase[]),
   ...(ephemerisSpkezpCasesRaw as ParityCase[]),
   ...(ephemerisSpkezrCasesRaw as ParityCase[]),
+  ...(ephemerisSpkacsCasesRaw as ParityCase[]),
+  ...(ephemerisSpkapoCasesRaw as ParityCase[]),
+  ...(ephemerisSpkappCasesRaw as ParityCase[]),
+  ...(ephemerisSpkapsCasesRaw as ParityCase[]),
+  ...(ephemerisSpkltcCasesRaw as ParityCase[]),
+  ...(ephemerisStelabCasesRaw as ParityCase[]),
+  ...(ephemerisStlabxCasesRaw as ParityCase[]),
+  ...(ephemerisLtimeCasesRaw as ParityCase[]),
   ...(ephemerisSpkgeoCasesRaw as ParityCase[]),
   ...(ephemerisSpkgpsCasesRaw as ParityCase[]),
   ...(ephemerisSpkobjCasesRaw as ParityCase[]),

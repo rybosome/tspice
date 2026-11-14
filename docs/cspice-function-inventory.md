@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -112,6 +112,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `ltime_c` | Light Time |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -141,6 +142,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sincpt_c` | Surface intercept |
 | `size_c` | Size of a cell |
 | `sphrec_c` | Spherical to rectangular coordinates |
+| `spkacs_c` | SPK, aberration corrected state |
+| `spkapo_c` | S/P Kernel, apparent position only |
+| `spkapp_c` | S/P Kernel, apparent state |
+| `spkaps_c` | SPK, apparent state |
 | `spkcls_c` | SPK, Close file |
 | `spkcov_c` | SPK coverage |
 | `spkez_c` | S/P Kernel, easy reader |
@@ -148,6 +153,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkezr_c` | S/P Kernel, easier reader |
 | `spkgeo_c` | S/P Kernel, geometric state |
 | `spkgps_c` | S/P Kernel, geometric position |
+| `spkltc_c` | S/P Kernel, light time corrected state |
 | `spkobj_c` | SPK objects |
 | `spkopa_c` | SPK open for addition |
 | `spkopn_c` | SPK, open new file. |
@@ -158,6 +164,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkuds_c` | SPK - unpack segment descriptor |
 | `spkw08_c` | Write SPK segment, type 8 |
 | `ssize_c` | Set the size of a cell |
+| `stelab_c` | Stellar Aberration |
+| `stlabx_c` | Stellar aberration, transmission case |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
@@ -441,7 +449,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `lstltc_c` | Last character element less than |
 | `lstltd_c` | Last double precision element less than |
 | `lstlti_c` | Last integer element less than |
-| `ltime_c` | Light Time |
 | `lx4dec_c` | Scan for decimal number |
 | `lx4num_c` | Scan for number |
 | `lx4sgn_c` | Scan for signed integer |
@@ -556,16 +563,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spk14a_c` | SPK, add data to a type 14 segment |
 | `spk14b_c` | SPK, begin a type 14 segment |
 | `spk14e_c` | SPK, end a type 14 segment |
-| `spkacs_c` | SPK, aberration corrected state |
-| `spkapo_c` | S/P Kernel, apparent position only |
-| `spkapp_c` | S/P Kernel, apparent state |
-| `spkaps_c` | SPK, apparent state |
 | `spkcpo_c` | SPK, constant position observer state |
 | `spkcpt_c` | SPK, constant position target state |
 | `spkcvo_c` | SPK, constant velocity observer state |
 | `spkcvt_c` | SPK, constant velocity target state |
 | `spklef_c` | S/P Kernel, Load ephemeris file |
-| `spkltc_c` | S/P Kernel, light time corrected state |
 | `spkpvn_c` | S/P Kernel, position and velocity in native frame |
 | `spksub_c` | S/P Kernel, subset |
 | `spkuef_c` | SPK Kernel, Unload ephemeris file |
@@ -587,8 +589,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `srfs2c_c` | Surface and body strings to surface ID code |
 | `srfscc_c` | Surface string and body ID code to surface ID code |
 | `srfxpt_c` | Surface intercept point |
-| `stelab_c` | Stellar Aberration |
-| `stlabx_c` | Stellar aberration, transmission case |
 | `stpool_c` | String from pool |
 | `subpt_c` | Sub-observer point |
 | `subpt_pl02` | Sub-observer point using DSK type 2 plate model |

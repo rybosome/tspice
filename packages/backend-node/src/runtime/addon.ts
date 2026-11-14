@@ -296,6 +296,51 @@ export type NativeAddon = {
     coverWindowHandle: number,
   ): void;
 
+  spkacs(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observer: number,
+  ): number[];
+  spkapo(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: readonly number[],
+    abcorr: string,
+  ): number[];
+  spkapp(
+    target: number,
+    et: number,
+    ref: string,
+    observerState: readonly number[],
+    abcorr: string,
+  ): number[];
+  spkaps(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: readonly number[],
+    observerAcceleration: readonly number[],
+  ): number[];
+  spkltc(
+    target: number,
+    et: number,
+    ref: string,
+    abcorr: string,
+    observerState: readonly number[],
+  ): number[];
+  stelab(
+    position: readonly number[],
+    observerVelocity: readonly number[],
+  ): number[];
+  stlabx(
+    position: readonly number[],
+    observerVelocity: readonly number[],
+  ): number[];
+  ltime(etobs: number, observer: number, dir: string, target: number): number[];
   spkezr(
     target: string,
     et: number,

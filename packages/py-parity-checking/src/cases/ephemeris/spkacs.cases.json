@@ -1,0 +1,488 @@
+[
+  {
+    "caseId": "ephemeris-spkacs-geometric",
+    "description": "Compare every output field for geometric corrections on the three-axis moving polynomial target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "NONE",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "none",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-reception",
+    "description": "Compare every output field for reception corrections on the three-axis moving polynomial target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "LT",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "CN",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "LT+S",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "CN+S",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-transmission",
+    "description": "Compare every output field for transmission corrections on the three-axis moving polynomial target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "XLT",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "XCN",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "XLT+S",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "XCN+S",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-rotated-frame",
+    "description": "Evaluate the complete state or position and light-time fields in another inertial frame across signed epochs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": -250.25,
+        "ref": "ECLIPJ2000",
+        "abcorr": "LT+S",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 200.5,
+        "ref": "ECLIPJ2000",
+        "abcorr": "XCN+S",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-kernel-priority",
+    "description": "The highest-priority target segment changes position, light time and apparent direction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-priority.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "NONE",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "CN+S",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-coincident-observer",
+    "description": "A target and observer at the barycentric origin produce zero separation, light time and derivative.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkacs",
+        "target": 0,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "NONE",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 0,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "LT",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 0,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "XCN+S",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-observer-stencil-edge",
+    "description": "Stellar acceleration requires SPK coverage at ET plus and minus one second.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 0,
+        "et": 100,
+        "ref": "J2000",
+        "abcorr": "CN+S",
+        "observer": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-unknown-observer",
+    "description": "Retain the primary missing barycentric observer error before differencing failed output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "XCN+S",
+        "observer": 888777
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-unknown-frame",
+    "description": "Inertial-frame validation precedes target ephemeris lookup.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkacs",
+        "target": 888777,
+        "et": 125.25,
+        "ref": "NOT_AN_INERTIAL_FRAME",
+        "abcorr": "LT",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-unknown-option",
+    "description": "Preserve the routine-specific parser diagnostic before frame or file lookup.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "NOT_AN_INERTIAL_FRAME",
+        "abcorr": "BANANA",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-coverage-gap",
+    "description": "Primary target has an authored coverage gap at observer ET.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 50,
+        "ref": "J2000",
+        "abcorr": "CN+S",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-shifted-coverage",
+    "description": "Geometric coverage includes the endpoint but the retarded target epoch falls in the preceding gap.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 100,
+        "ref": "J2000",
+        "abcorr": "LT+S",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkacs-correction-spelling-transition",
+    "description": "Alternate blank-separated stellar spelling and uncorrected light-time spelling at the same epoch; preserve the requested correction on every call.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "lt   +s",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "LT",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "CN +S",
+        "observer": 100002
+      },
+      {
+        "op": "ephemeris.spkacs",
+        "target": 100001,
+        "et": 125.25,
+        "ref": "J2000",
+        "abcorr": "CN",
+        "observer": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

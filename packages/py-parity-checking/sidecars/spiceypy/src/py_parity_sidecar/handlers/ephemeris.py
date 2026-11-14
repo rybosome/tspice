@@ -8,12 +8,21 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import SpiceyError
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
 
+from .. import correction_oracle
 from ..models import (
     StepEphemerisSpkcls,
     StepEphemerisSpkcov,
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisSpkacs,
+    StepEphemerisSpkapo,
+    StepEphemerisSpkapp,
+    StepEphemerisSpkaps,
+    StepEphemerisSpkltc,
+    StepEphemerisStelab,
+    StepEphemerisStlabx,
+    StepEphemerisLtime,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -221,6 +230,38 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             label="spkezr",
         )
         return StepOutput(op=step.op, value={"state": state, "lt": lt})
+
+    if isinstance(step, StepEphemerisSpkacs):
+        result = correction_oracle.spkacs(step.target, step.et, step.ref, step.abcorr, step.observer)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisSpkapo):
+        result = sp.spkapo(step.target, step.et, step.ref, step.observerState, correction_oracle.option(step.abcorr))
+        return StepOutput(op=step.op, value={'pos':_to_float_list(result[0], expected_len=3, label=step.op), 'lt':float(result[1])})
+
+    if isinstance(step, StepEphemerisSpkapp):
+        result = correction_oracle.spkapp(step.target, step.et, step.ref, step.observerState, step.abcorr)
+        return StepOutput(op=step.op, value={'state':_to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1])})
+
+    if isinstance(step, StepEphemerisSpkaps):
+        result = correction_oracle.spkaps(step.target, step.et, step.ref, step.abcorr, step.observerState, step.observerAcceleration)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisSpkltc):
+        result = sp.spkltc(step.target, step.et, step.ref, correction_oracle.option(step.abcorr), step.observerState)
+        return StepOutput(op=step.op, value={'state': _to_float_list(result[0], expected_len=6, label=step.op), 'lt':float(result[1]), 'dlt':float(result[2])})
+
+    if isinstance(step, StepEphemerisStelab):
+        result = sp.stelab(step.position, step.observerVelocity)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=3, label=step.op))
+
+    if isinstance(step, StepEphemerisStlabx):
+        result = sp.stlabx(step.position, step.observerVelocity)
+        return StepOutput(op=step.op, value=_to_float_list(result, expected_len=3, label=step.op))
+
+    if isinstance(step, StepEphemerisLtime):
+        result = correction_oracle.ltime(step.etobs, step.observer, step.dir, step.target)
+        return StepOutput(op=step.op, value={'ettarg':float(result[0]), 'elapsd':float(result[1])})
 
     if isinstance(step, StepEphemerisSpkgeo):
         state, lt = _normalize_state_lt(

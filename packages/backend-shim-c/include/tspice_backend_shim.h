@@ -690,6 +690,15 @@ int tspice_sxform(
     int errMaxBytes);
 
 // spkezr_c: compute state (6 doubles) and light time.
+int tspice_spkacs(int target, double et, const char *ref, const char *abcorr, int observer, double *out, char *err, int errMaxBytes);
+int tspice_spkapo(int target, double et, const char *ref, const double *observerState, const char *abcorr, double *out, char *err, int errMaxBytes);
+int tspice_spkapp(int target, double et, const char *ref, const double *observerState, const char *abcorr, double *out, char *err, int errMaxBytes);
+int tspice_spkaps(int target, double et, const char *ref, const char *abcorr, const double *observerState, const double *observerAcceleration, double *out, char *err, int errMaxBytes);
+int tspice_spkltc(int target, double et, const char *ref, const char *abcorr, const double *observerState, double *out, char *err, int errMaxBytes);
+int tspice_stelab(const double *position, const double *observerVelocity, double *out, char *err, int errMaxBytes);
+int tspice_stlabx(const double *position, const double *observerVelocity, double *out, char *err, int errMaxBytes);
+int tspice_ltime(double etobs, int observer, const char *dir, int target, double *out, char *err, int errMaxBytes);
+
 int tspice_spkezr(
     const char *target,
     double et,

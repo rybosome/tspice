@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import Any, Mapping
 
 from .models import (
@@ -41,6 +42,14 @@ from .models import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisSpkacs,
+    StepEphemerisSpkapo,
+    StepEphemerisSpkapp,
+    StepEphemerisSpkaps,
+    StepEphemerisSpkltc,
+    StepEphemerisStelab,
+    StepEphemerisStlabx,
+    StepEphemerisLtime,
     StepEphemerisSpkgeo,
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
@@ -203,6 +212,29 @@ def _expect_number(value: Any, *, label: str) -> float:
         raise TypeError(f"{label} must be numeric")
     return float(value)
 
+
+def _correction_number(value: Any, *, label: str) -> float:
+    n = _expect_number(value, label=label)
+    if not math.isfinite(n):
+        raise ValueError(f"{label} requires a finite value")
+    return n
+
+def _correction_id(value: Any, *, label: str) -> int:
+    n = _expect_int(value, label=label)
+    if not -(2**31) <= n < 2**31:
+        raise ValueError(f"{label} is outside the signed CSPICE integer range")
+    return n
+
+def _correction_string(value: Any, *, label: str) -> str:
+    s = _expect_string(value, label=label)
+    if "\0" in s:
+        raise ValueError(f"{label} contains an embedded NUL")
+    return s
+
+def _correction_vector(value: Any, *, width: int, label: str) -> list[float]:
+    if not isinstance(value, list) or len(value) != width:
+        raise ValueError(f"{label} requires {width} components")
+    return [_correction_number(word, label=label) for word in value]
 
 def _expect_bool(value: Any, *, label: str) -> bool:
     if not isinstance(value, bool):
@@ -915,6 +947,80 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 ref=_expect_string(step.get("ref"), label="ephemeris.spkezr.ref"),
                 abcorr=_expect_string(step.get("abcorr"), label="ephemeris.spkezr.abcorr"),
                 observer=_expect_string(step.get("observer"), label="ephemeris.spkezr.observer"),
+            )
+
+        case "ephemeris.spkacs":
+            return StepEphemerisSpkacs(
+                op=op,
+                target=_correction_id(step.get("target"), label="ephemeris.spkacs.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkacs.et"),
+                ref=_correction_string(step.get("ref"), label="ephemeris.spkacs.ref"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkacs.abcorr"),
+                observer=_correction_id(step.get("observer"), label="ephemeris.spkacs.observer"),
+            )
+
+        case "ephemeris.spkapo":
+            return StepEphemerisSpkapo(
+                op=op,
+                target=_correction_id(step.get("target"), label="ephemeris.spkapo.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkapo.et"),
+                ref=_correction_string(step.get("ref"), label="ephemeris.spkapo.ref"),
+                observerState=_correction_vector(step.get("observerState"), width=6, label="ephemeris.spkapo.observerState"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkapo.abcorr"),
+            )
+
+        case "ephemeris.spkapp":
+            return StepEphemerisSpkapp(
+                op=op,
+                target=_correction_id(step.get("target"), label="ephemeris.spkapp.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkapp.et"),
+                ref=_correction_string(step.get("ref"), label="ephemeris.spkapp.ref"),
+                observerState=_correction_vector(step.get("observerState"), width=6, label="ephemeris.spkapp.observerState"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkapp.abcorr"),
+            )
+
+        case "ephemeris.spkaps":
+            return StepEphemerisSpkaps(
+                op=op,
+                target=_correction_id(step.get("target"), label="ephemeris.spkaps.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkaps.et"),
+                ref=_correction_string(step.get("ref"), label="ephemeris.spkaps.ref"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkaps.abcorr"),
+                observerState=_correction_vector(step.get("observerState"), width=6, label="ephemeris.spkaps.observerState"),
+                observerAcceleration=_correction_vector(step.get("observerAcceleration"), width=3, label="ephemeris.spkaps.observerAcceleration"),
+            )
+
+        case "ephemeris.spkltc":
+            return StepEphemerisSpkltc(
+                op=op,
+                target=_correction_id(step.get("target"), label="ephemeris.spkltc.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkltc.et"),
+                ref=_correction_string(step.get("ref"), label="ephemeris.spkltc.ref"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkltc.abcorr"),
+                observerState=_correction_vector(step.get("observerState"), width=6, label="ephemeris.spkltc.observerState"),
+            )
+
+        case "ephemeris.stelab":
+            return StepEphemerisStelab(
+                op=op,
+                position=_correction_vector(step.get("position"), width=3, label="ephemeris.stelab.position"),
+                observerVelocity=_correction_vector(step.get("observerVelocity"), width=3, label="ephemeris.stelab.observerVelocity"),
+            )
+
+        case "ephemeris.stlabx":
+            return StepEphemerisStlabx(
+                op=op,
+                position=_correction_vector(step.get("position"), width=3, label="ephemeris.stlabx.position"),
+                observerVelocity=_correction_vector(step.get("observerVelocity"), width=3, label="ephemeris.stlabx.observerVelocity"),
+            )
+
+        case "ephemeris.ltime":
+            return StepEphemerisLtime(
+                op=op,
+                etobs=_correction_number(step.get("etobs"), label="ephemeris.ltime.etobs"),
+                observer=_correction_id(step.get("observer"), label="ephemeris.ltime.observer"),
+                dir=_correction_string(step.get("dir"), label="ephemeris.ltime.dir"),
+                target=_correction_id(step.get("target"), label="ephemeris.ltime.target"),
             )
 
         case "ephemeris.spkgeo":

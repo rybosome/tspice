@@ -1,0 +1,274 @@
+[
+  {
+    "caseId": "ephemeris-ltime-transmission",
+    "description": "Compare target epoch and positive elapsed light time with moving observer and target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": -210.25,
+        "observer": 100002,
+        "dir": "->",
+        "target": 100001
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 150.5,
+        "observer": 100002,
+        "dir": "->",
+        "target": 100001
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 500.125,
+        "observer": 100002,
+        "dir": "->",
+        "target": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-ltime-reception",
+    "description": "Compare target epoch and positive elapsed light time with moving observer and target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": -210.25,
+        "observer": 100002,
+        "dir": "<-",
+        "target": 100001
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 150.5,
+        "observer": 100002,
+        "dir": "<-",
+        "target": 100001
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 500.125,
+        "observer": 100002,
+        "dir": "<-",
+        "target": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-ltime-reverse-bodies",
+    "description": "Swap observer and target while preserving the event epoch at the selected observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 125.25,
+        "observer": 100001,
+        "dir": "->",
+        "target": 100002
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 125.25,
+        "observer": 100001,
+        "dir": "<-",
+        "target": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-ltime-coincident",
+    "description": "Same-body signal has coincident epochs and zero elapsed time.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 125.25,
+        "observer": 100002,
+        "dir": "->",
+        "target": 100002
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 125.25,
+        "observer": 100002,
+        "dir": "<-",
+        "target": 100002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-ltime-unknown-direction",
+    "description": "The original two-character direction selector rejects a non-arrow before requesting any data.",
+    "workflow": [
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 125.25,
+        "observer": 100002,
+        "dir": "xx",
+        "target": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDIRECTION"]
+    }
+  },
+  {
+    "caseId": "ephemeris-ltime-missing-observer",
+    "description": "Initial geometry failure retains the observer-first diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 125.25,
+        "observer": 888777,
+        "dir": "->",
+        "target": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-ltime-missing-target",
+    "description": "A valid observer with absent target reports the initial target lookup failure.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 125.25,
+        "observer": 100002,
+        "dir": "->",
+        "target": 888777
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "ephemeris-ltime-shift-outside-segment",
+    "description": "The target is in coverage at observer ET but outside it at signal reception.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-observer.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.ltime",
+        "etobs": 1000,
+        "observer": 100002,
+        "dir": "->",
+        "target": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  }
+]

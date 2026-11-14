@@ -1,4 +1,8 @@
 import type {
+  SpiceStateVector,
+  SpiceVector3,
+  SpkezrResult,
+  SpkposResult,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -579,6 +583,72 @@ export type StepEphemerisSpkezr = {
   ref: string;
   abcorr: string;
   observer: string;
+};
+
+export type StepEphemerisSpkacs = {
+  op: "ephemeris.spkacs";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observer: number;
+};
+
+export type StepEphemerisSpkapo = {
+  op: "ephemeris.spkapo";
+  target: number;
+  et: number;
+  ref: string;
+  observerState: SpiceStateVector;
+  abcorr: string;
+};
+
+export type StepEphemerisSpkapp = {
+  op: "ephemeris.spkapp";
+  target: number;
+  et: number;
+  ref: string;
+  observerState: SpiceStateVector;
+  abcorr: string;
+};
+
+export type StepEphemerisSpkaps = {
+  op: "ephemeris.spkaps";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observerState: SpiceStateVector;
+  observerAcceleration: SpiceVector3;
+};
+
+export type StepEphemerisSpkltc = {
+  op: "ephemeris.spkltc";
+  target: number;
+  et: number;
+  ref: string;
+  abcorr: string;
+  observerState: SpiceStateVector;
+};
+
+export type StepEphemerisStelab = {
+  op: "ephemeris.stelab";
+  position: SpiceVector3;
+  observerVelocity: SpiceVector3;
+};
+
+export type StepEphemerisStlabx = {
+  op: "ephemeris.stlabx";
+  position: SpiceVector3;
+  observerVelocity: SpiceVector3;
+};
+
+export type StepEphemerisLtime = {
+  op: "ephemeris.ltime";
+  etobs: number;
+  observer: number;
+  dir: string;
+  target: number;
 };
 
 export type StepEphemerisSpkgeo = {
@@ -1369,6 +1439,14 @@ export type WorkflowStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisSpkacs
+  | StepEphemerisSpkapo
+  | StepEphemerisSpkapp
+  | StepEphemerisSpkaps
+  | StepEphemerisSpkltc
+  | StepEphemerisStelab
+  | StepEphemerisStlabx
+  | StepEphemerisLtime
   | StepEphemerisSpkgeo
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
@@ -1626,6 +1704,14 @@ export type StepOutput =
         lt: number;
       };
     }
+  | { op: "ephemeris.spkacs"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.spkapo"; value: SpkposResult }
+  | { op: "ephemeris.spkapp"; value: SpkezrResult }
+  | { op: "ephemeris.spkaps"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.spkltc"; value: SpkezrResult & { dlt: number } }
+  | { op: "ephemeris.stelab"; value: SpiceVector3 }
+  | { op: "ephemeris.stlabx"; value: SpiceVector3 }
+  | { op: "ephemeris.ltime"; value: { ettarg: number; elapsd: number } }
   | {
       op: "ephemeris.spkgeo";
       value: {

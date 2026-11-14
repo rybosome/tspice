@@ -330,6 +330,21 @@ documented in the parity fixture README. The unchanged numeric comparator uses
 1e-12 absolute-or-relative tolerance; independent polynomial interpolation checks
 use 1e-9 km position and 1e-12 km/s velocity bounds.
 
+### SPK corrections and signal time
+
+| Method                                                                 | Direct canonical call | Output                                      |
+| ---------------------------------------------------------------------- | --------------------- | ------------------------------------------- |
+| `spkacs(target, et, ref, abcorr, observer)`                            | `spkacs_c`            | State, light time and light-time derivative |
+| `spkapo(target, et, ref, observerState, abcorr)`                       | `spkapo_c`            | Position and light time                     |
+| `spkapp(target, et, ref, observerState, abcorr)`                       | `spkapp_c`            | Legacy state and light time                 |
+| `spkaps(target, et, ref, abcorr, observerState, observerAcceleration)` | `spkaps_c`            | State, light time and light-time derivative |
+| `spkltc(target, et, ref, abcorr, observerState)`                       | `spkltc_c`            | State, light time and light-time derivative |
+| `stelab(position, observerVelocity)`                                   | `stelab_c`            | Corrected position                          |
+| `stlabx(position, observerVelocity)`                                   | `stlabx_c`            | Corrected position                          |
+| `ltime(etobs, observer, dir, target)`                                  | `ltime_c`             | Target epoch and elapsed signal time        |
+
+[Units, source guards, independent ABI and observed scientific behavior](step8-spk-corrections.md)
+
 ### SPK state, position and segment-search audit
 
 `ephemeris-2` reviews `spkez`, `spkezp`, `spkezr`, `spkpos`, `spkgeo`, `spkgps`,

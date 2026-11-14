@@ -1,0 +1,1365 @@
+{
+  "schemaVersion": 1,
+  "batch": "e08-spk-corrections",
+  "traceFiles": [
+    "docs/step8-spk-corrections.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/spk-corrections-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/spk-corrections-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/spk-corrections.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-spk-observer.py",
+    "packages/py-parity-checking/fixtures/generate-audit-spk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/test/spk-corrections.test.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "packages/tspice/src/transport/caching/withCaching.ts",
+    "packages/tspice/src/transport/caching/withCachingSync.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/stage-aberration-cache.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e08-2d32c8bf-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4067a7cc0a29352339846a8c94fcbceb459a689b51d26e198395b6e5ec771c9a",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "observation": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e08-2d32c8bf-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4067a7cc0a29352339846a8c94fcbceb459a689b51d26e198395b6e5ec771c9a",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "observation": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e08-2d32c8bf-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4067a7cc0a29352339846a8c94fcbceb459a689b51d26e198395b6e5ec771c9a",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "commit": "2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43589578886/job/132431245235",
+      "observation": "Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e08-2d32c8bf-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4067a7cc0a29352339846a8c94fcbceb459a689b51d26e198395b6e5ec771c9a",
+      "caseIds": [
+        "ephemeris-ltime-coincident",
+        "ephemeris-ltime-missing-observer",
+        "ephemeris-ltime-missing-target",
+        "ephemeris-ltime-reception",
+        "ephemeris-ltime-reverse-bodies",
+        "ephemeris-ltime-shift-outside-segment",
+        "ephemeris-ltime-transmission",
+        "ephemeris-ltime-unknown-direction",
+        "ephemeris-spkacs-coincident-observer",
+        "ephemeris-spkacs-correction-spelling-transition",
+        "ephemeris-spkacs-coverage-gap",
+        "ephemeris-spkacs-geometric",
+        "ephemeris-spkacs-kernel-priority",
+        "ephemeris-spkacs-observer-stencil-edge",
+        "ephemeris-spkacs-reception",
+        "ephemeris-spkacs-rotated-frame",
+        "ephemeris-spkacs-shifted-coverage",
+        "ephemeris-spkacs-transmission",
+        "ephemeris-spkacs-unknown-frame",
+        "ephemeris-spkacs-unknown-observer",
+        "ephemeris-spkacs-unknown-option",
+        "ephemeris-spkapo-barycentric-origin",
+        "ephemeris-spkapo-correction-spelling-transition",
+        "ephemeris-spkapo-coverage-gap",
+        "ephemeris-spkapo-geometric",
+        "ephemeris-spkapo-kernel-priority",
+        "ephemeris-spkapo-observer-light-speed",
+        "ephemeris-spkapo-reception",
+        "ephemeris-spkapo-rotated-frame",
+        "ephemeris-spkapo-shifted-coverage",
+        "ephemeris-spkapo-transmission",
+        "ephemeris-spkapo-unknown-frame",
+        "ephemeris-spkapo-unknown-option",
+        "ephemeris-spkapp-barycentric-origin",
+        "ephemeris-spkapp-correction-spelling-transition",
+        "ephemeris-spkapp-coverage-gap",
+        "ephemeris-spkapp-geometric",
+        "ephemeris-spkapp-kernel-priority",
+        "ephemeris-spkapp-observer-light-speed",
+        "ephemeris-spkapp-reception",
+        "ephemeris-spkapp-rotated-frame",
+        "ephemeris-spkapp-shifted-coverage",
+        "ephemeris-spkapp-transmission",
+        "ephemeris-spkapp-unknown-frame",
+        "ephemeris-spkapp-unknown-option",
+        "ephemeris-spkaps-acceleration",
+        "ephemeris-spkaps-barycentric-origin",
+        "ephemeris-spkaps-coincident-observer",
+        "ephemeris-spkaps-correction-spelling-transition",
+        "ephemeris-spkaps-coverage-gap",
+        "ephemeris-spkaps-geometric",
+        "ephemeris-spkaps-kernel-priority",
+        "ephemeris-spkaps-reception",
+        "ephemeris-spkaps-rotated-frame",
+        "ephemeris-spkaps-shifted-coverage",
+        "ephemeris-spkaps-transmission",
+        "ephemeris-spkaps-transverse-light-speed",
+        "ephemeris-spkaps-unknown-frame",
+        "ephemeris-spkaps-unknown-option",
+        "ephemeris-spkltc-barycentric-origin",
+        "ephemeris-spkltc-coincident-observer",
+        "ephemeris-spkltc-correction-spelling-transition",
+        "ephemeris-spkltc-coverage-gap",
+        "ephemeris-spkltc-geometric",
+        "ephemeris-spkltc-kernel-priority",
+        "ephemeris-spkltc-reception",
+        "ephemeris-spkltc-rotated-frame",
+        "ephemeris-spkltc-shifted-coverage",
+        "ephemeris-spkltc-transmission",
+        "ephemeris-spkltc-unknown-frame",
+        "ephemeris-spkltc-unknown-option",
+        "ephemeris-stelab-above-light-speed",
+        "ephemeris-stelab-excess-speed",
+        "ephemeris-stelab-no-rotation",
+        "ephemeris-stelab-oblique",
+        "ephemeris-stelab-rounded-light-speed",
+        "ephemeris-stelab-small-and-near-limit",
+        "ephemeris-stelab-transverse",
+        "ephemeris-stlabx-above-light-speed",
+        "ephemeris-stlabx-excess-speed",
+        "ephemeris-stlabx-no-rotation",
+        "ephemeris-stlabx-oblique",
+        "ephemeris-stlabx-rounded-light-speed",
+        "ephemeris-stlabx-small-and-near-limit",
+        "ephemeris-stlabx-transverse"
+      ],
+      "commit": "2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43589578886/job/132431245235",
+      "observation": "Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "spkacs_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkacs_c.html",
+      "semantics": "Compute inertial target-minus-observer state, one-way lt and dlt. Stellar aberration obtains barycentric observer acceleration by differencing velocities at ET±1 second.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkacs-geometric",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for geometric corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkacs-reception",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for reception corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkacs-transmission",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for transmission corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkacs-rotated-frame",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the complete state or position and light-time fields in another inertial frame across signed epochs."
+        },
+        {
+          "caseId": "ephemeris-spkacs-kernel-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The highest-priority target segment changes position, light time and apparent direction."
+        },
+        {
+          "caseId": "ephemeris-spkacs-coincident-observer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A target and observer at the barycentric origin produce zero separation, light time and derivative."
+        },
+        {
+          "caseId": "ephemeris-spkacs-observer-stencil-edge",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Stellar acceleration requires SPK coverage at ET plus and minus one second."
+        },
+        {
+          "caseId": "ephemeris-spkacs-unknown-observer",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Retain the primary missing barycentric observer error before differencing failed output."
+        },
+        {
+          "caseId": "ephemeris-spkacs-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Inertial-frame validation precedes target ephemeris lookup."
+        },
+        {
+          "caseId": "ephemeris-spkacs-unknown-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve the routine-specific parser diagnostic before frame or file lookup."
+        },
+        {
+          "caseId": "ephemeris-spkacs-coverage-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Primary target has an authored coverage gap at observer ET."
+        },
+        {
+          "caseId": "ephemeris-spkacs-shifted-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Geometric coverage includes the endpoint but the retarded target epoch falls in the preceding gap."
+        },
+        {
+          "caseId": "ephemeris-spkacs-correction-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternate blank-separated stellar spelling and uncorrected light-time spelling at the same epoch; preserve the requested correction on every call."
+        }
+      ],
+      "edgeAssessment": "Three-axis moving observer, directed corrections, coincident origins, priority replacement, exact stencil endpoint and full finite-difference state/lt derivatives.",
+      "errorAssessment": "Registered scientific errors include BADFRAME, INVALIDOPTION, SPKINSUFFDATA. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Independent moving observer and overlap/gap target fixtures allow closed-form and changed-kernel observations.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [
+        {
+          "id": "spkacs-checked-input-or-output",
+          "status": "repaired",
+          "summary": "N0067 SPKACS can differentiate unwritten velocity scratch after missing SPK coverage.",
+          "repair": "Check both real SPKGEO stencil calls and the nested stellar-state components with initialized buffers before the public canonical call.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ],
+          "caseIds": [
+            "ephemeris-spkacs-observer-stencil-edge",
+            "ephemeris-spkacs-unknown-observer",
+            "ephemeris-spkacs-unknown-frame",
+            "ephemeris-spkacs-unknown-option",
+            "ephemeris-spkacs-coverage-gap",
+            "ephemeris-spkacs-shifted-coverage"
+          ]
+        },
+        {
+          "id": "spkacs-complete-correction-cache-key",
+          "status": "repaired",
+          "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
+          ],
+          "caseIds": ["ephemeris-spkacs-correction-spelling-transition"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_spkacs to the named spkacs_c canonical entry point. Check both real SPKGEO stencil calls and the nested stellar-state components with initialized buffers before the public canonical call.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkacs to the named spkacs_c canonical entry point. Check both real SPKGEO stencil calls and the nested stellar-state components with initialized buffers before the public canonical call.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkapo_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkapo_c.html",
+      "semantics": "Compute apparent position and positive one-way light time relative to a supplied barycentric state using the original SPKAPO parser and iteration.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkapo-geometric",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for geometric corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkapo-reception",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for reception corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkapo-transmission",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for transmission corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkapo-rotated-frame",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the complete state or position and light-time fields in another inertial frame across signed epochs."
+        },
+        {
+          "caseId": "ephemeris-spkapo-kernel-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The highest-priority target segment changes position, light time and apparent direction."
+        },
+        {
+          "caseId": "ephemeris-spkapo-barycentric-origin",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Zero observer state and alternate supplied velocity distinguish geometric and corrected outputs."
+        },
+        {
+          "caseId": "ephemeris-spkapo-observer-light-speed",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Actual legacy stellar speed check rejects the barycentric observer velocity."
+        },
+        {
+          "caseId": "ephemeris-spkapo-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Inertial-frame validation precedes target ephemeris lookup."
+        },
+        {
+          "caseId": "ephemeris-spkapo-unknown-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve the routine-specific parser diagnostic before frame or file lookup."
+        },
+        {
+          "caseId": "ephemeris-spkapo-coverage-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Primary target has an authored coverage gap at observer ET."
+        },
+        {
+          "caseId": "ephemeris-spkapo-shifted-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Geometric coverage includes the endpoint but the retarded target epoch falls in the preceding gap."
+        },
+        {
+          "caseId": "ephemeris-spkapo-correction-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternate blank-separated stellar spelling and uncorrected light-time spelling at the same epoch; preserve the requested correction on every call."
+        }
+      ],
+      "edgeAssessment": "Both directional families, range gaps, unknown frames, legacy invalid option, superluminal observer and finite-input lt overflow.",
+      "errorAssessment": "Registered scientific errors include BADFRAME, SPKINSUFFDATA, SPKINVALIDOPTION, VALUEOUTOFRANGE. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Independent moving observer and overlap/gap target fixtures allow closed-form and changed-kernel observations.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [
+        {
+          "id": "spkapo-complete-correction-cache-key",
+          "status": "repaired",
+          "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
+          ],
+          "caseIds": ["ephemeris-spkapo-correction-spelling-transition"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_spkapo to the named spkapo_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkapo to the named spkapo_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkapp_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkapp_c.html",
+      "semantics": "Compute the legacy apparent state and light time relative to a provided observer state. Stellar rotation applies only to position. Its relative velocity uses unscaled target-at-emission/reception velocity minus observer velocity.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkapp-geometric",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for geometric corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkapp-reception",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for reception corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkapp-transmission",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for transmission corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkapp-rotated-frame",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the complete state or position and light-time fields in another inertial frame across signed epochs."
+        },
+        {
+          "caseId": "ephemeris-spkapp-kernel-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The highest-priority target segment changes position, light time and apparent direction."
+        },
+        {
+          "caseId": "ephemeris-spkapp-barycentric-origin",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Zero observer state and alternate supplied velocity distinguish geometric and corrected outputs."
+        },
+        {
+          "caseId": "ephemeris-spkapp-observer-light-speed",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Actual legacy stellar speed check rejects the barycentric observer velocity."
+        },
+        {
+          "caseId": "ephemeris-spkapp-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Inertial-frame validation precedes target ephemeris lookup."
+        },
+        {
+          "caseId": "ephemeris-spkapp-unknown-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve the routine-specific parser diagnostic before frame or file lookup."
+        },
+        {
+          "caseId": "ephemeris-spkapp-coverage-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Primary target has an authored coverage gap at observer ET."
+        },
+        {
+          "caseId": "ephemeris-spkapp-shifted-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Geometric coverage includes the endpoint but the retarded target epoch falls in the preceding gap."
+        },
+        {
+          "caseId": "ephemeris-spkapp-correction-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternate blank-separated stellar spelling and uncorrected light-time spelling at the same epoch; preserve the requested correction on every call."
+        }
+      ],
+      "edgeAssessment": "Legacy velocity is unchanged by adding +S; the full position agrees with SPKAPO. Compare finite-data lt overflow, directions and actual over-speed diagnosis.",
+      "errorAssessment": "Registered scientific errors include BADFRAME, SPKINSUFFDATA, SPKINVALIDOPTION, VALUEOUTOFRANGE. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Independent moving observer and overlap/gap target fixtures allow closed-form and changed-kernel observations.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [
+        {
+          "id": "spkapp-checked-input-or-output",
+          "status": "repaired",
+          "summary": "The legacy stellar branch copies a private vector after geometry or stellar correction errors.",
+          "repair": "Use the canonical five-character option normalization, checked original nonstellar SPKAPP path and checked STELAB/STLABX before replaying the actual public entry point.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ],
+          "caseIds": [
+            "ephemeris-spkapp-observer-light-speed",
+            "ephemeris-spkapp-unknown-frame",
+            "ephemeris-spkapp-unknown-option",
+            "ephemeris-spkapp-coverage-gap",
+            "ephemeris-spkapp-shifted-coverage"
+          ]
+        },
+        {
+          "id": "spkapp-complete-correction-cache-key",
+          "status": "repaired",
+          "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
+          ],
+          "caseIds": ["ephemeris-spkapp-correction-spelling-transition"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_spkapp to the named spkapp_c canonical entry point. Use the canonical five-character option normalization, checked original nonstellar SPKAPP path and checked STELAB/STLABX before replaying the actual public entry point.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkapp to the named spkapp_c canonical entry point. Use the canonical five-character option normalization, checked original nonstellar SPKAPP path and checked STELAB/STLABX before replaying the actual public entry point.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkaps_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkaps_c.html",
+      "semantics": "Compute the inertial corrected state and light-time derivative using independent barycentric observer state and three acceleration components.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkaps-geometric",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for geometric corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkaps-reception",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for reception corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkaps-transmission",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for transmission corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkaps-rotated-frame",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the complete state or position and light-time fields in another inertial frame across signed epochs."
+        },
+        {
+          "caseId": "ephemeris-spkaps-kernel-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The highest-priority target segment changes position, light time and apparent direction."
+        },
+        {
+          "caseId": "ephemeris-spkaps-barycentric-origin",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Zero observer state and alternate supplied velocity distinguish geometric and corrected outputs."
+        },
+        {
+          "caseId": "ephemeris-spkaps-coincident-observer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A target and observer at the barycentric origin produce zero separation, light time and derivative."
+        },
+        {
+          "caseId": "ephemeris-spkaps-acceleration",
+          "coverage": ["success", "edge", "state"],
+          "observes": "At fixed state and epoch, acceleration enters the derivative of stellar position in both signal directions."
+        },
+        {
+          "caseId": "ephemeris-spkaps-transverse-light-speed",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Checked ZZSTELAB diagnoses its zero cosine at an observer velocity perpendicular to the line of sight."
+        },
+        {
+          "caseId": "ephemeris-spkaps-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Inertial-frame validation precedes target ephemeris lookup."
+        },
+        {
+          "caseId": "ephemeris-spkaps-unknown-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve the routine-specific parser diagnostic before frame or file lookup."
+        },
+        {
+          "caseId": "ephemeris-spkaps-coverage-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Primary target has an authored coverage gap at observer ET."
+        },
+        {
+          "caseId": "ephemeris-spkaps-shifted-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Geometric coverage includes the endpoint but the retarded target epoch falls in the preceding gap."
+        },
+        {
+          "caseId": "ephemeris-spkaps-correction-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternate blank-separated stellar spelling and uncorrected light-time spelling at the same epoch; preserve the requested correction on every call."
+        }
+      ],
+      "edgeAssessment": "Both correction directions and two accelerations distinguish derivative changes. Coherent supplied and kernel-derived acceleration agree. The maximal finite geometric observer gives lt=Inf and dlt=NaN.",
+      "errorAssessment": "Registered scientific errors include BADFRAME, DIVIDEBYZERO, INVALIDOPTION, SPKINSUFFDATA. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Independent moving observer and overlap/gap target fixtures allow closed-form and changed-kernel observations.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [
+        {
+          "id": "spkaps-checked-input-or-output",
+          "status": "repaired",
+          "summary": "SpiceyPy 6.0.3 requires six acceleration words in its ctypes declaration, and N0067 copies private stellar correction vectors after a singular cosine.",
+          "repair": "Use a private exact three-word oracle binding, compare safely with the padded high-level wrapper and check actual SPKLTC and ZZSTELAB before public canonical execution.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ],
+          "caseIds": [
+            "ephemeris-spkaps-transverse-light-speed",
+            "ephemeris-spkaps-unknown-frame",
+            "ephemeris-spkaps-unknown-option",
+            "ephemeris-spkaps-coverage-gap",
+            "ephemeris-spkaps-shifted-coverage"
+          ]
+        },
+        {
+          "id": "spkaps-complete-correction-cache-key",
+          "status": "repaired",
+          "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
+          ],
+          "caseIds": ["ephemeris-spkaps-correction-spelling-transition"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_spkaps to the named spkaps_c canonical entry point. Use a private exact three-word oracle binding, compare safely with the padded high-level wrapper and check actual SPKLTC and ZZSTELAB before public canonical execution.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkaps to the named spkaps_c canonical entry point. Use a private exact three-word oracle binding, compare safely with the padded high-level wrapper and check actual SPKLTC and ZZSTELAB before public canonical execution.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkltc_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkltc_c.html",
+      "semantics": "Compute Newtonian corrected state, lt and dlt. Accepted +S attributes do not change this routine’s light-time solution. Geometric NONE still computes the derivative.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkltc-geometric",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for geometric corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkltc-reception",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for reception corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkltc-transmission",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every output field for transmission corrections on the three-axis moving polynomial target."
+        },
+        {
+          "caseId": "ephemeris-spkltc-rotated-frame",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the complete state or position and light-time fields in another inertial frame across signed epochs."
+        },
+        {
+          "caseId": "ephemeris-spkltc-kernel-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The highest-priority target segment changes position, light time and apparent direction."
+        },
+        {
+          "caseId": "ephemeris-spkltc-barycentric-origin",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Zero observer state and alternate supplied velocity distinguish geometric and corrected outputs."
+        },
+        {
+          "caseId": "ephemeris-spkltc-coincident-observer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A target and observer at the barycentric origin produce zero separation, light time and derivative."
+        },
+        {
+          "caseId": "ephemeris-spkltc-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Inertial-frame validation precedes target ephemeris lookup."
+        },
+        {
+          "caseId": "ephemeris-spkltc-unknown-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Preserve the routine-specific parser diagnostic before frame or file lookup."
+        },
+        {
+          "caseId": "ephemeris-spkltc-coverage-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Primary target has an authored coverage gap at observer ET."
+        },
+        {
+          "caseId": "ephemeris-spkltc-shifted-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Geometric coverage includes the endpoint but the retarded target epoch falls in the preceding gap."
+        },
+        {
+          "caseId": "ephemeris-spkltc-correction-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternate blank-separated stellar spelling and uncorrected light-time spelling at the same epoch; preserve the requested correction on every call."
+        }
+      ],
+      "edgeAssessment": "Explicit +S versus nonstellar equality, coincident zero range, rotated inertial axes, signed epochs and finite-input lt=Inf/dlt=NaN.",
+      "errorAssessment": "Registered scientific errors include BADFRAME, INVALIDOPTION, SPKINSUFFDATA. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Independent moving observer and overlap/gap target fixtures allow closed-form and changed-kernel observations.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [
+        {
+          "id": "spkltc-complete-correction-cache-key",
+          "status": "repaired",
+          "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
+          ],
+          "caseIds": ["ephemeris-spkltc-correction-spelling-transition"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_spkltc to the named spkltc_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkltc to the named spkltc_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "stelab_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stelab_c.html",
+      "semantics": "Rotate the received target position using the inertial observer velocity divided by light speed. Preserve distance and output direction.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-stelab-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three corrected components at three independent oblique observer velocities."
+        },
+        {
+          "caseId": "ephemeris-stelab-transverse",
+          "coverage": ["success", "edge"],
+          "observes": "Resolve the sense of stellar rotation with perpendicular axes and both velocity signs."
+        },
+        {
+          "caseId": "ephemeris-stelab-no-rotation",
+          "coverage": ["success", "edge"],
+          "observes": "Compare zero direction, zero velocity, and both collinear velocity orientations."
+        },
+        {
+          "caseId": "ephemeris-stelab-small-and-near-limit",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a tiny correction and a high subluminal transverse speed."
+        },
+        {
+          "caseId": "ephemeris-stelab-excess-speed",
+          "coverage": ["error", "edge"],
+          "observes": "Both a large Cartesian component and the combined velocity norm reach the speed limit."
+        },
+        {
+          "caseId": "ephemeris-stelab-rounded-light-speed",
+          "coverage": ["success", "edge"],
+          "observes": "N0067 scales by the rounded reciprocal of c. An exactly collinear nominal speed c falls below its squared normalized threshold; preserve the unchanged vector."
+        },
+        {
+          "caseId": "ephemeris-stelab-above-light-speed",
+          "coverage": ["error", "edge"],
+          "observes": "An axis component one representable step above c reaches the normalized cutoff."
+        }
+      ],
+      "edgeAssessment": "Oblique and transverse velocities of both signs, zero/collinear vectors and the exact rounded reciprocal boundary adjacent to nominal light speed.",
+      "errorAssessment": "Registered scientific errors include VALUEOUTOFRANGE. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Explicit vectors and observer velocities need no external SPK or other kernel.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_stelab to the named stelab_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_stelab to the named stelab_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "stlabx_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stlabx_c.html",
+      "semantics": "Apply transmission stellar rotation by evaluating STELAB with negated observer velocity. The output is in the position frame and units.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-stlabx-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three corrected components at three independent oblique observer velocities."
+        },
+        {
+          "caseId": "ephemeris-stlabx-transverse",
+          "coverage": ["success", "edge"],
+          "observes": "Resolve the sense of stellar rotation with perpendicular axes and both velocity signs."
+        },
+        {
+          "caseId": "ephemeris-stlabx-no-rotation",
+          "coverage": ["success", "edge"],
+          "observes": "Compare zero direction, zero velocity, and both collinear velocity orientations."
+        },
+        {
+          "caseId": "ephemeris-stlabx-small-and-near-limit",
+          "coverage": ["success", "edge"],
+          "observes": "Compare a tiny correction and a high subluminal transverse speed."
+        },
+        {
+          "caseId": "ephemeris-stlabx-excess-speed",
+          "coverage": ["error", "edge"],
+          "observes": "Both a large Cartesian component and the combined velocity norm reach the speed limit."
+        },
+        {
+          "caseId": "ephemeris-stlabx-rounded-light-speed",
+          "coverage": ["success", "edge"],
+          "observes": "N0067 scales by the rounded reciprocal of c. An exactly collinear nominal speed c falls below its squared normalized threshold; preserve the unchanged vector."
+        },
+        {
+          "caseId": "ephemeris-stlabx-above-light-speed",
+          "coverage": ["error", "edge"],
+          "observes": "An axis component one representable step above c reaches the normalized cutoff."
+        }
+      ],
+      "edgeAssessment": "Use incoming/outgoing sign distinction, opposite transverse orientations, high subluminal speed, and the actual normalized-norm cutoff.",
+      "errorAssessment": "Registered scientific errors include VALUEOUTOFRANGE. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Explicit vectors and observer velocities need no external SPK or other kernel.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_stlabx to the named stlabx_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_stlabx to the named stlabx_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ltime_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ltime_c.html",
+      "semantics": "Compute the target transmission or reception event and elapsed light time for an observer event. Direction is ordered from the observer and uses the target state at the shifted epoch.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-ltime-transmission",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare target epoch and positive elapsed light time with moving observer and target."
+        },
+        {
+          "caseId": "ephemeris-ltime-reception",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare target epoch and positive elapsed light time with moving observer and target."
+        },
+        {
+          "caseId": "ephemeris-ltime-reverse-bodies",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Swap observer and target while preserving the event epoch at the selected observer."
+        },
+        {
+          "caseId": "ephemeris-ltime-coincident",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Same-body signal has coincident epochs and zero elapsed time."
+        },
+        {
+          "caseId": "ephemeris-ltime-unknown-direction",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The original two-character direction selector rejects a non-arrow before requesting any data."
+        },
+        {
+          "caseId": "ephemeris-ltime-missing-observer",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Initial geometry failure retains the observer-first diagnostic."
+        },
+        {
+          "caseId": "ephemeris-ltime-missing-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A valid observer with absent target reports the initial target lookup failure."
+        },
+        {
+          "caseId": "ephemeris-ltime-shift-outside-segment",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The target is in coverage at observer ET but outside it at signal reception."
+        }
+      ],
+      "edgeAssessment": "Both arrows, swapped bodies, coincident events, positive/negative observer epochs, primary and shifted coverage failures. Event sign and magnitude are checked against corrected SPK light time.",
+      "errorAssessment": "Registered scientific errors include BADDIRECTION, SPKINSUFFDATA. Validation of tuple width, finite inputs, signed identifiers and strings occurs separately at the boundary.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Repository-authored type 8 SPK generated from explicit polynomial states.",
+          "distribution": "Distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Independent moving observer and overlap/gap target fixtures allow closed-form and changed-kernel observations.",
+      "cleanup": "The raw adapters snapshot each tuple and publish owned fields after CSPICE status checking. WASM acquisition tests prove release on each failure point and scientific error. Public clients dispose in finally; kernel-dependent workflows use case-scoped clear/reset.",
+      "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
+      "findings": [
+        {
+          "id": "ltime-checked-input-or-output",
+          "status": "repaired",
+          "summary": "The pinned LTIME implementation computes its initial distance immediately after two geometry lookups.",
+          "repair": "Check both original barycentric SPKGEO calls in observer-first order with initialized output before calling canonical LTIME; preserve nested trace and original delta/error semantics.",
+          "evidence": [
+            "docs/step8-spk-corrections.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+            "packages/py-parity-checking/test/spk-corrections.test.ts",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ],
+          "caseIds": [
+            "ephemeris-ltime-unknown-direction",
+            "ephemeris-ltime-missing-observer",
+            "ephemeris-ltime-missing-target",
+            "ephemeris-ltime-shift-outside-segment"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through serialized native addon and shared tspice_ltime to the named ltime_c canonical entry point. Check both original barycentric SPKGEO calls in observer-first order with initialized output before calling canonical LTIME; preserve nested trace and original delta/error semantics.",
+          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi through owned WASM buffers and shared tspice_ltime to the named ltime_c canonical entry point. Check both original barycentric SPKGEO calls in observer-first order with initialized output before calling canonical LTIME; preserve nested trace and original delta/error semantics.",
+          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

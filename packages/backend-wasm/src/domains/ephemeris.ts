@@ -16,6 +16,9 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  validateCorrectionString,
+  copyCorrectionInput,
+  decodeCorrectionResult,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
 } from "@rybosome/tspice-core";
@@ -31,6 +34,8 @@ import type {
   SpiceHandleRegistry,
 } from "../runtime/spice-handles.js";
 import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
+
+const correctionEncoder = new TextEncoder();
 
 function requireSpkNumber(value: unknown, label: string): number {
   if (typeof value !== "number" || !Number.isFinite(value))
@@ -854,6 +859,339 @@ export function createEphemerisApi(
   const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
 
   return {
+    spkacs: (target, et, ref, abcorr, observer) => {
+      assertSpiceInt32(target, "spkacs(target)");
+      requireSpkNumber(et, "spkacs(et)");
+      validateCorrectionString(ref, "spkacs(ref)");
+      validateCorrectionString(abcorr, "spkacs(abcorr)");
+      assertSpiceInt32(observer, "spkacs(observer)");
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [refBytes.length + 1, abcorrBytes.length + 1, 64, WASM_ERR_MAX_BYTES],
+        (refPtr, abcorrPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          const status = module._tspice_spkacs(
+            target,
+            et,
+            refPtr,
+            abcorrPtr,
+            observer,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+          );
+        },
+      );
+    },
+    spkapo: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapo(target)");
+      requireSpkNumber(et, "spkapo(et)");
+      validateCorrectionString(ref, "spkapo(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapo(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapo(abcorr)");
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          48,
+          abcorrBytes.length + 1,
+          32,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (refPtr, observerStatePtr, abcorrPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          const status = module._tspice_spkapo(
+            target,
+            et,
+            refPtr,
+            observerStatePtr,
+            abcorrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 4),
+            4,
+          );
+        },
+      );
+    },
+    spkapp: (target, et, ref, observerState, abcorr) => {
+      assertSpiceInt32(target, "spkapp(target)");
+      requireSpkNumber(et, "spkapp(et)");
+      validateCorrectionString(ref, "spkapp(ref)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkapp(observerState)",
+      );
+      validateCorrectionString(abcorr, "spkapp(abcorr)");
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          48,
+          abcorrBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (refPtr, observerStatePtr, abcorrPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          const status = module._tspice_spkapp(
+            target,
+            et,
+            refPtr,
+            observerStatePtr,
+            abcorrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkaps: (target, et, ref, abcorr, observerState, observerAcceleration) => {
+      assertSpiceInt32(target, "spkaps(target)");
+      requireSpkNumber(et, "spkaps(et)");
+      validateCorrectionString(ref, "spkaps(ref)");
+      validateCorrectionString(abcorr, "spkaps(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkaps(observerState)",
+      );
+      const observerAccelerationCopy = copyCorrectionInput(
+        observerAcceleration,
+        3,
+        "spkaps(observerAcceleration)",
+      );
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          abcorrBytes.length + 1,
+          48,
+          24,
+          64,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          refPtr,
+          abcorrPtr,
+          observerStatePtr,
+          observerAccelerationPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          module.HEAPF64.set(
+            observerAccelerationCopy,
+            observerAccelerationPtr >>> 3,
+          );
+          const status = module._tspice_spkaps(
+            target,
+            et,
+            refPtr,
+            abcorrPtr,
+            observerStatePtr,
+            observerAccelerationPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+          );
+        },
+      );
+    },
+    spkltc: (target, et, ref, abcorr, observerState) => {
+      assertSpiceInt32(target, "spkltc(target)");
+      requireSpkNumber(et, "spkltc(et)");
+      validateCorrectionString(ref, "spkltc(ref)");
+      validateCorrectionString(abcorr, "spkltc(abcorr)");
+      const observerStateCopy = copyCorrectionInput(
+        observerState,
+        6,
+        "spkltc(observerState)",
+      );
+      const refBytes = correctionEncoder.encode(ref);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      return withAllocs(
+        module,
+        [
+          refBytes.length + 1,
+          abcorrBytes.length + 1,
+          48,
+          64,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (refPtr, abcorrPtr, observerStatePtr, outPtr, errPtr) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(observerStateCopy, observerStatePtr >>> 3);
+          const status = module._tspice_spkltc(
+            target,
+            et,
+            refPtr,
+            abcorrPtr,
+            observerStatePtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 8),
+            8,
+          );
+        },
+      );
+    },
+    stelab: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stelab(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stelab(observerVelocity)",
+      );
+      return withAllocs(
+        module,
+        [24, 24, 24, WASM_ERR_MAX_BYTES],
+        (positionPtr, observerVelocityPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(positionCopy, positionPtr >>> 3);
+          module.HEAPF64.set(observerVelocityCopy, observerVelocityPtr >>> 3);
+          const status = module._tspice_stelab(
+            positionPtr,
+            observerVelocityPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 3),
+            3,
+          );
+        },
+      );
+    },
+    stlabx: (position, observerVelocity) => {
+      const positionCopy = copyCorrectionInput(position, 3, "stlabx(position)");
+      const observerVelocityCopy = copyCorrectionInput(
+        observerVelocity,
+        3,
+        "stlabx(observerVelocity)",
+      );
+      return withAllocs(
+        module,
+        [24, 24, 24, WASM_ERR_MAX_BYTES],
+        (positionPtr, observerVelocityPtr, outPtr, errPtr) => {
+          module.HEAPF64.set(positionCopy, positionPtr >>> 3);
+          module.HEAPF64.set(observerVelocityCopy, observerVelocityPtr >>> 3);
+          const status = module._tspice_stlabx(
+            positionPtr,
+            observerVelocityPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 3),
+            3,
+          );
+        },
+      );
+    },
+    ltime: (etobs, observer, dir, target) => {
+      requireSpkNumber(etobs, "ltime(etobs)");
+      assertSpiceInt32(observer, "ltime(observer)");
+      validateCorrectionString(dir, "ltime(dir)");
+      assertSpiceInt32(target, "ltime(target)");
+      const dirBytes = correctionEncoder.encode(dir);
+      return withAllocs(
+        module,
+        [dirBytes.length + 1, 16, WASM_ERR_MAX_BYTES],
+        (dirPtr, outPtr, errPtr) => {
+          module.HEAPU8.set(dirBytes, dirPtr);
+          module.HEAPU8[dirPtr + dirBytes.length] = 0;
+          const status = module._tspice_ltime(
+            etobs,
+            observer,
+            dirPtr,
+            target,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 2),
+            2,
+          );
+        },
+      );
+    },
     spkezr: (
       target: string,
       et: number,
