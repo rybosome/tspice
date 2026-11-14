@@ -430,8 +430,8 @@
         "unormg_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Finish primary-semantic review of inferred dimensions, empty/sentinel semantics, owned results and numeric limits; require genuine live cases and safety checks, both full local lanes and observed canonical CI before source-bound verification. Independent Step 8 batch; no merge authorized."
+      "prs": ["https://github.com/rybosome/tspice/pull/715"],
+      "nextAction": "All177 current routine audits have successful complete local and inspected canonical source CI at591c6f49. Final metadata matrix and explicit GitHub rebaseability remain required for PR-ready delivery; no merge authorized."
     }
   ]
 }

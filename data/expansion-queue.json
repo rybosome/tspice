@@ -192,7 +192,7 @@
       "worktree": "/private/tmp/tspice-step8-scalar-math",
       "branch": "codex/expand-scalar-math",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #714 source head 02544981; CI run 43544898708 pending. Integration owner reports compiled focused checks passed and full JS lane passed 2312 live comparisons; native-required lane running. Full source-bound verification and final-head readiness remain pending."
+      "progressNote": "Draft PR #714 source02544981 passed both required local lanes and inspected Linux22 CI job132293815854:2312 live comparisons/2538 parity tests without skips. All171 source audit reviews freshly verified. Final metadata9c1c1e2f pushed; final CI43546459881 pending."
     },
     {
       "id": "A04-array-storage",
@@ -312,7 +312,7 @@
       "worktree": "/private/tmp/tspice-step8-coordinate-conventions",
       "branch": "codex/expand-coordinate-conventions",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Integration owner reports both full required local lanes passed 2332 live comparisons / 2559 parity tests without skips in the native-required lane, and inspected source Linux Node 22 CI job 132291465391 passed. Draft PR #713 at source 18576cc465e7d9da8f084c03a009654ffe429d8e; fresh source-bound audit metadata being recorded, with final-head CI/readiness pending."
+      "progressNote": "Draft PR #713 final metadata commit 232ee6ef pushed; canonical final-head CI run 43545867313 pending. Both required local lanes and inspected source Linux22 job132291465391 passed 2332 live comparisons and 2559 parity tests without skips; all169 source-bound audit reviews verified. Final-head readiness still pending."
     },
     {
       "id": "A07-coordinate-jacobians",
@@ -368,7 +368,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
-      "status": "in-progress",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Existing Vec3 representation suffices. Establish zero-vector returns, boolean shape, unit-vector-plus-norm result and copy ownership.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -381,12 +381,21 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/710"],
-      "validationEvidence": [],
-      "nextAction": "Inspect completion of required final-head checks and rebaseability, then record source-bound evidence before changing queue readiness. No merge authorized.",
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "f3d2cb4fe7c69de6e3bec925f89c4938a9de0108",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43541137087",
+          "result": "All15 jobs passed; after-CI REST explicitly rebaseable:true and mergeable:true againstmain73f3; draft removed.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #710 data/parity-audits; this queue checkpoint is not a replacement."
+        }
+      ],
+      "nextAction": "Await user review/merge authorization; do not count this PR-ready batch as landed.",
       "worktree": "/private/tmp/tspice-step8-vector-basics",
       "branch": "codex/expand-vector-basics",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Integration owner inspected successful source native CI job 132277308410: 2282 live comparisons / 2505 parity-package tests with no skips. Per-routine source-bound audits are freshly verified. Final metadata head f3d2cb4fe7c69de6e3bec925f89c4938a9de0108 awaits all jobs in CI run 43541137087 and final readiness review. Draft PR #710 remains in-progress."
+      "progressNote": "Exact final head f3d2cb4fe7c69de6e3bec925f89c4938a9de0108 passed all15 jobs in CI43541137087. Integration owner observed REST rebaseable:true and mergeable:true againstmain73f3, updated body and removed draft. Eight routines PR-ready, not landed.",
+      "deliveryNote": "Final-head checks passed, explicit rebaseability observed and draft removed. Not merged."
     },
     {
       "id": "A09-vector-combinations",
@@ -461,13 +470,31 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/715"],
+      "validationEvidence": [
+        {
+          "kind": "local",
+          "commit": "591c6f49c33fee6e9b08a82ade4078bcc7d53b5d",
+          "commands": [
+            "pnpm run check:js:required",
+            "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required"
+          ],
+          "result": "passed",
+          "observation": "2382 actual live comparisons;2610 parity-package tests without native-required skips;182native673WASM28core152facade."
+        },
+        {
+          "kind": "ci",
+          "commit": "591c6f49c33fee6e9b08a82ade4078bcc7d53b5d",
+          "url": "https://github.com/rybosome/tspice/actions/runs/43546649291/job/132299443961",
+          "result": "passed",
+          "observation": "Inspected successful uncached Linux Node22 source native-required job, matching2382live/2610tests and no skips; final full matrix remains separate."
+        }
+      ],
       "nextAction": "Complete immediately consumed general-vector contracts and direct Node/WASM/shim paths, review dimensions/numeric behavior and independent live cases, then required local/CI evidence.",
       "worktree": "/private/tmp/tspice-step8-general-vectors",
       "branch": "codex/expand-general-vectors",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Production source and final native/WASM build frozen; primary/representation review complete, parity tests still being finalized. Current registry has 82 scenarios / 205 new calls. Nine SpiceyPy empty-vector converter defects are repaired by an independent empty-only typed locked-library C route, with nonempty wrappers unchanged. No current-source verification claim."
+      "progressNote": "Draft PR #715 source591c6f49c33fee6e9b08a82ade4078bcc7d53b5d; both full required local lanes and inspected source Linux22 CI job132299443961 passed2382 live comparisons/2610 parity tests without native-required skips, plus182 native/673 WASM/28 core/152 facade. Integration owner recording fresh source-bound CI metadata; later final-head readiness remains pending."
     },
     {
       "id": "A11-state-derivatives",
@@ -496,13 +523,13 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/716"],
       "validationEvidence": [],
       "nextAction": "Implement immediately consumed readonly state-array contracts and direct Node/WASM/shim paths; review derivative ordering, singular/zero behavior, numerical limits and independent live cases before required evidence.",
       "worktree": "/private/tmp/tspice-step8-state-derivatives",
       "branch": "codex/expand-state-derivatives",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Backend source implementation assigned for six state-derivative routines on an independent main-based worktree. Parity/semantic review, focused actual-backend and required full local/CI validation remain pending; no completion claim."
+      "progressNote": "Draft PR #716 source b20b81724550fe5cfa6b215afc78991b0dc5f76b; source CI43547433026 pending. All39 ledger/format/lint/typecheck/docs/generation checks passed. Full JS passed2296 live comparisons/2521 parity passes plus expected guard skip; native-required lane running. Focused78 live/10 public/3 extremes-oracle/31 WASM/32 native passed; source verification/readiness pending."
     },
     {
       "id": "A12-fixed-matrices",
@@ -657,8 +684,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Immediate bounded coefficient/workspace arrays. Verify coefficient order, degree versus element count, interval scaling, derivative order and quadratic root representation.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -672,7 +699,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Implement and review exact bounded coefficient/workspace shapes, degree/derivative-order limits, interval and root semantics; obtain independent canonical oracle evidence and required local/CI verification.",
+      "worktree": "/private/tmp/tspice-step8-polynomial-expansions",
+      "branch": "codex/expand-polynomial-expansions",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Production and parity source frozen; exact six routines/46 registered scenarios/131 calls including five genuineCerrors. Primary audit source reviewed with inferred degree, bounded workspace and independent negative-order polyds route. Compiled focused/required lanes and canonical CI pending; no verified claim."
     },
     {
       "id": "A17-interpolation",
@@ -688,8 +719,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Bound coefficient/workspace products; verify equal-spacing conventions, repeated abscissas, degree/count relations and derivative outputs.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -703,7 +734,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Implement and review bounded interpolation/workspace products, equal-spacing and repeated-abscissa semantics, derivative/output shapes and independent canonical oracle paths; require full local and CI evidence.",
+      "worktree": "/private/tmp/tspice-step8-interpolation",
+      "branch": "codex/expand-interpolation",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Backend and parity agents assigned in fresh-main worktree. Six exact routines claimed; no semantic verification or delivery claim."
     },
     {
       "id": "A18-string-transform",
