@@ -422,7 +422,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/716"],
-      "nextAction": "Both complete required local lanes passed at b20b8172; fresh local executions recorded. Await successful observed canonical source CI, then metadata final matrix and explicit rebaseability."
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
