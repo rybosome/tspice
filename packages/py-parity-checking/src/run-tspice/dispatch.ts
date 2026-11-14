@@ -159,6 +159,15 @@ export function dispatchStep(
     case "ek.ekappr":
     case "ek.ekinsr":
     case "ek.ekdelr":
+    case "ek.ekacec":
+    case "ek.ekaced":
+    case "ek.ekacei":
+    case "ek.ekrcec":
+    case "ek.ekrced":
+    case "ek.ekrcei":
+    case "ek.ekucec":
+    case "ek.ekuced":
+    case "ek.ekucei":
     case "ek.ekopn":
     case "ek.ekopr":
     case "ek.ekopw":

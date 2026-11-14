@@ -8,6 +8,7 @@ from spiceypy.utils import support_types as stypes
 from spiceypy.utils.libspicehelper import libspice
 
 from ..ek_record_oracle import record_schema, edit_record
+from ..ek_entry_oracle import entry
 from ..models import (
     PathRef,
     StepEkEkaclc,
@@ -27,6 +28,15 @@ from ..models import (
     StepEkEkappr,
     StepEkEkinsr,
     StepEkEkdelr,
+    StepEkEkacec,
+    StepEkEkaced,
+    StepEkEkacei,
+    StepEkEkrcec,
+    StepEkEkrced,
+    StepEkEkrcei,
+    StepEkEkucec,
+    StepEkEkuced,
+    StepEkEkucei,
     StepEkEkopn,
     StepEkEkopr,
     StepEkEkopw,
@@ -188,6 +198,87 @@ def run_ek_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutpu
             raise ValueError("Finish the active EK fast write before a record operation")
         h = _require_handle(context, step.handleId)
         value = edit_record(sp.ekdelr, h, step.segno, step.recno)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkacec):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekacec", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column, values=step.values, is_null=step.isNull,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkaced):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekaced", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column, values=step.values, is_null=step.isNull,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkacei):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekacei", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column, values=step.values, is_null=step.isNull,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkrcec):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekrcec", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column, width=step.lenout,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkrced):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekrced", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkrcei):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekrcei", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkucec):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekucec", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column, values=step.values, is_null=step.isNull,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkuced):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekuced", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column, values=step.values, is_null=step.isNull,
+        )
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepEkEkucei):
+        if context.state.ek.activeFast is not None:
+            raise ValueError("Finish the active EK fast write before a record operation")
+        value = entry(
+            "ekucei", _require_handle(context, step.handleId), step.segno, step.recno,
+            step.column, values=step.values, is_null=step.isNull,
+        )
         return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepEkEkopn):

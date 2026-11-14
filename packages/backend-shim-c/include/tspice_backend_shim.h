@@ -158,6 +158,17 @@ int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
 // --- EK --------------------------------------------------------------------
 
+int tspice_ek_entry_extent(int handle, int segno, int recno, const char *column, int kind, int width, int *count, char *err, int errMaxBytes);
+int tspice_ekacec(int handle, int segno, int recno, const char *column, int count, int width, const char *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekaced(int handle, int segno, int recno, const char *column, int count, const double *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekacei(int handle, int segno, int recno, const char *column, int count, const int *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekrcec(int handle, int segno, int recno, const char *column, int width, char *values, int capacity, int *nvals, int *isNull, char *err, int errMaxBytes);
+int tspice_ekrced(int handle, int segno, int recno, const char *column, double *values, int capacity, int *nvals, int *isNull, char *err, int errMaxBytes);
+int tspice_ekrcei(int handle, int segno, int recno, const char *column, int *values, int capacity, int *nvals, int *isNull, char *err, int errMaxBytes);
+int tspice_ekucec(int handle, int segno, int recno, const char *column, int count, int width, const char *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekuced(int handle, int segno, int recno, const char *column, int count, const double *values, int isNull, char *err, int errMaxBytes);
+int tspice_ekucei(int handle, int segno, int recno, const char *column, int count, const int *values, int isNull, char *err, int errMaxBytes);
+
 int tspice_ekops(int *out, char *err, int errMaxBytes);
 int tspice_ekbseg(int handle, const char *table, int count, int nameWidth, const char *names, int declWidth, const char *decls, int *out, char *err, int errMaxBytes);
 int tspice_ekappr(int handle, int segment, int *out, char *err, int errMaxBytes);

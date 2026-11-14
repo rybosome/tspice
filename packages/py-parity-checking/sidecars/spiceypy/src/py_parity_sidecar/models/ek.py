@@ -44,6 +44,100 @@ class StepEkEkdelr:
 
 
 @dataclass(frozen=True)
+class StepEkEkacec:
+    op: Literal["ek.ekacec"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+    values: list[str]
+    isNull: bool
+
+
+@dataclass(frozen=True)
+class StepEkEkaced:
+    op: Literal["ek.ekaced"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+    values: list[float]
+    isNull: bool
+
+
+@dataclass(frozen=True)
+class StepEkEkacei:
+    op: Literal["ek.ekacei"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+    values: list[int]
+    isNull: bool
+
+
+@dataclass(frozen=True)
+class StepEkEkrcec:
+    op: Literal["ek.ekrcec"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+    lenout: int
+
+
+@dataclass(frozen=True)
+class StepEkEkrced:
+    op: Literal["ek.ekrced"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+
+
+@dataclass(frozen=True)
+class StepEkEkrcei:
+    op: Literal["ek.ekrcei"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+
+
+@dataclass(frozen=True)
+class StepEkEkucec:
+    op: Literal["ek.ekucec"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+    values: list[str]
+    isNull: bool
+
+
+@dataclass(frozen=True)
+class StepEkEkuced:
+    op: Literal["ek.ekuced"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+    values: list[float]
+    isNull: bool
+
+
+@dataclass(frozen=True)
+class StepEkEkucei:
+    op: Literal["ek.ekucei"]
+    handleId: str
+    segno: int
+    recno: int
+    column: str
+    values: list[int]
+    isNull: bool
+
+
+@dataclass(frozen=True)
 class StepEkEkopn:
     op: Literal["ek.ekopn"]
     path: PathRefInput

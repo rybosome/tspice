@@ -4,6 +4,8 @@
 #include "SpiceEK.h"
 
 #include "SpiceZfc.h"
+#include "SpiceZst.h"
+#include <math.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -132,6 +134,290 @@ int tspice_ekdelr(int handle, int segment, int row, char *err, int errMaxBytes) 
   if (row == INT_MAX) return tspice_ek_invalid_arg(err, errMaxBytes, "EK record index exceeds the N0067 one-based conversion");
   if (ek_record_segment(handle, segment, 0, err, errMaxBytes)) return 1;
   ekdelr_c(handle, segment, row);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+
+enum { EK_ENTRY_LIMIT = 256 * 1024 * 1024 };
+typedef struct {
+  integer segment[24], column[11], record;
+  int matched;
+} EkEntryLocation;
+
+// Run descriptor lookups in their original order. N0067's ZZEKSDSc
+// computes base+1 even when ZZEKMLOC fails without assigning base.
+static int locate_ek_entry(int handle, int segno, int recno, const char *column, int kind,
+                           const char *entry, int writing, EkEntryLocation *loc, char *err,
+                           int errMaxBytes) {
+  if (begin_ek_record_call(err, errMaxBytes))
+    return 1;
+  if (!column || strlen(column) >= EK_ENTRY_LIMIT || segno == INT_MAX || recno == INT_MAX)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Invalid EK column or one-based ordinal");
+  if (!*column)
+    return 0; // Direct C string check has precedence.
+  integer s = segno + 1, row = recno + 1, page = 0, base = 0;
+  chkin_c(entry);
+  zzekmloc_(&handle, &s, &page, &base);
+  if (!failed_c()) {
+    int first = base + 1, last = base + 24;
+    dasrdi_c(handle, first, last, loc->segment);
+    if (!failed_c())
+      zzekcdsc_(&handle, loc->segment, (char *)column, loc->column, (ftnlen)strlen(column));
+  }
+  if (!failed_c()) {
+    int type = loc->column[1], cls = loc->column[0];
+    loc->matched = type == kind || (kind == 2 && type == 4);
+    if (loc->matched && cls >= 7 && (writing || row < 1 || row > loc->segment[5])) {
+      chkout_c(entry);
+      return tspice_ek_invalid_arg(
+          err, errMaxBytes, "Fixed-count EK entries require a valid row and support reading only");
+    }
+    // The ordinary toolkit readers/writers continue into the class handler
+    // after a failed tree lookup. Stop before they consume a missing pointer.
+    if (loc->matched && cls <= 6)
+      zzektrdp_(&handle, &loc->segment[6], &row, &loc->record);
+    if (writing && loc->matched && !failed_c())
+      zzekpgch_(&handle, "WRITE", (ftnlen)5);
+  }
+  chkout_c(entry);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+static const char *ek_reader(int kind) {
+  return kind == 1 ? "ekrcec_c" : kind == 2 ? "ekrced_c" : "ekrcei_c";
+}
+int tspice_ek_entry_extent(int handle, int segno, int recno, const char *column, int kind,
+                           int width, int *count, char *err, int errMaxBytes) {
+  if (!count || kind < 1 || kind > 3)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Invalid EK entry extent request");
+  *count = 1;
+  // Both C-level checks return before entering the defective read adapter.
+  if (column && (!*column || (kind == 1 && width < 2))) {
+    if (begin_ek_record_call(err, errMaxBytes))
+      return 1;
+    int n = 0, null = 0, i = 0;
+    double d = 0;
+    char c = 0;
+    if (kind == 1)
+      ekrcec_c(handle, segno, recno, column, width, &n, &c, &null);
+    else if (kind == 2)
+      ekrced_c(handle, segno, recno, column, &n, &d, &null);
+    else
+      ekrcei_c(handle, segno, recno, column, &n, &i, &null);
+    return finish_ek_record_call(err, errMaxBytes);
+  }
+  EkEntryLocation loc = {0};
+  if (locate_ek_entry(handle, segno, recno, column, kind, ek_reader(kind), 0, &loc, err,
+                      errMaxBytes))
+    return 1;
+  if (loc.matched && loc.column[0] >= 4 && loc.column[0] <= 6) {
+    chkin_c(ek_reader(kind));
+    *count = zzekesiz_(&handle, loc.segment, loc.column, &loc.record);
+    chkout_c(ek_reader(kind));
+    if (finish_ek_record_call(err, errMaxBytes))
+      return 1;
+  }
+  int stride = kind == 1 ? width : kind == 2 ? (int)sizeof(double) : (int)sizeof(int);
+  if (*count < 1 || stride < 1 || *count > EK_ENTRY_LIMIT / stride)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "EK entry exceeds the bounded output capacity");
+  return 0;
+}
+
+static int prepare_ek_write(int handle, int segno, int recno, const char *column, int kind,
+                            const char *entry, int adding, int count, int width, const void *values,
+                            int isNull, char *err, int errMaxBytes) {
+  if (!values || count < 0 || width < 1 || count > EK_ENTRY_LIMIT / width ||
+      (kind == 1 && (width < 2 || count > EK_ENTRY_LIMIT / (int)sizeof(char *))) ||
+      (isNull != 0 && isNull != 1))
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Invalid EK entry type, count or row stride");
+  if (kind == 1)
+    for (int i = 0; i < count; i++)
+      if (!memchr((const char *)values + i * width, 0, width))
+        return tspice_ek_invalid_arg(err, errMaxBytes, "Unterminated EK entry string");
+  if (kind == 2)
+    for (int i = 0; i < count; i++)
+      if (!isfinite(((const double *)values)[i]))
+        return tspice_ek_invalid_arg(err, errMaxBytes, "Expected finite EK doubles");
+  EkEntryLocation loc = {0};
+  if (locate_ek_entry(handle, segno, recno, column, kind, entry, 1, &loc, err, errMaxBytes))
+    return 1;
+  if (!loc.matched)
+    return 0; // Canonical wrong type or empty name.
+  int cls = loc.column[0];
+  if (!count && cls <= 3)
+    return tspice_ek_invalid_arg(err, errMaxBytes,
+                                 "Scalar EK writes require a value or null placeholder");
+  if (kind == 1 && cls == 6 && loc.column[2] > 0 && !isNull &&
+      count > EK_ENTRY_LIMIT / loc.column[2])
+    return tspice_ek_invalid_arg(err, errMaxBytes,
+                                 "Stored character entry exceeds the bounded extent");
+  // ZZEKUE01/02 can mark an existing scalar NULL without checking NULLS_OK.
+  // The new-entry paths perform the real BADATTRIBUTE check themselves.
+  const int checkNullUpdate = !adding && cls <= 2 && isNull && loc.column[7] != 1;
+  // Classes 1 and 2 diagnose repeated adds. The other classes assume a new
+  // entry and can overwrite a pointer without releasing its original storage.
+  if ((adding && cls >= 3) || checkNullUpdate) {
+    int addr = loc.record + 2 + loc.column[8], pointer = 0;
+    dasrdi_c(handle, addr, addr, &pointer);
+    if (finish_ek_record_call(err, errMaxBytes))
+      return 1;
+    if (pointer != -1 && pointer != -3) {
+      if (checkNullUpdate)
+        return tspice_ek_invalid_arg(err, errMaxBytes,
+            "Cannot mark a populated non-nullable numeric scalar NULL");
+      return tspice_ek_invalid_arg(err, errMaxBytes,
+            "EK add requires an uninitialized entry; use update");
+    }
+  }
+  return 0;
+}
+
+int tspice_ekacec(int handle, int segno, int recno, const char *column, int count, int width,
+                  const char *values, int isNull, char *err, int errMaxBytes) {
+  if (prepare_ek_write(handle, segno, recno, column, 1, "ekacec_c", 1, count, width, values, isNull,
+                       err, errMaxBytes))
+    return 1;
+  if (count == 0 && *column) {
+    // Avoid two allocator-dependent malloc(0) calls in the C row packer.
+    integer s = segno + 1, row = recno + 1;
+    logical null = isNull;
+    char blank = ' ';
+    chkin_c("ekacec_c");
+    ekacec_(&handle, &s, &row, (char *)column, &count, &blank, &null, (ftnlen)strlen(column),
+            (ftnlen)1);
+    chkout_c("ekacec_c");
+  } else
+    ekacec_c(handle, segno, recno, column, count, width, values, isNull);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekaced(int handle, int segno, int recno, const char *column, int count,
+                  const double *values, int isNull, char *err, int errMaxBytes) {
+  if (prepare_ek_write(handle, segno, recno, column, 2, "ekaced_c", 1, count, sizeof(double),
+                       values, isNull, err, errMaxBytes))
+    return 1;
+  ekaced_c(handle, segno, recno, column, count, values, isNull);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekacei(int handle, int segno, int recno, const char *column, int count,
+                  const int *values, int isNull, char *err, int errMaxBytes) {
+  if (prepare_ek_write(handle, segno, recno, column, 3, "ekacei_c", 1, count, sizeof(int), values,
+                       isNull, err, errMaxBytes))
+    return 1;
+  ekacei_c(handle, segno, recno, column, count, values, isNull);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekrcec(int handle, int segno, int recno, const char *column, int width, char *values,
+                  int capacity, int *nvals, int *isNull, char *err, int errMaxBytes) {
+  int expected = 0;
+  if (!values || !nvals || !isNull)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Missing EK result buffer");
+  if (tspice_ek_entry_extent(handle, segno, recno, column, 1, width, &expected, err, errMaxBytes))
+    return 1;
+  if (capacity < expected)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "EK result buffer is too small");
+  integer s = segno + 1, row = recno + 1;
+  logical null = 0;
+  *nvals = 0;
+  *isNull = 0;
+  chkin_c("ekrcec_c");
+  ekrcec_(&handle, &s, &row, (char *)column, nvals, values, &null, (ftnlen)strlen(column),
+          (ftnlen)(width - 1));
+  if (!failed_c() && !null && *nvals == expected)
+    F2C_ConvertStrArr(*nvals, width, values);
+  chkout_c("ekrcec_c");
+  if (finish_ek_record_call(err, errMaxBytes))
+    return 1;
+  if (*nvals != expected)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Inconsistent EK entry extent");
+  *isNull = null != 0;
+  return 0;
+}
+
+int tspice_ekrced(int handle, int segno, int recno, const char *column, double *values,
+                  int capacity, int *nvals, int *isNull, char *err, int errMaxBytes) {
+  int expected = 0;
+  if (!values || !nvals || !isNull)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Missing EK result buffer");
+  if (tspice_ek_entry_extent(handle, segno, recno, column, 2, 0, &expected, err, errMaxBytes))
+    return 1;
+  if (capacity < expected)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "EK result buffer is too small");
+  integer s = segno + 1, row = recno + 1;
+  logical null = 0;
+  *nvals = 0;
+  *isNull = 0;
+  chkin_c("ekrced_c");
+  ekrced_(&handle, &s, &row, (char *)column, nvals, values, &null, (ftnlen)strlen(column));
+  chkout_c("ekrced_c");
+  if (finish_ek_record_call(err, errMaxBytes))
+    return 1;
+  if (*nvals != expected)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Inconsistent EK entry extent");
+  *isNull = null != 0;
+  return 0;
+}
+
+int tspice_ekrcei(int handle, int segno, int recno, const char *column, int *values, int capacity,
+                  int *nvals, int *isNull, char *err, int errMaxBytes) {
+  int expected = 0;
+  if (!values || !nvals || !isNull)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Missing EK result buffer");
+  if (tspice_ek_entry_extent(handle, segno, recno, column, 3, 0, &expected, err, errMaxBytes))
+    return 1;
+  if (capacity < expected)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "EK result buffer is too small");
+  integer s = segno + 1, row = recno + 1;
+  logical null = 0;
+  *nvals = 0;
+  *isNull = 0;
+  chkin_c("ekrcei_c");
+  ekrcei_(&handle, &s, &row, (char *)column, nvals, values, &null, (ftnlen)strlen(column));
+  chkout_c("ekrcei_c");
+  if (finish_ek_record_call(err, errMaxBytes))
+    return 1;
+  if (*nvals != expected)
+    return tspice_ek_invalid_arg(err, errMaxBytes, "Inconsistent EK entry extent");
+  *isNull = null != 0;
+  return 0;
+}
+
+int tspice_ekucec(int handle, int segno, int recno, const char *column, int count, int width,
+                  const char *values, int isNull, char *err, int errMaxBytes) {
+  if (prepare_ek_write(handle, segno, recno, column, 1, "ekucec_c", 0, count, width, values, isNull,
+                       err, errMaxBytes))
+    return 1;
+  if (count == 0 && *column) {
+    // Avoid two allocator-dependent malloc(0) calls in the C row packer.
+    integer s = segno + 1, row = recno + 1;
+    logical null = isNull;
+    char blank = ' ';
+    chkin_c("ekucec_c");
+    ekucec_(&handle, &s, &row, (char *)column, &count, &blank, &null, (ftnlen)strlen(column),
+            (ftnlen)1);
+    chkout_c("ekucec_c");
+  } else
+    ekucec_c(handle, segno, recno, column, count, width, values, isNull);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekuced(int handle, int segno, int recno, const char *column, int count,
+                  const double *values, int isNull, char *err, int errMaxBytes) {
+  if (prepare_ek_write(handle, segno, recno, column, 2, "ekuced_c", 0, count, sizeof(double),
+                       values, isNull, err, errMaxBytes))
+    return 1;
+  ekuced_c(handle, segno, recno, column, count, values, isNull);
+  return finish_ek_record_call(err, errMaxBytes);
+}
+
+int tspice_ekucei(int handle, int segno, int recno, const char *column, int count,
+                  const int *values, int isNull, char *err, int errMaxBytes) {
+  if (prepare_ek_write(handle, segno, recno, column, 3, "ekucei_c", 0, count, sizeof(int), values,
+                       isNull, err, errMaxBytes))
+    return 1;
+  ekucei_c(handle, segno, recno, column, count, values, isNull);
   return finish_ek_record_call(err, errMaxBytes);
 }
 

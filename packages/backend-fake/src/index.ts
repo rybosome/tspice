@@ -2212,6 +2212,33 @@ export function createFakeBackend(
       throw new Error("Fake backend: ekgi() is not implemented");
     },
 
+    ekacec: () => {
+      throw new Error("Fake backend does not model ekacec");
+    },
+    ekaced: () => {
+      throw new Error("Fake backend does not model ekaced");
+    },
+    ekacei: () => {
+      throw new Error("Fake backend does not model ekacei");
+    },
+    ekrcec: () => {
+      throw new Error("Fake backend does not model ekrcec");
+    },
+    ekrced: () => {
+      throw new Error("Fake backend does not model ekrced");
+    },
+    ekrcei: () => {
+      throw new Error("Fake backend does not model ekrcei");
+    },
+    ekucec: () => {
+      throw new Error("Fake backend does not model ekucec");
+    },
+    ekuced: () => {
+      throw new Error("Fake backend does not model ekuced");
+    },
+    ekucei: () => {
+      throw new Error("Fake backend does not model ekucei");
+    },
     ekops: () => {
       throw new Error("Fake backend does not model ekops");
     },

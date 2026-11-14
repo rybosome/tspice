@@ -482,6 +482,20 @@ WASM artifacts change in this batch; its writer/bounds prerequisite is #694.
 
 ## Domain: `ek` file and segment lifecycle (`EkApi`)
 
+[Physical EK entry values, nulls, byte widths and independent persisted reads](step8-ek-entries.md)
+
+| Raw method | Linked toolkit entry                     | Result or effect                                                                                                                   |
+| ---------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `ekacec`   | `ekacec_c`                               | Add the character entry of an owned writable EK using the observed array count and null flag.                                      |
+| `ekaced`   | `ekaced_c`                               | Add the double precision and TIME entry of an owned writable EK using the observed array count and null flag.                      |
+| `ekacei`   | `ekacei_c`                               | Add the integer entry of an owned writable EK using the observed array count and null flag.                                        |
+| `ekrcec`   | `ekrcec_` with checked C string handling | Read the entire character entry by physical segment/record, preserving null flag, element count and owned payload.                 |
+| `ekrced`   | `ekrced_` with checked C string handling | Read the entire double precision and TIME entry by physical segment/record, preserving null flag, element count and owned payload. |
+| `ekrcei`   | `ekrcei_` with checked C string handling | Read the entire integer entry by physical segment/record, preserving null flag, element count and owned payload.                   |
+| `ekucec`   | `ekucec_c`                               | Replace the character entry of an owned writable EK using the observed array count and null flag.                                  |
+| `ekuced`   | `ekuced_c`                               | Replace the double precision and TIME entry of an owned writable EK using the observed array count and null flag.                  |
+| `ekucei`   | `ekucei_c`                               | Replace the integer entry of an owned writable EK using the observed array count and null flag.                                    |
+
 [EK record edits, table schemas and writer constraints](step8-ek-records.md)
 
 | Raw method | CSPICE     | Result or effect                                                                                                                                                       |

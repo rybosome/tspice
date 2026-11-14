@@ -150,6 +150,87 @@ export type NativeAddon = {
     | { found: false }
     | { found: true; isNull: true }
     | { found: true; isNull: false; value: number };
+  ekacec(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekaced(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekacei(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekrcec(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    width: number,
+  ): { nvals: number; isNull: boolean; bytes: Uint8Array };
+  ekrced(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    width: number,
+  ): { nvals: number; isNull: boolean; bytes: Uint8Array };
+  ekrcei(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    width: number,
+  ): { nvals: number; isNull: boolean; bytes: Uint8Array };
+  ekucec(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekuced(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
+  ekucei(
+    handle: number,
+    segno: number,
+    recno: number,
+    column: string,
+    count: number,
+    width: number,
+    bytes: Uint8Array,
+    isNull: boolean,
+  ): void;
   ekops(): number;
   ekbseg(
     handle: number,
