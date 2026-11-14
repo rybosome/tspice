@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "coords-vectors-dpmin-constant-value",
+    "description": "dpmin: compare most negative finite double returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpmin"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpmin-constant-repeat-after-reset",
+    "description": "dpmin: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpmin"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.dpmin"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "coords-vectors.dpmin"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 172
+- Planned (not yet implemented): 477
 - Excluded: 3
 
 ## Implemented now
@@ -22,6 +22,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | Routine | Purpose (1 line) |
 | --- | --- |
 | `axisar_c` | Axis and angle to rotation |
+| `b1900_c` | Besselian Date 1900.0 |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -40,6 +41,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cklpf_c` | CK, load pointing file |
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
+| `clight_c` | C, Speed of light in a vacuum |
 | `cnmfrm_c` | Center name to associated frame |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
@@ -53,6 +55,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
+| `dpmax_c` | Largest DP number |
+| `dpmin_c` | Smallest DP number |
 | `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
@@ -105,6 +109,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `intmax_c` | Largest integer number |
+| `intmin_c` | Smallest integer number |
+| `j1950_c` | Julian Date of 1950.0 JAN 1.0 |
+| `j2100_c` | Julian Date of 2100 JAN 1.5 |
+| `jyear_c` | Seconds per julian year |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `kinfo_c` | Kernel Information |
@@ -168,6 +177,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `tyear_c` | Seconds per tropical year |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -193,7 +203,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `appndi_c` | Append an item to an integer cell |
 | `azlcpo_c` | AZ/EL, constant position observer state |
 | `azlrec_c` | AZ/EL to rectangular coordinates |
-| `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
 | `badkpv_c` | Bad Kernel Pool Variable |
 | `bltfrm_c` | Built-in frame IDs |
@@ -227,7 +236,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `clearc_c` | Clear a two-dimensional character array |
 | `cleard_c` | Clear a double precision array |
 | `cleari_c` | Clear an integer array |
-| `clight_c` | C, Speed of light in a vacuum |
 | `clpool_c` | Clear the pool of kernel variables |
 | `cmprss_c` | Compress a character string |
 | `conics_c` | Determine state from conic elements |
@@ -291,8 +299,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dnearp_c` | Derivative of near point |
 | `dp2hx_c` | D.p. number to hexadecimal string |
 | `dpgrdr_c` | Derivative of planetographic w.r.t. rectangular |
-| `dpmax_c` | Largest DP number |
-| `dpmin_c` | Smallest DP number |
 | `dpr_c` | Degrees per radian |
 | `drdazl_c` | Derivative of rectangular w.r.t. AZ/EL |
 | `drdcyl_c` | Derivative of rectangular w.r.t. cylindrical |
@@ -402,8 +408,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `inelpl_c` | Intersection of ellipse and plane |
 | `inrypl_c` | Intersection of ray and plane |
 | `inter_c` | Intersection of two sets |
-| `intmax_c` | Largest integer number |
-| `intmin_c` | Smallest integer number |
 | `invert_c` | Invert a 3x3 matrix |
 | `invort_c` | Invert nearly orthogonal matrices |
 | `invstm_c` | Inverse of state transformation matrix |
@@ -414,10 +418,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `isrot_c` | Indicate whether a matrix is a rotation matrix |
 | `iswhsp_c` | Determine whether a string is white space |
 | `j1900_c` | Julian Date of 1900.0 JAN 0.5 |
-| `j1950_c` | Julian Date of 1950.0 JAN 1.0 |
 | `j2000_c` | Julian Date of 2000 JAN 1.5 |
-| `j2100_c` | Julian Date of 2100 JAN 1.5 |
-| `jyear_c` | Seconds per julian year |
 | `lastnb_c` | Last non-blank character |
 | `latcyl_c` | Latitudinal to cylindrical coordinates |
 | `latsph_c` | Latitudinal to spherical coordinates |
@@ -616,7 +617,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `twopi_c` | Twice the value of pi |
 | `twovec_c` | Two vectors defining an orthonormal frame |
 | `twovxf_c` | Two states defining a frame transformation |
-| `tyear_c` | Seconds per tropical year |
 | `ucase_c` | Convert to uppercase |
 | `ucrss_c` | Unitized cross product, 3x3 |
 | `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |

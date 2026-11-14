@@ -33,6 +33,26 @@ export type StepTimeEt2Utc = {
   prec: number;
 };
 
+export type StepTimeB1900 = {
+  op: "time.b1900";
+};
+
+export type StepTimeJ1950 = {
+  op: "time.j1950";
+};
+
+export type StepTimeJ2100 = {
+  op: "time.j2100";
+};
+
+export type StepTimeJyear = {
+  op: "time.jyear";
+};
+
+export type StepTimeTyear = {
+  op: "time.tyear";
+};
+
 export type StepTimeTkvrsn = {
   op: "time.tkvrsn";
   item: "TOOLKIT";
@@ -194,6 +214,26 @@ export type StepCoordsVectorsSphrec = {
   radius: number;
   colat: number;
   lon: number;
+};
+
+export type StepCoordsVectorsClight = {
+  op: "coords-vectors.clight";
+};
+
+export type StepCoordsVectorsDpmax = {
+  op: "coords-vectors.dpmax";
+};
+
+export type StepCoordsVectorsDpmin = {
+  op: "coords-vectors.dpmin";
+};
+
+export type StepCoordsVectorsIntmax = {
+  op: "coords-vectors.intmax";
+};
+
+export type StepCoordsVectorsIntmin = {
+  op: "coords-vectors.intmin";
 };
 
 export type StepCoordsVectorsVnorm = {
@@ -1292,6 +1332,11 @@ export type StepDskDskb02 = {
 export type WorkflowStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
+  | StepTimeB1900
+  | StepTimeJ1950
+  | StepTimeJ2100
+  | StepTimeJyear
+  | StepTimeTyear
   | StepTimeTkvrsn
   | StepTimeTimout
   | StepTimeDeltet
@@ -1317,6 +1362,11 @@ export type WorkflowStep =
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
   | StepCoordsVectorsSphrec
+  | StepCoordsVectorsClight
+  | StepCoordsVectorsDpmax
+  | StepCoordsVectorsDpmin
+  | StepCoordsVectorsIntmax
+  | StepCoordsVectorsIntmin
   | StepCoordsVectorsVnorm
   | StepCoordsVectorsVhat
   | StepCoordsVectorsVdot
@@ -1486,6 +1536,11 @@ export type GfSearchWindowPayload = {
 export type StepOutput =
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
+  | { op: "time.b1900"; value: number }
+  | { op: "time.j1950"; value: number }
+  | { op: "time.j2100"; value: number }
+  | { op: "time.jyear"; value: number }
+  | { op: "time.tyear"; value: number }
   | { op: "time.tkvrsn"; value: string }
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
@@ -1525,6 +1580,11 @@ export type StepOutput =
       value: { radius: number; colat: number; lon: number };
     }
   | { op: "coords-vectors.sphrec"; value: Vector3 }
+  | { op: "coords-vectors.clight"; value: number }
+  | { op: "coords-vectors.dpmax"; value: number }
+  | { op: "coords-vectors.dpmin"; value: number }
+  | { op: "coords-vectors.intmax"; value: number }
+  | { op: "coords-vectors.intmin"; value: number }
   | { op: "coords-vectors.vnorm"; value: number }
   | { op: "coords-vectors.vhat"; value: Vector3 }
   | { op: "coords-vectors.vdot"; value: number }

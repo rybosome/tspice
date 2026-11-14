@@ -8,6 +8,60 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Return the speed of light in vacuum: 299792.458 kilometers per second.
+   *
+   * This is the IAU value used by CSPICE.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/clight_c.html
+   */
+  clight(): number;
+
+  /**
+   * Return the largest finite double-precision value supported by CSPICE.
+   *
+   * The value is toolkit/platform dependent (DBL_MAX); on supported
+   * IEEE-754 binary64 backends it equals Number.MAX_VALUE.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpmax_c.html
+   */
+  dpmax(): number;
+
+  /**
+   * Return the most negative finite double-precision value supported by CSPICE.
+   *
+   * On supported backends this is -DBL_MAX (-Number.MAX_VALUE),
+   * not the smallest positive representable number.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpmin_c.html
+   */
+  dpmin(): number;
+
+  /**
+   * Return the largest integer representable by the toolkit SpiceInt type.
+   *
+   * The supported Node/WASM backends use signed 32-bit SpiceInt,
+   * so the result is 2147483647, represented exactly as a JavaScript number.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The integer CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/intmax_c.html
+   */
+  intmax(): number;
+
+  /**
+   * Return the smallest integer representable by the toolkit SpiceInt type.
+   *
+   * The supported Node/WASM backends use signed 32-bit SpiceInt,
+   * so the result is -2147483648, represented exactly as a JavaScript number.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The integer CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/intmin_c.html
+   */
+  intmin(): number;
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */
