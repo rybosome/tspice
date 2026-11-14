@@ -41,7 +41,244 @@
     "packages/backend-wasm/src/domains/coords-vectors.ts",
     "packages/backend-wasm/test/polynomial-input-snapshots.test.ts"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a16-af3d8fd5-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bbe62c1572d2c66a2cbbf17b793606cce9cb286cd3566dd3e84c6a6bfbaeaded",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "observation": "Both complete required lanes passed locally on af3d8fd56795fc32a895088a9c145078e82dbc58. JavaScript: 2,540 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,541 parity-package tests with no skips, including the native-required guard; 99 native wrapper, 637 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a16-af3d8fd5-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bbe62c1572d2c66a2cbbf17b793606cce9cb286cd3566dd3e84c6a6bfbaeaded",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "observation": "Both complete required lanes passed locally on af3d8fd56795fc32a895088a9c145078e82dbc58. JavaScript: 2,540 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,541 parity-package tests with no skips, including the native-required guard; 99 native wrapper, 637 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a16-af3d8fd5-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bbe62c1572d2c66a2cbbf17b793606cce9cb286cd3566dd3e84c6a6bfbaeaded",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "commit": "af3d8fd56795fc32a895088a9c145078e82dbc58",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550197101/job/132310662417",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310662417 on af3d8fd56795fc32a895088a9c145078e82dbc58: 2,310 registered Node/WASM live comparisons; 2,541 parity-package tests with no skips, including the native-required guard; 99 native wrapper, 637 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a16-af3d8fd5-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bbe62c1572d2c66a2cbbf17b793606cce9cb286cd3566dd3e84c6a6bfbaeaded",
+      "caseIds": [
+        "coords-vectors-chbder-constant-and-zero",
+        "coords-vectors-chbder-derivative-order-and-zero-tail",
+        "coords-vectors-chbder-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbder-domain-endpoints",
+        "coords-vectors-chbder-negative-radius-orientation",
+        "coords-vectors-chbder-scaled-coefficients",
+        "coords-vectors-chbder-scaled-domain-radius",
+        "coords-vectors-chbder-shifted-scaled-domain",
+        "coords-vectors-chbigr-constant-and-zero",
+        "coords-vectors-chbigr-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbigr-domain-endpoints",
+        "coords-vectors-chbigr-empty-degree-error",
+        "coords-vectors-chbigr-integral-midpoint-normalization",
+        "coords-vectors-chbigr-negative-radius-error",
+        "coords-vectors-chbigr-scaled-coefficients",
+        "coords-vectors-chbigr-scaled-domain-radius",
+        "coords-vectors-chbigr-shifted-scaled-domain",
+        "coords-vectors-chbigr-zero-radius-error",
+        "coords-vectors-chbint-constant-and-zero",
+        "coords-vectors-chbint-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbint-domain-endpoints",
+        "coords-vectors-chbint-negative-radius-orientation",
+        "coords-vectors-chbint-scaled-coefficients",
+        "coords-vectors-chbint-scaled-domain-radius",
+        "coords-vectors-chbint-shifted-scaled-domain",
+        "coords-vectors-chbval-constant-and-zero",
+        "coords-vectors-chbval-distinct-basis-and-coefficient-order",
+        "coords-vectors-chbval-domain-endpoints",
+        "coords-vectors-chbval-negative-radius-orientation",
+        "coords-vectors-chbval-scaled-coefficients",
+        "coords-vectors-chbval-scaled-domain-radius",
+        "coords-vectors-chbval-shifted-scaled-domain",
+        "coords-vectors-polyds-coefficient-order-and-signed-abscissa",
+        "coords-vectors-polyds-constant-and-empty",
+        "coords-vectors-polyds-derivative-order-and-zero-tail",
+        "coords-vectors-polyds-higher-degree-and-highest-coefficient",
+        "coords-vectors-polyds-negative-order-no-write",
+        "coords-vectors-polyds-scaled-coefficients",
+        "coords-vectors-rquad-all-zero-error",
+        "coords-vectors-rquad-complex-conjugate-fields",
+        "coords-vectors-rquad-constant-only-error",
+        "coords-vectors-rquad-linear-equations",
+        "coords-vectors-rquad-real-root-order-and-leading-sign",
+        "coords-vectors-rquad-repeated-and-zero-roots",
+        "coords-vectors-rquad-scaled-coefficients",
+        "coords-vectors-rquad-unequal-root-magnitudes"
+      ],
+      "commit": "af3d8fd56795fc32a895088a9c145078e82dbc58",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550197101/job/132310662417",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310662417 on af3d8fd56795fc32a895088a9c145078e82dbc58: 2,310 registered Node/WASM live comparisons; 2,541 parity-package tests with no skips, including the native-required guard; 99 native wrapper, 637 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "chbder_c",
@@ -115,16 +352,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.chbder -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-node", "ci-a16-af3d8fd5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.chbder -> typed WASM adapter -> exported _tspice_chbder with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbder -> canonical chbder_c. Independent Python calls actual locked SpiceyPy chbder with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-wasm", "ci-a16-af3d8fd5-wasm"]
         }
       }
     },
@@ -228,11 +477,12 @@
             "needs-repair",
             "reviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbigr -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-node", "ci-a16-af3d8fd5-node"]
         },
         "wasm": {
           "history": [
@@ -240,11 +490,12 @@
             "needs-repair",
             "reviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chbigr -> typed WASM adapter -> exported _tspice_chbigr with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbigr -> canonical chbigr_c. Independent Python calls actual locked SpiceyPy chbigr with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-wasm", "ci-a16-af3d8fd5-wasm"]
         }
       }
     },
@@ -315,16 +566,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.chbint -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-node", "ci-a16-af3d8fd5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.chbint -> typed WASM adapter -> exported _tspice_chbint with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbint -> canonical chbint_c. Independent Python calls actual locked SpiceyPy chbint with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-wasm", "ci-a16-af3d8fd5-wasm"]
         }
       }
     },
@@ -395,16 +658,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.chbval -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-node", "ci-a16-af3d8fd5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.chbval -> typed WASM adapter -> exported _tspice_chbval with checked coefficient/output/workspace buffers and copied results -> shared tspice_chbval -> canonical chbval_c. Independent Python calls actual locked SpiceyPy chbval with inferred degree in its proper argument position and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-wasm", "ci-a16-af3d8fd5-wasm"]
         }
       }
     },
@@ -492,11 +767,12 @@
             "needs-repair",
             "reviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.polyds -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-node", "ci-a16-af3d8fd5-node"]
         },
         "wasm": {
           "history": [
@@ -504,11 +780,12 @@
             "needs-repair",
             "reviewed",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.polyds -> typed WASM adapter -> exported _tspice_polyds with checked coefficient/output/workspace buffers and copied results -> shared tspice_polyds -> canonical polyds_c. Independent Python uses actual locked SpiceyPy for nonnegative order and an exact typed CDLL(libspice._name).polyds_c no-write call for negative order.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-wasm", "ci-a16-af3d8fd5-wasm"]
         }
       }
     },
@@ -585,19 +862,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.rquad -> typed Node adapter -> actual native binding with owned input/work/output storage and global SPICE mutex -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-node", "ci-a16-af3d8fd5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.rquad -> typed WASM adapter -> exported _tspice_rquad with checked coefficient/output/workspace buffers and copied results -> shared tspice_rquad -> canonical rquad_c. Independent Python calls actual locked SpiceyPy rquad with actual signed scalar coefficients and forwards every output field.",
-          "executions": []
+          "executions": ["local-a16-af3d8fd5-wasm", "ci-a16-af3d8fd5-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

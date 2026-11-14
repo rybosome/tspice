@@ -421,8 +421,8 @@
         "rquad_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review coefficient order/inferred degree, interval and derivative conventions, source-derived signed/workspace bounds, actual errors and independent negative-order polyds route. Require complete live outputs, both full local lanes and observed canonical CI before source-bound verification. No merge authorized."
+      "prs": ["https://github.com/rybosome/tspice/pull/717"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

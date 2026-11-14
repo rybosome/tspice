@@ -691,14 +691,21 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Stage/format corrected source, regenerate outputs, execute full required JS/native lanes and obtain observed canonical CI evidence. Keep reviewed status until those corrected-source observations are recorded.",
+      "prs": ["https://github.com/rybosome/tspice/pull/717"],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "af3d8fd56795fc32a895088a9c145078e82dbc58",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550197101/job/132310662417",
+          "result": "Both complete required lanes passed locally on af3d8fd56795fc32a895088a9c145078e82dbc58. JavaScript: 2,540 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,541 parity-package tests with no skips, including the native-required guard; 99 native wrapper, 637 WASM, 28 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132310662417 on af3d8fd56795fc32a895088a9c145078e82dbc58: 2,310 registered Node/WASM live comparisons; 2,541 parity-package tests with no skips, including the native-required guard; 99 native wrapper, 637 WASM, 28 core and 152 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-polynomial-expansions",
       "branch": "codex/expand-polynomial-expansions",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "All five array-bearing polynomial methods now dispatch validated owned snapshots. Focused boundary runs passed 33 native tests and two bounded WASM snapshot tests; no C, binary or scientific formula changed. The unchanged scalar rquad route retains the diagnostic/trace caveat. Original 46 scenarios / 131 canonical calls unchanged. Prior focused runs remain earlier-source observations; fresh required local lanes and canonical CI for this correction pending.",
-      "priorCheckpoint": "Six-routine source/audit frozen at46 scenarios/131 calls with5 genuine errors. Compiled focused92 live/12 public/3 extremes-oracle/35 WASM/31 native/2 RPC plus3 rquad diagnostic/caller-stack regressions passed. A narrow test-helper optional-empty representation correction leaves production unchanged. Upstream rquad checkout typo/device-dependent diagnostic remains documented; primary error/reset/stack recovery verified in focused tests. Full required local lanes and canonical CI pending; judgments reviewed, not verified."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source af3d8fd5. 2,310 registered Node/WASM live comparisons; 2,541 parity-package tests with no skips, including the native-required guard; 99 native wrapper, 637 WASM, 28 core and 152 facade tests passed.",
+      "priorCheckpoint": "All five array-bearing polynomial methods now dispatch validated owned snapshots. Focused boundary runs passed 33 native tests and two bounded WASM snapshot tests; no C, binary or scientific formula changed. The unchanged scalar rquad route retains the diagnostic/trace caveat. Original 46 scenarios / 131 canonical calls unchanged. Prior focused runs remain earlier-source observations; fresh required local lanes and canonical CI for this correction pending."
     },
     {
       "id": "A17-interpolation",
