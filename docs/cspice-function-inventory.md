@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 167
+- Planned (not yet implemented): 482
 - Excluded: 3
 
 ## Implemented now
@@ -77,7 +77,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
+| `et2lst_c` | ET to Local Solar Time |
 | `et2utc_c` | Ephemeris Time to UTC |
+| `etcal_c` | Convert ET to Calendar format |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
@@ -166,10 +168,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
+| `tparch_c` | Parse check---check format of strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `tsetyr_c` | Time --- set year expansion boundaries |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
+| `utc2et_c` | UTC to Ephemeris Time |
 | `vadd_c` | Vector addition, 3 dimensional |
 | `valid_c` | Validate a set |
 | `vcrss_c` | Vector cross product, 3 dimensions |
@@ -359,8 +364,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `errint_c` | Insert Integer into Error Message Text |
 | `errprt_c` | Get/Set Error Output Items |
 | `esrchc_c` | Equivalence search, character |
-| `et2lst_c` | ET to Local Solar Time |
-| `etcal_c` | Convert ET to Calendar format |
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
 | `evsgp4_c` | Evaluate "two-line" element data |
@@ -606,13 +609,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tipbod_c` | Transformation, inertial position to bodyfixed |
 | `tisbod_c` | Transformation, inertial state to bodyfixed |
 | `tkfram_c` | TK frame, find position rotation |
-| `tparch_c` | Parse check---check format of strings |
 | `trace_c` | Trace of a 3x3 matrix |
 | `trcdep_c` | Traceback depth |
 | `trcnam_c` | Get module name from traceback |
 | `trcoff_c` | Turn tracing off |
 | `trgsep_c` | Separation quantity from observer |
-| `tsetyr_c` | Time --- set year expansion boundaries |
 | `twopi_c` | Twice the value of pi |
 | `twovec_c` | Two vectors defining an orthonormal frame |
 | `twovxf_c` | Two states defining a frame transformation |
@@ -625,7 +626,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `union_c` | Union of two sets |
 | `unorm_c` | Unit vector and norm, 3 dimensional |
 | `unormg_c` | Unit vector and norm, general dimension |
-| `utc2et_c` | UTC to Ephemeris Time |
 | `vaddg_c` | Vector addition, general dimension |
 | `vdist_c` | Vector distance |
 | `vdistg_c` | Vector distance, general dimension |

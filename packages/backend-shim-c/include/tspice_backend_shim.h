@@ -472,6 +472,12 @@ int tspice_expool(
 // --- low-level primitives ---
 
 // str2et_c: convert time string -> ET seconds past J2000.
+int tspice_etcal(double et, int callen, char *out, char *err, int errMaxBytes);
+int tspice_utc2et(const char *utc, double *et, char *err, int errMaxBytes);
+int tspice_tparch(const char *type, char *err, int errMaxBytes);
+int tspice_tsetyr(int year, char *err, int errMaxBytes);
+int tspice_et2lst(double et, int body, double lon, const char *type, int timlen, int ampmlen,
+                  int *hms, char *time, char *ampm, char *err, int errMaxBytes);
 int tspice_str2et(const char *time, double *outEt, char *err, int errMaxBytes);
 
 // et2utc_c: convert ET seconds past J2000 -> formatted UTC string.

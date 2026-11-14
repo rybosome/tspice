@@ -1,5 +1,9 @@
 import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
 import {
+  checkTimeNumber,
+  checkTimeText,
+  checkTimeYearWindow,
+  timeOutputCapacity,
   assertNever,
   assertSpiceInt32,
   invariant,
@@ -60,6 +64,49 @@ export function createTimeApi(native: NativeAddon): TimeApi {
       return version;
     },
 
+    etcal(et, callen = 181) {
+      checkTimeNumber(et, "etcal(et)");
+      const out = native.etcal(et, timeOutputCapacity(callen, 181));
+      invariant(typeof out === "string", "Expected etcal calendar string");
+      return out;
+    },
+    utc2et(utcstr) {
+      checkTimeText(utcstr, "utc2et(utcstr)");
+      const out = native.utc2et(utcstr);
+      invariant(typeof out === "number", "Expected utc2et epoch");
+      return out;
+    },
+    tparch(type) {
+      checkTimeText(type, "tparch(type)");
+      native.tparch(type);
+    },
+    tsetyr(year) {
+      checkTimeYearWindow(year);
+      native.tsetyr(year);
+    },
+    et2lst(et, body, lon, type, timlen = 9, ampmlen = 14) {
+      checkTimeNumber(et, "et2lst(et)");
+      assertSpiceInt32(body, "et2lst(body)");
+      checkTimeNumber(lon, "et2lst(lon)");
+      checkTimeText(type, "et2lst(type)");
+      const { hr, mn, sc, time, ampm } = native.et2lst(
+        et,
+        body,
+        lon,
+        type,
+        timeOutputCapacity(timlen, 9),
+        timeOutputCapacity(ampmlen, 14),
+      );
+      invariant(
+        Number.isInteger(hr) &&
+          Number.isInteger(mn) &&
+          Number.isInteger(sc) &&
+          typeof time === "string" &&
+          typeof ampm === "string",
+        "Invalid native local solar time result",
+      );
+      return { hr, mn, sc, time, ampm };
+    },
     str2et: (time) => {
       return native.str2et(time);
     },

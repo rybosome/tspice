@@ -1,0 +1,685 @@
+{
+  "schemaVersion": 1,
+  "batch": "d01-time-additions",
+  "traceFiles": [
+    "docs/step8-civil-time.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/time.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/time.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/time.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/time-additions-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/time.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/calls.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/time.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/time-additions-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/time-inputs.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/civil_time_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/cases/time/et2lst.cases.json",
+    "packages/py-parity-checking/src/cases/time/etcal.cases.json",
+    "packages/py-parity-checking/src/cases/time/tparch.cases.json",
+    "packages/py-parity-checking/src/cases/time/tsetyr.cases.json",
+    "packages/py-parity-checking/src/cases/time/utc2et.cases.json",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernel-pool.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/civil-time-public.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "routines": [
+    {
+      "routine": "etcal_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/etcal_c.html",
+      "semantics": "Format finite formal ephemeris seconds using a proleptic Gregorian calendar of 86400-second days and the exact CSPICE millisecond text. Finite epochs beyond the day limits produce the toolkit’s boundary text.",
+      "scenarios": [
+        {
+          "caseId": "time-etcal-tdb-milliseconds",
+          "coverage": ["success", "edge"],
+          "observes": "Compare formal TDB calendar output around midday and both sides of the fractional-second boundary. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-etcal-day-transitions",
+          "coverage": ["success", "edge"],
+          "observes": "Midnight boundaries, leap day and a non-leap century use fixed 86400-second days. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-etcal-historical-dates",
+          "coverage": ["success", "edge"],
+          "observes": "Compare full A.D. and B.C. strings including multiword era labels. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-etcal-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Expose byte prefixes, trimmed outer blanks and full formatted text. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-etcal-short-0",
+          "coverage": ["error", "edge"],
+          "observes": "CSPICE detects insufficient output space. Require diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "time-etcal-short-1",
+          "coverage": ["error", "edge"],
+          "observes": "CSPICE detects insufficient output space. Require diagnostic STRINGTOOSHORT."
+        }
+      ],
+      "edgeAssessment": "J2000, midnight transitions, historical eras, truncation and signed output lengths cover the complete calendar string. The native test also checks the negative finite-double extreme.",
+      "errorAssessment": "Output capacities below two signal STRINGTOOSHORT. Positive excess capacity is bounded at the internal 180-byte date plus NUL.",
+      "fixtures": [],
+      "fixtureRationale": "This routine is kernel-independent. Inputs are project-authored epochs and capacities.",
+      "cleanup": "Parsing settings persist within a toolkit. Each workflow records its entry mode/window before changes and restores that state in finalizers on success or error. The science cases return owned strings/objects, dispose public clients, clean the kernel pool and release scoped WASM allocations.",
+      "tolerance": "The entire ASCII calendar text and truncation prefix compare exactly. No numeric tolerance applies.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.etcal through TimeApi, the serialized native addon and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.etcal through TimeApi, the regenerated, checked WASM export and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "utc2et_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/utc2et_c.html",
+      "semantics": "Parse a legacy UTC calendar, ordinal or Julian date to TDB seconds past J2000 using the loaded leap-second and conversion constants. Honor TPARCH and TSETYR; UTC2ET rejects timezone, AM/PM and alternate time systems.",
+      "scenarios": [
+        {
+          "caseId": "time-utc2et-epochs",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Calendar, ordinal and Julian UTC expressions identify the same J2000 noon instant. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-utc2et-leap-second",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Three successive UTC instants include an inserted second before 2017. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-utc2et-fractional",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Nonintegral seconds and mixed date formats yield distinguishable ET. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-utc2et-missing-lsk",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Recognized UTC without required leap seconds signals a missing kernel. Require diagnostic NOLEAPSECONDS."
+        },
+        {
+          "caseId": "time-utc2et-empty",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe the legacy UTC parser diagnostic for empty. Require diagnostic EMPTYSTRING."
+        },
+        {
+          "caseId": "time-utc2et-label",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe the legacy UTC parser diagnostic for label. Require diagnostic INVALIDTIMESTRING."
+        },
+        {
+          "caseId": "time-utc2et-text",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe the legacy UTC parser diagnostic for text. Require diagnostic INVALIDTIMESTRING."
+        },
+        {
+          "caseId": "time-utc2et-timezone",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe the legacy UTC parser diagnostic for timezone. Require diagnostic INVALIDTIMESTRING."
+        }
+      ],
+      "edgeAssessment": "Reference epochs, one-second leap transitions, alternate calendar spellings and fractional seconds exercise the numerical result. Bounded native tests check calendar-day, leap-table and expanded-year limits and diagnostic precedence.",
+      "errorAssessment": "NOLEAPSECONDS, EMPTYSTRING and INVALIDTIMESTRING remain toolkit errors. Unsafe integer narrowing or signed date/LSK arithmetic is a wrapper error.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing source-controlled kernels are reused unchanged. The fixture paths and provenance apply to the successful kernel-dependent scenarios. Other cases deliberately omit required data or use kernel-free parser controls.",
+      "cleanup": "Parsing settings persist within a toolkit. Each workflow records its entry mode/window before changes and restores that state in finalizers on success or error. The science cases return owned strings/objects, dispose public clients, clean the kernel pool and release scoped WASM allocations.",
+      "tolerance": "Registered epochs use the unchanged 1e-12 absolute-or-relative comparison. The public test compares one-second adjacent leap differences to six decimal places, avoiding masking by a large relative epoch.",
+      "findings": [
+        {
+          "id": "calendar-integer-domain",
+          "status": "repaired",
+          "summary": "N0067 TCHECK and TTRANS narrow parsed calendar/JD fields, evaluate signed Gregorian day expressions and subtract kernel-derived reference days.",
+          "repair": "Preflight using the actual TPARTV field decomposition and TCHECK mode. Check the calendar and leap-table arithmetic before calling UTC2ET_C. Preserve earlier syntax, modifier and kernel diagnostics.",
+          "caseIds": [
+            "time-utc2et-epochs",
+            "time-utc2et-missing-lsk",
+            "time-utc2et-label"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/backend-node/test/time-additions-domain.test.ts",
+            "packages/backend-wasm/test/time-additions-allocations.test.ts",
+            "docs/step8-civil-time.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/civil_time_oracle.py",
+            "packages/py-parity-checking/test/civil-time-public.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.utc2et through TimeApi, the serialized native addon and shared tspice_utc2et to actual utc2et_c. The locked oracle calls sp.utc2et on defined legacy time strings.",
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.utc2et through TimeApi, the regenerated, checked WASM export and shared tspice_utc2et to actual utc2et_c. The locked oracle calls sp.utc2et on defined legacy time strings.",
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tparch_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tparch_c.html",
+      "semantics": "Select the persistent calendar validation flag: the toolkit compares a nonempty string to YES with EQSTR; all other nonempty values select permissive checking.",
+      "scenarios": [
+        {
+          "caseId": "time-tparch-normalize",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Changing from strict to permissive restores overflow-component handling. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tparch-other-value",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A non-YES word re-enables normalized date input after strict parsing. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tparch-strict-tparse",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe parser restriction through the original formal-time helper. Require diagnostic day of the month."
+        },
+        {
+          "caseId": "time-tparch-strict-utc",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Strict policy changes the actual downstream UTC2ET result. Require diagnostic INVALIDTIMESTRING."
+        },
+        {
+          "caseId": "time-tparch-permissive-utc",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Permissive input resolves the day overflow through the live UTC scale conversion. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tparch-empty",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The C wrapper checks empty mode text before changing state. Require diagnostic EMPTYSTRING."
+        }
+      ],
+      "edgeAssessment": "Observe actual settings through both TPARSE and UTC2ET, including normalization of April 31, case/blank handling, an arbitrary permissive selector and restoration after failed workflows.",
+      "errorAssessment": "Empty input signals EMPTYSTRING. A strict-invalid TPARSE returns diagnostic text which its existing adapter throws. Strict UTC2ET instead raises the toolkit INVALIDTIMESTRING.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing source-controlled kernels are reused unchanged. The fixture paths and provenance apply to the successful kernel-dependent scenarios. Other cases deliberately omit required data or use kernel-free parser controls.",
+      "cleanup": "Parsing settings persist within a toolkit. Each workflow records its entry mode/window before changes and restores that state in finalizers on success or error. The science cases return owned strings/objects, dispose public clients, clean the kernel pool and release scoped WASM allocations.",
+      "tolerance": "The setter returns void. Subsequent parser successes and diagnostics demonstrate the effect, including exact equality of a normalized date and its calendar equivalent.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tparch through TimeApi, the serialized native addon and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tparch through TimeApi, the regenerated, checked WASM export and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tsetyr_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tsetyr_c.html",
+      "semantics": "Change the first year of the persistent 100-year window for abbreviated years. Nonpositive signed32 values leave the prior window in force.",
+      "scenarios": [
+        {
+          "caseId": "time-tsetyr-lower-1950",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tsetyr-lower-1969",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tsetyr-lower-2000",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tsetyr-lower-2050",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tsetyr-lower-1",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe two-digit expansion throughout the chosen century window. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tsetyr-successive",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A nonpositive bound leaves the preceding positive selection active; later reset is observable. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-tsetyr-utc-window",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The same pivot changes legacy UTC conversion and leaves four-digit input stable. Compare all observable workflow outputs to the independent implementation."
+        }
+      ],
+      "edgeAssessment": "Compare cutoff-adjacent years for multiple overlapping windows, multiple changes in a workflow, explicit centuries and UTC dates. Public cleanup tests start from a caller-selected window.",
+      "errorAssessment": "The setter has no toolkit error for defined inputs. Wider-than-signed32, fractional or lower-bound years above 5851355 are rejected by the wrapper before state mutation.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing self-contained fixture copied from facade tests as documented in fixtures/README.md. NAIF generic naif0012 LSK, 2016-07-14 header update; upstream https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls.",
+          "distribution": "Existing checked-in fixture reused unchanged under repository data policy; no new external payload or redistribution change."
+        }
+      ],
+      "fixtureRationale": "Existing source-controlled kernels are reused unchanged. The fixture paths and provenance apply to the successful kernel-dependent scenarios. Other cases deliberately omit required data or use kernel-free parser controls.",
+      "cleanup": "Parsing settings persist within a toolkit. Each workflow records its entry mode/window before changes and restores that state in finalizers on success or error. The science cases return owned strings/objects, dispose public clients, clean the kernel pool and release scoped WASM allocations.",
+      "tolerance": "The setter returns void. Focused tests compare full epoch arrays for boundary suffixes before and after workflows and exercise the top safe window on the actual native implementation.",
+      "findings": [
+        {
+          "id": "expanded-year-window",
+          "status": "repaired",
+          "summary": "A stored high TSETYR century can make even an ordinary two-digit TPARSE date overflow its signed 367*year expression.",
+          "repair": "Allow a lower bound through floor(INT_MAX/367) minus 99, check before changing shared state, and preserve nonpositive no-ops.",
+          "caseIds": ["time-tsetyr-successive", "time-tsetyr-lower-1"],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/backend-node/test/time-additions-domain.test.ts",
+            "packages/backend-wasm/test/time-additions-allocations.test.ts",
+            "docs/step8-civil-time.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/civil_time_oracle.py",
+            "packages/py-parity-checking/test/civil-time-public.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tsetyr through TimeApi, the serialized native addon and shared tspice_tsetyr to actual tsetyr_c. The locked oracle calls sp.tsetyr with subsequent real TPARSE/UTC2ET behavior.",
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tsetyr through TimeApi, the regenerated, checked WASM export and shared tspice_tsetyr to actual tsetyr_c. The locked oracle calls sp.tsetyr with subsequent real TPARSE/UTC2ET behavior.",
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "et2lst_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/et2lst_c.html",
+      "semantics": "Compute apparent local solar time from the body-to-Sun LT+S state in the body-fixed frame, surface longitude and rotation sense. Return all three integer fields and the 24-hour and AM/PM strings. The Sun centric shortcut returns noon.",
+      "scenarios": [
+        {
+          "caseId": "time-et2lst-sun",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The Sun has noon solar time for every planetocentric longitude without any supplied kernels. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-et2lst-time-widths",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Truncate time and AM/PM independently while preserving numeric components. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-et2lst-east-west",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare all five components at signed east and west longitudes, modulo a full rotation. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-et2lst-time-change",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Sun and synthetic body have independently evolving positions at separated ET instants. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-et2lst-planetographic",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Longitude definition and the sign of the PM rate affect direction and reported solar time. Compare all observable workflow outputs to the independent implementation."
+        },
+        {
+          "caseId": "time-et2lst-unknown-coordinates",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Unrecognized coordinate system precedes body orientation work. Require diagnostic UNKNOWNSYSTEM."
+        },
+        {
+          "caseId": "time-et2lst-frame-missing",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Missing frame association is an actual toolkit error. Require diagnostic CANTFINDFRAME."
+        },
+        {
+          "caseId": "time-et2lst-missing-spk",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Registered body-fixed frame without solar ephemeris reports missing SPK data. Require diagnostic NOLOADEDFILES."
+        },
+        {
+          "caseId": "time-et2lst-missing-rotation",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The ephemeris succeeds but the simulation has no PM rate. Require diagnostic CANTGETROTATIONTYPE."
+        },
+        {
+          "caseId": "time-et2lst-short-time",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Each output width has its own capacity check before scientific evaluation. Require diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "time-et2lst-short-ampm",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Each output width has its own capacity check before scientific evaluation. Require diagnostic STRINGTOOSHORT."
+        }
+      ],
+      "edgeAssessment": "East/west orientation, changing time, planetographic/centric conventions and limited capacities compare all five result fields. The authored body uses synthetic SPK/FK data and explicit rotation rates.",
+      "errorAssessment": "Canonical short-string, unknown-system, missing-frame, missing-ephemeris and missing-rotation paths are exercised. Initialized dependent calls retain real errors. INT_MIN body/hash values and an undefined clock narrowing remain wrapper boundaries.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Entirely project-authored fixture: arbitrary IDs and fixed frames/radii, seven constant/linear type8 ephemerides, outward-oriented eight-triangle octahedron. Locked SpiceyPy generator independently checks analytic ellipsoid/DSK intersections and total/annular occultation codes.",
+          "distribution": "Synthetic test data under repository MIT; no mission observations or external scientific dataset. Generator and distribution rationale documented in fixture README."
+        }
+      ],
+      "fixtureRationale": "Existing source-controlled kernels are reused unchanged. The fixture paths and provenance apply to the successful kernel-dependent scenarios. Other cases deliberately omit required data or use kernel-free parser controls.",
+      "cleanup": "Parsing settings persist within a toolkit. Each workflow records its entry mode/window before changes and restores that state in finalizers on success or error. The science cases return owned strings/objects, dispose public clients, clean the kernel pool and release scoped WASM allocations.",
+      "tolerance": "Hours, minutes, seconds and formatted text compare exactly, including truncation and 12-hour punctuation.",
+      "findings": [
+        {
+          "id": "private-geometry-inputs",
+          "status": "repaired",
+          "summary": "N0067 ET2LST uses the private PGRREC and SPKEZ result in RECLAT without first checking for a producer failure. The body mapping hash also assumes a representable signed absolute code.",
+          "repair": "Run exact linked geometry prerequisites under the original ET2LST caller frames with initialized storage; inspect status after each. Check hazardous integer hash inputs and pool codes before translation while preserving earlier string and pool diagnostics. The canonical ET2LST_C still generates successful clock fields and text.",
+          "caseIds": [
+            "time-et2lst-missing-spk",
+            "time-et2lst-planetographic",
+            "time-et2lst-sun"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/time.c",
+            "packages/backend-node/test/time-additions-domain.test.ts",
+            "packages/backend-wasm/test/time-additions-allocations.test.ts",
+            "docs/step8-civil-time.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/civil_time_oracle.py",
+            "packages/py-parity-checking/test/civil-time-public.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.et2lst through TimeApi, the serialized native addon and shared tspice_et2lst to actual et2lst_c. The locked oracle calls independent bounded PGRREC/SPKEZ prerequisites and the exact ET2LST_C export.",
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.et2lst through TimeApi, the regenerated, checked WASM export and shared tspice_et2lst to actual et2lst_c. The locked oracle calls independent bounded PGRREC/SPKEZ prerequisites and the exact ET2LST_C export.",
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
+        }
+      }
+    }
+  ],
+  "executions": [
+    {
+      "id": "local-d01-76c549f2-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "observation": "Both complete required lanes passed locally on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-d01-76c549f2-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "observation": "Both complete required lanes passed locally on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d01-76c549f2-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "commit": "76c549f2deb557021ec0cdb6b6da3ce20ff90b37",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43570044988/job/132372232193",
+      "observation": "Inspected successful Linux Node 22 native-required job 132372232193 on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d01-76c549f2-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "commit": "76c549f2deb557021ec0cdb6b6da3ce20ff90b37",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43570044988/job/132372232193",
+      "observation": "Inspected successful Linux Node 22 native-required job 132372232193 on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

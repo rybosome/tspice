@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import civil_time_oracle
 from ..models import (
     StepOutput,
     StepTimeDeltet,
@@ -17,6 +18,11 @@ from ..models import (
     StepTimeTimdefSet,
     StepTimeTimout,
     StepTimeTkvrsn,
+    StepTimeEtcal,
+    StepTimeUtc2et,
+    StepTimeTparch,
+    StepTimeTsetyr,
+    StepTimeEt2lst,
     StepTimeTparse,
     StepTimeTpictr,
     StepTimeUnitim,
@@ -62,6 +68,41 @@ def run_time_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOu
         julian = step.outsys.strip().upper() in {"JED", "JDTDB", "JDTDT"}
         seconds = (value - 2451545) * 86400 if julian else value
         return StepOutput(op=step.op, value={"epoch": value, "secondsPastJ2000": seconds})
+
+    if isinstance(step, StepTimeEtcal):
+        return StepOutput(op=step.op, value=civil_time_oracle.calendar(step.et, step.callen))
+
+    if isinstance(step, StepTimeUtc2et):
+        return StepOutput(op=step.op, value=civil_time_oracle.utc_et(step.utcstr))
+
+    if isinstance(step, StepTimeTparch):
+        label = "time.tparch.restore"
+        if not any(key == label for key, _ in _context.finalizers):
+            _, diagnostic = sp.tparse("1993 April 31 12:00:00")
+            mode = "YES" if diagnostic else "NO"
+            _context.register_finalizer(label, lambda: sp.tparch(mode))
+        sp.tparch(step.type)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepTimeTsetyr):
+        label = "time.tsetyr.restore"
+        if not any(key == label for key, _ in _context.finalizers):
+            years = []
+            for suffix in range(100):
+                epoch, message = sp.tparse(f"JAN 01 '{suffix:02}")
+                if message:
+                    raise ValueError(message)
+                years.append(int(sp.etcal(epoch).split()[0]))
+            lower = min(years)
+            _context.register_finalizer(label, lambda: sp.tsetyr(lower))
+        if not -(2**31) <= step.year <= (2**31 - 1) // 367 - 99:
+            raise ValueError("tsetyr window exceeds the calendar integer range")
+        sp.tsetyr(step.year)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepTimeEt2lst):
+        return StepOutput(op=step.op, value=civil_time_oracle.solar_time(
+            step.et, step.body, step.lon, step.type, step.timlen, step.ampmlen))
 
     if isinstance(step, StepTimeTparse):
         timstr = _expect_non_empty(step.timstr, label="time.tparse.timstr")

@@ -1312,6 +1312,21 @@ export function createFakeBackend(
       return FAKE_SPICE_VERSION;
     },
 
+    etcal: () => {
+      throw new Error("Fake backend: etcal() is not implemented");
+    },
+    utc2et: () => {
+      throw new Error("Fake backend: utc2et() is not implemented");
+    },
+    tparch: () => {
+      throw new Error("Fake backend: tparch() is not implemented");
+    },
+    tsetyr: () => {
+      throw new Error("Fake backend: tsetyr() is not implemented");
+    },
+    et2lst: () => {
+      throw new Error("Fake backend: et2lst() is not implemented");
+    },
     str2et: (time) => {
       if (!isIso8601OrRfc3339Utcish(time)) {
         throw new Error(

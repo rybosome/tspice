@@ -80,6 +80,18 @@ export type NativeAddon = {
   swpool(agent: string, names: readonly string[]): void;
   cvpool(agent: string): boolean;
   expool(name: string): boolean;
+  etcal(et: number, callen: number): string;
+  utc2et(utcstr: string): number;
+  tparch(type: string): void;
+  tsetyr(year: number): void;
+  et2lst(
+    et: number,
+    body: number,
+    lon: number,
+    type: string,
+    timlen: number,
+    ampmlen: number,
+  ): { hr: number; mn: number; sc: number; time: string; ampm: string };
   str2et(utc: string): number;
   et2utc(et: number, format: string, prec: number): string;
   timout(et: number, picture: string): string;

@@ -57,6 +57,19 @@ export type StepTimeUnitim = {
   outsys: string;
 };
 
+export type StepTimeEtcal = { op: "time.etcal"; et: number; callen?: number };
+export type StepTimeUtc2et = { op: "time.utc2et"; utcstr: string };
+export type StepTimeTparch = { op: "time.tparch"; type: string };
+export type StepTimeTsetyr = { op: "time.tsetyr"; year: number };
+export type StepTimeEt2lst = {
+  op: "time.et2lst";
+  et: number;
+  body: number;
+  lon: number;
+  type: string;
+  timlen?: number;
+  ampmlen?: number;
+};
 export type StepTimeTparse = {
   op: "time.tparse";
   timstr: string;
@@ -1296,6 +1309,11 @@ export type WorkflowStep =
   | StepTimeTimout
   | StepTimeDeltet
   | StepTimeUnitim
+  | StepTimeEtcal
+  | StepTimeUtc2et
+  | StepTimeTparch
+  | StepTimeTsetyr
+  | StepTimeEt2lst
   | StepTimeTparse
   | StepTimeTpictr
   | StepTimeTimdefGet
@@ -1490,6 +1508,14 @@ export type StepOutput =
   | { op: "time.timout"; value: string }
   | { op: "time.deltet"; value: number }
   | { op: "time.unitim"; value: { epoch: number; secondsPastJ2000: number } }
+  | { op: "time.etcal"; value: string }
+  | { op: "time.utc2et"; value: number }
+  | { op: "time.tparch"; value: null }
+  | { op: "time.tsetyr"; value: null }
+  | {
+      op: "time.et2lst";
+      value: { hr: number; mn: number; sc: number; time: string; ampm: string };
+    }
   | { op: "time.tparse"; value: number }
   | { op: "time.tpictr"; value: string }
   | { op: "time.timdef"; value: string | null }

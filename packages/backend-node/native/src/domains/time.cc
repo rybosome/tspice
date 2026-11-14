@@ -1,6 +1,8 @@
 #include "time.h"
 
 #include <string>
+#include <cmath>
+#include <climits>
 
 #include "../addon_common.h"
 #include "../napi_helpers.h"
@@ -9,6 +11,126 @@
 using tspice_napi::SetExportChecked;
 using tspice_napi::PreviewForError;
 using tspice_napi::ThrowSpiceError;
+
+static bool timeNumber(const Napi::Value &v, double *out) {
+  if (!v.IsNumber())
+    return false;
+  *out = v.As<Napi::Number>().DoubleValue();
+  return std::isfinite(*out);
+}
+
+static bool timeInt(const Napi::Value &v, int *out) {
+  double x;
+  if (!timeNumber(v, &x) || std::trunc(x) != x || x < INT_MIN || x > INT_MAX)
+    return false;
+  *out = static_cast<int>(x);
+  return true;
+}
+
+static bool timeText(const Napi::Value &v, std::string *out) {
+  if (!v.IsString())
+    return false;
+  const auto text = v.As<Napi::String>();
+  // N-API's UTF-8 conversion replaces unpaired UTF-16 surrogates.
+  const auto chars = text.Utf16Value();
+  for (size_t i = 0; i < chars.size(); ++i) {
+    auto c = chars[i];
+    if (c == 0 || (c >= 0xdc00 && c <= 0xdfff))
+      return false;
+    if (c >= 0xd800 && c <= 0xdbff) {
+      if (++i >= chars.size() || chars[i] < 0xdc00 || chars[i] > 0xdfff)
+        return false;
+    }
+  }
+  *out = text.Utf8Value();
+  return out->size() < INT_MAX;
+}
+
+static Napi::Value timeBadArgs(Napi::Env env, const char *op) {
+  ThrowSpiceError(
+      Napi::TypeError::New(env, std::string("Invalid numeric or string arguments to ") + op));
+  return env.Undefined();
+}
+
+static Napi::Value Etcal(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  double et;
+  int len;
+  if (info.Length() != 2 || !timeNumber(info[0], &et) || !timeInt(info[1], &len))
+    return timeBadArgs(env, "etcal");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char out[181] = {}, err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_etcal(et, len, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling etcal", err);
+    return env.Undefined();
+  }
+  return Napi::String::New(env, out);
+}
+
+static Napi::Value Utc2et(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  std::string text;
+  if (info.Length() != 1 || !timeText(info[0], &text))
+    return timeBadArgs(env, "utc2et");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double et = 0;
+  if (tspice_utc2et(text.c_str(), &et, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling utc2et", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, et);
+}
+
+static Napi::Value Tparch(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  std::string text;
+  if (info.Length() != 1 || !timeText(info[0], &text))
+    return timeBadArgs(env, "tparch");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_tparch(text.c_str(), err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling tparch", err);
+  return env.Undefined();
+}
+
+static Napi::Value Tsetyr(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  int year;
+  if (info.Length() != 1 || !timeInt(info[0], &year))
+    return timeBadArgs(env, "tsetyr");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_tsetyr(year, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling tsetyr", err);
+  return env.Undefined();
+}
+
+static Napi::Value Et2lst(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  double et, lon;
+  int body, timlen, ampmlen;
+  std::string type;
+  if (info.Length() != 6 || !timeNumber(info[0], &et) || !timeInt(info[1], &body) ||
+      !timeNumber(info[2], &lon) || !timeText(info[3], &type) || !timeInt(info[4], &timlen) ||
+      !timeInt(info[5], &ampmlen))
+    return timeBadArgs(env, "et2lst");
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char time[9] = {}, ampm[14] = {}, err[tspice_backend_node::kErrMaxBytes] = {};
+  int hms[3] = {};
+  if (tspice_et2lst(et, body, lon, type.c_str(), timlen, ampmlen, hms, time, ampm, err,
+                    sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling et2lst", err);
+    return env.Undefined();
+  }
+  auto out = Napi::Object::New(env);
+  out.Set("hr", Napi::Number::New(env, hms[0]));
+  out.Set("mn", Napi::Number::New(env, hms[1]));
+  out.Set("sc", Napi::Number::New(env, hms[2]));
+  out.Set("time", Napi::String::New(env, time));
+  out.Set("ampm", Napi::String::New(env, ampm));
+  return out;
+}
 
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -375,6 +497,11 @@ static Napi::Number Sce2c(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterTime(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "etcal", Napi::Function::New(env, Etcal), __func__)) return;
+  if (!SetExportChecked(env, exports, "utc2et", Napi::Function::New(env, Utc2et), __func__)) return;
+  if (!SetExportChecked(env, exports, "tparch", Napi::Function::New(env, Tparch), __func__)) return;
+  if (!SetExportChecked(env, exports, "tsetyr", Napi::Function::New(env, Tsetyr), __func__)) return;
+  if (!SetExportChecked(env, exports, "et2lst", Napi::Function::New(env, Et2lst), __func__)) return;
   if (!SetExportChecked(env, exports, "str2et", Napi::Function::New(env, Str2et), __func__)) return;
   if (!SetExportChecked(env, exports, "et2utc", Napi::Function::New(env, Et2utc), __func__)) return;
   if (!SetExportChecked(env, exports, "timout", Napi::Function::New(env, Timout), __func__)) return;

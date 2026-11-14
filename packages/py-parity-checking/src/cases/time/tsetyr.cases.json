@@ -1,0 +1,265 @@
+[
+  {
+    "caseId": "time-tsetyr-lower-1950",
+    "description": "Observe two-digit expansion throughout the chosen century window.",
+    "workflow": [
+      {
+        "op": "time.tsetyr",
+        "year": 1950
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '49"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '50"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '68"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '69"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '99"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tsetyr-lower-1969",
+    "description": "Observe two-digit expansion throughout the chosen century window.",
+    "workflow": [
+      {
+        "op": "time.tsetyr",
+        "year": 1969
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '49"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '50"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '68"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '69"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '99"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tsetyr-lower-2000",
+    "description": "Observe two-digit expansion throughout the chosen century window.",
+    "workflow": [
+      {
+        "op": "time.tsetyr",
+        "year": 2000
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '49"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '50"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '68"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '69"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '99"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tsetyr-lower-2050",
+    "description": "Observe two-digit expansion throughout the chosen century window.",
+    "workflow": [
+      {
+        "op": "time.tsetyr",
+        "year": 2050
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '49"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '50"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '68"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '69"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '99"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tsetyr-lower-1",
+    "description": "Observe two-digit expansion throughout the chosen century window.",
+    "workflow": [
+      {
+        "op": "time.tsetyr",
+        "year": 1
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '00"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '49"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '50"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '68"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '69"
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '99"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tsetyr-successive",
+    "description": "A nonpositive bound leaves the preceding positive selection active; later reset is observable.",
+    "workflow": [
+      {
+        "op": "time.tsetyr",
+        "year": 1950
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '60"
+      },
+      {
+        "op": "time.tsetyr",
+        "year": 0
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '60"
+      },
+      {
+        "op": "time.tsetyr",
+        "year": -2147483648
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '60"
+      },
+      {
+        "op": "time.tsetyr",
+        "year": 2050
+      },
+      {
+        "op": "time.tparse",
+        "timstr": "JAN 01 '60"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-tsetyr-utc-window",
+    "description": "The same pivot changes legacy UTC conversion and leaves four-digit input stable.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.tsetyr",
+        "year": 1950
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "JAN 01 '60"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "1960 JAN 01"
+      },
+      {
+        "op": "time.tsetyr",
+        "year": 2050
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "JAN 01 '60"
+      },
+      {
+        "op": "time.utc2et",
+        "utcstr": "2060 JAN 01"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

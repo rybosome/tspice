@@ -11,6 +11,11 @@ import type {
   StepTimeStr2Et,
   StepTimeTimout,
   StepTimeTkvrsn,
+  StepTimeEtcal,
+  StepTimeUtc2et,
+  StepTimeTparch,
+  StepTimeTsetyr,
+  StepTimeEt2lst,
   StepTimeTparse,
   StepTimeTpictr,
   StepTimeTimdefGet,
@@ -34,6 +39,55 @@ function preserveTimeDefaults(context: RunTspiceContext): void {
   });
 }
 
+// These persistent controls have no public getter. Observe their effects
+// before a workflow changes them so callers retain their entry settings.
+function preserveTimeParser(
+  context: RunTspiceContext,
+  setting: "tparch" | "tsetyr",
+): void {
+  const label = "time.restore." + setting;
+  if (context.lifecycle.finalizers.some((f) => f.label === label)) return;
+  const raw = context.spice.raw;
+  if (setting === "tparch") {
+    let mode = "NO";
+    try {
+      raw.tparse("1993 April 31 12:00:00");
+    } catch (error) {
+      if (
+        !(error instanceof Error) ||
+        !error.message.includes("day of the month")
+      )
+        throw error;
+      mode = "YES";
+    }
+    registerFinalizer(context, label, () => raw.tparch(mode));
+    return;
+  }
+  // In a 100-year window, suffixes wrap at most once. Locate the
+  // first year in the earlier century, or retain '00 for a whole century.
+  function expandedYear(suffix: number): number {
+    const timestamp = raw.tparse("JAN 01 '" + String(suffix).padStart(2, "0"));
+    const formatted = raw.etcal(timestamp);
+    const match = /^(\d+) /.exec(formatted);
+    if (!match)
+      throw new Error("Unexpected expanded calendar year: " + formatted);
+    return Number(match[1]);
+  }
+  const century = expandedYear(0);
+  let lower = century;
+  if (expandedYear(99) < century) {
+    let first = 1;
+    let last = 99;
+    while (first < last) {
+      const mid = Math.floor((first + last) / 2);
+      if (expandedYear(mid) < century) last = mid;
+      else first = mid + 1;
+    }
+    lower = century - 100 + first;
+  }
+  registerFinalizer(context, label, () => raw.tsetyr(lower));
+}
+
 type TimeStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
@@ -41,6 +95,11 @@ type TimeStep =
   | StepTimeTimout
   | StepTimeDeltet
   | StepTimeUnitim
+  | StepTimeEtcal
+  | StepTimeUtc2et
+  | StepTimeTparch
+  | StepTimeTsetyr
+  | StepTimeEt2lst
   | StepTimeTparse
   | StepTimeTpictr
   | StepTimeTimdefGet
@@ -105,6 +164,33 @@ export function runTimeStep(
       };
     }
 
+    case "time.etcal":
+      return {
+        op: step.op,
+        value: context.spice.raw.etcal(step.et, step.callen),
+      };
+    case "time.utc2et":
+      return { op: step.op, value: context.spice.raw.utc2et(step.utcstr) };
+    case "time.tparch":
+      preserveTimeParser(context, "tparch");
+      context.spice.raw.tparch(step.type);
+      return { op: step.op, value: null };
+    case "time.tsetyr":
+      preserveTimeParser(context, "tsetyr");
+      context.spice.raw.tsetyr(step.year);
+      return { op: step.op, value: null };
+    case "time.et2lst":
+      return {
+        op: step.op,
+        value: context.spice.raw.et2lst(
+          step.et,
+          step.body,
+          step.lon,
+          step.type,
+          step.timlen,
+          step.ampmlen,
+        ),
+      };
     case "time.tparse":
       return {
         op: step.op,

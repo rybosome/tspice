@@ -1329,6 +1329,29 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_etcal(
+    et: number,
+    callen: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_utc2et(text: number, out: number, err: number, cap: number): number;
+  _tspice_tparch(text: number, err: number, cap: number): number;
+  _tspice_tsetyr(year: number, err: number, cap: number): number;
+  _tspice_et2lst(
+    et: number,
+    body: number,
+    lon: number,
+    type: number,
+    timlen: number,
+    ampmlen: number,
+    hms: number,
+    time: number,
+    ampm: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_tparse(
     timstrPtr: number,
     outEtPtr: number,
@@ -2197,6 +2220,11 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_timout",
   "_tspice_deltet",
   "_tspice_unitim",
+  "_tspice_etcal",
+  "_tspice_utc2et",
+  "_tspice_tparch",
+  "_tspice_tsetyr",
+  "_tspice_et2lst",
   "_tspice_tparse",
   "_tspice_tpictr",
   "_tspice_timdef_get",

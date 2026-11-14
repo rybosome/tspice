@@ -1,0 +1,176 @@
+[
+  {
+    "caseId": "time-etcal-tdb-milliseconds",
+    "description": "Compare formal TDB calendar output around midday and both sides of the fractional-second boundary.",
+    "workflow": [
+      {
+        "op": "time.etcal",
+        "et": 0
+      },
+      {
+        "op": "time.etcal",
+        "et": 0.1234
+      },
+      {
+        "op": "time.etcal",
+        "et": 0.9999
+      },
+      {
+        "op": "time.etcal",
+        "et": -0.0005
+      },
+      {
+        "op": "time.etcal",
+        "et": 59.9999
+      },
+      {
+        "op": "time.etcal",
+        "et": 60.0001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-etcal-day-transitions",
+    "description": "Midnight boundaries, leap day and a non-leap century use fixed 86400-second days.",
+    "workflow": [
+      {
+        "op": "time.etcal",
+        "et": -43200
+      },
+      {
+        "op": "time.etcal",
+        "et": -43200.001
+      },
+      {
+        "op": "time.etcal",
+        "et": -43199.999
+      },
+      {
+        "op": "time.etcal",
+        "et": 5054400
+      },
+      {
+        "op": "time.etcal",
+        "et": 5140800
+      },
+      {
+        "op": "time.etcal",
+        "et": -3155760000
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-etcal-historical-dates",
+    "description": "Compare full A.D. and B.C. strings including multiword era labels.",
+    "workflow": [
+      {
+        "op": "time.etcal",
+        "et": -63100000000.0
+      },
+      {
+        "op": "time.etcal",
+        "et": -63070000000.0
+      },
+      {
+        "op": "time.etcal",
+        "et": -100000000000.0
+      },
+      {
+        "op": "time.etcal",
+        "et": 10000000000.0
+      },
+      {
+        "op": "time.etcal",
+        "et": 1000000000000.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-etcal-capacity",
+    "description": "Expose byte prefixes, trimmed outer blanks and full formatted text.",
+    "workflow": [
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 2
+      },
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 5
+      },
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 12
+      },
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 19
+      },
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 24
+      },
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 25
+      },
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 256
+      },
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-etcal-short-0",
+    "description": "CSPICE detects insufficient output space.",
+    "workflow": [
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "time-etcal-short-1",
+    "description": "CSPICE detects insufficient output space.",
+    "workflow": [
+      {
+        "op": "time.etcal",
+        "et": 0,
+        "callen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]
