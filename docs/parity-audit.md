@@ -78,3 +78,7 @@ reads exact CSPICE bytes for DAFGN. Each backend judgment is source-bound.
 ## DAF records
 
 C02 adds summary packing and unpacking, physical summary records, file headers and two address-read routines. The 42 registered workflows contain 198 steps and 103 calls to these routines. Five expected errors come from CSPICE and four from closed-handle checks. [DAF records and format restrictions](step8-daf-records.md) [Routine audit](../data/parity-audits/c02-daf-records.json)
+
+## SPK segment evaluation and physical subset files
+
+E03 checks SPK registration priority, file identity, complete native states, type-specific boundaries and independent persisted subsets in both producer/reader directions. [Scientific review](step8-spk-lowlevel.md) · [Per-routine evidence](../data/parity-audits/e03-spk-lowlevel.json)

@@ -873,10 +873,16 @@ int tspice_spkobj(
 //
 // Segment identifiers may be up to 40 characters; `outIdentMaxBytes` must be
 // at least 41 (including trailing NUL).
+void tspice_spk_keeper_snapshot(int after);
+int tspice_spklef(const char *path,int *generation,char *err,int cap);
+int tspice_spkuef(int generation,char *err,int cap);
+int tspice_spkpvn(int source,int isRegistration,const void *descr,int size,double et,int *ref,double *state6,int *center,char *err,int cap);
+int tspice_spksub(int source,int isRegistration,const void *descr,int size,const char *ident,double begin,double end,int writer,char *err,int cap);
 int tspice_spksfs(
     int body,
     double et,
     int *outHandle,
+    int *outGeneration,
     double *outDescr5,
     char *outIdent,
     int outIdentMaxBytes,

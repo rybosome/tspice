@@ -37,3 +37,29 @@ function inspectDaf(spice: SpiceSync, path: string): Uint8Array | undefined {
   }
 }
 void inspectDaf;
+
+function copySegment(
+  spice: SpiceSync,
+  path: string,
+  target: number,
+  et: number,
+  output: string,
+) {
+  const r = spice.raw,
+    source = r.spklef(path);
+  try {
+    const segment = r.spksfs(target, et);
+    if (!segment.found) return;
+    const observation = r.spkpvn(source, segment.descr, et);
+    const writer = r.spkopn(output, "SUBSET", 0);
+    try {
+      r.spksub(source, segment.descr, "SAMPLE", et, et, writer);
+    } finally {
+      r.spkcls(writer);
+    }
+    return observation;
+  } finally {
+    r.spkuef(source);
+  }
+}
+void copySegment;

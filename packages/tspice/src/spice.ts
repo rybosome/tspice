@@ -1,3 +1,4 @@
+import { releaseSpkLoads } from "@rybosome/tspice-core";
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import type { CreateBackendOptions } from "./backend.js";
@@ -11,6 +12,11 @@ import type {
 } from "./kit/types/spice-types.js";
 import { createKit } from "./kit/spice/create-kit.js";
 
+const ownedSpkCleanup = new WeakMap<Spice | SpiceAsync, () => void>();
+/** Release this facade's outstanding direct text read leases at client disposal. */
+export function releaseClientSpkLoads(spice: Spice | SpiceAsync): void {
+  ownedSpkCleanup.get(spice)?.();
+}
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
    * If provided, `createSpice()` will wrap this backend instead of creating a new one.
@@ -92,7 +98,11 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     { byteBackedKernelPaths },
   );
 
-  return { raw, kit };
+  const spice = { raw, kit };
+  const release: unknown = Reflect.get(backend.raw, releaseSpkLoads);
+  if (typeof release === "function")
+    ownedSpkCleanup.set(spice, () => Reflect.apply(release, backend.raw, []));
+  return spice;
 }
 
 function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
@@ -136,10 +146,8 @@ function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
 export async function createSpiceAsync(
   options: CreateSpiceAsyncOptions,
 ): Promise<SpiceAsync> {
-  const { raw, kit } = await createSpice(options);
-
-  return {
-    raw: promisifyApi(raw),
-    kit: promisifyApi(kit),
-  };
+  const sync = await createSpice(options);
+  const spice = { raw: promisifyApi(sync.raw), kit: promisifyApi(sync.kit) };
+  ownedSpkCleanup.set(spice, () => releaseClientSpkLoads(sync));
+  return spice;
 }

@@ -45,6 +45,10 @@ from .models import (
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
     StepEphemerisSpkopa,
+    StepEphemerisSpklef,
+    StepEphemerisSpkuef,
+    StepEphemerisSpkpvn,
+    StepEphemerisSpksub,
     StepEphemerisSpkopn,
     StepEphemerisSpkpds,
     StepEphemerisSpkpos,
@@ -975,6 +979,36 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 handleId=_expect_string(step.get("handleId"), label="ephemeris.spkopa.handleId"),
             )
 
+        case "ephemeris.spklef":
+            return StepEphemerisSpklef(
+                op=op,
+                file=_decode_path_ref(step.get("file"), label="ephemeris.spklef.file"),
+                id=_expect_string(step.get("id"), label="ephemeris.spklef.id"),
+            )
+        case "ephemeris.spkuef":
+            return StepEphemerisSpkuef(
+                op=op,
+                id=_expect_string(step.get("id"), label="ephemeris.spkuef.id"),
+            )
+        case "ephemeris.spkpvn":
+            return StepEphemerisSpkpvn(
+                op=op,
+                source=_expect_string(step.get("source"), label="ephemeris.spkpvn.source"),
+                descriptor=_expect_string(step.get("descriptor"), label="ephemeris.spkpvn.descriptor"),
+                et=_expect_number(step.get("et"), label="ephemeris.spkpvn.et"),
+                mode=_expect_string(step.get("mode"), label="ephemeris.spkpvn.mode"),
+            )
+        case "ephemeris.spksub":
+            return StepEphemerisSpksub(
+                op=op,
+                source=_expect_string(step.get("source"), label="ephemeris.spksub.source"),
+                descriptor=_expect_string(step.get("descriptor"), label="ephemeris.spksub.descriptor"),
+                ident=_expect_string(step.get("ident"), label="ephemeris.spksub.ident"),
+                begin=_expect_number(step.get("begin"), label="ephemeris.spksub.begin"),
+                end=_expect_number(step.get("end"), label="ephemeris.spksub.end"),
+                writer=_expect_string(step.get("writer"), label="ephemeris.spksub.writer"),
+                mode=_expect_string(step.get("mode"), label="ephemeris.spksub.mode"),
+            )
         case "ephemeris.spkopn":
             return StepEphemerisSpkopn(
                 op=op,

@@ -94,14 +94,18 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 176,
-    planned: 473,
+    implemented: 180,
+    planned: 469,
     excluded: 3,
-    caseFiles: 176,
-    scenarios: 1196,
+    caseFiles: 180,
+    scenarios: 1223,
     wasmRawUnsupported: 0,
   });
   for (const name of [
+    "spklef",
+    "spkuef",
+    "spkpvn",
+    "spksub",
     "dafps",
     "dafus",
     "dafgsr",
@@ -521,7 +525,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 14);
+  assert.equal(ledger.audit.expansionRoutines, 18);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -804,4 +808,23 @@ test("historical executions remain visible but cannot establish current verifica
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.throws(f.build, /missing local live verification/);
+});
+
+test("authenticating a descriptor does not establish scientific evaluation or subset writing", (t) => {
+  for (const call of [
+    "spkpvn_c(handle,words,et,ref,state6,center)",
+    "spksub_c(handle,words,ident,begin,end,writer)",
+  ]) {
+    const f = fixture(t);
+    f.edit(
+      "packages/backend-shim-c/src/domains/ephemeris.c",
+      call,
+      call.replace("_c(", "_absent("),
+    );
+    const method = call.split("_c(")[0];
+    assert.throws(
+      f.build,
+      new RegExp("Unexplained non-direct node mapping for " + method),
+    );
+  }
 });

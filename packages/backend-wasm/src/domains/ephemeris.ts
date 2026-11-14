@@ -8,6 +8,7 @@ import type {
   SpiceStateVector,
   SpiceVector3,
   SpiceWindow,
+  SpkSegmentDescriptor,
   SpkPackedDescriptor,
   SpkUnpackedDescriptor,
   SpkezrResult,
@@ -16,6 +17,11 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  createSpkReaders,
+  releaseSpkLoads,
+  spkSegmentBytes,
+  spkInputText,
+  spkStateComponents,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
 } from "@rybosome/tspice-core";
@@ -682,6 +688,7 @@ function tspiceCallSpksfs(
   module: EmscriptenModule,
   body: number,
   et: number,
+  observe: (handle: number, generation: number) => void,
 ): Found<{ handle: number; descr: SpkPackedDescriptor; ident: string }> {
   requireSpkNumber(et, "spksfs(et)");
   assertSpiceInt32(body, "spksfs(body)");
@@ -691,7 +698,7 @@ function tspiceCallSpksfs(
 
   return withAllocs(
     module,
-    [WASM_ERR_MAX_BYTES, 4, 5 * 8, identMaxBytes, 4],
+    [WASM_ERR_MAX_BYTES, 8, 5 * 8, identMaxBytes, 4],
     (errPtr, outHandlePtr, outDescrPtr, outIdentPtr, outFoundPtr) => {
       module.HEAP32[outHandlePtr >> 2] = 0;
       module.HEAP32[outFoundPtr >> 2] = 0;
@@ -701,6 +708,7 @@ function tspiceCallSpksfs(
         body,
         et,
         outHandlePtr,
+        outHandlePtr + 4,
         outDescrPtr,
         outIdentPtr,
         identMaxBytes,
@@ -719,6 +727,7 @@ function tspiceCallSpksfs(
       }
 
       const handle = module.HEAP32[outHandlePtr >> 2] ?? 0;
+      observe(handle, module.HEAP32[(outHandlePtr + 4) >>> 2]!);
       const descr = copySpkPackedDescriptor(
         module.HEAPF64.subarray(outDescrPtr >> 3, (outDescrPtr >> 3) + 5),
       );
@@ -853,7 +862,115 @@ export function createEphemerisApi(
 ): EphemerisApi {
   const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
 
-  return {
+  const readers = createSpkReaders(handles);
+  function checked(status: number, err: number) {
+    if (status) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+  }
+  const api = {
+    [releaseSpkLoads]: (): void => readers.release(api.spkuef),
+    spklef: (file: string | VirtualOutput) =>
+      readers.own(
+        withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+          const path = spkInputText(
+            typeof file === "string" && file === ""
+              ? ""
+              : resolveSpkPath(file, "spklef"),
+          );
+          const encoded = writeUtf8CString(module, path);
+          try {
+            checked(
+              module._tspice_spklef(encoded, out, err, WASM_ERR_MAX_BYTES),
+              err,
+            );
+            return module.HEAP32[out >>> 2]!;
+          } finally {
+            module._free(encoded);
+          }
+        }),
+      ),
+    spkuef: (handle: SpiceHandle) =>
+      readers.unload(handle, (generation: number) =>
+        withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+          checked(
+            module._tspice_spkuef(generation, err, WASM_ERR_MAX_BYTES),
+            err,
+          ),
+        ),
+      ),
+    spkpvn: (handle: number, descr: SpkSegmentDescriptor, et: number) => {
+      const { source, registered } = readers.source(handle);
+      requireSpkNumber(et, "spkpvn(et)");
+      const bytes = spkSegmentBytes(descr);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, 4, 48, 4],
+        (err, packed, ref, state, center) => {
+          module.HEAPU8.set(bytes, packed >>> 0);
+          checked(
+            module._tspice_spkpvn(
+              source,
+              Number(registered),
+              packed,
+              40,
+              et,
+              ref,
+              state,
+              center,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return {
+            ref: module.HEAP32[ref >>> 2]!,
+            state: spkStateComponents(
+              module.HEAPF64.subarray(state >>> 3, (state >>> 3) + 6),
+            ),
+            center: module.HEAP32[center >>> 2]!,
+          };
+        },
+      );
+    },
+    spksub: (
+      handle: number,
+      descr: SpkSegmentDescriptor,
+      ident: string,
+      begin: number,
+      end: number,
+      newh: SpiceHandle,
+    ) => {
+      const { source, registered } = readers.source(handle);
+      const writer = handles.lookup(newh, ["SPK"], "spksub(newh)").nativeHandle;
+      requireSpkNumber(begin, "spksub(begin)");
+      requireSpkNumber(end, "spksub(end)");
+      const bytes = spkSegmentBytes(descr),
+        name = new TextEncoder().encode(spkInputText(ident));
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, name.length + 1],
+        (err, packed, id) => {
+          module.HEAPU8.set(bytes, packed >>> 0);
+          module.HEAPU8.set(name, id >>> 0);
+          module.HEAPU8[(id >>> 0) + name.length] = 0;
+          checked(
+            module._tspice_spksub(
+              source,
+              Number(registered),
+              packed,
+              40,
+              id,
+              begin,
+              end,
+              writer,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
+
     spkezr: (
       target: string,
       et: number,
@@ -901,7 +1018,8 @@ export function createEphemerisApi(
     spkobj: (spk: string, ids: SpiceIntCell) =>
       tspiceCallSpkobj(module, spk, ids),
 
-    spksfs: (body: number, et: number) => tspiceCallSpksfs(module, body, et),
+    spksfs: (body: number, et: number) =>
+      tspiceCallSpksfs(module, body, et, readers.observe),
 
     spkpds: (
       body: number,
@@ -1044,5 +1162,6 @@ export function createEphemerisApi(
         step,
       );
     },
-  };
+  } satisfies EphemerisApi & { [releaseSpkLoads](): void };
+  return api;
 }

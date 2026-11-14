@@ -1848,6 +1848,18 @@ export function createFakeBackend(
       return { ...out, visibl, lit } satisfies IllumfResult;
     },
 
+    spklef: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
+    spkuef: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
+    spkpvn: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
+    spksub: () => {
+      throw new Error("Fake backend does not model SPK segment files");
+    },
     spksfs: (body, et) => {
       assertSpiceInt32(body, "spksfs(body)");
       void et;

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 176
-- Planned (not yet implemented): 473
+- Implemented now (SpiceRawBackend): 180
+- Planned (not yet implemented): 469
 - Excluded: 3
 
 ## Implemented now
@@ -162,14 +162,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkezr_c` | S/P Kernel, easier reader |
 | `spkgeo_c` | S/P Kernel, geometric state |
 | `spkgps_c` | S/P Kernel, geometric position |
+| `spklef_c` | S/P Kernel, Load ephemeris file |
 | `spkobj_c` | SPK objects |
 | `spkopa_c` | SPK open for addition |
 | `spkopn_c` | SPK, open new file. |
 | `spkpds_c` | SPK pack descriptor |
 | `spkpos_c` | S/P Kernel, position |
+| `spkpvn_c` | S/P Kernel, position and velocity in native frame |
 | `spksfs_c` | S/P Kernel, Select file and segment |
 | `spkssb_c` | S/P Kernel, solar system barycenter |
+| `spksub_c` | S/P Kernel, subset |
 | `spkuds_c` | SPK - unpack segment descriptor |
+| `spkuef_c` | SPK Kernel, Unload ephemeris file |
 | `spkw08_c` | Write SPK segment, type 8 |
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
@@ -564,11 +568,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkcpt_c` | SPK, constant position target state |
 | `spkcvo_c` | SPK, constant velocity observer state |
 | `spkcvt_c` | SPK, constant velocity target state |
-| `spklef_c` | S/P Kernel, Load ephemeris file |
 | `spkltc_c` | S/P Kernel, light time corrected state |
-| `spkpvn_c` | S/P Kernel, position and velocity in native frame |
-| `spksub_c` | S/P Kernel, subset |
-| `spkuef_c` | SPK Kernel, Unload ephemeris file |
 | `spkw02_c` | Write SPK segment, type 2 |
 | `spkw03_c` | Write SPK segment, type 3 |
 | `spkw05_c` | Write SPK segment, type 5 |

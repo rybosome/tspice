@@ -717,7 +717,8 @@
         "dsk-dsksrf-happy-apophis-fixture",
         "dsk-dsksrf-non-dsk-file-error"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c02-0138a1b3-wasm",
@@ -756,7 +757,8 @@
         "dsk-dsksrf-happy-apophis-fixture",
         "dsk-dsksrf-non-dsk-file-error"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-node",
@@ -797,7 +799,8 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-wasm",
@@ -838,7 +841,168 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e03-b9cd0f5a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7b375121e151ff6c18c237d280238ec4e79be5ee9700ad065d46020662309c4e",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-e03-b9cd0f5a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7b375121e151ff6c18c237d280238ec4e79be5ee9700ad065d46020662309c4e",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7b375121e151ff6c18c237d280238ec4e79be5ee9700ad065d46020662309c4e",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7b375121e151ff6c18c237d280238ec4e79be5ee9700ad065d46020662309c4e",
+      "caseIds": [
+        "dsk-dskb02-audit-asymmetric-vertex-bounds",
+        "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+        "dsk-dskb02-closed-handle-error",
+        "dsk-dskb02-happy-apophis-fixture",
+        "dsk-dskgd-audit-nonzero-rectangular-descriptor",
+        "dsk-dskgd-audit-planetodetic-descriptor",
+        "dsk-dskgd-closed-handle-error",
+        "dsk-dskgd-happy-open-write-read-close-roundtrip",
+        "dsk-dskobj-audit-empty-zero-capacity",
+        "dsk-dskobj-audit-missing-file",
+        "dsk-dskobj-audit-small-capacity",
+        "dsk-dskobj-audit-transient-capacity-before-deduplication",
+        "dsk-dskobj-audit-union-duplicates-and-repeat",
+        "dsk-dskobj-audit-wrong-das-file-type",
+        "dsk-dskobj-happy-apophis-fixture",
+        "dsk-dskobj-non-dsk-file-error",
+        "dsk-dsksrf-audit-absent-body-preserves-set",
+        "dsk-dsksrf-audit-empty-zero-capacity",
+        "dsk-dsksrf-audit-fractional-body",
+        "dsk-dsksrf-audit-missing-file",
+        "dsk-dsksrf-audit-overflow-body",
+        "dsk-dsksrf-audit-small-capacity",
+        "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+        "dsk-dsksrf-audit-union-duplicates-and-repeat",
+        "dsk-dsksrf-audit-wrong-das-file-type",
+        "dsk-dsksrf-happy-apophis-fixture",
+        "dsk-dsksrf-non-dsk-file-error"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
     }
   ],
   "routines": [
@@ -955,11 +1119,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskobj -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskobj -> dskobj_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dskobj_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
           "history": [
@@ -974,11 +1140,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskobj -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskobj -> shared tspice_dskobj -> dskobj_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dskobj_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     },
@@ -1113,11 +1281,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dsksrf -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dsksrf -> dsksrf_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dsksrf_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
           "history": [
@@ -1132,11 +1302,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dsksrf -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dsksrf -> shared tspice_dsksrf -> dsksrf_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual loaded N0067 libspice.dsksrf_c with an explicit SpiceyPy SPICEINT_CELL and status check; the 6.0.3 convenience wrapper hard-codes a fresh size 10000 cell.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     },
@@ -1214,11 +1386,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskgd -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskgd -> dskgd_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskgd and full descriptor/bookkeeping normalization.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
           "history": [
@@ -1233,11 +1407,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskgd -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskgd -> shared tspice_dskgd -> dskgd_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskgd and full descriptor/bookkeeping normalization.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     },
@@ -1315,11 +1491,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskb02 -> Node adapter with explicit output parsing and local file-token lookup -> native N-API DSK binding -> shared tspice_dskb02 -> dskb02_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskb02 and full descriptor/bookkeeping normalization.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
         },
         "wasm": {
           "history": [
@@ -1334,11 +1512,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskb02 -> WASM adapter with actual module/cell ownership and local file-token lookup -> actual compiled _tspice_dskb02 -> shared tspice_dskb02 -> dskb02_c. Registered TS workflow calls the actual public raw method. Independent Python handler invokes actual sp.dskb02 and full descriptor/bookkeeping normalization.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
         }
       }
     }

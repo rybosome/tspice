@@ -13,6 +13,10 @@ import type {
   StepEphemerisSpkgps,
   StepEphemerisSpkobj,
   StepEphemerisSpkopa,
+  StepEphemerisSpklef,
+  StepEphemerisSpkuef,
+  StepEphemerisSpkpvn,
+  StepEphemerisSpksub,
   StepEphemerisSpkopn,
   StepEphemerisSpkpds,
   StepEphemerisSpkpos,
@@ -28,6 +32,7 @@ import {
   toVirtualKernelPath,
 } from "../../fixtures.js";
 import {
+  registerFinalizer,
   deleteSpkHandle,
   getOrCreateEphemerisIntCell,
   getOrCreateWindow,
@@ -46,6 +51,10 @@ type EphemerisStep =
   | StepEphemerisSpkgps
   | StepEphemerisSpkobj
   | StepEphemerisSpkopa
+  | StepEphemerisSpklef
+  | StepEphemerisSpkuef
+  | StepEphemerisSpkpvn
+  | StepEphemerisSpksub
   | StepEphemerisSpkopn
   | StepEphemerisSpkpds
   | StepEphemerisSpkpos
@@ -95,6 +104,28 @@ function resolveEphemerisPath(
   return resolved;
 }
 
+function lowLevelInput(
+  context: RunTspiceContext,
+  step: StepEphemerisSpkpvn | StepEphemerisSpksub,
+) {
+  const state = context.state.ephemeris;
+  if (step.mode === "daf") {
+    const entry = context.state.fileIo.handles.get(step.source);
+    if (!entry?.isOpen) throw new Error("Missing owned DAF source");
+    return {
+      handle: entry.handle,
+      descr: context.spice.raw.dafgs(entry.handle),
+    };
+  }
+  const handle =
+    step.mode === "borrowed"
+      ? state.borrowedSpks.get(step.source)
+      : state.directSpks.get(step.source);
+  const descr = state.descriptors.get(step.descriptor);
+  if (handle === undefined || !descr)
+    throw new Error("Missing selected SPK source or descriptor");
+  return { handle, descr };
+}
 function descriptorOutput(descr: Readonly<SpkPackedDescriptor>) {
   // Last three doubles hold six signed integer fields in native memory order.
   // Compare those fields as integers: floating tolerance hides subnormal changes.
@@ -275,6 +306,59 @@ export function runEphemerisStep(
       };
     }
 
+    case "ephemeris.spklef": {
+      const state = context.state.ephemeris;
+      // FURNSH stages fixture bytes privately, including in the Node backend.
+      // Resolve that same actual file for KEEPER/direct duplicate-load semantics.
+      const ref = toPathRef(step.file),
+        virtualPath = toVirtualKernelPath(ref);
+      const sameStaged =
+        ref.kind === "fixture" &&
+        context.state.kernels.loadedVirtualKernelPaths.includes(virtualPath);
+      const token = context.spice.raw.spklef(
+        sameStaged ? virtualPath : resolveEphemerisPath(context, ref),
+      );
+      state.directSpks.set(step.id, token);
+      registerFinalizer(context, "ephemeris.spkuef:" + step.id, () => {
+        if (state.directSpks.get(step.id) === token) {
+          context.spice.raw.spkuef(token);
+          for (const [key, value] of state.directSpks)
+            if (value === token) state.directSpks.delete(key);
+        }
+      });
+      return { op: step.op, value: { id: step.id } };
+    }
+    case "ephemeris.spkuef": {
+      const state = context.state.ephemeris,
+        token = state.directSpks.get(step.id);
+      if (token === undefined)
+        throw new Error("Unknown direct SPK registration");
+      context.spice.raw.spkuef(token);
+      for (const [key, value] of state.directSpks)
+        if (value === token) state.directSpks.delete(key);
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spkpvn": {
+      const { handle, descr } = lowLevelInput(context, step);
+      const { ref, state, center } = context.spice.raw.spkpvn(
+        handle,
+        descr,
+        step.et,
+      );
+      return { op: step.op, value: { ref, state: toVec6(state), center } };
+    }
+    case "ephemeris.spksub": {
+      const { handle, descr } = lowLevelInput(context, step);
+      context.spice.raw.spksub(
+        handle,
+        descr,
+        step.ident,
+        step.begin,
+        step.end,
+        requireSpkHandle(context, step.writer),
+      );
+      return { op: step.op, value: null };
+    }
     case "ephemeris.spkopn": {
       if (context.state.ephemeris.spkHandles.has(step.handleId))
         throw new Error(`SPK handle already exists: ${step.handleId}`);
@@ -339,8 +423,10 @@ export function runEphemerisStep(
         };
       }
 
-      if (step.descrId !== undefined)
+      if (step.descrId !== undefined) {
         context.state.ephemeris.descriptors.set(step.descrId, out.descr);
+        context.state.ephemeris.borrowedSpks.set(step.descrId, out.handle);
+      }
       return {
         op: step.op,
         value: {

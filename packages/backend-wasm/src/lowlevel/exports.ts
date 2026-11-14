@@ -769,10 +769,42 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_spklef(
+    path: number,
+    generation: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_spkuef(generation: number, err: number, cap: number): number;
+  _tspice_spkpvn(
+    source: number,
+    registered: number,
+    descr: number,
+    size: number,
+    et: number,
+    ref: number,
+    state: number,
+    center: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_spksub(
+    source: number,
+    registered: number,
+    descr: number,
+    size: number,
+    ident: number,
+    begin: number,
+    end: number,
+    writer: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_spksfs(
     body: number,
     et: number,
     outHandlePtr: number,
+    outGenerationPtr: number,
     outDescr5Ptr: number,
     outIdentPtr: number,
     outIdentMaxBytes: number,
@@ -1830,10 +1862,42 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_spklef(
+    path: number,
+    generation: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_spkuef(generation: number, err: number, cap: number): number;
+  _tspice_spkpvn(
+    source: number,
+    registered: number,
+    descr: number,
+    size: number,
+    et: number,
+    ref: number,
+    state: number,
+    center: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_spksub(
+    source: number,
+    registered: number,
+    descr: number,
+    size: number,
+    ident: number,
+    begin: number,
+    end: number,
+    writer: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_spksfs(
     body: number,
     et: number,
     outHandlePtr: number,
+    outGenerationPtr: number,
     outDescr5Ptr: number,
     outIdentPtr: number,
     outIdentMaxBytes: number,
@@ -2354,6 +2418,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkssb",
   "_tspice_spkcov",
   "_tspice_spkobj",
+  "_tspice_spklef",
+  "_tspice_spkuef",
+  "_tspice_spkpvn",
+  "_tspice_spksub",
   "_tspice_spksfs",
   "_tspice_spkpds",
   "_tspice_spkuds",

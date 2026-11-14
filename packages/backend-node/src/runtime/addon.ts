@@ -425,10 +425,33 @@ export type NativeAddon = {
   pl2nvc(plane: number[]): { normal: number[]; konst: number };
   spkobj(spk: string, ids: SpiceIntCell): void;
 
+  spklef(path: string): number;
+  spkuef(generation: number): void;
+  spkpvn(
+    source: number,
+    registered: boolean,
+    descr: Uint8Array,
+    et: number,
+  ): { ref: number; state: number[]; center: number };
+  spksub(
+    source: number,
+    registered: boolean,
+    descr: Uint8Array,
+    ident: string,
+    begin: number,
+    end: number,
+    writer: number,
+  ): void;
   spksfs(
     body: number,
     et: number,
-  ): { found: boolean; handle?: number; descr?: Float64Array; ident?: string };
+  ): {
+    found: boolean;
+    handle?: number;
+    generation?: number;
+    descr?: Float64Array;
+    ident?: string;
+  };
 
   spkpds(
     body: number,

@@ -8,7 +8,7 @@ import { SPICE_INT32_MAX, SPICE_INT32_MIN } from "./spice-int.js";
 import { issueOpaqueSpiceHandle } from "./opaque-handles.js";
 import { SpiceBackendContractError } from "./errors.js";
 
-function asHandleId(handle: SpiceHandle, context: string): number {
+function asHandleId(handle: number, context: string): number {
   const id: number = handle;
   if (typeof id !== "number" || !Number.isFinite(id) || !Number.isInteger(id)) {
     throw new TypeError(
@@ -73,7 +73,7 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
   }
 
   function lookup(
-    handle: SpiceHandle,
+    handle: number,
     expected: readonly SpiceHandleKind[],
     context: string,
   ): SpiceHandleEntry {

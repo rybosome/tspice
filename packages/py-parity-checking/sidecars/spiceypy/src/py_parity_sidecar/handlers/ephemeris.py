@@ -18,6 +18,10 @@ from ..models import (
     StepEphemerisSpkgps,
     StepEphemerisSpkobj,
     StepEphemerisSpkopa,
+    StepEphemerisSpklef,
+    StepEphemerisSpkuef,
+    StepEphemerisSpkpvn,
+    StepEphemerisSpksub,
     StepEphemerisSpkopn,
     StepEphemerisSpkpds,
     StepEphemerisSpkpos,
@@ -255,6 +259,41 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         _set_spk_handle(context, step.handleId, handle)
         return StepOutput(op=step.op, value={"handleId": step.handleId})
 
+    if isinstance(step, StepEphemerisSpklef):
+        direct = context.state.ephemeris.directSpks
+        handle = int(sp.spklef(_resolve_path(context, step.file)))
+        direct[step.id] = handle
+        def release():
+            if direct.get(step.id) == handle:
+                sp.spkuef(handle)
+                for name in list(direct):
+                    if direct[name] == handle:
+                        del direct[name]
+        context.register_finalizer("ephemeris.spkuef:" + step.id, release)
+        return StepOutput(op=step.op, value={"id": step.id})
+    if isinstance(step, StepEphemerisSpkuef):
+        direct = context.state.ephemeris.directSpks
+        handle = direct[step.id]
+        sp.spkuef(handle)
+        for name in list(direct):
+            if direct[name] == handle:
+                del direct[name]
+        return StepOutput(op=step.op, value=None)
+    if isinstance(step, (StepEphemerisSpkpvn, StepEphemerisSpksub)):
+        if step.mode == "daf":
+            handle = context.state.fileIo.handles[step.source].handle
+            sp.dafcs(handle)
+            descr = sp.dafgs(5)
+        else:
+            ephemeris = context.state.ephemeris
+            handle = (ephemeris.borrowedSpks if step.mode == "borrowed" else ephemeris.directSpks)[step.source]
+            descr = ephemeris.descriptors[step.descriptor]
+        if isinstance(step, StepEphemerisSpkpvn):
+            frame, state, center = sp.spkpvn(handle, descr, step.et)
+            return StepOutput(op=step.op, value={"ref": int(frame), "state": state.tolist(), "center": int(center)})
+        sp.spksub(handle, descr, step.ident, step.begin, step.end, _require_spk_handle(context, step.writer))
+        return StepOutput(op=step.op, value=None)
+
     if isinstance(step, StepEphemerisSpkopn):
         if step.handleId in context.state.ephemeris.spkHandles:
             raise ValueError(f"SPK handle already exists: {step.handleId}")
@@ -285,11 +324,13 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         # Preserve the actual toolkit error before interpreting the found flag:
         # the default decorator otherwise masks NOLOADEDFILES as NotFoundError.
         with sp.no_found_check():
-            out = _normalize_spksfs_result(sp.spksfs(step.body, step.et, 41))
+            actual = sp.spksfs(step.body, step.et, 41)
+            out = _normalize_spksfs_result(actual)
             if out["found"]:
                 packed=_to_float_list(out["descr"],expected_len=5,label="spksfs.descr")
                 if step.descrId is not None:
                     context.state.ephemeris.descriptors[step.descrId]=packed
+                    context.state.ephemeris.borrowedSpks[step.descrId]=int(actual[0])
                 out["descr"]={"first":packed[0],"last":packed[1],"packedIntegers":list(struct.unpack("=6i",struct.pack("=3d",*packed[2:])))}
             return StepOutput(op=step.op, value=out)
 

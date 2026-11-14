@@ -1,4 +1,5 @@
 import {
+  releaseClientSpkLoads,
   createSpice,
   createSpiceAsync,
   type CreateSpiceAsyncOptions,
@@ -420,6 +421,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
             }
           }
 
+          // Close this client’s remaining direct SPK registrations before clearing kernels.
+          releaseClientSpkLoads(baseSpice);
           // In-process: best-effort kernel cleanup.
           try {
             raw.kit.kclear();
@@ -493,6 +496,8 @@ function createBuilder(state: BuilderState): SpiceClientsBuilder {
             }
           }
 
+          // Close this client’s remaining direct SPK registrations before clearing kernels.
+          releaseClientSpkLoads(baseSpice);
           // In-process: best-effort kernel cleanup.
           try {
             await spice.kit.kclear();

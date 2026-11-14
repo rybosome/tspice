@@ -1,0 +1,591 @@
+{
+  "schemaVersion": 1,
+  "batch": "e03-spk-lowlevel",
+  "traceFiles": [
+    "docs/step8-spk-lowlevel.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/spk-lowlevel-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-shim-c/src/domains/kernels.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/spk-lowlevel-allocations.test.ts",
+    "packages/backend-wasm/test/spk-query-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/spk-descriptor.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-spk-observer.py",
+    "packages/py-parity-checking/fixtures/generate-audit-spk.py",
+    "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/tests/spk_subset_files.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/ephemeris/spklef.cases.json",
+    "packages/py-parity-checking/src/cases/ephemeris/spkpvn.cases.json",
+    "packages/py-parity-checking/src/cases/ephemeris/spksub.cases.json",
+    "packages/py-parity-checking/src/cases/ephemeris/spkuef.cases.json",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/post-case.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ephemeris.ts",
+    "packages/py-parity-checking/test/spk-lowlevel-content.test.ts",
+    "packages/py-parity-checking/test/spk-query-boundaries.test.ts",
+    "packages/py-parity-checking/test/spk-query-observables.test.ts",
+    "packages/tspice/src/clients/spiceClients.ts",
+    "packages/tspice/src/spice.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e03-b9cd0f5a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-e03-b9cd0f5a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "observation": "Both complete required lanes passed locally on b9cd0f5a96c78e67a8e720f565e6350da2a21db1. JavaScript: 2,678 parity tests and one expected guard skip. Native-required: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-e03-b9cd0f5a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "28f1f3b6f27de8f4fe7b97ed22fbbfdb8a10c11c2ad681d43092ae6586bbe76c",
+      "caseIds": [
+        "ephemeris-spklef-direct-no-keeper",
+        "ephemeris-spklef-empty-file",
+        "ephemeris-spklef-missing",
+        "ephemeris-spklef-priority-stack",
+        "ephemeris-spklef-promote-repeated",
+        "ephemeris-spkpvn-borrowed",
+        "ephemeris-spkpvn-daf-summary",
+        "ephemeris-spkpvn-negative-center",
+        "ephemeris-spkpvn-negative-early",
+        "ephemeris-spkpvn-other-center",
+        "ephemeris-spkpvn-priority-handle",
+        "ephemeris-spkpvn-type8-before-coverage",
+        "ephemeris-spksub-borrowed",
+        "ephemeris-spksub-daf-selected",
+        "ephemeris-spksub-empty-name",
+        "ephemeris-spksub-instant",
+        "ephemeris-spksub-narrow-interval",
+        "ephemeris-spksub-outside-end",
+        "ephemeris-spksub-outside-start",
+        "ephemeris-spksub-reversed",
+        "ephemeris-spksub-two-ordered",
+        "ephemeris-spksub-whole",
+        "ephemeris-spkuef-direct-survives-clear",
+        "ephemeris-spkuef-duplicate-once",
+        "ephemeris-spkuef-empty",
+        "ephemeris-spkuef-keeper-first",
+        "ephemeris-spkuef-restores-priority"
+      ],
+      "commit": "b9cd0f5a96c78e67a8e720f565e6350da2a21db1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43590225785/job/132433199612",
+      "observation": "Inspected successful Linux Node 22 native-required job 132433199612 on b9cd0f5a96c78e67a8e720f565e6350da2a21db1: 2,446 registered Node/WASM live comparisons; 2,679 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 666 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "spklef_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spklef_c.html",
+      "semantics": "Register a physical SPK without a KEEPER entry and promote it to highest SPKBSR priority. Repeated direct loads share a per-client token until unload.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spklef-promote-repeated",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Reloading the lower-priority original SPK promotes it, and its physical registration is removed by one unload."
+        },
+        {
+          "caseId": "ephemeris-spklef-priority-stack",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Observe the distinct complete states at a common epoch with overlapping direct registrations."
+        },
+        {
+          "caseId": "ephemeris-spklef-direct-no-keeper",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Close and independently register an authored physical SPK without adding a KEEPER record."
+        },
+        {
+          "caseId": "ephemeris-spklef-empty-file",
+          "coverage": ["success", "state", "edge"],
+          "observes": "A valid empty DAF loads directly and has no matching segment."
+        },
+        {
+          "caseId": "ephemeris-spklef-missing",
+          "coverage": ["error", "state", "edge"],
+          "observes": "Opening a nonexistent SPK reaches the real DAF file diagnostic."
+        }
+      ],
+      "edgeAssessment": "Reloading the lower-priority original SPK promotes it, and its physical registration is removed by one unload. Observe the distinct complete states at a common epoch with overlapping direct registrations. Close and independently register an authored physical SPK without adding a KEEPER record. A valid empty DAF loads directly and has no matching segment.",
+      "errorAssessment": "Actual missing file reports NOSUCHFILE; a valid empty DAF registers without a match.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        }
+      ],
+      "fixtureRationale": "MIT project-authored type-8 fixture and priority/empty controls are produced with genuine SPK writers. Outputs are independently generated in unique scratch storage. Focused tests also author asymmetric type-2 coefficients and a near-epoch synthetic synchronous orbit; time conversion uses the existing NAIF0012 LSK.",
+      "cleanup": "Explicitly close each real writer and DAF reader, unload each direct registration and dispose the client. Terminal subset error scenarios seed a valid segment to ensure normal SPKCLS finalization. Each independent process removes its separate temporary files.",
+      "tolerance": "Per-component existing absolute/relative 1e-12 for registered finite states. Compare integer, text and found fields exactly. Public probes check all fields, true IEEE classifications and independently authored physical files without a global tolerance change.",
+      "findings": [
+        {
+          "id": "spklef-spk-file-identity",
+          "status": "repaired",
+          "summary": "Duplicate loads promote a registered file, and a staged KEEPER path has to resolve to the same actual file on each side.",
+          "repair": "Use per-client, toolkit-generation-aware ownership; avoid cached loads and resolve the parity path to the same staged file used for KEEPER.",
+          "evidence": [
+            "docs/step8-spk-lowlevel.md",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/tests/spk_subset_files.py",
+            "packages/py-parity-checking/test/spk-lowlevel-content.test.ts",
+            "packages/py-parity-checking/src/cases/ephemeris/spklef.cases.json"
+          ],
+          "caseIds": ["ephemeris-spklef-promote-repeated"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spklef -> mutex-serialized native addon -> tspice_spklef -> spklef_c. Register a physical SPK without a KEEPER entry and promote it to highest SPKBSR priority. Repeated direct loads share a per-client token until unload.",
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spklef -> scoped WASM allocations and required export -> tspice_spklef -> spklef_c. Register a physical SPK without a KEEPER entry and promote it to highest SPKBSR priority. Repeated direct loads share a per-client token until unload.",
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkuef_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkuef_c.html",
+      "semantics": "Remove an owned direct SPK registration, invalidating prior direct and borrowed observations across the shared toolkit, while preserving other files and any later registration.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkuef-restores-priority",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Removal restores the earlier search state and center."
+        },
+        {
+          "caseId": "ephemeris-spkuef-duplicate-once",
+          "coverage": ["error", "state", "edge"],
+          "observes": "One unload removes a duplicated registration including segment table entries."
+        },
+        {
+          "caseId": "ephemeris-spkuef-keeper-first",
+          "coverage": ["success", "state", "edge"],
+          "observes": "KEEPER clear precedes direct release, whose actual target is already absent."
+        },
+        {
+          "caseId": "ephemeris-spkuef-direct-survives-clear",
+          "coverage": ["success", "state", "edge"],
+          "observes": "A direct-only scratch SPK remains searchable across KEEPER clear."
+        },
+        {
+          "caseId": "ephemeris-spkuef-empty",
+          "coverage": ["error", "state", "edge"],
+          "observes": "Unload an empty SPK and verify that the SPK subsystem has no remaining files."
+        }
+      ],
+      "edgeAssessment": "Removal restores the earlier search state and center. KEEPER clear precedes direct release, whose actual target is already absent. A direct-only scratch SPK remains searchable across KEEPER clear.",
+      "errorAssessment": "Unloading an absent toolkit registration is a no-op; a subsequent search with no remaining files reports NOLOADEDFILES. Wrapper checks distinguish retired or foreign tokens.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-empty.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        }
+      ],
+      "fixtureRationale": "MIT project-authored type-8 fixture and priority/empty controls are produced with genuine SPK writers. Outputs are independently generated in unique scratch storage. Focused tests also author asymmetric type-2 coefficients and a near-epoch synthetic synchronous orbit; time conversion uses the existing NAIF0012 LSK.",
+      "cleanup": "Explicitly close each real writer and DAF reader, unload each direct registration and dispose the client. Terminal subset error scenarios seed a valid segment to ensure normal SPKCLS finalization. Each independent process removes its separate temporary files.",
+      "tolerance": "Per-component existing absolute/relative 1e-12 for registered finite states. Compare integer, text and found fields exactly. Public probes check all fields, true IEEE classifications and independently authored physical files without a global tolerance change.",
+      "findings": [
+        {
+          "id": "spkuef-spk-file-identity",
+          "status": "repaired",
+          "summary": "A signed physical handle can survive SPK table removal while a separate DAF link remains.",
+          "repair": "Track generation across direct and KEEPER unloads, retain independent DAF read links, and release each outstanding direct claim during client teardown.",
+          "evidence": [
+            "docs/step8-spk-lowlevel.md",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/tests/spk_subset_files.py",
+            "packages/py-parity-checking/test/spk-lowlevel-content.test.ts",
+            "packages/py-parity-checking/src/cases/ephemeris/spkuef.cases.json"
+          ],
+          "caseIds": ["ephemeris-spkuef-restores-priority"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spkuef -> mutex-serialized native addon -> tspice_spkuef -> spkuef_c. Remove an owned direct SPK registration, invalidating prior direct and borrowed observations across the shared toolkit, while preserving other files and any later registration.",
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spkuef -> scoped WASM allocations and required export -> tspice_spkuef -> spkuef_c. Remove an owned direct SPK registration, invalidating prior direct and borrowed observations across the shared toolkit, while preserving other files and any later registration.",
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkpvn_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpvn_c.html",
+      "semantics": "Authenticate the exact packed descriptor against its readable source, evaluate the requested finite TDB epoch and return the complete native frame, position (km), velocity (km/s) and center.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkpvn-negative-center",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Read the five-word descriptor with noncanonical NaN payload and compare all six components, center and frame."
+        },
+        {
+          "caseId": "ephemeris-spkpvn-borrowed",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Search with KEEPER alone and evaluate its borrowed physical handle without unloading it."
+        },
+        {
+          "caseId": "ephemeris-spkpvn-daf-summary",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Evaluate the genuine C01 summary on a separately owned DAF reader without an SPKLEF token."
+        },
+        {
+          "caseId": "ephemeris-spkpvn-other-center",
+          "coverage": ["success", "state", "edge"],
+          "observes": "State is relative to the segment center rather than the solar-system barycenter."
+        },
+        {
+          "caseId": "ephemeris-spkpvn-priority-handle",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Hold a lower-priority descriptor while a higher-priority file is active and evaluate both independently."
+        },
+        {
+          "caseId": "ephemeris-spkpvn-negative-early",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Compare both inclusive negative-epoch endpoints and an interior path."
+        },
+        {
+          "caseId": "ephemeris-spkpvn-type8-before-coverage",
+          "coverage": ["error", "state", "edge"],
+          "observes": "Let the genuine type 8 record reader report its out-of-coverage epoch diagnostic."
+        }
+      ],
+      "edgeAssessment": "Read the five-word descriptor with noncanonical NaN payload and compare all six components, center and frame. Search with KEEPER alone and evaluate its borrowed physical handle without unloading it. Evaluate the genuine C01 summary on a separately owned DAF reader without an SPKLEF token. State is relative to the segment center rather than the solar-system barycenter. Hold a lower-priority descriptor while a higher-priority file is active and evaluate both independently. Compare both inclusive negative-epoch endpoints and an interior path.",
+      "errorAssessment": "A selected type-8 segment outside coverage reports canonical TIMEOUTOFBOUNDS. Guard false descriptors and unrepresentable lookup indices before use. A type-10 resonant guard preserves the earlier missing-LSK error.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        }
+      ],
+      "fixtureRationale": "MIT project-authored type-8 fixture and priority/empty controls are produced with genuine SPK writers. Outputs are independently generated in unique scratch storage. Focused tests also author asymmetric type-2 coefficients and a near-epoch synthetic synchronous orbit; time conversion uses the existing NAIF0012 LSK.",
+      "cleanup": "Explicitly close each real writer and DAF reader, unload each direct registration and dispose the client. Terminal subset error scenarios seed a valid segment to ensure normal SPKCLS finalization. Each independent process removes its separate temporary files.",
+      "tolerance": "Per-component existing absolute/relative 1e-12 for registered finite states. Compare integer, text and found fields exactly. Public probes check all fields, true IEEE classifications and independently authored physical files without a global tolerance change.",
+      "findings": [
+        {
+          "id": "spkpvn-spk-file-identity",
+          "status": "repaired",
+          "summary": "Packed integer pairs can resemble NaN. A descriptor is a native file address, and the supported epoch domain depends on the actual record type.",
+          "repair": "Match native descriptor bytes against actual DAF records under the toolkit lock. Apply type-specific record bounds and compare complete native states, including IEEE overflow and ordinary bounded extrapolation, against the independently loaded library.",
+          "evidence": [
+            "docs/step8-spk-lowlevel.md",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/tests/spk_subset_files.py",
+            "packages/py-parity-checking/test/spk-lowlevel-content.test.ts",
+            "packages/py-parity-checking/src/cases/ephemeris/spkpvn.cases.json"
+          ],
+          "caseIds": ["ephemeris-spkpvn-negative-center"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spkpvn -> mutex-serialized native addon -> tspice_spkpvn -> spkpvn_c. Authenticate the exact packed descriptor against its readable source, evaluate the requested finite TDB epoch and return the complete native frame, position (km), velocity (km/s) and center.",
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spkpvn -> scoped WASM allocations and required export -> tspice_spkpvn -> spkpvn_c. Authenticate the exact packed descriptor against its readable source, evaluate the requested finite TDB epoch and return the complete native frame, position (km), velocity (km/s) and center.",
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spksub_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spksub_c.html",
+      "semantics": "Append a real physical subset to a separate open SPK writer using the original file, actual packed descriptor, segment ID and inclusive TDB epochs.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spksub-narrow-interval",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Close/reopen a real reduced interval, unpack every output descriptor field and evaluate both endpoints."
+        },
+        {
+          "caseId": "ephemeris-spksub-instant",
+          "coverage": ["success", "state", "edge"],
+          "observes": "A zero-duration subset preserves its single epoch and full interpolated state."
+        },
+        {
+          "caseId": "ephemeris-spksub-whole",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Copy full coverage and evaluate the output file through a distinct load."
+        },
+        {
+          "caseId": "ephemeris-spksub-borrowed",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Copy a real SPKSFS match using only its borrowed reader handle."
+        },
+        {
+          "caseId": "ephemeris-spksub-daf-selected",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Use a DAF reader plus exact DAFGS bytes as the physical subset source."
+        },
+        {
+          "caseId": "ephemeris-spksub-two-ordered",
+          "coverage": ["success", "state", "edge"],
+          "observes": "Two appended subsets of one source have distinct names, coverages and later-segment priority at the shared endpoint."
+        },
+        {
+          "caseId": "ephemeris-spksub-outside-start",
+          "coverage": ["error", "state", "edge"],
+          "observes": "A first epoch before the source coverage raises the true subset error."
+        },
+        {
+          "caseId": "ephemeris-spksub-outside-end",
+          "coverage": ["error", "state", "edge"],
+          "observes": "A last epoch past the source coverage raises the true subset error."
+        },
+        {
+          "caseId": "ephemeris-spksub-reversed",
+          "coverage": ["error", "state", "edge"],
+          "observes": "Forward an inverted interval to the canonical SPKSUB check."
+        },
+        {
+          "caseId": "ephemeris-spksub-empty-name",
+          "coverage": ["error", "state", "edge"],
+          "observes": "The actual C wrapper rejects an empty segment identifier."
+        }
+      ],
+      "edgeAssessment": "Close/reopen a real reduced interval, unpack every output descriptor field and evaluate both endpoints. A zero-duration subset preserves its single epoch and full interpolated state. Copy full coverage and evaluate the output file through a distinct load. Copy a real SPKSFS match using only its borrowed reader handle. Use a DAF reader plus exact DAFGS bytes as the physical subset source. Two appended subsets of one source have distinct names, coverages and later-segment priority at the shared endpoint.",
+      "errorAssessment": "Observe SPKNOTASUBSET for range and ordering failures and EMPTYSTRING for an empty ID. After a real rejected interval the same output writer remains usable and produces one independently verifiable segment.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored deterministic type8 polynomial states with arbitrary signed IDs/centers, gaps and overlapping priorities. The independent locked SpiceyPy generator asserts complete states/metadata. Distinct three-axis observer motion avoids degenerate near-zero cancellation and distinguishes stellar/light-time corrections.",
+          "distribution": "Repository-authored synthetic data under MIT, with generator and distribution rationale in fixture README. No mission observations or external scientific dataset."
+        }
+      ],
+      "fixtureRationale": "MIT project-authored type-8 fixture and priority/empty controls are produced with genuine SPK writers. Outputs are independently generated in unique scratch storage. Focused tests also author asymmetric type-2 coefficients and a near-epoch synthetic synchronous orbit; time conversion uses the existing NAIF0012 LSK.",
+      "cleanup": "Explicitly close each real writer and DAF reader, unload each direct registration and dispose the client. Terminal subset error scenarios seed a valid segment to ensure normal SPKCLS finalization. Each independent process removes its separate temporary files.",
+      "tolerance": "Per-component existing absolute/relative 1e-12 for registered finite states. Compare integer, text and found fields exactly. Public probes check all fields, true IEEE classifications and independently authored physical files without a global tolerance change.",
+      "findings": [
+        {
+          "id": "spksub-spk-file-identity",
+          "status": "repaired",
+          "summary": "A successful return alone cannot demonstrate a correct subset, preserved integer pairs, coverage, state or output ownership.",
+          "repair": "Authenticate the source and separate write target, execute canonical SPKSUB_C, close and reopen each file independently and compare all summary fields and complete states in both producer/reader directions.",
+          "evidence": [
+            "docs/step8-spk-lowlevel.md",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
+            "packages/py-parity-checking/sidecars/spiceypy/tests/spk_subset_files.py",
+            "packages/py-parity-checking/test/spk-lowlevel-content.test.ts",
+            "packages/py-parity-checking/src/cases/ephemeris/spksub.cases.json"
+          ],
+          "caseIds": ["ephemeris-spksub-narrow-interval"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spksub -> mutex-serialized native addon -> tspice_spksub -> spksub_c. Append a real physical subset to a separate open SPK writer using the original file, actual packed descriptor, segment ID and inclusive TDB epochs.",
+          "executions": ["local-e03-b9cd0f5a-node", "ci-e03-b9cd0f5a-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EphemerisApi.spksub -> scoped WASM allocations and required export -> tspice_spksub -> spksub_c. Append a real physical subset to a separate open SPK writer using the original file, actual packed descriptor, segment ID and inclusive TDB epochs.",
+          "executions": ["local-e03-b9cd0f5a-wasm", "ci-e03-b9cd0f5a-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

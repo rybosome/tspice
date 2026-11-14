@@ -57,7 +57,7 @@ declare const __spiceHandleBrand: unique symbol;
  */
 export type SpiceHandle = number & { readonly [__spiceHandleBrand]: true };
 
-export type SpiceHandleKind = "DAF" | "DAS" | "DLA" | "SPK" | "EK";
+export type SpiceHandleKind = "DAF" | "DAS" | "DLA" | "SPK" | "SPK-LOAD" | "EK";
 
 export type SpiceHandleEntry = {
   kind: SpiceHandleKind;
@@ -67,7 +67,7 @@ export type SpiceHandleEntry = {
 export type SpiceHandleRegistry = {
   register: (kind: SpiceHandleKind, nativeHandle: number) => SpiceHandle;
   lookup: (
-    handle: SpiceHandle,
+    handle: number,
     expected: readonly SpiceHandleKind[],
     context: string,
   ) => SpiceHandleEntry;

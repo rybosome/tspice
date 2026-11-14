@@ -4,12 +4,18 @@ import type {
   SpiceStateVector,
   SpiceVector3,
   SpiceWindow,
+  SpkSegmentDescriptor,
   SpkPackedDescriptor,
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  createSpkReaders,
+  releaseSpkLoads,
+  spkSegmentBytes,
+  spkInputText,
+  spkStateComponents,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
   invariant,
@@ -112,7 +118,63 @@ export function createEphemerisApi(
 ): EphemerisApi {
   const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
 
-  return {
+  const readers = createSpkReaders(handles);
+  const api = {
+    [releaseSpkLoads]: (): void => readers.release(api.spkuef),
+    spklef: (file: string | VirtualOutput) =>
+      readers.own(
+        native.spklef(
+          spkInputText(
+            typeof file === "string"
+              ? file
+                ? stager.resolvePathForSpice(file)
+                : ""
+              : resolveSpkPath(outputs, file, "spklef"),
+          ),
+        ),
+      ),
+    spkuef: (handle: SpiceHandle) =>
+      readers.unload(handle, (generation: number) => native.spkuef(generation)),
+    spkpvn: (handle: number, descr: SpkSegmentDescriptor, et: number) => {
+      const { source, registered } = readers.source(handle);
+      requireSpkNumber(et, "spkpvn(et)");
+      const result = native.spkpvn(
+        source,
+        registered,
+        spkSegmentBytes(descr),
+        et,
+      );
+      assertSpiceInt32(result.ref, "spkpvn(ref)");
+      assertSpiceInt32(result.center, "spkpvn(center)");
+      return {
+        ref: result.ref,
+        state: spkStateComponents(result.state),
+        center: result.center,
+      };
+    },
+    spksub: (
+      handle: number,
+      descr: SpkSegmentDescriptor,
+      ident: string,
+      begin: number,
+      end: number,
+      newh: SpiceHandle,
+    ) => {
+      const { source, registered } = readers.source(handle);
+      const writer = handles.lookup(newh, ["SPK"], "spksub(newh)").nativeHandle;
+      requireSpkNumber(begin, "spksub(begin)");
+      requireSpkNumber(end, "spksub(end)");
+      native.spksub(
+        source,
+        registered,
+        spkSegmentBytes(descr),
+        spkInputText(ident),
+        begin,
+        end,
+        writer,
+      );
+    },
+
     spkezr: (target, et, ref, abcorr, observer) => {
       requireSpkNumber(et, "spkezr(et)");
       requireSpkString(ref, "spkezr(ref)");
@@ -227,6 +289,11 @@ export function createEphemerisApi(
         typeof out.handle === "number",
         "Expected spksfs().handle to be a number when found",
       );
+      invariant(
+        typeof out.generation === "number",
+        "Missing native SPKSFS generation",
+      );
+      readers.observe(out.handle, out.generation);
       const descr = copySpkPackedDescriptor(out.descr);
       invariant(
         typeof out.ident === "string",
@@ -401,5 +468,6 @@ export function createEphemerisApi(
         step,
       );
     },
-  };
+  } satisfies EphemerisApi & { [releaseSpkLoads](): void };
+  return api;
 }
