@@ -1527,7 +1527,8 @@
         "ephemeris-spkssb-generated-segment-success",
         "ephemeris-spkssb-invalid-frame-error"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "local-706-main-c5f0b058-wasm",
@@ -1693,7 +1694,8 @@
         "ephemeris-spkssb-generated-segment-success",
         "ephemeris-spkssb-invalid-frame-error"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-node",
@@ -1861,7 +1863,8 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-wasm",
@@ -2029,7 +2032,8 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
     }
   ],
   "routines": [
@@ -2251,14 +2255,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkez -> typed node adapter -> actual N-API registered spkez binding -> shared tspice_spkez -> spkez_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkez. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2269,14 +2271,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkez -> typed wasm adapter -> actual compiled _tspice_spkez export -> shared tspice_spkez -> spkez_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkez. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2498,14 +2498,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezp -> typed node adapter -> actual N-API registered spkezp binding -> shared tspice_spkezp -> spkezp_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezp. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2516,14 +2514,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezp -> typed wasm adapter -> actual compiled _tspice_spkezp export -> shared tspice_spkezp -> spkezp_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezp. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -2773,14 +2769,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezr -> typed node adapter -> actual N-API registered spkezr binding -> shared tspice_spkezr -> spkezr_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezr. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2791,14 +2785,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezr -> typed wasm adapter -> actual compiled _tspice_spkezr export -> shared tspice_spkezr -> spkezr_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezr. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3048,14 +3040,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkpos -> typed node adapter -> actual N-API registered spkpos binding -> shared tspice_spkpos -> spkpos_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkpos. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3066,14 +3056,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkpos -> typed wasm adapter -> actual compiled _tspice_spkpos export -> shared tspice_spkpos -> spkpos_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkpos. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3219,14 +3207,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgeo -> typed node adapter -> actual N-API registered spkgeo binding -> shared tspice_spkgeo -> spkgeo_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgeo. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3237,14 +3223,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgeo -> typed wasm adapter -> actual compiled _tspice_spkgeo export -> shared tspice_spkgeo -> spkgeo_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgeo. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3390,14 +3374,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgps -> typed node adapter -> actual N-API registered spkgps binding -> shared tspice_spkgps -> spkgps_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgps. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3408,14 +3390,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgps -> typed wasm adapter -> actual compiled _tspice_spkgps export -> shared tspice_spkgps -> spkgps_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgps. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3555,14 +3535,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkssb -> typed node adapter -> actual N-API registered spkssb binding -> shared tspice_spkssb -> spkssb_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkssb. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3573,14 +3551,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkssb -> typed wasm adapter -> actual compiled _tspice_spkssb export -> shared tspice_spkssb -> spkssb_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkssb. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -3727,14 +3703,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spksfs -> typed node adapter -> actual N-API registered spksfs binding -> shared tspice_spksfs -> spksfs_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spksfs. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3745,17 +3719,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spksfs -> typed wasm adapter -> actual compiled _tspice_spksfs export -> shared tspice_spksfs -> spksfs_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spksfs. No substitute/composed numerical query.",
-          "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
-          ]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Historical Step 7 executions and their recorded source digests are preserved. Current source verification requires new full local and canonical CI executions."
 }

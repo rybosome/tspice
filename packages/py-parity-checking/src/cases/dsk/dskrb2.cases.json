@@ -1,0 +1,274 @@
+[
+  {
+    "caseId": "dsk-dskrb2-latitudinal-face",
+    "description": "The minimum radius may occur inside a plate; maxima include unreferenced vertices.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [2, 0, 0, 0, 2, 0, 0, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 1,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 8],
+        "plates": [1, 2, 3],
+        "corsys": 1,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4],
+        "plates": [1, 3, 2, 1, 2, 4, 1, 4, 3, 2, 3, 4],
+        "corsys": 1,
+        "corpar": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-rectangular",
+    "description": "Rectangular z bounds visit every vertex even when the plate set is empty or references unused signed integers.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4],
+        "plates": [1, 3, 2, 1, 2, 4, 1, 4, 3, 2, 3, 4],
+        "corsys": 3,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, -7],
+        "plates": [],
+        "corsys": 3,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4],
+        "plates": [0, -99, 77],
+        "corsys": 3,
+        "corpar": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-planetodetic-shape",
+    "description": "Compare the conservative lower and vertex upper altitude bounds for spherical, oblate and prolate reference bodies.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 4,
+        "corpar": [2, 0]
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 4,
+        "corpar": [2, 0.25]
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 4,
+        "corpar": [2, -0.25]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-parameter-layout",
+    "description": "Only the first two descriptor parameters determine altitude; rectangular and latitudinal ignore supplied values.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 4,
+        "corpar": [2, 0.25, 17, 17, 17, 17, 17, 17, 17, 17]
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 1,
+        "corpar": [19, -2]
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 3,
+        "corpar": [1, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-degenerate-plate",
+    "description": "Compare origin-to-point distance and altitude bounds for a valid repeated point index.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 1, 1],
+        "corsys": 1,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 1, 1],
+        "corsys": 4,
+        "corpar": [2, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-empty-bounds",
+    "description": "Observe the actual DP extrema for empty plate or vertex loops in each supported branch.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [],
+        "plates": [],
+        "corsys": 1,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [],
+        "plates": [],
+        "corsys": 3,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [],
+        "plates": [],
+        "corsys": 4,
+        "corpar": [2, 0]
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [],
+        "corsys": 1,
+        "corpar": []
+      },
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [],
+        "corsys": 4,
+        "corpar": [2, 0.25]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-cylindrical",
+    "description": "The coordinate-system switch signals NOTSUPPORTED even with ignored plate references.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [0, -9, 99],
+        "corsys": 2,
+        "corpar": []
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-unknown",
+    "description": "The coordinate-system switch signals NOTSUPPORTED even with ignored plate references.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [0, -9, 99],
+        "corsys": -8,
+        "corpar": []
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-radius-error",
+    "description": "Nonpositive equatorial radius is diagnosed by RECGEO for the first active vertex.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 4,
+        "corpar": [0, 0.2]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-flattening-error",
+    "description": "Flattening equal to one signals the genuine RECGEO range error.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [3, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 4,
+        "corpar": [2, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskrb2-scaled-point-error",
+    "description": "The nested NEARPT diagnostic protects the geodetic calculation when scaled coordinates exceed its range.",
+    "workflow": [
+      {
+        "op": "dsk.dskrb2",
+        "vertices": [1e308, 0, 0, 3, 2, 0, 3, 0, 2],
+        "plates": [1, 2, 3],
+        "corsys": 4,
+        "corpar": [1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INPUTSTOOLARGE"]
+    }
+  }
+]

@@ -56,6 +56,12 @@ from .models import (
     StepDskDasopr,
     StepDskDlabfs,
     StepDskDskb02,
+    StepDskPltar,
+    StepDskPltexp,
+    StepDskPltnp,
+    StepDskPltnrm,
+    StepDskPltvol,
+    StepDskDskrb2,
     StepDskDskgd,
     StepDskDskmi2,
     StepDskDskobj,
@@ -1506,6 +1512,53 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 handleId=_expect_string(step.get("handleId"), label="dsk.dlabfs.handleId"),
                 dladscId=_expect_string(step.get("dladscId"), label="dsk.dlabfs.dladscId"),
+            )
+
+        case "dsk.pltar":
+            return StepDskPltar(
+                op=op,
+                vertices=_expect_number_list(step.get("vertices"), label="dsk.pltar.vertices"),
+                plates=_expect_int_list(step.get("plates"), label="dsk.pltar.plates"),
+            )
+
+        case "dsk.pltexp":
+            return StepDskPltexp(
+                op=op,
+                iverts=_expect_number_list(step.get("iverts"), label="dsk.pltexp.iverts"),
+                delta=_expect_number(step.get("delta"), label="dsk.pltexp.delta"),
+            )
+
+        case "dsk.pltnp":
+            return StepDskPltnp(
+                op=op,
+                point=_expect_vec3(step.get("point"), label="dsk.pltnp.point"),
+                v1=_expect_vec3(step.get("v1"), label="dsk.pltnp.v1"),
+                v2=_expect_vec3(step.get("v2"), label="dsk.pltnp.v2"),
+                v3=_expect_vec3(step.get("v3"), label="dsk.pltnp.v3"),
+            )
+
+        case "dsk.pltnrm":
+            return StepDskPltnrm(
+                op=op,
+                v1=_expect_vec3(step.get("v1"), label="dsk.pltnrm.v1"),
+                v2=_expect_vec3(step.get("v2"), label="dsk.pltnrm.v2"),
+                v3=_expect_vec3(step.get("v3"), label="dsk.pltnrm.v3"),
+            )
+
+        case "dsk.pltvol":
+            return StepDskPltvol(
+                op=op,
+                vertices=_expect_number_list(step.get("vertices"), label="dsk.pltvol.vertices"),
+                plates=_expect_int_list(step.get("plates"), label="dsk.pltvol.plates"),
+            )
+
+        case "dsk.dskrb2":
+            return StepDskDskrb2(
+                op=op,
+                vertices=_expect_number_list(step.get("vertices"), label="dsk.dskrb2.vertices"),
+                plates=_expect_int_list(step.get("plates"), label="dsk.dskrb2.plates"),
+                corsys=_expect_int(step.get("corsys"), label="dsk.dskrb2.corsys"),
+                corpar=_expect_number_list(step.get("corpar"), label="dsk.dskrb2.corpar"),
             )
 
         case "dsk.dskgd":

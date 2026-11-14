@@ -46,6 +46,53 @@ export type DskType2Bookkeeping = {
 
 /** Backend contract for DSK (Digital Shape Kernel) segment queries. */
 export interface DskApi {
+  /** Sum the areas of triangular plates, including repeated plates. Flat xyz vertices and signed one-based index triples determine the two counts. Empty plates yield zero. A nonempty set needs at least three vertices. Invalid references signal INDEXOUTOFRANGE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltar_c.html
+   */
+  pltar(vertices: readonly number[], plates: readonly number[]): number;
+
+  /** Expand the three xyz rows of a triangle about their centroid by the factor 1 + delta. Zero preserves the triangle, −1 collapses it, and smaller values pass through the centroid. Return all nine coordinates in vertex order in a new array.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltexp_c.html
+   */
+  pltexp(
+    iverts: readonly number[],
+    delta: number,
+  ): [number, number, number, number, number, number, number, number, number];
+
+  /** Return a closest point on the closed triangular plate and its nonnegative distance, including projections onto edges or vertices. Collinear and coincident vertices are handled by the pinned segment or point path. Coordinates and distance have the same length unit.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltnp_c.html
+   */
+  pltnp(
+    point: Readonly<SpiceVector3>,
+    v1: Readonly<SpiceVector3>,
+    v2: Readonly<SpiceVector3>,
+    v3: Readonly<SpiceVector3>,
+  ): { pnear: SpiceVector3; dist: number };
+
+  /** Compute the oriented, unnormalized cross product of consecutive plate edges. Its magnitude equals twice the plate area. Reversing winding changes the sign, and a degenerate plate can return the zero vector.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltnrm_c.html
+   */
+  pltnrm(
+    v1: Readonly<SpiceVector3>,
+    v2: Readonly<SpiceVector3>,
+    v3: Readonly<SpiceVector3>,
+  ): SpiceVector3;
+
+  /** Sum the signed tetrahedral volumes of an oriented closed plate model. Consistently outward faces give positive enclosed volume, reversed faces negative. Supply at least four vertices and four plates, using one-based indices. CSPICE checks counts and indices but assumes a valid boundary.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltvol_c.html
+   */
+  pltvol(vertices: readonly number[], plates: readonly number[]): number;
+
+  /** Compute the third-coordinate bounds of a type-2 plate mesh. Code 1 uses radius, 3 rectangular z, and 4 planetodetic altitude. For 4 supply at least [equatorialRadius, flattening]. Other codes use no parameters. All vertices contribute to maxima. For 1 and 4 each plate reference must be in 1..vertexCount. The planetodetic lower bound assumes convexity of the corresponding altitude surface.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskrb2_c.html
+   */
+  dskrb2(
+    vertices: readonly number[],
+    plates: readonly number[],
+    corsys: number,
+    corpar?: readonly number[],
+  ): { mncor3: number; mxcor3: number };
+
   /**
    * Union this DSK's body IDs into an initialized integer set cell.
    * Existing IDs are retained and results sorted/deduplicated. CSPICE appends

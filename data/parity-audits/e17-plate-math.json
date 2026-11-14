@@ -1,0 +1,472 @@
+{
+  "schemaVersion": 1,
+  "batch": "e17-plate-math",
+  "traceFiles": [
+    "docs/step8-plate-math.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/dsk.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/dsk.cc",
+    "packages/backend-node/src/domains/dsk.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/plate-math-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/dsk.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/dsk.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/plate-math-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/plate-math.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/plate_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
+    "packages/py-parity-checking/test/plate-math.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "pltar_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltar_c.html",
+      "semantics": "Sum the areas of triangular plates, including repeated plates. Flat xyz vertices and signed one-based index triples determine the two counts. Empty plates yield zero. A nonempty set needs at least three vertices. Invalid references signal INDEXOUTOFRANGE.",
+      "scenarios": [
+        {
+          "caseId": "dsk-pltar-closed-mesh",
+          "coverage": ["success", "edge"],
+          "observes": "Sum four unequal face areas; reversing winding and translating the tetrahedron preserve area."
+        },
+        {
+          "caseId": "dsk-pltar-open-and-repeated",
+          "coverage": ["success", "edge"],
+          "observes": "Area includes every supplied face, including duplicates and both windings."
+        },
+        {
+          "caseId": "dsk-pltar-degenerate",
+          "coverage": ["success", "edge"],
+          "observes": "Zero-area collinear and coincident plates coexist with ordinary faces."
+        },
+        {
+          "caseId": "dsk-pltar-oblique-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Check all three cross-product components and the squared scaling of an oblique triangle."
+        },
+        {
+          "caseId": "dsk-pltar-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Empty plate arrays yield zero, including an empty vertex table."
+        },
+        {
+          "caseId": "dsk-pltar-vertex-count",
+          "coverage": ["error", "edge"],
+          "observes": "Nonempty connectivity with fewer than three vertices signals the native vertex error."
+        },
+        {
+          "caseId": "dsk-pltar-index-below",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the toolkit one-based index diagnostic for a referenced vertex outside the table."
+        },
+        {
+          "caseId": "dsk-pltar-index-above",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the toolkit one-based index diagnostic for a referenced vertex outside the table."
+        }
+      ],
+      "edgeAssessment": "Compare repeated, reversed, planar, degenerate and closed geometry. The independently known total area is 13 + sqrt(61). Rescaling by the square of a tiny/large unit protects small nonzero results from an absolute-tolerance-only comparison.",
+      "errorAssessment": "Three registered toolkit errors cover TOOFEWVERTICES and below/above-table INDEXOUTOFRANGE. Empty connectivity gives zero before any vertex-count error. Counts are inferred so negative plate count cannot occur.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored Cartesian triangle, tetrahedron and spheroid arrays are embedded in registered cases. No external files, kernels or mutable handles are required.",
+      "cleanup": "Node snapshots finite array entries once and holds the SPICE lock during the scientific call. WASM validates byte size, allocates non-null empty sentinels and releases every successfully acquired buffer in reverse order after success, failure and toolkit error. Results are owned and public clients dispose in finally.",
+      "tolerance": "Registered finite results use the existing geometry comparator. Integer validation and diagnostic codes are exact. Supplemental live comparisons retain IEEE classes, signed zeros and complete results. Invariant tests scale small values to meaningful magnitudes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltar -> native domain and C++ addon under the process mutex -> tspice_pltar -> pltar_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltar -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltar -> pltar_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "pltexp_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltexp_c.html",
+      "semantics": "Expand the three xyz rows of a triangle about their centroid by the factor 1 + delta. Zero preserves the triangle, −1 collapses it, and smaller values pass through the centroid. Return all nine coordinates in vertex order in a new array.",
+      "scenarios": [
+        {
+          "caseId": "dsk-pltexp-centroid-expansion",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all nine flattened Cartesian components after enlargement about an off-origin centroid."
+        },
+        {
+          "caseId": "dsk-pltexp-contraction-and-collapse",
+          "coverage": ["success", "edge"],
+          "observes": "Shrink towards and collapse onto the centroid using negative expansion fractions."
+        },
+        {
+          "caseId": "dsk-pltexp-through-centroid",
+          "coverage": ["success", "edge"],
+          "observes": "Fractions less than minus one place corresponding vertices on the opposite side of the centroid."
+        },
+        {
+          "caseId": "dsk-pltexp-identity-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Zero leaves row order intact including cyclic permutations; input storage is independent."
+        },
+        {
+          "caseId": "dsk-pltexp-degenerate",
+          "coverage": ["success", "edge"],
+          "observes": "A line or point triangle remains in its affine span after expansion."
+        },
+        {
+          "caseId": "dsk-pltexp-coordinate-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Check all coordinates for translated triangles and very different unit scales."
+        }
+      ],
+      "edgeAssessment": "Compare all nine coordinates across collapse, contraction, identity, inversion through the centroid, disconnected coordinate scales and repeated points. Public invariants also test centroid preservation and squared scaling of the measured face area.",
+      "errorAssessment": "This operation performs arithmetic directly, including negative fractions and degenerate inputs. The wrappers reject wrong input size and nonfinite scalars. Finite-input overflow is retained and tested.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored Cartesian triangle, tetrahedron and spheroid arrays are embedded in registered cases. No external files, kernels or mutable handles are required.",
+      "cleanup": "Node snapshots finite array entries once and holds the SPICE lock during the scientific call. WASM validates byte size, allocates non-null empty sentinels and releases every successfully acquired buffer in reverse order after success, failure and toolkit error. Results are owned and public clients dispose in finally.",
+      "tolerance": "Registered finite results use the existing geometry comparator. Integer validation and diagnostic codes are exact. Supplemental live comparisons retain IEEE classes, signed zeros and complete results. Invariant tests scale small values to meaningful magnitudes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltexp -> native domain and C++ addon under the process mutex -> tspice_pltexp -> pltexp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltexp -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltexp -> pltexp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "pltnp_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltnp_c.html",
+      "semantics": "Return a closest point on the closed triangular plate and its nonnegative distance, including projections onto edges or vertices. Collinear and coincident vertices are handled by the pinned segment or point path. Coordinates and distance have the same length unit.",
+      "scenarios": [
+        {
+          "caseId": "dsk-pltnp-face-interior",
+          "coverage": ["success", "edge"],
+          "observes": "Interior projections from both sides and a point directly on the plate compare the closest point and distance."
+        },
+        {
+          "caseId": "dsk-pltnp-edge-projections",
+          "coverage": ["success", "edge"],
+          "observes": "Project onto each distinct edge, with the last case requiring the slanted edge."
+        },
+        {
+          "caseId": "dsk-pltnp-vertex-regions",
+          "coverage": ["success", "edge"],
+          "observes": "Each Voronoi vertex region has a distinct nearest endpoint."
+        },
+        {
+          "caseId": "dsk-pltnp-oblique-winding",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the full off-axis foot and distance through reversed ordering of translated vertices."
+        },
+        {
+          "caseId": "dsk-pltnp-collinear",
+          "coverage": ["success", "edge"],
+          "observes": "For collinear vertices each of the three edge positions can be the longest segment."
+        },
+        {
+          "caseId": "dsk-pltnp-coincident",
+          "coverage": ["success", "edge"],
+          "observes": "A repeated point and a repeated endpoint follow the pinned degeneracy branches."
+        },
+        {
+          "caseId": "dsk-pltnp-coordinate-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Compare scaled distance and nearest coordinates on geometrically similar plates."
+        }
+      ],
+      "edgeAssessment": "Compare distance and all three coordinates for interior projections on both sides, each edge and vertex region, swapped winding, each longest-edge position in a collinear triangle, and coincident vertices. The exterior slanted-edge probe also checks the returned point and distance at three scales.",
+      "errorAssessment": "The kernel-free routine handles finite degenerate triangles as a point or segment. The wrappers reject incomplete/sparse or nonfinite three-vectors. Relevant geometric non-applicability is represented by the actual selected nearest point and distance.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored Cartesian triangle, tetrahedron and spheroid arrays are embedded in registered cases. No external files, kernels or mutable handles are required.",
+      "cleanup": "Node snapshots finite array entries once and holds the SPICE lock during the scientific call. WASM validates byte size, allocates non-null empty sentinels and releases every successfully acquired buffer in reverse order after success, failure and toolkit error. Results are owned and public clients dispose in finally.",
+      "tolerance": "Registered finite results use the existing geometry comparator. Integer validation and diagnostic codes are exact. The supplemental check normalizes both distance and every component by the coordinate scale to verify tiny results.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltnp -> native domain and C++ addon under the process mutex -> tspice_pltnp -> pltnp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltnp -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltnp -> pltnp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "pltnrm_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltnrm_c.html",
+      "semantics": "Compute the oriented, unnormalized cross product of consecutive plate edges. Its magnitude equals twice the plate area. Reversing winding changes the sign, and a degenerate plate can return the zero vector.",
+      "scenarios": [
+        {
+          "caseId": "dsk-pltnrm-handedness",
+          "coverage": ["success", "edge"],
+          "observes": "Winding reversal negates the non-unit normal and cyclic reordering preserves it."
+        },
+        {
+          "caseId": "dsk-pltnrm-oblique-components",
+          "coverage": ["success", "edge"],
+          "observes": "An oblique plate yields signed normal components along all three axes."
+        },
+        {
+          "caseId": "dsk-pltnrm-translation",
+          "coverage": ["success", "edge"],
+          "observes": "An equal translation of all three xyz vertices leaves edge differences and the normal unchanged."
+        },
+        {
+          "caseId": "dsk-pltnrm-degenerate",
+          "coverage": ["success", "edge"],
+          "observes": "Pinned normals vanish for coincident vertices and exact collinear edges."
+        },
+        {
+          "caseId": "dsk-pltnrm-quadratic-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Check quadratic scaling at both small and large finite scales."
+        }
+      ],
+      "edgeAssessment": "Compare all components on asymmetric faces, right-handed and reversed winding, translation, exact degeneracy and quadratic scaling. Live tagged checks preserve overflow, the sign of zero and finite nonzero products near 1e−290.",
+      "errorAssessment": "The pinned operation is error-free for ordinary finite triples and returns a zero vector for exact degeneracy. Incomplete or nonfinite triples are rejected before FFI. Floating-point overflow remains observable.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored Cartesian triangle, tetrahedron and spheroid arrays are embedded in registered cases. No external files, kernels or mutable handles are required.",
+      "cleanup": "Node snapshots finite array entries once and holds the SPICE lock during the scientific call. WASM validates byte size, allocates non-null empty sentinels and releases every successfully acquired buffer in reverse order after success, failure and toolkit error. Results are owned and public clients dispose in finally.",
+      "tolerance": "Registered finite results use the existing geometry comparator. Integer validation and diagnostic codes are exact. Supplemental live comparisons retain IEEE classes, signed zeros and complete results. Invariant tests scale small values to meaningful magnitudes.",
+      "findings": [
+        {
+          "id": "retain-computed-signed-zero-in-ownership-test",
+          "status": "repaired",
+          "summary": "An ownership assertion expected positive zero in both transverse normal components. Both actual backends returned negative zero in the second component.",
+          "repair": "Save the original calculated result before mutating the returned array and compare the following call with that value. Tagged direct oracle observations independently compare the sign, every component and nonfinite categories.",
+          "caseIds": ["dsk-pltnrm-handedness"],
+          "evidence": [
+            "packages/py-parity-checking/test/plate-math.test.ts",
+            "docs/step8-plate-math.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltnrm -> native domain and C++ addon under the process mutex -> tspice_pltnrm -> pltnrm_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltnrm -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltnrm -> pltnrm_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "pltvol_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pltvol_c.html",
+      "semantics": "Sum the signed tetrahedral volumes of an oriented closed plate model. Consistently outward faces give positive enclosed volume, reversed faces negative. Supply at least four vertices and four plates, using one-based indices. CSPICE checks counts and indices but assumes a valid boundary.",
+      "scenarios": [
+        {
+          "caseId": "dsk-pltvol-signed-orientation",
+          "coverage": ["success", "edge"],
+          "observes": "A closed tetrahedron has opposite signed volumes when all face windings reverse."
+        },
+        {
+          "caseId": "dsk-pltvol-translation-and-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Volume of the closed polyhedron survives translation and scales cubically."
+        },
+        {
+          "caseId": "dsk-pltvol-coplanar-and-repeated",
+          "coverage": ["success", "edge"],
+          "observes": "Coplanar and repeated zero-area faces yield the actual determinant sum."
+        },
+        {
+          "caseId": "dsk-pltvol-unreferenced-and-reordered",
+          "coverage": ["success", "edge"],
+          "observes": "Extra unused vertices do not affect signed volume; face rows may be reordered."
+        },
+        {
+          "caseId": "dsk-pltvol-vertex-count",
+          "coverage": ["error", "edge"],
+          "observes": "The vertex-count diagnostic precedes plate count and index validation."
+        },
+        {
+          "caseId": "dsk-pltvol-plate-count",
+          "coverage": ["error", "edge"],
+          "observes": "Four vertices with too few plates fail before index lookup."
+        },
+        {
+          "caseId": "dsk-pltvol-index-zero",
+          "coverage": ["error", "edge"],
+          "observes": "Canonical validation locates the invalid one-based reference in a full sized model."
+        },
+        {
+          "caseId": "dsk-pltvol-index-large",
+          "coverage": ["error", "edge"],
+          "observes": "Canonical validation locates the invalid one-based reference in a full sized model."
+        }
+      ],
+      "edgeAssessment": "Check signed volume for outward/reversed tetrahedra, translation, coordinate scaling, coplanarity and unused points. Cubic rescaling and tagged live overflow/finite controls are verified independently.",
+      "errorAssessment": "Four registered errors cover TOOFEWVERTICES preceding TOOFEWPLATES and out-of-range one-based references after both count checks. Open or inconsistently wound meshes remain outside geometric interpretation rather than a fabricated toolkit error.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored Cartesian triangle, tetrahedron and spheroid arrays are embedded in registered cases. No external files, kernels or mutable handles are required.",
+      "cleanup": "Node snapshots finite array entries once and holds the SPICE lock during the scientific call. WASM validates byte size, allocates non-null empty sentinels and releases every successfully acquired buffer in reverse order after success, failure and toolkit error. Results are owned and public clients dispose in finally.",
+      "tolerance": "Registered finite results use the existing geometry comparator. Integer validation and diagnostic codes are exact. Supplemental live comparisons retain IEEE classes, signed zeros and complete results. Invariant tests scale small values to meaningful magnitudes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltvol -> native domain and C++ addon under the process mutex -> tspice_pltvol -> pltvol_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pltvol -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltvol -> pltvol_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskrb2_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskrb2_c.html",
+      "semantics": "Compute the third-coordinate bounds of a type-2 plate mesh. Code 1 uses radius, 3 rectangular z, and 4 planetodetic altitude. For 4 supply at least [equatorialRadius, flattening]. Other codes use no parameters. All vertices contribute to maxima. For 1 and 4 each plate reference must be in 1..vertexCount. The planetodetic lower bound assumes convexity of the corresponding altitude surface.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskrb2-latitudinal-face",
+          "coverage": ["success", "edge"],
+          "observes": "The minimum radius may occur inside a plate; maxima include unreferenced vertices."
+        },
+        {
+          "caseId": "dsk-dskrb2-rectangular",
+          "coverage": ["success", "edge"],
+          "observes": "Rectangular z bounds visit every vertex even when the plate set is empty or references unused signed integers."
+        },
+        {
+          "caseId": "dsk-dskrb2-planetodetic-shape",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the conservative lower and vertex upper altitude bounds for spherical, oblate and prolate reference bodies."
+        },
+        {
+          "caseId": "dsk-dskrb2-parameter-layout",
+          "coverage": ["success", "edge"],
+          "observes": "Only the first two descriptor parameters determine altitude; rectangular and latitudinal ignore supplied values."
+        },
+        {
+          "caseId": "dsk-dskrb2-degenerate-plate",
+          "coverage": ["success", "edge"],
+          "observes": "Compare origin-to-point distance and altitude bounds for a valid repeated point index."
+        },
+        {
+          "caseId": "dsk-dskrb2-empty-bounds",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual DP extrema for empty plate or vertex loops in each supported branch."
+        },
+        {
+          "caseId": "dsk-dskrb2-cylindrical",
+          "coverage": ["error", "edge"],
+          "observes": "The coordinate-system switch signals NOTSUPPORTED even with ignored plate references."
+        },
+        {
+          "caseId": "dsk-dskrb2-unknown",
+          "coverage": ["error", "edge"],
+          "observes": "The coordinate-system switch signals NOTSUPPORTED even with ignored plate references."
+        },
+        {
+          "caseId": "dsk-dskrb2-radius-error",
+          "coverage": ["error", "edge"],
+          "observes": "Nonpositive equatorial radius is diagnosed by RECGEO for the first active vertex."
+        },
+        {
+          "caseId": "dsk-dskrb2-flattening-error",
+          "coverage": ["error", "edge"],
+          "observes": "Flattening equal to one signals the genuine RECGEO range error."
+        },
+        {
+          "caseId": "dsk-dskrb2-scaled-point-error",
+          "coverage": ["error", "edge"],
+          "observes": "The nested NEARPT diagnostic protects the geodetic calculation when scaled coordinates exceed its range."
+        }
+      ],
+      "edgeAssessment": "Distinguish minimum plate radius from minimum vertex norm, and the unreferenced vertex maximum from referenced extrema. Compare empty sentinels, rectangular connectivity independence, and conservative altitude bounds on spherical, oblate and prolate reference surfaces.",
+      "errorAssessment": "Unsupported codes 2 and -8, invalid reference radius or flattening, and excessive scaled points exercise genuine diagnostics. Invalid references for coordinate codes 1/4 and missing parameter storage are wrapper boundary errors. Empty, rectangular and unsupported code paths have their own observed access behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored Cartesian triangle, tetrahedron and spheroid arrays are embedded in registered cases. No external files, kernels or mutable handles are required.",
+      "cleanup": "Node snapshots finite array entries once and holds the SPICE lock during the scientific call. WASM validates byte size, allocates non-null empty sentinels and releases every successfully acquired buffer in reverse order after success, failure and toolkit error. Results are owned and public clients dispose in finally.",
+      "tolerance": "Registered finite results use the existing geometry comparator. Integer validation and diagnostic codes are exact. The supplemental check proves an interior radial minimum and a conservative lower altitude; the nested failing call preserves exact short, long and caller trace.",
+      "findings": [
+        {
+          "id": "guard-geodetic-private-normal-and-plate-connectivity",
+          "status": "repaired",
+          "summary": "Pinned radius/altitude paths dereference connectivity without validating its range. Nested geodetic conversion can read a private normal after a failed NEARPT.",
+          "repair": "Require physical referenced vertices for coordinate codes 1/4 and check the fallible linked nearest-point component in initialized storage under preserved frames before the direct canonical call. The independent oracle uses the shared library’s own geometries and guarded ABI.",
+          "caseIds": [
+            "dsk-dskrb2-scaled-point-error",
+            "dsk-dskrb2-rectangular",
+            "dsk-dskrb2-planetodetic-shape"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/dsk.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/plate_oracle.py",
+            "packages/py-parity-checking/test/plate-math.test.ts",
+            "packages/backend-wasm/test/plate-math-allocations.test.ts",
+            "docs/step8-plate-math.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskrb2 -> native domain and C++ addon under the process mutex -> tspice_dskrb2 -> dskrb2_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskrb2 -> WASM domain, checked allocations and compiled Emscripten export -> tspice_dskrb2 -> dskrb2_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current focused evidence includes all registered, public, native, WASM and Chrome observations. Source-bound required local and canonical CI verification is pending."
+}

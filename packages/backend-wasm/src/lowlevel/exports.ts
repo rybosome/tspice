@@ -385,6 +385,60 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_pltar(
+    nv: number,
+    vertices: number,
+    np: number,
+    plates: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_pltexp(
+    iverts: number,
+    delta: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_pltnp(
+    point: number,
+    v1: number,
+    v2: number,
+    v3: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_pltnrm(
+    v1: number,
+    v2: number,
+    v3: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_pltvol(
+    nv: number,
+    vertices: number,
+    np: number,
+    plates: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskrb2(
+    nv: number,
+    vertices: number,
+    np: number,
+    plates: number,
+    corsys: number,
+    npar: number,
+    corpar: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_dskb02(
     handle: number,
     dladscInts8Ptr: number,
@@ -2308,6 +2362,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dskobj",
   "_tspice_dsksrf",
   "_tspice_dskgd",
+  "_tspice_pltar",
+  "_tspice_pltexp",
+  "_tspice_pltnp",
+  "_tspice_pltnrm",
+  "_tspice_pltvol",
+  "_tspice_dskrb2",
   "_tspice_dskb02",
 
   // Cells + windows

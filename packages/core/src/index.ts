@@ -161,3 +161,8 @@ export {
 } from "./spice-runtime/domains/kernels-utils.js";
 
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
+
+export {
+  snapshotPlateInput,
+  readPlateResult,
+} from "./spice-runtime/domains/plate-math.js";

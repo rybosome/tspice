@@ -1,0 +1,132 @@
+[
+  {
+    "caseId": "dsk-pltexp-centroid-expansion",
+    "description": "Observe all nine flattened Cartesian components after enlargement about an off-origin centroid.",
+    "workflow": [
+      {
+        "op": "dsk.pltexp",
+        "iverts": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "delta": 0.5
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "delta": 2
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "delta": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltexp-contraction-and-collapse",
+    "description": "Shrink towards and collapse onto the centroid using negative expansion fractions.",
+    "workflow": [
+      {
+        "op": "dsk.pltexp",
+        "iverts": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "delta": -0.25
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "delta": -1
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [0, 0, 0, 2, 0, 0, 0, 3, 0],
+        "delta": -1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltexp-through-centroid",
+    "description": "Fractions less than minus one place corresponding vertices on the opposite side of the centroid.",
+    "workflow": [
+      {
+        "op": "dsk.pltexp",
+        "iverts": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "delta": -1.5
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "delta": -2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltexp-identity-and-order",
+    "description": "Zero leaves row order intact including cyclic permutations; input storage is independent.",
+    "workflow": [
+      {
+        "op": "dsk.pltexp",
+        "iverts": [2, -1, 4, 5, 2, -3, -1, 2, 1],
+        "delta": 0
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [5, 2, -3, -1, 2, 1, 2, -1, 4],
+        "delta": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltexp-degenerate",
+    "description": "A line or point triangle remains in its affine span after expansion.",
+    "workflow": [
+      {
+        "op": "dsk.pltexp",
+        "iverts": [1, 2, 3, 1, 2, 3, 1, 2, 3],
+        "delta": 2
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [1, 0, 0, 2, 0, 0, 6, 0, 0],
+        "delta": -2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-pltexp-coordinate-scale",
+    "description": "Check all coordinates for translated triangles and very different unit scales.",
+    "workflow": [
+      {
+        "op": "dsk.pltexp",
+        "iverts": [
+          2e-12, -1e-12, 4e-12, 5e-12, 2e-12, -3e-12, -1e-12, 2e-12, 1e-12
+        ],
+        "delta": 0.5
+      },
+      {
+        "op": "dsk.pltexp",
+        "iverts": [
+          2000000000000.0, -1000000000000.0, 4000000000000.0, 5000000000000.0,
+          2000000000000.0, -3000000000000.0, -1000000000000.0, 2000000000000.0,
+          1000000000000.0
+        ],
+        "delta": 0.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

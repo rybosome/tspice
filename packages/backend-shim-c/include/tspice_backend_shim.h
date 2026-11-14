@@ -366,6 +366,18 @@ int tspice_dskgd(
 //
 // `outDoubles10` layout:
 // [vtxbds(6), voxsiz, voxori(3)]
+int tspice_pltar(int nv, const double* vertices, int np, const int* plates, double* out, char* err,
+                 int cap);
+int tspice_pltexp(const double* iverts, double delta, double* out, char* err, int cap);
+int tspice_pltnp(const double* point, const double* v1, const double* v2, const double* v3,
+                 double* out, char* err, int cap);
+int tspice_pltnrm(const double* v1, const double* v2, const double* v3, double* out, char* err,
+                  int cap);
+int tspice_pltvol(int nv, const double* vertices, int np, const int* plates, double* out, char* err,
+                  int cap);
+int tspice_dskrb2(int nv, const double* vertices, int np, const int* plates, int corsys, int npar,
+                  const double* corpar, double* out, char* err, int cap);
+
 int tspice_dskb02(
     int handle,
     const int32_t *dladscInts8,

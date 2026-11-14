@@ -1,5 +1,7 @@
 #include "tspice_backend_shim.h"
 
+#include <math.h>
+#include "SpiceZfc.h"
 #include "SpiceUsr.h"
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
@@ -266,4 +268,116 @@ int tspice_dskb02(int handle, const int32_t *dladscInts8, int32_t *outInts10, do
   outDoubles10[9] = voxori[2];
 
   return 0;
+}
+
+static int plate_status(char* err, int cap) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, cap);
+  return 1;
+}
+
+static int plate_mesh_ok(int nv, const double* vertices, int np, const int* plates) {
+  return nv >= 0 && nv <= INT32_MAX / (3 * (int)sizeof(double)) && np >= 0 &&
+         np <= INT32_MAX / (3 * (int)sizeof(int)) && vertices && plates;
+}
+
+// RECGEO calls RECLAT on its private normal even if NEARPT failed before
+// assigning a base point. Run the fallible NEARPT component in initialized
+// storage under the actual outer frames before DSKRB2 visits the same points.
+static int check_geodetic_mesh(int nv, const double* vertices, int np, const int* plates,
+                               const double* parameters, char* err, int cap) {
+  double re = parameters[0], f = parameters[1];
+  if (!nv || re <= 0 || f >= 1) return 0;  // RECGEO diagnoses these parameters first.
+  double polar = re - f * re;
+  if (!isfinite(polar))
+    return tspice_return_error(err, cap, "Planetodetic polar radius exceeds representable range");
+  chkin_c("dskrb2_c");
+  chkin_c("DSKRB2");
+  chkin_c("RECGEO");
+  for (int i = 0; i < nv + np && !failed_c(); ++i) {
+    double center[3], base[3] = {0}, altitude = 0;
+    const double* point;
+    if (i < nv)
+      point = vertices + 3 * i;
+    else {
+      const int* index = plates + 3 * (i - nv);
+      const double third = 1.0 / 3.0;
+      vlcom3_c(third, vertices + 3 * (index[0] - 1), third, vertices + 3 * (index[1] - 1), third,
+               vertices + 3 * (index[2] - 1), center);
+      point = center;
+    }
+    nearpt_((doublereal*)point, &re, &re, &polar, base, &altitude);
+  }
+  chkout_c("RECGEO");
+  chkout_c("DSKRB2");
+  chkout_c("dskrb2_c");
+  return plate_status(err, cap);
+}
+
+int tspice_pltar(int nv, const double* vertices, int np, const int* plates, double* out, char* err,
+                 int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return plate_status(err, cap);
+  if (!plate_mesh_ok(nv, vertices, np, plates) || !out)
+    return tspice_return_error(err, cap, "Invalid plate array storage or shape");
+  *out = pltar_c(nv, (const SpiceDouble(*)[3])vertices, np, (const SpiceInt(*)[3])plates);
+  return plate_status(err, cap);
+}
+
+int tspice_pltexp(const double* iverts, double delta, double* out, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return plate_status(err, cap);
+  if (!iverts || !out) return tspice_return_error(err, cap, "Invalid plate array storage or shape");
+  pltexp_c((const SpiceDouble(*)[3])iverts, delta, (SpiceDouble(*)[3])out);
+  return plate_status(err, cap);
+}
+
+int tspice_pltnp(const double* point, const double* v1, const double* v2, const double* v3,
+                 double* out, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return plate_status(err, cap);
+  if (!point || !v1 || !v2 || !v3 || !out)
+    return tspice_return_error(err, cap, "Invalid plate array storage or shape");
+  pltnp_c(point, v1, v2, v3, out, out + 3);
+  return plate_status(err, cap);
+}
+
+int tspice_pltnrm(const double* v1, const double* v2, const double* v3, double* out, char* err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return plate_status(err, cap);
+  if (!v1 || !v2 || !v3 || !out)
+    return tspice_return_error(err, cap, "Invalid plate array storage or shape");
+  pltnrm_c(v1, v2, v3, out);
+  return plate_status(err, cap);
+}
+
+int tspice_pltvol(int nv, const double* vertices, int np, const int* plates, double* out, char* err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return plate_status(err, cap);
+  if (!plate_mesh_ok(nv, vertices, np, plates) || !out)
+    return tspice_return_error(err, cap, "Invalid plate array storage or shape");
+  *out = pltvol_c(nv, (const SpiceDouble(*)[3])vertices, np, (const SpiceInt(*)[3])plates);
+  return plate_status(err, cap);
+}
+
+int tspice_dskrb2(int nv, const double* vertices, int np, const int* plates, int corsys, int npar,
+                  const double* corpar, double* out, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return plate_status(err, cap);
+  if (!plate_mesh_ok(nv, vertices, np, plates) || !out || !corpar || npar < 0 ||
+      (corsys == 4 && npar < 2))
+    return tspice_return_error(err, cap, "Invalid plate array storage or shape");
+  // The latitudinal and planetodetic branches dereference IDs without checking.
+  // Rectangular and unsupported systems do not access plate connectivity.
+  if (corsys == 1 || corsys == 4) {
+    for (int i = 0; i < np * 3; ++i)
+      if (plates[i] < 1 || plates[i] > nv)
+        return tspice_return_error(err, cap, "Expected one-based vertex index in the mesh");
+  }
+  if (corsys == 4 && check_geodetic_mesh(nv, vertices, np, plates, corpar, err, cap)) return 1;
+  dskrb2_c(nv, (const SpiceDouble(*)[3])vertices, np, (const SpiceInt(*)[3])plates, corsys, corpar,
+           out, out + 1);
+  return plate_status(err, cap);
 }

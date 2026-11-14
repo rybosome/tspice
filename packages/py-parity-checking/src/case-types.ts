@@ -1277,6 +1277,36 @@ export type StepDskDlabfs = {
   dladscId: string;
 };
 
+export type StepDskPltar = {
+  op: "dsk.pltar";
+  vertices: number[];
+  plates: number[];
+};
+export type StepDskPltexp = {
+  op: "dsk.pltexp";
+  iverts: number[];
+  delta: number;
+};
+export type StepDskPltnp = {
+  op: "dsk.pltnp";
+  point: Vec3;
+  v1: Vec3;
+  v2: Vec3;
+  v3: Vec3;
+};
+export type StepDskPltnrm = { op: "dsk.pltnrm"; v1: Vec3; v2: Vec3; v3: Vec3 };
+export type StepDskPltvol = {
+  op: "dsk.pltvol";
+  vertices: number[];
+  plates: number[];
+};
+export type StepDskDskrb2 = {
+  op: "dsk.dskrb2";
+  vertices: number[];
+  plates: number[];
+  corsys: number;
+  corpar: number[];
+};
 export type StepDskDskgd = {
   op: "dsk.dskgd";
   handleId: string;
@@ -1457,6 +1487,12 @@ export type WorkflowStep =
   | StepDskDasopr
   | StepDskDascls
   | StepDskDlabfs
+  | StepDskPltar
+  | StepDskPltexp
+  | StepDskPltnp
+  | StepDskPltnrm
+  | StepDskPltvol
+  | StepDskDskrb2
   | StepDskDskgd
   | StepDskDskb02;
 
@@ -1905,6 +1941,12 @@ export type StepOutput =
   | { op: "dsk.dasopr"; value: null }
   | { op: "dsk.dascls"; value: null }
   | { op: "dsk.dlabfs"; value: { found: boolean } }
+  | { op: "dsk.pltar"; value: number }
+  | { op: "dsk.pltexp"; value: number[] }
+  | { op: "dsk.pltnp"; value: { pnear: Vec3; dist: number } }
+  | { op: "dsk.pltnrm"; value: Vec3 }
+  | { op: "dsk.pltvol"; value: number }
+  | { op: "dsk.dskrb2"; value: { mncor3: number; mxcor3: number } }
   | { op: "dsk.dskgd"; value: DskDescriptorPayload }
   | { op: "dsk.dskb02"; value: DskType2BookkeepingPayload };
 

@@ -408,5 +408,21 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "e17-plate-math",
+      "routines": [
+        "dskrb2_c",
+        "pltar_c",
+        "pltexp_c",
+        "pltnp_c",
+        "pltnrm_c",
+        "pltvol_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Run both full local lanes, observe source CI and confirm final-head checks and rebaseability."
+    }
   ]
 }
