@@ -2298,18 +2298,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/760"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "57 registered workflows, 430 ordered steps, 173 target calls, 28 terminal diagnostics. Both runtimes passed 114 registered comparisons, 4 independent physical/public tests, 2 native and 21 actual WASM allocation tests. Final real Chrome tested the four segments together, error recovery, orthogonality, instrument IDs, coverage and cleanup."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "d1f051cc53083f87fe3da4a384562925e20dafbf",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43580414369/job/132403733493",
+          "result": "Both complete required lanes passed locally on d1f051cc53083f87fe3da4a384562925e20dafbf. JavaScript: 2,548 parity tests and one expected guard skip. Native-required: 2,332 registered Node/WASM live comparisons; 2,549 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 621 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132403733493 on d1f051cc53083f87fe3da4a384562925e20dafbf: 2,332 registered Node/WASM live comparisons; 2,549 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 621 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run complete uncached local and canonical CI validation on the combined source and confirm final-head checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-ck-writers",
       "worktree": "/private/tmp/tspice-step8-ck-writers",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Six direct CK writers; all four type-5 packet layouts, complete DAF readback and independent pointing."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source d1f051cc. 2,332 registered Node/WASM live comparisons; 2,549 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 621 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Six direct CK writers; all four type-5 packet layouts, complete DAF readback and independent pointing."
     },
     {
       "id": "C13-ck-records",
