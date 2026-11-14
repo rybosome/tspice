@@ -1,0 +1,182 @@
+[
+  {
+    "caseId": "error-trcoff-active-stack",
+    "description": "Disable tracing within nested names; inspect all observable stack changes after a subsequent check-in and check-out.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "outer"
+      },
+      {
+        "op": "error.chkin",
+        "name": "inner"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.trcoff"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.chkin",
+        "name": "new"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.chkout",
+        "name": "new"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-trcoff-reset-kclear",
+    "description": "Reset and kernel clear in a disabled instance, followed by an attempted new check-in.",
+    "workflow": [
+      {
+        "op": "error.trcoff"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "error.chkin",
+        "name": "after"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-trcoff-repeat",
+    "description": "A repeated disable in a new instance remains irreversible.",
+    "workflow": [
+      {
+        "op": "error.trcoff"
+      },
+      {
+        "op": "error.trcoff"
+      },
+      {
+        "op": "error.chkin",
+        "name": "later"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-trcoff-signaled",
+    "description": "Capture a real user signal with trace collection disabled and check the failure indicator after recovery.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "outer"
+      },
+      {
+        "op": "error.chkin",
+        "name": "inner"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.trcoff"
+      },
+      {
+        "op": "error.setmsg",
+        "message": "after disabling trace"
+      },
+      {
+        "op": "error.sigerr",
+        "short": "SPICE(POSTOFF)",
+        "capture": true
+      },
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-trcoff-absent-index",
+    "description": "An indexed name request after disabling an active trace reports the toolkit bounds error.",
+    "workflow": [
+      {
+        "op": "error.chkin",
+        "name": "outer"
+      },
+      {
+        "op": "error.chkin",
+        "name": "inner"
+      },
+      {
+        "op": "error.trcdep"
+      },
+      {
+        "op": "error.qcktrc"
+      },
+      {
+        "op": "error.trcoff"
+      },
+      {
+        "op": "error.trcnam",
+        "index": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  }
+]

@@ -1,0 +1,363 @@
+[
+  {
+    "caseId": "error-errdev-initial-capacities",
+    "description": "Read the established toolkit setting at one-character, intermediate, default and maximal signed capacities.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 2
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 4
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdev-length--2147483648",
+    "description": "Use physical sentinel storage while passing the signed length to the canonical C interface.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-errdev-length-0",
+    "description": "Use physical sentinel storage while passing the signed length to the canonical C interface.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-errdev-length-1",
+    "description": "Use physical sentinel storage while passing the signed length to the canonical C interface.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "error-errdev-empty-setting",
+    "description": "Let CSPICE diagnose a zero-byte input string.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "error-errdev-null",
+    "description": "Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "   null"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 3
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdev-screen",
+    "description": "Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": " Screen "
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 3
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdev-filename",
+    "description": "Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "MixedCase-log-α.txt"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 3
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdev-significant-tab",
+    "description": "Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "name\t"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 3
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdev-leading-space",
+    "description": "Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "  log.txt"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 3
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdev-fixed-storage",
+    "description": "Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 3
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "error-errdev-blank",
+    "description": "Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+    "workflow": [
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": " "
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET",
+        "capacity": 3
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "SET",
+        "value": "NULL"
+      },
+      {
+        "op": "error.errdev",
+        "operation": "GET"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -352,3 +352,34 @@ int tspice_trcnam(int index, int capacity, char *out, char *err, int errMaxBytes
   }
   return capture_if_new_error(wasFailed, err, errMaxBytes);
 }
+
+static bool valid_policy_buffers(const char *op, const char *value, const char *out) {
+  return op && value && out && strlen(op) < INT_MAX && strlen(value) < INT_MAX;
+}
+
+int tspice_errdev(const char *op, char *value, int length, char *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!valid_policy_buffers(op, value, out)) return tspice_return_error(err, errMaxBytes, "Invalid errdev buffer");
+  out[0] = '\0';
+  const SpiceBoolean wasFailed = failed_c();
+  errdev_c(op, length, eqstr_c(op, "SET") ? value : out);
+  return capture_if_new_error(wasFailed, err, errMaxBytes);
+}
+
+int tspice_errprt(const char *op, char *value, int length, char *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!valid_policy_buffers(op, value, out)) return tspice_return_error(err, errMaxBytes, "Invalid errprt buffer");
+  out[0] = '\0';
+  const SpiceBoolean wasFailed = failed_c();
+  errprt_c(op, length, eqstr_c(op, "SET") ? value : out);
+  return capture_if_new_error(wasFailed, err, errMaxBytes);
+}
+
+int tspice_trcoff(char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  trcoff_c();
+  return 0;
+}

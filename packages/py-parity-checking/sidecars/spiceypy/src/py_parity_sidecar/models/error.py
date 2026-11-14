@@ -5,6 +5,27 @@ from typing import Literal
 
 
 @dataclass(frozen=True)
+class StepErrorErrdev:
+    op: Literal["error.errdev"]
+    operation: str
+    capacity: int | None = None
+    value: str = ""
+
+
+@dataclass(frozen=True)
+class StepErrorErrprt:
+    op: Literal["error.errprt"]
+    operation: str
+    capacity: int | None = None
+    value: str = ""
+
+
+@dataclass(frozen=True)
+class StepErrorTrcoff:
+    op: Literal["error.trcoff"]
+
+
+@dataclass(frozen=True)
 class StepErrorErrch:
     op: Literal["error.errch"]
     marker: str

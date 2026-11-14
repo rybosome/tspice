@@ -1,5 +1,6 @@
 import type { ErrorApi } from "@rybosome/tspice-backend-contract";
 import {
+  policyArguments,
   assertGetmsgWhich,
   assertSpiceInt32,
   spiceStringByteLength,
@@ -53,7 +54,78 @@ export function createErrorApi(module: EmscriptenModule): ErrorApi {
     );
   }
 
+  function readPolicy(
+    op: string,
+    value: string,
+    capacity: number,
+    invoke: (
+      op: number,
+      value: number,
+      capacity: number,
+      out: number,
+      err: number,
+    ) => number,
+  ) {
+    const opBytes = spiceStringByteLength(op, "operation");
+    const valueBytes = spiceStringByteLength(value, "policy value");
+    const physical = Math.max(capacity, 1);
+    return withAllocs(
+      module,
+      [opBytes + 1, valueBytes + 1, physical, WASM_ERR_MAX_BYTES],
+      (o, v, out, err) => {
+        writeSpiceString(module, o, op, opBytes);
+        writeSpiceString(module, v, value, valueBytes);
+        check(invoke(o, v, capacity, out, err), err);
+        const start = out >>> 0;
+        const bytes = module.HEAPU8.subarray(start, start + physical);
+        const end = bytes.indexOf(0);
+        if (end < 0)
+          throw new Error("CSPICE error policy output has no NUL terminator");
+        return decoder.decode(bytes.subarray(0, end));
+      },
+    );
+  }
+  function errdev(op: "GET", capacity?: number): string;
+  function errdev(op: "SET", value: string): void;
+  function errdev(
+    op: "GET" | "SET",
+    argument?: number | string,
+  ): string | void {
+    const call = policyArguments(op, argument, 256);
+    const result = readPolicy(
+      op,
+      call.value,
+      call.capacity,
+      (o, v, l, out, err) =>
+        module._tspice_errdev(o, v, l, out, err, WASM_ERR_MAX_BYTES),
+    );
+    if (!call.set) return result;
+  }
+
+  function errprt(op: "GET", capacity?: number): string;
+  function errprt(op: "SET", value: string): void;
+  function errprt(
+    op: "GET" | "SET",
+    argument?: number | string,
+  ): string | void {
+    const call = policyArguments(op, argument, 41);
+    const result = readPolicy(
+      op,
+      call.value,
+      call.capacity,
+      (o, v, l, out, err) =>
+        module._tspice_errprt(o, v, l, out, err, WASM_ERR_MAX_BYTES),
+    );
+    if (!call.set) return result;
+  }
+
   return {
+    errdev,
+    errprt,
+    trcoff: () =>
+      withMalloc(module, WASM_ERR_MAX_BYTES, (err) => {
+        check(module._tspice_trcoff(err, WASM_ERR_MAX_BYTES), err);
+      }),
     errch: (marker, value) => {
       const m = spiceStringByteLength(marker, "marker"),
         v = spiceStringByteLength(value, "value");

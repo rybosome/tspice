@@ -1,6 +1,9 @@
 import type {
   StepErrorChkin,
   StepErrorChkout,
+  StepErrorErrdev,
+  StepErrorErrprt,
+  StepErrorTrcoff,
   StepErrorErrch,
   StepErrorErrdp,
   StepErrorErrint,
@@ -18,6 +21,9 @@ import type {
 import { registerFinalizer, type RunTspiceContext } from "../context.js";
 
 type ErrorStep =
+  | StepErrorErrdev
+  | StepErrorErrprt
+  | StepErrorTrcoff
   | StepErrorErrch
   | StepErrorErrdp
   | StepErrorErrint
@@ -39,6 +45,25 @@ export function runErrorStep(
   step: ErrorStep,
 ): StepOutput {
   switch (step.op) {
+    case "error.errdev":
+      if (step.operation === "GET")
+        return {
+          op: step.op,
+          value: context.spice.raw.errdev("GET", step.capacity),
+        };
+      context.spice.raw.errdev("SET", step.value);
+      return { op: step.op, value: null };
+    case "error.errprt":
+      if (step.operation === "GET")
+        return {
+          op: step.op,
+          value: context.spice.raw.errprt("GET", step.capacity),
+        };
+      context.spice.raw.errprt("SET", step.value);
+      return { op: step.op, value: null };
+    case "error.trcoff":
+      context.spice.raw.trcoff();
+      return { op: step.op, value: null };
     case "error.errch":
       context.spice.raw.errch(step.marker, step.value);
       return { op: step.op, value: context.spice.raw.getmsg("LONG") };

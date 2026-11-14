@@ -123,6 +123,9 @@ export function dispatchStep(
     case "file-io.dskw02":
       return runFileIoStep(context, step);
 
+    case "error.errdev":
+    case "error.errprt":
+    case "error.trcoff":
     case "error.errch":
     case "error.errdp":
     case "error.errint":

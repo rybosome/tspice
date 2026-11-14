@@ -59,3 +59,7 @@ Both backends reset signaled errors before throwing. A persistent true failure f
 ## Diagnostic substitution and traceback observation
 
 B06 adds seven routines with 33 workflows, 767 steps, 92 target calls and 10 expected diagnostics. Complete messages, current and frozen trace and the immediate-return indicator are compared. [State, cleanup and independent evidence](step8-error-observation.md)
+
+## Error devices, print masks and traceback lifetime
+
+Three canonical controls add 29 isolated workflows, 161 steps and 114 targeted calls, including 10 terminal diagnostics. Dedicated children compare byte-exact reports and irreversible trace behavior against the independent N0067 toolkit. [Policy evidence](step8-error-devices.md)

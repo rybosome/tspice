@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 169
-- Planned (not yet implemented): 480
+- Implemented now (SpiceRawBackend): 172
+- Planned (not yet implemented): 477
 - Excluded: 3
 
 ## Implemented now
@@ -78,8 +78,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
 | `errch_c` | Insert String into Error Message Text |
+| `errdev_c` | Get/Set Error Output Device Name |
 | `errdp_c` | Insert D.P. Number into Error Message Text |
 | `errint_c` | Insert Integer into Error Message Text |
+| `errprt_c` | Get/Set Error Output Items |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -175,6 +177,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tpictr_c` | Create a Time Format Picture |
 | `trcdep_c` | Traceback depth |
 | `trcnam_c` | Get module name from traceback |
+| `trcoff_c` | Turn tracing off |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -360,8 +363,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `eqstr_c` | Equivalent strings |
 | `erract_c` | Get/Set Default Error Action |
-| `errdev_c` | Get/Set Error Output Device Name |
-| `errprt_c` | Get/Set Error Output Items |
 | `esrchc_c` | Equivalence search, character |
 | `et2lst_c` | ET to Local Solar Time |
 | `etcal_c` | Convert ET to Calendar format |
@@ -610,7 +611,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkfram_c` | TK frame, find position rotation |
 | `tparch_c` | Parse check---check format of strings |
 | `trace_c` | Trace of a 3x3 matrix |
-| `trcoff_c` | Turn tracing off |
 | `trgsep_c` | Separation quantity from observer |
 | `tsetyr_c` | Time --- set year expansion boundaries |
 | `twopi_c` | Twice the value of pi |

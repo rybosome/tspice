@@ -892,7 +892,8 @@
         "ek-ekgi-invalid-selidx-error",
         "ek-ekgi-valid-row-out-of-range-element-found-false"
       ],
-      "observation": "Both complete required lanes passed locally on f1e18c255839f3064e80b583259c62853a01b1af. JavaScript: 2,500 parity tests and one expected guard skip. Native-required: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f1e18c255839f3064e80b583259c62853a01b1af. JavaScript: 2,500 parity tests and one expected guard skip. Native-required: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-b06-f1e18c25-wasm",
@@ -956,7 +957,8 @@
         "ek-ekgi-invalid-selidx-error",
         "ek-ekgi-valid-row-out-of-range-element-found-false"
       ],
-      "observation": "Both complete required lanes passed locally on f1e18c255839f3064e80b583259c62853a01b1af. JavaScript: 2,500 parity tests and one expected guard skip. Native-required: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f1e18c255839f3064e80b583259c62853a01b1af. JavaScript: 2,500 parity tests and one expected guard skip. Native-required: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b06-f1e18c25-node",
@@ -1022,7 +1024,8 @@
       ],
       "commit": "f1e18c255839f3064e80b583259c62853a01b1af",
       "url": "https://github.com/rybosome/tspice/actions/runs/43574593043/job/132385968930",
-      "observation": "Inspected successful Linux Node 22 native-required job 132385968930 on f1e18c255839f3064e80b583259c62853a01b1af: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132385968930 on f1e18c255839f3064e80b583259c62853a01b1af: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b06-f1e18c25-wasm",
@@ -1088,7 +1091,8 @@
       ],
       "commit": "f1e18c255839f3064e80b583259c62853a01b1af",
       "url": "https://github.com/rybosome/tspice/actions/runs/43574593043/job/132385968930",
-      "observation": "Inspected successful Linux Node 22 native-required job 132385968930 on f1e18c255839f3064e80b583259c62853a01b1af: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132385968930 on f1e18c255839f3064e80b583259c62853a01b1af: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1187,11 +1191,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekacli -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1204,11 +1209,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekacli -> typed WASM helper -> configured/generated/binary _tspice_ekacli -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     },
@@ -1307,11 +1313,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekacld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1324,11 +1331,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekacld -> typed WASM helper -> configured/generated/binary _tspice_ekacld -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     },
@@ -1458,11 +1466,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekaclc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1475,11 +1484,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekaclc -> typed WASM helper -> configured/generated/binary _tspice_ekaclc -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     },
@@ -1566,11 +1576,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekffld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1583,11 +1594,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekffld -> typed WASM helper -> configured/generated/binary _tspice_ekffld -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     },
@@ -1681,11 +1693,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekfind -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1698,11 +1711,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekfind -> typed WASM helper -> configured/generated/binary _tspice_ekfind -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     },
@@ -1810,11 +1824,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekgc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1827,11 +1842,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekgc -> typed WASM helper -> configured/generated/binary _tspice_ekgc -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     },
@@ -1942,11 +1958,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekgd -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1959,11 +1976,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekgd -> typed WASM helper -> configured/generated/binary _tspice_ekgd -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     },
@@ -2074,11 +2092,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekgi -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2091,14 +2110,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ekgi -> typed WASM helper -> configured/generated/binary _tspice_ekgi -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier source-bound executions remain historical on this branch. Fresh local and canonical validation is required."
 }

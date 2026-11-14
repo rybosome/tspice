@@ -29,3 +29,21 @@ async function observeTrace() {
   }
 }
 void observeTrace;
+
+async function observeErrorPolicy() {
+  const sync = await spiceClients.toSync({ backend: "wasm" });
+  const asyncClient = await spiceClients.toAsync({ backend: "wasm" });
+  try {
+    const device: string = sync.spice.raw.errdev("GET", 8);
+    sync.spice.raw.errdev("SET", "NULL");
+    sync.spice.raw.trcoff();
+    const read: Promise<string> = asyncClient.spice.raw.errprt("GET");
+    const set: Promise<void> = asyncClient.spice.raw.errdev("SET", device);
+    await set;
+    return await read;
+  } finally {
+    await sync.dispose();
+    await asyncClient.dispose();
+  }
+}
+void observeErrorPolicy;

@@ -18,6 +18,36 @@ export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
  */
 export interface ErrorApi {
   /**
+   * Read the selected CSPICE diagnostic device in its stored spelling. The byte capacity includes NUL and defaults to 256. A truncation that splits UTF-8 cannot be represented as a JavaScript string.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errdev_c.html
+   */
+  errdev(op: "GET", capacity?: number): string;
+
+  /**
+   * Select SCREEN, NULL or a diagnostic filename. Native filenames use the host filesystem; WASM names use that module’s filesystem. Supply a new caller-owned file in an existing directory. N0067 stores 255 bytes and opens files lazily on output, retaining the logical unit. Selecting a device does not register a kit virtual output.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errdev_c.html
+   */
+  errdev(op: "SET", value: string): void;
+
+  /**
+   * Read the currently selected message types, in toolkit order. The byte capacity includes NUL and defaults to 41. An empty list means printing is disabled.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errprt_c.html
+   */
+  errprt(op: "GET", capacity?: number): string;
+
+  /**
+   * Apply comma-separated SHORT, LONG, EXPLAIN, TRACEBACK, DEFAULT, ALL or NONE selections from left to right. Selections accumulate across calls. A leading NONE clears earlier selections. This changes diagnostic output, independently of the selected error action.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errprt_c.html
+   */
+  errprt(op: "SET", value: string): void;
+
+  /**
+   * Permanently disable traceback collection in this CSPICE instance and clear its current stack. There is no matching enable operation. Reset, kclear and constructing another native client cannot restore it. Use a new native process or a fresh WASM module for independent tracing.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trcoff_c.html
+   */
+  trcoff(): void;
+
+  /**
    * Substitute text for the first occurrence of the trimmed marker in the prepared long message. A blank marker does nothing. Blank replacement inserts one space. An empty C string signals EMPTYSTRING. The toolkit truncates the resulting message at 1840 bytes.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errch_c.html
    */

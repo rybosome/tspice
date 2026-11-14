@@ -75,6 +75,59 @@ static Napi::Value StringBytes(Napi::Env env, const char* data, size_t capacity)
   return result;
 }
 
+struct PolicyArgs {
+  std::string op;
+  std::string value;
+  int length;
+};
+
+static bool ReadPolicyArgs(const Napi::CallbackInfo& info, PolicyArgs* args) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected operation, text, and byte capacity"));
+    return false;
+  }
+  return ReadText(env, info[0], &args->op) && ReadText(env, info[1], &args->value)
+    && ReadInt(env, info[2], &args->length);
+}
+
+static Napi::Value Errdev(const Napi::CallbackInfo& info) {
+  PolicyArgs args;
+  if (!ReadPolicyArgs(info, &args)) return info.Env().Undefined();
+  char out[256] = {};
+  char err[tspice_backend_node::kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_errdev(args.op.c_str(), args.value.data(), std::min(args.length, 256), out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(info.Env(), "errdev", err, "errdev");
+    return info.Env().Undefined();
+  }
+  return StringBytes(info.Env(), out, sizeof(out));
+}
+
+static Napi::Value Errprt(const Napi::CallbackInfo& info) {
+  PolicyArgs args;
+  if (!ReadPolicyArgs(info, &args)) return info.Env().Undefined();
+  char out[41] = {};
+  char err[tspice_backend_node::kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_errprt(args.op.c_str(), args.value.data(), std::min(args.length, 41), out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(info.Env(), "errprt", err, "errprt");
+    return info.Env().Undefined();
+  }
+  return StringBytes(info.Env(), out, sizeof(out));
+}
+
+static Napi::Value Trcoff(const Napi::CallbackInfo& info) {
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(info.Env(), "trcoff expects zero arguments"));
+    return info.Env().Undefined();
+  }
+  char err[tspice_backend_node::kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_trcoff(err, sizeof(err)) != 0) ThrowSpiceError(info.Env(), "trcoff", err, "trcoff");
+  return info.Env().Undefined();
+}
+
 static Napi::Value Errch(const Napi::CallbackInfo& info) {
   const Napi::Env env = info.Env();
   if (info.Length() != 2) {
@@ -344,6 +397,9 @@ static void Chkout(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterError(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "errdev", Napi::Function::New(env, Errdev), __func__)) return;
+  if (!SetExportChecked(env, exports, "errprt", Napi::Function::New(env, Errprt), __func__)) return;
+  if (!SetExportChecked(env, exports, "trcoff", Napi::Function::New(env, Trcoff), __func__)) return;
   if (!SetExportChecked(env, exports, "errch", Napi::Function::New(env, Errch), __func__)) return;
   if (!SetExportChecked(env, exports, "errdp", Napi::Function::New(env, Errdp), __func__)) return;
   if (!SetExportChecked(env, exports, "errint", Napi::Function::New(env, Errint), __func__)) return;
