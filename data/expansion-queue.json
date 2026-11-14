@@ -3097,13 +3097,20 @@
         {
           "kind": "local-focused",
           "result": "79 registered workflows, 393 total steps, 172 target calls and 39 expected toolkit errors. All 158 compiled registered comparisons, 12 public tests, 16 native and 50 WASM focused tests passed. Chrome returned the independent full states/light times and recovered after POINTONZAXIS. The rebuilt combined source passed all 328 registered, 26 public, 41 native and 95 WASM focused checks across E08 and E09. Final Chrome matched independent complete states, inherited SPKEZR and SPKCVO mixed flag behavior, blank diagnostic and recovery."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
+          "result": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run combined required local and canonical source lanes, then inspect the final matrix and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-spk-relative",
       "branch": "codex/expand-spk-relative",
       "baseCommit": "cecd58d92c76f7181b3771f5d39c3b4b154215d1",
-      "progressNote": "79 registered workflows, 393 total steps, 172 target calls and 39 expected toolkit errors. All 158 compiled registered comparisons, 12 public tests, 16 native and 50 WASM focused tests passed. Chrome returned the independent full states/light times and recovered after POINTONZAXIS. The rebuilt combined source passed all 328 registered, 26 public, 41 native and 95 WASM focused checks across E08 and E09. Final Chrome matched independent complete states, inherited SPKEZR and SPKCVO mixed flag behavior, blank diagnostic and recovery."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source e83d49bc. 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "79 registered workflows, 393 total steps, 172 target calls and 39 expected toolkit errors. All 158 compiled registered comparisons, 12 public tests, 16 native and 50 WASM focused tests passed. Chrome returned the independent full states/light times and recovered after POINTONZAXIS. The rebuilt combined source passed all 328 registered, 26 public, 41 native and 95 WASM focused checks across E08 and E09. Final Chrome matched independent complete states, inherited SPKEZR and SPKCVO mixed flag behavior, blank diagnostic and recovery."
     },
     {
       "id": "E10-plane-geometry",

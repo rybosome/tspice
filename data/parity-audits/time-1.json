@@ -1155,6 +1155,230 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43589578886/job/132431245235",
       "observation": "Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-e09-e83d49bc-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ddd644eaf9eaa81d32631867765b068fd48fa919a5d385930c1abab3b0db4a68",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e09-e83d49bc-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ddd644eaf9eaa81d32631867765b068fd48fa919a5d385930c1abab3b0db4a68",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e09-e83d49bc-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ddd644eaf9eaa81d32631867765b068fd48fa919a5d385930c1abab3b0db4a68",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "commit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e09-e83d49bc-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ddd644eaf9eaa81d32631867765b068fd48fa919a5d385930c1abab3b0db4a68",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "commit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1224,11 +1448,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.deltet -> Node adapter with integer validation -> serialized native handler -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -1244,11 +1469,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.deltet -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     },
@@ -1357,11 +1583,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.et2utc -> Node adapter with integer validation -> serialized native handler -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -1377,11 +1604,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.et2utc -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     },
@@ -1481,11 +1709,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scdecd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -1501,11 +1730,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scdecd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     },
@@ -1617,11 +1847,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2c -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -1637,11 +1868,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2c -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     },
@@ -1753,11 +1985,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2s -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -1773,11 +2006,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2s -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     },
@@ -1882,11 +2116,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scencd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -1902,11 +2137,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scencd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     },
@@ -2018,11 +2254,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scs2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -2038,11 +2275,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scs2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     },
@@ -2154,11 +2392,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sct2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
         },
         "wasm": {
           "history": [
@@ -2174,14 +2413,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sct2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": []
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Prior full local and canonical observations retain their tested source revisions. Current E09 combined source requires fresh full local and canonical CI observations."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

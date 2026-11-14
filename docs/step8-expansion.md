@@ -85,3 +85,7 @@ This checkpoint has 140 routines ready for review, 347 in progress and 0 planned
 | E26-gf-signals-progress      | `gfbail_c`, `gfclrh_c`, `gfinth_c`, `gfrepu_c`                                                                                                                             | Main baseline                       | in-progress [#771](https://github.com/rybosome/tspice/pull/771) |
 
 After a parent lands, restack its dependent PRs on the merged history, regenerate combined WASM and generated evidence, and rerun the required checks. Scientific findings and source-bound verification for the routines present on this branch are in the [per-routine ledger](coverage-ledger.md).
+
+## E09 source validation checkpoint
+
+[PR #774](https://github.com/rybosome/tspice/pull/774) remains in progress. Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.
