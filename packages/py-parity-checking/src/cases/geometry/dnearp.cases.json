@@ -1,0 +1,261 @@
+[
+  {
+    "caseId": "geometry-dnearp-triaxial",
+    "description": "Observe all nearest-point and derivative components for moving states in distinct octants.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [4, 2, 1, 1, -2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [-6, 1, 3, -0.5, 4, 2],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [3, 4, -8, 4, -3, 8],
+        "a": 1,
+        "b": 4,
+        "c": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-sphere",
+    "description": "The closest point follows radial projection: radial motion changes altitude, tangential motion changes the surface point.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [3, 4, 0, 0, 0, 0],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [3, 4, 0, 3, 4, 0],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [3, 4, 0, -4, 3, 0],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [3, 4, 0, 1, -3, 4],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-focal-set",
+    "description": "At the ellipsoid center and an interior focal point retain the position and altitude when derivatives are undefined.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, 0, 1, 2, 3],
+        "a": 1,
+        "b": 1,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, 0, 1, 2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, 0, 1, 2, 3],
+        "a": 1,
+        "b": 3,
+        "c": 2
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [1, 0, 0, 3, 2, 1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-interior-exterior",
+    "description": "Sample a regular interior point, a point on the surface and an exterior point along an axis.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, 0.4, 1, 2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, 1, 1, 2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, 2.75, 1, 2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, -1, 1, 2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [0, 0, -2.75, 1, 2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-velocity-linearity",
+    "description": "Scale and reverse velocity at a fixed point. Position and altitude persist; derivatives track the input.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [4, 2, 1, 1, -2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [4, 2, 1, -2, 4, -6],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [4, 2, 1, 0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-scale",
+    "description": "Scale positions, semiaxes and velocities together, retaining signed altitude and all six nearest-state components.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [0.5, -0.25, 0.125, 0.125, -0.25, 0.375],
+        "a": 0.375,
+        "b": 0.25,
+        "c": 0.125
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [4, -2, 1, 1, -2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.dnearp",
+        "state": [128, -64, 32, 32, -64, 96],
+        "a": 96,
+        "b": 64,
+        "c": 32
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-bad-axis-0",
+    "description": "Observe the actual NEARPT diagnostic for this nonpositive semiaxis.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [4, 2, 1, 1, -2, 3],
+        "a": -1,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADAXISLENGTH)"]
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-bad-axis-1",
+    "description": "Observe the actual NEARPT diagnostic for this nonpositive semiaxis.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [4, 2, 1, 1, -2, 3],
+        "a": 3,
+        "b": 0,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADAXISLENGTH)"]
+    }
+  },
+  {
+    "caseId": "geometry-dnearp-bad-axis-2",
+    "description": "Observe the actual NEARPT diagnostic for this nonpositive semiaxis.",
+    "workflow": [
+      {
+        "op": "geometry.dnearp",
+        "state": [4, 2, 1, 1, -2, 3],
+        "a": 3,
+        "b": 2,
+        "c": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADAXISLENGTH)"]
+    }
+  }
+]

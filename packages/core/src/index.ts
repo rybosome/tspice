@@ -163,3 +163,5 @@ export {
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
 
 export { spiceStringByteLength } from "./spice-runtime/domains/string-bytes.js";
+
+export { surfaceVector } from "./spice-runtime/domains/surface-derivatives.js";

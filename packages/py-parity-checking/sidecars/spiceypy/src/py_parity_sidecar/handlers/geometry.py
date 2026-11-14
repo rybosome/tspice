@@ -5,12 +5,16 @@ from ctypes import c_double
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
 
+from .. import surface_derivatives_oracle
 from .. import geometry_quantities_oracle
 from ..models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
     StepGeometryNvc2pl,
+    StepGeometryDnearp,
+    StepGeometrySurfpv,
+    StepGeometryTangpt,
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
@@ -158,6 +162,15 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
                 "lit": bool(lit),
             },
         )
+
+    if isinstance(step, StepGeometryDnearp):
+        return StepOutput(op=step.op,value=surface_derivatives_oracle.dnearp(step.state, step.a, step.b, step.c))
+
+    if isinstance(step, StepGeometrySurfpv):
+        return StepOutput(op=step.op,value=surface_derivatives_oracle.surfpv(step.vertex, step.direction, step.a, step.b, step.c))
+
+    if isinstance(step, StepGeometryTangpt):
+        return StepOutput(op=step.op,value=surface_derivatives_oracle.tangpt(step.method, step.target, step.et, step.fixref, step.abcorr, step.corloc, step.observer, step.dref, step.dvec))
 
     if isinstance(step, StepGeometryPhaseq):
         return StepOutput(op=step.op, value=geometry_quantities_oracle.phaseq(step.et, step.target, step.illmn, step.observer, step.abcorr))

@@ -118,6 +118,9 @@ from .models import (
     StepGeometryIllumf,
     StepGeometryIllumg,
     StepGeometryNvc2pl,
+    StepGeometryDnearp,
+    StepGeometrySurfpv,
+    StepGeometryTangpt,
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
@@ -344,6 +347,13 @@ def _decode_runtime_config(value: Any) -> RuntimeConfig | None:
         )
     )
 
+
+
+def _expect_surface_state(value: Any, *, label: str) -> tuple[float, float, float, float, float, float]:
+    values = _expect_number_list(value, label=label)
+    if len(values) != 6:
+        raise TypeError(f"{label} must have six state components")
+    return values[0], values[1], values[2], values[3], values[4], values[5]
 
 
 def _expect_spk_packed_descriptor(value: Any, *, label: str) -> tuple[float, float, float, float, float]:
@@ -1596,6 +1606,39 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 abcorr=_expect_string(step.get("abcorr"), label="geometry.illumf.abcorr"),
                 observer=_expect_string(step.get("observer"), label="geometry.illumf.observer"),
                 spoint=_expect_vec3(step.get("spoint"), label="geometry.illumf.spoint"),
+            )
+
+        case "geometry.dnearp":
+            return StepGeometryDnearp(
+                op=op,
+                state=_expect_surface_state(step.get("state"), label="geometry.dnearp.state"),
+                a=_expect_number(step.get("a"), label="geometry.dnearp.a"),
+                b=_expect_number(step.get("b"), label="geometry.dnearp.b"),
+                c=_expect_number(step.get("c"), label="geometry.dnearp.c"),
+            )
+
+        case "geometry.surfpv":
+            return StepGeometrySurfpv(
+                op=op,
+                vertex=_expect_surface_state(step.get("vertex"), label="geometry.surfpv.vertex"),
+                direction=_expect_surface_state(step.get("direction"), label="geometry.surfpv.direction"),
+                a=_expect_number(step.get("a"), label="geometry.surfpv.a"),
+                b=_expect_number(step.get("b"), label="geometry.surfpv.b"),
+                c=_expect_number(step.get("c"), label="geometry.surfpv.c"),
+            )
+
+        case "geometry.tangpt":
+            return StepGeometryTangpt(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.tangpt.method"),
+                target=_expect_string(step.get("target"), label="geometry.tangpt.target"),
+                et=_expect_number(step.get("et"), label="geometry.tangpt.et"),
+                fixref=_expect_string(step.get("fixref"), label="geometry.tangpt.fixref"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.tangpt.abcorr"),
+                corloc=_expect_string(step.get("corloc"), label="geometry.tangpt.corloc"),
+                observer=_expect_string(step.get("observer"), label="geometry.tangpt.observer"),
+                dref=_expect_string(step.get("dref"), label="geometry.tangpt.dref"),
+                dvec=_expect_vec3(step.get("dvec"), label="geometry.tangpt.dvec"),
             )
 
         case "geometry.phaseq":

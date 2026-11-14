@@ -4,6 +4,9 @@ import type {
   StepGeometryIllumf,
   StepGeometryIllumg,
   StepGeometryNvc2pl,
+  StepGeometryDnearp,
+  StepGeometrySurfpv,
+  StepGeometryTangpt,
   StepGeometryPhaseq,
   StepGeometryLspcn,
   StepGeometryTrgsep,
@@ -24,6 +27,9 @@ type GeometryStep =
   | StepGeometryIlumin
   | StepGeometryIllumg
   | StepGeometryIllumf
+  | StepGeometryDnearp
+  | StepGeometrySurfpv
+  | StepGeometryTangpt
   | StepGeometryPhaseq
   | StepGeometryLspcn
   | StepGeometryTrgsep
@@ -184,6 +190,37 @@ export function runGeometryStep(
       };
     }
 
+    case "geometry.dnearp":
+      return {
+        op: step.op,
+        value: context.spice.raw.dnearp(step.state, step.a, step.b, step.c),
+      };
+    case "geometry.surfpv":
+      return {
+        op: step.op,
+        value: context.spice.raw.surfpv(
+          step.vertex,
+          step.direction,
+          step.a,
+          step.b,
+          step.c,
+        ),
+      };
+    case "geometry.tangpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.tangpt(
+          step.method,
+          step.target,
+          step.et,
+          step.fixref,
+          step.abcorr,
+          step.corloc,
+          step.observer,
+          step.dref,
+          step.dvec,
+        ),
+      };
     case "geometry.phaseq":
       return {
         op: step.op,

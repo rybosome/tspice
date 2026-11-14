@@ -538,6 +538,18 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export spkcls(handle)",
   );
   invariant(
+    typeof native.dnearp === "function",
+    "Native addon missing dnearp()",
+  );
+  invariant(
+    typeof native.surfpv === "function",
+    "Native addon missing surfpv()",
+  );
+  invariant(
+    typeof native.tangpt === "function",
+    "Native addon missing tangpt()",
+  );
+  invariant(
     typeof native.phaseq === "function",
     "Native addon missing phaseq()",
   );

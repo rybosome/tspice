@@ -1,0 +1,1117 @@
+[
+  {
+    "caseId": "geometry-tangpt-ray-branches",
+    "description": "A forward miss yields positive tangent altitude; a forward hit yields zero altitude; a backward tangent yields the ray vertex.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10, -4, -3]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-10, -1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-correction-locus",
+    "description": "Compare geometric, reception, and transmission quantities for surface and tangent correction loci. Observe target epoch, range, altitude, and all positions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT+S",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT+S",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN+S",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN+S",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT+S",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XLT+S",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN+S",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 3500,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "XCN+S",
+        "corloc": "SURFACE POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-ray-frame",
+    "description": "Use the rotated frame and then an equivalent J2000 direction. Also vary direction magnitude.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "AUDIT_GEOMETRY_ROT",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-0.8660254037844386, 0.5, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-7, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-observer-and-epochs",
+    "description": "Change observer, target epoch and signed direction with independent ephemerides.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": -4000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 4000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": -4000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100103",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100103",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 4000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100103",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": -4000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100104",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100104",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 4000,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100104",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-radii",
+    "description": "Vary the triaxial radii then make the body spherical. Observe all geometric quantities.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [2, 3, 1]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [2, 2, 2]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-clear-reload",
+    "description": "Release kernel state and repeat the scientific result on a fresh load.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-invalid-method",
+    "description": "Observe the original toolkit diagnostic for invalid-method.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "DSK",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-invalid-locus",
+    "description": "Observe the original toolkit diagnostic for invalid-locus.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "OBSERVER",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-invalid-correction",
+    "description": "Observe the original toolkit diagnostic for invalid-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "INVALID",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-empty-method",
+    "description": "Observe the original toolkit diagnostic for empty-method.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-empty-dref",
+    "description": "Observe the original toolkit diagnostic for empty-dref.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-zero-ray",
+    "description": "Observe the original toolkit diagnostic for zero-ray.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ZEROVECTOR)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-target-missing",
+    "description": "Observe the original toolkit diagnostic for target-missing.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "UNKNOWN TARGET",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-observer-missing",
+    "description": "Observe the original toolkit diagnostic for observer-missing.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "UNKNOWN OBSERVER",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-same-bodies",
+    "description": "Observe the original toolkit diagnostic for same-bodies.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100101",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-unrecognized-fixref",
+    "description": "Observe the original toolkit diagnostic for unrecognized-fixref.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "NO FRAME",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-wrong-center",
+    "description": "Observe the original toolkit diagnostic for wrong-center.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-unrecognized-dref",
+    "description": "Observe the original toolkit diagnostic for unrecognized-dref.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "NO SUCH FRAME",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-missing-spk",
+    "description": "Observe the original toolkit diagnostic for missing-spk.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOLOADEDFILES)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-missing-radii",
+    "description": "Observe the original toolkit diagnostic for missing-radii.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(KERNELVARNOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-two-radii",
+    "description": "Observe the original toolkit diagnostic for two-radii.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [2, 1]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDCOUNT)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-invalid-axis",
+    "description": "Observe the original toolkit diagnostic for invalid-axis.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [2, 0, 1]
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDRADII)"]
+    }
+  },
+  {
+    "caseId": "geometry-tangpt-outside-coverage",
+    "description": "Observe the original toolkit diagnostic for outside-coverage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.tangpt",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 10001,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "TANGENT POINT",
+        "observer": "100102",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  }
+]

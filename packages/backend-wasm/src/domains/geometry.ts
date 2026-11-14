@@ -1,4 +1,4 @@
-import { spiceStringByteLength } from "@rybosome/tspice-core";
+import { surfaceVector, spiceStringByteLength } from "@rybosome/tspice-core";
 import type {
   AbCorr,
   Found,
@@ -9,6 +9,7 @@ import type {
   Pl2nvcResult,
   SpicePlane,
   SpiceVector3,
+  SpiceStateVector,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
 
@@ -715,9 +716,167 @@ function assertFiniteNumberArrayFixed(
   }
 }
 
+function copySurfaceVector(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceVector3 {
+  const i = ptr >>> 3,
+    h = module.HEAPF64;
+  return [h[i]!, h[i + 1]!, h[i + 2]!];
+}
+function copySurfaceState(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceStateVector {
+  return [
+    ...copySurfaceVector(module, ptr),
+    ...copySurfaceVector(module, ptr + 24),
+  ];
+}
 /** Create a {@link GeometryApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
+    dnearp: (state, a, b, c) => {
+      const x = surfaceVector(state, 6, "state");
+      geometryNumber(a, "a");
+      geometryNumber(b, "b");
+      geometryNumber(c, "c");
+      return withAllocs(
+        module,
+        [48, 48, 16, 4, WASM_ERR_MAX_BYTES],
+        (input, near, alt, found, err) => {
+          module.HEAPF64.set(x, input >>> 3);
+          const status = module._tspice_dnearp(
+            input,
+            a,
+            b,
+            c,
+            near,
+            alt,
+            found,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          const position = copySurfaceVector(module, near),
+            altitude = module.HEAPF64[alt >>> 3]!;
+          if (!module.HEAP32[found >>> 2])
+            return { found: false, position, altitude };
+          return {
+            found: true,
+            position,
+            altitude,
+            velocity: copySurfaceVector(module, near + 24),
+            altitudeRate: module.HEAPF64[(alt >>> 3) + 1]!,
+          };
+        },
+      );
+    },
+    surfpv: (vertex, direction, a, b, c) => {
+      const x = surfaceVector(vertex, 6, "vertex"),
+        d = surfaceVector(direction, 6, "direction");
+      geometryNumber(a, "a");
+      geometryNumber(b, "b");
+      geometryNumber(c, "c");
+      return withAllocs(
+        module,
+        [48, 48, 48, 4, WASM_ERR_MAX_BYTES],
+        (v, dir, out, found, err) => {
+          module.HEAPF64.set(x, v >>> 3);
+          module.HEAPF64.set(d, dir >>> 3);
+          const status = module._tspice_surfpv(
+            v,
+            dir,
+            a,
+            b,
+            c,
+            out,
+            found,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return module.HEAP32[found >>> 2]
+            ? { found: true, state: copySurfaceState(module, out) }
+            : { found: false };
+        },
+      );
+    },
+    tangpt: (
+      method,
+      target,
+      et,
+      fixref,
+      abcorr,
+      corloc,
+      observer,
+      dref,
+      dvec,
+    ) => {
+      geometryNumber(et, "et");
+      const v = surfaceVector(dvec, 3, "dvec");
+      const strings = [method, target, fixref, abcorr, corloc, observer, dref];
+      const sizes = strings.map(
+        (s) => spiceStringByteLength(s, "tangpt", WASM_MAX_ALLOC_BYTES - 1) + 1,
+      );
+      return withAllocs(
+        module,
+        [...sizes, 24, 24, 8, 8, 24, 8, 24, WASM_ERR_MAX_BYTES],
+        (
+          m,
+          t,
+          f,
+          ab,
+          loc,
+          obs,
+          df,
+          d,
+          tanpt,
+          alt,
+          range,
+          srfpt,
+          epoch,
+          srfvec,
+          err,
+        ) => {
+          [m, t, f, ab, loc, obs, df].forEach((ptr, i) =>
+            writeGeometryText(module, ptr, sizes[i]! - 1, strings[i]!),
+          );
+          module.HEAPF64.set(v, d >>> 3);
+          const status = module._tspice_tangpt(
+            m,
+            t,
+            et,
+            f,
+            ab,
+            loc,
+            obs,
+            df,
+            d,
+            tanpt,
+            alt,
+            range,
+            srfpt,
+            epoch,
+            srfvec,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return {
+            tanpt: copySurfaceVector(module, tanpt),
+            alt: module.HEAPF64[alt >>> 3]!,
+            range: module.HEAPF64[range >>> 3]!,
+            srfpt: copySurfaceVector(module, srfpt),
+            trgepc: module.HEAPF64[epoch >>> 3]!,
+            srfvec: copySurfaceVector(module, srfvec),
+          };
+        },
+      );
+    },
     phaseq: (et, target, illmn, observer, abcorr) => {
       geometryNumber(et, "phaseq(et)");
       const targetBytes = spiceStringByteLength(

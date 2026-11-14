@@ -5,6 +5,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import type {
+  GeometryApi,
   SpiceIntCell,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
@@ -430,6 +431,9 @@ export type NativeAddon = {
     step: number,
   ): void;
 
+  dnearp: GeometryApi["dnearp"];
+  surfpv: GeometryApi["surfpv"];
+  tangpt: GeometryApi["tangpt"];
   phaseq(
     et: number,
     target: string,

@@ -45,6 +45,102 @@ static bool ReadGeometryString(Napi::Env env, const Napi::Value& value, std::str
   return true;
 }
 
+static bool ReadGeometryNumber(Napi::Env env, const Napi::Value& value, double* result) {
+  if (value.IsNumber()) {
+    *result = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(*result)) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite geometry argument"));
+  return false;
+}
+static Napi::Value Dnearp(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected state and three semiaxes"));
+    return env.Undefined();
+  }
+  double state[6], a, b, c;
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, info[0], 6, state, "state") ||
+      !ReadGeometryNumber(env, info[1], &a) || !ReadGeometryNumber(env, info[2], &b) ||
+      !ReadGeometryNumber(env, info[3], &c))
+    return env.Undefined();
+  double near_state[6] = {}, altitude[2] = {};
+  int found = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_dnearp(state, a, b, c, near_state, altitude, &found, err, sizeof(err))) {
+    ThrowSpiceError(env, "dnearp", err);
+    return env.Undefined();
+  }
+  auto result = Napi::Object::New(env);
+  result.Set("found", Napi::Boolean::New(env, found));
+  result.Set("position", MakeNumberArray(env, near_state, 3));
+  result.Set("altitude", altitude[0]);
+  if (found) {
+    result.Set("velocity", MakeNumberArray(env, near_state + 3, 3));
+    result.Set("altitudeRate", altitude[1]);
+  }
+  return result;
+}
+static Napi::Value Surfpv(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(
+        Napi::TypeError::New(env, "Expected vertex state, direction state and three semiaxes"));
+    return env.Undefined();
+  }
+  double vertex[6], direction[6], a, b, c;
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, info[0], 6, vertex, "vertex") ||
+      !tspice_backend_node::ReadNumberArrayFixed(env, info[1], 6, direction, "direction") ||
+      !ReadGeometryNumber(env, info[2], &a) || !ReadGeometryNumber(env, info[3], &b) ||
+      !ReadGeometryNumber(env, info[4], &c))
+    return env.Undefined();
+  double intercept[6] = {};
+  int found = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_surfpv(vertex, direction, a, b, c, intercept, &found, err, sizeof(err))) {
+    ThrowSpiceError(env, "surfpv", err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  auto result = Napi::Object::New(env);
+  result.Set("found", true);
+  result.Set("state", MakeNumberArray(env, intercept, 6));
+  return result;
+}
+static Napi::Value Tangpt(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 9) {
+    ThrowSpiceError(Napi::TypeError::New(env, "TANGPT expects nine inputs"));
+    return env.Undefined();
+  }
+  std::string method, target, fixref, abcorr, corloc, observer, dref;
+  double et, dvec[3];
+  if (!ReadGeometryString(env, info[0], &method) || !ReadGeometryString(env, info[1], &target) ||
+      !ReadGeometryNumber(env, info[2], &et) || !ReadGeometryString(env, info[3], &fixref) ||
+      !ReadGeometryString(env, info[4], &abcorr) || !ReadGeometryString(env, info[5], &corloc) ||
+      !ReadGeometryString(env, info[6], &observer) || !ReadGeometryString(env, info[7], &dref) ||
+      !tspice_backend_node::ReadVec3(env, info[8], dvec, "dvec"))
+    return env.Undefined();
+  double tanpt[3] = {}, alt = 0, range = 0, srfpt[3] = {}, trgepc = 0, srfvec[3] = {};
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_tangpt(method.c_str(), target.c_str(), et, fixref.c_str(), abcorr.c_str(),
+                    corloc.c_str(), observer.c_str(), dref.c_str(), dvec, tanpt, &alt, &range,
+                    srfpt, &trgepc, srfvec, err, sizeof(err))) {
+    ThrowSpiceError(env, "tangpt", err);
+    return env.Undefined();
+  }
+  auto result = Napi::Object::New(env);
+  result.Set("tanpt", MakeNumberArray(env, tanpt, 3));
+  result.Set("alt", alt);
+  result.Set("range", range);
+  result.Set("srfpt", MakeNumberArray(env, srfpt, 3));
+  result.Set("trgepc", trgepc);
+  result.Set("srfvec", MakeNumberArray(env, srfvec, 3));
+  return result;
+}
 static Napi::Value Phaseq(const Napi::CallbackInfo& info) {
   const Napi::Env env = info.Env();
   if (info.Length() != 5 || !info[0].IsNumber()) {
@@ -586,6 +682,9 @@ static Napi::Number Occult(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterGeometry(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "dnearp", Napi::Function::New(env, Dnearp), __func__)) return;
+  if (!SetExportChecked(env, exports, "surfpv", Napi::Function::New(env, Surfpv), __func__)) return;
+  if (!SetExportChecked(env, exports, "tangpt", Napi::Function::New(env, Tangpt), __func__)) return;
   if (!SetExportChecked(env, exports, "phaseq", Napi::Function::New(env, Phaseq), __func__)) return;
   if (!SetExportChecked(env, exports, "lspcn", Napi::Function::New(env, Lspcn), __func__)) return;
   if (!SetExportChecked(env, exports, "trgsep", Napi::Function::New(env, Trgsep), __func__)) return;

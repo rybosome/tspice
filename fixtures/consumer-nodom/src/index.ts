@@ -60,3 +60,37 @@ export async function geometryQuantitiesConsumer(
     asyncSpicetrgsep,
   ];
 }
+
+/** Check discriminated surface derivatives and tangent results on synchronous and asynchronous clients. */
+export async function surfaceDerivativeConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<number[]> {
+  const state = [3, 4, 0, 1, 2, 3] as const,
+    ray = [-1, 0, 0, 0, 0, 0] as const;
+  const args = [
+    "ELLIPSOID",
+    "100101",
+    0,
+    "AUDIT_GEOMETRY_FIXED",
+    "NONE",
+    "TANGENT POINT",
+    "100102",
+    "J2000",
+    [-1, 0, 0],
+  ] as const;
+  const a = spice.raw.dnearp(state, 2, 2, 2),
+    b = await asyncSpice.raw.dnearp(state, 2, 2, 2);
+  const x = spice.raw.surfpv(state, ray, 2, 2, 2),
+    y = await asyncSpice.raw.surfpv(state, ray, 2, 2, 2);
+  const u = spice.raw.tangpt(...args),
+    v = await asyncSpice.raw.tangpt(...args);
+  return [
+    a.found ? a.altitudeRate : a.altitude,
+    b.found ? b.velocity[0] : b.position[0],
+    x.found ? x.state[0] : 0,
+    y.found ? y.state[3] : 0,
+    u.alt,
+    v.trgepc,
+  ];
+}

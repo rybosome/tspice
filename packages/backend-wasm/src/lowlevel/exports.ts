@@ -760,6 +760,47 @@ export type EmscriptenModule = {
   ): number;
 
   // Derived geometry primitives
+  _tspice_dnearp(
+    state: number,
+    a: number,
+    b: number,
+    c: number,
+    near: number,
+    alt: number,
+    found: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_surfpv(
+    vertex: number,
+    direction: number,
+    a: number,
+    b: number,
+    c: number,
+    intercept: number,
+    found: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_tangpt(
+    method: number,
+    target: number,
+    et: number,
+    fixref: number,
+    abcorr: number,
+    corloc: number,
+    observer: number,
+    dref: number,
+    dvec: number,
+    tanpt: number,
+    alt: number,
+    range: number,
+    srfpt: number,
+    trgepc: number,
+    srfvec: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_phaseq(
     et: number,
     targetPtr: number,
@@ -1801,6 +1842,47 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dnearp(
+    state: number,
+    a: number,
+    b: number,
+    c: number,
+    near: number,
+    alt: number,
+    found: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_surfpv(
+    vertex: number,
+    direction: number,
+    a: number,
+    b: number,
+    c: number,
+    intercept: number,
+    found: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_tangpt(
+    method: number,
+    target: number,
+    et: number,
+    fixref: number,
+    abcorr: number,
+    corloc: number,
+    observer: number,
+    dref: number,
+    dvec: number,
+    tanpt: number,
+    alt: number,
+    range: number,
+    srfpt: number,
+    trgepc: number,
+    srfvec: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_phaseq(
     et: number,
     targetPtr: number,
@@ -2313,6 +2395,9 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkw08",
   "_tspice_spkw08_v2",
   "_tspice_spkcls",
+  "_tspice_dnearp",
+  "_tspice_surfpv",
+  "_tspice_tangpt",
   "_tspice_phaseq",
   "_tspice_lspcn",
   "_tspice_trgsep",

@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 165,
-    planned: 484,
+    implemented: 168,
+    planned: 481,
     excluded: 3,
-    caseFiles: 165,
-    scenarios: 1163,
+    caseFiles: 168,
+    scenarios: 1205,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -472,7 +472,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 3);
+  assert.equal(ledger.audit.expansionRoutines, 6);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -503,6 +503,32 @@ test("baseline rejects duplicate, removed, and omitted routines", (t) => {
     editAudit(f, mutation, "baseline.json");
     assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
   }
+});
+
+test("surface derivative evidence includes the checked build and all three typed routes", (t) => {
+  const ledger = fixture(t).build();
+  for (const name of ["dnearp", "surfpv", "tangpt"]) {
+    const row = ledger.routines.find((r) => r.routine === name + "_c");
+    for (const backend of ["node", "wasm"]) {
+      assert.ok(row.backends[backend].shimSymbols.includes("tspice_" + name));
+    }
+    assert.equal(
+      row.mapping.node.classification,
+      "same-named-cspice-entrypoint",
+    );
+  }
+  const audit = JSON.parse(
+    fs.readFileSync(
+      path.join(repoRoot, "data/parity-audits/e13-surface-derivatives.json"),
+      "utf8",
+    ),
+  );
+  assert.ok(audit.traceFiles.includes("scripts/checked-geometry-sources.mjs"));
+  assert.ok(
+    audit.traceFiles.includes(
+      "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    ),
+  );
 });
 
 test("expansion assignments cannot omit routines, duplicate baseline, or plan absent APIs", (t) => {

@@ -1109,7 +1109,8 @@
         "cells-windows-wninsd-merge-success",
         "cells-windows-wninsd-wnfetd-success"
       ],
-      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e16-7ae2be19-wasm",
@@ -1159,7 +1160,8 @@
         "cells-windows-wninsd-merge-success",
         "cells-windows-wninsd-wnfetd-success"
       ],
-      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e16-7ae2be19-node",
@@ -1211,7 +1213,8 @@
       ],
       "commit": "7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2",
       "url": "https://github.com/rybosome/tspice/actions/runs/43572332323/job/132379191565",
-      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e16-7ae2be19-wasm",
@@ -1263,7 +1266,212 @@
       ],
       "commit": "7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2",
       "url": "https://github.com/rybosome/tspice/actions/runs/43572332323/job/132379191565",
-      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e13-0466c9bd-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a0c9f504a09639e69d3088f800f4ed059acec4f33bd768d6d727b362da1315bc",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e13-0466c9bd-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a0c9f504a09639e69d3088f800f4ed059acec4f33bd768d6d727b362da1315bc",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e13-0466c9bd-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a0c9f504a09639e69d3088f800f4ed059acec4f33bd768d6d727b362da1315bc",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "commit": "0466c9bdef81bea12b0cceea443a8a053f5ec7d6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43581579340/job/132407254220",
+      "observation": "Inspected successful Linux Node 22 native-required job 132407254220 on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e13-0466c9bd-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a0c9f504a09639e69d3088f800f4ed059acec4f33bd768d6d727b362da1315bc",
+      "caseIds": [
+        "cells-windows-card-audit-all-cell-types-and-zero",
+        "cells-windows-card-missing-target-error",
+        "cells-windows-card-window-cardinality-success",
+        "cells-windows-insrtc-audit-complete-sorted-values",
+        "cells-windows-insrtc-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtc-audit-truncation-deduplication",
+        "cells-windows-insrtc-audit-zero-capacity",
+        "cells-windows-insrtc-capacity-overflow-error",
+        "cells-windows-insrtc-dedupe-success",
+        "cells-windows-insrtd-audit-complete-sorted-values",
+        "cells-windows-insrtd-audit-duplicate-at-full-capacity",
+        "cells-windows-insrtd-audit-zero-capacity",
+        "cells-windows-insrtd-capacity-overflow-error",
+        "cells-windows-insrtd-dedupe-success",
+        "cells-windows-insrti-audit-complete-sorted-values",
+        "cells-windows-insrti-audit-duplicate-at-full-capacity",
+        "cells-windows-insrti-audit-zero-capacity",
+        "cells-windows-insrti-capacity-overflow-error",
+        "cells-windows-insrti-dedupe-success",
+        "cells-windows-scard-audit-above-logical-capacity",
+        "cells-windows-scard-audit-clear-refill-all-types",
+        "cells-windows-scard-negative-card-error",
+        "cells-windows-scard-truncates-success",
+        "cells-windows-size-audit-independent-of-cardinality",
+        "cells-windows-size-missing-target-error",
+        "cells-windows-size-window-capacity-success",
+        "cells-windows-wncard-audit-three-and-empty",
+        "cells-windows-wncard-missing-window-error",
+        "cells-windows-wncard-window-lifecycle-success",
+        "cells-windows-wnfetd-audit-empty-window",
+        "cells-windows-wnfetd-audit-zero-based-first-last",
+        "cells-windows-wnfetd-out-of-range-error",
+        "cells-windows-wninsd-audit-overflow",
+        "cells-windows-wninsd-audit-touching-containing-singletons",
+        "cells-windows-wninsd-audit-zero-capacity",
+        "cells-windows-wninsd-invalid-interval-error",
+        "cells-windows-wninsd-merge-success",
+        "cells-windows-wninsd-wnfetd-success"
+      ],
+      "commit": "0466c9bdef81bea12b0cceea443a8a053f5ec7d6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43581579340/job/132407254220",
+      "observation": "Inspected successful Linux Node 22 native-required job 132407254220 on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1309,11 +1517,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.card -> typed adapter -> native process handle registry -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1327,11 +1537,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.card -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> card_c. Oracle calls SpiceyPy card on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -1440,11 +1652,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrtc -> typed adapter -> native process handle registry -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1459,11 +1673,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrtc -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtc_c. Oracle calls SpiceyPy insrtc on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -1550,11 +1766,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrtd -> typed adapter -> native process handle registry -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1569,11 +1787,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrtd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrtd_c. Oracle calls SpiceyPy insrtd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -1660,11 +1880,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.insrti -> typed adapter -> native process handle registry -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1679,11 +1901,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.insrti -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> insrti_c. Oracle calls SpiceyPy insrti on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -1753,11 +1977,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.scard -> typed adapter -> native process handle registry -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1772,11 +1998,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.scard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> scard_c. Oracle calls SpiceyPy scard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -1822,11 +2050,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.size -> typed adapter -> native process handle registry -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1840,11 +2070,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.size -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> size_c. Oracle calls SpiceyPy size on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -1890,11 +2122,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wncard -> typed adapter -> native process handle registry -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1908,11 +2142,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wncard -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wncard_c. Oracle calls SpiceyPy wncard on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -1963,11 +2199,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wnfetd -> typed adapter -> native process handle registry -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -1981,11 +2219,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wnfetd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wnfetd_c. Oracle calls SpiceyPy wnfetd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     },
@@ -2054,11 +2294,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> node dispatcher raw.wninsd -> typed adapter -> native process handle registry -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
         },
         "wasm": {
           "history": [
@@ -2073,11 +2315,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "Registered workflow -> wasm dispatcher raw.wninsd -> typed adapter -> per-module opaque token resolution -> required compiled export -> shared C shim -> wninsd_c. Oracle calls SpiceyPy wninsd on independently allocated cells; result/effects in the listed observations reach recursive live comparison.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
         }
       }
     }

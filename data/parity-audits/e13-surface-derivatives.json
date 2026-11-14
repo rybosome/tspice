@@ -1,0 +1,630 @@
+{
+  "schemaVersion": 1,
+  "batch": "e13-surface-derivatives",
+  "traceFiles": [
+    "docs/spicebackend-cspice-mapping.md",
+    "docs/step8-surface-derivatives.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/surface-derivative-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/surface-derivative-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/surface-derivatives.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/geometry_quantities_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_derivatives_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/test/surface-derivatives.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/checked-geometry-sources.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/fetch-cspice.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e13-0466c9bd-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0fc4d806d82a893c1c2cfb7a3b1d4bc4fab79a5c72169324d4adc2e49d8a795f",
+      "caseIds": [
+        "geometry-dnearp-bad-axis-0",
+        "geometry-dnearp-bad-axis-1",
+        "geometry-dnearp-bad-axis-2",
+        "geometry-dnearp-focal-set",
+        "geometry-dnearp-interior-exterior",
+        "geometry-dnearp-scale",
+        "geometry-dnearp-sphere",
+        "geometry-dnearp-triaxial",
+        "geometry-dnearp-velocity-linearity",
+        "geometry-surfpv-bad-axis-a",
+        "geometry-surfpv-bad-axis-b",
+        "geometry-surfpv-bad-axis-c",
+        "geometry-surfpv-direction-scale",
+        "geometry-surfpv-exact-tangent",
+        "geometry-surfpv-front-back",
+        "geometry-surfpv-invalid-vertex",
+        "geometry-surfpv-moving-ray",
+        "geometry-surfpv-sphere-axis",
+        "geometry-surfpv-zero-direction",
+        "geometry-tangpt-clear-reload",
+        "geometry-tangpt-correction-locus",
+        "geometry-tangpt-empty-dref",
+        "geometry-tangpt-empty-method",
+        "geometry-tangpt-invalid-axis",
+        "geometry-tangpt-invalid-correction",
+        "geometry-tangpt-invalid-locus",
+        "geometry-tangpt-invalid-method",
+        "geometry-tangpt-missing-radii",
+        "geometry-tangpt-missing-spk",
+        "geometry-tangpt-observer-and-epochs",
+        "geometry-tangpt-observer-missing",
+        "geometry-tangpt-outside-coverage",
+        "geometry-tangpt-radii",
+        "geometry-tangpt-ray-branches",
+        "geometry-tangpt-ray-frame",
+        "geometry-tangpt-same-bodies",
+        "geometry-tangpt-target-missing",
+        "geometry-tangpt-two-radii",
+        "geometry-tangpt-unrecognized-dref",
+        "geometry-tangpt-unrecognized-fixref",
+        "geometry-tangpt-wrong-center",
+        "geometry-tangpt-zero-ray"
+      ],
+      "observation": "Both complete required lanes passed locally on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e13-0466c9bd-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0fc4d806d82a893c1c2cfb7a3b1d4bc4fab79a5c72169324d4adc2e49d8a795f",
+      "caseIds": [
+        "geometry-dnearp-bad-axis-0",
+        "geometry-dnearp-bad-axis-1",
+        "geometry-dnearp-bad-axis-2",
+        "geometry-dnearp-focal-set",
+        "geometry-dnearp-interior-exterior",
+        "geometry-dnearp-scale",
+        "geometry-dnearp-sphere",
+        "geometry-dnearp-triaxial",
+        "geometry-dnearp-velocity-linearity",
+        "geometry-surfpv-bad-axis-a",
+        "geometry-surfpv-bad-axis-b",
+        "geometry-surfpv-bad-axis-c",
+        "geometry-surfpv-direction-scale",
+        "geometry-surfpv-exact-tangent",
+        "geometry-surfpv-front-back",
+        "geometry-surfpv-invalid-vertex",
+        "geometry-surfpv-moving-ray",
+        "geometry-surfpv-sphere-axis",
+        "geometry-surfpv-zero-direction",
+        "geometry-tangpt-clear-reload",
+        "geometry-tangpt-correction-locus",
+        "geometry-tangpt-empty-dref",
+        "geometry-tangpt-empty-method",
+        "geometry-tangpt-invalid-axis",
+        "geometry-tangpt-invalid-correction",
+        "geometry-tangpt-invalid-locus",
+        "geometry-tangpt-invalid-method",
+        "geometry-tangpt-missing-radii",
+        "geometry-tangpt-missing-spk",
+        "geometry-tangpt-observer-and-epochs",
+        "geometry-tangpt-observer-missing",
+        "geometry-tangpt-outside-coverage",
+        "geometry-tangpt-radii",
+        "geometry-tangpt-ray-branches",
+        "geometry-tangpt-ray-frame",
+        "geometry-tangpt-same-bodies",
+        "geometry-tangpt-target-missing",
+        "geometry-tangpt-two-radii",
+        "geometry-tangpt-unrecognized-dref",
+        "geometry-tangpt-unrecognized-fixref",
+        "geometry-tangpt-wrong-center",
+        "geometry-tangpt-zero-ray"
+      ],
+      "observation": "Both complete required lanes passed locally on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e13-0466c9bd-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0fc4d806d82a893c1c2cfb7a3b1d4bc4fab79a5c72169324d4adc2e49d8a795f",
+      "caseIds": [
+        "geometry-dnearp-bad-axis-0",
+        "geometry-dnearp-bad-axis-1",
+        "geometry-dnearp-bad-axis-2",
+        "geometry-dnearp-focal-set",
+        "geometry-dnearp-interior-exterior",
+        "geometry-dnearp-scale",
+        "geometry-dnearp-sphere",
+        "geometry-dnearp-triaxial",
+        "geometry-dnearp-velocity-linearity",
+        "geometry-surfpv-bad-axis-a",
+        "geometry-surfpv-bad-axis-b",
+        "geometry-surfpv-bad-axis-c",
+        "geometry-surfpv-direction-scale",
+        "geometry-surfpv-exact-tangent",
+        "geometry-surfpv-front-back",
+        "geometry-surfpv-invalid-vertex",
+        "geometry-surfpv-moving-ray",
+        "geometry-surfpv-sphere-axis",
+        "geometry-surfpv-zero-direction",
+        "geometry-tangpt-clear-reload",
+        "geometry-tangpt-correction-locus",
+        "geometry-tangpt-empty-dref",
+        "geometry-tangpt-empty-method",
+        "geometry-tangpt-invalid-axis",
+        "geometry-tangpt-invalid-correction",
+        "geometry-tangpt-invalid-locus",
+        "geometry-tangpt-invalid-method",
+        "geometry-tangpt-missing-radii",
+        "geometry-tangpt-missing-spk",
+        "geometry-tangpt-observer-and-epochs",
+        "geometry-tangpt-observer-missing",
+        "geometry-tangpt-outside-coverage",
+        "geometry-tangpt-radii",
+        "geometry-tangpt-ray-branches",
+        "geometry-tangpt-ray-frame",
+        "geometry-tangpt-same-bodies",
+        "geometry-tangpt-target-missing",
+        "geometry-tangpt-two-radii",
+        "geometry-tangpt-unrecognized-dref",
+        "geometry-tangpt-unrecognized-fixref",
+        "geometry-tangpt-wrong-center",
+        "geometry-tangpt-zero-ray"
+      ],
+      "commit": "0466c9bdef81bea12b0cceea443a8a053f5ec7d6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43581579340/job/132407254220",
+      "observation": "Inspected successful Linux Node 22 native-required job 132407254220 on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e13-0466c9bd-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0fc4d806d82a893c1c2cfb7a3b1d4bc4fab79a5c72169324d4adc2e49d8a795f",
+      "caseIds": [
+        "geometry-dnearp-bad-axis-0",
+        "geometry-dnearp-bad-axis-1",
+        "geometry-dnearp-bad-axis-2",
+        "geometry-dnearp-focal-set",
+        "geometry-dnearp-interior-exterior",
+        "geometry-dnearp-scale",
+        "geometry-dnearp-sphere",
+        "geometry-dnearp-triaxial",
+        "geometry-dnearp-velocity-linearity",
+        "geometry-surfpv-bad-axis-a",
+        "geometry-surfpv-bad-axis-b",
+        "geometry-surfpv-bad-axis-c",
+        "geometry-surfpv-direction-scale",
+        "geometry-surfpv-exact-tangent",
+        "geometry-surfpv-front-back",
+        "geometry-surfpv-invalid-vertex",
+        "geometry-surfpv-moving-ray",
+        "geometry-surfpv-sphere-axis",
+        "geometry-surfpv-zero-direction",
+        "geometry-tangpt-clear-reload",
+        "geometry-tangpt-correction-locus",
+        "geometry-tangpt-empty-dref",
+        "geometry-tangpt-empty-method",
+        "geometry-tangpt-invalid-axis",
+        "geometry-tangpt-invalid-correction",
+        "geometry-tangpt-invalid-locus",
+        "geometry-tangpt-invalid-method",
+        "geometry-tangpt-missing-radii",
+        "geometry-tangpt-missing-spk",
+        "geometry-tangpt-observer-and-epochs",
+        "geometry-tangpt-observer-missing",
+        "geometry-tangpt-outside-coverage",
+        "geometry-tangpt-radii",
+        "geometry-tangpt-ray-branches",
+        "geometry-tangpt-ray-frame",
+        "geometry-tangpt-same-bodies",
+        "geometry-tangpt-target-missing",
+        "geometry-tangpt-two-radii",
+        "geometry-tangpt-unrecognized-dref",
+        "geometry-tangpt-unrecognized-fixref",
+        "geometry-tangpt-wrong-center",
+        "geometry-tangpt-zero-ray"
+      ],
+      "commit": "0466c9bdef81bea12b0cceea443a8a053f5ec7d6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43581579340/job/132407254220",
+      "observation": "Inspected successful Linux Node 22 native-required job 132407254220 on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dnearp_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dnearp_c.html",
+      "semantics": "Return signed altitude and position even on a singular derivative. Return owned velocity and altitude rate when defined.",
+      "edgeAssessment": "General triaxial states, sphere projection, scaled velocity, focal-set points, interior/exterior and nonpositive axes.",
+      "errorAssessment": "Compared genuine SPICE(BADAXISLENGTH) outcomes on both backends. Checked continued use after errors.",
+      "scenarios": [
+        {
+          "caseId": "geometry-dnearp-triaxial",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all nearest-point and derivative components for moving states in distinct octants."
+        },
+        {
+          "caseId": "geometry-dnearp-sphere",
+          "coverage": ["success", "edge"],
+          "observes": "The closest point follows radial projection: radial motion changes altitude, tangential motion changes the surface point."
+        },
+        {
+          "caseId": "geometry-dnearp-focal-set",
+          "coverage": ["success", "edge"],
+          "observes": "At the ellipsoid center and an interior focal point retain the position and altitude when derivatives are undefined."
+        },
+        {
+          "caseId": "geometry-dnearp-interior-exterior",
+          "coverage": ["success", "edge"],
+          "observes": "Sample a regular interior point, a point on the surface and an exterior point along an axis."
+        },
+        {
+          "caseId": "geometry-dnearp-velocity-linearity",
+          "coverage": ["success", "edge"],
+          "observes": "Scale and reverse velocity at a fixed point. Position and altitude persist; derivatives track the input."
+        },
+        {
+          "caseId": "geometry-dnearp-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Scale positions, semiaxes and velocities together, retaining signed altitude and all six nearest-state components."
+        },
+        {
+          "caseId": "geometry-dnearp-bad-axis-0",
+          "coverage": ["error"],
+          "observes": "Observe the actual NEARPT diagnostic for this nonpositive semiaxis."
+        },
+        {
+          "caseId": "geometry-dnearp-bad-axis-1",
+          "coverage": ["error"],
+          "observes": "Observe the actual NEARPT diagnostic for this nonpositive semiaxis."
+        },
+        {
+          "caseId": "geometry-dnearp-bad-axis-2",
+          "coverage": ["error"],
+          "observes": "Observe the actual NEARPT diagnostic for this nonpositive semiaxis."
+        }
+      ],
+      "fixtures": [],
+      "fixtureRationale": "Cartesian states and analytic shapes are authored directly in the scenarios. TANGPT additionally uses independently generated linear ephemerides and triaxial radii.",
+      "cleanup": "Fresh clients are disposed per workflow; kernel and error state are restored. Direct WASM tests free all allocations and inject failures in acquisition and diagnostic handling.",
+      "tolerance": "The standard 1e-12 absolute or relative component-wise scientific comparison applies. Separate finite-difference checks use 1e-5 time steps with absolute derivative bounds of 8e-10 for the sphere and 6e-9 for the quadratic ray root.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dnearp -> serialized N-API geometry handler -> tspice_dnearp -> dnearp_c",
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dnearp -> scoped WASM adapter and compiled export -> tspice_dnearp -> dnearp_c",
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
+        }
+      },
+      "findings": [
+        {
+          "id": "dnearp-surface",
+          "status": "repaired",
+          "summary": "Independent locked C entry point uses six contiguous doubles for the malformed pinned high-level matrix conversion.",
+          "repair": "Independent locked C entry point uses six contiguous doubles for the malformed pinned high-level matrix conversion.",
+          "evidence": [
+            "docs/step8-surface-derivatives.md",
+            "packages/py-parity-checking/test/surface-derivatives.test.ts",
+            "packages/backend-node/test/surface-derivative-domain.test.ts",
+            "packages/backend-wasm/test/surface-derivative-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_derivatives_oracle.py"
+          ],
+          "caseIds": ["geometry-dnearp-focal-set"]
+        }
+      ]
+    },
+    {
+      "routine": "surfpv_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/surfpv_c.html",
+      "semantics": "Return the complete forward intercept state when its velocity exists. A miss or singular tangent yields found:false.",
+      "edgeAssessment": "Moving origins and directions, analytic quadratic root, interior rays, exact tangency, direction scaling and invalid inputs.",
+      "errorAssessment": "Compared genuine SPICE(BADAXISLENGTH), SPICE(INVALIDVERTEX), SPICE(ZEROVECTOR) outcomes on both backends. Checked continued use after errors.",
+      "scenarios": [
+        {
+          "caseId": "geometry-surfpv-moving-ray",
+          "coverage": ["success", "edge"],
+          "observes": "Use independently moving vertex and direction; inspect the complete intercept state."
+        },
+        {
+          "caseId": "geometry-surfpv-front-back",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish a forward hit from a backward-only intersection, a perpendicular miss and an inside-to-outside hit."
+        },
+        {
+          "caseId": "geometry-surfpv-exact-tangent",
+          "coverage": ["success", "edge"],
+          "observes": "A tangent sphere hit can have undefined velocity. Observe absence and the different results for rays just inside and outside."
+        },
+        {
+          "caseId": "geometry-surfpv-direction-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Positive common scaling of direction and its derivative preserves the intercept velocity."
+        },
+        {
+          "caseId": "geometry-surfpv-sphere-axis",
+          "coverage": ["success", "edge"],
+          "observes": "A fixed line across a moving vertex gives a stationary intercept for radial-only motion, and responds to transverse motion."
+        },
+        {
+          "caseId": "geometry-surfpv-zero-direction",
+          "coverage": ["error"],
+          "observes": "Observe the canonical moving-intercept diagnostic for zero-direction."
+        },
+        {
+          "caseId": "geometry-surfpv-invalid-vertex",
+          "coverage": ["error"],
+          "observes": "Observe the canonical moving-intercept diagnostic for invalid-vertex."
+        },
+        {
+          "caseId": "geometry-surfpv-bad-axis-a",
+          "coverage": ["error"],
+          "observes": "Observe the canonical moving-intercept diagnostic for bad-axis-a."
+        },
+        {
+          "caseId": "geometry-surfpv-bad-axis-b",
+          "coverage": ["error"],
+          "observes": "Observe the canonical moving-intercept diagnostic for bad-axis-b."
+        },
+        {
+          "caseId": "geometry-surfpv-bad-axis-c",
+          "coverage": ["error"],
+          "observes": "Observe the canonical moving-intercept diagnostic for bad-axis-c."
+        }
+      ],
+      "fixtures": [],
+      "fixtureRationale": "Cartesian states and analytic shapes are authored directly in the scenarios. TANGPT additionally uses independently generated linear ephemerides and triaxial radii.",
+      "cleanup": "Fresh clients are disposed per workflow; kernel and error state are restored. Direct WASM tests free all allocations and inject failures in acquisition and diagnostic handling.",
+      "tolerance": "The standard 1e-12 absolute or relative component-wise scientific comparison applies. Separate finite-difference checks use 1e-5 time steps with absolute derivative bounds of 8e-10 for the sphere and 6e-9 for the quadratic ray root.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.surfpv -> serialized N-API geometry handler -> tspice_surfpv -> surfpv_c",
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.surfpv -> scoped WASM adapter and compiled export -> tspice_surfpv -> surfpv_c",
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
+        }
+      },
+      "findings": [
+        {
+          "id": "surfpv-surface",
+          "status": "repaired",
+          "summary": "Use initialized linked SURFPT storage before the wrapping C routine could copy its private logical after an error.",
+          "repair": "Use initialized linked SURFPT storage before the wrapping C routine could copy its private logical after an error.",
+          "evidence": [
+            "docs/step8-surface-derivatives.md",
+            "packages/py-parity-checking/test/surface-derivatives.test.ts",
+            "packages/backend-node/test/surface-derivative-domain.test.ts",
+            "packages/backend-wasm/test/surface-derivative-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_derivatives_oracle.py"
+          ],
+          "caseIds": ["geometry-surfpv-exact-tangent"]
+        }
+      ]
+    },
+    {
+      "routine": "tangpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tangpt_c.html",
+      "semantics": "Return tangent point, altitude, range, surface point, target epoch and observer-to-surface vector under the specified viewing geometry.",
+      "edgeAssessment": "Three ray branches, rotated frame, changed ephemerides and radii, geometric/reception/transmission corrections, both correction loci, and missing data.",
+      "errorAssessment": "Compared genuine SPICE(BODIESNOTDISTINCT), SPICE(EMPTYSTRING), SPICE(IDCODENOTFOUND), SPICE(INVALIDCOUNT), SPICE(INVALIDFRAME), SPICE(INVALIDOPTION), SPICE(INVALIDRADII), SPICE(KERNELVARNOTFOUND), SPICE(NOFRAME), SPICE(NOLOADEDFILES), SPICE(NOTSUPPORTED), SPICE(SPKINSUFFDATA), SPICE(ZEROVECTOR) outcomes on both backends. Checked continued use after errors.",
+      "scenarios": [
+        {
+          "caseId": "geometry-tangpt-ray-branches",
+          "coverage": ["success", "edge"],
+          "observes": "A forward miss yields positive tangent altitude; a forward hit yields zero altitude; a backward tangent yields the ray vertex."
+        },
+        {
+          "caseId": "geometry-tangpt-correction-locus",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, reception, and transmission quantities for surface and tangent correction loci. Observe target epoch, range, altitude, and all positions."
+        },
+        {
+          "caseId": "geometry-tangpt-ray-frame",
+          "coverage": ["success", "edge"],
+          "observes": "Use the rotated frame and then an equivalent J2000 direction. Also vary direction magnitude."
+        },
+        {
+          "caseId": "geometry-tangpt-observer-and-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Change observer, target epoch and signed direction with independent ephemerides."
+        },
+        {
+          "caseId": "geometry-tangpt-radii",
+          "coverage": ["success", "edge"],
+          "observes": "Vary the triaxial radii then make the body spherical. Observe all geometric quantities."
+        },
+        {
+          "caseId": "geometry-tangpt-clear-reload",
+          "coverage": ["success", "edge"],
+          "observes": "Release kernel state and repeat the scientific result on a fresh load."
+        },
+        {
+          "caseId": "geometry-tangpt-invalid-method",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for invalid-method."
+        },
+        {
+          "caseId": "geometry-tangpt-invalid-locus",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for invalid-locus."
+        },
+        {
+          "caseId": "geometry-tangpt-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-tangpt-empty-method",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for empty-method."
+        },
+        {
+          "caseId": "geometry-tangpt-empty-dref",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for empty-dref."
+        },
+        {
+          "caseId": "geometry-tangpt-zero-ray",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for zero-ray."
+        },
+        {
+          "caseId": "geometry-tangpt-target-missing",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for target-missing."
+        },
+        {
+          "caseId": "geometry-tangpt-observer-missing",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for observer-missing."
+        },
+        {
+          "caseId": "geometry-tangpt-same-bodies",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for same-bodies."
+        },
+        {
+          "caseId": "geometry-tangpt-unrecognized-fixref",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for unrecognized-fixref."
+        },
+        {
+          "caseId": "geometry-tangpt-wrong-center",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for wrong-center."
+        },
+        {
+          "caseId": "geometry-tangpt-unrecognized-dref",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for unrecognized-dref."
+        },
+        {
+          "caseId": "geometry-tangpt-missing-spk",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for missing-spk."
+        },
+        {
+          "caseId": "geometry-tangpt-missing-radii",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for missing-radii."
+        },
+        {
+          "caseId": "geometry-tangpt-two-radii",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for two-radii."
+        },
+        {
+          "caseId": "geometry-tangpt-invalid-axis",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for invalid-axis."
+        },
+        {
+          "caseId": "geometry-tangpt-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit diagnostic for outside-coverage."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Invented piecewise linear body trajectories generated by the checked-in generator.",
+          "distribution": "Original fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Project-authored frames, semiaxes and orientations for synthetic bodies.",
+          "distribution": "Original fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Cartesian states and analytic shapes are authored directly in the scenarios. TANGPT additionally uses independently generated linear ephemerides and triaxial radii.",
+      "cleanup": "Fresh clients are disposed per workflow; kernel and error state are restored. Direct WASM tests free all allocations and inject failures in acquisition and diagnostic handling.",
+      "tolerance": "The standard 1e-12 absolute or relative component-wise scientific comparison applies. Separate finite-difference checks use 1e-5 time steps with absolute derivative bounds of 8e-10 for the sphere and 6e-9 for the quadratic ray root.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tangpt -> serialized N-API geometry handler -> tspice_tangpt -> tangpt_c",
+          "executions": ["local-e13-0466c9bd-node", "ci-e13-0466c9bd-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tangpt -> scoped WASM adapter and compiled export -> tspice_tangpt -> tangpt_c",
+          "executions": ["local-e13-0466c9bd-wasm", "ci-e13-0466c9bd-wasm"]
+        }
+      },
+      "findings": [
+        {
+          "id": "tangpt-surface",
+          "status": "repaired",
+          "summary": "Initialize failed name lookups before private caching; propagate nested geometry errors before temporary outputs are consumed in the pinned native and WASM builds.",
+          "repair": "Initialize failed name lookups before private caching; propagate nested geometry errors before temporary outputs are consumed in the pinned native and WASM builds.",
+          "evidence": [
+            "docs/step8-surface-derivatives.md",
+            "packages/py-parity-checking/test/surface-derivatives.test.ts",
+            "packages/backend-node/test/surface-derivative-domain.test.ts",
+            "packages/backend-wasm/test/surface-derivative-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_derivatives_oracle.py"
+          ],
+          "caseIds": ["geometry-tangpt-correction-locus"]
+        }
+      ]
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}
